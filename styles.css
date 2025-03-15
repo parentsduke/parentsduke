@@ -50,3 +50,9 @@ footer {
     width: 100%;
     bottom: 0;
 }
+
+
+img {
+        width: 300px; /* 设置宽度 */
+        height: auto; /* 高度自适应 */
+}
