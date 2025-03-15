@@ -55,5 +55,5 @@ footer {
     display: inline-block; /* 使图片在同一行显示 */
     width: 40%; /* 设置图片宽度 */
     margin: 10px; /* 添加间距 */
-    height: auto; /* 高度自适应 */
+    height: 80%; /* 高度自适应 */
 }
