@@ -53,7 +53,7 @@ footer {
 
 .image-container img {
     display: inline-block; /* 使图片在同一行显示 */
-    width: 50%; /* 设置图片宽度 */
+    width: 40%; /* 设置图片宽度 */
     margin: 10px; /* 添加间距 */
     height: auto; /* 高度自适应 */
 }
