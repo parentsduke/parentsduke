@@ -57,19 +57,3 @@ footer {
     margin: 10px; /* 添加间距 */
     height: 80%; /* 高度自适应 */
 }
-
-/* 手机版样式 */
-@media (max-width: 600px) {
-    nav ul li {
-        display: block; /* 将导航菜单垂直排列 */
-        margin: 10px 0;
-    }
-
-    header h1 {
-        font-size: 24px; /* 缩小标题字体 */
-    }
-
-    main {
-        padding: 10px; /* 减少内边距 */
-    }
-}
