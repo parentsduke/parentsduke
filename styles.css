@@ -10,7 +10,7 @@
 header {
     background: #000080;
     color: #fff;
-    padding: 0.5px 0;
+    padding: 0.3px 0;
     text-align: center;
 }
 
@@ -31,7 +31,7 @@ footer {
     background: #000080;
     color: #fff;
     position: fixed;
-    width: auto;
+    width: 100%;
     bottom: 0;
 }
 
