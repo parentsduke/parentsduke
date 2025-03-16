@@ -2,7 +2,7 @@
     font-family: Arial, sans-serif;
     line-height: normal;
     margin: 0;
-    padding: 0.5px 0;
+    padding: 0 0;
     background-color: #f4f4f4;
     color: #000080;
 }
@@ -10,7 +10,7 @@
 header {
     background: #000080;
     color: #fff;
-    padding: 0 0;
+    padding: 0.5px 0;
     text-align: center;
 }
 
