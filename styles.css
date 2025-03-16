@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    line-height: 1.5; /* 调整行高 */
+    line-height: 0.5; /* 调整行高 */
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
@@ -35,8 +35,9 @@ footer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px; /* 增加间距 */
-    padding: 10px 0; /* 添加内边距 */
+    gap: 0; /* 增加间距 */
+    padding: 0; /* 添加内边距 */
+    line-height: 0.5; /* 设置较小的行高 */
 }
 
 .image-container img {
