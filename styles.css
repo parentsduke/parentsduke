@@ -25,10 +25,18 @@ nav ul li a {
 }
 
 footer {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background: #000080;
+    color: #fff;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
     display: flex;
     flex-direction: column; /* 垂直排列 */
     align-items: center; /* 内容居中对齐 */
-    gap: 5px; /* 设置两行内容之间的间距为 5px */
+    gap: 0; /* 设置两行内容之间的间距为 5px */
 }
 
 .image-container img {
