@@ -5,9 +5,7 @@ body {
     padding: 0;
     background-color: #f4f4f4;
     color: #000080;
-    min-height: 150vh; /* 使 body 高度为视口高度的 1.5 倍 */
     overflow: auto; /* 允许滚动 */
-    padding-bottom: 60px; /* 根据 footer 高度调整 */
 }
 
 header {
