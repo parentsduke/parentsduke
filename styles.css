@@ -10,7 +10,7 @@ body {
 header {
     background: #000080;
     color: #fff;
-    padding: 10px 0; /* 使用固定值 */
+    padding: 1px 0; /* 使用固定值 */
     text-align: center;
     top: 0;
 }
@@ -27,7 +27,7 @@ nav ul li a {
 
 footer {
     text-align: center;
-    padding: 0.5px 0;
+    padding: 1px 0;
     margin: 0;
     background: #000080;
     color: #fff;
