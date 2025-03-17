@@ -5,6 +5,7 @@ body {
     padding: 0;
     background-color: #f4f4f4;
     color: #000080;
+    min-height: 150vh; /* 使 body 高度为视口高度的 1.5 倍 */
 }
 
 header {
