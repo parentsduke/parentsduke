@@ -31,7 +31,7 @@ footer {
     margin: 0;
     background: #000080;
     color: #fff;
-    position: relative;
+    position: fixed;
     width: 100%;
     bottom: 0;
 }
