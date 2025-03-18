@@ -1,46 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<title></title>
-	<meta name="generator" content="LibreOffice 24.8.3.2 (Linux)"/>
-	<meta name="author" content="aa bb"/>
-	<meta name="created" content="2025-03-18T18:40:00"/>
-	<meta name="changedby" content="aa bb"/>
-	<meta name="changed" content="2025-03-18T19:54:00"/>
-	<meta name="AppVersion" content="14.0000"/>
-	<style type="text/css">
-		@page { size: 8.5in 11in; margin: 1in }
-		p { line-height: 115%; text-align: left; orphans: 2; widows: 2; margin-bottom: 0.1in; direction: ltr; background: transparent }
-	</style>
-</head>
-<body lang="en-US" link="#000080" vlink="#800000" dir="ltr">
-	<div class="password-container">
-        <h2>请输入密码</h2>
-        <input type="password" id="password" placeholder="输入密码">
-        <button onclick="checkPassword()">提交</button>
-        <p id="message" style="color: red;"></p>
-    </div>
-
-    <div class="content" id="content">
-        <h1>欢迎来到受保护的页面！</h1>
-        <p>这是受密码保护的内容。</p>
-    </div>
-
-    <script>
-        function checkPassword() {
-            const password = document.getElementById('password').value;
-            const message = document.getElementById('message');
-            const content = document.getElementById('content');
-
-            if (password === '123456') { // 设置密码为 123456
-                document.querySelector('.password-container').style.display = 'none'; // 隐藏密码输入框
-                content.style.display = 'block'; // 显示内容
-            } else {
-                message.textContent = '密码错误，请重试！';
-            }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>密码保护页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
         }
-    </script>
+        .password-container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .content {
+            display: <lang="en-US" link="#000080" vlink="#800000" dir="ltr">
 <p style="line-height: 108%; margin-bottom: 0.11in"><a name="_GoBack"></a>
 GangY:</p>
 <p style="line-height: 108%; margin-bottom: 0.11in"><font face="等线"><font face="Noto Sans CJK JP"><span lang="zh-CN">请问</span></font><font face="MS Mincho"><span lang="zh-CN">大家</span></font></font>Duke<font face="等线"><font face="MS Mincho"><span lang="zh-CN">附近有</span></font><font face="Noto Sans CJK JP"><span lang="zh-CN">给</span></font><font face="MS Mincho"><span lang="zh-CN">女孩子理</span></font><font face="Noto Sans CJK JP"><span lang="zh-CN">发</span></font><font face="MS Mincho"><span lang="zh-CN">的</span></font><font face="Noto Sans CJK JP"><span lang="zh-CN">发</span></font><font face="MS Mincho"><span lang="zh-CN">型</span></font><font face="Noto Sans CJK JP"><span lang="zh-CN">师</span></font><font face="MS Mincho"><span lang="zh-CN">可以推荐的</span></font><font face="Noto Sans CJK JP"><span lang="zh-CN">吗</span></font><font face="MS Mincho"><span lang="zh-CN">？</span></font><font face="Noto Sans CJK JP"><span lang="zh-CN">谢谢</span></font><font face="MS Mincho"><span lang="zh-CN">。</span></font></font></p>
@@ -86,5 +68,38 @@ GangY:</p>
 <br/>
 
 </p>
+</body>
+</html>
+; /* 默认隐藏内容 */
+        }
+    </style>
+</head>
+<body>
+    <div class="password-container">
+        <h2>请输入密码</h2>
+        <input type="password" id="password" placeholder="输入密码">
+        <button onclick="checkPassword()">提交</button>
+        <p id="message" style="color: red;"></p>
+    </div>
+
+    <div class="content" id="content">
+        <h1>欢迎来到受保护的页面！</h1>
+        <p>这是受密码保护的内容。</p>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
+            const content = document.getElementById('content');
+
+            if (password === '123456') { // 设置密码为 123456
+                document.querySelector('.password-container').style.display = 'none'; // 隐藏密码输入框
+                content.style.display = 'block'; // 显示内容
+            } else {
+                message.textContent = '密码错误，请重试！';
+            }
+        }
+    </script>
 </body>
 </html>
