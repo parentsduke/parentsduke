@@ -1,4 +1,61 @@
 <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>密码保护页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .password-container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .content {
+            display: none; /* 默认隐藏内容 */
+        }
+    </style>
+</head>
+<body>
+    <div class="password-container">
+        <h2>请输入密码</h2>
+        <input type="password" id="password" placeholder="输入密码">
+        <button onclick="checkPassword()">提交</button>
+        <p id="message" style="color: red;"></p>
+    </div>
+
+    <div class="content" id="content">
+        <h1>欢迎来到受保护的页面！</h1>
+        <p>这是受密码保护的内容。</p>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
+            const content = document.getElementById('content');
+
+            if (password === '123456') { // 设置密码为 123456
+                document.querySelector('.password-container').style.display = 'none'; // 隐藏密码输入框
+                content.style.display = 'block'; // 显示内容
+            } else {
+                message.textContent = '密码错误，请重试！';
+            }
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
