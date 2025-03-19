@@ -46,7 +46,18 @@
             const message = document.getElementById('message');
             const content = document.getElementById('content');
 
-            if (password === 'Duke2025') { // 设置密码为 Duke2025
+            // 设置六个密码
+            const passwords = [
+                'Duke2024', // 第一个密码
+                'Duke2025', // 第二个密码
+                'Duke2026', // 第三个密码
+                'Duke2027', // 第四个密码
+                'Duke2028', // 第五个密码
+                'Duke2029'  // 第六个密码
+            ];
+
+                // 检查用户输入的密码是否匹配任意一个密码
+           if (passwords.includes(password)) { // 设置密码为 Duke202x
                 document.querySelector('.password-container').style.display = 'none'; // 隐藏密码输入框
                 content.style.display = 'block'; // 显示被保护内容
             } else {
