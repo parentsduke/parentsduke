@@ -25,6 +25,12 @@
             text-align: center;
             margin-top: 20px;
         }
+	    .toggle-password {
+            margin-top: 10px;
+            cursor: pointer;
+            color: #000080;
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -41,6 +47,18 @@
     </div>
 	
   <script>
+	function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleText = document.querySelector('.toggle-password');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text'; // 显示密码
+                toggleText.textContent = '隐藏密码';
+            } else {
+                passwordInput.type = 'password'; // 隐藏密码
+                toggleText.textContent = '显示密码';
+            }
+        }
         function checkPassword() {
             const password = document.getElementById('password').value;
             const message = document.getElementById('message');
