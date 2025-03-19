@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .password-container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .content {
+            display: none; /* 默认隐藏被保护内容 */
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+    <!-- 密码输入区域 -->
+    <div class="password-container">
+        <input type="password" id="password" placeholder="">
+        <button onclick="checkPassword()">提交</button>
+        <p id="message" style="color: blue;"></p>
+    </div>
+
+    <!-- 被保护的内容 -->
+    <div class="content" id="content">
+    <a href="LauraCaiphitographer.html" target="_blank">LauraCaiphitographer</a>
+    </div>
+	
+  <script>
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
+            const content = document.getElementById('content');
+
+            if (password === 'Duke2025') { // 设置密码为 Duke2025
+                document.querySelector('.password-container').style.display = 'none'; // 隐藏密码输入框
+                content.style.display = 'block'; // 显示被保护内容
+            } else {
+                message.textContent = '请重试';
+            }
+        }
+    </script>
+</body>
+</html>
