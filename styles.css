@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    line-height: 1.5; /* 调整行高 */
+    line-height: 1.6; /* 调整行高 */
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
@@ -17,12 +17,11 @@ header {
 
 nav ul li {
     display: inline;
-    margin: 5px 2px;
+    margin: 0 2px;
    }
 
 nav ul li a {
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin: 10px 2px;
     color: #fff;
     text-decoration: none;
 }
