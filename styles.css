@@ -40,6 +40,16 @@ footer {
     display: inline-block;
     width: 40%;
     margin: 10px 10px 0 10px;
-
     height: auto;
+}
+
+.caption {
+    position: absolute; /* 设置绝对定位 */
+    right: 0; /* 对齐到右侧 */
+    bottom: 0; /* 对齐到底部 */
+    margin: 0; /* 移除默认外边距 */
+    padding: 5px 10px; /* 添加内边距 */
+    background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+    color: white; /* 白色文字 */
+    font-size: 12px; /* 设置字体大小 */
 }
