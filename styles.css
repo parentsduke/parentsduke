@@ -51,8 +51,16 @@ footer {
     display: inline-block; /* 使容器宽度适应内容 */
 }
 
+.image-container {
+    position: relative; /* 设置相对定位 */
+    display: inline-block; /* 使容器宽度适应内容 */
+}
+
 .caption {
-    margin: 0, 0, 0, 3px; /* 默认外边距 */
+    position: absolute; /* 设置绝对定位 */
+    right: 0; /* 对齐到右侧 */
+    bottom: 0; /* 对齐到底部 */
+    margin: 0; /* 移除默认外边距 */
     color: black; /* 黑色文字 */
-    font-size: 0.08rem; /* 设置字体大小 */
+    font-size: 0.08rem; 
 }
