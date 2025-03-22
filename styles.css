@@ -57,7 +57,7 @@ footer {
 }
 
 .caption {
-    position: absolute; /* 设置绝对定位 */
+    position: relative; /* 设置绝对定位 */
     right: 10px; /* 对齐到右侧 */
     bottom: 0; /* 对齐到底部 */
     margin: 0; /* 移除默认外边距 */
