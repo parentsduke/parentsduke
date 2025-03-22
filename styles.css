@@ -52,8 +52,7 @@ footer {
 }
 
 .caption {
-    margin: 0, 0, 0, 3px; /* 移除默认外边距 */
-    
+    margin: 0, 0, 0, 3px; /* 默认外边距 */
     color: black; /* 黑色文字 */
     font-size: 0.08rem; /* 设置字体大小 */
 }
