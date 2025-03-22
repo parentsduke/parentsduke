@@ -48,5 +48,6 @@ footer {
     right: 0; /* 对齐到右侧 */
     bottom: 0; /* 对齐到底部 */
     margin: 0; /* 移除默认外边距 */
+    colir: black;
     font-size: 0.3rem; /* 设置字体大小 */
 }
