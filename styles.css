@@ -39,6 +39,8 @@ footer {
 .image-container img {
     display: inline-block;
     width: 40%;
-    margin: 10px 0 0 0;
+    margin-top: 10px;
+    margin-left: 10px;
+
     height: auto;
 }
