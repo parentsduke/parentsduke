@@ -10,7 +10,7 @@ body {
 header {
     background: #000080;
     color: #fff;
-    padding: 0; /* 使用固定值 */
+    padding: 1px; /* 使用固定值 */
     text-align: center;
     top: 0;
 }
