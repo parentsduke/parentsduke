@@ -43,6 +43,15 @@ footer {
     font-size: 12px;     /* 统一字体大小 */
 }
 
+.email-link {
+    color: #fff;     /* 链接白色 */
+    text-decoration: none;
+}
+
+.email-link:hover {
+    text-decoration: underline; /* 悬停下划线 */
+}
+
 .image-container img {
     display: inline-block;
     width: 40%;
