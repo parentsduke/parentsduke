@@ -37,6 +37,11 @@ footer {
     bottom: 0;
 }
 
+.footer-text {
+    margin-right: 10px;
+    font-size: 14px;     /* 统一字体大小 */
+}
+
 .image-container img {
     display: inline-block;
     width: 40%;
