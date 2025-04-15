@@ -30,7 +30,6 @@ nav ul li a {
 footer {
     text-align: center;
     line-height: 0.3;
-    margin-right: 100px; /* modified4/15 */
     padding: 1px 0; /* 使用固定值 */
     background: #000080;
     color: #fff;
@@ -39,7 +38,7 @@ footer {
 }
 
 .footer-text {
-    margin-right: 10px;
+    margin-right: 100px; /* 10 modified 415 */
     font-size: 12px;     /* 统一字体大小 */
 }
 
