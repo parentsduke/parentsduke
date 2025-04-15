@@ -38,8 +38,12 @@ footer {
 }
 
 .footer-text {
-    margin-right: 100px; /* 10 modified 415 */
+    margin-right: 10px; 
     font-size: 12px;     /* 统一字体大小 */
+}
+
+.sentence {
+    margin-right: 20px; /* Adjusts empty space to the right */
 }
 
 .email-link {
