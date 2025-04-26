@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .password-container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .content {
+            display: none; /* 默认隐藏被保护内容 */
+            text-align: center;
+            margin-top: 20px;
+        }
+	.toggle-password {
+            margin-top: 5px;
+	    margin-bottom: 5px;
+            cursor: pointer;
+            color: #000080;
+            text-decoration: underline;
+	    font-size: 10px
+        }
+    </style>
+</head>
+<body>
+    <!-- 密码输入区域 -->
+    <div class="password-container">
+        <input type="password" id="password" placeholder="">
+	<div class="toggle-password" onclick="togglePassword()">显示密码</div>
+        <button onclick="checkPassword()">提交</button>
+        <p id="message" style="color: blue;"></p>
+    </div>
+
+    <!-- 被保护的内容 -->
+    <div class="content" id="content">
+    <a href="过敏讨论.html" target="_blank">过敏讨论</a>
+    </div>
+	
+  <script>
+	function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleText = document.querySelector('.toggle-password');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text'; // 显示密码
+                toggleText.textContent = '隐藏密码';
+            } else {
+                passwordInput.type = 'password'; // 隐藏密码
+                toggleText.textContent = '显示密码';
+            }
+        }
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
+            const content = document.getElementById('content');
+
+            // 设置六个密码
+            const passwords = [
+                'Duke2024', // 第一个密码
+                'Duke2025', // 第二个密码
+                'Duke2026', // 第三个密码
+                'Duke2027', // 第四个密码
+                'Duke2028', // 第五个密码
+                'Duke2029'  // 第六个密码
+            ];
+
+                // 检查用户输入的密码是否匹配任意一个密码
+           if (passwords.includes(password)) { // 设置密码为 Duke202x
+                document.querySelector('.password-container').style.display = 'none'; // 隐藏密码输入框
+                content.style.display = 'block'; // 显示被保护内容
+            } else {
+                message.textContent = '请重试';
+            }
+	}
+		// 监听 Enter 键
+        document.getElementById('password').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                checkPassword(); // 按下 Enter 键时触发提交
+            }
+        });
+    </script>
+</body>
+</html>
