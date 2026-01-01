@@ -65,12 +65,14 @@ footer {
 
 
 .video-wrap {
+  margin-top: 5px;
   margin-left: 20px;     /* 左边留空 */
   display: flex;         /* 横向排列 */
-  gap: 16px;             /* 两个视频间距 */
+  gap: 10px;             /* 两个视频间距 */
 }
 
 .demo {
   height: 212px;         /* 控制高度 */
   width: auto;           /* 保持比例 */
 }
+
