@@ -72,9 +72,10 @@ footer {
 }
 
 .demo {
-  height: 190px;         /* 控制高度 */
-  width: auto;           /* 保持比例 */
+  height: auto;         /* 控制高度 */
+  width: 40%;           /* 保持比例 */
 }
+
 
 
 
