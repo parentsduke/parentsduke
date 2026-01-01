@@ -68,13 +68,14 @@ footer {
   margin-top: 8px;
   margin-left: 20px;     /* 左边留空 */
   display: inline-block;         /* 横向排列 */
-  gap: 10px;             /* 两个视频间距 */
+         /* 两个视频间距 */
 }
 
 .demo {
   height: auto;         /* 控制高度 */
   width: 42%;           /* 保持比例 */
 }
+
 
 
 
