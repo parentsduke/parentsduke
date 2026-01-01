@@ -62,3 +62,15 @@ footer {
     margin-left: 20px;
     height: auto;
 }
+
+
+.video-wrap {
+  margin-left: 20px;     /* 左边留空 */
+  display: flex;         /* 横向排列 */
+  gap: 16px;             /* 两个视频间距 */
+}
+
+.demo {
+  height: 212px;         /* 控制高度 */
+  width: auto;           /* 保持比例 */
+}
