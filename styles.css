@@ -62,3 +62,11 @@ footer {
     margin-left: 20px;
     height: auto;
 }
+
+.video-container vid {
+    display: inline-block;
+    width: 40%;
+    margin-top: 5px;
+    margin-left: 20px;
+    height: auto;
+}
