@@ -64,7 +64,7 @@ footer {
 }
 
 
-.video-wrap {
+/* .video-wrap {
   margin-top: 8px;
   margin-left: 20px;     /* 左边留空 */
   display: inline-block;         /* 横向排列 */
@@ -74,6 +74,19 @@ footer {
 .demo {
   height: auto;         /* 保持比例 */
   width: 42%;           /* 控制宽度 */
+} */
+
+.video-wrap {
+  margin-left: 20px;     /* 左边留空 */
+  display: flex;
+  gap: 16px;
+}
+
+.video-box {
+  width: 340px;          /* 同宽 */
+  height: 200px;         /* 同高 */
+  object-fit: contain;   /* 不拉伸，可能留黑边 */
+  background: #000;      /* 黑边更自然 */
 }
 
 
