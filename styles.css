@@ -63,21 +63,8 @@ footer {
     height: auto;
 }
 
-
-/* .video-wrap {
-  margin-top: 8px;
-  margin-left: 20px;     /* 左边留空 */
-  display: inline-block;         /* 横向排列 */
-  /* 两个视频间距 */
-}
-
-.demo {
-  height: auto;         /* 保持比例 */
-  width: 42%;           /* 控制宽度 */
-} */
-
 .video-wrap {
-  margin-left: 20px;     /* 左边留空 */
+  /* 左边留空 */
   display: flex;
   gap: 16px;
 }
@@ -86,9 +73,9 @@ footer {
   width: 42%;          /* 同宽 */
   height: 50%;         /* 同高 */
   object-fit: contain;   /* 不拉伸，可能留黑边 */
-  padding-left: 8px;
-  /* 黑边更自然 */
+  padding-left: 8px;   /* 左边留白 */
 }
+
 
 
 
