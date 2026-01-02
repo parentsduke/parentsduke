@@ -86,9 +86,10 @@ footer {
   width: 42%;          /* 同宽 */
   height: 50%;         /* 同高 */
   object-fit: contain;   /* 不拉伸，可能留黑边 */
-  padding: 8px;
+  padding-left: 8px;
   /* 黑边更自然 */
 }
+
 
 
 
