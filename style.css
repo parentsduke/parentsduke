@@ -56,6 +56,7 @@ footer {
 
 .email-link {
     color: #fff;     /* 链接白色 */
+    font-size: 8px;   /* 改这里 */
     text-decoration: none;
 }
 
@@ -84,6 +85,7 @@ footer {
   padding-left: 8px;   /* 左边留白 */
   padding-top: 8px;
 }
+
 
 
 
