@@ -8,7 +8,7 @@ body {
 }
 
 header {
-    line-height: 0.6; /* 设置标题的行高为字体大小的 1.2 倍 */
+    line-height: 0.7; /* 设置标题的行高为字体大小的 1.2 倍 */
     background: #000080;
     color: #fff; /* White */
     padding: 1px; /* 使用固定值 */
@@ -37,7 +37,7 @@ nav ul li a {
 
 footer {
     text-align: center;
-    line-height: 0.6;
+    line-height: 0.7;
     padding: 2px 0; /* 使用固定值 */
     background: #000080; /* Navy blue */
     color: #fff; /* White */
@@ -84,3 +84,4 @@ footer {
   padding-left: 8px;   /* 左边留白 */
   padding-top: 8px;
 }
+
