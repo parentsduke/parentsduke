@@ -3,12 +3,12 @@ body {
     line-height: 1.6; /* 调整行高 */
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #000080;
+    background-color: #f4f4f4; /* Cultured */
+    color: #000080; /* Navy blue */
 }
 
 header {
-    line-height: 0.3; /* 设置标题的行高为字体大小的 1.2 倍 */
+    line-height: 0.5; /* 设置标题的行高为字体大小的 1.2 倍 */
     background: #000080;
     color: #fff;
     padding: 1px; /* 使用固定值 */
@@ -84,5 +84,6 @@ footer {
   padding-left: 8px;   /* 左边留白 */
   padding-top: 8px;
 }
+
 
 
