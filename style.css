@@ -19,8 +19,8 @@ header {
 
 .link-list a {
   display: block;      /* ⭐ 每个链接一行 */
-  margin-left: 28px;   /* 与网页左边留空 */
-  margin-bottom: 7px;  /* 行间距 */
+  margin-left: 24px;   /* 与网页左边留空 */
+  margin-bottom: 8px;  /* 行间距 */
 }
 
 
@@ -84,5 +84,6 @@ footer {
   padding-left: 8px;   /* 左边留白 */
   padding-top: 8px;
 }
+
 
 
