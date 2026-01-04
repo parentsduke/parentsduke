@@ -10,7 +10,7 @@ body {
 header {
     line-height: 0.6; /* 设置标题的行高为字体大小的 1.2 倍 */
     background: #000080;
-    color: #fff;
+    color: #fff; /* White */
     padding: 1px; /* 使用固定值 */
     text-align: center;
     top: 0;
@@ -31,7 +31,7 @@ nav ul li {
 
 nav ul li a {
     margin: 0 5px;
-    color: #fff;
+    color: #fff; /* White */
     text-decoration: none;
 }
 
@@ -46,8 +46,7 @@ footer {
 }
 
 .footer-text {
-    margin-right: 10px; 
-    font-size: 4px;     /* 统一字体大小 */
+    margin-right: 10px;
 }
 
 .sentence {
@@ -85,11 +84,3 @@ footer {
   padding-left: 8px;   /* 左边留白 */
   padding-top: 8px;
 }
-
-
-
-
-
-
-
-
