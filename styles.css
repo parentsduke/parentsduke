@@ -16,11 +16,14 @@ header {
     top: 0;
 }
 
-<div class="link-list">
-  <a href="https://www.google.com">Google</a>
-  <a href="https://www.github.com">GitHub</a>
-  <a href="https://www.wikipedia.org">Wikipedia</a>
-</div>
+.link-list {
+  margin-left: 32px;
+}
+
+.link-list li {
+  margin-bottom: 6px;
+}
+
 
 nav ul li {
     display: inline;
@@ -82,3 +85,4 @@ footer {
   padding-left: 8px;   /* 左边留白 */
   padding-top: 8px;
 }
+
