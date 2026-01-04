@@ -37,17 +37,17 @@ nav ul li a {
 
 footer {
     text-align: center;
-    line-height: 0.3;
-    padding: 1px 0; /* 使用固定值 */
-    background: #000080;
-    color: #fff;
+    line-height: 0.5;
+    padding: 2px 0; /* 使用固定值 */
+    background: #000080; /* Navy blue */
+    color: #fff; /* White */
     width: 100%;
     bottom: 0;
 }
 
 .footer-text {
     margin-right: 10px; 
-    font-size: 8px;     /* 统一字体大小 */
+    font-size: 4px;     /* 统一字体大小 */
 }
 
 .sentence {
@@ -84,6 +84,7 @@ footer {
   padding-left: 8px;   /* 左边留白 */
   padding-top: 8px;
 }
+
 
 
 
