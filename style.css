@@ -71,6 +71,31 @@ footer {
     height: auto;
 }
 
+
+
+.thumb {
+  width: 200px;
+  cursor: pointer;
+}
+
+#overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+#overlay img {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+
+
+
 .video-wrap {
   /* 左边留空 */
   display: flex;
@@ -84,6 +109,7 @@ footer {
   padding-left: 8px;   /* 左边留白 */
   padding-top: 8px;
 }
+
 
 
 
