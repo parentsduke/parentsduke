@@ -71,18 +71,21 @@ footer {
     height: auto;
 }
 
-
-
 .thumb {
-  width: 200px;
+  width: 220px;
+  margin: 10px;
   cursor: pointer;
 }
 
+/* 放大遮罩 */
 #overlay {
-  display: none;
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 999;
@@ -92,6 +95,8 @@ footer {
   max-width: 90%;
   max-height: 90%;
 }
+
+
 
 
 
@@ -109,6 +114,7 @@ footer {
   padding-left: 8px;   /* 左边留白 */
   padding-top: 8px;
 }
+
 
 
 
