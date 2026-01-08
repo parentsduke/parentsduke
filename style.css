@@ -76,17 +76,17 @@ footer {
 
 
 
-
+/* 
 
 .email-link {
-  color: #fff !important;     /* 链接白色 */
-  font-size: 16px;   /* 改这里 */
-  text-decoration: none; 
+  color: #fff !important;     链接白色 */
+ /* font-size: 16px;   改这里 */
+/*  text-decoration: none; 
 } 
-
-.email-link:hover {
-    text-decoration: underline; /* 悬停下划线 */
-}
+*/
+/* .email-link:hover {
+    text-decoration: underline;  悬停下划线 */
+/* } */
 
 .thumb {
     width: 220px;
@@ -160,12 +160,41 @@ footer {
     to { transform: scale(1); opacity: 1; }
 }
 
-/* 底部 WJ 二维码缩小 */
-footer .WJ {
-    width: 40px;       /* 根据需要调整 */
-    height: auto;      /* 保持比例 */
-    vertical-align: middle;  /* 和文字对齐 */
-    margin-left: 8px;  /* 和文字有一点间距 */
+
+/* footer 内 WJ 图片和邮箱对齐 */
+footer {
+    position: relative;
+    text-align: center;
+    font-family: SIMLI, sans-serif;
+    line-height: 1.2;
+    padding: 10px 0;
+    background: #000080; /* Navy blue */
+    color: #fff;
 }
 
+/* WJ 图片缩小，和邮箱在同一行 */
+footer .WJ-wrapper {
+    display: inline-block;
+    vertical-align: middle; /* 垂直居中对齐 */
+    margin-left: 10px;       /* 和邮箱保持间距 */
+}
+
+footer .WJ-wrapper img {
+    width: 40px;    /* 缩小 WJ 图片 */
+    height: auto;
+    vertical-align: middle;
+}
+
+/* 邮箱样式 */
+footer .email-link {
+    display: inline-block;
+    color: #fff;        /* 白色 */
+    font-size: 16px;    /* 适中大小 */
+    vertical-align: middle; /* 和 WJ 图片垂直居中 */
+    text-decoration: none;
+}
+
+footer .email-link:hover {
+    text-decoration: underline;
+}
 
