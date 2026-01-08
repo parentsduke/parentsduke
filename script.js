@@ -21,19 +21,18 @@ imgOverlay.addEventListener('click', () => {
 
 
 
-const videos = document.querySelectorAll('.clickable-video');
+
+
+
+const clickLayer = document.querySelector('.video-click-layer');
+const video = document.querySelector('.video-box');
 const videoOverlay = document.getElementById('video-overlay');
 const overlayVideo = document.getElementById('overlay-video');
 
-videos.forEach(video => {
-  video.addEventListener('click', e => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    overlayVideo.src = video.currentSrc;
-    videoOverlay.style.display = 'flex';
-    overlayVideo.play();
-  });
+clickLayer.addEventListener('click', () => {
+  overlayVideo.src = video.currentSrc;
+  videoOverlay.style.display = 'flex';
+  overlayVideo.play();
 });
 
 videoOverlay.addEventListener('click', () => {
@@ -41,5 +40,3 @@ videoOverlay.addEventListener('click', () => {
   overlayVideo.src = '';
   videoOverlay.style.display = 'none';
 });
-
-overlayVideo.addEventListener('click', e => e.stopPropagation());
