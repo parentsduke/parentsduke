@@ -29,6 +29,7 @@ header h4 {
 
 .qrcode {
     width: 50px;
+    height: auto;
     display: block;
     margin: 6px auto;
     cursor: zoom-in;
