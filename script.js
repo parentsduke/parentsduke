@@ -33,3 +33,13 @@ overlay.addEventListener('click', () => {
   overlayVideo.src = '';
   overlay.style.display = 'none';
 });
+
+document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+  const video = wrapper.querySelector('video');
+
+  wrapper.addEventListener('click', () => {
+    overlayVideo.src = video.currentSrc;
+    overlay.style.display = 'flex';
+    overlayVideo.play();
+  });
+});
