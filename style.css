@@ -15,6 +15,52 @@ header {
     text-align: center;
 }
 
+.link-list a {
+  display: block;      /* ⭐ 每个链接一行 */
+  margin-left: 24px;   /* 与网页左边留空 */
+  margin-bottom: 8px;  /* 行间距 */
+}
+
+
+nav ul li {
+    display: inline;
+    margin: 0 2px;
+   }
+
+nav ul li a {
+    margin: 0 5px;
+    color: #fff; /* White */
+    text-decoration: none;
+}
+
+footer {
+    text-align: center;
+    line-height: 0.7;
+    padding: 2px 0; /* 使用固定值 */
+    background: #000080; /* Navy blue */
+    color: #fff; /* White */
+    width: 100%;
+    bottom: 0;
+}
+
+.footer-text {
+    margin-right: 10px;
+}
+
+.sentence {
+    margin-right: 8px; /* Adjusts empty space to the right */
+}
+
+.email-link {
+    color: #fff;     /* 链接白色 */
+    font-size: 16px;   /* 改这里 */
+    text-decoration: none;
+}
+
+.email-link:hover {
+    text-decoration: underline; /* 悬停下划线 */
+}
+
 .thumb {
     width: 220px;
     margin: 10px;
