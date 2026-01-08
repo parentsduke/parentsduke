@@ -98,7 +98,7 @@ footer {
 video-wrapper {
   position: relative;
   display: inline-block;
-  margin-left: 10px;
+  margin-left: 15px;
 }
 
 
@@ -156,6 +156,7 @@ video-wrapper {
 #overlay-video {
   pointer-events: auto;
 }
+
 
 
 
