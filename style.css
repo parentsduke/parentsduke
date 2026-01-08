@@ -76,49 +76,20 @@ footer {
 
 
 
-/* 二维码 */
-.thumb.WJ {
-  width: 30px;                 /* 推荐 28–32 */
-  height: 30px;                /* ⭐ 固定高度，防止下沉 */
-  object-fit: contain;
-  display: block;              /* ⭐ 防止 img baseline 下沉 */
-}
-
-/* 邮箱 */
-.email-link {
-  font-size: 18px;
-  line-height: 30px;           /* ⭐ 与二维码高度一致 */
-  text-decoration: none;
-  color: white;
-}
-
-.email-link:hover {
-  color: gray;
-}
-
-/* .footer-text {
-    margin-right: 10px;
-} */
-
-.WJ{
-  width: 20px;          /* 缩小 */
-  height: auto;
-  display: inline-block;
-  cursor: zoom-in;
-}
 
 /* .sentence {
     margin-right: 8px; /* Adjusts empty space to the right */
 } */
-/* .email-link {
-  /*  color: #fff;      链接白色 */
-  /*  font-size: 16px;    改这里 */
-  /*  text-decoration: none; */
-} */
 
-/*.email-link:hover {
+.email-link {
+  color: #fff;     /* 链接白色 */
+  font-size: 16px;   /* 改这里 */
+  text-decoration: none; 
+} 
+
+.email-link:hover {
     text-decoration: underline; /* 悬停下划线 */
-} */
+}
 
 .thumb {
     width: 220px;
