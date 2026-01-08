@@ -18,28 +18,28 @@ imgOverlay.addEventListener('click', () => {
 /* ========== 视频单击放大（重点） ========== */
 
 
-const videoWrappers = document.querySelectorAll('.video-wrapper');
+
+
+
+const videos = document.querySelectorAll('.clickable-video');
 const videoOverlay = document.getElementById('video-overlay');
 const overlayVideo = document.getElementById('overlay-video');
-const src = video.currentSrc || video.querySelector('source')?.src || '';
-overlayVideo.src = src;
 
-videoWrappers.forEach(wrapper => {
-  const video = wrapper.querySelector('video');
+videos.forEach(video => {
+  video.addEventListener('click', e => {
+    e.preventDefault();
+    e.stopPropagation();
 
-  wrapper.addEventListener('click', () => {
-    overlayVideo.src = video.currentSrc || video.src; // 确保能取到视频路径
+    overlayVideo.src = video.currentSrc;
     videoOverlay.style.display = 'flex';
     overlayVideo.play();
   });
 });
 
-// 点击遮罩层关闭
 videoOverlay.addEventListener('click', () => {
   overlayVideo.pause();
   overlayVideo.src = '';
   videoOverlay.style.display = 'none';
 });
 
-// 阻止点击视频本身关闭 overlay
 overlayVideo.addEventListener('click', e => e.stopPropagation());
