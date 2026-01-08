@@ -141,6 +141,11 @@ footer {
   to   { transform: scale(1); opacity: 1; }
 }
 
+#overlay img,
+#overlay-video {
+  pointer-events: auto;
+}
+
 
 
 
