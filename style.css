@@ -91,15 +91,13 @@ footer {
 
 .video-wrapper {
   display: inline-block;
+  margin-left: 40px;
   cursor: zoom-in;
 }
 
-
-/* 原视频 */
 .video-box {
-  width: 400px;
-  height: 225px;
-  cursor: pointer;
+  width: 420px;
+  height: auto;
 }
 
 /* 放大遮罩层 */
@@ -121,6 +119,7 @@ footer {
   max-width: 90%;
   max-height: 90%;
 }
+
 
 
 
