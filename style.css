@@ -20,7 +20,7 @@ header {
     color: #fff;
     padding: 10px 0;
     text-align: center;
-    font-family: "隶书", "LiSu", serif;  /* 中文隶书，备用 serif */
+    font-family: 'ZCOOL XiaoWei', "LiSu", "SimLi", serif; /* 中文隶书风格 */
 }
 
 header h3,
