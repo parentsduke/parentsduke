@@ -35,7 +35,7 @@ header h4 {
 }
 
 .thumb.qrcode {
-  width: 45px;          /* 缩小 */
+  width: 25px;          /* 缩小 */
   height: auto;
   display: inline-block;
   cursor: zoom-in;
