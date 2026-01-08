@@ -95,13 +95,18 @@ footer {
 }
 
 
+video-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-left: 10px;
+}
 
 
-.video-wrapper {
+/* .video-wrapper {
   position: relative;
   display: inline-block;
   margin-left: 20px;
-}
+} */
 
 /* 原视频 */
 /* .video-box { */
@@ -151,6 +156,7 @@ footer {
 #overlay-video {
   pointer-events: auto;
 }
+
 
 
 
