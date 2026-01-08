@@ -7,12 +7,25 @@ body {
     color: #000080;
 }
 
-header {
+/* header {
     line-height: 1.2;
     background: #000080;
     color: #fff;
     padding: 10px;
     text-align: center;
+} */
+
+header {
+    background: #000080;
+    color: #fff;
+    padding: 8px 0;
+    text-align: center;
+}
+
+header h3,
+header h4 {
+    line-height: 1.2;
+    margin: 4px 0;
 }
 
 /* .qrcode {
