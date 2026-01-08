@@ -74,10 +74,36 @@ footer {
     bottom: 0;
 }
 
-.footer-text {
-    margin-right: 10px;
+/* ===== Footer 联系方式横向排列 ===== */
+.contact-row {
+  display: flex;
+  align-items: center;      /* 垂直居中 */
+  justify-content: center;  /* 整体居中 */
+  gap: 12px;                /* 二维码和邮箱间距 */
+  margin-top: 8px;
 }
 
+/* 微信二维码尺寸 */
+.WJ {
+  width: 32px;    /* 可调：28 / 32 / 36 */
+  height: auto;
+}
+
+/* 邮箱样式 */
+.email-link {
+  font-size: 18px;
+  font-family: serif;
+  color: black;
+  text-decoration: none;
+}
+
+.email-link:hover {
+  color: gray;
+}
+
+/* .footer-text {
+    margin-right: 10px;
+} */
 
 .thumb.WJ{
   width: 20px;          /* 缩小 */
@@ -86,19 +112,18 @@ footer {
   cursor: zoom-in;
 }
 
-.sentence {
+/* .sentence {
     margin-right: 8px; /* Adjusts empty space to the right */
-}
+} */
+/* .email-link {
+  /*  color: #fff;      链接白色 */
+  /*  font-size: 16px;    改这里 */
+  /*  text-decoration: none; */
+} */
 
-.email-link {
-    color: #fff;     /* 链接白色 */
-    font-size: 16px;   /* 改这里 */
-    text-decoration: none;
-}
-
-.email-link:hover {
+/*.email-link:hover {
     text-decoration: underline; /* 悬停下划线 */
-}
+} */
 
 .thumb {
     width: 220px;
