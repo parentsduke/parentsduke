@@ -103,10 +103,16 @@ footer {
   margin-left: 40px;
 }
 
-/* 原视频 */
+/* 原视频 
 .video-box {
   width: 420px;
-}
+} */
+
+/* 原视频 */
+.video-box {
+  width: 200px;
+} 
+
 
 /* ⭐ 透明点击层 */
 .video-click-layer {
@@ -145,6 +151,7 @@ footer {
 #overlay-video {
   pointer-events: auto;
 }
+
 
 
 
