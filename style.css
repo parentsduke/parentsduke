@@ -100,7 +100,7 @@ footer {
 .video-wrapper {
   position: relative;
   display: inline-block;
-  margin-left: 40px;
+  margin-left: 20px;
 }
 
 /* 原视频 
@@ -151,6 +151,7 @@ footer {
 #overlay-video {
   pointer-events: auto;
 }
+
 
 
 
