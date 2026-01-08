@@ -1,4 +1,4 @@
-/* ================= 图片放大 ========== */
+/* ================= 图片放大 ================= */
 
 const imgOverlay = document.getElementById('overlay');
 const overlayImg = document.getElementById('overlay-img');
@@ -17,7 +17,7 @@ imgOverlay.addEventListener('click', () => {
 });
 
 // 阻止点图片本身关闭
-overlayImg.addEventListener('click', e => e.stopPropagation()); 
+overlayImg.addEventListener('click', e => e.stopPropagation());
 
 
 
@@ -45,7 +45,7 @@ videoOverlay.addEventListener('click', () => {
 });
 
 // 阻止点视频本身关闭
-overlayVideo.addEventListener('click', e => e.stopPropagation()); 
+overlayVideo.addEventListener('click', e => e.stopPropagation());
 
 
 
@@ -63,10 +63,4 @@ document.addEventListener('keydown', e => {
     overlayVideo.src = '';
     videoOverlay.style.display = 'none';
   }
-}); 
-
-
-
-
-
-
+});
