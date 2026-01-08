@@ -74,27 +74,28 @@ footer {
     bottom: 0;
 }
 
-/* ===== Footer 联系方式横向排列 ===== */
+/* ===== 二维码 + 邮箱 严格平齐 ===== */
 .contact-row {
-  display: flex;
-  align-items: center;      /* 垂直居中 */
-  justify-content: center;  /* 整体居中 */
-  gap: 12px;                /* 二维码和邮箱间距 */
-  margin-top: 8px;
+  display: inline-flex;        /* ⭐ 关键：inline-flex */
+  align-items: center;         /* ⭐ 垂直居中对齐 */
+  vertical-align: middle;
+  gap: 10px;
 }
 
-/* 微信二维码尺寸 */
+/* 二维码 */
 .WJ {
-  width: 32px;    /* 可调：28 / 32 / 36 */
-  height: auto;
+  width: 30px;                 /* 推荐 28–32 */
+  height: 30px;                /* ⭐ 固定高度，防止下沉 */
+  object-fit: contain;
+  display: block;              /* ⭐ 防止 img baseline 下沉 */
 }
 
-/* 邮箱样式 */
+/* 邮箱 */
 .email-link {
   font-size: 18px;
-  font-family: serif;
-  color: black;
+  line-height: 30px;           /* ⭐ 与二维码高度一致 */
   text-decoration: none;
+  color: black;
 }
 
 .email-link:hover {
