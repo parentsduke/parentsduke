@@ -63,10 +63,16 @@ footer {
     text-decoration: underline; /* 悬停下划线 */
 }
 
-.thumb {
-  width: 220px;
-  margin: 10px;
-  cursor: pointer;
+
+    .thumb {
+    width: 220px;
+    margin: 10px;
+    cursor: zoom-in;
+    transition: transform 0.3s ease; /* ⭐ 动画过渡 */
+}
+
+.thumb:hover {
+    transform: scale(1.05); /* ⭐ 放大 5% */
 }
 
 /* 放大遮罩 */
@@ -119,6 +125,7 @@ footer {
   max-width: 90%;
   max-height: 90%;
 }
+
 
 
 
