@@ -63,14 +63,6 @@ footer {
     text-decoration: underline; /* 悬停下划线 */
 }
 
-.image-container img {
-    display: inline-block;
-    width: 40%;
-    margin-top: 5px;
-    margin-left: 20px;
-    height: auto;
-}
-
 .thumb {
   width: 220px;
   margin: 10px;
@@ -126,6 +118,7 @@ footer {
   max-width: 90%;
   max-height: 90%;
 }
+
 
 
 
