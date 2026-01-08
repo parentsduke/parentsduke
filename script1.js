@@ -21,6 +21,8 @@ imgOverlay.addEventListener('click', () => {
 const videoWrappers = document.querySelectorAll('.video-wrapper');
 const videoOverlay = document.getElementById('video-overlay');
 const overlayVideo = document.getElementById('overlay-video');
+const src = video.currentSrc || video.querySelector('source')?.src || '';
+overlayVideo.src = src;
 
 videoWrappers.forEach(wrapper => {
   const video = wrapper.querySelector('video');
