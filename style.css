@@ -37,13 +37,7 @@ header h4 {
     cursor: zoom-in;
 }
 
-.qrcode {
-    width: 50px;
-    height: auto;
-    display: block;
-    margin: 6px auto;
-    cursor: zoom-in;
-}
+
 
 .link-list a {
   display: block;      /* ⭐ 每个链接一行 */
