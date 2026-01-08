@@ -79,7 +79,7 @@ footer {
 
 
 .email-link {
-  color: #fff;     /* 链接白色 */
+  color: #fff !important;     /* 链接白色 */
   font-size: 16px;   /* 改这里 */
   text-decoration: none; 
 } 
