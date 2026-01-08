@@ -29,12 +29,16 @@ header h4 {
 }
 
 /* ===== 二维码：居中 + 缩小 ===== */
+.qrcode-wrapper {
+  text-align: center;   /* ⭐ 父容器居中 */
+  margin: 6px 0;
+}
+
 .qrcode {
-    width: 45px;          /* ⭐ 缩小：想更小就改 40 / 35 */
-    height: auto;
-    display: block;       /* ⭐ 居中关键 */
-    margin: 6px auto;     /* ⭐ 上下留空 + 水平居中 */
-    cursor: zoom-in;
+  width: 45px;          /* 缩小 */
+  height: auto;
+  display: inline-block;
+  cursor: zoom-in;
 }
 
 
