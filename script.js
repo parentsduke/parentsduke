@@ -17,26 +17,31 @@ imgOverlay.addEventListener('click', () => {
 
 /* ========== 视频单击放大（重点） ========== */
 
+document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+  const video = wrapper.querySelector('.video-box');
+  const clickLayer = wrapper.querySelector('.video-click-layer');
 
+  clickLayer.addEventListener('click', () => {
+    const overlay = document.getElementById('video-overlay');
+    const overlayVideo = document.getElementById('overlay-video');
 
-
-
-
-
-
-const clickLayer = document.querySelector('.video-click-layer');
-const video = document.querySelector('.video-box');
-const videoOverlay = document.getElementById('video-overlay');
-const overlayVideo = document.getElementById('overlay-video');
-
-clickLayer.addEventListener('click', () => {
-  overlayVideo.src = video.currentSrc;
-  videoOverlay.style.display = 'flex';
-  overlayVideo.play();
+    overlayVideo.src = video.currentSrc || video.src;
+    overlay.style.display = 'flex';
+    overlayVideo.play();
+  });
 });
 
-videoOverlay.addEventListener('click', () => {
+// 点击遮罩关闭
+document.getElementById('video-overlay').addEventListener('click', () => {
+  const overlayVideo = document.getElementById('overlay-video');
   overlayVideo.pause();
   overlayVideo.src = '';
-  videoOverlay.style.display = 'none';
+  document.getElementById('video-overlay').style.display = 'none';
 });
+
+
+
+
+
+
+
