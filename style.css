@@ -101,7 +101,7 @@ footer {
 
 
 
-.video-wrap {
+</* .video-wrap {
   /* 左边留空 */
   display: flex;
   gap: 10px;
@@ -113,8 +113,7 @@ footer {
   object-fit: contain;   /* 不拉伸，可能留黑边 */
   padding-left: 8px;   /* 左边留白 */
   padding-top: 8px;
-}
-
+} */
 
 /* 原视频 */
 .video-box {
@@ -142,6 +141,7 @@ footer {
   max-width: 90%;
   max-height: 90%;
 }
+
 
 
 
