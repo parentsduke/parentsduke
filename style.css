@@ -7,7 +7,6 @@
     font-style: normal;
 }
 
-
 body {
     font-family: 宋体, sans-serif;
     line-height: 1.6;
@@ -16,16 +15,6 @@ body {
     background-color: #f4f4f4;
     color: #000080;
 }
-
-/* header {
-    line-height: 1.2;
-    background: #000080;
-    color: #fff;
-    padding: 10px;
-    text-align: center;
-} */
-
-
 
 header {
     background: #000080;
@@ -41,7 +30,7 @@ header h4 {
     margin: 4px 0;
 }
 
-/* ===== 二维码：居中 + 缩小 ===== */
+/* ===== 二维码：居中 ===== */
 .qrcode-wrapper {
   text-align: center;   /* ⭐ 父容器居中 */
   margin: 6px 0;
@@ -87,6 +76,14 @@ footer {
 
 .footer-text {
     margin-right: 10px;
+}
+
+
+.thumb.WJ{
+  width: 40px;          /* 缩小 */
+  height: auto;
+  display: inline-block;
+  cursor: zoom-in;
 }
 
 .sentence {
