@@ -1,3 +1,13 @@
+/* ⭐ 引入隶书字体 */
+@font-face {
+    font-family: 'SIMLI';
+    src: url('fonts/SIMLI.woff2') format('woff2'),
+         url('fonts/SIMLI.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -15,14 +25,7 @@ body {
     text-align: center;
 } */
 
-/* ⭐ 引入隶书字体 */
-@font-face {
-    font-family: 'LiSuWeb';
-    src: url('fonts/SIMLI.woff2') format('woff2'),
-         url('fonts/SIMLI.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+
 
 header {
     background: #000080;
