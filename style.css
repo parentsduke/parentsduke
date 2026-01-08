@@ -160,3 +160,15 @@ footer {
     from { transform: scale(0.85); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
+
+
+/* ===== 📱 移动端二维码优化 ===== */
+@media (max-width: 768px) {
+  .thumb.qrcode {
+    width: 120px;      /* 手机上更大，方便扫码 */
+  }
+
+  .qrcode-wrapper {
+    margin: 12px 0;    /* 上下多一点呼吸感 */
+  }
+}
