@@ -16,16 +16,17 @@ imgOverlay.addEventListener('click', () => {
 
 
 /* ========== 视频单击放大（重点） ========== */
-const videoWrapper = document.querySelectorAll('.video-wrapper');
+
+
+const videoWrappers = document.querySelectorAll('.video-wrapper');
 const videoOverlay = document.getElementById('video-overlay');
 const overlayVideo = document.getElementById('overlay-video');
 
-videoWrapper.forEach(wrapper => {
+videoWrappers.forEach(wrapper => {
   const video = wrapper.querySelector('video');
 
-  // 点击 wrapper 放大
   wrapper.addEventListener('click', () => {
-    overlayVideo.src = video.currentSrc; // 使用当前 src
+    overlayVideo.src = video.currentSrc || video.src; // 确保能取到视频路径
     videoOverlay.style.display = 'flex';
     overlayVideo.play();
   });
