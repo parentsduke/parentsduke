@@ -120,13 +120,26 @@ footer {
   z-index: 9999;
 }
 
-/* 放大后的视频 */
+
+/* ⭐ 真正放大的地方 */
 #overlay-video {
-  max-width: 90%;
-  max-height: 90%;
+  width: 80vw;        /* 视口宽度 */
+  max-width: 1000px; /* 桌面端上限 */
+  height: auto;
+  box-shadow: 0 0 30px rgba(0,0,0,0.6);
+  animation: zoomIn 0.3s ease;
 }
 
-
+@keyframes zoomIn {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
 
 
