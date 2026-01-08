@@ -160,5 +160,12 @@ footer {
     to { transform: scale(1); opacity: 1; }
 }
 
+/* 底部 WJ 二维码缩小 */
+footer .WJ {
+    width: 40px;       /* 根据需要调整 */
+    height: auto;      /* 保持比例 */
+    vertical-align: middle;  /* 和文字对齐 */
+    margin-left: 8px;  /* 和文字有一点间距 */
+}
 
 
