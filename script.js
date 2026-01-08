@@ -13,3 +13,23 @@ thumbs.forEach(img => {
 overlay.addEventListener('click', () => {
   overlay.style.display = 'none';
 });
+
+const videos = document.querySelectorAll('.enlarge-video');
+const overlay = document.getElementById('video-overlay');
+const overlayVideo = document.getElementById('overlay-video');
+
+// 点击视频 → 放大
+videos.forEach(video => {
+  video.addEventListener('click', () => {
+    overlayVideo.src = video.currentSrc;
+    overlay.style.display = 'flex';
+    overlayVideo.play();
+  });
+});
+
+// 点击黑色区域 → 关闭
+overlay.addEventListener('click', () => {
+  overlayVideo.pause();
+  overlayVideo.src = '';
+  overlay.style.display = 'none';
+});
