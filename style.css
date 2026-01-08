@@ -116,6 +116,33 @@ footer {
 }
 
 
+/* 原视频 */
+.video-box {
+  width: 400px;
+  height: 225px;
+  cursor: pointer;
+}
+
+/* 放大遮罩层 */
+#video-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* 放大后的视频 */
+#overlay-video {
+  max-width: 90%;
+  max-height: 90%;
+}
+
 
 
 
