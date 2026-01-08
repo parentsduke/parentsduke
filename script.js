@@ -23,16 +23,20 @@ const overlayVideo = document.getElementById('overlay-video');
 videoWrapper.forEach(wrapper => {
   const video = wrapper.querySelector('video');
 
+  // 点击 wrapper 放大
   wrapper.addEventListener('click', () => {
-    overlayVideo.src = video.currentSrc;
+    overlayVideo.src = video.currentSrc; // 使用当前 src
     videoOverlay.style.display = 'flex';
     overlayVideo.play();
   });
 });
 
-// 点击黑色区域关闭
+// 点击遮罩层关闭
 videoOverlay.addEventListener('click', () => {
   overlayVideo.pause();
   overlayVideo.src = '';
   videoOverlay.style.display = 'none';
 });
+
+// 阻止点击视频本身关闭 overlay
+overlayVideo.addEventListener('click', e => e.stopPropagation());
