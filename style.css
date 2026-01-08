@@ -74,16 +74,10 @@ footer {
     bottom: 0;
 }
 
-/* ===== 二维码 + 邮箱 严格平齐 ===== */
-.contact-row {
-  display: inline-flex;        /* ⭐ 关键：inline-flex */
-  align-items: center;         /* ⭐ 垂直居中对齐 */
-  vertical-align: middle;
-  gap: 10px;
-}
+
 
 /* 二维码 */
-.WJ {
+.thumb.WJ {
   width: 30px;                 /* 推荐 28–32 */
   height: 30px;                /* ⭐ 固定高度，防止下沉 */
   object-fit: contain;
