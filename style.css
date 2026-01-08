@@ -34,7 +34,7 @@ header h4 {
   margin: 6px 0;
 }
 
-.qrcode {
+.thumb.qrcode {
   width: 45px;          /* 缩小 */
   height: auto;
   display: inline-block;
