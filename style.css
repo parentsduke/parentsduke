@@ -148,7 +148,7 @@ footer .footer-bottom {
     display: inline-flex;          /* ⭐ inline-flex 保持水平 */
     align-items: center;           /* 垂直居中 */
     gap: 8px;                      /* 邮箱和 WJ 之间空隙 */
-    margin-top: 4px;               /* 与上一行空一点 */
+    margin-top: 2px;               /* 与上一行空一点 */
 }
 
 /* 邮箱单独一行显示 */
