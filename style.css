@@ -79,6 +79,15 @@ header h4 {
   cursor: zoom-in;
 }
 
+<div class="search-wrapper">
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="🔍 搜索网站内容（如：FAFSA / 校历 / 医疗 / Facebook）"
+  >
+</div>
+
+
 .link-list a {
   display: block;      /* ⭐ 每个链接一行 */
   margin-left: 24px;   /* 与网页左边留空 */
