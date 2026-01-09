@@ -32,3 +32,15 @@ document.getElementById('video-overlay').addEventListener('click', () => {
     overlayVideo.src = '';
     document.getElementById('video-overlay').style.display = 'none';
 });
+
+const searchInput = document.getElementById('searchInput');
+const links = document.querySelectorAll('.link-list a, .link-list li');
+
+searchInput.addEventListener('input', () => {
+  const keyword = searchInput.value.toLowerCase().trim();
+
+  links.forEach(el => {
+    const text = el.textContent.toLowerCase();
+    el.style.display = text.includes(keyword) ? '' : 'none';
+  });
+});
