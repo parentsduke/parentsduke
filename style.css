@@ -43,14 +43,11 @@ header h4 {
   cursor: zoom-in;
 }
 
-
-
 .link-list a {
   display: block;      /* ⭐ 每个链接一行 */
   margin-left: 24px;   /* 与网页左边留空 */
   margin-bottom: 8px;  /* 行间距 */
 }
-
 
 nav ul li {
     display: inline;
@@ -62,31 +59,6 @@ nav ul li a {
     color: #fff; /* White */
     text-decoration: none;
 }
-
-/* footer {
-    text-align: center;
-    font-family: SIMLI, sans-serif;
-    line-height: 0.7;
-    padding: 2px 0; */ /* 使用固定值 */
-  /*   background: #000080; */ /* Navy blue */
-  /*  color: #fff; */ /* White */
-  /*  width: 100%;
-    bottom: 0;
-} */
-
-
-
-/* 
-
-.email-link {
-  color: #fff !important;     链接白色 */
- /* font-size: 16px;   改这里 */
-/*  text-decoration: none; 
-} 
-*/
-/* .email-link:hover {
-    text-decoration: underline;  悬停下划线 */
-/* } */
 
 .thumb {
     width: 220px;
@@ -160,7 +132,6 @@ nav ul li a {
     to { transform: scale(1); opacity: 1; }
 }
 
-
 /* footer 内 WJ 图片和邮箱对齐 */
 footer {
     position: relative;
@@ -180,7 +151,7 @@ footer .WJ-wrapper {
 }
 
 footer .WJ-wrapper img {
-    width: 40px;    /* 缩小 WJ 图片 */
+    width: 20px;    /* 缩小 WJ 图片 */
     height: auto;
     vertical-align: middle;
 }
