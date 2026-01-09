@@ -133,40 +133,53 @@ nav ul li a {
 }
 
 
-/* Footer 整体 */
+/* ===== 书法落款感 Footer ===== */
 footer {
     text-align: center;
-    font-family: SIMLI, sans-serif;
-    line-height: 0.7;
-    margin-top: 5px;
+    font-family: SIMLI, "宋体", serif;
     background: #000080;
     color: #fff;
+
+    padding: 10px 0 12px;          /* ⭐ 上轻下稳 */
+    letter-spacing: 0.04em;       /* ⭐ 字距微收，有墨感 */
 }
 
-/* 底部底行：邮箱 + WJ 并列 */
+/* footer 每一行 */
+footer p,
+footer div {
+    margin: 4px 0;
+    line-height: 1.25;            /* ⭐ 疏而不散 */
+}
+
+/* 最后一行：邮箱 + WJ（落款核心） */
 footer .footer-bottom {
-    display: inline-flex;          /* ⭐ inline-flex 保持水平 */
-    align-items: center;           /* 垂直居中 */
-    gap: 8px;                      /* 邮箱和 WJ 之间空隙 */
-    /* margin-top: 2px; */           /* 与上一行空一点 */
-    margin-bottom: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;                    /* ⭐ 名与印之间的“呼吸感” */
+
+    margin-top: 6px;              /* ⭐ 与正文轻断 */
+    padding-top: 4px;
+
+    border-top: 1px solid rgba(255,255,255,0.25);
 }
 
-/* 邮箱单独一行显示 */
+/* 邮箱：像署名 */
 footer .email-link {
-    display: inline-block;         /* 保持行内显示 */
     color: #fff;
- /* font-size: 30px; */
     text-decoration: none;
+    white-space: nowrap;
+
+    font-size: 0.92em;            /* ⭐ 略小，显克制 */
+    letter-spacing: 0.08em;       /* ⭐ 手写感关键 */
 }
 
 footer .email-link:hover {
     text-decoration: underline;
 }
 
-/* WJ 图片 */
+/* WJ：像印章 */
 footer .WJ-wrapper img {
-    width: 20px;
+    width: 18px;                  /* ⭐ 印章不宜大 */
     height: auto;
-    vertical-align: middle;
+    opacity: 0.9;
 }
