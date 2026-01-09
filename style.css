@@ -138,7 +138,7 @@ footer {
     text-align: center;
     font-family: SIMLI, sans-serif;
     line-height: 0.7;
-    padding: 2px 0;
+    padding: 1px 0;
     background: #000080;
     color: #fff;
 }
@@ -149,7 +149,7 @@ footer .footer-bottom {
     align-items: center;           /* 垂直居中 */
     gap: 8px;                      /* 邮箱和 WJ 之间空隙 */
     /* margin-top: 2px; */           /* 与上一行空一点 */
-    margin-bottom: 4px;
+    margin-bottom: 5px;
 }
 
 /* 邮箱单独一行显示 */
