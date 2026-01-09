@@ -172,12 +172,12 @@ nav ul li a {
 /* ===== 书法落款感 Footer ===== */
 footer {
     text-align: center;
-    font-family: SIMLI, "宋体", serif;
+    font-family: SIMLI, serif;
     background: #000080;
     color: #fff;
 
     padding: 10px 0 12px;          /* ⭐ 上轻下稳 */
-    letter-spacing: 0.04em;       /* ⭐ 字距微收，有墨感 */
+    letter-spacing: 0.08em;       /* ⭐ 字距微收，有墨感 */
 }
 
 /* footer 每一行 */
