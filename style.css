@@ -147,7 +147,8 @@ footer {
 footer .WJ-wrapper {
     display: inline-block;
     vertical-align: middle; /* 垂直居中对齐 */
-    margin-left: 10px;       /* 和邮箱保持间距 */
+    margin-left: 8px;       /* 和邮箱保持间距 */
+    margin-top: 15px;
 }
 
 footer .WJ-wrapper img {
@@ -160,7 +161,7 @@ footer .WJ-wrapper img {
 footer .email-link {
     display: inline-block;
     color: #fff;        /* 白色 */
-    margin-top: 10px;
+    margin-top: 15px;
     font-size: 16px;    /* 适中大小 */
     vertical-align: middle; /* 和 WJ 图片垂直居中 */
     text-decoration: none;
