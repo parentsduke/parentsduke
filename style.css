@@ -16,6 +16,41 @@ body {
     color: #000080;
 }
 
+/* ===== 书法题签 Header ===== */
+header {
+    background: #000080;
+    color: #fff;
+    text-align: center;
+
+    font-family: SIMLI, serif;
+
+    padding: 18px 0 14px;        /* ⭐ 上虚下实 */
+    letter-spacing: 0.12em;     /* ⭐ 题签关键 */
+}
+
+/* 主标题（题名） */
+header h3 {
+    margin: 0;
+    font-size: 1.6em;
+
+    font-weight: normal;
+    line-height: 1.1;
+
+    letter-spacing: 0.18em;     /* ⭐ 行书展开 */
+}
+
+/* 副标题 / 年款 */
+header h4 {
+    margin: 6px 0 0;
+    font-size: 0.9em;
+
+    font-weight: normal;
+    opacity: 0.9;
+
+    letter-spacing: 0.12em;     /* ⭐ 落款感 */
+}
+
+/*
 header {
     background: #000080;
     color: #fff;
@@ -29,6 +64,7 @@ header h4 {
     line-height: 1.2;
     margin: 4px 0;
 }
+*/
 
 /* ===== 二维码：居中 ===== */
 .qrcode-wrapper {
