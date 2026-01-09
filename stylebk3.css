@@ -1,0 +1,221 @@
+/* ⭐ 引入隶书字体 */
+@font-face {
+    font-family: SIMLI;
+    src: url('fonts/SIMLI.woff2') format('woff2'),
+         url('fonts/SIMLI.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 宋体, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #000080;
+}
+
+/* ===== 书法题签 Header ===== */
+header {
+    background: #000080;
+    color: #fff;
+    text-align: center;
+
+    font-family: SIMLI, serif;
+
+    padding: 18px 0 14px;        /* ⭐ 上虚下实 */
+    letter-spacing: 0.12em;     /* ⭐ 题签关键 */
+}
+
+/* 主标题（题名） */
+header h3 {
+    margin: 0;
+    font-size: 1.6em;
+
+    font-weight: normal;
+    line-height: 1.1;
+
+    letter-spacing: 0.18em;     /* ⭐ 行书展开 */
+}
+
+/* 副标题 / 年款 */
+header h4 {
+    margin: 6px 0 0;
+    font-size: 0.9em;
+
+    font-weight: normal;
+    opacity: 0.9;
+
+    letter-spacing: 0.12em;     /* ⭐ 落款感 */
+}
+
+/*
+header {
+    background: #000080;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    font-family: SIMLI, sans-serif;
+}
+
+header h3,
+header h4 {
+    line-height: 1.2;
+    margin: 4px 0;
+}
+*/
+
+/* ===== 二维码：居中 ===== */
+.qrcode-wrapper {
+  text-align: center;   /* ⭐ 父容器居中 */
+  margin: 6px 0;
+}
+
+.thumb.qrcode {
+  width: 40px;          /* 缩小 */
+  height: auto;
+  display: inline-block;
+  cursor: zoom-in;
+}
+
+.link-list a {
+  display: block;      /* ⭐ 每个链接一行 */
+  margin-left: 24px;   /* 与网页左边留空 */
+  margin-bottom: 8px;  /* 行间距 */
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 2px;
+   }
+
+nav ul li a {
+    margin: 0 5px;
+    color: #fff; /* White */
+    text-decoration: none;
+}
+
+.thumb {
+    width: 220px;
+    margin: 10px;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.thumb:hover {
+    transform: scale(1.05);
+}
+
+/* 图片放大遮罩 */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.8);
+    z-index: 999;
+}
+
+#overlay img {
+    max-width: 90%;
+    max-height: 90%;
+}
+
+/* 视频部分 */
+.video-wrapper {
+    position: relative;
+    display: inline-block;
+    margin: 10px;
+}
+
+.video-box {
+    width: 200px;
+}
+
+.video-click-layer {
+    position: absolute;
+    inset: 0;
+    cursor: zoom-in;
+    background: rgba(0,0,0,0);
+    z-index: 10;
+}
+
+/* 视频放大遮罩 */
+#video-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.85);
+    z-index: 9999;
+}
+
+#overlay-video {
+    width: 80vw;
+    max-width: 1000px;
+    height: auto;
+    animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+
+/* ===== 书法落款感 Footer ===== */
+footer {
+    text-align: center;
+    font-family: SIMLI, "宋体", serif;
+    background: #000080;
+    color: #fff;
+
+    padding: 10px 0 12px;          /* ⭐ 上轻下稳 */
+    letter-spacing: 0.04em;       /* ⭐ 字距微收，有墨感 */
+}
+
+/* footer 每一行 */
+footer p,
+footer div {
+    margin: 4px 0;
+    line-height: 1.25;            /* ⭐ 疏而不散 */
+}
+
+/* 最后一行：邮箱 + WJ（落款核心） */
+footer .footer-bottom {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;                    /* ⭐ 名与印之间的“呼吸感” */
+
+    margin-top: 6px;              /* ⭐ 与正文轻断 */
+    padding-top: 4px;
+
+    border-top: 1px solid rgba(255,255,255,0.25);
+}
+
+/* 邮箱：像署名 */
+footer .email-link {
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+
+    font-size: 0.92em;            /* ⭐ 略小，显克制 */
+    letter-spacing: 0.08em;       /* ⭐ 手写感关键 */
+}
+
+footer .email-link:hover {
+    text-decoration: underline;
+}
+
+/* WJ：像印章 */
+footer .WJ-wrapper img {
+    width: 18px;                  /* ⭐ 印章不宜大 */
+    height: auto;
+    opacity: 0.9;
+}
