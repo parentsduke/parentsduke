@@ -219,3 +219,9 @@ footer .WJ-wrapper img {
     height: auto;
     opacity: 0.9;
 }
+
+/* footer 内 WJ 二维码 */
+footer .WJ {
+    width: 40px;     /* 小图 */
+    height: auto;
+}
