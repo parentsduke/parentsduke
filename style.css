@@ -160,6 +160,7 @@ footer .WJ-wrapper img {
 footer .email-link {
     display: inline-block;
     color: #fff;        /* 白色 */
+    margin-top: 4px;
     font-size: 16px;    /* 适中大小 */
     vertical-align: middle; /* 和 WJ 图片垂直居中 */
     text-decoration: none;
