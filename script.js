@@ -34,13 +34,30 @@ document.getElementById('video-overlay').addEventListener('click', () => {
 });
 
 const searchInput = document.getElementById('searchInput');
-const links = document.querySelectorAll('.link-list a, .link-list li');
+const items = document.querySelectorAll('.link-list a, .link-list li');
 
 searchInput.addEventListener('input', () => {
   const keyword = searchInput.value.toLowerCase().trim();
+  let firstMatch = null;
 
-  links.forEach(el => {
+  items.forEach(el => {
     const text = el.textContent.toLowerCase();
-    el.style.display = text.includes(keyword) ? '' : 'none';
+
+    if (text.includes(keyword)) {
+      el.style.display = '';
+      if (!firstMatch && keyword !== '') {
+        firstMatch = el;
+      }
+    } else {
+      el.style.display = 'none';
+    }
   });
+
+  // ⭐ 自动滚动到第一个结果
+  if (firstMatch) {
+    firstMatch.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  }
 });
