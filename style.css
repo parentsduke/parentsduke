@@ -80,7 +80,7 @@ header h4 {
 }
 
 .link-list a {
-  display: block !important;      /* ⭐ 每个链接一行 */
+  display: block;      /* ⭐ 每个链接一行 */
   width: fit-content;
   margin-left: 24px;   /* 与网页左边留空 */
   margin-bottom: 8px;  /* 行间距 */
