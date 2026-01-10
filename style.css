@@ -199,6 +199,12 @@ footer .WJ {
   margin: 14px 0;
 }
 
+.search-bar {
+  display: flex;
+  justify-content: center;   /* ⭐ 水平居中 */
+  margin: 12px 0;
+}
+
 #searchInput {
   width: 80%;
   max-width: 420px;
