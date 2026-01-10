@@ -79,15 +79,6 @@ header h4 {
   cursor: zoom-in;
 }
 
-<div class="search-wrapper">
-  <input
-    type="text"
-    id="searchInput"
-    placeholder="🔍 搜索网站内容（如：FAFSA / 校历 / 医疗 / Facebook）"
-  >
-</div>
-
-
 .link-list a {
   display: block !important;      /* ⭐ 每个链接一行 */
   width: fit-content;
@@ -254,4 +245,36 @@ footer .WJ {
 
 #searchInput:focus {
   border-color: #000080;
+}
+
+/* ===== link-list 标准化样式 ===== */
+
+.link-list ul {
+  padding-left: 0;
+  margin: 0;
+}
+
+.link-list li {
+  list-style: none;
+}
+
+/* 分类标题 */
+.link-list .section-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 18px 0 6px 0;
+}
+
+/* 链接：一行一个 */
+.link-list li a {
+  display: block;
+  margin-left: 24px;
+  margin-bottom: 8px;
+  font-size: 20px;
+  color: black;
+  text-decoration: none;
+}
+
+.link-list li a:hover {
+  color: gray;
 }
