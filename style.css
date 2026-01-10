@@ -50,22 +50,6 @@ header h4 {
     letter-spacing: 0.12em;     /* ⭐ 落款感 */
 }
 
-/*
-header {
-    background: #000080;
-    color: #fff;
-    padding: 10px 0;
-    text-align: center;
-    font-family: SIMLI, sans-serif;
-}
-
-header h3,
-header h4 {
-    line-height: 1.2;
-    margin: 4px 0;
-}
-*/
-
 /* ===== 二维码：居中 ===== */
 .qrcode-wrapper {
   text-align: center;   /* ⭐ 父容器居中 */
@@ -83,7 +67,7 @@ header h4 {
   display: block;       ⭐ 每个链接一行 */
  /* width: fit-content;
  /* margin-left: 24px;    与网页左边留空 */
-  margin-bottom: 8px;   行间距 
+/*  margin-bottom: 8px;   行间距 
 }*/
 
 /* nav ul li {
