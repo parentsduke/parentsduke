@@ -79,23 +79,23 @@ header h4 {
   cursor: zoom-in;
 }
 
-.link-list a {
-  display: block;      /* ⭐ 每个链接一行 */
-  width: fit-content;
-  margin-left: 24px;   /* 与网页左边留空 */
-  margin-bottom: 8px;  /* 行间距 */
-}
+/* .link-list a {
+  display: block;       ⭐ 每个链接一行 */
+ /* width: fit-content;
+ /* margin-left: 24px;    与网页左边留空 */
+  margin-bottom: 8px;   行间距 
+}*/
 
-nav ul li {
+/* nav ul li {
     display: inline;
     margin: 0 2px;
    }
 
 nav ul li a {
     margin: 0 5px;
-    color: #fff; /* White */
+    color: #fff;  White 
     text-decoration: none;
-}
+} */
 
 .thumb {
     width: 220px;
