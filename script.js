@@ -61,3 +61,15 @@ searchInput.addEventListener('input', () => {
     });
   }
 });
+
+// ===== PPT 折叠控制 =====
+const pptToggle = document.getElementById("pptToggle");
+const pptContent = document.getElementById("pptContent");
+
+if (pptToggle && pptContent) {
+  pptToggle.addEventListener("click", () => {
+    const isOpen = pptContent.style.display === "block";
+    pptContent.style.display = isOpen ? "none" : "block";
+    pptToggle.textContent = isOpen ? "展开" : "收起";
+  });
+}
