@@ -313,7 +313,20 @@ footer .WJ {
   }
 }
 
-.instagram-icon {
+. instagram-icon {
+  color: #000080;
+  font-size: 15px;
+  margin-left: 12px;
+}
+
+/* 📱 手机 */
+@media (max-width: 600px) {
+  .ppt-content iframe {
+    height: 420px;
+  }
+}
+
+. facebook-icon {
   color: #000080;
   font-size: 15px;
   margin-left: 12px;
