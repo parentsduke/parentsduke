@@ -40,8 +40,7 @@ header h3 {
 }
 
 /* 副标题 / 年款 */
-header h4,
-header h6 {
+header h4 {
     margin: 6px 0 0;
     font-size: 0.9em;
 
@@ -49,6 +48,14 @@ header h6 {
     opacity: 0.9;
 
     letter-spacing: 0.12em;     /* ⭐ 落款感 */
+}
+
+header h6 {
+    margin: 6px 0 0;
+    font-size: 0.85em;
+    font-weight: normal;
+    opacity: 0.85;
+    letter-spacing: 0.12em;
 }
 
 /* ===== 二维码：居中 ===== */
