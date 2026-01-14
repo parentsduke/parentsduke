@@ -40,7 +40,8 @@ header h3 {
 }
 
 /* 副标题 / 年款 */
-header h4 h6 {
+header h4,
+header h6 {
     margin: 6px 0 0;
     font-size: 0.9em;
 
