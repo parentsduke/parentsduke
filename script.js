@@ -77,7 +77,7 @@ if (pptToggle && pptContent) {
 // ===== Q&A 密码保护 =====
 
 document.getElementById("qaSubmit").addEventListener("click", function () {
-  const password = "Duke202x";   // ← 改成你的
+  const password = "Duke2030";   // ← 改成你的
   const input = document.getElementById("qaPassword").value;
   const qa = document.querySelector(".qa-content");
 
