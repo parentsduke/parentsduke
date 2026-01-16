@@ -119,7 +119,7 @@ qaDetails.forEach(detail => {
 });
 
 // 24届
-function loadCSV() {
+function loadCSV24() {
   const correctPassword = "Duke2024";   // ← 改成你的密码
   const input = document.getElementById("csvPassword").value;
   const error = document.getElementById("csv-error");
@@ -154,7 +154,7 @@ function loadCSV() {
 }
 
 // 25届
-function loadCSV() {
+function loadCSV25() {
   const correctPassword = "Duke2025";   // ← 改成你的密码
   const input = document.getElementById("csvPassword").value;
   const error = document.getElementById("csv-error");
