@@ -102,3 +102,21 @@ qaDetails.forEach(detail => {
     }
   });
 });
+
+fetch('24届毕业去向.csv')
+  .then(response => response.text())
+  .then(text => {
+    const rows = text.trim().split('\n');
+    const table = document.getElementById('csvTable');
+
+    rows.forEach((row, rowIndex) => {
+      const tr = document.createElement('tr');
+      row.split(',').forEach(cell => {
+        const el = rowIndex === 0 ? 'th' : 'td';
+        const td = document.createElement(el);
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    });
+  });
