@@ -73,3 +73,18 @@ if (pptToggle && pptContent) {
     pptToggle.textContent = isOpen ? "展开" : "收起";
   });
 }
+
+// ===== Q&A 折叠互斥（一次只展开一个）=====
+const qaDetails = document.querySelectorAll('.qa details');
+
+qaDetails.forEach(detail => {
+  detail.addEventListener('toggle', () => {
+    if (detail.open) {
+      qaDetails.forEach(other => {
+        if (other !== detail) {
+          other.removeAttribute('open');
+        }
+      });
+    }
+  });
+});
