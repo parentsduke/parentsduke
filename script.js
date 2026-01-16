@@ -93,8 +93,8 @@ qaButton.addEventListener("click", () => {
   }
 });
 
-// ===== Q&A 折叠互斥（一次只展开一个）=====
-const qaDetails = document.querySelectorAll('.qa details');
+// ===== Q&A 折叠功能（保持之前逻辑） =====
+const qaDetails = document.querySelectorAll('.qa-content details');
 
 qaDetails.forEach(detail => {
   detail.addEventListener('toggle', () => {
