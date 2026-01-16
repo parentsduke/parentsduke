@@ -134,7 +134,7 @@ qaDetails.forEach(detail => {
 
 //  error.textContent = "";
 
-//  fetch("24届毕业去向.csv")
+//  fetch("24graduate.csv")
 //    .then(res => res.text())
 //    .then(text => {
 //      const rows = text.trim().split("\n");
@@ -168,7 +168,7 @@ qaDetails.forEach(detail => {
 
 //  error.textContent = "";
 //
-//  fetch("25届毕业去向.csv")
+//  fetch("25graduate.csv")
 //    .then(res => res.text())
 //    .then(text => {
 //      const rows = text.trim().split("\n");
@@ -219,7 +219,7 @@ function loadCSV24() {
     return;
   }
 
-  fetch("24届毕业去向.csv")
+  fetch("24graduate.csv")
     .then(res => res.text())
     .then(text => renderCSV(text, "csvTable24"));
 
@@ -237,7 +237,7 @@ function loadCSV25() {
     return;
   }
 
-  fetch("25届毕业去向.csv")
+  fetch("25graduate.csv")
     .then(res => res.text())
     .then(text => renderCSV(text, "csvTable25"));
 
