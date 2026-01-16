@@ -1,3 +1,6 @@
+document.addEventListener("DOMContentLoaded", () => {
+
+
 // ========== 图片单击放大 ==========
 document.querySelectorAll('.thumb').forEach(img => {
     img.addEventListener('click', () => {
@@ -241,3 +244,5 @@ function loadCSV25() {
   err.textContent = "";
   document.getElementById("csv-box-25").style.display = "none";
 }
+
+    });
