@@ -119,72 +119,125 @@ qaDetails.forEach(detail => {
 });
 
 // 24届
-function loadCSV24() {
-  const correctPassword = "Duke2024";   // ← 改成你的密码
-  const input = document.getElementById("csvPassword").value;
-  const error = document.getElementById("csv-error");
+// function loadCSV24() {
+//  const correctPassword = "Duke2024";   // ← 改成你的密码
+//  const input = document.getElementById("csvPassword").value;
+//  const error = document.getElementById("csv-error");
 
-  if (input !== correctPassword) {
-    error.textContent = "密码错误";
-    return;
-  }
+//  if (input !== correctPassword) {
+//    error.textContent = "密码错误";
+//  return;
+//  }
 
-  error.textContent = "";
+//  error.textContent = "";
 
-  fetch("24届毕业去向.csv")
-    .then(res => res.text())
-    .then(text => {
-      const rows = text.trim().split("\n");
-      const table = document.getElementById("csvTable");
-      table.innerHTML = "";
+//  fetch("24届毕业去向.csv")
+//    .then(res => res.text())
+//    .then(text => {
+//      const rows = text.trim().split("\n");
+   //   const table = document.getElementById("csvTable");
+ //     table.innerHTML = "";
 
-      rows.forEach((row, i) => {
-        const tr = document.createElement("tr");
-        row.split(",").forEach(cell => {
-          const el = i === 0 ? "th" : "td";
-          const td = document.createElement(el);
-          td.textContent = cell;
-          tr.appendChild(td);
-        });
-        table.appendChild(tr);
-      });
+ //     rows.forEach((row, i) => {
+  //      const tr = document.createElement("tr");
+ //       row.split(",").forEach(cell => {
+//          const el = i === 0 ? "th" : "td";
+ //         const td = document.createElement(el);
+   //       td.textContent = cell;
+ //         tr.appendChild(td);
+//        });
+//        table.appendChild(tr);
+//      });
 
-      document.getElementById("csv-password-box").style.display = "none";
-    });
-}
+//      document.getElementById("csv-password-box").style.display = "none";
+//    });
+// }
 
 // 25届
-function loadCSV25() {
-  const correctPassword = "Duke2025";   // ← 改成你的密码
-  const input = document.getElementById("csvPassword").value;
-  const error = document.getElementById("csv-error");
+// function loadCSV25() {
+//  const correctPassword = "Duke2025";   // ← 改成你的密码
+//  const input = document.getElementById("csvPassword").value;
+//  const error = document.getElementById("csv-error");
+//  if (input !== correctPassword) {
+//    error.textContent = "密码错误";
+//    return;
+//  }
 
-  if (input !== correctPassword) {
-    error.textContent = "密码错误";
+//  error.textContent = "";
+//
+//  fetch("25届毕业去向.csv")
+//    .then(res => res.text())
+//    .then(text => {
+//      const rows = text.trim().split("\n");
+   //   const table = document.getElementById("csvTable");
+ //     table.innerHTML = "";
+
+  //    rows.forEach((row, i) => {
+//        const tr = document.createElement("tr");
+   //     row.split(",").forEach(cell => {
+//          const el = i === 0 ? "th" : "td";
+//          const td = document.createElement(el);
+  //        td.textContent = cell;
+ //         tr.appendChild(td);
+  //      });
+ //       table.appendChild(tr);
+  //    });
+
+ //     document.getElementById("csv-password-box").style.display = "none";
+//    });
+// }
+
+
+
+/* ========= CSV 工具函数 ========= */
+function renderCSV(csvText, tableId) {
+  const rows = csvText.trim().split("\n");
+  const table = document.getElementById(tableId);
+  table.innerHTML = "";
+
+  rows.forEach((row, i) => {
+    const tr = document.createElement("tr");
+    row.split(",").forEach(cell => {
+      const el = document.createElement(i === 0 ? "th" : "td");
+      el.textContent = cell;
+      tr.appendChild(el);
+    });
+    table.appendChild(tr);
+  });
+}
+
+/* ========= 24届 ========= */
+function loadCSV24() {
+  const pwd = document.getElementById("csvPwd24").value;
+  const err = document.getElementById("csvErr24");
+
+  if (pwd !== "Duke24") {
+    err.textContent = "❌ 密码错误";
     return;
   }
 
-  error.textContent = "";
-
-  fetch("25届毕业去向.csv")
+  fetch("graduate_24.csv")
     .then(res => res.text())
-    .then(text => {
-      const rows = text.trim().split("\n");
-      const table = document.getElementById("csvTable");
-      table.innerHTML = "";
+    .then(text => renderCSV(text, "csvTable24"));
 
-      rows.forEach((row, i) => {
-        const tr = document.createElement("tr");
-        row.split(",").forEach(cell => {
-          const el = i === 0 ? "th" : "td";
-          const td = document.createElement(el);
-          td.textContent = cell;
-          tr.appendChild(td);
-        });
-        table.appendChild(tr);
-      });
-
-      document.getElementById("csv-password-box").style.display = "none";
-    });
+  err.textContent = "";
+  document.getElementById("csv-box-24").style.display = "none";
 }
 
+/* ========= 25届 ========= */
+function loadCSV25() {
+  const pwd = document.getElementById("csvPwd25").value;
+  const err = document.getElementById("csvErr25");
+
+  if (pwd !== "Duke25") {
+    err.textContent = "❌ 密码错误";
+    return;
+  }
+
+  fetch("graduate_25.csv")
+    .then(res => res.text())
+    .then(text => renderCSV(text, "csvTable25"));
+
+  err.textContent = "";
+  document.getElementById("csv-box-25").style.display = "none";
+}
