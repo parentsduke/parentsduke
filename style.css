@@ -390,14 +390,14 @@ footer .WJ {
 
 /* ===== 密码输入 ===== */
 .qa-section input {
-  width: 220px;
-  padding: 8px;
-  font-size: 14px;
+/*  width: 220px; */
+  padding: 8px 16px;
+  font-size: 1em; /* 14px; */
 }
 
 .qa-section button {
   margin-left: 8px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   cursor: pointer;
 }
 
