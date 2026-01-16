@@ -355,3 +355,13 @@ footer .WJ {
   font-size: 16px;
   cursor: pointer;
 }
+
+.qa-content details {
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.qa-content summary {
+  font-weight: bold;
+  font-size: 16px;
+}
