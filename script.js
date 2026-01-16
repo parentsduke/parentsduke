@@ -76,33 +76,28 @@ if (pptToggle && pptContent) {
 
 
 // ===== Q&A 密码保护 =====
-const qaPassword = "Duke123"; // 设置你的密码
-const qaInput = document.getElementById("qaPassword");
-const qaButton = document.getElementById("qaSubmit");
+const qaPassword = "Duke2030";  // 设置你的密码
 const qaContent = document.querySelector(".qa-content");
+const qaInput = document.getElementById("qaPassword");
+const qaSubmit = document.getElementById("qaSubmit");
 
-qaButton.addEventListener("click", () => {
+qaSubmit.addEventListener("click", () => {
   if (qaInput.value === qaPassword) {
-    qaContent.style.display = "block";   // 显示 Q&A
-    qaInput.style.display = "none";      // 隐藏密码框
-    qaButton.style.display = "none";     // 隐藏按钮
+    qaContent.style.display = "block";
+    qaInput.style.display = "none";
+    qaSubmit.style.display = "none";
   } else {
-    alert("密码错误，请重新输入！");
-    qaInput.value = "";
-    qaInput.focus();
+    alert("密码错误，请重试！");
   }
 });
 
-// ===== Q&A 折叠功能（保持之前逻辑） =====
+// 保持折叠互斥
 const qaDetails = document.querySelectorAll('.qa-content details');
-
 qaDetails.forEach(detail => {
   detail.addEventListener('toggle', () => {
     if (detail.open) {
       qaDetails.forEach(other => {
-        if (other !== detail) {
-          other.removeAttribute('open');
-        }
+        if (other !== detail) other.removeAttribute('open');
       });
     }
   });
