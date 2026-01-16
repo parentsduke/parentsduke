@@ -340,33 +340,18 @@ footer .WJ {
   margin-left: 12px;
 }
 
-.qa-title {
-  margin-top: 40px;
-  text-align: center;
-  color: #000080;
+.qa-section {
+  margin: 20px 0;
 }
 
-.qa {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 0 10px;
+.qa-section input {
+  padding: 6px;
+  font-size: 16px;
+  margin-right: 4px;
 }
 
-.qa details {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  padding: 10px 14px;
-  background: #fff;
-}
-
-.qa summary {
-  font-weight: bold;
+.qa-section button {
+  padding: 6px 10px;
+  font-size: 16px;
   cursor: pointer;
-  color: #000080;
-}
-
-.qa p {
-  margin-top: 8px;
-  line-height: 1.6;
 }
