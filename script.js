@@ -74,6 +74,25 @@ if (pptToggle && pptContent) {
   });
 }
 
+
+// ===== Q&A 密码保护 =====
+const qaPassword = "Duke123"; // 设置你的密码
+const qaInput = document.getElementById("qaPassword");
+const qaButton = document.getElementById("qaSubmit");
+const qaContent = document.querySelector(".qa-content");
+
+qaButton.addEventListener("click", () => {
+  if (qaInput.value === qaPassword) {
+    qaContent.style.display = "block";   // 显示 Q&A
+    qaInput.style.display = "none";      // 隐藏密码框
+    qaButton.style.display = "none";     // 隐藏按钮
+  } else {
+    alert("密码错误，请重新输入！");
+    qaInput.value = "";
+    qaInput.focus();
+  }
+});
+
 // ===== Q&A 折叠互斥（一次只展开一个）=====
 const qaDetails = document.querySelectorAll('.qa details');
 
