@@ -211,12 +211,12 @@ function loadCSV24() {
   const pwd = document.getElementById("csvPwd24").value;
   const err = document.getElementById("csvErr24");
 
-  if (pwd !== "Duke24") {
+  if (pwd !== "Duke2024") {
     err.textContent = "❌ 密码错误";
     return;
   }
 
-  fetch("graduate_24.csv")
+  fetch("24届毕业去向.csv")
     .then(res => res.text())
     .then(text => renderCSV(text, "csvTable24"));
 
@@ -229,12 +229,12 @@ function loadCSV25() {
   const pwd = document.getElementById("csvPwd25").value;
   const err = document.getElementById("csvErr25");
 
-  if (pwd !== "Duke25") {
+  if (pwd !== "Duke2025") {
     err.textContent = "❌ 密码错误";
     return;
   }
 
-  fetch("graduate_25.csv")
+  fetch("25届毕业去向.csv")
     .then(res => res.text())
     .then(text => renderCSV(text, "csvTable25"));
 
