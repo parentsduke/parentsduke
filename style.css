@@ -341,9 +341,12 @@ footer .WJ {
 }
 
 .qa-section {
-  margin: 20px 0;
+  margin: 20px auto;
+  max-width: 700px; /* ⭐ 宽度不要太挤 */
+  text-align: left;
 }
 
+/* 输入框和按钮 */
 .qa-section input {
   padding: 6px;
   font-size: 16px;
@@ -356,12 +359,27 @@ footer .WJ {
   cursor: pointer;
 }
 
-.qa-content details {
-  margin-bottom: 10px;
+/* Q&A 卡片样式 */
+.qa-content details.qa-card {
+  background-color: #fdfdfd;       /* 卡片背景 */
+  border: 1px solid #ccc;          /* 边框 */
+  border-radius: 8px;               /* 圆角 */
+  padding: 10px 15px;               /* 内边距 */
+  margin-bottom: 10px;              /* 卡片间距 */
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.1); /* 阴影 */
   cursor: pointer;
 }
 
-.qa-content summary {
+/* summary 样式 */
+.qa-content details.qa-card summary {
   font-weight: bold;
   font-size: 16px;
+  list-style: none;     /* 去掉默认方块 */
+  outline: none;        /* 去掉 focus 边框 */
+}
+
+/* 内部文字 */
+.qa-content details.qa-card p {
+  margin: 8px 0 0 0;
+  font-size: 14px;
 }
