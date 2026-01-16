@@ -196,16 +196,13 @@
 
     <div class="qa-wrapper">
 
-  <!-- 🔐 密码输入层 -->
-  <div id="qa-lock" class="qa-lock">
-    <h3>🔒 Q&A 需要密码</h3>
-    <input type="password" id="qa-password" placeholder="请输入密码">
-    <button onclick="unlockQA()">进入</button>
-    <p id="qa-error"></p>
-  </div>
+  <!-- Q&A 密码保护 -->
+<div class="qa-section">
+  <input type="password" id="qaPassword" placeholder="请输入密码查看 Q&A">
+  <button id="qaSubmit">提交</button>
 
-  <!-- 📦 Q&A 方框（默认隐藏） -->
-  <div class="qa" id="qa-content" style="display:none;">
+  <div class="qa-content" style="display:none;">
+
     <details class="qa-card">
       <summary>Q1: 扯谈Duke群是什么群?</summary>      
       <p>Duke家长群。</p>
