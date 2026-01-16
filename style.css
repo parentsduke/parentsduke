@@ -379,12 +379,12 @@ footer .WJ {
 
 /* ===== Q&A 整体居中容器 ===== */
 .qa-section {
-  max-width: 800px;
+  max-width: 900px;
   margin: 40px auto;        /* ⭐ 水平居中 */
   padding: 24px;
-  background: #ffffff;
+ /* background: #ffffff; */
   border: 1px solid #ccc;
-  border-radius: 14px;
+  border-radius: 12px;
   text-align: center;       /* 密码输入居中 */
 }
 
