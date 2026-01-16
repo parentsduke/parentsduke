@@ -76,35 +76,35 @@ if (pptToggle && pptContent) {
 
 // ===== Q&A 密码保护 =====
 
-document.getElementById("qaSubmit").addEventListener("click", function () {
-  const password = "Duke2030";   // ← 改成你的
-  const input = document.getElementById("qaPassword").value;
-  const qa = document.querySelector(".qa-content");
+// document.getElementById("qaSubmit").addEventListener("click", function () {
+  // const password = "Duke2030";   // ← 改成你的
+ // const input = document.getElementById("qaPassword").value;
+//  const qa = document.querySelector(".qa-content");
 
-  if (input === password) {
-    qa.style.display = "block";
-  } else {
-    alert("密码错误");
-  }
-});
+ // if (input === password) {
+ //   qa.style.display = "block";
+//  } else {
+//    alert("密码错误");
+//  }
+// });
 
 
 
 // ===== Q&A 密码保护 =====
- // const qaPassword = "Duke2030";  // 设置你的密码
-// const qaContent = document.querySelector(".qa-content");
-// const qaInput = document.getElementById("qaPassword");
-// const qaSubmit = document.getElementById("qaSubmit");
+ const qaPassword = "Duke2030";  // 设置你的密码
+ const qaContent = document.querySelector(".qa-content");
+ const qaInput = document.getElementById("qaPassword");
+ const qaSubmit = document.getElementById("qaSubmit");
 
-// qaSubmit.addEventListener("click", () => {
- // if (qaInput.value === qaPassword) {
-  //  qaContent.style.display = "block";
- //   qaInput.style.display = "none";
- //   qaSubmit.style.display = "none";
-//  } else {
- //   alert("密码错误，请重试！");
-//  }
-// }); 
+ qaSubmit.addEventListener("click", () => {
+  if (qaInput.value === qaPassword) {
+      qaContent.style.display = "block";
+      qaInput.style.display = "none";
+      qaSubmit.style.display = "none";
+    } else {
+      alert("密码错误，请重试！");
+    } 
+   }); 
 
 // 保持折叠互斥
 const qaDetails = document.querySelectorAll('.qa-content details');
