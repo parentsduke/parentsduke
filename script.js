@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const qaInput = document.getElementById("qaPassword");
   const qaSubmit = document.getElementById("qaSubmit");
   const qaClose = document.getElementById("qaClose");
+  const qaShowPwd = document.getElementById("qaShowPwd");
 
   qaSubmit.addEventListener("click", () => {
     if (qaInput.value === qaPassword) {
@@ -119,7 +120,16 @@ qaClose.addEventListener("click", () => {
   qaInput.value = "";                       // 清空输入
 });
 
-  
+  // 显示按钮
+  qaShowPwd.addEventListener("click", () => {
+  if (qaInput.type === "password") {
+    qaInput.type = "text";
+    qaShowPwd.textContent = "隐藏密码";
+  } else {
+    qaInput.type = "password";
+    qaShowPwd.textContent = "显示密码";
+  }
+});
 
 }); // ← DOMContentLoaded 结束
 
