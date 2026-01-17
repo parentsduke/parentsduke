@@ -401,6 +401,13 @@ footer .WJ {
   cursor: pointer;
 }
 
+/* 关闭按钮样式 */
+#qaClose {
+  margin-left: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
 /* ===== Q&A 内容区 ===== */
 .qa-content {
   margin-top: 20px;
