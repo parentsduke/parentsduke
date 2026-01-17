@@ -205,6 +205,8 @@ function loadCSV24() {
 
   err.textContent = "";
   document.getElementById("csv-password-box-24").style.display = "none";
+   // 7️⃣ ✅ 显示表格容器（包括关闭按钮）
+  document.getElementById("csv-container-24").style.display = "block";
 }
 
 function loadCSV25() {
@@ -223,4 +225,16 @@ function loadCSV25() {
 
   err.textContent = "";
   document.getElementById("csv-password-box-25").style.display = "none";
+   // 7️⃣ ✅ 显示表格容器（包括关闭按钮）
+  document.getElementById("csv-container-25").style.display = "block";
+}
+
+// 🔹 关闭表格函数
+function closeCSV(year) {
+  const container = document.getElementById(`csv-container-${year}`);
+  if (container) container.style.display = "none";
+  
+  // 密码框重新显示，让用户可以重新打开
+  const pwdBox = document.getElementById(`csv-password-box-${year}`);
+  if (pwdBox) pwdBox.style.display = "block";
 }
