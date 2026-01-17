@@ -185,8 +185,15 @@
     <button onclick="loadCSV24()">确认</button>
     <p id="csvErr24"></p>
   </div>
-  <table id="csvTable24" style="display:none;"></table>
-</div>
+
+        <!-- 新增 CSV 容器 -->
+  <div id="csv-container-24" style="display:none;">
+    <button class="csv-close-btn" onclick="closeCSV('24')">关闭表格</button>
+    <table id="csvTable24"></table>
+  </div>
+    </div>
+  <!-- <table id="csvTable24" style="display:none;"></table>
+</div> -->
 
 <div class="csv-box" id="csv-box-25">
   <div id="csv-password-box-25">
@@ -194,9 +201,18 @@
     <button onclick="loadCSV25()">确认</button>
     <p id="csvErr25"></p>
   </div>
-  <table id="csvTable25" style="display:none;"></table>
+
+    <!-- 新增 CSV 容器 -->
+  <div id="csv-container-25" style="display:none;">
+    <button class="csv-close-btn" onclick="closeCSV('25')">关闭表格</button>
+    <table id="csvTable25"></table>
+  </div>
 </div>
 
+  <!--  
+  <table id="csvTable25" style="display:none;"></table>
+</div>
+-->
 
     <div class="qa-wrapper">
 
