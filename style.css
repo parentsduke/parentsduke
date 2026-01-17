@@ -415,20 +415,14 @@ footer .WJ {
   background: #333399;
 }
 
-#qaTogglePwd {
+#qaShowPwd {
   margin-left: 8px;
-  padding: 8px 12px;
+  padding: 4px 8px;
+  font-size: 0.9rem;
   cursor: pointer;
-  border: 1px solid #000080;
-  border-radius: 6px;
-  background: #fff;
-  color: #000080;
 }
 
-#qaTogglePwd:hover {
-  background: #000080;
-  color: #fff;
-}
+
 
 /* ===== Q&A 内容区 ===== */
 .qa-content {
