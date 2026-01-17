@@ -118,6 +118,19 @@ qaClose.addEventListener("click", () => {
   qaInput.value = "";                       // 清空输入
 });
 
+  const qaTogglePwd = document.getElementById("qaTogglePwd");
+const qaInput = document.getElementById("qaPassword");
+
+qaTogglePwd.addEventListener("click", () => {
+  if (qaInput.type === "password") {
+    qaInput.type = "text";
+    qaTogglePwd.textContent = "隐藏密码";
+  } else {
+    qaInput.type = "password";
+    qaTogglePwd.textContent = "显示密码";
+  }
+});
+
 }); // ← DOMContentLoaded 结束
 
 // =======================================
