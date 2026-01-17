@@ -83,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const qaContent = document.querySelector(".qa-content");
   const qaInput = document.getElementById("qaPassword");
   const qaSubmit = document.getElementById("qaSubmit");
+  const qaClose = document.getElementById("qaClose");
 
   qaSubmit.addEventListener("click", () => {
     if (qaInput.value === qaPassword) {
@@ -107,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  const qaClose = document.getElementById("qaClose"); // 获取关闭按钮
+  // const qaClose = document.getElementById("qaClose"); // 获取关闭按钮
 
 // 点击关闭按钮
 qaClose.addEventListener("click", () => {
