@@ -106,6 +106,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  const qaClose = document.getElementById("qaClose"); // 获取关闭按钮
+
+// 点击关闭按钮
+qaClose.addEventListener("click", () => {
+  qaContent.style.display = "none";       // 隐藏 Q&A
+  qaInput.style.display = "inline-block"; // 显示密码输入框
+  qaSubmit.style.display = "inline-block"; // 显示提交按钮
+  qaClose.style.display = "none";          // 隐藏关闭按钮
+  qaInput.value = "";                       // 清空输入
+});
+
 }); // ← DOMContentLoaded 结束
 
 // =======================================
