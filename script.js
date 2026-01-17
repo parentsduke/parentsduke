@@ -89,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
       qaContent.style.display = "block";
       qaInput.style.display = "none";
       qaSubmit.style.display = "none";
+      qaClose.style.display = "inline-block"; // ✅ 必须加这一行
     } else {
       alert("密码错误，请重试！");
     } 
