@@ -483,3 +483,50 @@ footer .WJ {
   margin: 8px 0 0 0;
   font-size: 14px;
 } */
+
+/* ===== CSV 高级卡片风格 ===== */
+.csv-box table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.csv-box th,
+.csv-box td {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.csv-box th {
+  background: #000080;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+}
+
+.csv-box tr {
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.csv-box tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+}
+
+.csv-box td, .csv-box th {
+  border: none;
+}
+
+@media (max-width: 600px) {
+  .csv-box table {
+    font-size: 12px;
+  }
+
+  .csv-box th, .csv-box td {
+    padding: 8px 12px;
+  }
+}
