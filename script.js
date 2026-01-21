@@ -133,65 +133,6 @@ qaClose.addEventListener("click", () => {
 
 }); // ← DOMContentLoaded 结束
 
-// =======================================
-// CSV 加载函数（全局，可直接调用 loadCSV24()/loadCSV25()）
-// =======================================
-
-// 渲染 CSV 表格
-//function renderCSV(csvText, tableId) {
-//  const rows = csvText.trim().split("\n");
-//  const table = document.getElementById(tableId);
-//  table.innerHTML = "";
-//  table.style.display = ""; // 显示表格
-
-//  rows.forEach((row, i) => {
-//    const tr = document.createElement("tr");
-//    row.split(",").forEach(cell => {
- //     const el = document.createElement(i === 0 ? "th" : "td");
-//      el.textContent = cell;
-//      tr.appendChild(el);
- //   });
-//    table.appendChild(tr);
-//  });
-// }
-
-// 24届 CSV 加载
-// function loadCSV24() {
-//  const pwd = document.getElementById("csvPwd24").value;
-//  const err = document.getElementById("csvErr24");
-
-//  if (pwd !== "Duke2024") {
-//    err.textContent = "❌ 密码错误";
-//    return;
-//  }
-
-//  fetch("24graduate.csv")
-//   .then(res => res.text())
- //   .then(text => renderCSV(text, "csvTable24"))
-//    .catch(() => err.textContent = "❌ CSV 文件加载失败");
-
-//  err.textContent = "";
-//  document.getElementById("csv-password-box-24").style.display = "none";
-// }
-
-// 25届 CSV 加载
-// function loadCSV25() {
-//  const pwd = document.getElementById("csvPwd25").value;
-//  const err = document.getElementById("csvErr25");
-
-//  if (pwd !== "Duke2025") {
- //   err.textContent = "❌ 密码错误";
-//    return;
-//  }
-
-//  fetch("25graduate.csv")
-//    .then(res => res.text())
-//    .then(text => renderCSV(text, "csvTable25"))
-//    .catch(() => err.textContent = "❌ CSV 文件加载失败");
-
-//  err.textContent = "";
-//  document.getElementById("csv-password-box-25").style.display = "none";
-// }
 
 // =======================================
 // CSV 加载函数（高级表格风格）
@@ -214,6 +155,28 @@ function renderCSV(csvText, tableId) {
   });
 }
 
+// 30
+function loadCSV30() {
+  const pwd = document.getElementById("csvPwd30").value;
+  const err = document.getElementById("csvErr30");
+
+  if (pwd !== "Duke2030") {
+    err.textContent = "❌ 密码错误";
+    return;
+  }
+
+  fetch("class30.csv")
+    .then(res => res.text())
+    .then(text => renderCSV(text, "csvTable30"))
+    .catch(() => err.textContent = "❌ CSV 文件加载失败");
+
+  err.textContent = "";
+  document.getElementById("csv-password-box-30").style.display = "none";
+   // 7️⃣ ✅ 显示表格容器（包括关闭按钮）
+  document.getElementById("csv-container-30").style.display = "block";
+}
+
+// 24
 function loadCSV24() {
   const pwd = document.getElementById("csvPwd24").value;
   const err = document.getElementById("csvErr24");
@@ -234,6 +197,7 @@ function loadCSV24() {
   document.getElementById("csv-container-24").style.display = "block";
 }
 
+// 25
 function loadCSV25() {
   const pwd = document.getElementById("csvPwd25").value;
   const err = document.getElementById("csvErr25");
