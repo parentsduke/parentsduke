@@ -182,7 +182,20 @@
         </ul>
     </div>
 
-    <div class="csv-box" id="csv-box-24">
+    <div class="csv-box" id="csv-box-30">
+  <div id="csv-password-box-30">
+    <input type="password" id="csvPwd30" placeholder="请输入密码查看30届">
+    <button onclick="loadCSV30()">确认</button>
+    <p id="csvErr30"></p>
+  </div>
+
+        <!-- CSV 表格容器（包含关闭按钮） -->
+<div id="csv-container-30" class="csv-box" style="display:none;">
+  <button class="csv-close-btn" onclick="closeCSV(30)">关闭</button>
+  <table id="csvTable30"></table>
+</div>
+    
+  <div class="csv-box" id="csv-box-24">
   <div id="csv-password-box-24">
     <input type="password" id="csvPwd24" placeholder="请输入密码查看24届毕业">
     <button onclick="loadCSV24()">确认</button>
@@ -195,14 +208,7 @@
   <table id="csvTable24"></table>
 </div>
 
-        <!-- 新增 CSV 容器 
-  <div id="csv-container-24" style="display:none;">
-    <button class="csv-close-btn" onclick="closeCSV('24')">关闭表格</button>
-    <table id="csvTable24"></table>
-  </div>
-    </div>. -->
-  <!-- <table id="csvTable24" style="display:none;"></table>
-</div> -->
+        
 
 <div class="csv-box" id="csv-box-25">
   <div id="csv-password-box-25">
@@ -217,20 +223,9 @@
   <table id="csvTable25"></table>
     </div>
 
-    <!-- 新增 CSV 容器
-  <div id="csv-container-25" style="display:none;">
-    <button class="csv-close-btn" onclick="closeCSV('25')">关闭表格</button>
-    <table id="csvTable25"></table>
-  </div>
-</div> -->
+    
 
-  <!--  
-  <table id="csvTable25" style="display:none;"></table>
-</div>
--->
-
-    <div class="qa-wrapper">
-
+<div class="qa-wrapper">
   <!-- Q&A 密码保护 -->
 <div class="qa-section">
   <input type="password" id="qaPassword" placeholder="请输入密码查看 Q&A">
