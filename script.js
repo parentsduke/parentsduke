@@ -160,7 +160,7 @@ function loadCSV30() {
   const pwd = document.getElementById("csvPwd30").value;
   const err = document.getElementById("csvErr30");
 
-  if (pwd !== "Duke2030") {
+  if (pwd !== "2030Duke") {
     err.textContent = "❌ 密码错误";
     return;
   }
