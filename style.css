@@ -581,3 +581,23 @@ footer .WJ {
 .csv-close-btn:hover {
   background: #333399;
 }
+
+/* ===== 网站访问统计 UV / PV ===== */
+.site-counter {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #555;
+  text-align: center;
+}
+
+.site-counter span {
+  color: #00539B;   /* Duke 蓝 */
+  font-weight: 600;
+}
+
+/* 手机上稍微小一点 */
+@media (max-width: 768px) {
+  .site-counter {
+    font-size: 12px;
+  }
+}
