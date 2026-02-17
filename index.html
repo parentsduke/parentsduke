@@ -21,6 +21,8 @@
 
 <!-- 🔐 把原来的正文全部剪切到这里 -->
 <template id="real-content">
+
+    <div>
     <!-- 这里粘贴你 header 后面所有内容 -->
 
     <img src="231104S.png" class="thumb">
@@ -41,15 +43,16 @@
     <video class="video-box" controls>
     <source src="2030.mp4" type="video/mp4">
     </video>
+  </div>
 
 <div class="video-wrapper">
     <video class="video-box" controls>
     <source src="Justin.mp4" type="video/mp4">
     </video>
+    </div>
     
 <!-- ⭐ 透明点击层 -->
   <div class="video-click-layer"></div>
-  </div>
     
   <!-- 视频放大遮罩 -->
   <div id="video-overlay">
@@ -195,7 +198,7 @@
     </div>
       
 <!-- 30 -->
-    <div class="csv-box" id="csv-box-30">
+    <div class="csv-box" id="csv-box-30"></div>
   <div id="csv-password-box-30">
     <input type="password" id="csvPwd30" placeholder="请输入密码查看30届">
     <button onclick="loadCSV30()">确认</button>
@@ -441,14 +444,16 @@ Fraternities and sororities对pre-med track 学生没有作用。
  <h6>Since February 7, 2026</h6> 👣
   <span id="busuanzi_value_site_pv">0</span>
     </div>
-    
-</footer>
-        
-</template>
 
+</footer>
+
+    
    <div id="overlay">
       <img id="overlay-img">
    </div>
+</div> 
+</template>
+
 
    <!-- 访问统计 UV / PV -->
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
