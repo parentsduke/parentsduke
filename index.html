@@ -376,10 +376,12 @@ Fraternities and sororities对pre-med track 学生没有作用。
 
 
     
-   <div id="overlay">
+   
+</template>
+
+    <div id="overlay">
       <img id="overlay-img">
    </div>
-</template>
 
     <footer>
   <h5>&copy; 扯谈Duke群1.0-2.0</h5>
@@ -391,7 +393,7 @@ Fraternities and sororities对pre-med track 学生没有作用。
     </div>
 
     <div class="site-counter">
- <h6>Since February 7, 2026</h6> 👣
+ <h6>Since February 17, 2026</h6> 👣
   <span id="busuanzi_value_site_pv">0</span>
     </div>
 
@@ -404,10 +406,11 @@ Fraternities and sororities对pre-med track 学生没有作用。
 (function () {
 
   const PASSWORD = "123456";  // 改成你自己的密码
-
+  const EXPIRE_TIME = 2 * 60 * 60 * 1000; // 2小时（毫秒）
   function showLogin() {
     document.getElementById("protected-area").innerHTML = `
       <div style="text-align:center;margin-top:120px;">
+      <h2>扯谈Duke群体系家长专用</h2>
         <h2>请输入访问密码</h2>
         <input type="password" id="sitePwd">
         <button onclick="checkSitePwd()">进入</button>
@@ -420,28 +423,83 @@ Fraternities and sororities对pre-med track 学生没有作用。
     const input = document.getElementById("sitePwd").value;
 
     if (input === PASSWORD) {
-      sessionStorage.setItem("siteAuth", "true");
+        const loginData = {
+        time: Date.now()
+      };
+
+        localStorage.setItem("siteAuth", JSON.stringify(loginData));
+      
       showContent();
     } else {
       document.getElementById("siteErr").innerText = "密码错误";
     }
   };
 
-  function showContent() {
-    const template = document.getElementById("real-content");
-    const clone = template.content.cloneNode(true);
-    const main = document.getElementById("protected-area");
-    main.innerHTML = "";
-    main.appendChild(clone);
-  }
+function showContent() {
+  const template = document.getElementById("real-content");
+  const clone = template.content.cloneNode(true);
+  const main = document.getElementById("protected-area");
+  main.innerHTML = "";
 
-  if (sessionStorage.getItem("siteAuth") === "true") {
-    showContent();
-  } else {
-    showLogin();
-  }
+  main.appendChild(clone);
+
+  // 删除旧按钮（避免重复）
+  const oldBtn = document.getElementById("logoutBtnFixed");
+  if (oldBtn) oldBtn.remove();
+
+  // 创建固定按钮
+  const logoutBtn = document.createElement("button");
+  logoutBtn.id = "logoutBtnFixed";
+  logoutBtn.innerText = "退出登录";
+
+  logoutBtn.style.position = "fixed";
+  logoutBtn.style.top = "20px";
+  logoutBtn.style.right = "20px";
+  logoutBtn.style.zIndex = "99999";
+  logoutBtn.style.padding = "8px 14px";
+  logoutBtn.style.background = "#003366";
+  logoutBtn.style.color = "white";
+  logoutBtn.style.border = "none";
+  logoutBtn.style.borderRadius = "6px";
+  logoutBtn.style.cursor = "pointer";
+
+  logoutBtn.onclick = function () {
+    localStorage.removeItem("siteAuth");
+    alert("已退出登录");
+    location.reload();
+  };
+
+  document.body.appendChild(logoutBtn);
+}
+
+
+
+    
+  
+
+function checkLoginStatus() {
+    const data = localStorage.getItem("siteAuth");
+
+    if (!data) {
+      showLogin();
+      return;
+    }
+
+    const loginData = JSON.parse(data);
+    const now = Date.now();
+
+    if (now - loginData.time > EXPIRE_TIME) {
+      localStorage.removeItem("siteAuth");
+      showLogin();
+    } else {
+      showContent();
+    }
+}
+
+    checkLoginStatus();
 
 })();
+  
 </script>
 
 
