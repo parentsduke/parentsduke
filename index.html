@@ -5,6 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>扯谈Duke群</title>
     <link rel="stylesheet" href="style.css">
+<script>
+// ===== IMAGE OVERLAY =====
+// style.css already has #overlay with display:none and flex layout
+// We just need to toggle display between "none" and "flex"
+
+function openOverlay(src, alt) {
+  var overlay = document.getElementById("overlay");
+  var overlayImg = document.getElementById("overlay-img");
+  overlayImg.src = src;
+  overlayImg.alt = alt || "放大图片";
+  overlay.style.display = "flex";
+}
+
+function closeOverlay() {
+  var overlay = document.getElementById("overlay");
+  overlay.style.display = "none";
+}
+
+// Close image overlay
+document.getElementById("overlay").addEventListener("click", function(e) {
+  if (e.target === this) closeOverlay();
+});
+
+// Close video overlay
+document.getElementById("video-overlay").addEventListener("click", function() {
+  var overlayVideo = document.getElementById("overlay-video");
+  overlayVideo.pause();
+  overlayVideo.src = "";
+  this.style.display = "none";
+});
+
+// Close on Escape
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") {
+    closeOverlay();
+    var overlayVideo = document.getElementById("overlay-video");
+    if (overlayVideo) { overlayVideo.pause(); overlayVideo.src = ""; }
+    var vo = document.getElementById("video-overlay");
+    if (vo) vo.style.display = "none";
+  }
+});
+</script>
 </head>
 <body>
 
@@ -459,8 +501,8 @@
   <h5>Web administrator:</h5>
   <h5>2024届家长_WeChatID_2327293770</h5>
   <div class="footer-bottom">
-    <h5><a class="email-link" href="mailto:parentsduke@gmail.com">parentsduke@gmail.com</a></h5>
-    <span class="WJ-wrapper"><img src="WJ.png" class="thumb WJ" alt="管理员二维码"></span>
+    <h5><a class="email-link" href="/cdn-cgi/l/email-protection#b8c8d9caddd6cccbdccdd3ddf8dfd5d9d1d496dbd7d5"><span class="__cf_email__" data-cfemail="1c6c7d6e7972686f786977795c7b717d7570327f7371">[email&#160;protected]</span></a></h5>
+    <span class="WJ-wrapper"><img src="WJ.png" class="thumb WJ" alt="管理员二维码" onclick="openOverlay(this.src, this.alt)"></span>
   </div>
   <div class="site-counter">
     <h6>Since February 17, 2026</h6> 👣
@@ -469,7 +511,7 @@
 </footer>
 
 <!-- 访问统计 -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 <script>
 (function () {
@@ -735,48 +777,7 @@
 })();
 </script>
 
-<script>
-// ===== IMAGE OVERLAY =====
-// style.css already has #overlay with display:none and flex layout
-// We just need to toggle display between "none" and "flex"
 
-function openOverlay(src, alt) {
-  var overlay = document.getElementById("overlay");
-  var overlayImg = document.getElementById("overlay-img");
-  overlayImg.src = src;
-  overlayImg.alt = alt || "放大图片";
-  overlay.style.display = "flex";
-}
-
-function closeOverlay() {
-  var overlay = document.getElementById("overlay");
-  overlay.style.display = "none";
-}
-
-// Close image overlay
-document.getElementById("overlay").addEventListener("click", function(e) {
-  if (e.target === this) closeOverlay();
-});
-
-// Close video overlay
-document.getElementById("video-overlay").addEventListener("click", function() {
-  var overlayVideo = document.getElementById("overlay-video");
-  overlayVideo.pause();
-  overlayVideo.src = "";
-  this.style.display = "none";
-});
-
-// Close on Escape
-document.addEventListener("keydown", function(e) {
-  if (e.key === "Escape") {
-    closeOverlay();
-    var overlayVideo = document.getElementById("overlay-video");
-    if (overlayVideo) { overlayVideo.pause(); overlayVideo.src = ""; }
-    var vo = document.getElementById("video-overlay");
-    if (vo) vo.style.display = "none";
-  }
-});
-</script>
 
 <style>
   /* Logout button */
@@ -1158,10 +1159,3 @@ function loadCSV25() {
   if (pwd !== "Duke2025") { err.textContent = "❌ 密码错误"; return; }
   fetch("25graduate.csv").then(function(r){ return r.text(); })
     .then(function(t){ renderCSV(t, "csvTable25"); })
-    .catch(function(){ err.textContent = "❌ CSV 文件加载失败"; });
-  err.textContent = "";
-  document.getElementById("csv-password-box-25").style.display = "none";
-  document.getElementById("csv-container-25").style.display = "block";
-}
-
-f
