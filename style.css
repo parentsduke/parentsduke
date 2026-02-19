@@ -82,7 +82,20 @@ header h6 {
     transform: scale(1.05);
 }
 
-/* 图片放大遮罩 */
+
+
+#overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.85);
+    z-index: 100000;   /* ⭐ 必须大于 99999 */
+}
+
+
+/* 图片放大遮罩 
 #overlay {
     position: fixed;
     top: 0;
@@ -94,7 +107,7 @@ header h6 {
     align-items: center;
     background: rgba(0,0,0,0.8);
     z-index: 999;
-}
+} */
 
 #overlay img {
     max-width: 90%;
