@@ -315,40 +315,62 @@
 
     </div>
 
-    <!-- 30届 CSV -->
-    <div class="csv-box" id="csv-box-30"></div>
-    <div id="csv-password-box-30">
-      <input type="password" id="csvPwd30" placeholder="请输入密码查看30届" aria-label="30届密码">
-      <button onclick="loadCSV30()">确认</button>
-      <p id="csvErr30" role="alert"></p>
-    </div>
-    <div id="csv-container-30" class="csv-box" style="display:none;">
-      <button class="csv-close-btn" onclick="closeCSV(30)">关闭</button>
-      <table id="csvTable30"></table>
-    </div>
+    <!-- ===== 历届名单（一个手风琴，三个名单上下排列） ===== -->
+    <div class="accordion">
+      <button class="accordion-btn" onclick="toggleAccordion(this)">
+        <span>📋 历届名单</span><span class="accordion-arrow">▸</span>
+      </button>
+      <div class="accordion-body accordion-body-csv">
 
-    <!-- 24届 CSV -->
-    <div class="csv-box" id="csv-box-24"></div>
-    <div id="csv-password-box-24">
-      <input type="password" id="csvPwd24" placeholder="请输入密码查看24届毕业" aria-label="24届密码">
-      <button onclick="loadCSV24()">确认</button>
-      <p id="csvErr24" role="alert"></p>
-    </div>
-    <div id="csv-container-24" class="csv-box" style="display:none;">
-      <button class="csv-close-btn" onclick="closeCSV(24)">关闭</button>
-      <table id="csvTable24"></table>
-    </div>
+        <!-- 30届 -->
+        <div class="csv-sub-section">
+          <div class="csv-sub-title">30届</div>
+          <div id="csv-password-box-30" style="text-align:center; padding:12px;">
+            <input type="password" id="csvPwd30" placeholder="请输入密码查看30届" aria-label="30届密码">
+            <button onclick="loadCSV30()">确认</button>
+            <p id="csvErr30" role="alert" style="color:crimson;"></p>
+          </div>
+          <div id="csv-container-30" style="display:none;">
+            <table id="csvTable30"></table>
+            <div style="text-align:center; margin-top:10px;">
+              <button class="csv-close-btn" onclick="closeCSV(30)">关闭</button>
+            </div>
+          </div>
+        </div>
 
-    <!-- 25届 CSV -->
-    <div class="csv-box" id="csv-box-25"></div>
-    <div id="csv-password-box-25">
-      <input type="password" id="csvPwd25" placeholder="请输入密码查看25届毕业" aria-label="25届密码">
-      <button onclick="loadCSV25()">确认</button>
-      <p id="csvErr25" role="alert"></p>
-    </div>
-    <div id="csv-container-25" class="csv-box" style="display:none;">
-      <button class="csv-close-btn" onclick="closeCSV(25)">关闭</button>
-      <table id="csvTable25"></table>
+        <!-- 24届 -->
+        <div class="csv-sub-section">
+          <div class="csv-sub-title">24届毕业</div>
+          <div id="csv-password-box-24" style="text-align:center; padding:12px;">
+            <input type="password" id="csvPwd24" placeholder="请输入密码查看24届毕业" aria-label="24届密码">
+            <button onclick="loadCSV24()">确认</button>
+            <p id="csvErr24" role="alert" style="color:crimson;"></p>
+          </div>
+          <div id="csv-container-24" style="display:none;">
+            <table id="csvTable24"></table>
+            <div style="text-align:center; margin-top:10px;">
+              <button class="csv-close-btn" onclick="closeCSV(24)">关闭</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 25届 -->
+        <div class="csv-sub-section">
+          <div class="csv-sub-title">25届毕业</div>
+          <div id="csv-password-box-25" style="text-align:center; padding:12px;">
+            <input type="password" id="csvPwd25" placeholder="请输入密码查看25届毕业" aria-label="25届密码">
+            <button onclick="loadCSV25()">确认</button>
+            <p id="csvErr25" role="alert" style="color:crimson;"></p>
+          </div>
+          <div id="csv-container-25" style="display:none;">
+            <table id="csvTable25"></table>
+            <div style="text-align:center; margin-top:10px;">
+              <button class="csv-close-btn" onclick="closeCSV(25)">关闭</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <!-- Q&A Section -->
@@ -914,6 +936,44 @@ document.addEventListener("keydown", function(e) {
     color: #555;
     text-decoration: underline;
   }
+
+  /* CSV 子分区 */
+  .csv-sub-section {
+    border-top: 1px solid #ddd;
+  }
+  .csv-sub-section:first-child {
+    border-top: none;
+  }
+  .csv-sub-title {
+    background: #e8eaf6;
+    color: #000080;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 8px 16px;
+    border-left: 4px solid #000080;
+  }
+
+  /* CSV 手风琴内容区 */
+  .accordion-body-csv {
+    padding: 0;
+    background: #fff;
+  }
+  .accordion-body-csv table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .accordion-body-csv th,
+  .accordion-body-csv td {
+    border: 1px solid #aaa;
+    padding: 8px 12px;
+    font-size: 14px;
+    text-align: left;
+  }
+  .accordion-body-csv th {
+    background: #000080;
+    color: #fff;
+  }
+  .accordion-body-csv tr:nth-child(even) { background: #f4f4f4; }
 
   /* ===== 视频集 ===== */
   .video-gallery-container {
