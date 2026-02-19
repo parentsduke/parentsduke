@@ -6,9 +6,8 @@
     <title>扯谈Duke群</title>
     <link rel="stylesheet" href="style.css">
 <script>
-// ===== IMAGE OVERLAY =====
-// style.css already has #overlay with display:none and flex layout
-// We just need to toggle display between "none" and "flex"
+// ===== IMAGE / VIDEO OVERLAY =====
+// openOverlay/closeOverlay defined here in <head> so onclick attributes work immediately
 
 function openOverlay(src, alt) {
   var overlay = document.getElementById("overlay");
@@ -20,23 +19,24 @@ function openOverlay(src, alt) {
 
 function closeOverlay() {
   var overlay = document.getElementById("overlay");
-  overlay.style.display = "none";
+  if (overlay) overlay.style.display = "none";
 }
 
-// Close image overlay
-document.getElementById("overlay").addEventListener("click", function(e) {
-  if (e.target === this) closeOverlay();
+// All close handlers use event delegation on document — safe to run in <head>
+document.addEventListener("click", function(e) {
+  // 点击overlay背景关闭图片放大
+  if (e.target && e.target.id === "overlay") {
+    closeOverlay();
+  }
+  // 点击video-overlay背景关闭视频
+  if (e.target && e.target.id === "video-overlay") {
+    var overlayVideo = document.getElementById("overlay-video");
+    if (overlayVideo) { overlayVideo.pause(); overlayVideo.src = ""; }
+    e.target.style.display = "none";
+  }
 });
 
-// Close video overlay
-document.getElementById("video-overlay").addEventListener("click", function() {
-  var overlayVideo = document.getElementById("overlay-video");
-  overlayVideo.pause();
-  overlayVideo.src = "";
-  this.style.display = "none";
-});
-
-// Close on Escape
+// 按 Escape 关闭
 document.addEventListener("keydown", function(e) {
   if (e.key === "Escape") {
     closeOverlay();
