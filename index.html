@@ -501,7 +501,15 @@ document.addEventListener("keydown", function(e) {
   <h5>Web administrator:</h5>
   <h5>2024届家长_WeChatID_2327293770</h5>
   <div class="footer-bottom">
-    <h5><a class="email-link" href="/cdn-cgi/l/email-protection#b8c8d9caddd6cccbdccdd3ddf8dfd5d9d1d496dbd7d5"><span class="__cf_email__" data-cfemail="1c6c7d6e7972686f786977795c7b717d7570327f7371">[email&#160;protected]</span></a></h5>
+    <h5 id="emailDisplay"></h5>
+    <script>
+      (function(){
+        var u="parentsduke";var d="gmail.com";
+        var el=document.getElementById("emailDisplay");
+        var addr=u+"@"+d;
+        el.innerHTML='<a class="email-link" href="mailto:'+addr+'">'+addr+'</a>';
+      })();
+    </script>
     <span class="WJ-wrapper"><img src="WJ.png" class="thumb WJ" alt="管理员二维码" onclick="openOverlay(this.src, this.alt)"></span>
   </div>
   <div class="site-counter">
