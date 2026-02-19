@@ -1,142 +1,10 @@
 // =======================================
-// DOM 操作：图片/视频/搜索/PPT/Q&A
+// CSV 加载函数
 // =======================================
-document.addEventListener("DOMContentLoaded", () => {
-
-  // ========== 图片单击放大 ==========
-  document.querySelectorAll('.thumb').forEach(img => {
-    img.addEventListener('click', () => {
-      const overlay = document.getElementById('overlay');
-      const overlayImg = document.getElementById('overlay-img');
-      overlayImg.src = img.src;
-      overlay.style.display = 'flex';
-    });
-  });
-
-  document.getElementById('overlay').addEventListener('click', () => {
-    document.getElementById('overlay').style.display = 'none';
-  });
-
-  // ========== 视频单击放大 ==========
-  document.querySelectorAll('.video-wrapper').forEach(wrapper => {
-    const video = wrapper.querySelector('.video-box');
-    const clickLayer = wrapper.querySelector('.video-click-layer');
-    const overlay = document.getElementById('video-overlay');
-    const overlayVideo = document.getElementById('overlay-video');
-
-    clickLayer.addEventListener('click', () => {
-      overlayVideo.src = video.currentSrc || video.src;
-      overlay.style.display = 'flex';
-      overlayVideo.play();
-    });
-  });
-
-  document.getElementById('video-overlay').addEventListener('click', () => {
-    const overlayVideo = document.getElementById('overlay-video');
-    overlayVideo.pause();
-    overlayVideo.src = '';
-    document.getElementById('video-overlay').style.display = 'none';
-  });
-
-  // ========== 搜索功能 ==========
-  const searchInput = document.getElementById('searchInput');
-  const items = document.querySelectorAll('.link-list a, .link-list li');
-
-  if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      const keyword = searchInput.value.toLowerCase().trim();
-      let firstMatch = null;
-
-      items.forEach(el => {
-        const text = el.textContent.toLowerCase();
-        if (text.includes(keyword)) {
-          el.style.display = '';
-          if (!firstMatch && keyword !== '') firstMatch = el;
-        } else {
-          el.style.display = 'none';
-        }
-      });
-
-      if (firstMatch) {
-        firstMatch.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        });
-      }
-    });
-  }
-
-  // ===== PPT 折叠控制 =====
-  const pptToggle = document.getElementById("pptToggle");
-  const pptContent = document.getElementById("pptContent");
-
-  if (pptToggle && pptContent) {
-    pptToggle.addEventListener("click", () => {
-      const isOpen = pptContent.style.display === "block";
-      pptContent.style.display = isOpen ? "none" : "block";
-      pptToggle.textContent = isOpen ? "展开" : "收起";
-    });
-  }
-
-  // ===== Q&A 密码保护 =====
-  const qaPassword = "Duke2030";  
-  const qaContent = document.querySelector(".qa-content");
-  const qaInput = document.getElementById("qaPassword");
-  const qaSubmit = document.getElementById("qaSubmit");
-  const qaClose = document.getElementById("qaClose");
-  const qaShowPwd = document.getElementById("qaShowPwd");
-
-  qaSubmit.addEventListener("click", () => {
-    if (qaInput.value === qaPassword) {
-      qaContent.style.display = "block";
-      qaInput.style.display = "none";
-      qaSubmit.style.display = "none";
-      qaClose.style.display = "inline-block"; // ✅ 必须加这一行
-    } else {
-      alert("密码错误，请重试！");
-    } 
-  });
-
-  // 保持 Q&A 折叠互斥
-  const qaDetails = document.querySelectorAll('.qa-content details');
-  qaDetails.forEach(detail => {
-    detail.addEventListener('toggle', () => {
-      if (detail.open) {
-        qaDetails.forEach(other => {
-          if (other !== detail) other.removeAttribute('open');
-        });
-      }
-    });
-  });
-
-  // const qaClose = document.getElementById("qaClose"); // 获取关闭按钮
-
-// 点击关闭按钮
-qaClose.addEventListener("click", () => {
-  qaContent.style.display = "none";       // 隐藏 Q&A
-  qaInput.style.display = "inline-block"; // 显示密码输入框
-  qaSubmit.style.display = "inline-block"; // 显示提交按钮
-  qaClose.style.display = "none";          // 隐藏关闭按钮
-  qaInput.value = "";                       // 清空输入
-});
-
-  // 显示按钮
-  qaShowPwd.addEventListener("click", () => {
-  if (qaInput.type === "password") {
-    qaInput.type = "text";
-    qaShowPwd.textContent = "隐藏密码";
-  } else {
-    qaInput.type = "password";
-    qaShowPwd.textContent = "显示密码";
-  }
-});
-
-}); // ← DOMContentLoaded 结束
-
-
-// =======================================
-// CSV 加载函数（高级表格风格）
-// =======================================
+// 注意：图片放大、视频放大、PPT、搜索、Q&A 的事件绑定
+// 已移至 index.html 的 showContent() 函数中处理，
+// 因为这些元素是登录后从 <template> 克隆插入的，
+// DOMContentLoaded 时它们还不存在。
 
 function renderCSV(csvText, tableId) {
   const rows = csvText.trim().split("\n");
@@ -155,7 +23,7 @@ function renderCSV(csvText, tableId) {
   });
 }
 
-// 30
+// 30届
 function loadCSV30() {
   const pwd = document.getElementById("csvPwd30").value;
   const err = document.getElementById("csvErr30");
@@ -172,11 +40,10 @@ function loadCSV30() {
 
   err.textContent = "";
   document.getElementById("csv-password-box-30").style.display = "none";
-   // 7️⃣ ✅ 显示表格容器（包括关闭按钮）
   document.getElementById("csv-container-30").style.display = "block";
 }
 
-// 24
+// 24届
 function loadCSV24() {
   const pwd = document.getElementById("csvPwd24").value;
   const err = document.getElementById("csvErr24");
@@ -193,11 +60,10 @@ function loadCSV24() {
 
   err.textContent = "";
   document.getElementById("csv-password-box-24").style.display = "none";
-   // 7️⃣ ✅ 显示表格容器（包括关闭按钮）
   document.getElementById("csv-container-24").style.display = "block";
 }
 
-// 25
+// 25届
 function loadCSV25() {
   const pwd = document.getElementById("csvPwd25").value;
   const err = document.getElementById("csvErr25");
@@ -214,16 +80,13 @@ function loadCSV25() {
 
   err.textContent = "";
   document.getElementById("csv-password-box-25").style.display = "none";
-   // 7️⃣ ✅ 显示表格容器（包括关闭按钮）
   document.getElementById("csv-container-25").style.display = "block";
 }
 
-// 🔹 关闭表格函数
+// 关闭表格
 function closeCSV(year) {
-  const container = document.getElementById(`csv-container-${year}`);
+  const container = document.getElementById("csv-container-" + year);
   if (container) container.style.display = "none";
-  
-  // 密码框重新显示，让用户可以重新打开
-  const pwdBox = document.getElementById(`csv-password-box-${year}`);
+  const pwdBox = document.getElementById("csv-password-box-" + year);
   if (pwdBox) pwdBox.style.display = "block";
 }
