@@ -1167,3 +1167,17 @@ function loadCSV25() {
   if (pwd !== "Duke2025") { err.textContent = "❌ 密码错误"; return; }
   fetch("25graduate.csv").then(function(r){ return r.text(); })
     .then(function(t){ renderCSV(t, "csvTable25"); })
+    .catch(function(){ err.textContent = "❌ CSV 文件加载失败"; });
+  err.textContent = "";
+  document.getElementById("csv-password-box-25").style.display = "none";
+  document.getElementById("csv-container-25").style.display = "block";
+}
+function closeCSV(year) {
+  document.getElementById("csv-container-" + year).style.display = "none";
+  document.getElementById("csv-password-box-" + year).style.display = "block";
+  document.getElementById("csvPwd" + year).value = "";
+}
+</script>
+
+</body>
+</html>
