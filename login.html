@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — Duke Parents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0f2044;
+    --navy-light: #1a3260;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #faf7f2;
+    --text: #1a1a2e;
+    --muted: #7a7a8c;
+    --error: #c0392b;
+    --success: #1e7e50;
+    --border: #ddd5c0;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .panel-left {
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 56px 52px;
+    position: relative;
+    overflow: hidden;
+    animation: panelIn 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateX(-30px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .panel-left::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    border: 60px solid rgba(201,168,76,0.08);
+    border-radius: 50%;
+  }
+
+  .panel-left::after {
+    content: '';
+    position: absolute;
+    bottom: -120px; left: -60px;
+    width: 400px; height: 400px;
+    border: 80px solid rgba(201,168,76,0.05);
+    border-radius: 50%;
+  }
+
+  .brand { position: relative; z-index: 1; }
+
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 64px;
+  }
+
+  .brand-emblem {
+    width: 48px; height: 48px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--gold);
+  }
+
+  .brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .brand-name span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .panel-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+  }
+
+  .panel-headline em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .gold-line {
+    width: 48px;
+    height: 2px;
+    background: var(--gold);
+    margin: 28px 0;
+  }
+
+  .panel-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+    max-width: 300px;
+  }
+
+  .panel-footer {
+    position: relative; z-index: 1;
+    font-size: 12px;
+    color: rgba(255,255,255,0.2);
+  }
+
+  .panel-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 32px;
+    animation: fadeUp 0.8s 0.15s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-wrap {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .form-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  .form-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+
+  .field { margin-bottom: 20px; }
+
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--navy);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  input {
+    width: 100%;
+    padding: 13px 16px;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(15,32,68,0.08);
+  }
+
+  input::placeholder { color: #bbb; }
+
+  .pwd-wrap {
+    position: relative;
+  }
+
+  .pwd-wrap input {
+    padding-right: 44px;
+  }
+
+  .pwd-toggle {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 16px;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .pwd-toggle:hover { color: var(--navy); }
+
+  .row-forgot {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+
+  .row-forgot a {
+    font-size: 12px;
+    color: var(--gold);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .row-forgot a:hover { color: var(--navy); }
+
+  .btn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 28px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.25s;
+    transform-origin: left;
+  }
+
+  .btn:hover:not(:disabled)::after { transform: scaleX(1); }
+
+  .btn:hover:not(:disabled) {
+    background: var(--navy-light);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(15,32,68,0.2);
+  }
+
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .spinner {
+    display: none;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading .spinner { display: block; }
+  .loading .btn-text { display: none; }
+
+  .message {
+    margin-top: 16px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    display: none;
+    border-left: 3px solid;
+  }
+
+  .message.error {
+    display: block;
+    background: #fdf0ef;
+    border-color: var(--error);
+    color: var(--error);
+  }
+
+  .message.success {
+    display: block;
+    background: #edf7f2;
+    border-color: var(--success);
+    color: var(--success);
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 32px 0 20px;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .divider span { font-size: 12px; color: var(--muted); }
+
+  .register {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .register a {
+    color: var(--navy);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 1px;
+    transition: color 0.2s;
+  }
+
+  .register a:hover { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    body { grid-template-columns: 1fr; }
+    .panel-left { display: none; }
+    .panel-right { padding: 60px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="panel-left">
+  <div class="brand">
+    <div class="brand-logo">
+      <div class="brand-emblem">♦</div>
+      <div class="brand-name">
+        Duke Parents
+        <span>Community Portal</span>
+      </div>
+    </div>
+    <h2 class="panel-headline">Welcome to the<br><em>Duke Family</em><br>Community</h2>
+    <div class="gold-line"></div>
+    <p class="panel-sub">Connect with fellow Duke parents, stay informed, and be part of the Blue Devil community.</p>
+  </div>
+  <div class="panel-footer">© 2025 dukeparents.org · All rights reserved</div>
+</div>
+
+<div class="panel-right">
+  <div class="form-wrap">
+    <h1 class="form-heading">Sign In</h1>
+    <p class="form-sub">Access your Duke Parents account</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="pwd-wrap">
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required />
+          <button type="button" class="pwd-toggle" id="pwdToggle" aria-label="显示或隐藏密码">👁</button>
+        </div>
+        <div class="row-forgot"><a href="forgot-password.html">Forgot password?</a></div>
+      </div>
+      <button type="submit" class="btn" id="loginBtn">
+        <div class="btn-inner">
+          <span class="btn-text">Sign In</span>
+          <div class="spinner"></div>
+        </div>
+      </button>
+    </form>
+
+    <div class="message" id="message"></div>
+
+    <div class="divider"><span>New to Duke Parents?</span></div>
+    <div class="register"><a href="register.html">Create an account →</a></div>
+  </div>
+</div>
+
+<script>
+  // ================================================================
+  //  HOW TO SET UP:
+  //
+  //  1. Go to https://supabase.com and create a free account
+  //  2. Create a new project (remember your DB password)
+  //  3. Go to Settings → API
+  //  4. Copy "Project URL" → paste as SUPABASE_URL below
+  //  5. Copy "anon public" key → paste as SUPABASE_ANON_KEY below
+  //  6. In Supabase: Authentication → URL Configuration
+  //     Add "https://dukeparents.org" to Site URL
+  //  7. Push login.html to your GitHub repo → GitHub Pages auto-deploys
+  // ================================================================
+
+  const SUPABASE_URL      = 'https://ctfqokgnnljmkghtmpxm.supabase.co';       // https://xxxx.supabase.co
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0ZnFva2dubmxqbWtnaHRtcHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODUxMzgsImV4cCI6MjA4NzI2MTEzOH0.-CKwENIu90Q04bb1MeGoE5H5MGe1S71y4_aRChbbaMY';  // eyJhbGci...
+  const REDIRECT_AFTER_LOGIN = '/dukeparents/index.html';       // page to go to after login
+
+  // ================================================================
+
+  const isConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
+  let client = null;
+  if (isConfigured) {
+    client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+
+  const form  = document.getElementById('loginForm');
+  const btn   = document.getElementById('loginBtn');
+  const msgEl = document.getElementById('message');
+
+  const ERRORS = {
+    'Invalid login credentials': 'Incorrect email or password. Please try again.',
+    'Email not confirmed':        'Please verify your email address first.',
+    'Too many requests':          'Too many attempts. Please wait a moment.',
+  };
+
+  function showMsg(text, type) {
+    msgEl.textContent = text;
+    msgEl.className   = `message ${type}`;
+  }
+
+  function setLoading(on) {
+    btn.disabled = on;
+    btn.classList.toggle('loading', on);
+  }
+
+  // 显示/隐藏密码
+  document.getElementById('pwdToggle').addEventListener('click', function() {
+    const input = document.getElementById('password');
+    if (input.type === 'password') {
+      input.type = 'text';
+      this.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      this.textContent = '👁';
+    }
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msgEl.className = 'message';
+
+    if (!isConfigured) {
+      showMsg('Supabase not configured yet. Add your URL and anon key to login.html.', 'error');
+      return;
+    }
+
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    setLoading(true);
+    try {
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      showMsg('Signed in! Redirecting…', 'success');
+      setTimeout(() => { window.location.href = REDIRECT_AFTER_LOGIN; }, 900);
+    } catch (err) {
+      showMsg(ERRORS[err.message] || err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  });
+</script>
+</body>
+</html>
