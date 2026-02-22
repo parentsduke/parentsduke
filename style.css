@@ -7,6 +7,17 @@
     font-style: normal;
 }
 
+@font-face {
+  font-family: 'LiShu';
+  src: url('fonts/LiShu.woff2') format('woff2'),
+       url('fonts/LiShu.ttf') format('truetype');
+}
+
+.lishu {
+  font-family: 'LiShu', serif;
+}
+
+
 body {
     font-family: 宋体, sans-serif;
     line-height: 1.6;
