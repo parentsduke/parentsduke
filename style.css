@@ -1,3 +1,6 @@
+/* ⭐ 引入哥特体（用于英文 Duke） */
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+
 /* ⭐ 引入隶书字体 */
 @font-face {
     font-family: SIMLI;
@@ -31,6 +34,12 @@ header {
 
     padding: 18px 0 14px;        /* ⭐ 上虚下实 */
     letter-spacing: 0.12em;     /* ⭐ 题签关键 */
+}
+
+/* ⭐ 哥特体：专用于英文 Duke */
+.gothic {
+    font-family: 'UnifrakturMaguntia', cursive;
+    letter-spacing: 0.05em;
 }
 
 /* 主标题（题名） */
