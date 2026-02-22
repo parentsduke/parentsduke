@@ -536,12 +536,15 @@ document.addEventListener("keydown", function(e) {
 
   function showLogin() {
     document.getElementById("protected-area").innerHTML = `
-      <div style="text-align:center;margin-top:120px;padding:20px;">
+      <div style="text-align:center;margin-top:60px;padding:40px 20px;background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Duke_University_Chapel.jpg/800px-Duke_University_Chapel.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;position:relative;min-height:320px;display:flex;align-items:center;justify-content:center;">
+      <div style="position:absolute;inset:0;background:rgba(255,255,255,0.80);"></div>
+      <div style="position:relative;z-index:1;width:100%;">
       <h2 style="font-family: SIMLI, serif;">众里寻他千百度</h2>
         <h2 style="font-family: SIMLI, serif;">扯谈Duke在校家长群社区</h2>
         <h4 style="margin:16px 0 24px;color:#555;">请登录后查看内容</h4>
         <a href="login.html" style="display:inline-block;padding:12px 32px;background:#003366;color:#fff;border-radius:8px;text-decoration:none;font-size:16px;margin-right:12px;">登录</a>
         <a href="register.html" style="display:inline-block;padding:12px 32px;background:#c9a84c;color:#003366;border-radius:8px;text-decoration:none;font-size:16px;font-weight:600;">注册</a>
+      </div>
       </div>
     `;
   }
