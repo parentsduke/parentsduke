@@ -533,13 +533,14 @@ document.addEventListener("keydown", function(e) {
   const SUPABASE_URL      = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
   const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  window._supabaseClient = client; // 供 script.js 共用
 
   function showLogin() {
     document.getElementById("protected-area").innerHTML = `
       <div style="text-align:center;margin-top:0;padding:80px 20px 40px 20px;background-image:url(https://dukeparents.org/chapel.jpg);background-size:cover;background-position:center;background-repeat:no-repeat;position:relative;min-height:320px;display:flex;align-items:center;justify-content:center;">
       <div style="position:absolute;inset:0;background:rgba(255,255,255,0.80);"></div>
       <div style="position:relative;z-index:1;width:100%;">
-      <h2 style="font-family: SIMLI, serif;">蓝魔港湾</h2>
+      <h2 style="font-family: SIMLI, serif;">众里寻他千百度</h2>
         <h2 style="font-family: SIMLI, serif;">扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>在校家长群社区</h2>
         <h4 style="margin:16px 0 24px;color:#555;">请登录后查看内容</h4>
         <a href="login.html" style="display:inline-block;padding:12px 32px;background:#003366;color:#fff;border-radius:8px;text-decoration:none;font-size:16px;margin-right:12px;">登录</a>
