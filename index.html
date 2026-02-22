@@ -431,13 +431,18 @@ document.addEventListener("keydown", function(e) {
         <button id="qaClose" style="display:none;" type="button">关闭 Q&amp;A</button>
 
         <!-- Q&A 内容 -->
-        <div class="qa-content" style="display:none;" role="region" aria-label="Q&A内容">
+        <div class="qa-content" style="display:none;" role="region" aria-label="Q&A 家长询问和回答">
           <details class="qa-card">
             <summary>Q1: 扯谈Duke群是什么群?</summary>
             <p>Duke家长群。</p>
           </details>
           <details class="qa-card">
-            <summary>Q2-VON-Xiaobing: 大一工学和文理学院的必修课是否一样？有哪些热门课需提前抢？大一选课策略。选宿舍和适配室友机制：选宿舍适配室友信息表格内容，什么时候提交，实际上学校会按所交表格信息进行匹配室友吗？可以自选室友吗?国际生VISA签证的银行资金证明具体要求?</summary>
+            <summary>Q2: 大一工学和文理学院的必修课是否一样？
+                有哪些热门课需提前抢？
+                大一选课策略。
+                选宿舍和适配室友机制：选宿舍适配室友信息表格内容，什么时候提交，实际上学校会按所交表格信息进行匹配室友吗？
+                可以自选室友吗?
+                国际生VISA签证的银行资金证明具体要求?</summary>
             <p>具体专业课肯定不一样。比较热门的还是CS，Econ，Math等大课堂。选课策略一般建议循序渐进，特别是第一学期。可以选一门与以后所学专业有关的课程，其他的稍微轻松的人文需修课。室友不能自己直接互选，学校大概在五月底会发表格供学生填信息，但是也不用期望会完全匹配每个人的意愿，有时看上去就是随机组合的。存款证明不需要冻结，开资产证明就行，证明有付学费的能力。银行有格式化的存款证明，手机银行上就可以申请开具。</p>
           </details>
           <details class="qa-card">
@@ -521,49 +526,26 @@ document.addEventListener("keydown", function(e) {
 <!-- 访问统计 -->
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function () {
 
-  // ⚠️ NOTE: For production, move authentication to a server-side solution.
-  // Client-side passwords are visible in DevTools. Consider a backend API or
-  // services like Netlify Identity, Firebase Auth, or a password-protected server route.
-  const PASSWORD = "123456"; // Change to your password
-  const EXPIRE_TIME = 2 * 60 * 60 * 1000; // 2 hours
+  const SUPABASE_URL      = 'https://ctfqokgnnljmkghtmpxm.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0ZnFva2dubmxqbWtnaHRtcHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2ODUxMzgsImV4cCI6MjA4NzI2MTEzOH0.-CKwENIu90Q04bb1MeGoE5H5MGe1S71y4_aRChbbaMY';
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   function showLogin() {
     document.getElementById("protected-area").innerHTML = `
-      <div style="text-align:center;margin-top:120px;">
+      <div style="text-align:center;margin-top:120px;padding:20px;">
         <h2>扯谈Duke群体系家长专用</h2>
-        <h4>请输入访问密码</h4>
-        <input type="password" id="sitePwd" aria-label="访问密码">
-        <button onclick="checkSitePwd()" type="button">进入</button>
-        <p id="siteErr" style="color:red;" role="alert"></p>
+        <h4 style="margin:16px 0 24px;color:#555;">请登录后查看内容</h4>
+        <a href="login.html" style="display:inline-block;padding:12px 32px;background:#003366;color:#fff;border-radius:8px;text-decoration:none;font-size:16px;margin-right:12px;">登录</a>
+        <a href="register.html" style="display:inline-block;padding:12px 32px;background:#c9a84c;color:#003366;border-radius:8px;text-decoration:none;font-size:16px;font-weight:600;">注册</a>
       </div>
     `;
-
-    // ✅ FIX: Support Enter key on login
-    setTimeout(() => {
-      const input = document.getElementById("sitePwd");
-      if (input) {
-        input.addEventListener("keydown", function (e) {
-          if (e.key === "Enter") checkSitePwd();
-        });
-      }
-    }, 0);
   }
 
-  window.checkSitePwd = function () {
-    const input = document.getElementById("sitePwd").value;
-    if (input === PASSWORD) {
-      const loginData = { time: Date.now() };
-      localStorage.setItem("siteAuth", JSON.stringify(loginData));
-      showContent();
-    } else {
-      document.getElementById("siteErr").innerText = "密码错误";
-    }
-  };
-
-  function showContent() {
+  function showContent(user) {
     const template = document.getElementById("real-content");
     const clone = template.content.cloneNode(true);
     const main = document.getElementById("protected-area");
@@ -577,8 +559,8 @@ document.addEventListener("keydown", function(e) {
     logoutBtn.id = "logoutBtnFixed";
     logoutBtn.innerText = "退出登录";
     logoutBtn.className = "logout-btn-fixed";
-    logoutBtn.onclick = function () {
-      localStorage.removeItem("siteAuth");
+    logoutBtn.onclick = async function () {
+      await client.auth.signOut();
       location.reload();
     };
     document.body.appendChild(logoutBtn);
@@ -761,21 +743,11 @@ document.addEventListener("keydown", function(e) {
     }
   }
 
-  function checkLoginStatus() {
-    const data = localStorage.getItem("siteAuth");
-    if (!data) { showLogin(); return; }
-
-    try {
-      const loginData = JSON.parse(data);
-      const now = Date.now();
-      if (now - loginData.time > EXPIRE_TIME) {
-        localStorage.removeItem("siteAuth");
-        showLogin();
-      } else {
-        showContent();
-      }
-    } catch (e) {
-      localStorage.removeItem("siteAuth");
+  async function checkLoginStatus() {
+    const { data: { session } } = await client.auth.getSession();
+    if (session) {
+      showContent(session.user);
+    } else {
       showLogin();
     }
   }
@@ -953,6 +925,41 @@ document.addEventListener("keydown", function(e) {
     color: #fff;
   }
   .accordion-body-csv tr:nth-child(even) { background: #f4f4f4; }
+
+  /* ===== 登录/注册按钮 ===== */
+  .auth-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px 16px 0;
+  }
+
+  .auth-btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .auth-btn:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+  }
+
+  .auth-btn-login {
+    background: transparent;
+    border: 2px solid #c9a84c;
+    color: #c9a84c;
+  }
+
+  .auth-btn-register {
+    background: #c9a84c;
+    border: 2px solid #c9a84c;
+    color: #0f2044;
+  }
 
   /* ===== 视频集 ===== */
   .video-gallery-container {
