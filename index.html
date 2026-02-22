@@ -80,43 +80,43 @@ document.addEventListener("keydown", function(e) {
     <div class="slideshow-container">
       <div class="slideshow-track" id="slideshowTrack">
         <div class="slide active">
-          <img src="231104S.png" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="231104S.png" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="231104P.png" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="231104P.png" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="110423F.jpg" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="110423F.jpg" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="240511.png" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="240511.png" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="聚会.png" alt="聚会照片" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="聚会.png" alt="聚会照片" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="SH30.png" alt="上海30届" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="SH30.png" alt="上海30届" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="聚会4.png" alt="聚会照片" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="聚会4.png" alt="聚会照片" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="BJ30.png" alt="北京30届" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="BJ30.png" alt="北京30届" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="BJ29.png" alt="北京29届" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="BJ29.png" alt="北京29届" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="GD29.png" alt="广东29届" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="GD29.png" alt="广东29届" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="agenda.png" alt="议程" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="agenda.png" alt="议程" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="30_1.png" alt="30届照片1" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="30_1.png" alt="30届照片1" onclick="openOverlay(this.src, this.alt)">
         </div>
         <div class="slide">
-          <img src="30_2.png" alt="30届照片2" onclick="openOverlay(this.src, this.alt)">
+          <img data-src="30_2.png" alt="30届照片2" onclick="openOverlay(this.src, this.alt)">
         </div>
       </div>
 
@@ -135,7 +135,7 @@ document.addEventListener("keydown", function(e) {
     <div class="video-gallery-container">
       <div class="video-gallery-main">
         <video id="mainVideo" class="video-gallery-player" controls>
-          <source src="2030.mp4" type="video/mp4">
+          <source data-src="2030.mp4" type="video/mp4">
         </video>
         <div class="video-gallery-title" id="videoTitle">🎬 2030届视频</div>
       </div>
@@ -170,7 +170,7 @@ document.addEventListener("keydown", function(e) {
       </div>
       <!-- 默认隐藏，点击展开后显示 -->
       <div id="pptContent" class="ppt-content" style="display:none;">
-        <iframe src="Parents_Guide.pdf" title="家长群介绍 PPT" width="100%" height="600px"></iframe>
+        <iframe data-src="Parents_Guide.pdf" title="家长群介绍 PPT" width="100%" height="600px"></iframe>
         <div class="ppt-actions">
           <a href="Parents_Guide.pdf" target="_blank">下载_PDF</a>
           <a href="Parents_Guide.pdf" target="_blank">全屏查看</a>
@@ -569,6 +569,19 @@ document.addEventListener("keydown", function(e) {
       location.reload();
     };
     document.body.appendChild(logoutBtn);
+
+    // === 登录后还原图片/视频/PDF的真实路径 ===
+    main.querySelectorAll("img[data-src]").forEach(function(el) {
+      el.src = el.getAttribute("data-src");
+    });
+    main.querySelectorAll("source[data-src]").forEach(function(el) {
+      el.src = el.getAttribute("data-src");
+      var video = el.closest("video");
+      if (video) video.load();
+    });
+    main.querySelectorAll("iframe[data-src]").forEach(function(el) {
+      el.src = el.getAttribute("data-src");
+    });
 
     // === 图片放大 ===
     main.querySelectorAll("img.thumb").forEach(function(img) {
