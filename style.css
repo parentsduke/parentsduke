@@ -4,17 +4,11 @@
     src: url('fonts/SIMLI.woff2') format('woff2'),
          url('fonts/SIMLI.ttf') format('truetype');
     font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-  font-family: 'LiShu';
-  src: url('fonts/LiShu.woff2') format('woff2'),
-       url('fonts/LiShu.ttf') format('truetype');
+    font-style: normal
 }
 
 .lishu {
-  font-family: 'LiShu', serif;
+  font-family: 'SIMLI', serif;
 }
 
 
