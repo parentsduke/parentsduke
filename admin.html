@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>用户管理</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #f0f4f8;
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: #1a1a2e;
+    }
+
+    header {
+      background: #fff;
+      padding: 18px 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    header span {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 28px;
+      flex: 1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .stat-card .num {
+      font-size: 32px;
+      font-weight: 700;
+      color: #4f8ef7;
+    }
+
+    .stat-card .label {
+      font-size: 13px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .card-header h2 {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-box input {
+      padding: 8px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      width: 200px;
+      transition: border 0.2s;
+    }
+
+    .search-box input:focus { border-color: #4f8ef7; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: #f7f9fc;
+    }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 13px;
+      color: #888;
+      font-weight: 600;
+      border-bottom: 1.5px solid #f0f0f0;
+    }
+
+    td {
+      padding: 14px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid #f5f5f5;
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafbff; }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f8ef7, #a78bfa);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .name-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge.set {
+      background: #e6f4ea;
+      color: #2e7d32;
+    }
+
+    .badge.not-set {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    .loading-row td {
+      text-align: center;
+      padding: 40px;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .empty-row td {
+      text-align: center;
+      padding: 40px;
+      color: #bbb;
+      font-size: 14px;
+    }
+
+    .refresh-btn {
+      padding: 8px 16px;
+      background: #4f8ef7;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .refresh-btn:hover { background: #3a7ae0; }
+
+    .error-msg {
+      background: #fdecea;
+      color: #c62828;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🛠 用户管理后台</h1>
+  <span id="lastUpdated">正在加载...</span>
+</header>
+
+<div class="container">
+
+  <!-- 统计卡片 -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="num" id="totalCount">-</div>
+      <div class="label">总用户数</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="setCount">-</div>
+      <div class="label">已设置密码</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="notSetCount">-</div>
+      <div class="label">待设置密码</div>
+    </div>
+  </div>
+
+  <!-- 用户列表 -->
+  <div class="card">
+    <div class="card-header">
+      <h2>已邀请用户列表</h2>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索姓名或邮箱..." oninput="filterTable()" />
+        <button class="refresh-btn" onclick="loadUsers()">🔄 刷新</button>
+      </div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>姓名</th>
+          <th>邮箱</th>
+          <th>注册时间</th>
+          <th>密码状态</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody">
+        <tr class="loading-row"><td colspan="4">⏳ 加载中...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ⚠️ 替换为你的 Supabase 项目信息
+  const SUPABASE_URL = '你的_SUPABASE_URL'
+  const SUPABASE_ANON_KEY = '你的_ANON_KEY'
+
+  const { createClient } = supabase
+  const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+  let allUsers = []
+
+  async function loadUsers() {
+    const tbody = document.getElementById('userTableBody')
+    const errorMsg = document.getElementById('errorMsg')
+    errorMsg.style.display = 'none'
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="4">⏳ 加载中...</td></tr>'
+
+    // 从 profiles 表读取用户信息（需配合下方 SQL 建表）
+    const { data, error } = await client
+      .from('profiles')
+      .select('id, full_name, email, created_at, has_set_password')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      errorMsg.textContent = '❌ 加载失败：' + error.message
+      errorMsg.style.display = 'block'
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">暂无数据</td></tr>'
+      return
+    }
+
+    allUsers = data || []
+    renderTable(allUsers)
+    updateStats(allUsers)
+    document.getElementById('lastUpdated').textContent =
+      '最后更新：' + new Date().toLocaleTimeString('zh-CN')
+  }
+
+  function renderTable(users) {
+    const tbody = document.getElementById('userTableBody')
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">暂无用户数据</td></tr>'
+      return
+    }
+
+    tbody.innerHTML = users.map(user => {
+      const name = user.full_name || '未设置'
+      const initial = name !== '未设置' ? name[0] : '?'
+      const email = user.email || '-'
+      const createdAt = user.created_at
+        ? new Date(user.created_at).toLocaleString('zh-CN', {
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit'
+          })
+        : '-'
+      const passwordSet = user.has_set_password
+
+      return `
+        <tr>
+          <td>
+            <div class="name-cell">
+              <div class="avatar">${initial}</div>
+              <span>${name}</span>
+            </div>
+          </td>
+          <td>${email}</td>
+          <td>${createdAt}</td>
+          <td>
+            <span class="badge ${passwordSet ? 'set' : 'not-set'}">
+              ${passwordSet ? '✅ 已设置' : '⏳ 待设置'}
+            </span>
+          </td>
+        </tr>
+      `
+    }).join('')
+  }
+
+  function updateStats(users) {
+    const setCount = users.filter(u => u.has_set_password).length
+    document.getElementById('totalCount').textContent = users.length
+    document.getElementById('setCount').textContent = setCount
+    document.getElementById('notSetCount').textContent = users.length - setCount
+  }
+
+  function filterTable() {
+    const keyword = document.getElementById('searchInput').value.toLowerCase()
+    const filtered = allUsers.filter(u =>
+      (u.full_name || '').toLowerCase().includes(keyword) ||
+      (u.email || '').toLowerCase().includes(keyword)
+    )
+    renderTable(filtered)
+  }
+
+  // 页面加载时自动获取用户
+  loadUsers()
+</script>
+
+</body>
+</html>
