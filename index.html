@@ -761,9 +761,22 @@ document.addEventListener("keydown", function(e) {
     }
   }
 
+  // ✅ 修改后的 checkLoginStatus：新用户首次登录自动跳转设置密码页
   async function checkLoginStatus() {
     const { data: { session } } = await client.auth.getSession();
     if (session) {
+      // 检查是否已设置密码
+      const { data: profile } = await client
+        .from('profiles')
+        .select('has_set_password')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profile && !profile.has_set_password) {
+        window.location.href = '/set-password.html';
+        return;
+      }
+
       showContent(session.user);
     } else {
       showLogin();
