@@ -1035,7 +1035,9 @@ async function submitUserPhoto() {
   msg.textContent = "⬆ 上传中...";
   msg.style.color = "#003366";
 
-  var filePath = "pending/" + Date.now() + "_" + userPendingFile.name;
+  var imgExt = userPendingFile.name.split(".").pop().toLowerCase();
+  var safeImgName = Date.now() + "." + imgExt;
+  var filePath = "pending/" + safeImgName;
   var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingFile, { upsert: true });
 
   if (uploadResult.error) {
@@ -1131,7 +1133,9 @@ async function submitUserVideo() {
   msg.textContent = "⬆ 上传中，请稍候...";
   msg.style.color = "#003366";
 
-  var filePath = "pending_videos/" + Date.now() + "_" + userPendingVideo.name;
+  var videoExt = userPendingVideo.name.split(".").pop().toLowerCase();
+  var safeVideoName = Date.now() + "." + videoExt;
+  var filePath = "pending_videos/" + safeVideoName;
   var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingVideo, { upsert: true });
 
   if (uploadResult.error) {
@@ -1231,7 +1235,9 @@ async function submitPptFile() {
   msg.textContent = "⬆ 上传中，请稍候...";
   msg.style.color = "#003366";
 
-  var filePath = "pending_ppts/" + Date.now() + "_" + userPendingPpt.name;
+  var ext = userPendingPpt.name.split(".").pop().toLowerCase();
+  var safeFileName = Date.now() + "." + ext;
+  var filePath = "pending_ppts/" + safeFileName;
   var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingPpt, { upsert: true });
 
   if (uploadResult.error) {
