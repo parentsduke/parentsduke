@@ -189,17 +189,16 @@ document.addEventListener("keydown", function(e) {
       <div id="videoUploadBox" style="display:none;">
         <div class="user-upload-inner">
           <h4 style="margin:0 0 14px; color:#003366;">📤 提交视频</h4>
-          <div id="videoDropZone"
+          <label for="videoFileInput" id="videoDropZone"
             ondragover="event.preventDefault(); this.style.background='#d8e8fc';"
             ondragleave="this.style.background='#eef3fa';"
             ondrop="videoFileDrop(event)"
-            onclick="document.getElementById('videoFileInput').click()"
-            style="border:2px dashed #003366; border-radius:8px; padding:30px; text-align:center; cursor:pointer; background:#eef3fa; margin-bottom:12px;">
+            style="display:block; border:2px dashed #003366; border-radius:8px; padding:30px; text-align:center; cursor:pointer; background:#eef3fa; margin-bottom:12px;">
             <div style="font-size:32px;">🎥</div>
             <div style="color:#003366; font-weight:bold; margin-top:6px;">点击或拖拽视频到此处</div>
             <div style="color:#888; font-size:12px; margin-top:4px;">支持 MP4、MOV、AVI 等常见视频格式（最大 500MB）</div>
-            <input type="file" id="videoFileInput" accept="video/*" style="display:none;" onchange="videoFileSelected(this.files)">
-          </div>
+          </label>
+          <input type="file" id="videoFileInput" accept="video/*" style="display:none;" onchange="videoFileSelected(this.files)">
           <div id="videoFilePreview" style="display:none; margin-bottom:12px; text-align:center;">
             <div id="videoPreviewName" style="font-size:13px; color:#333; background:#eef3fa; border-radius:6px; padding:8px 12px; display:inline-block;">🎬 <span id="videoPreviewNameText"></span></div>
             <div id="videoPreviewSize" style="font-size:12px; color:#888; margin-top:4px;"></div>
