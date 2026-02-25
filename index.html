@@ -131,6 +131,38 @@ document.addEventListener("keydown", function(e) {
       <div class="slide-counter" id="slideCounter">1 / 13</div>
     </div>
 
+    <!-- ===== 用户上传照片入口 ===== -->
+    <div class="user-upload-section">
+      <button class="user-upload-toggle-btn" onclick="toggleUserUpload()">📷 上传照片到相册</button>
+      <div id="userUploadBox" style="display:none;">
+        <div class="user-upload-inner">
+          <h4 style="margin:0 0 14px; color:#003366;">📤 提交照片</h4>
+          <div id="userDropZone"
+            ondragover="event.preventDefault(); this.style.background='#d8e8fc';"
+            ondragleave="this.style.background='#eef3fa';"
+            ondrop="userFileDrop(event)"
+            onclick="document.getElementById('userFileInput').click()"
+            style="border:2px dashed #003366; border-radius:8px; padding:30px; text-align:center; cursor:pointer; background:#eef3fa; margin-bottom:12px;">
+            <div style="font-size:32px;">🖼</div>
+            <div style="color:#003366; font-weight:bold; margin-top:6px;">点击或拖拽图片到此处</div>
+            <div style="color:#888; font-size:12px; margin-top:4px;">支持 JPG、PNG、GIF 等图片格式</div>
+            <input type="file" id="userFileInput" accept="image/*" style="display:none;" onchange="userFileSelected(this.files)">
+          </div>
+          <div id="userFilePreview" style="display:none; margin-bottom:12px; text-align:center;">
+            <img id="userPreviewImg" style="max-height:160px; max-width:100%; border-radius:6px; border:1px solid #ddd;">
+            <div id="userPreviewName" style="font-size:12px; color:#888; margin-top:4px;"></div>
+          </div>
+          <input type="text" id="userPhotoTitle" placeholder="请输入照片标题/说明（必填）" maxlength="50"
+            style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; margin-bottom:10px;">
+          <div style="font-size:12px; color:#aaa; margin-bottom:12px;">上传日期将自动记录</div>
+          <button onclick="submitUserPhoto()" style="width:100%; padding:10px; background:#003366; color:#fff; border:none; border-radius:8px; font-size:15px; cursor:pointer;">
+            ⬆ 提交审核
+          </button>
+          <p id="userUploadMsg" style="text-align:center; margin-top:10px; font-size:14px;"></p>
+        </div>
+      </div>
+    </div>
+
     <!-- ===== 视频集 ===== -->
     <div class="video-gallery-container">
       <div class="video-gallery-main">
@@ -501,6 +533,461 @@ document.addEventListener("keydown", function(e) {
   </div>
 </template>
 
+<!-- ===== 管理员上传区域 ===== -->
+<div id="admin-panel-wrapper">
+  <!-- 管理员入口按钮（点击展开） -->
+  <div style="text-align:center; padding: 12px 0 0;">
+    <button id="adminToggleBtn" onclick="toggleAdminPanel()" style="background:none;border:none;color:#aaa;font-size:12px;cursor:pointer;opacity:0.5;">⚙ 管理员</button>
+  </div>
+
+  <!-- 管理员面板（默认隐藏） -->
+  <div id="admin-panel" style="display:none; max-width:800px; margin:0 auto; padding:20px; background:#f8f8f8; border:1px solid #ddd; border-radius:10px; margin-bottom:20px;">
+
+    <!-- 密码验证区 -->
+    <div id="admin-login-box" style="text-align:center; padding:20px;">
+      <h3 style="color:#003366; margin-bottom:16px;">🔐 管理员登录</h3>
+      <input type="password" id="adminPwdInput" placeholder="请输入管理员密码" style="padding:8px 14px; font-size:15px; border:1px solid #ccc; border-radius:6px; width:220px;">
+      <button onclick="verifyAdmin()" style="margin-left:8px; padding:8px 18px; background:#003366; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:15px;">确认</button>
+      <p id="adminLoginErr" style="color:crimson; margin-top:8px;"></p>
+    </div>
+
+    <!-- 上传功能区（验证后显示） -->
+    <div id="admin-upload-area" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:2px solid #003366; padding-bottom:10px;">
+        <h3 style="color:#003366; margin:0;">📁 管理员文件上传</h3>
+        <button onclick="adminLogout()" style="padding:6px 14px; background:#c00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">退出管理</button>
+      </div>
+
+      <!-- 拖拽上传区 -->
+      <div id="adminDropZone"
+        ondragover="adminDragOver(event)"
+        ondragleave="adminDragLeave(event)"
+        ondrop="adminDrop(event)"
+        style="border:2px dashed #003366; border-radius:10px; padding:40px 20px; text-align:center; cursor:pointer; background:#eef3fa; transition:background 0.2s; margin-bottom:16px;"
+        onclick="document.getElementById('adminFileInput').click()">
+        <div style="font-size:40px; margin-bottom:8px;">📂</div>
+        <div style="color:#003366; font-size:16px; font-weight:bold;">点击或拖拽文件到此处上传</div>
+        <div style="color:#888; font-size:13px; margin-top:6px;">支持图片、视频、PDF及所有常见文件格式</div>
+        <input type="file" id="adminFileInput" multiple style="display:none;" onchange="handleAdminFiles(this.files)">
+      </div>
+
+      <!-- 文件夹分类选择 -->
+      <div style="margin-bottom:14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <label style="font-size:14px; color:#333; font-weight:bold;">📂 上传至分类：</label>
+        <select id="adminFolderSelect" style="padding:7px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; background:#fff;">
+          <option value="images">🖼 图片 (images/)</option>
+          <option value="videos">🎬 视频 (videos/)</option>
+          <option value="documents">📄 文档/PDF (documents/)</option>
+          <option value="misc">📦 其他 (misc/)</option>
+        </select>
+      </div>
+
+      <!-- 上传进度列表 -->
+      <div id="adminUploadList" style="margin-bottom:16px;"></div>
+
+      <!-- 上传按钮 -->
+      <div style="text-align:center;">
+        <button id="adminUploadBtn" onclick="startAdminUpload()" style="padding:10px 32px; background:#003366; color:#fff; border:none; border-radius:8px; font-size:16px; cursor:pointer; display:none;">
+          ⬆ 开始上传
+        </button>
+      </div>
+
+      <!-- 已上传文件列表 -->
+      <div id="admin-file-list-section" style="margin-top:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h4 style="margin:0; color:#003366;">📋 已上传文件</h4>
+          <button onclick="loadAdminFileList()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">🔄 刷新</button>
+        </div>
+        <div id="adminFileListContent" style="font-size:13px; color:#555;">点击刷新加载文件列表...</div>
+      </div>
+
+      <!-- 待审核照片 -->
+      <div style="margin-top:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h4 style="margin:0; color:#c07000;">🕐 待审核照片 <span id="pendingBadge" style="background:#e07000;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
+          <button onclick="loadPendingUploads()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">🔄 刷新</button>
+        </div>
+        <div id="pendingUploadsList" style="color:#555;">点击刷新加载待审核列表...</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 管理员面板逻辑 =====
+const ADMIN_PASSWORD = "DukeAdmin2030"; // ← 可在此修改管理员密码
+
+var adminPendingFiles = [];
+
+function toggleAdminPanel() {
+  var panel = document.getElementById("admin-panel");
+  panel.style.display = panel.style.display === "none" ? "block" : "none";
+}
+
+function verifyAdmin() {
+  var pwd = document.getElementById("adminPwdInput").value;
+  var err = document.getElementById("adminLoginErr");
+  if (pwd === ADMIN_PASSWORD) {
+    document.getElementById("admin-login-box").style.display = "none";
+    document.getElementById("admin-upload-area").style.display = "block";
+    loadAdminFileList();
+    loadPendingUploads();
+  } else {
+    err.textContent = "❌ 密码错误，请重试";
+  }
+}
+
+document.addEventListener("keydown", function(e) {
+  var input = document.getElementById("adminPwdInput");
+  if (input && document.activeElement === input && e.key === "Enter") verifyAdmin();
+});
+
+function adminLogout() {
+  document.getElementById("admin-upload-area").style.display = "none";
+  document.getElementById("admin-login-box").style.display = "block";
+  document.getElementById("adminPwdInput").value = "";
+  document.getElementById("adminLoginErr").textContent = "";
+  adminPendingFiles = [];
+  document.getElementById("adminUploadList").innerHTML = "";
+  document.getElementById("adminUploadBtn").style.display = "none";
+}
+
+function adminDragOver(e) {
+  e.preventDefault();
+  document.getElementById("adminDropZone").style.background = "#d8e8fc";
+}
+function adminDragLeave(e) {
+  document.getElementById("adminDropZone").style.background = "#eef3fa";
+}
+function adminDrop(e) {
+  e.preventDefault();
+  adminDragLeave(e);
+  handleAdminFiles(e.dataTransfer.files);
+}
+
+function handleAdminFiles(files) {
+  adminPendingFiles = Array.from(files);
+  var list = document.getElementById("adminUploadList");
+  list.innerHTML = "";
+
+  if (!adminPendingFiles.length) return;
+
+  adminPendingFiles.forEach(function(file) {
+    var item = document.createElement("div");
+    item.style.cssText = "display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;margin-bottom:6px;background:#fff;";
+
+    var icon = file.type.startsWith("image/") ? "🖼" :
+               file.type.startsWith("video/") ? "🎬" :
+               file.type === "application/pdf" ? "📄" : "📦";
+
+    var size = file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+"MB" : (file.size/1024).toFixed(0)+"KB";
+
+    item.innerHTML = '<span style="font-size:20px;">'+icon+'</span>' +
+      '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;">'+file.name+'</span>' +
+      '<span style="color:#888;font-size:12px;white-space:nowrap;">'+size+'</span>' +
+      '<span class="upload-status-'+sanitizeId(file.name)+'" style="font-size:12px;color:#888;">待上传</span>';
+    list.appendChild(item);
+  });
+
+  document.getElementById("adminUploadBtn").style.display = "inline-block";
+}
+
+function sanitizeId(name) {
+  return name.replace(/[^a-zA-Z0-9]/g, "_");
+}
+
+async function startAdminUpload() {
+  if (!adminPendingFiles.length) return;
+
+  var supabase = window._supabaseClient;
+  if (!supabase) { alert("Supabase 未初始化，请确保已登录页面"); return; }
+
+  var folder = document.getElementById("adminFolderSelect").value;
+  var btn = document.getElementById("adminUploadBtn");
+  btn.disabled = true;
+  btn.textContent = "上传中...";
+
+  for (var i = 0; i < adminPendingFiles.length; i++) {
+    var file = adminPendingFiles[i];
+    var statusEl = document.querySelector(".upload-status-"+sanitizeId(file.name));
+    if (statusEl) { statusEl.textContent = "⬆ 上传中..."; statusEl.style.color = "#003366"; }
+
+    var filePath = folder + "/" + Date.now() + "_" + file.name;
+    var result = await supabase.storage.from("uploads").upload(filePath, file, { upsert: true });
+
+    if (result.error) {
+      if (statusEl) { statusEl.textContent = "❌ 失败"; statusEl.style.color = "crimson"; }
+    } else {
+      if (statusEl) { statusEl.textContent = "✅ 成功"; statusEl.style.color = "green"; }
+    }
+  }
+
+  btn.textContent = "✅ 上传完成";
+  btn.disabled = false;
+  adminPendingFiles = [];
+  loadAdminFileList();
+}
+
+async function loadAdminFileList() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+
+  var content = document.getElementById("adminFileListContent");
+  content.innerHTML = '<span style="color:#888;">加载中...</span>';
+
+  var folders = ["images", "videos", "documents", "misc"];
+  var allFiles = [];
+
+  for (var i = 0; i < folders.length; i++) {
+    var result = await supabase.storage.from("uploads").list(folders[i], { limit: 100, sortBy: { column: "created_at", order: "desc" } });
+    if (result.data && result.data.length) {
+      result.data.forEach(function(f) {
+        allFiles.push({ folder: folders[i], file: f });
+      });
+    }
+  }
+
+  if (!allFiles.length) {
+    content.innerHTML = '<span style="color:#aaa;">暂无上传文件</span>';
+    return;
+  }
+
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
+  html += '<tr style="background:#003366;color:#fff;"><th style="padding:8px;text-align:left;">文件名</th><th style="padding:8px;">分类</th><th style="padding:8px;">大小</th><th style="padding:8px;">操作</th></tr>';
+
+  allFiles.forEach(function(item, idx) {
+    var f = item.file;
+    var size = f.metadata && f.metadata.size ? (f.metadata.size > 1024*1024 ? (f.metadata.size/1024/1024).toFixed(1)+"MB" : (f.metadata.size/1024).toFixed(0)+"KB") : "-";
+    var filePath = item.folder + "/" + f.name;
+    var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + filePath;
+    var bg = idx % 2 === 0 ? "#fff" : "#f4f4f4";
+
+    // 文件名（去掉时间戳前缀）
+    var displayName = f.name.replace(/^\d+_/, "");
+
+    html += '<tr style="background:'+bg+';">' +
+      '<td style="padding:7px 8px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+f.name+'">'+displayName+'</td>' +
+      '<td style="padding:7px 8px;text-align:center;color:#555;">'+item.folder+'</td>' +
+      '<td style="padding:7px 8px;text-align:center;color:#777;">'+size+'</td>' +
+      '<td style="padding:7px 8px;text-align:center;">' +
+        '<a href="'+pubUrl+'" target="_blank" style="color:#003366;text-decoration:none;margin-right:8px;">🔗 链接</a>' +
+        '<button onclick="copyAdminUrl(\''+pubUrl+'\')" style="padding:3px 8px;font-size:12px;cursor:pointer;border:1px solid #ccc;border-radius:4px;background:#fff;">复制链接</button>' +
+        ' <button onclick="deleteAdminFile(\''+filePath+'\')" style="padding:3px 8px;font-size:12px;cursor:pointer;border:1px solid #faa;border-radius:4px;background:#fff8f8;color:#c00;">删除</button>' +
+      '</td></tr>';
+  });
+  html += '</table>';
+  content.innerHTML = html;
+}
+
+function copyAdminUrl(url) {
+  navigator.clipboard.writeText(url).then(function() {
+    alert("✅ 链接已复制到剪贴板！\n\n" + url);
+  });
+}
+
+async function deleteAdminFile(filePath) {
+  if (!confirm("确认删除此文件？\n" + filePath)) return;
+  var supabase = window._supabaseClient;
+  var result = await supabase.storage.from("uploads").remove([filePath]);
+  if (result.error) {
+    alert("❌ 删除失败：" + result.error.message);
+  } else {
+    alert("✅ 文件已删除");
+    loadAdminFileList();
+  }
+}
+
+// ===== 审核功能 =====
+async function loadPendingUploads() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("pendingUploadsList");
+  var badge = document.getElementById("pendingBadge");
+  if (!container) return;
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+
+  var result = await supabase
+    .from("pending_uploads")
+    .select("*")
+    .eq("status", "pending")
+    .order("uploaded_at", { ascending: false });
+
+  if (result.error) {
+    container.innerHTML = '<span style="color:crimson;">加载失败：' + result.error.message + '</span>';
+    return;
+  }
+
+  var items = result.data;
+  if (badge) badge.textContent = items.length > 0 ? items.length + " 条" : "";
+
+  if (!items.length) {
+    container.innerHTML = '<span style="color:#aaa;">暂无待审核照片 ✅</span>';
+    return;
+  }
+
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var html = '';
+  items.forEach(function(item) {
+    var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var date = new Date(item.uploaded_at).toLocaleString("zh-CN");
+    html += '<div style="border:1px solid #f0c060; border-radius:8px; padding:12px; margin-bottom:12px; background:#fffbf0;">' +
+      '<div style="display:flex; gap:12px; align-items:flex-start;">' +
+      '<img src="' + pubUrl + '" style="width:100px; height:80px; object-fit:cover; border-radius:6px; border:1px solid #ddd; cursor:pointer;" onclick="openOverlay(\'' + pubUrl + '\', \'' + item.title + '\')">' +
+      '<div style="flex:1;">' +
+      '<div style="font-weight:bold; font-size:14px; color:#333; margin-bottom:4px;">📌 ' + item.title + '</div>' +
+      '<div style="font-size:12px; color:#888;">上传者：' + (item.uploaded_by || '匿名') + '</div>' +
+      '<div style="font-size:12px; color:#888;">时间：' + date + '</div>' +
+      '<div style="font-size:12px; color:#888; word-break:break-all;">文件：' + item.file_name + '</div>' +
+      '</div></div>' +
+      '<div style="margin-top:10px; display:flex; gap:8px;">' +
+      '<button onclick="approvePhoto(\'' + item.id + '\', \'' + pubUrl + '\', \'' + item.title + '\')" style="flex:1; padding:8px; background:#003366; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">✅ 批准加入相册</button>' +
+      '<button onclick="rejectPhoto(\'' + item.id + '\', \'' + item.file_path + '\')" style="flex:1; padding:8px; background:#c00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">❌ 拒绝删除</button>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+async function approvePhoto(id, pubUrl, title) {
+  var supabase = window._supabaseClient;
+  var result = await supabase
+    .from("pending_uploads")
+    .update({ status: "approved", approved_at: new Date().toISOString() })
+    .eq("id", id);
+
+  if (result.error) {
+    alert("❌ 批准失败：" + result.error.message);
+    return;
+  }
+
+  // 动态加入轮播相册
+  addSlideToShow(pubUrl, title);
+  alert("✅ 已批准！照片已加入相册。");
+  loadPendingUploads();
+}
+
+async function rejectPhoto(id, filePath) {
+  if (!confirm("确认拒绝并删除此照片？")) return;
+  var supabase = window._supabaseClient;
+
+  await supabase.from("pending_uploads").update({ status: "rejected" }).eq("id", id);
+  await supabase.storage.from("uploads").remove([filePath]);
+
+  alert("✅ 已拒绝并删除。");
+  loadPendingUploads();
+}
+
+function addSlideToShow(imgSrc, altText) {
+  var track = document.getElementById("slideshowTrack");
+  var dots = document.getElementById("slideDots");
+  var counter = document.getElementById("slideCounter");
+  if (!track) return;
+
+  var slide = document.createElement("div");
+  slide.className = "slide";
+  slide.innerHTML = '<img src="' + imgSrc + '" alt="' + altText + '" onclick="openOverlay(this.src, this.alt)" style="width:100%;max-height:480px;object-fit:contain;cursor:zoom-in;display:block;margin:0 auto;background:#000;">';
+  track.appendChild(slide);
+
+  // 更新圆点
+  if (dots) {
+    var dot = document.createElement("span");
+    dot.className = "slide-dot";
+    dot.onclick = (function(idx) { return function() { goToSlide(idx); }; })(track.children.length - 1);
+    dots.appendChild(dot);
+  }
+
+  // 更新计数
+  if (counter) {
+    var total = track.children.length;
+    counter.textContent = "1 / " + total;
+  }
+}
+
+// ===== 用户上传功能 =====
+var userPendingFile = null;
+
+function toggleUserUpload() {
+  var box = document.getElementById("userUploadBox");
+  if (box) box.style.display = box.style.display === "none" ? "block" : "none";
+}
+
+function userFileDrop(e) {
+  e.preventDefault();
+  document.getElementById("userDropZone").style.background = "#eef3fa";
+  var files = e.dataTransfer.files;
+  if (files.length) userFileSelected(files);
+}
+
+function userFileSelected(files) {
+  if (!files.length) return;
+  var file = files[0];
+  if (!file.type.startsWith("image/")) {
+    alert("请选择图片文件（JPG、PNG 等）");
+    return;
+  }
+  userPendingFile = file;
+  var preview = document.getElementById("userFilePreview");
+  var previewImg = document.getElementById("userPreviewImg");
+  var previewName = document.getElementById("userPreviewName");
+  if (preview && previewImg) {
+    var reader = new FileReader();
+    reader.onload = function(e) { previewImg.src = e.target.result; };
+    reader.readAsDataURL(file);
+    preview.style.display = "block";
+    if (previewName) previewName.textContent = file.name;
+  }
+}
+
+async function submitUserPhoto() {
+  var supabase = window._supabaseClient;
+  if (!supabase) { alert("请先登录网站"); return; }
+  if (!userPendingFile) { alert("请先选择图片"); return; }
+
+  var title = document.getElementById("userPhotoTitle").value.trim();
+  if (!title) { alert("请填写照片标题/说明"); return; }
+
+  var msg = document.getElementById("userUploadMsg");
+  msg.textContent = "⬆ 上传中...";
+  msg.style.color = "#003366";
+
+  var filePath = "pending/" + Date.now() + "_" + userPendingFile.name;
+  var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingFile, { upsert: true });
+
+  if (uploadResult.error) {
+    msg.textContent = "❌ 上传失败：" + uploadResult.error.message;
+    msg.style.color = "crimson";
+    return;
+  }
+
+  // 获取当前用户信息
+  var { data: { user } } = await supabase.auth.getUser();
+  var uploadedBy = user && user.email ? user.email : "匿名";
+
+  // 写入数据库
+  var dbResult = await supabase.from("pending_uploads").insert({
+    file_path: filePath,
+    file_name: userPendingFile.name,
+    title: title,
+    uploaded_by: uploadedBy,
+    status: "pending"
+  });
+
+  if (dbResult.error) {
+    msg.textContent = "❌ 提交失败：" + dbResult.error.message;
+    msg.style.color = "crimson";
+    return;
+  }
+
+  msg.textContent = "✅ 提交成功！等待管理员审核后将加入相册。";
+  msg.style.color = "green";
+  userPendingFile = null;
+  document.getElementById("userPhotoTitle").value = "";
+  document.getElementById("userFilePreview").style.display = "none";
+  document.getElementById("userFileInput").value = "";
+}
+</script>
+
 <footer>
   <h5>&copy; 扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群1.0-2.0</h5>
   <h5>Web administrator:</h5>
@@ -791,6 +1278,32 @@ document.addEventListener("keydown", function(e) {
 
 
 <style>
+  /* ===== 用户上传区域 ===== */
+  .user-upload-section {
+    max-width: 700px;
+    margin: 12px auto;
+    text-align: center;
+  }
+  .user-upload-toggle-btn {
+    background: #003366;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 9px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .user-upload-toggle-btn:hover { background: #00509e; }
+  .user-upload-inner {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 10px;
+    text-align: left;
+  }
+
   /* Logout button */
   .logout-btn-fixed {
     position: fixed;
