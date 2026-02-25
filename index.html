@@ -1110,13 +1110,24 @@ function videoFileSelected(files) {
 
 async function submitUserVideo() {
   var supabase = window._supabaseClient;
-  if (!supabase) { alert("请先登录网站"); return; }
-  if (!userPendingVideo) { alert("请先选择视频文件"); return; }
+  var msg = document.getElementById("videoUploadMsg");
+  if (!supabase) {
+    msg.textContent = "❌ 请先登录网站";
+    msg.style.color = "crimson";
+    return;
+  }
+  if (!userPendingVideo) {
+    msg.textContent = "❌ 请先选择视频文件";
+    msg.style.color = "crimson";
+    return;
+  }
 
   var title = document.getElementById("videoTitle").value.trim();
-  if (!title) { alert("请填写视频标题/说明"); return; }
-
-  var msg = document.getElementById("videoUploadMsg");
+  if (!title) {
+    msg.textContent = "❌ 请填写视频标题/说明";
+    msg.style.color = "crimson";
+    return;
+  }
   msg.textContent = "⬆ 上传中，请稍候...";
   msg.style.color = "#003366";
 
@@ -1199,13 +1210,24 @@ function pptFileSelected(files) {
 
 async function submitPptFile() {
   var supabase = window._supabaseClient;
-  if (!supabase) { alert("请先登录网站"); return; }
-  if (!userPendingPpt) { alert("请先选择文件"); return; }
+  var msg = document.getElementById("pptUploadMsg");
+  if (!supabase) {
+    msg.textContent = "❌ 请先登录网站";
+    msg.style.color = "crimson";
+    return;
+  }
+  if (!userPendingPpt) {
+    msg.textContent = "❌ 请先选择文件";
+    msg.style.color = "crimson";
+    return;
+  }
 
   var title = document.getElementById("pptFileTitle").value.trim();
-  if (!title) { alert("请填写文件标题/说明"); return; }
-
-  var msg = document.getElementById("pptUploadMsg");
+  if (!title) {
+    msg.textContent = "❌ 请填写文件标题/说明";
+    msg.style.color = "crimson";
+    return;
+  }
   msg.textContent = "⬆ 上传中，请稍候...";
   msg.style.color = "#003366";
 
