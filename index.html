@@ -933,34 +933,128 @@ async function loadPendingUploads() {
   container.innerHTML = html;
 }
 
-async function approvePhoto(id, pubUrl, title) {
-  var supabase = window._supabaseClient;
-  var result = await supabase
-    .from("pending_uploads")
-    .update({ status: "approved", approved_at: new Date().toISOString() })
-    .eq("id", id);
+// ===== GitHub 上传核心函数 =====
+const GITHUB_TOKEN  = "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";
+const GITHUB_REPO   = "parentsduke/parentsduke";
+const GITHUB_BRANCH = "main";
 
-  if (result.error) {
-    alert("❌ 批准失败：" + result.error.message);
-    return;
+async function uploadToGitHub(fileName, fileBlob, folder) {
+  var base64 = await new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload  = function(e) { resolve(e.target.result.split(",")[1]); };
+    reader.onerror = reject;
+    reader.readAsDataURL(fileBlob);
+  });
+
+  var ghPath = folder + "/" + fileName;
+  var apiUrl = "https://api.github.com/repos/" + GITHUB_REPO + "/contents/" + ghPath;
+
+  // 检查文件是否已存在（获取 SHA）
+  var sha = null;
+  try {
+    var checkResp = await fetch(apiUrl, {
+      headers: { "Authorization": "token " + GITHUB_TOKEN, "Accept": "application/vnd.github.v3+json" }
+    });
+    if (checkResp.ok) { var d = await checkResp.json(); sha = d.sha; }
+  } catch(e) {}
+
+  var body = { message: "上传：" + fileName, content: base64, branch: GITHUB_BRANCH };
+  if (sha) body.sha = sha;
+
+  var resp = await fetch(apiUrl, {
+    method: "PUT",
+    headers: {
+      "Authorization": "token " + GITHUB_TOKEN,
+      "Accept": "application/vnd.github.v3+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!resp.ok) {
+    var err = await resp.json();
+    throw new Error(err.message || "GitHub 上传失败");
   }
-
-  // 动态加入轮播相册
-  addSlideToShow(pubUrl, title);
-  alert("✅ 已批准！照片已加入相册。");
-  loadPendingUploads();
+  var data = await resp.json();
+  return data.content.download_url;
 }
 
-async function rejectPhoto(id, filePath) {
-  if (!confirm("确认拒绝并删除此照片？")) return;
+async function approvePhoto(id, pubUrl, title) {
+  if (!confirm("批准此照片并上传到 GitHub？")) return;
   var supabase = window._supabaseClient;
+  var btn = event.target;
+  btn.textContent = "⬆ 上传中..."; btn.disabled = true;
 
-  await supabase.from("pending_uploads").update({ status: "rejected" }).eq("id", id);
-  await supabase.storage.from("uploads").remove([filePath]);
+  try {
+    var { data: rec } = await supabase.from("pending_uploads").select("file_path,file_name").eq("id", id).single();
+    var blob = await fetch(pubUrl).then(r => r.blob());
+    var ghUrl = await uploadToGitHub(Date.now() + "_" + rec.file_name, blob, "images");
 
-  alert("✅ 已拒绝并删除。");
-  loadPendingUploads();
+    await supabase.from("pending_uploads")
+      .update({ status: "approved", approved_at: new Date().toISOString(), file_path: "github:" + ghUrl })
+      .eq("id", id);
+    await supabase.storage.from("uploads").remove([rec.file_path]);
+
+    addSlideToShow(ghUrl, title);
+    alert("✅ 已批准！照片已上传到 GitHub 并加入相册。");
+    loadPendingUploads();
+  } catch(e) {
+    alert("❌ 失败：" + e.message);
+    btn.textContent = "✅ 批准加入相册"; btn.disabled = false;
+  }
 }
+
+async function approveVideo(id, pubUrl, title) {
+  if (!confirm("批准此视频并上传到 GitHub？\n注意：视频较大，上传需要一点时间。")) return;
+  var supabase = window._supabaseClient;
+  var btn = event.target;
+  btn.textContent = "⬆ 上传中..."; btn.disabled = true;
+
+  try {
+    var { data: rec } = await supabase.from("pending_uploads").select("file_path,file_name").eq("id", id).single();
+    var blob = await fetch(pubUrl).then(r => r.blob());
+    var ghUrl = await uploadToGitHub(Date.now() + "_" + rec.file_name, blob, "videos");
+
+    await supabase.from("pending_uploads")
+      .update({ status: "approved", approved_at: new Date().toISOString(), file_path: "github:" + ghUrl })
+      .eq("id", id);
+    await supabase.storage.from("uploads").remove([rec.file_path]);
+
+    addVideoThumb(ghUrl, title);
+    alert("✅ 已批准！视频已上传到 GitHub 并加入视频区。");
+    loadPendingVideos();
+  } catch(e) {
+    alert("❌ 失败：" + e.message);
+    btn.textContent = "✅ 批准加入视频区"; btn.disabled = false;
+  }
+}
+
+async function approvePpt(id, pubUrl, title, fileName) {
+  if (!confirm("批准此文件并上传到 GitHub？")) return;
+  var supabase = window._supabaseClient;
+  var btn = event.target;
+  btn.textContent = "⬆ 上传中..."; btn.disabled = true;
+
+  try {
+    var { data: rec } = await supabase.from("pending_uploads").select("file_path,file_name").eq("id", id).single();
+    var blob = await fetch(pubUrl).then(r => r.blob());
+    var ghUrl = await uploadToGitHub(Date.now() + "_" + rec.file_name, blob, "shared-files");
+
+    await supabase.from("pending_uploads")
+      .update({ status: "approved", approved_at: new Date().toISOString(), file_path: "github:" + ghUrl })
+      .eq("id", id);
+    await supabase.storage.from("uploads").remove([rec.file_path]);
+
+    addPptFileEntry(ghUrl, title, fileName);
+    alert("✅ 已批准！文件已上传到 GitHub 并发布到文件区。");
+    loadPendingPpts();
+  } catch(e) {
+    alert("❌ 失败：" + e.message);
+    btn.textContent = "✅ 批准发布到PPT区"; btn.disabled = false;
+  }
+}
+
+// ===== 通用拒绝函数（照片/视频/文件共用） =====
 
 function addSlideToShow(imgSrc, altText) {
   var track = document.getElementById("slideshowTrack");
@@ -1328,23 +1422,7 @@ async function loadPendingVideos() {
   container.innerHTML = html;
 }
 
-async function approveVideo(id, pubUrl, title) {
-  var supabase = window._supabaseClient;
-  var result = await supabase
-    .from("pending_uploads")
-    .update({ status: "approved", approved_at: new Date().toISOString() })
-    .eq("id", id);
-
-  if (result.error) {
-    alert("❌ 批准失败：" + result.error.message);
-    return;
-  }
-
-  // 动态加入视频缩略图列表
-  addVideoThumb(pubUrl, title);
-  alert("✅ 已批准！视频已加入视频区。");
-  loadPendingVideos();
-}
+// ===== 通用拒绝函数（照片/视频/文件共用） =====
 
 function addVideoThumb(videoSrc, label) {
   var thumbs = document.getElementById("videoThumbs");
@@ -1355,8 +1433,6 @@ function addVideoThumb(videoSrc, label) {
   div.innerHTML = '<div class="video-thumb-icon">▶</div><div class="video-thumb-label">' + label + '</div>';
   div.onclick = (function(i) { return function() { switchVideo(i, div); }; })(idx);
   thumbs.appendChild(div);
-
-  // 将新视频源加入 videoList（如果存在）
   if (window.videoList) {
     window.videoList.push({ src: videoSrc, title: label });
   }
@@ -1394,7 +1470,7 @@ async function loadPendingPpts() {
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
   var html = '';
   items.forEach(function(item) {
-    var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var pubUrl = item.file_path.startsWith("github:") ? item.file_path.replace("github:","") : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     var date = new Date(item.uploaded_at).toLocaleString("zh-CN");
     var ext = item.file_name.split(".").pop().toUpperCase();
     var icon = ext === "PDF" ? "📄" : (["PPT","PPTX"].includes(ext) ? "📊" : "📁");
@@ -1416,24 +1492,6 @@ async function loadPendingPpts() {
   container.innerHTML = html;
 }
 
-async function approvePpt(id, pubUrl, title, fileName) {
-  var supabase = window._supabaseClient;
-  var result = await supabase
-    .from("pending_uploads")
-    .update({ status: "approved", approved_at: new Date().toISOString() })
-    .eq("id", id);
-
-  if (result.error) {
-    alert("❌ 批准失败：" + result.error.message);
-    return;
-  }
-
-  // 动态加入PPT文件列表（在pptContent中追加）
-  addPptFileEntry(pubUrl, title, fileName);
-  alert("✅ 已批准！文件已发布到PPT/文件区。");
-  loadPendingPpts();
-}
-
 function addPptFileEntry(fileUrl, title, fileName) {
   var pptContent = document.getElementById("pptContent");
   if (!pptContent) return;
@@ -1453,13 +1511,14 @@ function addPptFileEntry(fileUrl, title, fileName) {
   pptContent.appendChild(div);
 }
 
-// ===== 通用拒绝函数（照片/视频/文件共用） =====
 async function rejectPendingItem(id, filePath) {
   if (!confirm("确认拒绝并删除此文件？")) return;
   var supabase = window._supabaseClient;
+  var actualPath = filePath.startsWith("github:") ? null : filePath;
   await supabase.from("pending_uploads").update({ status: "rejected" }).eq("id", id);
-  await supabase.storage.from("uploads").remove([filePath]);
+  if (actualPath) await supabase.storage.from("uploads").remove([actualPath]);
   alert("✅ 已拒绝并删除。");
+  loadPendingUploads();
   loadPendingVideos();
   loadPendingPpts();
 }
