@@ -933,67 +933,40 @@ async function loadPendingUploads() {
   container.innerHTML = html;
 }
 
-// ===== GitHub 上传核心函数 =====
-const GITHUB_TOKEN  = "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";
-const GITHUB_REPO   = "parentsduke/parentsduke";
-const GITHUB_BRANCH = "main";
+// ===== GitHub 上传核心函数（通过 Supabase Edge Function，Token 在服务端）=====
+const EDGE_FUNCTION_URL = "https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/github-upload";
 
-async function uploadToGitHub(fileName, fileBlob, folder) {
-  var base64 = await new Promise(function(resolve, reject) {
-    var reader = new FileReader();
-    reader.onload  = function(e) { resolve(e.target.result.split(",")[1]); };
-    reader.onerror = reject;
-    reader.readAsDataURL(fileBlob);
-  });
+// 调用服务端 Edge Function 完成上传，前端不持有任何 Token
+async function uploadToGitHubViaEdge(pendingId, folder) {
+  var supabase = window._supabaseClient;
 
-  var ghPath = folder + "/" + fileName;
-  var apiUrl = "https://api.github.com/repos/" + GITHUB_REPO + "/contents/" + ghPath;
+  // 获取当前用户的 JWT，用于服务端鉴权
+  var { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error("未登录，请先登录后再操作");
 
-  // 检查文件是否已存在（获取 SHA）
-  var sha = null;
-  try {
-    var checkResp = await fetch(apiUrl, {
-      headers: { "Authorization": "token " + GITHUB_TOKEN, "Accept": "application/vnd.github.v3+json" }
-    });
-    if (checkResp.ok) { var d = await checkResp.json(); sha = d.sha; }
-  } catch(e) {}
-
-  var body = { message: "上传：" + fileName, content: base64, branch: GITHUB_BRANCH };
-  if (sha) body.sha = sha;
-
-  var resp = await fetch(apiUrl, {
-    method: "PUT",
+  var resp = await fetch(EDGE_FUNCTION_URL, {
+    method: "POST",
     headers: {
-      "Authorization": "token " + GITHUB_TOKEN,
-      "Accept": "application/vnd.github.v3+json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + session.access_token
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify({ pendingId: pendingId, folder: folder })
   });
 
-  if (!resp.ok) {
-    var err = await resp.json();
-    throw new Error(err.message || "GitHub 上传失败");
+  var result = await resp.json();
+  if (!resp.ok || result.error) {
+    throw new Error(result.error || "Edge Function 调用失败");
   }
-  var data = await resp.json();
-  return data.content.download_url;
+  return result.url; // 返回 GitHub 文件的公开 URL
 }
 
 async function approvePhoto(id, pubUrl, title) {
   if (!confirm("批准此照片并上传到 GitHub？")) return;
-  var supabase = window._supabaseClient;
   var btn = event.target;
   btn.textContent = "⬆ 上传中..."; btn.disabled = true;
 
   try {
-    var { data: rec } = await supabase.from("pending_uploads").select("file_path,file_name").eq("id", id).single();
-    var blob = await fetch(pubUrl).then(r => r.blob());
-    var ghUrl = await uploadToGitHub(Date.now() + "_" + rec.file_name, blob, "images");
-
-    await supabase.from("pending_uploads")
-      .update({ status: "approved", approved_at: new Date().toISOString(), file_path: "github:" + ghUrl })
-      .eq("id", id);
-    await supabase.storage.from("uploads").remove([rec.file_path]);
+    var ghUrl = await uploadToGitHubViaEdge(id, "images");
 
     addSlideToShow(ghUrl, title);
     alert("✅ 已批准！照片已上传到 GitHub 并加入相册。");
@@ -1006,19 +979,11 @@ async function approvePhoto(id, pubUrl, title) {
 
 async function approveVideo(id, pubUrl, title) {
   if (!confirm("批准此视频并上传到 GitHub？\n注意：视频较大，上传需要一点时间。")) return;
-  var supabase = window._supabaseClient;
   var btn = event.target;
   btn.textContent = "⬆ 上传中..."; btn.disabled = true;
 
   try {
-    var { data: rec } = await supabase.from("pending_uploads").select("file_path,file_name").eq("id", id).single();
-    var blob = await fetch(pubUrl).then(r => r.blob());
-    var ghUrl = await uploadToGitHub(Date.now() + "_" + rec.file_name, blob, "videos");
-
-    await supabase.from("pending_uploads")
-      .update({ status: "approved", approved_at: new Date().toISOString(), file_path: "github:" + ghUrl })
-      .eq("id", id);
-    await supabase.storage.from("uploads").remove([rec.file_path]);
+    var ghUrl = await uploadToGitHubViaEdge(id, "videos");
 
     addVideoThumb(ghUrl, title);
     alert("✅ 已批准！视频已上传到 GitHub 并加入视频区。");
@@ -1031,19 +996,11 @@ async function approveVideo(id, pubUrl, title) {
 
 async function approvePpt(id, pubUrl, title, fileName) {
   if (!confirm("批准此文件并上传到 GitHub？")) return;
-  var supabase = window._supabaseClient;
   var btn = event.target;
   btn.textContent = "⬆ 上传中..."; btn.disabled = true;
 
   try {
-    var { data: rec } = await supabase.from("pending_uploads").select("file_path,file_name").eq("id", id).single();
-    var blob = await fetch(pubUrl).then(r => r.blob());
-    var ghUrl = await uploadToGitHub(Date.now() + "_" + rec.file_name, blob, "shared-files");
-
-    await supabase.from("pending_uploads")
-      .update({ status: "approved", approved_at: new Date().toISOString(), file_path: "github:" + ghUrl })
-      .eq("id", id);
-    await supabase.storage.from("uploads").remove([rec.file_path]);
+    var ghUrl = await uploadToGitHubViaEdge(id, "shared-files");
 
     addPptFileEntry(ghUrl, title, fileName);
     alert("✅ 已批准！文件已上传到 GitHub 并发布到文件区。");
