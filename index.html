@@ -927,7 +927,7 @@ async function loadPendingUploads() {
       '</div></div>' +
       '<div style="margin-top:10px; display:flex; gap:8px;">' +
       '<button onclick="approvePhoto(\'' + item.id + '\', \'' + pubUrl + '\', \'' + item.title + '\')" style="flex:1; padding:8px; background:#003366; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">✅ 批准加入相册</button>' +
-      '<button onclick="rejectPhoto(\'' + item.id + '\', \'' + item.file_path + '\')" style="flex:1; padding:8px; background:#c00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">❌ 拒绝删除</button>' +
+      '<button onclick="rejectPendingItem(\'' + item.id + '\', \'' + item.file_path + '\')" style="flex:1; padding:8px; background:#c00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">❌ 拒绝删除</button>' +
       '</div></div>';
   });
   container.innerHTML = html;
