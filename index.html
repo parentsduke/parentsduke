@@ -401,8 +401,348 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>👩‍❤️‍👨 有缘千里来相会</span><span class="accordion-arrow">▸</span>
         </button>
-        <ul class="accordion-body">  
+        <div class="accordion-body">
+
+          <!-- 区域标题装饰 -->
+          <div class="yuanfen-header">
+            <div class="yuanfen-header-bg"></div>
+            <div class="yuanfen-header-content">
+              <div class="yuanfen-title-icon">💞</div>
+              <h3 class="yuanfen-title">有缘千里来相会</h3>
+              <p class="yuanfen-subtitle">在这里发布你的有缘启示，也许下一个缘分就在Duke家长群里</p>
+            </div>
+          </div>
+
+          <!-- 已发布的有缘启示列表 -->
+          <div id="yuanfen-list" class="yuanfen-list-wrap">
+            <div id="yuanfen-items" class="yuanfen-loading">
+              <span class="yuanfen-loading-dot"></span>
+              <span class="yuanfen-loading-dot"></span>
+              <span class="yuanfen-loading-dot"></span>
+            </div>
+          </div>
+
+          <!-- 上传按钮 -->
+          <div class="yuanfen-upload-trigger">
+            <button class="yuanfen-post-btn" onclick="toggleYuanfenUpload()">
+              <span class="yuanfen-post-btn-icon">✍️</span>
+              发布有缘启示
+            </button>
+          </div>
+
+          <!-- 上传表单 -->
+          <div id="yuanfenUploadBox" class="yuanfen-form-wrap" style="display:none;">
+            <div class="yuanfen-form">
+              <div class="yuanfen-form-title">📮 发布你的有缘启示</div>
+
+              <div id="yuanfenDropZone" class="yuanfen-dropzone"
+                ondragover="event.preventDefault(); this.classList.add('yuanfen-dropzone-active');"
+                ondragleave="this.classList.remove('yuanfen-dropzone-active');"
+                ondrop="yuanfenFileDrop(event)"
+                onclick="this.querySelector('input').click()">
+                <div class="yuanfen-dropzone-icon">💌</div>
+                <div class="yuanfen-dropzone-text">点击或拖拽文件到此处</div>
+                <div class="yuanfen-dropzone-hint">支持 PDF、图片、Word、PPT（最大 50MB）</div>
+                <input type="file" id="yuanfenFileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.doc,.docx,.ppt,.pptx" style="display:none;" onchange="yuanfenFileSelected(this.files)">
+              </div>
+
+              <div id="yuanfenFilePreview" class="yuanfen-preview" style="display:none;">
+                <div class="yuanfen-preview-icon">📎</div>
+                <div class="yuanfen-preview-info">
+                  <span id="yuanfenPreviewNameText" class="yuanfen-preview-name"></span>
+                  <span id="yuanfenPreviewSize" class="yuanfen-preview-size"></span>
+                </div>
+              </div>
+
+              <input type="text" id="yuanfenFileTitle"
+                placeholder="标题/说明，如：寻找XXX的有缘人 ✨"
+                maxlength="80"
+                class="yuanfen-input">
+              <div class="yuanfen-form-note">提交后经管理员审核发布 · 上传时间自动记录</div>
+
+              <button onclick="submitYuanfenFile()" class="yuanfen-submit-btn">
+                发布 💌
+              </button>
+              <p id="yuanfenUploadMsg" class="yuanfen-msg"></p>
+            </div>
+          </div>
+
+        </div>
       </div>
+
+<style>
+/* ===== 有缘千里来相会 美化样式 ===== */
+.yuanfen-header {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.yuanfen-header-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #ffe0ec 0%, #ffd6f0 40%, #e8d5ff 70%, #d5e8ff 100%);
+  opacity: 0.9;
+}
+.yuanfen-header-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(255,150,180,0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 30%, rgba(200,150,255,0.3) 0%, transparent 50%);
+}
+.yuanfen-header-content {
+  position: relative;
+  z-index: 1;
+  padding: 28px 20px 22px;
+}
+.yuanfen-title-icon {
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 8px;
+  animation: yuanfen-pulse 2s ease-in-out infinite;
+}
+@keyframes yuanfen-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+.yuanfen-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #8b1a4a;
+  margin: 0 0 8px;
+  letter-spacing: 0.05em;
+}
+.yuanfen-subtitle {
+  font-size: 13px;
+  color: #a0527a;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 加载动画 */
+.yuanfen-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 28px 0;
+}
+.yuanfen-loading-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d4a0c0;
+  animation: yuanfen-bounce 1.2s ease-in-out infinite;
+}
+.yuanfen-loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.yuanfen-loading-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes yuanfen-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-8px); opacity: 1; }
+}
+
+/* 已发布卡片 */
+.yuanfen-list-wrap {
+  padding: 4px 0 8px;
+}
+.yuanfen-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #fff5f9, #fdf0ff);
+  border: 1px solid #f0d5e8;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.yuanfen-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #e91e8c, #9c27b0);
+  border-radius: 4px 0 0 4px;
+}
+.yuanfen-card:hover {
+  box-shadow: 0 6px 20px rgba(180,80,140,0.15);
+  transform: translateY(-2px);
+}
+.yuanfen-card-thumb {
+  width: 72px;
+  height: 58px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1.5px solid #f0d5e8;
+  flex-shrink: 0;
+  cursor: zoom-in;
+}
+.yuanfen-card-icon {
+  width: 72px;
+  height: 58px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffe0ec, #f0d5ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+.yuanfen-card-body { flex: 1; min-width: 0; }
+.yuanfen-card-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: #7a1840;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+.yuanfen-card-meta {
+  font-size: 11px;
+  color: #b08090;
+  margin-bottom: 9px;
+}
+.yuanfen-card-btn {
+  display: inline-block;
+  padding: 5px 14px;
+  background: linear-gradient(135deg, #c2185b, #880e4f);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 12px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  letter-spacing: 0.02em;
+}
+.yuanfen-card-btn:hover { opacity: 0.85; }
+
+/* 空状态 */
+.yuanfen-empty {
+  text-align: center;
+  padding: 32px 20px;
+  color: #c0a0b0;
+}
+.yuanfen-empty-icon { font-size: 40px; margin-bottom: 10px; }
+.yuanfen-empty-text { font-size: 13px; line-height: 1.6; }
+
+/* 发布按钮 */
+.yuanfen-upload-trigger { text-align: center; margin: 8px 0 16px; }
+.yuanfen-post-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 28px;
+  background: linear-gradient(135deg, #e91e8c, #9c27b0);
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(180,30,120,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.03em;
+}
+.yuanfen-post-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 22px rgba(180,30,120,0.4);
+}
+.yuanfen-post-btn-icon { font-size: 17px; }
+
+/* 上传表单 */
+.yuanfen-form-wrap { padding: 4px 0; }
+.yuanfen-form {
+  background: linear-gradient(135deg, #fff8fb, #fdf4ff);
+  border: 1.5px solid #f0d0e8;
+  border-radius: 16px;
+  padding: 22px 20px;
+}
+.yuanfen-form-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #8b1a4a;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.yuanfen-dropzone {
+  border: 2px dashed #d4a0c0;
+  border-radius: 12px;
+  padding: 26px 20px;
+  text-align: center;
+  cursor: pointer;
+  background: #fff5f9;
+  margin-bottom: 14px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.yuanfen-dropzone:hover, .yuanfen-dropzone-active {
+  background: #ffe0ee !important;
+  border-color: #e91e8c !important;
+}
+.yuanfen-dropzone-icon { font-size: 30px; margin-bottom: 6px; }
+.yuanfen-dropzone-text { font-size: 14px; font-weight: 600; color: #8b1a4a; }
+.yuanfen-dropzone-hint { font-size: 11px; color: #c090a8; margin-top: 4px; }
+
+.yuanfen-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff0f6;
+  border: 1px solid #f0d0e0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+.yuanfen-preview-icon { font-size: 20px; }
+.yuanfen-preview-info { display: flex; flex-direction: column; gap: 2px; }
+.yuanfen-preview-name { font-size: 13px; font-weight: 600; color: #8b1a4a; }
+.yuanfen-preview-size { font-size: 11px; color: #b08090; }
+
+.yuanfen-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 14px;
+  border: 1.5px solid #e0b0cc;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  outline: none;
+  background: #fff;
+  color: #333;
+  transition: border-color 0.2s;
+}
+.yuanfen-input:focus { border-color: #e91e8c; }
+.yuanfen-input::placeholder { color: #c0a0b0; }
+
+.yuanfen-form-note {
+  font-size: 11px;
+  color: #c0a0b0;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.yuanfen-submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #e91e8c, #9c27b0);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 14px rgba(180,30,120,0.25);
+  transition: opacity 0.2s, transform 0.15s;
+}
+.yuanfen-submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.yuanfen-msg {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  min-height: 20px;
+}
+</style>
 
         
 
@@ -720,6 +1060,15 @@ document.addEventListener("keydown", function(e) {
         <div id="pendingPptsList" style="color:#555;">点击刷新加载待审核文件...</div>
       </div>
 
+      <!-- 待审核有缘启示 -->
+      <div style="margin-top:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h4 style="margin:0; color:#7a0060;">💌 待审核有缘启示 <span id="pendingYuanfenBadge" style="background:#a0007a;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
+          <button onclick="loadPendingYuanfen()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">🔄 刷新</button>
+        </div>
+        <div id="pendingYuanfenList" style="color:#555;">点击刷新加载待审核有缘启示...</div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -745,6 +1094,7 @@ function verifyAdmin() {
     loadPendingUploads();
     loadPendingVideos();
     loadPendingPpts();
+    loadPendingYuanfen();
   } else {
     err.textContent = "❌ 密码错误，请重试";
   }
@@ -1496,6 +1846,213 @@ function addPptFileEntry(fileUrl, title, fileName) {
   pptContent.appendChild(div);
 }
 
+// ===== 有缘千里来相会功能 =====
+var userPendingYuanfen = null;
+
+function toggleYuanfenUpload() {
+  var box = document.getElementById("yuanfenUploadBox");
+  if (box) box.style.display = box.style.display === "none" ? "block" : "none";
+}
+
+function yuanfenFileDrop(e) {
+  e.preventDefault();
+  document.getElementById("yuanfenDropZone").style.background = "#eef3fa";
+  if (e.dataTransfer.files.length) yuanfenFileSelected(e.dataTransfer.files);
+}
+
+function yuanfenFileSelected(files) {
+  if (!files.length) return;
+  var file = files[0];
+  var ext = file.name.split(".").pop().toLowerCase();
+  var allowed = ["pdf","jpg","jpeg","png","gif","doc","docx","ppt","pptx"];
+  if (!allowed.includes(ext)) {
+    alert("请选择支持的格式：PDF、图片、Word、PPT 等");
+    return;
+  }
+  if (file.size > 50 * 1024 * 1024) {
+    alert("文件不能超过 50MB");
+    return;
+  }
+  userPendingYuanfen = file;
+  var preview = document.getElementById("yuanfenFilePreview");
+  if (preview) {
+    document.getElementById("yuanfenPreviewNameText").textContent = file.name;
+    var size = file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+"MB" : (file.size/1024).toFixed(0)+"KB";
+    document.getElementById("yuanfenPreviewSize").textContent = "文件大小：" + size;
+    preview.style.display = "block";
+  }
+}
+
+async function submitYuanfenFile() {
+  var supabase = window._supabaseClient;
+  var msg = document.getElementById("yuanfenUploadMsg");
+  if (!supabase) { msg.textContent = "❌ 请先登录网站"; msg.style.color = "crimson"; return; }
+  if (!userPendingYuanfen) { msg.textContent = "❌ 请先选择文件"; msg.style.color = "crimson"; return; }
+
+  var title = document.getElementById("yuanfenFileTitle").value.trim();
+  if (!title) { msg.textContent = "❌ 请填写标题/说明"; msg.style.color = "crimson"; return; }
+
+  msg.textContent = "⬆ 上传中，请稍候...";
+  msg.style.color = "#003366";
+
+  var ext = userPendingYuanfen.name.split(".").pop().toLowerCase();
+  var filePath = "pending_yuanfen/" + Date.now() + "." + ext;
+  var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingYuanfen, { upsert: true });
+
+  if (uploadResult.error) {
+    msg.textContent = "❌ 上传失败：" + uploadResult.error.message;
+    msg.style.color = "crimson";
+    return;
+  }
+
+  var { data: { user } } = await supabase.auth.getUser();
+  var uploadedBy = user && user.email ? user.email : "匿名";
+
+  var dbResult = await supabase.from("pending_uploads").insert({
+    file_path: filePath,
+    file_name: userPendingYuanfen.name,
+    title: title,
+    uploaded_by: uploadedBy,
+    status: "pending",
+    file_type: "yuanfen"
+  });
+
+  if (dbResult.error) {
+    msg.textContent = "❌ 提交失败：" + dbResult.error.message;
+    msg.style.color = "crimson";
+    return;
+  }
+
+  msg.textContent = "✅ 提交成功！等待管理员审核后将发布。";
+  msg.style.color = "green";
+  userPendingYuanfen = null;
+  document.getElementById("yuanfenFileTitle").value = "";
+  document.getElementById("yuanfenFilePreview").style.display = "none";
+  document.getElementById("yuanfenFileInput").value = "";
+}
+
+// 加载已发布的有缘启示（供所有用户查看）
+async function loadYuanfenItems() {
+  var supabase = window._supabaseClient;
+  var container = document.getElementById("yuanfen-items");
+  if (!container) return;
+  if (!supabase) {
+    container.innerHTML = '<div class="yuanfen-empty"><div class="yuanfen-empty-icon">🔒</div><div class="yuanfen-empty-text">请登录后查看</div></div>';
+    return;
+  }
+
+  var result = await supabase
+    .from("pending_uploads")
+    .select("*")
+    .eq("status", "approved")
+    .eq("file_type", "yuanfen")
+    .order("uploaded_at", { ascending: false });
+
+  if (result.error || !result.data || !result.data.length) {
+    container.innerHTML = '<div class="yuanfen-empty"><div class="yuanfen-empty-icon">💌</div><div class="yuanfen-empty-text">暂无有缘启示<br>快来发布第一条吧～</div></div>';
+    return;
+  }
+
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var html = '';
+  result.data.forEach(function(item) {
+    var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var ext = item.file_name.split(".").pop().toUpperCase();
+    var isImg = ["JPG","JPEG","PNG","GIF"].includes(ext);
+    var date = new Date(item.uploaded_at).toLocaleDateString("zh-CN", { year:'numeric', month:'long', day:'numeric' });
+    var uploader = item.uploaded_by ? item.uploaded_by.split('@')[0] : '匿名';
+
+    html += '<div class="yuanfen-card">';
+    if (isImg) {
+      html += '<img src="' + pubUrl + '" class="yuanfen-card-thumb" onclick="openOverlay(\'' + pubUrl + '\', \'' + item.title + '\')" alt="' + item.title + '">';
+    } else {
+      var icon = ext === 'PDF' ? '📄' : (['PPT','PPTX'].includes(ext) ? '📊' : ['DOC','DOCX'].includes(ext) ? '📝' : '💌');
+      html += '<div class="yuanfen-card-icon">' + icon + '</div>';
+    }
+    html += '<div class="yuanfen-card-body">' +
+      '<div class="yuanfen-card-title">' + item.title + '</div>' +
+      '<div class="yuanfen-card-meta">' + uploader + ' · ' + date + '</div>' +
+      '<a href="' + pubUrl + '" target="_blank" class="yuanfen-card-btn">查看 →</a>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+// 管理员：加载待审核有缘启示
+async function loadPendingYuanfen() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("pendingYuanfenList");
+  var badge = document.getElementById("pendingYuanfenBadge");
+  if (!container) return;
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+
+  var result = await supabase
+    .from("pending_uploads")
+    .select("*")
+    .eq("status", "pending")
+    .eq("file_type", "yuanfen")
+    .order("uploaded_at", { ascending: false });
+
+  if (result.error) {
+    container.innerHTML = '<span style="color:crimson;">加载失败：' + result.error.message + '</span>';
+    return;
+  }
+
+  var items = result.data;
+  if (badge) badge.textContent = items.length > 0 ? items.length + " 条" : "";
+
+  if (!items.length) {
+    container.innerHTML = '<span style="color:#aaa;">暂无待审核有缘启示 ✅</span>';
+    return;
+  }
+
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var html = '';
+  items.forEach(function(item) {
+    var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var date = new Date(item.uploaded_at).toLocaleString("zh-CN");
+    var ext = item.file_name.split(".").pop().toUpperCase();
+    var isImg = ["JPG","JPEG","PNG","GIF"].includes(ext);
+    html += '<div style="border:1px solid #e8c8e8; border-radius:8px; padding:12px; margin-bottom:12px; background:#fff9fe;">' +
+      '<div style="display:flex; gap:12px; align-items:flex-start;">';
+    if (isImg) {
+      html += '<img src="' + pubUrl + '" style="width:100px; height:80px; object-fit:cover; border-radius:6px; border:1px solid #ddd; cursor:pointer;" onclick="openOverlay(\'' + pubUrl + '\', \'' + item.title + '\')">';
+    } else {
+      html += '<div style="width:100px; height:80px; background:#f5e8ff; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:36px; flex-shrink:0;">💌</div>';
+    }
+    html += '<div style="flex:1;">' +
+      '<div style="font-weight:bold; font-size:14px; color:#7a0060; margin-bottom:4px;">📌 ' + item.title + '</div>' +
+      '<div style="font-size:12px; color:#888;">上传者：' + (item.uploaded_by || '匿名') + '</div>' +
+      '<div style="font-size:12px; color:#888;">时间：' + date + '</div>' +
+      '<div style="font-size:12px; color:#888; word-break:break-all;">文件：' + item.file_name + '</div>' +
+      '<a href="' + pubUrl + '" target="_blank" style="font-size:12px; color:#7a0060;">🔗 预览/下载</a>' +
+      '</div></div>' +
+      '<div style="margin-top:10px; display:flex; gap:8px;">' +
+      '<button onclick="approveYuanfen(\'' + item.id + '\')" style="flex:1; padding:8px; background:#7a0060; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">✅ 批准发布</button>' +
+      '<button onclick="rejectPendingItem(\'' + item.id + '\', \'' + item.file_path + '\')" style="flex:1; padding:8px; background:#c00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">❌ 拒绝删除</button>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+async function approveYuanfen(id) {
+  if (!confirm("批准此有缘启示并发布？")) return;
+  var supabase = window._supabaseClient;
+  var result = await supabase
+    .from("pending_uploads")
+    .update({ status: "approved" })
+    .eq("id", id);
+
+  if (result.error) {
+    alert("❌ 操作失败：" + result.error.message);
+  } else {
+    alert("✅ 已发布！");
+    loadPendingYuanfen();
+    loadYuanfenItems();
+  }
+}
+
 async function rejectPendingItem(id, filePath) {
   if (!confirm("确认拒绝并删除此文件？")) return;
   var supabase = window._supabaseClient;
@@ -1767,6 +2324,9 @@ async function rejectPendingItem(id, filePath) {
         }
       });
     }
+
+    // === 加载已发布的有缘启示 ===
+    loadYuanfenItems();
   }
 
   // ✅ 修改后的 checkLoginStatus：新用户首次登录自动跳转设置密码页
