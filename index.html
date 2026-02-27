@@ -921,7 +921,7 @@ document.addEventListener("keydown", function(e) {
       <!-- ===== 扯谈群 ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>💬 扯谈群</span><span class="accordion-arrow">▸</span>
+          <span>扯谈群</span><span class="accordion-arrow">▸</span>
         </button>
         <ul class="accordion-body">
           <li><a href="中文课.html" target="_blank">中文课</a></li>
@@ -1148,7 +1148,7 @@ document.addEventListener("keydown", function(e) {
       <div id="admin-file-list-section" style="margin-top:28px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <h4 style="margin:0; color:#003366;">已上传文件</h4>
-          <button onclick="loadAdminFileList()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">🔄 刷新</button>
+          <button onclick="loadAdminFileList()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
         </div>
         <div id="adminFileListContent" style="font-size:13px; color:#555;">点击刷新加载文件列表...</div>
       </div>
@@ -1157,7 +1157,7 @@ document.addEventListener("keydown", function(e) {
       <div style="margin-top:28px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <h4 style="margin:0; color:#c07000;">待审核照片 <span id="pendingBadge" style="background:#e07000;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
-          <button onclick="loadPendingUploads()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">🔄 刷新</button>
+          <button onclick="loadPendingUploads()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
         </div>
         <div id="pendingUploadsList" style="color:#555;">点击刷新加载待审核列表...</div>
       </div>
@@ -1166,7 +1166,7 @@ document.addEventListener("keydown", function(e) {
       <div style="margin-top:28px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <h4 style="margin:0; color:#1a5c00;">待审核视频 <span id="pendingVideoBadge" style="background:#2a8c00;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
-          <button onclick="loadPendingVideos()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">🔄 刷新</button>
+          <button onclick="loadPendingVideos()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
         </div>
         <div id="pendingVideosList" style="color:#555;">点击刷新加载待审核视频...</div>
       </div>
@@ -1175,7 +1175,7 @@ document.addEventListener("keydown", function(e) {
       <div style="margin-top:28px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <h4 style="margin:0; color:#00407a;">待审核PPT/文件 <span id="pendingPptBadge" style="background:#00518a;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
-          <button onclick="loadPendingPpts()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">🔄 刷新</button>
+          <button onclick="loadPendingPpts()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
         </div>
         <div id="pendingPptsList" style="color:#555;">点击刷新加载待审核文件...</div>
       </div>
@@ -1184,7 +1184,7 @@ document.addEventListener("keydown", function(e) {
       <div style="margin-top:28px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <h4 style="margin:0; color:#7a0060;">待审核有缘启示 <span id="pendingYuanfenBadge" style="background:#a0007a;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
-          <button onclick="loadPendingYuanfen()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">🔄 刷新</button>
+          <button onclick="loadPendingYuanfen()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
         </div>
         <div id="pendingYuanfenList" style="color:#555;">点击刷新加载待审核有缘启示...</div>
       </div>
@@ -1195,7 +1195,7 @@ document.addEventListener("keydown", function(e) {
 
 <script>
 // ===== 管理员面板逻辑 =====
-const ADMIN_PASSWORD = "DukeAdmin2030"; // ← 可在此修改管理员密码
+const ADMIN_PASSWORD = "Jyswswhj098)(*"; // ← 可在此修改管理员密码
 
 var adminPendingFiles = [];
 
@@ -1293,19 +1293,19 @@ async function startAdminUpload() {
   for (var i = 0; i < adminPendingFiles.length; i++) {
     var file = adminPendingFiles[i];
     var statusEl = document.querySelector(".upload-status-"+sanitizeId(file.name));
-    if (statusEl) { statusEl.textContent = "⬆ 上传中..."; statusEl.style.color = "#003366"; }
+    if (statusEl) { statusEl.textContent = "上传中..."; statusEl.style.color = "#003366"; }
 
     var filePath = folder + "/" + Date.now() + "_" + file.name;
     var result = await supabase.storage.from("uploads").upload(filePath, file, { upsert: true });
 
     if (result.error) {
-      if (statusEl) { statusEl.textContent = "❌ 失败"; statusEl.style.color = "crimson"; }
+      if (statusEl) { statusEl.textContent = "失败"; statusEl.style.color = "crimson"; }
     } else {
-      if (statusEl) { statusEl.textContent = "✅ 成功"; statusEl.style.color = "green"; }
+      if (statusEl) { statusEl.textContent = "成功"; statusEl.style.color = "green"; }
     }
   }
 
-  btn.textContent = "✅ 上传完成";
+  btn.textContent = "上传完成";
   btn.disabled = false;
   adminPendingFiles = [];
   loadAdminFileList();
@@ -1365,7 +1365,7 @@ async function loadAdminFileList() {
 
 function copyAdminUrl(url) {
   navigator.clipboard.writeText(url).then(function() {
-    alert("✅ 链接已复制到剪贴板！\n\n" + url);
+    alert("链接已复制到剪贴板！\n\n" + url);
   });
 }
 
@@ -1374,9 +1374,9 @@ async function deleteAdminFile(filePath) {
   var supabase = window._supabaseClient;
   var result = await supabase.storage.from("uploads").remove([filePath]);
   if (result.error) {
-    alert("❌ 删除失败：" + result.error.message);
+    alert("删除失败：" + result.error.message);
   } else {
-    alert("✅ 文件已删除");
+    alert("文件已删除");
     loadAdminFileList();
   }
 }
@@ -1405,7 +1405,7 @@ async function loadPendingUploads() {
   if (badge) badge.textContent = items.length > 0 ? items.length + " 条" : "";
 
   if (!items.length) {
-    container.innerHTML = '<span style="color:#aaa;">暂无待审核照片 ✅</span>';
+    container.innerHTML = '<span style="color:#aaa;">暂无待审核照片</span>';
     return;
   }
 
@@ -1467,11 +1467,11 @@ async function approvePhoto(id, pubUrl, title) {
     var ghUrl = await uploadToGitHubViaEdge(id, "images");
 
     addSlideToShow(ghUrl, title);
-    alert("✅ 已批准！照片已上传到 GitHub 并加入相册。");
+    alert("已批准！照片已上传到 GitHub 并加入相册。");
     loadPendingUploads();
   } catch(e) {
-    alert("❌ 失败：" + e.message);
-    btn.textContent = "✅ 批准加入相册"; btn.disabled = false;
+    alert("失败：" + e.message);
+    btn.textContent = "批准加入相册"; btn.disabled = false;
   }
 }
 
@@ -1484,28 +1484,28 @@ async function approveVideo(id, pubUrl, title) {
     var ghUrl = await uploadToGitHubViaEdge(id, "videos");
 
     addVideoThumb(ghUrl, title);
-    alert("✅ 已批准！视频已上传到 GitHub 并加入视频区。");
+    alert("已批准！视频已上传到 GitHub 并加入视频区。");
     loadPendingVideos();
   } catch(e) {
-    alert("❌ 失败：" + e.message);
-    btn.textContent = "✅ 批准加入视频区"; btn.disabled = false;
+    alert("失败：" + e.message);
+    btn.textContent = "批准加入视频区"; btn.disabled = false;
   }
 }
 
 async function approvePpt(id, pubUrl, title, fileName) {
   if (!confirm("批准此文件并上传到 GitHub？")) return;
   var btn = event.target;
-  btn.textContent = "⬆ 上传中..."; btn.disabled = true;
+  btn.textContent = "上传中..."; btn.disabled = true;
 
   try {
     var ghUrl = await uploadToGitHubViaEdge(id, "shared-files");
 
     addPptFileEntry(ghUrl, title, fileName);
-    alert("✅ 已批准！文件已上传到 GitHub 并发布到文件区。");
+    alert("已批准！文件已上传到 GitHub 并发布到文件区。");
     loadPendingPpts();
   } catch(e) {
-    alert("❌ 失败：" + e.message);
-    btn.textContent = "✅ 批准发布到PPT区"; btn.disabled = false;
+    alert("失败：" + e.message);
+    btn.textContent = "批准发布到PPT区"; btn.disabled = false;
   }
 }
 
@@ -1581,7 +1581,7 @@ async function submitUserPhoto() {
   if (!title) { alert("请填写照片标题/说明"); return; }
 
   var msg = document.getElementById("userUploadMsg");
-  msg.textContent = "⬆ 上传中...";
+  msg.textContent = "上传中...";
   msg.style.color = "#003366";
 
   var imgExt = userPendingFile.name.split(".").pop().toLowerCase();
@@ -1590,7 +1590,7 @@ async function submitUserPhoto() {
   var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingFile, { upsert: true });
 
   if (uploadResult.error) {
-    msg.textContent = "❌ 上传失败：" + uploadResult.error.message;
+    msg.textContent = "上传失败：" + uploadResult.error.message;
     msg.style.color = "crimson";
     return;
   }
@@ -1610,12 +1610,12 @@ async function submitUserPhoto() {
   });
 
   if (dbResult.error) {
-    msg.textContent = "❌ 提交失败：" + dbResult.error.message;
+    msg.textContent = "提交失败：" + dbResult.error.message;
     msg.style.color = "crimson";
     return;
   }
 
-  msg.textContent = "✅ 提交成功！等待管理员审核后将加入相册。";
+  msg.textContent = "提交成功！等待管理员审核后将加入相册。";
   msg.style.color = "green";
   userPendingFile = null;
   document.getElementById("userPhotoTitle").value = "";
@@ -1664,12 +1664,12 @@ async function submitUserVideo(btn) {
   var supabase = window._supabaseClient;
   var msg = container.querySelector('#videoUploadMsg') || container.querySelector('p[id$="UploadMsg"]') || container.querySelector('p');
   if (!supabase) {
-    msg.textContent = "❌ 请先登录网站";
+    msg.textContent = "请先登录网站";
     msg.style.color = "crimson";
     return;
   }
   if (!userPendingVideo) {
-    msg.textContent = "❌ 请先选择视频文件";
+    msg.textContent = "请先选择视频文件";
     msg.style.color = "crimson";
     return;
   }
@@ -1677,11 +1677,11 @@ async function submitUserVideo(btn) {
   var titleInput = container.querySelector('input[type="text"]');
   var title = titleInput ? titleInput.value.trim() : '';
   if (!title) {
-    msg.textContent = "❌ 请填写视频标题/说明";
+    msg.textContent = "请填写视频标题/说明";
     msg.style.color = "crimson";
     return;
   }
-  msg.textContent = "⬆ 上传中，请稍候...";
+  msg.textContent = "上传中，请稍候...";
   msg.style.color = "#003366";
 
   var videoExt = userPendingVideo.name.split(".").pop().toLowerCase();
@@ -1690,7 +1690,7 @@ async function submitUserVideo(btn) {
   var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingVideo, { upsert: true });
 
   if (uploadResult.error) {
-    msg.textContent = "❌ 上传失败：" + uploadResult.error.message;
+    msg.textContent = "上传失败：" + uploadResult.error.message;
     msg.style.color = "crimson";
     return;
   }
@@ -1708,12 +1708,12 @@ async function submitUserVideo(btn) {
   });
 
   if (dbResult.error) {
-    msg.textContent = "❌ 提交失败：" + dbResult.error.message;
+    msg.textContent = "提交失败：" + dbResult.error.message;
     msg.style.color = "crimson";
     return;
   }
 
-  msg.textContent = "✅ 提交成功！等待管理员审核后将加入视频区。";
+  msg.textContent = "提交成功！等待管理员审核后将加入视频区。";
   msg.style.color = "green";
   userPendingVideo = null;
   if (titleInput) titleInput.value = "";
@@ -1769,23 +1769,23 @@ async function submitPptFile() {
   var supabase = window._supabaseClient;
   var msg = document.getElementById("pptUploadMsg");
   if (!supabase) {
-    msg.textContent = "❌ 请先登录网站";
+    msg.textContent = "请先登录网站";
     msg.style.color = "crimson";
     return;
   }
   if (!userPendingPpt) {
-    msg.textContent = "❌ 请先选择文件";
+    msg.textContent = "请先选择文件";
     msg.style.color = "crimson";
     return;
   }
 
   var title = document.getElementById("pptFileTitle").value.trim();
   if (!title) {
-    msg.textContent = "❌ 请填写文件标题/说明";
+    msg.textContent = "请填写文件标题/说明";
     msg.style.color = "crimson";
     return;
   }
-  msg.textContent = "⬆ 上传中，请稍候...";
+  msg.textContent = "上传中，请稍候...";
   msg.style.color = "#003366";
 
   var ext = userPendingPpt.name.split(".").pop().toLowerCase();
@@ -1794,7 +1794,7 @@ async function submitPptFile() {
   var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingPpt, { upsert: true });
 
   if (uploadResult.error) {
-    msg.textContent = "❌ 上传失败：" + uploadResult.error.message;
+    msg.textContent = "上传失败：" + uploadResult.error.message;
     msg.style.color = "crimson";
     return;
   }
@@ -1812,12 +1812,12 @@ async function submitPptFile() {
   });
 
   if (dbResult.error) {
-    msg.textContent = "❌ 提交失败：" + dbResult.error.message;
+    msg.textContent = "提交失败：" + dbResult.error.message;
     msg.style.color = "crimson";
     return;
   }
 
-  msg.textContent = "✅ 提交成功！等待管理员审核后将发布到文件区。";
+  msg.textContent = "提交成功！等待管理员审核后将发布到文件区。";
   msg.style.color = "green";
   userPendingPpt = null;
   document.getElementById("pptFileTitle").value = "";
@@ -1850,7 +1850,7 @@ async function loadPendingVideos() {
   if (badge) badge.textContent = items.length > 0 ? items.length + " 条" : "";
 
   if (!items.length) {
-    container.innerHTML = '<span style="color:#aaa;">暂无待审核视频 ✅</span>';
+    container.innerHTML = '<span style="color:#aaa;">暂无待审核视频</span>';
     return;
   }
 
@@ -1918,7 +1918,7 @@ async function loadPendingPpts() {
   if (badge) badge.textContent = items.length > 0 ? items.length + " 条" : "";
 
   if (!items.length) {
-    container.innerHTML = '<span style="color:#aaa;">暂无待审核文件 ✅</span>';
+    container.innerHTML = '<span style="color:#aaa;">暂无待审核文件</span>';
     return;
   }
 
@@ -2006,13 +2006,13 @@ function yuanfenFileSelected(files) {
 async function submitYuanfenFile() {
   var supabase = window._supabaseClient;
   var msg = document.getElementById("yuanfenUploadMsg");
-  if (!supabase) { msg.textContent = "❌ 请先登录网站"; msg.style.color = "crimson"; return; }
-  if (!userPendingYuanfen) { msg.textContent = "❌ 请先选择文件"; msg.style.color = "crimson"; return; }
+  if (!supabase) { msg.textContent = "请先登录网站"; msg.style.color = "crimson"; return; }
+  if (!userPendingYuanfen) { msg.textContent = "请先选择文件"; msg.style.color = "crimson"; return; }
 
   var title = document.getElementById("yuanfenFileTitle").value.trim();
-  if (!title) { msg.textContent = "❌ 请填写标题/说明"; msg.style.color = "crimson"; return; }
+  if (!title) { msg.textContent = "请填写标题/说明"; msg.style.color = "crimson"; return; }
 
-  msg.textContent = "⬆ 上传中，请稍候...";
+  msg.textContent = "上传中，请稍候...";
   msg.style.color = "#003366";
 
   var ext = userPendingYuanfen.name.split(".").pop().toLowerCase();
@@ -2020,7 +2020,7 @@ async function submitYuanfenFile() {
   var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingYuanfen, { upsert: true });
 
   if (uploadResult.error) {
-    msg.textContent = "❌ 上传失败：" + uploadResult.error.message;
+    msg.textContent = "上传失败：" + uploadResult.error.message;
     msg.style.color = "crimson";
     return;
   }
@@ -2038,12 +2038,12 @@ async function submitYuanfenFile() {
   });
 
   if (dbResult.error) {
-    msg.textContent = "❌ 提交失败：" + dbResult.error.message;
+    msg.textContent = "提交失败：" + dbResult.error.message;
     msg.style.color = "crimson";
     return;
   }
 
-  msg.textContent = "✅ 提交成功！等待管理员审核后将发布。";
+  msg.textContent = "提交成功！等待管理员审核后将发布。";
   msg.style.color = "green";
   userPendingYuanfen = null;
   document.getElementById("yuanfenFileTitle").value = "";
@@ -2123,7 +2123,7 @@ async function loadPendingYuanfen() {
   if (badge) badge.textContent = items.length > 0 ? items.length + " 条" : "";
 
   if (!items.length) {
-    container.innerHTML = '<span style="color:#aaa;">暂无待审核有缘启示 ✅</span>';
+    container.innerHTML = '<span style="color:#aaa;">暂无待审核有缘启示</span>';
     return;
   }
 
@@ -2165,9 +2165,9 @@ async function approveYuanfen(id) {
     .eq("id", id);
 
   if (result.error) {
-    alert("❌ 操作失败：" + result.error.message);
+    alert("操作失败：" + result.error.message);
   } else {
-    alert("✅ 已发布！");
+    alert("已发布！");
     loadPendingYuanfen();
     loadYuanfenItems();
   }
@@ -2179,7 +2179,7 @@ async function rejectPendingItem(id, filePath) {
   var actualPath = filePath.startsWith("github:") ? null : filePath;
   await supabase.from("pending_uploads").update({ status: "rejected" }).eq("id", id);
   if (actualPath) await supabase.storage.from("uploads").remove([actualPath]);
-  alert("✅ 已拒绝并删除。");
+  alert("已拒绝并删除。");
   loadPendingUploads();
   loadPendingVideos();
   loadPendingPpts();
@@ -2892,10 +2892,10 @@ function renderCSV(csvText, tableId) {
 function loadCSV30() {
   var pwd = document.getElementById("csvPwd30").value;
   var err = document.getElementById("csvErr30");
-  if (pwd !== "2030Duke") { err.textContent = "❌ 密码错误"; return; }
+  if (pwd !== "2030Duke") { err.textContent = "密码错误"; return; }
   fetch("class30.csv").then(function(r){ return r.text(); })
     .then(function(t){ renderCSV(t, "csvTable30"); })
-    .catch(function(){ err.textContent = "❌ CSV 文件加载失败"; });
+    .catch(function(){ err.textContent = "CSV 文件加载失败"; });
   err.textContent = "";
   document.getElementById("csv-password-box-30").style.display = "none";
   document.getElementById("csv-container-30").style.display = "block";
@@ -2904,10 +2904,10 @@ function loadCSV30() {
 function loadCSV24() {
   var pwd = document.getElementById("csvPwd24").value;
   var err = document.getElementById("csvErr24");
-  if (pwd !== "Duke2024") { err.textContent = "❌ 密码错误"; return; }
+  if (pwd !== "Duke2024") { err.textContent = "密码错误"; return; }
   fetch("24graduate.csv").then(function(r){ return r.text(); })
     .then(function(t){ renderCSV(t, "csvTable24"); })
-    .catch(function(){ err.textContent = "❌ CSV 文件加载失败"; });
+    .catch(function(){ err.textContent = "CSV 文件加载失败"; });
   err.textContent = "";
   document.getElementById("csv-password-box-24").style.display = "none";
   document.getElementById("csv-container-24").style.display = "block";
@@ -2916,10 +2916,10 @@ function loadCSV24() {
 function loadCSV25() {
   var pwd = document.getElementById("csvPwd25").value;
   var err = document.getElementById("csvErr25");
-  if (pwd !== "Duke2025") { err.textContent = "❌ 密码错误"; return; }
+  if (pwd !== "Duke2025") { err.textContent = "密码错误"; return; }
   fetch("25graduate.csv").then(function(r){ return r.text(); })
     .then(function(t){ renderCSV(t, "csvTable25"); })
-    .catch(function(){ err.textContent = "❌ CSV 文件加载失败"; });
+    .catch(function(){ err.textContent = "CSV 文件加载失败"; });
   err.textContent = "";
   document.getElementById("csv-password-box-25").style.display = "none";
   document.getElementById("csv-container-25").style.display = "block";
