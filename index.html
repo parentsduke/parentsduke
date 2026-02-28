@@ -131,6 +131,23 @@ document.addEventListener("keydown", function(e) {
       <div class="slide-counter" id="slideCounter">1 / 13</div>
     </div>
 
+    <!-- ===== 管理员精选相册（幻灯片轮播） ===== -->
+    <div id="adminAlbumSection" style="display:none;">
+      <div class="admin-album-label">📸 精选相册</div>
+      <div class="slideshow-container" id="adminSlideshowContainer">
+        <div class="slideshow-track" id="adminSlideshowTrack">
+          <!-- 照片动态加载 -->
+        </div>
+        <!-- 左右箭头 -->
+        <button class="slide-btn slide-prev" id="adminSlidePrev">&#10094;</button>
+        <button class="slide-btn slide-next" id="adminSlideNext">&#10095;</button>
+        <!-- 圆点指示器 -->
+        <div class="slide-dots" id="adminSlideDots"></div>
+        <!-- 计数器 -->
+        <div class="slide-counter" id="adminSlideCounter"></div>
+      </div>
+    </div>
+
     <!-- ===== 用户上传照片入口 ===== -->
     <div class="user-upload-section">
       <button class="user-upload-toggle-btn" onclick="toggleUserUpload()">上传照片到相册</button>
@@ -1326,9 +1343,11 @@ async function startAdminUpload() {
   btn.disabled = true;
   btn.textContent = "上传中...";
 
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+
   for (var i = 0; i < adminPendingFiles.length; i++) {
     var file = adminPendingFiles[i];
-    var statusEl = document.querySelector(".upload-status-"+sanitizeId(file.name));
+    var statusEl = document.querySelector(".upload-status-" + sanitizeId(file.name));
     if (statusEl) { statusEl.textContent = "上传中..."; statusEl.style.color = "#003366"; }
 
     var filePath = folder + "/" + Date.now() + "_" + file.name;
@@ -1338,6 +1357,21 @@ async function startAdminUpload() {
       if (statusEl) { statusEl.textContent = "失败"; statusEl.style.color = "crimson"; }
     } else {
       if (statusEl) { statusEl.textContent = "成功"; statusEl.style.color = "green"; }
+
+      // 如果是图片分类，自动写入 pending_uploads（直接 approved）并加入精选相册
+      if (folder === "images" && file.type.startsWith("image/")) {
+        var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + filePath;
+        var displayName = file.name.replace(/\.[^.]+$/, "");
+        await supabase.from("pending_uploads").insert({
+          file_path: filePath,
+          file_name: file.name,
+          title: displayName,
+          uploaded_by: "admin",
+          status: "approved",
+          file_type: "image"
+        });
+        addAdminAlbumPhoto(pubUrl, displayName);
+      }
     }
   }
 
@@ -1460,7 +1494,7 @@ async function loadPendingUploads() {
       '<div style="font-size:12px; color:#888; word-break:break-all;">文件：' + item.file_name + '</div>' +
       '</div></div>' +
       '<div style="margin-top:10px; display:flex; gap:8px;">' +
-      '<button onclick="approvePhoto(\'' + item.id + '\', \'' + pubUrl + '\', \'' + item.title + '\')" style="flex:1; padding:8px; background:#003366; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">✅ 批准加入相册</button>' +
+      '<button onclick="approvePhoto(\'' + item.id + '\', \'' + pubUrl + '\', \'' + item.title + '\')" style="flex:1; padding:8px; background:#003366; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">✅ 批准加入精选相册</button>' +
       '<button onclick="rejectPendingItem(\'' + item.id + '\', \'' + item.file_path + '\')" style="flex:1; padding:8px; background:#c00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">❌ 拒绝删除</button>' +
       '</div></div>';
   });
@@ -1495,7 +1529,7 @@ async function uploadToGitHubViaEdge(pendingId, folder) {
 }
 
 async function approvePhoto(id, pubUrl, title) {
-  if (!confirm("批准此照片并上传到 GitHub？")) return;
+  if (!confirm("批准此照片并上传到 GitHub 精选相册？")) return;
   var btn = event.target;
   btn.textContent = "⬆ 上传中..."; btn.disabled = true;
 
@@ -1503,11 +1537,11 @@ async function approvePhoto(id, pubUrl, title) {
     var ghUrl = await uploadToGitHubViaEdge(id, "images");
 
     addSlideToShow(ghUrl, title);
-    alert("已批准！照片已上传到 GitHub 并加入相册。");
+    alert("已批准！照片已上传到 GitHub 并加入精选相册。");
     loadPendingUploads();
   } catch(e) {
     alert("失败：" + e.message);
-    btn.textContent = "批准加入相册"; btn.disabled = false;
+    btn.textContent = "批准加入精选相册"; btn.disabled = false;
   }
 }
 
@@ -1547,30 +1581,130 @@ async function approvePpt(id, pubUrl, title, fileName) {
 
 // ===== 通用拒绝函数（照片/视频/文件共用） =====
 
-function addSlideToShow(imgSrc, altText) {
-  var track = document.getElementById("slideshowTrack");
-  var dots = document.getElementById("slideDots");
-  var counter = document.getElementById("slideCounter");
+// ===== 管理员精选相册（幻灯片）=====
+var adminSlide = {
+  current: 0,
+  total: 0,
+  timer: null
+};
+
+function adminGoTo(n) {
+  var track = document.getElementById("adminSlideshowTrack");
+  var dots  = document.getElementById("adminSlideDots");
+  var counter = document.getElementById("adminSlideCounter");
+  if (!track || adminSlide.total === 0) return;
+
+  var slides = track.querySelectorAll(".slide");
+  slides[adminSlide.current].classList.remove("active");
+  if (dots.children[adminSlide.current]) dots.children[adminSlide.current].classList.remove("active");
+
+  adminSlide.current = (n + adminSlide.total) % adminSlide.total;
+
+  slides[adminSlide.current].classList.add("active");
+  if (dots.children[adminSlide.current]) dots.children[adminSlide.current].classList.add("active");
+  if (counter) counter.textContent = (adminSlide.current + 1) + " / " + adminSlide.total;
+}
+
+function adminStartAuto() {
+  clearInterval(adminSlide.timer);
+  adminSlide.timer = setInterval(function() { adminGoTo(adminSlide.current + 1); }, 4000);
+}
+
+function adminResetAuto() {
+  clearInterval(adminSlide.timer);
+  adminStartAuto();
+}
+
+// 添加单张照片到管理员精选相册轮播
+function addAdminAlbumPhoto(imgSrc, altText) {
+  var track = document.getElementById("adminSlideshowTrack");
+  var dots  = document.getElementById("adminSlideDots");
+  var counter = document.getElementById("adminSlideCounter");
+  var section = document.getElementById("adminAlbumSection");
   if (!track) return;
 
+  var isFirst = (adminSlide.total === 0);
+
+  // 创建 slide
   var slide = document.createElement("div");
-  slide.className = "slide";
-  slide.innerHTML = '<img src="' + imgSrc + '" alt="' + altText + '" onclick="openOverlay(this.src, this.alt)" style="width:100%;max-height:480px;object-fit:contain;cursor:zoom-in;display:block;margin:0 auto;background:#000;">';
+  slide.className = "slide" + (isFirst ? " active" : "");
+  slide.innerHTML = '<img src="' + imgSrc + '" alt="' + (altText || "照片") + '" onclick="openOverlay(this.src, this.alt)" style="width:100%;max-height:480px;object-fit:contain;cursor:zoom-in;display:block;margin:0 auto;background:#000;">';
   track.appendChild(slide);
 
-  // 更新圆点
+  // 创建圆点
   if (dots) {
     var dot = document.createElement("span");
-    dot.className = "slide-dot";
-    dot.onclick = (function(idx) { return function() { goToSlide(idx); }; })(track.children.length - 1);
+    dot.className = "slide-dot" + (isFirst ? " active" : "");
+    (function(idx) {
+      dot.onclick = function() { adminGoTo(idx); adminResetAuto(); };
+    })(adminSlide.total);
     dots.appendChild(dot);
   }
 
-  // 更新计数
-  if (counter) {
-    var total = track.children.length;
-    counter.textContent = "1 / " + total;
+  adminSlide.total++;
+  if (counter) counter.textContent = (adminSlide.current + 1) + " / " + adminSlide.total;
+
+  // 首次出现时显示区块并绑定按钮
+  if (isFirst) {
+    if (section) section.style.display = "";
+
+    var prevBtn = document.getElementById("adminSlidePrev");
+    var nextBtn = document.getElementById("adminSlideNext");
+    if (prevBtn) prevBtn.onclick = function() { adminGoTo(adminSlide.current - 1); adminResetAuto(); };
+    if (nextBtn) nextBtn.onclick = function() { adminGoTo(adminSlide.current + 1); adminResetAuto(); };
+
+    // 触摸滑动支持
+    var container = document.getElementById("adminSlideshowContainer");
+    if (container) {
+      var touchStartX = 0;
+      container.addEventListener("touchstart", function(e) {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+      container.addEventListener("touchend", function(e) {
+        var diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) {
+          adminGoTo(diff > 0 ? adminSlide.current + 1 : adminSlide.current - 1);
+          adminResetAuto();
+        }
+      }, { passive: true });
+    }
+
+    adminStartAuto();
   }
+}
+
+// 保持旧名称兼容（批准照片后调用）
+function addSlideToShow(imgSrc, altText) {
+  addAdminAlbumPhoto(imgSrc, altText);
+}
+
+// 页面加载时从 Supabase 读取已批准的管理员上传照片
+async function loadApprovedAdminPhotos() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+
+  var result = await supabase
+    .from("pending_uploads")
+    .select("*")
+    .eq("status", "approved")
+    .order("uploaded_at", { ascending: false });
+
+  if (result.error || !result.data) return;
+
+  var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
+  if (!items.length) return;
+
+  items.forEach(function(item) {
+    var imgUrl;
+    if (item.file_path && item.file_path.startsWith("github:")) {
+      imgUrl = item.file_path.replace("github:", "");
+    } else {
+      imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    }
+    addAdminAlbumPhoto(imgUrl, item.title || "");
+  });
 }
 
 // ===== 用户上传功能 =====
@@ -2483,6 +2617,9 @@ async function rejectPendingItem(id, filePath) {
 
     // === 加载已发布的有缘启示 ===
     loadYuanfenItems();
+
+    // === 加载管理员精选相册 ===
+    loadApprovedAdminPhotos();
   }
 
   // ✅ 修改后的 checkLoginStatus：新用户首次登录自动跳转设置密码页
@@ -2905,6 +3042,19 @@ async function rejectPendingItem(id, filePath) {
   @media (max-width: 600px) {
     .slide img { max-height: 280px; }
     .slide-btn { padding: 8px 12px; font-size: 16px; }
+  }
+
+  /* ===== 管理员精选相册标签 ===== */
+  .admin-album-label {
+    max-width: 700px;
+    margin: 24px auto 4px;
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #003366;
+    letter-spacing: 0.05em;
+    text-align: left;
+    opacity: 0.8;
   }
 </style>
 
