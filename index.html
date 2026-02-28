@@ -1206,57 +1206,172 @@ document.addEventListener("keydown", function(e) {
         <div id="adminFileListContent" style="font-size:13px; color:#555;">点击刷新加载文件列表...</div>
       </div>
 
-      <!-- 精选相册管理 -->
-      <div style="margin-top:28px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h4 style="margin:0; color:#003366;">📸 精选相册管理 <span id="approvedPhotoBadge" style="background:#003366;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
-          <div style="display:flex;gap:6px;">
-            <button onclick="loadApprovedPhotoManager()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
-            <button onclick="deleteAllApprovedPhotos()" style="padding:5px 12px; background:#fff0f0; border:1px solid #faa; border-radius:5px; cursor:pointer; font-size:13px; color:#c00;">全部清空</button>
+      <!-- ===== 全能管理区域（Tab 切换） ===== -->
+      <div style="margin-top:32px; border-top:2px solid #003366; padding-top:20px;">
+        <h3 style="color:#003366; margin:0 0 14px;">⚡ 内容管理中心</h3>
+
+        <!-- Tab 导航 -->
+        <div id="adminTabNav" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
+          <button class="admin-tab-btn admin-tab-active" onclick="switchAdminTab('photos',this)">📸 精选相册</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('videos',this)">🎬 视频集</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('files',this)">📁 PPT/文件</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('yuanfen',this)">💞 有缘启示</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('pending_photo',this)">⏳ 待审核照片</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('pending_video',this)">⏳ 待审核视频</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('pending_file',this)">⏳ 待审核文件</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('pending_yuanfen',this)">⏳ 待审核启示</button>
+        </div>
+
+        <!-- Tab 内容面板 -->
+
+        <!-- 精选相册 -->
+        <div id="adminTab-photos" class="admin-tab-panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;">共 <b id="approvedPhotoBadge">-</b> 张</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="loadApprovedPhotoManager()" class="admin-action-btn">🔄 刷新</button>
+              <button onclick="deleteAllApprovedPhotos()" class="admin-danger-btn">🗑 全部清空</button>
+            </div>
           </div>
+          <div id="approvedPhotoManager" style="color:#aaa;font-size:13px;">加载中...</div>
         </div>
-        <div id="approvedPhotoManager" style="color:#555;">点击刷新加载精选相册...</div>
-      </div>
 
-      <!-- 待审核照片 -->
-      <div style="margin-top:28px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h4 style="margin:0; color:#c07000;">待审核照片 <span id="pendingBadge" style="background:#e07000;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
-          <button onclick="loadPendingUploads()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
+        <!-- 视频集 -->
+        <div id="adminTab-videos" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;">共 <b id="approvedVideoBadge">-</b> 个</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="loadApprovedVideoManager()" class="admin-action-btn">🔄 刷新</button>
+              <button onclick="deleteAllApprovedVideos()" class="admin-danger-btn">🗑 全部清空</button>
+            </div>
+          </div>
+          <div id="approvedVideoManager" style="color:#aaa;font-size:13px;">加载中...</div>
         </div>
-        <div id="pendingUploadsList" style="color:#555;">点击刷新加载待审核列表...</div>
-      </div>
 
-      <!-- 待审核视频 -->
-      <div style="margin-top:28px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h4 style="margin:0; color:#1a5c00;">待审核视频 <span id="pendingVideoBadge" style="background:#2a8c00;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
-          <button onclick="loadPendingVideos()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
+        <!-- PPT/文件 -->
+        <div id="adminTab-files" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;">共 <b id="approvedFileBadge">-</b> 个</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="loadApprovedFileManager()" class="admin-action-btn">🔄 刷新</button>
+              <button onclick="deleteAllApprovedFiles()" class="admin-danger-btn">🗑 全部清空</button>
+            </div>
+          </div>
+          <div id="approvedFileManager" style="color:#aaa;font-size:13px;">加载中...</div>
         </div>
-        <div id="pendingVideosList" style="color:#555;">点击刷新加载待审核视频...</div>
-      </div>
 
-      <!-- 待审核PPT/文件 -->
-      <div style="margin-top:28px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h4 style="margin:0; color:#00407a;">待审核PPT/文件 <span id="pendingPptBadge" style="background:#00518a;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
-          <button onclick="loadPendingPpts()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
+        <!-- 有缘启示 -->
+        <div id="adminTab-yuanfen" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;">共 <b id="approvedYuanfenBadge">-</b> 条</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="loadApprovedYuanfenManager()" class="admin-action-btn">🔄 刷新</button>
+              <button onclick="deleteAllApprovedYuanfen()" class="admin-danger-btn">🗑 全部清空</button>
+            </div>
+          </div>
+          <div id="approvedYuanfenManager" style="color:#aaa;font-size:13px;">加载中...</div>
         </div>
-        <div id="pendingPptsList" style="color:#555;">点击刷新加载待审核文件...</div>
-      </div>
 
-      <!-- 待审核有缘启示 -->
-      <div style="margin-top:28px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <h4 style="margin:0; color:#7a0060;">待审核有缘启示 <span id="pendingYuanfenBadge" style="background:#a0007a;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
-          <button onclick="loadPendingYuanfen()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
+        <!-- 待审核照片 -->
+        <div id="adminTab-pending_photo" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;"><b id="pendingBadge"></b></span>
+            <button onclick="loadPendingUploads()" class="admin-action-btn">🔄 刷新</button>
+          </div>
+          <div id="pendingUploadsList" style="color:#555;">加载中...</div>
         </div>
-        <div id="pendingYuanfenList" style="color:#555;">点击刷新加载待审核有缘启示...</div>
+
+        <!-- 待审核视频 -->
+        <div id="adminTab-pending_video" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;"><b id="pendingVideoBadge"></b></span>
+            <button onclick="loadPendingVideos()" class="admin-action-btn">🔄 刷新</button>
+          </div>
+          <div id="pendingVideosList" style="color:#555;">加载中...</div>
+        </div>
+
+        <!-- 待审核文件 -->
+        <div id="adminTab-pending_file" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;"><b id="pendingPptBadge"></b></span>
+            <button onclick="loadPendingPpts()" class="admin-action-btn">🔄 刷新</button>
+          </div>
+          <div id="pendingPptsList" style="color:#555;">加载中...</div>
+        </div>
+
+        <!-- 待审核有缘启示 -->
+        <div id="adminTab-pending_yuanfen" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;"><b id="pendingYuanfenBadge"></b></span>
+            <button onclick="loadPendingYuanfen()" class="admin-action-btn">🔄 刷新</button>
+          </div>
+          <div id="pendingYuanfenList" style="color:#555;">加载中...</div>
+        </div>
+
       </div>
 
     </div>
   </div>
 </div>
+
+<style>
+.admin-tab-btn {
+  padding: 7px 14px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background: #f5f5f5;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.admin-tab-btn:hover { background: #e0e8f4; }
+.admin-tab-active {
+  background: #003366 !important;
+  color: #fff !important;
+  border-color: #003366 !important;
+}
+.admin-tab-panel { animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.admin-action-btn {
+  padding: 5px 12px; font-size: 12px; cursor: pointer;
+  border: 1px solid #ccc; border-radius: 5px; background: #eee;
+}
+.admin-action-btn:hover { background: #ddd; }
+.admin-danger-btn {
+  padding: 5px 12px; font-size: 12px; cursor: pointer;
+  border: 1px solid #faa; border-radius: 5px;
+  background: #fff0f0; color: #c00;
+}
+.admin-danger-btn:hover { background: #ffe0e0; }
+.admin-mgr-card {
+  display: flex; gap: 10px; align-items: flex-start;
+  border: 1px solid #e0e0e0; border-radius: 8px;
+  padding: 10px; margin-bottom: 8px; background: #fff;
+}
+.admin-mgr-thumb {
+  width: 80px; height: 64px; object-fit: cover;
+  border-radius: 6px; border: 1px solid #ddd; cursor: zoom-in; flex-shrink: 0;
+}
+.admin-mgr-icon {
+  width: 80px; height: 64px; border-radius: 6px;
+  background: #eef3fa; display: flex; align-items: center;
+  justify-content: center; font-size: 28px; flex-shrink: 0;
+}
+.admin-mgr-body { flex: 1; min-width: 0; }
+.admin-mgr-title { font-size: 13px; font-weight: 600; color: #003366; margin-bottom: 3px; }
+.admin-mgr-meta { font-size: 11px; color: #aaa; margin-bottom: 6px; }
+.admin-mgr-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.admin-mgr-edit-btn {
+  padding: 4px 10px; font-size: 12px; cursor: pointer;
+  border: 1px solid #ccc; border-radius: 4px; background: #f5f5f5;
+}
+.admin-mgr-del-btn {
+  padding: 4px 10px; font-size: 12px; cursor: pointer;
+  border: 1px solid #faa; border-radius: 4px;
+  background: #fff0f0; color: #c00;
+}
+</style>
 
 <script>
 // ===== 管理员面板逻辑 =====
@@ -1277,6 +1392,9 @@ function verifyAdmin() {
     document.getElementById("admin-upload-area").style.display = "block";
     loadAdminFileList();
     loadApprovedPhotoManager();
+    loadApprovedVideoManager();
+    loadApprovedFileManager();
+    loadApprovedYuanfenManager();
     loadPendingUploads();
     loadPendingVideos();
     loadPendingPpts();
@@ -1526,6 +1644,189 @@ async function deleteAdminFile(filePath, folder) {
 }
 
 // ===== 精选相册管理（管理员可选择性删除）=====
+// ===== Tab 切换 =====
+function switchAdminTab(tab, btn) {
+  document.querySelectorAll('.admin-tab-panel').forEach(function(p) { p.style.display = 'none'; });
+  document.querySelectorAll('.admin-tab-btn').forEach(function(b) { b.classList.remove('admin-tab-active'); });
+  var panel = document.getElementById('adminTab-' + tab);
+  if (panel) panel.style.display = 'block';
+  if (btn) btn.classList.add('admin-tab-active');
+}
+
+// ===== 通用删除单条已发布内容 =====
+async function deleteApprovedItem(id, filePath, onDone) {
+  var supabase = window._supabaseClient;
+  await supabase.from("pending_uploads").delete().eq("id", id);
+  if (filePath && !filePath.startsWith("github:")) {
+    await supabase.storage.from("uploads").remove([filePath]);
+  }
+  if (onDone) onDone();
+}
+
+// ===== 通用编辑标题 =====
+async function editItemTitle(id, currentTitle, onDone) {
+  var newTitle = prompt("修改标题：", currentTitle);
+  if (newTitle === null || newTitle.trim() === "") return;
+  var supabase = window._supabaseClient;
+  await supabase.from("pending_uploads").update({ title: newTitle.trim() }).eq("id", id);
+  if (onDone) onDone();
+}
+
+// ===== 视频集管理 =====
+async function loadApprovedVideoManager() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("approvedVideoManager");
+  var badge = document.getElementById("approvedVideoBadge");
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "approved").eq("file_type", "video")
+    .order("uploaded_at", { ascending: false });
+
+  var items = (result.data || []);
+  if (badge) badge.textContent = items.length;
+  if (!items.length) { container.innerHTML = '<span style="color:#aaa;">暂无已发布视频</span>'; return; }
+
+  var html = '';
+  items.forEach(function(item) {
+    var url = item.file_path.startsWith("github:") ? item.file_path.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+item.file_path;
+    var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
+    html += '<div class="admin-mgr-card">' +
+      '<div class="admin-mgr-icon">🎬</div>' +
+      '<div class="admin-mgr-body">' +
+        '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
+        '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||"匿名") + ' · ' + date + '</div>' +
+        '<div class="admin-mgr-actions">' +
+          '<a href="' + url + '" target="_blank" class="admin-mgr-edit-btn" style="text-decoration:none;">▶ 预览</a>' +
+          '<button class="admin-mgr-edit-btn" onclick="editItemTitle('' + item.id + '','' + (item.title||'').replace(/'/g,"\'") + '',loadApprovedVideoManager)">✏️ 改标题</button>' +
+          '<button class="admin-mgr-del-btn" onclick="if(confirm('确认删除此视频？')){deleteApprovedItem('' + item.id + '','' + item.file_path.replace(/'/g,"\'") + '',loadApprovedVideoManager)}">🗑 删除</button>' +
+        '</div>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+async function deleteAllApprovedVideos() {
+  if (!confirm("确认清空全部已发布视频？")) return;
+  var supabase = window._supabaseClient;
+  var result = await supabase.from("pending_uploads").select("id,file_path").eq("status","approved").eq("file_type","video");
+  var items = result.data || [];
+  var ids = items.map(function(i){return i.id;});
+  var paths = items.map(function(i){return i.file_path;}).filter(function(p){return !p.startsWith("github:");});
+  if (ids.length) await supabase.from("pending_uploads").delete().in("id", ids);
+  if (paths.length) await supabase.storage.from("uploads").remove(paths);
+  alert("已清空 " + items.length + " 个视频");
+  loadApprovedVideoManager();
+}
+
+// ===== PPT/文件管理 =====
+async function loadApprovedFileManager() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("approvedFileManager");
+  var badge = document.getElementById("approvedFileBadge");
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "approved").eq("file_type", "document")
+    .order("uploaded_at", { ascending: false });
+
+  var items = (result.data || []);
+  if (badge) badge.textContent = items.length;
+  if (!items.length) { container.innerHTML = '<span style="color:#aaa;">暂无已发布文件</span>'; return; }
+
+  var html = '';
+  items.forEach(function(item) {
+    var url = item.file_path.startsWith("github:") ? item.file_path.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+item.file_path;
+    var ext = (item.file_name||"").split(".").pop().toUpperCase();
+    var icon = ext==="PDF" ? "📄" : (["PPT","PPTX"].includes(ext) ? "📊" : "📁");
+    var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
+    html += '<div class="admin-mgr-card">' +
+      '<div class="admin-mgr-icon">' + icon + '</div>' +
+      '<div class="admin-mgr-body">' +
+        '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
+        '<div class="admin-mgr-meta">' + (item.file_name||"") + ' · ' + date + '</div>' +
+        '<div class="admin-mgr-actions">' +
+          '<a href="' + url + '" target="_blank" class="admin-mgr-edit-btn" style="text-decoration:none;">🔗 查看</a>' +
+          '<button class="admin-mgr-edit-btn" onclick="editItemTitle('' + item.id + '','' + (item.title||'').replace(/'/g,"\'") + '',loadApprovedFileManager)">✏️ 改标题</button>' +
+          '<button class="admin-mgr-del-btn" onclick="if(confirm('确认删除此文件？')){deleteApprovedItem('' + item.id + '','' + item.file_path.replace(/'/g,"\'") + '',loadApprovedFileManager)}">🗑 删除</button>' +
+        '</div>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+async function deleteAllApprovedFiles() {
+  if (!confirm("确认清空全部已发布文件？")) return;
+  var supabase = window._supabaseClient;
+  var result = await supabase.from("pending_uploads").select("id,file_path").eq("status","approved").eq("file_type","document");
+  var items = result.data || [];
+  var ids = items.map(function(i){return i.id;});
+  var paths = items.map(function(i){return i.file_path;}).filter(function(p){return !p.startsWith("github:");});
+  if (ids.length) await supabase.from("pending_uploads").delete().in("id", ids);
+  if (paths.length) await supabase.storage.from("uploads").remove(paths);
+  alert("已清空 " + items.length + " 个文件");
+  loadApprovedFileManager();
+}
+
+// ===== 有缘启示管理 =====
+async function loadApprovedYuanfenManager() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("approvedYuanfenManager");
+  var badge = document.getElementById("approvedYuanfenBadge");
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "approved").eq("file_type", "yuanfen")
+    .order("uploaded_at", { ascending: false });
+
+  var items = (result.data || []);
+  if (badge) badge.textContent = items.length;
+  if (!items.length) { container.innerHTML = '<span style="color:#aaa;">暂无已发布有缘启示</span>'; return; }
+
+  var html = '';
+  items.forEach(function(item) {
+    var url = supabaseUrl+"/storage/v1/object/public/uploads/"+item.file_path;
+    var ext = (item.file_name||"").split(".").pop().toUpperCase();
+    var isImg = ["JPG","JPEG","PNG","GIF"].includes(ext);
+    var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
+    html += '<div class="admin-mgr-card">';
+    if (isImg) {
+      html += '<img class="admin-mgr-thumb" src="' + url + '" onclick="openOverlay('' + url + '','')">';
+    } else {
+      html += '<div class="admin-mgr-icon">💌</div>';
+    }
+    html += '<div class="admin-mgr-body">' +
+        '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
+        '<div class="admin-mgr-meta">发布者：' + (item.uploaded_by||"匿名") + ' · ' + date + '</div>' +
+        '<div class="admin-mgr-actions">' +
+          '<a href="' + url + '" target="_blank" class="admin-mgr-edit-btn" style="text-decoration:none;">🔗 查看</a>' +
+          '<button class="admin-mgr-edit-btn" onclick="editItemTitle('' + item.id + '','' + (item.title||'').replace(/'/g,"\'") + '',loadApprovedYuanfenManager)">✏️ 改标题</button>' +
+          '<button class="admin-mgr-del-btn" onclick="if(confirm('确认删除此启示？')){deleteApprovedItem('' + item.id + '','' + item.file_path.replace(/'/g,"\'") + '',loadApprovedYuanfenManager)}">🗑 删除</button>' +
+        '</div>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+async function deleteAllApprovedYuanfen() {
+  if (!confirm("确认清空全部已发布有缘启示？")) return;
+  var supabase = window._supabaseClient;
+  var result = await supabase.from("pending_uploads").select("id,file_path").eq("status","approved").eq("file_type","yuanfen");
+  var items = result.data || [];
+  var ids = items.map(function(i){return i.id;});
+  var paths = items.map(function(i){return i.file_path;}).filter(function(p){return !p.startsWith("github:");});
+  if (ids.length) await supabase.from("pending_uploads").delete().in("id", ids);
+  if (paths.length) await supabase.storage.from("uploads").remove(paths);
+  alert("已清空 " + items.length + " 条有缘启示");
+  loadApprovedYuanfenManager();
+}
+
 async function loadApprovedPhotoManager() {
   var supabase = window._supabaseClient;
   if (!supabase) return;
@@ -1554,55 +1855,38 @@ async function loadApprovedPhotoManager() {
     return;
   }
 
-  var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:4px;">';
+  var html = '';
   items.forEach(function(item) {
     var imgUrl = item.file_path.startsWith("github:")
       ? item.file_path.replace("github:", "")
       : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
-    var escapedId = item.id;
-    var escapedPath = item.file_path.replace(/'/g, "\'");
-    html +=
-      '<div style="border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.06);">' +
-        '<img src="' + imgUrl + '" style="width:100%;height:90px;object-fit:cover;display:block;cursor:zoom-in;" onclick="openOverlay('' + imgUrl + '','' + (item.title||'') + '')">' +
-        '<div style="padding:6px 8px;">' +
-          '<div style="font-size:12px;font-weight:600;color:#003366;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="' + (item.title||'') + '">' + (item.title || '未命名') + '</div>' +
-          '<div style="font-size:11px;color:#aaa;margin-bottom:6px;">' + date + '</div>' +
-          '<button onclick="deleteSingleApprovedPhoto('' + escapedId + '','' + escapedPath + '',this)" ' +
-            'style="width:100%;padding:4px;background:#fff0f0;border:1px solid #fcc;border-radius:4px;font-size:12px;color:#c00;cursor:pointer;">🗑 删除</button>' +
+    var safeTitle = (item.title||"").replace(/'/g, "\'");
+    var safePath = item.file_path.replace(/'/g, "\'");
+    html += '<div class="admin-mgr-card">' +
+      '<img class="admin-mgr-thumb" src="' + imgUrl + '" onclick="openOverlay(\'"+imgUrl+"\',\'\')">' +
+      '<div class="admin-mgr-body">' +
+        '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
+        '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||"匿名") + ' · ' + date + '</div>' +
+        '<div class="admin-mgr-actions">' +
+          '<button class="admin-mgr-edit-btn" onclick="editItemTitle(\''+ item.id +'\',\'' + safeTitle + '\',loadApprovedPhotoManager)">✏️ 改标题</button>' +
+          '<button class="admin-mgr-del-btn" onclick="deleteApprovedPhotoItem(\''+ item.id +'\',\'' + safePath + '\')">🗑 删除</button>' +
         '</div>' +
-      '</div>';
+      '</div></div>';
   });
-  html += '</div>';
-  container.innerHTML = html;
+  container.innerHTML = html || '<span style="color:#aaa;">暂无照片</span>';
 }
 
-async function deleteSingleApprovedPhoto(id, filePath, btn) {
+async function deleteApprovedPhotoItem(id, filePath) {
   if (!confirm("确认从精选相册删除这张照片？")) return;
   var supabase = window._supabaseClient;
-  btn.textContent = "删除中..."; btn.disabled = true;
-
-  // 删数据库记录
-  var dbResult = await supabase.from("pending_uploads").delete().eq("id", id);
-  if (dbResult.error) {
-    alert("删除失败：" + dbResult.error.message);
-    btn.textContent = "🗑 删除"; btn.disabled = false;
-    return;
-  }
-
-  // 如果是 Supabase Storage 文件（非 github: 路径），同步删除文件
+  await supabase.from("pending_uploads").delete().eq("id", id);
   if (!filePath.startsWith("github:")) {
     await supabase.storage.from("uploads").remove([filePath]);
   }
-
-  // 从精选相册轮播中移除
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
-  var imgUrl = filePath.startsWith("github:")
-    ? filePath.replace("github:", "")
-    : supabaseUrl + "/storage/v1/object/public/uploads/" + filePath;
+  var imgUrl = filePath.startsWith("github:") ? filePath.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+filePath;
   removeAdminAlbumPhoto(imgUrl);
-
-  // 刷新管理列表
   loadApprovedPhotoManager();
 }
 
