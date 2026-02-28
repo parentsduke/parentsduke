@@ -1206,6 +1206,18 @@ document.addEventListener("keydown", function(e) {
         <div id="adminFileListContent" style="font-size:13px; color:#555;">点击刷新加载文件列表...</div>
       </div>
 
+      <!-- 精选相册管理 -->
+      <div style="margin-top:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h4 style="margin:0; color:#003366;">📸 精选相册管理 <span id="approvedPhotoBadge" style="background:#003366;color:#fff;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:6px;"></span></h4>
+          <div style="display:flex;gap:6px;">
+            <button onclick="loadApprovedPhotoManager()" style="padding:5px 12px; background:#eee; border:1px solid #ccc; border-radius:5px; cursor:pointer; font-size:13px;">刷新</button>
+            <button onclick="deleteAllApprovedPhotos()" style="padding:5px 12px; background:#fff0f0; border:1px solid #faa; border-radius:5px; cursor:pointer; font-size:13px; color:#c00;">全部清空</button>
+          </div>
+        </div>
+        <div id="approvedPhotoManager" style="color:#555;">点击刷新加载精选相册...</div>
+      </div>
+
       <!-- 待审核照片 -->
       <div style="margin-top:28px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -1264,6 +1276,7 @@ function verifyAdmin() {
     document.getElementById("admin-login-box").style.display = "none";
     document.getElementById("admin-upload-area").style.display = "block";
     loadAdminFileList();
+    loadApprovedPhotoManager();
     loadPendingUploads();
     loadPendingVideos();
     loadPendingPpts();
@@ -1510,6 +1523,127 @@ async function deleteAdminFile(filePath, folder) {
 
   alert("已删除");
   loadAdminFileList();
+}
+
+// ===== 精选相册管理（管理员可选择性删除）=====
+async function loadApprovedPhotoManager() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("approvedPhotoManager");
+  var badge = document.getElementById("approvedPhotoBadge");
+  if (!container) return;
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var result = await supabase
+    .from("pending_uploads")
+    .select("*")
+    .eq("status", "approved")
+    .order("uploaded_at", { ascending: false });
+
+  if (result.error) {
+    container.innerHTML = '<span style="color:crimson;">加载失败：' + result.error.message + '</span>';
+    return;
+  }
+
+  var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
+  if (badge) badge.textContent = items.length > 0 ? items.length + " 张" : "0 张";
+
+  if (!items.length) {
+    container.innerHTML = '<span style="color:#aaa;">精选相册暂无照片</span>';
+    return;
+  }
+
+  var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:4px;">';
+  items.forEach(function(item) {
+    var imgUrl = item.file_path.startsWith("github:")
+      ? item.file_path.replace("github:", "")
+      : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
+    var escapedId = item.id;
+    var escapedPath = item.file_path.replace(/'/g, "\'");
+    html +=
+      '<div style="border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.06);">' +
+        '<img src="' + imgUrl + '" style="width:100%;height:90px;object-fit:cover;display:block;cursor:zoom-in;" onclick="openOverlay('' + imgUrl + '','' + (item.title||'') + '')">' +
+        '<div style="padding:6px 8px;">' +
+          '<div style="font-size:12px;font-weight:600;color:#003366;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="' + (item.title||'') + '">' + (item.title || '未命名') + '</div>' +
+          '<div style="font-size:11px;color:#aaa;margin-bottom:6px;">' + date + '</div>' +
+          '<button onclick="deleteSingleApprovedPhoto('' + escapedId + '','' + escapedPath + '',this)" ' +
+            'style="width:100%;padding:4px;background:#fff0f0;border:1px solid #fcc;border-radius:4px;font-size:12px;color:#c00;cursor:pointer;">🗑 删除</button>' +
+        '</div>' +
+      '</div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+async function deleteSingleApprovedPhoto(id, filePath, btn) {
+  if (!confirm("确认从精选相册删除这张照片？")) return;
+  var supabase = window._supabaseClient;
+  btn.textContent = "删除中..."; btn.disabled = true;
+
+  // 删数据库记录
+  var dbResult = await supabase.from("pending_uploads").delete().eq("id", id);
+  if (dbResult.error) {
+    alert("删除失败：" + dbResult.error.message);
+    btn.textContent = "🗑 删除"; btn.disabled = false;
+    return;
+  }
+
+  // 如果是 Supabase Storage 文件（非 github: 路径），同步删除文件
+  if (!filePath.startsWith("github:")) {
+    await supabase.storage.from("uploads").remove([filePath]);
+  }
+
+  // 从精选相册轮播中移除
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var imgUrl = filePath.startsWith("github:")
+    ? filePath.replace("github:", "")
+    : supabaseUrl + "/storage/v1/object/public/uploads/" + filePath;
+  removeAdminAlbumPhoto(imgUrl);
+
+  // 刷新管理列表
+  loadApprovedPhotoManager();
+}
+
+async function deleteAllApprovedPhotos() {
+  if (!confirm("确认清空精选相册全部照片？\n此操作不可恢复。")) return;
+  var supabase = window._supabaseClient;
+
+  // 先查出所有 approved 图片记录
+  var result = await supabase
+    .from("pending_uploads")
+    .select("id,file_path,file_type")
+    .eq("status", "approved");
+
+  if (result.error || !result.data) { alert("获取列表失败"); return; }
+
+  var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
+
+  // 收集 Supabase Storage 路径（非 github: 的）
+  var storagePaths = items
+    .map(function(i) { return i.file_path; })
+    .filter(function(p) { return !p.startsWith("github:"); });
+
+  // 删数据库
+  var ids = items.map(function(i) { return i.id; });
+  if (ids.length) await supabase.from("pending_uploads").delete().in("id", ids);
+
+  // 删 Storage 文件
+  if (storagePaths.length) await supabase.storage.from("uploads").remove(storagePaths);
+
+  // 清空精选相册轮播
+  var track = document.getElementById("adminSlideshowTrack");
+  var dots  = document.getElementById("adminSlideDots");
+  var section = document.getElementById("adminAlbumSection");
+  if (track) track.innerHTML = "";
+  if (dots)  dots.innerHTML = "";
+  clearInterval(adminSlide.timer);
+  adminSlide.current = 0; adminSlide.total = 0;
+  if (section) section.style.display = "none";
+
+  alert("已清空精选相册（共 " + items.length + " 张）");
+  loadApprovedPhotoManager();
 }
 
 // 从精选相册轮播中移除指定 URL 的 slide
