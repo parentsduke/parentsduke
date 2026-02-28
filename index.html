@@ -1138,7 +1138,7 @@ document.addEventListener("keydown", function(e) {
   </div>
 </template>
 
-<!-- ===== 管理员上传区域 ===== -->
+  <!-- ===== 管理员上传区域 ===== -->
 <div id="admin-panel-wrapper">
   <!-- 管理员入口按钮（点击展开） -->
   <div style="text-align:center; padding: 12px 0 0;">
@@ -1313,6 +1313,7 @@ document.addEventListener("keydown", function(e) {
     </div>
   </div>
 </div>
+
 
 <style>
 .admin-tab-btn {
@@ -1672,6 +1673,58 @@ async function editItemTitle(id, currentTitle, onDone) {
   if (onDone) onDone();
 }
 
+// 通用：从按钮找到卡片的data属性来获取id/path/title
+function adminGetCard(btn) {
+  return btn.closest('[data-id]');
+}
+
+async function adminEditTitle(btn) {
+  var card = adminGetCard(btn);
+  var id = card.dataset.id;
+  var currentTitle = decodeURIComponent(card.dataset.title || "");
+  var type = card.dataset.type;
+  var newTitle = prompt("修改标题：", currentTitle);
+  if (newTitle === null || newTitle.trim() === "") return;
+  var supabase = window._supabaseClient;
+  await supabase.from("pending_uploads").update({ title: newTitle.trim() }).eq("id", id);
+  // 更新显示
+  var titleEl = card.querySelector('.admin-mgr-title');
+  if (titleEl) titleEl.textContent = newTitle.trim();
+  card.dataset.title = encodeURIComponent(newTitle.trim());
+}
+
+async function adminDeleteItem(btn) {
+  var card = adminGetCard(btn);
+  var type = card.dataset.type || 'photo';
+  var label = type === 'photo' ? '照片' : type === 'video' ? '视频' : type === 'document' ? '文件' : '启示';
+  if (!confirm("确认删除此" + label + "？")) return;
+  var card = adminGetCard(btn);
+  var id = card.dataset.id;
+  var filePath = decodeURIComponent(card.dataset.path || "");
+  var supabase = window._supabaseClient;
+  btn.textContent = "删除中..."; btn.disabled = true;
+  await supabase.from("pending_uploads").delete().eq("id", id);
+  if (filePath && !filePath.startsWith("github:")) {
+    await supabase.storage.from("uploads").remove([filePath]);
+  }
+  // 如果是照片，从精选相册轮播移除
+  if (type === 'photo') {
+    var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+    var imgUrl = filePath.startsWith("github:") ? filePath.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+filePath;
+    removeAdminAlbumPhoto(imgUrl);
+  }
+  // 从管理列表中移除卡片
+  card.style.transition = "opacity 0.3s";
+  card.style.opacity = "0";
+  setTimeout(function() { card.remove(); }, 300);
+  // 更新badge
+  var reloader = type === 'photo' ? loadApprovedPhotoManager : type === 'video' ? loadApprovedVideoManager : type === 'document' ? loadApprovedFileManager : loadApprovedYuanfenManager;
+  // 不重新加载整个列表，只更新badge数字
+  var badgeMap = {photo:'approvedPhotoBadge', video:'approvedVideoBadge', document:'approvedFileBadge', yuanfen:'approvedYuanfenBadge'};
+  var badge = document.getElementById(badgeMap[type]);
+  if (badge) { var n = parseInt(badge.textContent)||1; badge.textContent = Math.max(0, n-1) + (type==='photo'?' 张':' 个'); }
+}
+
 // ===== 视频集管理 =====
 async function loadApprovedVideoManager() {
   var supabase = window._supabaseClient;
@@ -1693,15 +1746,16 @@ async function loadApprovedVideoManager() {
   items.forEach(function(item) {
     var url = item.file_path.startsWith("github:") ? item.file_path.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+item.file_path;
     var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
-    html += '<div class="admin-mgr-card">' +
+    var idx = items.indexOf(item);
+    html += '<div class="admin-mgr-card" data-id="' + item.id + '" data-path="' + encodeURIComponent(item.file_path) + '" data-title="' + encodeURIComponent(item.title||"") + '" data-type="video">' +
       '<div class="admin-mgr-icon">🎬</div>' +
       '<div class="admin-mgr-body">' +
         '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
         '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||"匿名") + ' · ' + date + '</div>' +
         '<div class="admin-mgr-actions">' +
           '<a href="' + url + '" target="_blank" class="admin-mgr-edit-btn" style="text-decoration:none;">▶ 预览</a>' +
-          '<button class="admin-mgr-edit-btn" onclick="editItemTitle('' + item.id + '','' + (item.title||'').replace(/'/g,"\'") + '',loadApprovedVideoManager)">✏️ 改标题</button>' +
-          '<button class="admin-mgr-del-btn" onclick="if(confirm('确认删除此视频？')){deleteApprovedItem('' + item.id + '','' + item.file_path.replace(/'/g,"\'") + '',loadApprovedVideoManager)}">🗑 删除</button>' +
+          '<button class="admin-mgr-edit-btn" onclick="adminEditTitle(this)">✏️ 改标题</button>' +
+          '<button class="admin-mgr-del-btn" onclick="adminDeleteItem(this)">🗑 删除</button>' +
         '</div>' +
       '</div></div>';
   });
@@ -1744,15 +1798,15 @@ async function loadApprovedFileManager() {
     var ext = (item.file_name||"").split(".").pop().toUpperCase();
     var icon = ext==="PDF" ? "📄" : (["PPT","PPTX"].includes(ext) ? "📊" : "📁");
     var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
-    html += '<div class="admin-mgr-card">' +
+    html += '<div class="admin-mgr-card" data-id="' + item.id + '" data-path="' + encodeURIComponent(item.file_path) + '" data-title="' + encodeURIComponent(item.title||"") + '" data-type="document">' +
       '<div class="admin-mgr-icon">' + icon + '</div>' +
       '<div class="admin-mgr-body">' +
         '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
         '<div class="admin-mgr-meta">' + (item.file_name||"") + ' · ' + date + '</div>' +
         '<div class="admin-mgr-actions">' +
           '<a href="' + url + '" target="_blank" class="admin-mgr-edit-btn" style="text-decoration:none;">🔗 查看</a>' +
-          '<button class="admin-mgr-edit-btn" onclick="editItemTitle('' + item.id + '','' + (item.title||'').replace(/'/g,"\'") + '',loadApprovedFileManager)">✏️ 改标题</button>' +
-          '<button class="admin-mgr-del-btn" onclick="if(confirm('确认删除此文件？')){deleteApprovedItem('' + item.id + '','' + item.file_path.replace(/'/g,"\'") + '',loadApprovedFileManager)}">🗑 删除</button>' +
+          '<button class="admin-mgr-edit-btn" onclick="adminEditTitle(this)">✏️ 改标题</button>' +
+          '<button class="admin-mgr-del-btn" onclick="adminDeleteItem(this)">🗑 删除</button>' +
         '</div>' +
       '</div></div>';
   });
@@ -1795,9 +1849,9 @@ async function loadApprovedYuanfenManager() {
     var ext = (item.file_name||"").split(".").pop().toUpperCase();
     var isImg = ["JPG","JPEG","PNG","GIF"].includes(ext);
     var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
-    html += '<div class="admin-mgr-card">';
+    html += '<div class="admin-mgr-card" data-id="' + item.id + '" data-path="' + encodeURIComponent(item.file_path) + '" data-title="' + encodeURIComponent(item.title||"") + '" data-type="yuanfen">';
     if (isImg) {
-      html += '<img class="admin-mgr-thumb" src="' + url + '" onclick="openOverlay('' + url + '','')">';
+      html += '<img class="admin-mgr-thumb" src="' + url + '" onclick="openOverlay(this.src,this.alt)" alt="' + (item.title||"") + '">' ;
     } else {
       html += '<div class="admin-mgr-icon">💌</div>';
     }
@@ -1806,8 +1860,8 @@ async function loadApprovedYuanfenManager() {
         '<div class="admin-mgr-meta">发布者：' + (item.uploaded_by||"匿名") + ' · ' + date + '</div>' +
         '<div class="admin-mgr-actions">' +
           '<a href="' + url + '" target="_blank" class="admin-mgr-edit-btn" style="text-decoration:none;">🔗 查看</a>' +
-          '<button class="admin-mgr-edit-btn" onclick="editItemTitle('' + item.id + '','' + (item.title||'').replace(/'/g,"\'") + '',loadApprovedYuanfenManager)">✏️ 改标题</button>' +
-          '<button class="admin-mgr-del-btn" onclick="if(confirm('确认删除此启示？')){deleteApprovedItem('' + item.id + '','' + item.file_path.replace(/'/g,"\'") + '',loadApprovedYuanfenManager)}">🗑 删除</button>' +
+          '<button class="admin-mgr-edit-btn" onclick="adminEditTitle(this)">✏️ 改标题</button>' +
+          '<button class="admin-mgr-del-btn" onclick="adminDeleteItem(this)">🗑 删除</button>' +
         '</div>' +
       '</div></div>';
   });
@@ -1869,8 +1923,8 @@ async function loadApprovedPhotoManager() {
         '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
         '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||"匿名") + ' · ' + date + '</div>' +
         '<div class="admin-mgr-actions">' +
-          '<button class="admin-mgr-edit-btn" onclick="editItemTitle(\''+ item.id +'\',\'' + safeTitle + '\',loadApprovedPhotoManager)">✏️ 改标题</button>' +
-          '<button class="admin-mgr-del-btn" onclick="deleteApprovedPhotoItem(\''+ item.id +'\',\'' + safePath + '\')">🗑 删除</button>' +
+          '<button class="admin-mgr-edit-btn" onclick="adminEditTitle(this)">✏️ 改标题</button>' +
+          '<button class="admin-mgr-del-btn" onclick="adminDeleteItem(this)">🗑 删除</button>' +
         '</div>' +
       '</div></div>';
   });
