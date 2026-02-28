@@ -1355,23 +1355,49 @@ async function startAdminUpload() {
 
     if (result.error) {
       if (statusEl) { statusEl.textContent = "失败"; statusEl.style.color = "crimson"; }
-    } else {
-      if (statusEl) { statusEl.textContent = "成功"; statusEl.style.color = "green"; }
+      continue;
+    }
 
-      // 如果是图片分类，自动写入 pending_uploads（直接 approved）并加入精选相册
-      if (folder === "images" && file.type.startsWith("image/")) {
-        var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + filePath;
-        var displayName = file.name.replace(/\.[^.]+$/, "");
-        await supabase.from("pending_uploads").insert({
-          file_path: filePath,
-          file_name: file.name,
-          title: displayName,
-          uploaded_by: "admin",
-          status: "approved",
-          file_type: "image"
-        });
-        addAdminAlbumPhoto(pubUrl, displayName);
-      }
+    // 非图片分类：直接完成
+    if (!(folder === "images" && file.type.startsWith("image/"))) {
+      if (statusEl) { statusEl.textContent = "成功"; statusEl.style.color = "green"; }
+      continue;
+    }
+
+    // 图片分类：先写一条 pending 记录，再调 Edge Function 转存到 GitHub
+    if (statusEl) { statusEl.textContent = "转存 GitHub 中..."; statusEl.style.color = "#c07000"; }
+
+    var displayName = file.name.replace(/\.[^.]+$/, "");
+
+    // 插入临时记录（pending），获取 id 供 Edge Function 使用
+    var dbInsert = await supabase.from("pending_uploads").insert({
+      file_path: filePath,
+      file_name: file.name,
+      title: displayName,
+      uploaded_by: "admin",
+      status: "pending",
+      file_type: "image"
+    }).select().single();
+
+    if (dbInsert.error) {
+      if (statusEl) { statusEl.textContent = "数据库写入失败"; statusEl.style.color = "crimson"; }
+      continue;
+    }
+
+    var pendingId = dbInsert.data.id;
+
+    // 调用 Edge Function 转存到 GitHub（会自动更新记录状态为 approved，file_path 改为 github: URL）
+    try {
+      var ghUrl = await uploadToGitHubViaEdge(pendingId, "images");
+      if (statusEl) { statusEl.textContent = "成功 ✓ GitHub"; statusEl.style.color = "green"; }
+      // 加入精选相册（使用 GitHub URL）
+      addAdminAlbumPhoto(ghUrl, displayName);
+    } catch (e) {
+      // Edge Function 失败时回退：直接用 Supabase URL，并把状态改为 approved
+      var fallbackUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + filePath;
+      await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", pendingId);
+      if (statusEl) { statusEl.textContent = "GitHub失败，已存Supabase"; statusEl.style.color = "#c07000"; }
+      addAdminAlbumPhoto(fallbackUrl, displayName);
     }
   }
 
@@ -1426,7 +1452,7 @@ async function loadAdminFileList() {
       '<td style="padding:7px 8px;text-align:center;">' +
         '<a href="'+pubUrl+'" target="_blank" style="color:#003366;text-decoration:none;margin-right:8px;">🔗 链接</a>' +
         '<button onclick="copyAdminUrl(\''+pubUrl+'\')" style="padding:3px 8px;font-size:12px;cursor:pointer;border:1px solid #ccc;border-radius:4px;background:#fff;">复制链接</button>' +
-        ' <button onclick="deleteAdminFile(\''+filePath+'\')" style="padding:3px 8px;font-size:12px;cursor:pointer;border:1px solid #faa;border-radius:4px;background:#fff8f8;color:#c00;">删除</button>' +
+        ' <button onclick="deleteAdminFile(\''+filePath+'\',\''+item.folder+'\')" style="padding:3px 8px;font-size:12px;cursor:pointer;border:1px solid #faa;border-radius:4px;background:#fff8f8;color:#c00;">' + (item.folder === 'images' ? '🗑 删除（含相册）' : '删除') + '</button>' +
       '</td></tr>';
   });
   html += '</table>';
@@ -1439,16 +1465,97 @@ function copyAdminUrl(url) {
   });
 }
 
-async function deleteAdminFile(filePath) {
-  if (!confirm("确认删除此文件？\n" + filePath)) return;
+async function deleteAdminFile(filePath, folder) {
+  var isImage = folder === "images";
+  var msg = isImage
+    ? "确认删除此图片？\n将同时从精选相册中移除。\n\n" + filePath
+    : "确认删除此文件？\n" + filePath;
+  if (!confirm(msg)) return;
+
   var supabase = window._supabaseClient;
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+
+  // 1. 删除 Supabase Storage 文件
   var result = await supabase.storage.from("uploads").remove([filePath]);
   if (result.error) {
     alert("删除失败：" + result.error.message);
-  } else {
-    alert("文件已删除");
-    loadAdminFileList();
+    return;
   }
+
+  // 2. 如果是图片，同步删除 pending_uploads 表记录
+  //    数据库里 file_path 可能是原始路径，也可能是 github:URL（Edge Function 转存后会更新）
+  if (isImage) {
+    var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + filePath;
+
+    // 先尝试匹配原始路径，再尝试匹配 github: 前缀
+    var delResult = await supabase.from("pending_uploads").delete().eq("file_path", filePath);
+    if (!delResult.error) {
+      // 也尝试删除可能存在的 github: 格式记录（Edge Function 转存后 file_path 被改写）
+      await supabase.from("pending_uploads").delete().like("file_path", "github:%").eq("file_name", filePath.split("/").pop());
+    }
+
+    // 3. 从精选相册轮播中移除
+    removeAdminAlbumPhoto(pubUrl);
+    // 同时尝试移除 GitHub raw URL（如果 Edge Function 成功转存过）
+    var track = document.getElementById("adminSlideshowTrack");
+    if (track) {
+      Array.from(track.querySelectorAll(".slide img")).forEach(function(img) {
+        var fileName = filePath.split("/").pop();
+        if (img.src && img.src.includes(fileName)) {
+          removeAdminAlbumPhoto(img.src);
+        }
+      });
+    }
+  }
+
+  alert("已删除");
+  loadAdminFileList();
+}
+
+// 从精选相册轮播中移除指定 URL 的 slide
+function removeAdminAlbumPhoto(imgSrc) {
+  var track = document.getElementById("adminSlideshowTrack");
+  var dots  = document.getElementById("adminSlideDots");
+  var counter = document.getElementById("adminSlideCounter");
+  var section = document.getElementById("adminAlbumSection");
+  if (!track) return;
+
+  var slides = Array.from(track.querySelectorAll(".slide"));
+  var idx = -1;
+  slides.forEach(function(slide, i) {
+    var img = slide.querySelector("img");
+    if (img && img.src === imgSrc) idx = i;
+  });
+  if (idx === -1) return;
+
+  // 移除 slide 和对应圆点
+  track.children[idx].remove();
+  if (dots && dots.children[idx]) dots.children[idx].remove();
+
+  adminSlide.total--;
+
+  if (adminSlide.total === 0) {
+    // 没有照片了，隐藏整个区块
+    clearInterval(adminSlide.timer);
+    if (section) section.style.display = "none";
+    return;
+  }
+
+  // 重建圆点的 onclick（索引已变）
+  Array.from(dots.children).forEach(function(dot, i) {
+    dot.onclick = function() { adminGoTo(i); adminResetAuto(); };
+  });
+
+  // 修正 current 指针
+  if (adminSlide.current >= adminSlide.total) adminSlide.current = adminSlide.total - 1;
+
+  // 确保有一张是 active
+  var remaining = track.querySelectorAll(".slide");
+  remaining.forEach(function(s) { s.classList.remove("active"); });
+  Array.from(dots.children).forEach(function(d) { d.classList.remove("active"); });
+  remaining[adminSlide.current].classList.add("active");
+  if (dots.children[adminSlide.current]) dots.children[adminSlide.current].classList.add("active");
+  if (counter) counter.textContent = (adminSlide.current + 1) + " / " + adminSlide.total;
 }
 
 // ===== 审核功能 =====
