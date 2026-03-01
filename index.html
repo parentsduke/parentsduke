@@ -2317,11 +2317,94 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>生病了</span><span class="accordion-arrow">▸</span>
         </button>
-        <ul class="accordion-body">
-          <li><a href="https://students.duke.edu/wellness/studenthealth/" target="_blank">医务室</a></li>
-          <li><a href="https://www.dukehealth.org/locations/duke-urgent-care-croasdaile" target="_blank">Urgent_Care</a></li>
-          <li><a href="过敏.html" target="_blank">过敏</a></li>
-        </ul>
+        <div class="accordion-body" style="padding:8px 0 10px 0;">
+
+          <!-- 就医流程总览 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>就医流程：第一步怎么办</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/wellness/studenthealth/" target="_blank">Duke Student Health官网(第一站，大多数问题都能处理)</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/make-an-appointment/" target="_blank">如何预约：电话(919)681-9355 按1预约当天或未来就诊</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/services/" target="_blank">Student Health提供的服务清单(感冒/皮肤/运动伤/妇科/慢病等)</a>
+              <a href="https://dukechronicle.com/article/duke-university-student-health-services-chronquiry-sick-visits-physical-therapy-mental-health-vaccinations-nutrition-consultations-allergy-clinic-pharmacy-20240911" target="_blank">Duke Chronicle：学生就医完整指南(2024年最新)</a>
+            </div>
+          </div>
+
+          <!-- Student Health详情 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Duke Student Health医务室</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/wellness/studenthealth/" target="_blank">Student Health官网 — 305 Towerview Rd，Student Wellness Center 2楼</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/make-an-appointment/" target="_blank">预约方式：电话(919)681-9355 按1；当天就诊尽早打电话</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/services/" target="_blank">可治疾病：感冒发烧/咽喉痛/胃肠炎/皮疹/扭伤/尿路感染等</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/services/" target="_blank">含Student Health Fee的免费项目：快速链球菌/单核细胞/流感检测+物理治疗+营养咨询</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/services/" target="_blank">视频问诊Video Visit：需在北卡州内，用Chrome/Firefox，电话(919)681-9355 按2</a>
+              <a href="https://wellness.duke.edu/pharmacy" target="_blank">Duke Campus Center Pharmacy校内药房(Wellness Center 1楼，可取处方药)</a>
+            </div>
+          </div>
+
+          <!-- 营业时间与下班后怎么办 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>营业时间与下班后急症处理</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/wellness/studenthealth/" target="_blank">门诊时间：周一/二/三/五 8:00am-4:30pm；周四 9:00am-4:30pm；午休12:00-12:30；周末不开放</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/make-an-appointment/" target="_blank">下班后护士电话咨询：(919)681-9355 按2 — 非急症症状指导，24小时可拨</a>
+              <a href="https://www.dukehealth.org/locations/duke-urgent-care-croasdaile" target="_blank">Duke Urgent Care — Croasdaile(最近的急诊外科，7天开放，无需预约)</a>
+              <a href="https://www.dukehealth.org/find-a-location?type=urgent-care" target="_blank">Duke Urgent Care各点等待时间查询与网上占位(Reserve Your Spot)</a>
+              <a href="https://www.dukehealth.org/" target="_blank">Duke University Hospital急诊室(真正紧急情况，24小时)</a>
+            </div>
+          </div>
+
+          <!-- 紧急情况 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>紧急情况与急救电话</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://police.duke.edu/" target="_blank">911 — 所有医疗紧急情况(意识丧失/严重外伤/呼吸困难等)立即拨打</a>
+              <a href="https://police.duke.edu/" target="_blank">Duke警察局非紧急线：(919)684-2444(校园安全/送医协助)</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/make-an-appointment/" target="_blank">Student Health非急症下班后护士线：(919)681-9355 按2</a>
+              <a href="https://students.duke.edu/wellness/caps/" target="_blank">CAPS心理危机热线：(919)660-1000(24小时)</a>
+              <a href="https://www.dukehealth.org/locations/duke-urgent-care-croasdaile" target="_blank">Duke Urgent Care Croasdaile：3643 N Roxboro St，Durham</a>
+              <a href="https://www.dukehealth.org/" target="_blank">Duke University Hospital急诊：2301 Erwin Rd，Durham，NC 27710</a>
+            </div>
+          </div>
+
+          <!-- 心理健康 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>心理健康与情绪支持</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/wellness/caps/" target="_blank">CAPS心理咨询与心理健康服务(Wellness Center 3楼，首次评估免费)</a>
+              <a href="https://students.duke.edu/wellness/caps/" target="_blank">CAPS预约：(919)660-1000；危机支持24小时可拨</a>
+              <a href="https://studentaffairs.duke.edu/duwell" target="_blank">DuWell健康与幸福感项目(冥想/压力管理/营养/睡眠课程)</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/services/" target="_blank">Student Health营养咨询：邮件<span class="__cf_email__" data-cfemail="9cf2e9e8eef5e8f5f3f2b1fdececf3f5f2e8f1f9f2e8efdcf8e9f7f9b2f9f8e9">[email&#160;protected]</span>预约(含费)</a>
+            </div>
+          </div>
+
+          <!-- 特殊医疗需求 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>特殊医疗需求</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/wellness/studenthealth/services/" target="_blank">过敏针：Student Health Allergy Clinic(仅限已在外部开始疗程的学生，需提前联系<span class="__cf_email__" data-cfemail="20445348414c4c45524759434c494e49436044554b450e454455">[email&#160;protected]</span>)</a>
+              <a href="過敏.html" target="_blank">过敏管理本站整理</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/services/" target="_blank">ADHD用药续期：Student Health可续稳定的ADHD处方，但不做首次诊断</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/services/" target="_blank">出国前Travel Clinic：提前8-12周预约，提供疫苗+抗疟药+健康证明(出行相关疫苗不含于保险)</a>
+              <a href="https://access.duke.edu/" target="_blank">SDAO残障学生服务(考试延时/无障碍住宿等)</a>
+              <a href="https://go.gallagherstudent.com/Universities/Duke%20University/Home" target="_blank">学生医疗保险豁免申请(Gallagher，每年8月前提交)</a>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- ===== 篮球 ===== -->
@@ -2621,20 +2704,66 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>扯谈群</span><span class="accordion-arrow">▸</span>
         </button>
-        <ul class="accordion-body">
-          <li><a href="中文课.html" target="_blank">中文课</a></li>
-          <li><a href="1098-T与税.html" target="_blank">1098-T与税</a></li>
-          <li><a href="智齿.html" target="_blank">智齿</a></li>
-          <li><a href="理发.html" target="_blank">理发</a></li>
-          <li><a href="保险.html" target="_blank">保险</a></li>
-          <li><a href="搭帐篷.html" target="_blank">搭帐篷</a></li>
-          <li><a href="中国驾照美国开车.html" target="_blank">中国驾照美国开车</a></li>
-          <li><a href="暑期储存.html" target="_blank">暑期储存</a></li>
-          <li><a href="https://m.wenxuecity.com/bbs/travel/746407.html" target="_blank">家长游记@文学城</a></li>
-          <li><a href="https://pan.baidu.com/s/1EeWU-0KkFb5mrfM1eTbKOQ?pwd=Duke" target="_blank">家长游记@百度</a></li>
-          <li><a href="https://www.instagram.com/你的账号名/" target="_blank">📸 Instagram</a></li>
-          <li><a href="https://www.facebook.com/你的账号名/" target="_blank">📸 Facebook</a></li>
-        </ul>
+        <div class="accordion-body" style="padding:8px 0 10px 0;">
+
+          <!-- 学习与学业 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>学习与学业</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="中文课.html" target="_blank">中文课选课与安排</a>
+            </div>
+          </div>
+
+          <!-- 财税与保险 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>财税与保险</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="1098-T与税.html" target="_blank">1098-T表格与报税指南</a>
+              <a href="保险.html" target="_blank">学生医疗保险说明</a>
+            </div>
+          </div>
+
+          <!-- 生活实用 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>生活实用</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="智齿.html" target="_blank">智齿拔牙经验分享</a>
+              <a href="理发.html" target="_blank">Duke周边理发店推荐</a>
+              <a href="中国驾照美国开车.html" target="_blank">中国驾照在美开车与换证</a>
+              <a href="暑期储存.html" target="_blank">暑期行李储存方案</a>
+            </div>
+          </div>
+
+          <!-- 活动与特别体验 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>活动与特别体验</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="搭帐篷.html" target="_blank">K-Ville搭帐篷观篮球全攻略</a>
+            </div>
+          </div>
+
+          <!-- 家长游记与社群 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>家长游记与社群</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://m.wenxuecity.com/bbs/travel/746407.html" target="_blank">家长Durham游记@文学城</a>
+              <a href="https://pan.baidu.com/s/1EeWU-0KkFb5mrfM1eTbKOQ?pwd=Duke" target="_blank">家长Durham游记@百度网盘</a>
+              <a href="https://www.instagram.com/你的账号名/" target="_blank">扯谈群Instagram</a>
+              <a href="https://www.facebook.com/你的账号名/" target="_blank">扯谈群Facebook</a>
+            </div>
+          </div>
+
+        </div>
       </div>
 
     </div>
@@ -3029,7 +3158,7 @@ document.addEventListener("keydown", function(e) {
 }
 </style>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ===== 管理员面板逻辑 =====
 const ADMIN_PASSWORD = "Jyswswhj098)(*"; // ← 可在此修改管理员密码
 
@@ -5573,14 +5702,4 @@ function loadCSV25() {
     .catch(function(){ err.textContent = "CSV 文件加载失败"; });
   err.textContent = "";
   document.getElementById("csv-password-box-25").style.display = "none";
-  document.getElementById("csv-container-25").style.display = "block";
-}
-function closeCSV(year) {
-  document.getElementById("csv-container-" + year).style.display = "none";
-  document.getElementById("csv-password-box-" + year).style.display = "block";
-  document.getElementById("csvPwd" + year).value = "";
-}
-</script>
-
-</body>
-</html>
+  document.getElementById
