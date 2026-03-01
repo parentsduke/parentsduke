@@ -507,18 +507,35 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>二年级</span><span class="accordion-arrow">▸</span>
         </button>
-        <ul class="accordion-body">
-          <li><a href="https://advising.duke.edu/major-declaration/" target="_blank">专业宣告</a></li>
-          <li><a href="https://undergrad.duke.edu/student-success/time-away-office/" target="_blank">休学</a></li>
-          <li><a href="https://dukeengage.duke.edu/" target="_blank">DukeEngage暑期参与</a></li>
-          <li><a href="https://dtech.duke.edu/" target="_blank">DTech</a></li>
-          <li><a href="https://gardens.duke.edu/" target="_blank">花园</a></li>
-          <li><a href="https://drive.google.com/file/d/1O13SFyIhGP6ncUubiW_6oMFuG_VTsjyr/view" target="_blank">RTP餐馆</a></li>
-          <li><a href="订蛋糕.html" target="_blank">订蛋糕</a></li>
-          <li><a href="https://www.facebook.com/groups/1787611951621247/" target="_blank">Facebook</a></li>
-          <li><a href="https://datascience.duke.edu/admissions/student-life/housing/" target="_blank">校外租房</a></li>
-          <li><a href="https://muser.duke.edu/projects?compensation%5b7%5d=7" target="_blank">找科研项目</a></li>
-        </ul>
+        <div class="accordion-body" style="padding:8px 0 10px 0;">
+
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>学业发展</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://advising.duke.edu/major-declaration/" target="_blank">专业宣告</a>
+              <a href="https://undergrad.duke.edu/student-success/time-away-office/" target="_blank">休学</a>
+              <a href="https://muser.duke.edu/projects?compensation%5b7%5d=7" target="_blank">找科研项目</a>
+              <a href="https://dtech.duke.edu/" target="_blank">DTech项目</a>
+              <a href="https://dukeengage.duke.edu/" target="_blank">DukeEngage暑期参与</a>
+            </div>
+          </div>
+
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>校外生活</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://datascience.duke.edu/admissions/student-life/housing/" target="_blank">校外租房</a>
+              <a href="https://drive.google.com/file/d/1O13SFyIhGP6ncUubiW_6oMFuG_VTsjyr/view" target="_blank">RTP餐馆</a>
+              <a href="订蛋糕.html" target="_blank">订蛋糕</a>
+              <a href="https://gardens.duke.edu/" target="_blank">Duke花园</a>
+              <a href="https://www.facebook.com/groups/1787611951621247/" target="_blank">Facebook群</a>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- ===== 三年级 ===== -->
@@ -526,12 +543,21 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>三年级</span><span class="accordion-arrow">▸</span>
         </button>
-        <ul class="accordion-body">
-          <li><a href="https://trinity.duke.edu/undergraduate/academic-policies" target="_blank">T-reqs</a></li>
-          <li><a href="https://globaled.duke.edu/" target="_blank">海外学习</a></li>
-          <li><a href="https://www.facebook.com/groups/2026families/" target="_blank">Facebook</a></li>
-          <li><a href="https://advising.duke.edu/changing-your-major/" target="_blank">Change_Your_Major</a></li>
-        </ul>
+        <div class="accordion-body" style="padding:8px 0 10px 0;">
+
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>学业规划</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://trinity.duke.edu/undergraduate/academic-policies" target="_blank">T-reqs学位要求</a>
+              <a href="https://advising.duke.edu/changing-your-major/" target="_blank">更换专业</a>
+              <a href="https://globaled.duke.edu/" target="_blank">海外学习项目</a>
+              <a href="https://www.facebook.com/groups/2026families/" target="_blank">Facebook群</a>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- ===== 毕业届 ===== -->
@@ -539,15 +565,32 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>毕业届</span><span class="accordion-arrow">▸</span>
         </button>
-        <ul class="accordion-body">
-          <li><a href="https://commencement.duke.edu/" target="_blank">典礼</a></li>
-          <li><a href="https://www.dukegraduates.com/" target="_blank">小贝贝们毕业啦</a></li>
-          <li><a href="LauraCaiphotographer.html" target="_blank">摄影</a></li>
-          <li><a href="https://www.facebook.com/groups/1063866454037437/" target="_blank">Facebook</a></li>
-          <li><a href="https://www.jostens.com" target="_blank">Year_Book</a></li>
-          <li><a href="https://www.linkedin.com/school/dtechscholars/" target="_blank">DTech部分25届毕业</a></li>
-          <li><a href="https://duke.app.box.com/s/bm2f39z38pg3mmz3hmuwxa5emz3wi8tj/" target="_blank">25届毕业照片</a></li>
-        </ul>
+        <div class="accordion-body" style="padding:8px 0 10px 0;">
+
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>毕业典礼</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://commencement.duke.edu/" target="_blank">毕业典礼官网</a>
+              <a href="https://www.dukegraduates.com/" target="_blank">小贝贝们毕业啦</a>
+              <a href="LauraCaiphotographer.html" target="_blank">摄影</a>
+              <a href="https://www.jostens.com" target="_blank">Year Book纪念册</a>
+              <a href="https://www.facebook.com/groups/1063866454037437/" target="_blank">Facebook群</a>
+            </div>
+          </div>
+
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>毕业纪念与照片</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://duke.app.box.com/s/bm2f39z38pg3mmz3hmuwxa5emz3wi8tj/" target="_blank">25届毕业照片</a>
+              <a href="https://www.linkedin.com/school/dtechscholars/" target="_blank">DTech部分25届毕业LinkedIn</a>
+            </div>
+          </div>
+
+        </div>
       </div>
 
 <!-- ===== Pre-med track ===== -->
