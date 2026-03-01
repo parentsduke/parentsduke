@@ -1739,11 +1739,58 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>篮球</span><span class="accordion-arrow">▸</span>
         </button>
-        <ul class="accordion-body">
-          <li><a href="https://goduke.com/sports/mens-basketball" target="_blank">GoDuke</a></li>
-          <li><a href="https://apnews.com/hub/ap-top-25-college-basketball-poll" target="_blank">排名</a></li>
-          <li><a href="https://goduke.com/documents/2025/3/22/NCAAT_Second_Round__03-23-25_.pdf" target="_blank">Duke_NCAA_March_Madness</a></li>
-        </ul>
+        <div class="accordion-body" style="padding:8px 0 10px 0;">
+
+          <!-- 子手风琴：大学篮球赛事 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>大学篮球赛事</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://www.ncaa.com/sports/basketball-men/d1" target="_blank">NCAA Division I男篮官方总览</a>
+              <a href="https://apnews.com/hub/ap-top-25-college-basketball-poll" target="_blank">AP全美Top 25球队排名</a>
+              <a href="https://www.ncaa.com/rankings/basketball-men/d1/ncaa-mens-basketball" target="_blank">NCAA官方球队积分榜</a>
+              <a href="https://www.espn.com/mens-college-basketball/" target="_blank">ESPN大学男篮新闻与赛程</a>
+              <a href="https://www.cbssports.com/college-basketball/" target="_blank">CBS Sports大学篮球</a>
+              <a href="https://www.acc-sports.com/sports/m-baskbl/acc-m-baskbl-body.aspx" target="_blank">ACC联盟篮球官方主页</a>
+              <a href="https://www.espn.com/mens-college-basketball/standings" target="_blank">各联盟积分排名(ESPN)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：Duke篮球 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Duke篮球</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://goduke.com/sports/mens-basketball" target="_blank">GoDuke男篮官方主页</a>
+              <a href="https://goduke.com/sports/womens-basketball" target="_blank">GoDuke女篮官方主页</a>
+              <a href="https://goduke.com/sports/mens-basketball/schedule" target="_blank">Duke男篮赛程表</a>
+              <a href="https://goduke.com/sports/mens-basketball/roster" target="_blank">Duke男篮球员名单</a>
+              <a href="https://www.krzyzewskiville.com/" target="_blank">Krzyzewskiville(K-Ville)扎营购票信息</a>
+              <a href="https://studentaffairs.duke.edu/cameron-crazies" target="_blank">Cameron Crazies球迷组织</a>
+              <a href="https://www.espn.com/mens-college-basketball/team/_/id/150/duke-blue-devils" target="_blank">Duke Blue Devils ESPN主页</a>
+              <a href="https://bleacherreport.com/duke-blue-devils-basketball" target="_blank">Duke篮球深度报道(Bleacher Report)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：三月篮球疯(March Madness) -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>三月篮球疯 March Madness</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://www.ncaa.com/march-madness" target="_blank">March Madness官方主页</a>
+              <a href="https://www.ncaa.com/brackets/basketball-men/d1" target="_blank">NCAA Tournament对阵表Bracket</a>
+              <a href="https://games.espn.com/tournament-challenge-bracket/" target="_blank">ESPN Tournament Challenge填表预测</a>
+              <a href="https://www.cbssports.com/college-basketball/ncaa-tournament/" target="_blank">CBS Sports赛事追踪与分析</a>
+              <a href="https://www.ncaa.com/news/basketball-men/article/2024-03-17/march-madness-schedule-dates-2024-ncaa-tournament" target="_blank">March Madness赛程与日期</a>
+              <a href="https://goduke.com/documents/2025/3/22/NCAAT_Second_Round__03-23-25_.pdf" target="_blank">Duke 2025 NCAA Tournament赛程表</a>
+              <a href="https://www.sportingnews.com/us/ncaa-basketball/news/march-madness-bracket-2025/6tpznasaymmbwcj9dqq2h3bu" target="_blank">2025年Bracket分析与预测</a>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- ===== Sarah P. Duke Gardens ===== -->
