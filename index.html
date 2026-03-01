@@ -2080,15 +2080,143 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>校园生活</span><span class="accordion-arrow">▸</span>
         </button>
-        <ul class="accordion-body">
-          <li><a href="https://www.dukechronicle.com/" target="_blank">The_Chronicle校报</a></li>
-          <li><a href="https://photos.app.goo.gl/nQs3shAUnUcdhUYp6/" target="_blank">照片@谷歌Lijun</a></li>
-          <li><a href="https://pan.baidu.com/s/1F5jZtHG_b8lEU2zbBXSuNw?pwd=Duke" target="_blank">照片@百度Lijun20250301_DukeASAShowcase</a></li>
-          <li><a href="https://pan.baidu.com/s/1aaXgoNYTPL45SwKckvjJgg?pwd=Duke" target="_blank">照片@百度Lijun20250411_DukeDCDShowcase</a></li>
-          <li><a href="https://pan.baidu.com/s/1ZMNtW95XUsvKaifcSJ_0Jw?pwd=Duke" target="_blank">照片@百度Lijun20250411_DukeKPopShowcase</a></li>
-          <li><a href="https://pan.baidu.com/s/1FwRpg0JLXmkpoZYurZgVeg?pwd=Duke" target="_blank">视频@百度Lujing20250411_DukeKPopShowcase</a></li>
-          <li><a href="https://drive.google.com/drive/folders/1qGyYFaqRZ2T-pZ3Dknd2lDeTv17lIJhd?usp=sharing" target="_blank">Duke春夏秋冬</a></li>
-        </ul>
+        <div class="accordion-body" style="padding:8px 0 10px 0;">
+
+          <!-- 子手风琴：学生社团总览与加入方式 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>学生社团总览与加入方式</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/belonging/get-involved/student-organizations/" target="_blank">Duke学生组织官方总览(600+社团)</a>
+              <a href="https://duke.campusgroups.com/club_signup" target="_blank">DukeGroups社团搜索与加入平台</a>
+              <a href="https://students.duke.edu/duke-groups-fair-2025/" target="_blank">Duke Groups Fair社团博览会(每年8月下旬)</a>
+              <a href="https://dukestudentgovernment.org/" target="_blank">DSG学生自治政府(每周三晚开放旁听)</a>
+              <a href="https://duuke.org/" target="_blank">DUU学生活动联盟(全校最大组织，每年200+活动)</a>
+              <a href="https://students.duke.edu/belonging/get-involved/student-organizations/rso-hub/" target="_blank">成立新社团指南(需10+在校生+教职顾问)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：华人与亚裔学生组织 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>华人与亚裔学生组织</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://duke.campusgroups.com/CSA/" target="_blank">CSA中国学生学者联合会(本科生，文化活动+职业资源)</a>
+              <a href="https://duke.campusgroups.com/dcssa/home/" target="_blank">DCSSA中国学生学者联合会(研究生+学者，30年历史)</a>
+              <a href="https://duke.campusgroups.com/ASA/" target="_blank">ASA亚裔学生协会(政治倡导+Spring Showcase)</a>
+              <a href="https://studentaffairs.duke.edu/ihouse/student-groups" target="_blank">亚裔文化组织大全(DIYA/TASA/ASEAN/JCC/PSA/VSA等)</a>
+              <a href="https://students.duke.edu/belonging/icr/disc/" target="_blank">DISC国际生资源中心(签证+文化适应+活动)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：表演艺术与演出 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>表演艺术与知名演出</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://hoofnhorn.org/" target="_blank">Hoof 'n' Horn学生音乐剧社(每学期一部全场音乐剧)</a>
+              <a href="https://duke.campusgroups.com/awaaz/home/" target="_blank">Awaaz南亚文化晚会(每年最热门演出之一)</a>
+              <a href="https://duke.campusgroups.com/DefiningMovement/home/" target="_blank">Defining Movement多元文化舞蹈团</a>
+              <a href="https://duke.campusgroups.com/DUI/home/" target="_blank">Duke University Improv(DUI)即兴喜剧社</a>
+              <a href="https://music.duke.edu/ensembles/duke-chorale" target="_blank">Duke Chorale合唱团(国际巡演)</a>
+              <a href="https://music.duke.edu/ensembles/jazz" target="_blank">Duke Jazz Ensemble爵士乐队</a>
+              <a href="https://duke.campusgroups.com/" target="_blank">DukeGroups搜索：A cappella无伴奏合唱团(Spring Showcase)</a>
+              <a href="https://dukeperformances.duke.edu/" target="_blank">Duke Performances专业演出季(学生可优惠购票)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：学术与职业类社团 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>学术与职业类社团</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://duke.campusgroups.com/dukechronicle/home/" target="_blank">The Duke Chronicle校报(独立学生媒体，1905年创刊)</a>
+              <a href="https://www.dukechronicle.com/" target="_blank">Duke Chronicle在线阅读</a>
+              <a href="https://duke.campusgroups.com/" target="_blank">Duke Robotics Club机器人俱乐部(竞赛+编程+工程)</a>
+              <a href="https://duke.campusgroups.com/" target="_blank">Duke Mock Trial模拟法庭(全国竞赛级别)</a>
+              <a href="https://duke.campusgroups.com/" target="_blank">Duke Debate辩论社</a>
+              <a href="https://duke.campusgroups.com/" target="_blank">Duke Pre-Medical Association医学预科协会</a>
+              <a href="https://entrepreneurship.duke.edu/" target="_blank">Duke entrepreneurship创业生态(孵化器+竞赛+导师)</a>
+              <a href="https://dtech.duke.edu/" target="_blank">DTech创新技术学者项目</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：体育运动与健身 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>体育运动：俱乐部赛队与校内联赛</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://recreation.duke.edu/programs/sport-clubs/" target="_blank">Club Sports俱乐部赛队总览(30+项目，无需选拔即可加入)</a>
+              <a href="https://recreation.duke.edu/programs/intramural-sports/" target="_blank">Intramural Sports校内联赛(篮球/足球/排球/旗式橄榄球等)</a>
+              <a href="https://recreation.duke.edu/" target="_blank">Duke Recreation健身房/泳池/攀岩墙/球场预约</a>
+              <a href="https://recreation.duke.edu/programs/outdoor-adventures/" target="_blank">Outdoor Adventures户外探险(徒步/露营/皮划艇)</a>
+              <a href="https://recreation.duke.edu/programs/aquatics/" target="_blank">游泳课程与水上运动项目</a>
+              <a href="https://goduke.com/" target="_blank">GoDuke观看Duke所有NCAA体育赛事(27支队伍)</a>
+              <a href="https://studentaffairs.duke.edu/cameron-crazies" target="_blank">Cameron Crazies主场篮球球迷组织(K-Ville扎营)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：希腊字母会与Selective Living Groups -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Greek Life与Selective Living Groups</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/belonging/get-involved/fraternities-sororities/" target="_blank">Fraternities &amp; Sororities总览(约37%本科生参与，40+组织)</a>
+              <a href="https://students.duke.edu/belonging/get-involved/fraternities-sororities/" target="_blank">IFC兄弟会、NPC姐妹会、MGC多元文化希腊会、NPHC说明</a>
+              <a href="https://students.duke.edu/belonging/get-involved/selective-living-groups/" target="_blank">Selective Living Groups(SLG)选择性居住社群</a>
+              <a href="https://students.duke.edu/belonging/get-involved/fraternities-sororities/rush-recruitment/" target="_blank">Rush招募流程与时间线(秋季Rush)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：社区服务与公益 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>社区服务与公益组织</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://dukeengage.duke.edu/" target="_blank">DukeEngage全球社区服务(暑期带薪项目)</a>
+              <a href="https://servicelearning.duke.edu/" target="_blank">Duke Service Learning社区参与学习</a>
+              <a href="https://sanford.duke.edu/student-life/student-organizations/" target="_blank">Sanford政策学院学生公益组织</a>
+              <a href="https://duke.campusgroups.com/" target="_blank">DukeGroups搜索：Habitat for Humanity等服务类社团</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：校园媒体与新闻 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>校园媒体与新闻</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://www.dukechronicle.com/" target="_blank">The Duke Chronicle独立校报(dukechronicle.com)</a>
+              <a href="https://today.duke.edu/" target="_blank">Duke Today官方新闻(学校公告/研究成果/活动)</a>
+              <a href="https://duuke.org/" target="_blank">DUU Duke Student Broadcasting学生广播与视频制作</a>
+              <a href="https://www.instagram.com/dukeuniversity/" target="_blank">Duke University官方Instagram</a>
+              <a href="https://duke.campusgroups.com/events" target="_blank">DukeGroups全校活动日历</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：家长群照片与视频 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>家长群照片与视频记录</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://photos.app.goo.gl/nQs3shAUnUcdhUYp6/" target="_blank">Duke校园照片(谷歌相册 Lijun)</a>
+              <a href="https://drive.google.com/drive/folders/1qGyYFaqRZ2T-pZ3Dknd2lDeTv17lIJhd?usp=sharing" target="_blank">Duke春夏秋冬四季影像(谷歌云盘)</a>
+              <a href="https://pan.baidu.com/s/1F5jZtHG_b8lEU2zbBXSuNw?pwd=Duke" target="_blank">照片@百度：20250301 ASA Showcase(Lijun)</a>
+              <a href="https://pan.baidu.com/s/1aaXgoNYTPL45SwKckvjJgg?pwd=Duke" target="_blank">照片@百度：20250411 DCD Showcase(Lijun)</a>
+              <a href="https://pan.baidu.com/s/1ZMNtW95XUsvKaifcSJ_0Jw?pwd=Duke" target="_blank">照片@百度：20250411 K-Pop Showcase(Lijun)</a>
+              <a href="https://pan.baidu.com/s/1FwRpg0JLXmkpoZYurZgVeg?pwd=Duke" target="_blank">视频@百度：20250411 K-Pop Showcase(Lujing)</a>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- ===== 生病了 ===== -->
