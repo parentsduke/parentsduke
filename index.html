@@ -1118,6 +1118,90 @@ document.addEventListener("keydown", function(e) {
         </ul>
       </div>
 
+      <!-- ===== AI工具 ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>AI工具</span><span class="accordion-arrow">▸</span>
+        </button>
+        <div class="accordion-body" style="padding:16px 20px; font-size:14px; color:#222; line-height:1.7;">
+
+          <!-- 导言 -->
+          <h3 style="color:#003366; margin:0 0 6px;">在Duke用好AI：从入门到高效</h3>
+          <p style="margin:0 0 14px;">AI工具已经成为美国顶尖大学学生日常学习的标配。在Duke，善用AI不是作弊，而是一种现代学习能力。本文整理了当前最主流的AI工具，帮助同学们根据自己的需求快速找到最合适的选择。</p>
+
+          <!-- 第一部分：主流对话AI -->
+          <h3 style="color:#003366; margin:16px 0 6px;">主流对话AI：哪个更适合你？</h3>
+          <p style="margin:0 0 10px;">目前市场上最主流的对话AI有四个：Claude、ChatGPT、Gemini和Microsoft Copilot。它们功能相似，但各有侧重，了解区别才能用对地方。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://claude.ai" target="_blank" style="color:#003366;">Claude(Anthropic)</a></h4>
+          <p style="margin:0 0 8px;">Claude是目前公认在长文本理解、写作质量和逻辑推理方面表现最突出的AI之一。它特别适合处理复杂的学术写作任务，比如论文初稿、文献综述的框架搭建、对一段复杂论点的分析与反驳。Claude的回答通常更有条理、更审慎，不容易乱说话，这对需要准确信息的学术场景尤为重要。</p>
+          <p style="margin:0 0 12px;">Claude对长对话的记忆能力也很强，可以在一次对话里反复修改同一篇文章，不会"忘记"之前的版本。免费版已经够用，Claude Pro(约$20/月)提供更强的模型和更多使用次数。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://chatgpt.com" target="_blank" style="color:#003366;">ChatGPT(OpenAI)</a></h4>
+          <p style="margin:0 0 8px;">ChatGPT是知名度最高、用户最多的AI工具，也是目前生态最完整的平台。它的最大优势是功能全面：可以联网搜索获取实时信息，可以生成图片(DALL·E)，可以分析上传的Excel/PDF文件，可以运行Python代码。对于需要多种能力组合的任务，ChatGPT的生态是目前最强的。</p>
+          <p style="margin:0 0 12px;">GPT-4o是目前的主力模型，免费用户每天有一定次数限制，ChatGPT Plus($20/月)可以解锁更多功能。如果你只用一个AI，ChatGPT的通用性使它成为最合适的默认选择。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://gemini.google.com" target="_blank" style="color:#003366;">Gemini(Google)</a></h4>
+          <p style="margin:0 0 8px;">Gemini的核心优势是与Google生态的深度整合。用Duke邮箱登录后可以访问Gemini Advanced(即原来的Google One AI Premium)，可以直接读取你Google Drive里的文件、调用Gmail里的邮件内容，并和Google Docs无缝配合。如果你的学习和协作主要依赖Google套件，Gemini的效率优势非常明显。</p>
+          <p style="margin:0 0 12px;">此外，Gemini支持超长上下文(目前高达100万token)，处理超长文档的能力是几个主流AI里最强的。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://copilot.microsoft.com" target="_blank" style="color:#003366;">Microsoft Copilot</a></h4>
+          <p style="margin:0 0 12px;">Duke学生通过学校的Microsoft 365授权可以免费使用Copilot，它直接集成在Word、PowerPoint、Excel、OneNote等Office应用里。用法很直接：在Word里写论文可以让Copilot帮你润色或扩写，在Excel里处理数据可以用自然语言描述要做什么分析，在PowerPoint里可以一键生成幻灯片大纲。对于不想额外付费、又主要用Office办公的同学来说，Copilot是最无缝的选择。</p>
+
+          <!-- 第二部分：学习科研 -->
+          <h3 style="color:#003366; margin:16px 0 6px;">学习与科研专用工具</h3>
+          <p style="margin:0 0 10px;">除了通用对话AI，还有一些专为学术场景设计的工具，在处理论文和文献方面比通用AI更高效。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://notebooklm.google.com" target="_blank" style="color:#003366;">NotebookLM(Google)</a></h4>
+          <p style="margin:0 0 12px;">NotebookLM是目前读文献最好用的AI工具之一，没有之一。使用方法是把PDF论文、课程讲义、教材章节上传进去，AI会基于你上传的内容来回答问题，不会乱引用你没上传的东西。你可以问"这篇论文的核心论点是什么"、"第三章和第五章的结论有什么矛盾"、"帮我列一个可以用来写综述的提纲"。它还能自动生成播客风格的音频摘要，适合通勤时听。对于需要同时处理大量文献的科研生来说，这个工具可以节省大量时间。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://www.perplexity.ai" target="_blank" style="color:#003366;">Perplexity AI</a></h4>
+          <p style="margin:0 0 12px;">Perplexity是一个AI驱动的搜索引擎，每一条回答都会附上来源链接。它的适用场景是"我需要快速了解一个话题，但不确定去哪里查"。比如查一个医学名词的定义、了解某个政策的背景、核实一个数据的出处，Perplexity比直接用Google搜索更省时，比直接问ChatGPT更可靠(因为有引用来源)。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://elicit.com" target="_blank" style="color:#003366;">Elicit</a></h4>
+          <p style="margin:0 0 12px;">Elicit专门针对学术文献综述设计。你输入一个研究问题，它会自动搜索相关学术论文，并把每篇的研究方法、样本量、主要结论提取成表格，让你一眼看清文献全貌。对于pre-med同学写文献综述，或者工程、理科同学做文献调研，Elicit可以把原本需要几天的工作压缩到几小时。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://consensus.app" target="_blank" style="color:#003366;">Consensus</a></h4>
+          <p style="margin:0 0 12px;">Consensus专注于从学术论文里提取"学界共识"。你问一个研究性问题，比如"间歇性禁食对血糖控制有效吗"，它会搜索相关论文并告诉你哪些研究支持、哪些研究不支持，以及总体证据强度如何。这个工具对于pre-med同学、公共卫生、心理学方向的学生特别有用，可以快速判断一个干预或假设在学术上是否站得住脚。</p>
+
+          <!-- 第三部分：编程 -->
+          <h3 style="color:#003366; margin:16px 0 6px;">编程辅助工具</h3>
+          <p style="margin:0 0 10px;">对于CS、ECE、统计、数据科学等需要大量写代码的专业，AI编程工具几乎已经成为标配。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://github.com/features/copilot" target="_blank" style="color:#003366;">GitHub Copilot</a></h4>
+          <p style="margin:0 0 8px;">GitHub Copilot是目前使用最广泛的AI代码补全工具，直接集成在VSCode等编辑器里。写代码时它会实时预测你接下来要写什么，支持Python、Java、C++、JavaScript等几乎所有主流语言。</p>
+          <p style="margin:0 0 12px;">重要提示：Duke学生可以通过申请<a href="https://education.github.com/pack" target="_blank" style="color:#003366;">GitHub Student Developer Pack</a>免费获得GitHub Copilot Pro，只需用学校邮箱验证学生身份，申请通常几天内审核通过。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://cursor.sh" target="_blank" style="color:#003366;">Cursor</a></h4>
+          <p style="margin:0 0 12px;">Cursor是一款以AI为核心设计的代码编辑器，基于VSCode，但在AI能力上远超GitHub Copilot。它不只是补全代码，而是可以理解整个项目结构，支持"帮我重构这个函数"、"找出这段代码里的bug"、"根据这个需求帮我写一个新的模块"等更复杂的指令。对于做课程项目或个人项目的CS同学，Cursor的效率提升非常显著。免费版已经很够用，Pro版$20/月。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://colab.research.google.com" target="_blank" style="color:#003366;">Google Colab</a></h4>
+          <p style="margin:0 0 12px;">Google Colab提供免费的云端Jupyter Notebook环境，内置GPU，适合跑机器学习模型和数据分析。用Duke邮箱登录可以享有更稳定的运行时。Colab本身不是AI工具，但结合AI写好的代码粘贴进去直接运行，是做数据科学作业最快的工作流之一。</p>
+
+          <!-- 第四部分：Duke资源 -->
+          <h3 style="color:#003366; margin:16px 0 6px;">Duke提供的AI资源</h3>
+          <p style="margin:0 0 10px;">除了第三方工具，Duke本身也提供了一些AI资源，很多同学不知道这些是免费的。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://oit.duke.edu/service/microsoft-365/" target="_blank" style="color:#003366;">Microsoft 365(含Copilot)</a></h4>
+          <p style="margin:0 0 12px;">Duke学生可以免费获得完整的Microsoft 365授权，包括Word、Excel、PowerPoint、OneNote、Teams等，以及内置的Copilot AI功能。登录你的Duke邮箱账号即可激活，安装到电脑上使用。</p>
+
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://oit.duke.edu/service/virtual-computing-lab/" target="_blank" style="color:#003366;">Duke VCL虚拟计算实验室</a></h4>
+          <p style="margin:0 0 12px;">Duke OIT提供虚拟计算资源，有需要大算力跑模型或做数据分析的同学可以申请使用，无需自己有高配置电脑。</p>
+
+          <!-- 第五部分：使用建议 -->
+          <h3 style="color:#003366; margin:16px 0 6px;">怎么用AI才对？</h3>
+          <p style="margin:0 0 8px;">AI工具强大，但用错了场景或方式反而会帮倒忙。以下是几条实用建议：</p>
+          <p style="margin:0 0 6px;">把AI当助手，不当替代品。让AI帮你整理思路、检查逻辑、润色表达，但核心论点和判断应该是你自己的。依赖AI写出来的东西你自己读不懂，上课被问到就露馅了。</p>
+          <p style="margin:0 0 6px;">先问清楚教授的政策。Duke各门课对AI使用的规定差异很大，有的鼓励用，有的明令禁止，有的允许用于草稿但不能用于最终提交。上课第一天就看清楚syllabus里的Academic Integrity部分，不确定就直接问教授。</p>
+          <p style="margin:0 0 6px;">验证AI给出的信息。AI会"幻觉"，即非常自信地给出错误信息，包括编造不存在的论文引用、错误的数据、错误的语法规则。任何重要内容都要自己核实来源。</p>
+          <p style="margin:0 0 12px;">学会写好Prompt。AI的输出质量高度依赖输入质量。给出背景("我在写一篇关于X的学术论文")、限定格式("用150字")、明确要求("只用我提供的信息，不要外部引用")，得到的结果会好得多。</p>
+
+          <div style="background:#fffbe6; border:1px solid #f0c040; border-radius:8px; padding:12px 16px; font-size:13px;">
+            学术诚信：在Duke，违反Academic Integrity规定的后果是严重的，轻则课程不及格，重则开除学籍。AI工具本身是中性的，关键在于用法是否诚实透明。</div>
+
+        </div>
+      </div>
+
       <!-- ===== 扯谈群 ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
