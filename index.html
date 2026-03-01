@@ -298,52 +298,115 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>新生</span><span class="accordion-arrow">▸</span>
         </button>
-        <ul class="accordion-body">
-          <li><a href="https://trinity.duke.edu/" target="_blank">Trinity</a></li>
-          <li><a href="https://trinity.duke.edu/undergraduate/academic-policies/credit-AP-IPC-PMC" target="_blank">Trinity_AP_credits</a></li>
-          <li><a href="https://pratt.duke.edu/" target="_blank">Pratt</a></li>
-          <li><a href="Orientation.pdf" target="_blank">学校百科</a></li>
-          <li><a href="https://admissions.duke.edu/admit/" target="_blank">访校日RD承诺</a></li>
-          <li><a href="https://bluebook.duke.edu/" target="_blank">BLUE_BOOK</a></li>
-          <li><a href="https://students.duke.edu/info-for/students/incoming-students/experiential-orientation/first-year-students/" target="_blank">Orientation</a></li>
-          <li><a href="https://registrar.duke.edu/2024-2025-academic-calendar/" target="_blank">校历</a></li>
-          <li><a href="https://students.duke.edu/" target="_blank">食宿行规</a></li>
-          <li><a href="https://go.gallagherstudent.com/Universities/Duke%20University/Home" target="_blank">医疗保险豁免</a></li>
-          <li><a href="https://students.duke.edu/wellness/studenthealth/immunizations/" target="_blank">疫苗接种证明</a></li>
-          <li><a href="https://www.collegiateconcepts.net/schools/duke-university/" target="_blank">小冰箱微波炉租赁</a></li>
-          <li><a href="https://sissoffice.duke.edu/" target="_blank">DukeHub</a></li>
-          <li><a href="https://finance.duke.edu/bursar/Payments/" target="_blank">付学费</a></li>
-          <li><a href="https://mycollegepaymentplan.com/duke/" target="_blank">分期付学费注册</a></li>
-          <li><a href="https://duke.qualtrics.com/jfe/form/SV_eepMhBZXr4qkJuJ" target="_blank">外部奖学金报告</a></li>
-          <li><a href="https://financialaid.duke.edu/apply-aid/renew-your-aid/" target="_blank">FAFSA和CSS_Profile每年申请日期</a></li>
-          <li><a href="FOCUS.html" target="_blank">FOCUS</a></li>
-          <li><a href="https://trinity.duke.edu/constellations/" target="_blank">Constellations</a></li>
-          <li><a href="https://plusprograms.duke.edu/" target="_blank">暑期Plus</a></li>
-          <li><a href="https://parking.duke.edu/" target="_blank">校园停车</a></li>
-          <li><a href="https://students.duke.edu/belonging/icr/disc/" target="_blank">国际生</a></li>
-          <li><a href="https://www.youtube.com/watch?v=RcyQZ-sIC1o" target="_blank">宿舍@油管AthanWright</a></li>
-          <li><a href="https://pan.baidu.com/s/1uGKjnqTruzG1kmhuB0lFPw" target="_blank">宿舍@百度AthanWright</a></li>
-          <li><a href="https://shop.duke.edu/" target="_blank">Duke_Store</a></li>
-          <li><a href="https://maps.duke.edu/" target="_blank">地图</a></li>
-          <li><a href="https://postoffice.duke.edu/locations/" target="_blank">学生邮件中心</a></li>
-          <li><a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">信件包裹地址填写</a></li>
-          <li><a href="信件包裹网站购物地址.pdf" target="_blank">信件包裹网站购物具体地址格式</a></li>
-          <li><a href="https://www.facebook.com/groups/1527980028032445/" target="_blank">'28Facebook</a></li>
-          <li><a href="https://www.facebook.com/groups/1215919983029350/" target="_blank">'29Facebook</a></li>
-          <li><a href="https://www.facebook.com/groups/1737750673588075/" target="_blank">'30Facebook</a></li>
-          <li><a href="https://police.duke.edu/" target="_blank">DukePolice_919-684-2444</a></li>
-          <li><a href="DukeKunshanprogram2025.pdf" target="_blank">Duke_Kunshan_program_2025</a></li>
-          <li><a href="24-25杜克大学中国新生信息手册.pdf" target="_blank">24-25杜克大学中国新生信息手册</a></li>
-          <li><a href="Packing List.html" target="_blank">Packing_List</a></li>
-          <li><a href="Packing_List.html" target="_blank">Packing_List_to_Check</a></li>
-          <li><a href="Bank Wire.html" target="_blank">Bank_Wire付学费</a></li>
-          <li><a href="https://trinity.duke.edu/undergraduate/academic-policies/transfer-to-from-pratt" target="_blank">Trinity-Pratt互转</a></li>
-          <li><a href="Trinity_to_Pratt.html" target="_blank">Trinity转Pratt</a></li>
-          <li><a href="https://sites.duke.edu/dukessa/home/miscellaneous/filing-taxes/" target="_blank">国际生报税</a></li>
-          <li><a href="https://trinity.duke.edu/undergraduate/academic-policies/credit-AP-IPC-PMC" target="_blank">AP分数</a></li>
-          <li><a href="https://advising.duke.edu/prebusiness-advising/junior-year/#:~:text=1.,reported%2C%20usually%20for%20five%20years." target="_blank">Advisors</a></li>
-          <li><a href="https://pan.baidu.com/s/11EPSrtfjqiBWsEeOuxIGkA?pwd=Duke" target="_blank">视频@百度2029_OpeningConvocation</a></li>
-        </ul>
+        <div class="accordion-body" style="padding:10px 0 16px 0;">
+
+          <!-- 子手风琴：学院与学术 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>学院与学术</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://trinity.duke.edu/" target="_blank">Trinity文理学院</a>
+              <a href="https://pratt.duke.edu/" target="_blank">Pratt工程学院</a>
+              <a href="https://bluebook.duke.edu/" target="_blank">BLUE BOOK学生手册</a>
+              <a href="Orientation.pdf" target="_blank">学校百科</a>
+              <a href="https://admissions.duke.edu/admit/" target="_blank">访校日RD承诺</a>
+              <a href="FOCUS.html" target="_blank">FOCUS新生项目</a>
+              <a href="https://trinity.duke.edu/constellations/" target="_blank">Constellations</a>
+              <a href="https://plusprograms.duke.edu/" target="_blank">暑期Plus项目</a>
+              <a href="https://registrar.duke.edu/2024-2025-academic-calendar/" target="_blank">校历</a>
+              <a href="https://sissoffice.duke.edu/" target="_blank">DukeHub学生门户</a>
+              <a href="https://advising.duke.edu/prebusiness-advising/junior-year/#:~:text=1.,reported%2C%20usually%20for%20five%20years." target="_blank">Advisors学业顾问</a>
+              <a href="https://trinity.duke.edu/undergraduate/academic-policies/credit-AP-IPC-PMC" target="_blank">AP学分政策</a>
+              <a href="https://trinity.duke.edu/undergraduate/academic-policies/transfer-to-from-pratt" target="_blank">Trinity-Pratt互转政策</a>
+              <a href="Trinity_to_Pratt.html" target="_blank">Trinity转Pratt详解</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：入学报到 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>入学报到</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/info-for/students/incoming-students/experiential-orientation/first-year-students/" target="_blank">Orientation新生迎新</a>
+              <a href="https://students.duke.edu/" target="_blank">食宿行规</a>
+              <a href="https://go.gallagherstudent.com/Universities/Duke%20University/Home" target="_blank">医疗保险豁免申请</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/immunizations/" target="_blank">疫苗接种证明</a>
+              <a href="https://www.collegiateconcepts.net/schools/duke-university/" target="_blank">小冰箱微波炉租赁</a>
+              <a href="Packing List.html" target="_blank">Packing List行李清单</a>
+              <a href="Packing_List.html" target="_blank">Packing List核查版</a>
+              <a href="24-25杜克大学中国新生信息手册.pdf" target="_blank">中国新生信息手册(24-25)</a>
+              <a href="https://students.duke.edu/belonging/icr/disc/" target="_blank">国际生资源中心</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：学费与奖助学金 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>学费与奖助学金</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://finance.duke.edu/bursar/Payments/" target="_blank">付学费</a>
+              <a href="https://mycollegepaymentplan.com/duke/" target="_blank">分期付学费注册</a>
+              <a href="Bank Wire.html" target="_blank">Bank Wire电汇付款</a>
+              <a href="https://duke.qualtrics.com/jfe/form/SV_eepMhBZXr4qkJuJ" target="_blank">外部奖学金报告</a>
+              <a href="https://financialaid.duke.edu/apply-aid/renew-your-aid/" target="_blank">FAFSA和CSS Profile每年申请日期</a>
+              <a href="https://sites.duke.edu/dukessa/home/miscellaneous/filing-taxes/" target="_blank">国际生报税</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：校园生活与设施 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>校园生活与设施</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://maps.duke.edu/" target="_blank">校园地图</a>
+              <a href="https://parking.duke.edu/" target="_blank">校园停车</a>
+              <a href="https://shop.duke.edu/" target="_blank">Duke Store校园商店</a>
+              <a href="https://postoffice.duke.edu/locations/" target="_blank">学生邮件中心</a>
+              <a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">信件包裹地址填写</a>
+              <a href="信件包裹网站购物地址.pdf" target="_blank">网站购物地址格式PDF</a>
+              <a href="https://police.duke.edu/" target="_blank">Duke警察局 919-684-2444</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：宿舍与视频参考 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>宿舍与视频参考</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://www.youtube.com/watch?v=RcyQZ-sIC1o" target="_blank">宿舍参观视频(油管 AthanWright)</a>
+              <a href="https://pan.baidu.com/s/1uGKjnqTruzG1kmhuB0lFPw" target="_blank">宿舍参观视频(百度 AthanWright)</a>
+              <a href="https://pan.baidu.com/s/11EPSrtfjqiBWsEeOuxIGkA?pwd=Duke" target="_blank">2029届Opening Convocation(百度)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：新生社群与Facebook -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>新生社群与Facebook</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://www.facebook.com/groups/1527980028032445/" target="_blank">'28届Facebook群</a>
+              <a href="https://www.facebook.com/groups/1215919983029350/" target="_blank">'29届Facebook群</a>
+              <a href="https://www.facebook.com/groups/1737750673588075/" target="_blank">'30届Facebook群</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：特殊项目 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>特殊项目</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="DukeKunshanprogram2025.pdf" target="_blank">Duke Kunshan联合项目(2025)</a>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- ===== Amazon Lockers ===== -->
@@ -4165,6 +4228,15 @@ async function rejectPendingItem(id, filePath) {
       btn.classList.toggle("active", !isOpen);
     };
 
+    window.toggleSubAccordion = function(btn) {
+      var body = btn.nextElementSibling;
+      var arrow = btn.querySelector(".sub-accordion-arrow");
+      var isOpen = body.classList.contains("sub-open");
+      body.classList.toggle("sub-open", !isOpen);
+      arrow.textContent = isOpen ? "▸" : "▾";
+      btn.classList.toggle("sub-active", !isOpen);
+    };
+
     // === PPT 展开/收起 ===
     const pptToggle = main.querySelector("#pptToggle");
     const pptContent = main.querySelector("#pptContent");
@@ -4376,6 +4448,83 @@ async function rejectPendingItem(id, filePath) {
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid #ddd;
+  }
+
+  /* ===== Sub-Accordion ===== */
+  .sub-accordion {
+    border: 1px solid #000080;
+    border-radius: 4px;
+    margin: 3px 0;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .sub-accordion-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: #fff;
+    color: #000080;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 宋体, sans-serif;
+    font-weight: 600;
+    text-align: left;
+    transition: background 0.15s;
+  }
+
+  .sub-accordion-btn:hover {
+    background: #eef2ff;
+  }
+
+  .sub-accordion-btn.sub-active {
+    background: #eef2ff;
+  }
+
+  .sub-accordion-arrow {
+    font-size: 11px;
+    color: #000080;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+
+  .sub-accordion-body {
+    display: none;
+    border-top: 1px solid #c0c8e8;
+    background: #fff;
+    padding: 2px 0 4px 0;
+  }
+
+  .sub-accordion-body.sub-open {
+    display: block;
+    animation: subOpen 0.2s ease;
+  }
+
+  @keyframes subOpen {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .sub-accordion-body a {
+    display: block;
+    padding: 5px 10px;
+    font-size: 13px;
+    color: #000080;
+    text-decoration: none;
+    border-bottom: 1px solid #e8ecf8;
+    transition: background 0.15s;
+  }
+
+  .sub-accordion-body a:last-child {
+    border-bottom: none;
+  }
+
+  .sub-accordion-body a:hover {
+    background: #eef2ff;
+    text-decoration: underline;
   }
 
   .accordion-btn {
