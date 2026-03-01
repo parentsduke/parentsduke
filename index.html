@@ -351,37 +351,87 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>Amazon Lockers校园自提柜</span><span class="accordion-arrow">▸</span>
         </button>
-        <div class="accordion-body" style="padding:16px 20px; font-size:14px; color:#222; line-height:1.9;">
-          <p>Duke校园内设有多个Amazon Hub Locker自提柜，学生可在Amazon下单时选择就近的locker地址，包裹送达后会收到取件码(pickup code)，凭码在locker屏幕上输入即可开柜取包，全程无需在宿舍等待快递员。</p>
+        <div class="accordion-body" style="padding:16px 0; font-size:14px; color:#222; line-height:1.9;">
+          <p>Duke校园内共设有7个Amazon Parcel Locker自提柜，2022年11月由Amazon与Duke Campus Mail Services合作安装，分布在East Campus、West Campus和Central Campus的宿舍楼附近，学生可在下单时直接选择就近的Locker地址收包裹，全程无需等待快递员上门。</p>
 
-          <p style="margin-top:12px; font-weight:600; color:#003366;">校园内主要Locker位置</p>
-          <ul style="margin:6px 0 0 18px; padding:0;">
-            <li>East Campus — Gilbert-Addoms宿舍楼附近的Locker (名称: <a href="https://postoffice.duke.edu/packages/amazon/" target="_blank">见官网</a>)，靠近一年级新生宿舍，步行即达</li>
-            <li>West Campus — Bryan Center学生活动中心内部，位于1楼大厅，营业时间通常为周一至周五7:00am-11:00pm，周末8:00am-11:00pm</li>
-            <li>Central Campus — 近Ninth Street附近的公寓区也有Locker覆盖，适合住在Central Campus的学生</li>
-            <li>Perkins Library附近 — 学术区核心地带，白天进出方便</li>
-          </ul>
+          <p style="margin-top:14px; font-weight:600; color:#003366;">7个Locker具体位置一览(来源：<a href="https://postoffice.duke.edu/packages/amazon/" target="_blank" style="color:#003366;">Duke Campus Mail Services官网</a>)</p>
+
+          <table style="width:100%; border-collapse:collapse; font-size:13px; margin:8px 0 4px;">
+            <thead>
+              <tr style="background:#003366; color:#fff;">
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">Locker名称</th>
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">所在建筑</th>
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">校区</th>
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">具体地址</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Ceyln</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Swift Apartments</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Central Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">300 Swift Ave, Durham, NC 27705</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Elsa</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Bell Tower Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">40 Brodie Gym Drive, Durham, NC 27705</td>
+              </tr>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Elinor</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Blackwell Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">51 Brodie Gym Drive, Durham, NC 27705</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Ljuba</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus Union (室内)</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">1324 Campus Drive, Durham, NC 27705</td>
+              </tr>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Lennie</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Randolph Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">50 Brodie Gym Drive, Durham, NC 27705</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Arkadiusz Jad</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Edens (near Schafer House)</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">West Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">117 Edens Drive, Durham, NC 27705</td>
+              </tr>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Dawood</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Keohane Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">West Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">101 Wannamaker Drive, Durham, NC 27705</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:12px; color:#888; margin:4px 0 14px;">注：East Campus有4个Locker(Elsa、Elinor、Ljuba、Lennie)，West Campus有2个(Arkadiusz Jad、Dawood)，Central Campus有1个(Ceyln)。一年级新生住East Campus，以上四个Locker均步行可达。</p>
 
           <p style="margin-top:12px; font-weight:600; color:#003366;">使用流程</p>
-          <ul style="margin:6px 0 0 18px; padding:0;">
-            <li>在Amazon结账时，在送货地址(shipping address)处搜索"Duke University"或对应Locker名称，选择所需的Locker点位</li>
-            <li>包裹送达后，Amazon会向你的注册邮箱发送含有6位取件码(pickup code)的通知邮件，同时在Amazon App里也可查看</li>
-            <li>前往Locker，点击屏幕上的"Pick Up"，输入6位取件码，对应的柜门自动弹开</li>
-            <li>取件时限通常为3天(72小时)，超时包裹将被退回给卖家并全额退款</li>
-            <li>每个Locker格子最大承重约68kg，最大尺寸约为43cm × 36cm × 46cm，超大件或超重件无法使用Locker</li>
+          <ul style="margin:6px 0 0 0; padding:0;">
+            <li>在Amazon下单时，在送货地址处按Locker名称搜索(如"Elsa"或"Dawood")，选中对应点位即可</li>
+            <li>必须提前在手机上下载Amazon App，并开启蓝牙(Bluetooth)，这是取件的必要条件</li>
+            <li>包裹送达后，Amazon会发送邮件通知，带上手机前往Locker，Locker会通过蓝牙自动识别手机并弹开对应柜门，无需手动输入取件码</li>
+            <li>取件时限为3天(72小时)，超时包裹将被退回给卖家并全额退款</li>
+            <li>存在尺寸和重量限制，超大件或超重件无法使用Locker，Amazon会自动改送至宿舍front desk</li>
           </ul>
 
           <p style="margin-top:12px; font-weight:600; color:#003366;">注意事项</p>
-          <ul style="margin:6px 0 0 18px; padding:0;">
+          <ul style="margin:6px 0 0 0; padding:0;">
             <li>Amazon Prime会员在校期间可申请<a href="https://www.amazon.com/b?ie=UTF8&node=668781011" target="_blank">Prime Student</a>优惠，6个月免费试用后折扣续费，每年约$7.49/月</li>
             <li>Duke邮局(Post Office)位于West Campus Bryan Center地下1楼，电话919-684-3367，可寄发USPS/FedEx/UPS包裹，不处理Amazon Locker事务</li>
             <li>校园内Amazon Locker仅供Amazon订单使用，其他快递公司(FedEx、UPS、USPS)的包裹须送至宿舍门卫或Bryan Center邮局</li>
             <li>如包裹尺寸超过Locker限制，Amazon会自动改送至学生宿舍门卫室(front desk)，并发送另行通知</li>
-            <li>Locker机器偶发故障，如屏幕无响应或取件码无效，可拨打Locker标签上的Amazon客服电话1-877-346-1153，通常24小时内解决</li>
+            <li>Locker机器偶发故障，可访问<a href="http://www.amazon.com/ulp" target="_blank">amazon.com/ulp</a>或拨打Amazon客服电话1-877-346-6244获取帮助</li>
           </ul>
 
           <p style="margin-top:12px; font-weight:600; color:#003366;">实用链接</p>
-          <ul style="margin:6px 0 0 18px; padding:0;">
+          <ul style="margin:6px 0 0 0; padding:0;">
             <li><a href="https://postoffice.duke.edu/packages/amazon/" target="_blank">Duke邮局官方Amazon Locker说明页面</a></li>
             <li><a href="https://postoffice.duke.edu/locations/" target="_blank">Duke邮局各取件点位置</a></li>
             <li><a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">信件及包裹地址填写规范</a></li>
@@ -442,11 +492,11 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>医学预科方向 Pre-med track</span><span class="accordion-arrow">▸</span>
         </button>
-        <div class="accordion-body" style="padding:16px 20px; font-size:14px; color:#222; line-height:1.7;">
+        <div class="accordion-body" style="padding:16px 0; font-size:14px; color:#222; line-height:1.7;">
 
           <!-- 第一部分：什么是Pre-Med -->
           <h3 style="color:#003366; margin:0 0 6px;">什么是Pre-Med Track医学预科方向</h3>
-          <p style="margin:0 0 10px;">Pre-med track不是一个具体专业，而是一种为将来申请医学院(Medical School)做准备的学习路线。在美国大学里(包括Duke University)，你可以主修任何专业——生物、化学、心理学、经济学都可以——同时完成医学院要求的先修课程，这条路线就叫pre-med。</p>
+          <p style="margin:0 0 10px;">Pre-med track不是一个具体专业，而是一种为将来申请医学院(Medical School)做准备的学习路线。在美国大学里(包括Duke University)，你可以主修任何专业，生物、化学、心理学、经济学都可以，同时完成医学院要求的先修课程，这条路线就叫pre-med。</p>
           <p style="margin:0 0 14px;">需要特别说明的是，Duke本校学生申请Duke School of Medicine并没有特别优待，录取标准与其他申请者相同。拥有Duke学籍不等于进Duke医学院有捷径，家长和学生需要对此有清醒认知。</p>
 
           <div style="background:#f0f5ff; border:1px solid #b0c8f0; border-radius:8px; padding:14px 18px; margin:0 0 12px;">
@@ -492,7 +542,7 @@ document.addEventListener("keydown", function(e) {
           <p style="margin:0 0 8px;">挑战：GPA要求极高(3.9+才有竞争力)、课程难度大、竞争激烈、总训练时间长(本科4年+医学院4年+住院医3–7年=共10–15年)、心理压力持续贯穿整个过程。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">进入pre-med前的核心问题</h4>
-          <p style="margin:0 0 14px;">先问自己：真喜欢医学本身，还是喜欢"医生"这个身份标签？能否接受10年以上的学习和培训？能否在高压、高强度环境中长期维持状态？Pre-med不等于必须学Biology——很多成功申请者主修经济学、心理学、工程、公共政策，医学院反而欣赏多样化背景。不要把"医生"当唯一出路，要提前想好Plan B(PA、NP、公共卫生、PhD、医疗行业等)，因为医学院申请整体录取率并不高。</p>
+          <p style="margin:0 0 14px;">先问自己：真喜欢医学本身，还是喜欢"医生"这个身份标签？能否接受10年以上的学习和培训？能否在高压、高强度环境中长期维持状态？Pre-med不等于必须学Biology，很多成功申请者主修经济学、心理学、工程、公共政策，医学院反而欣赏多样化背景。不要把"医生"当唯一出路，要提前想好Plan B(PA、NP、公共卫生、PhD、医疗行业等)，因为医学院申请整体录取率并不高。</p>
 
           <!-- 第二部分：大一 -->
           <h3 style="color:#003366; margin:16px 0 6px;">大一Pre-Med：最重要的一年</h3>
@@ -503,7 +553,7 @@ document.addEventListener("keydown", function(e) {
 
           <h4 style="color:#003366; margin:12px 0 4px;">选课策略</h4>
           <p style="margin:0 0 4px;">最常见的错误：大一把生物+化学+物理+微积分全堆在一起，结果GPA掉到3.5以下。在Duke这种情况极为普遍，一旦发生很难挽救。</p>
-          <p style="margin:0 0 8px;">推荐节奏——Fall学期：General Chemistry I + Writing/Seminar + 一门相对轻松的人文或社科课(统计或心理都是好选择，同时为MCAT打基础)。Spring学期：Biology I + General Chemistry II + 一门平衡性课程。不建议大一就修Organic Chemistry，那是大二的核心战场。</p>
+          <p style="margin:0 0 8px;">推荐节奏，Fall学期：General Chemistry I + Writing/Seminar + 一门相对轻松的人文或社科课(统计或心理都是好选择，同时为MCAT打基础)。Spring学期：Biology I + General Chemistry II + 一门平衡性课程。不建议大一就修Organic Chemistry，那是大二的核心战场。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">大一课外安排</h4>
           <p style="margin:0 0 8px;">大一上学期专注GPA，不要分心。大一下学期开始申请Duke University Hospital的志愿者项目，安排1–2次跟诊体验，有条件尽量联系进一个lab(不需要马上出成果，先建立关系)。</p>
@@ -529,10 +579,10 @@ document.addEventListener("keydown", function(e) {
           <p style="margin:0 0 8px;">申请准备：撰写Personal Statement(核心文书，需要多稿打磨)、联系3–5位推荐人(至少包含科研导师、临床医生、一位学术教授)、整理Activities列表。6月初通过AMCAS系统递交主申请，7–9月补充各校secondary essays，9月起陆续收到面试邀请。这是整个pre-med旅程中压力最集中的阶段。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">大四(Senior Year)：面试+保持状态</h4>
-          <p style="margin:0 0 8px;">全力参加医学院面试(MMI或传统面试形式)，切勿出现senioritis——大四成绩下滑会被医学院注意到，甚至导致录取撤销。同时完成本科major要求。如当年未获录取，应认真规划gap year方向，而不是仓促再申。</p>
+          <p style="margin:0 0 8px;">全力参加医学院面试(MMI或传统面试形式)，切勿出现senioritis，大四成绩下滑会被医学院注意到，甚至导致录取撤销。同时完成本科major要求。如当年未获录取，应认真规划gap year方向，而不是仓促再申。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">有竞争力的Duke Pre-Med申请参考标准</h4>
-          <p style="margin:0 0 14px;">GPA：3.9+；MCAT：515–518；临床小时：150–300小时；科研：2年以上持续参与；领导力：1–2个有持续深度的角色。选课策略比拼难度更重要——不要为了"看起来厉害"而选最难的教授。Duke的医学资源强大，但不会自动转化为医学院申请的加分。</p>
+          <p style="margin:0 0 14px;">GPA：3.9+；MCAT：515–518；临床小时：150–300小时；科研：2年以上持续参与；领导力：1–2个有持续深度的角色。选课策略比拼难度更重要，不要为了"看起来厉害"而选最难的教授。Duke的医学资源强大，但不会自动转化为医学院申请的加分。</p>
 
           <!-- 第四部分：专业选择 -->
           <h3 style="color:#003366; margin:16px 0 6px;">专业怎么选？Biology(Trinity) vs Engineering(Pratt)</h3>
@@ -581,7 +631,7 @@ document.addEventListener("keydown", function(e) {
           <h4 style="color:#003366; margin:12px 0 4px;">Duke提供的心理支持资源</h4>
           <p style="margin:0 0 4px;"><a href="https://studentaffairs.duke.edu/caps" target="_blank" style="color:#003366;">CAPS(Counseling and Psychological Services)</a>：Duke的学生心理咨询中心，提供免费个人咨询、团体治疗和危机干预服务，在线和面对面均可预约。Pre-med学生使用CAPS的比例很高，寻求帮助不是软弱，是理性自我管理。</p>
           <p style="margin:0 0 4px;"><a href="https://studentaffairs.duke.edu/duwell" target="_blank" style="color:#003366;">DuWell</a>：Duke的学生健康促进项目，提供压力管理、睡眠改善、正念练习等工坊和资源。</p>
-          <p style="margin:0 0 8px;">Pre-med群体中互助社群也很重要——Duke有pre-med相关的学生组织(如Duke Pre-Medical Society)，找到志同道合的同学一起学习和互相支持，比单打独斗效果好很多。</p>
+          <p style="margin:0 0 8px;">Pre-med群体中互助社群也很重要，Duke有pre-med相关的学生组织(如Duke Pre-Medical Society)，找到志同道合的同学一起学习和互相支持，比单打独斗效果好很多。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">给家长的建议</h4>
           <p style="margin:0 0 14px;">关注孩子的情绪状态，不只是成绩。Pre-med的压力往往是内化的，孩子不一定会主动说。保持定期沟通，询问他们在学校的感受，而不只是问GPA。如果孩子在大二出现明显的情绪低落或对医学失去热情，这可能是一个需要认真讨论方向的信号，而不是需要"再加把劲"的时候。</p>
@@ -634,7 +684,7 @@ document.addEventListener("keydown", function(e) {
           <p style="margin:0 0 8px;">主动选择gap是策略，被拒之后才不得不gap才是被动。把节奏控制权理解为能力高低，是对gap本质的误解。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">误区七：被环境推着去申请</h4>
-          <p style="margin:0 0 8px;">MCAT成绩刚出来、周围同学都在准备AMCAS、导师说"你可以试试"——于是在没有充分准备的情况下就启动申请。正确的判断标准不是"我好像可以申了"，而是"这是我成功率最高的一年吗？"</p>
+          <p style="margin:0 0 8px;">MCAT成绩刚出来、周围同学都在准备AMCAS、导师说"你可以试试"，于是在没有充分准备的情况下就启动申请。正确的判断标准不是"我好像可以申了"，而是"这是我成功率最高的一年吗？"</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">误区八：忽视"reapplicant"的额外代价</h4>
           <p style="margin:0 0 8px;">再次申请的成功率低于首次申请，过早申请失败后，需要花费大量精力解释"为什么第一次没成功"，心理和策略成本都更高。"今年试试，不行明年再来"的心态是医学院申请最危险的一种心态。</p>
@@ -643,14 +693,29 @@ document.addEventListener("keydown", function(e) {
           <p style="margin:0 0 12px;">不要问"我够不够好"，而要问"今年是我成功率最高的一年吗？"如果回答有任何犹豫，通常说明还有可以继续准备的空间。在强校里：直接申成功者，通常各项准备都已非常完整；边缘型直接申请者，后悔率相当高；主动gap者，面试表现普遍更成熟、故事更完整。</p>
 
           <div style="background:#fffbe6; border:1px solid #f0c040; border-radius:8px; padding:12px 16px; font-size:13px;">
-            相关资源：<a href="https://advising.duke.edu/prehealth/" target="_blank" style="color:#003366;">Duke Pre-Health Advising</a> &nbsp;|&nbsp;
-            <a href="https://advising.duke.edu/prehealth/prepare/course/" target="_blank" style="color:#003366;">先修课程要求</a> &nbsp;|&nbsp;
+            官网：<a href="https://advising.duke.edu/prehealth/" target="_blank" style="color:#003366;">advising.duke.edu/prehealth</a> &nbsp;|&nbsp; 电话：(919) 684-5637 &nbsp;|&nbsp; MCAT备考：<a href="https://students.duke.edu/academics/premed/" target="_blank" style="color:#003366;">students.duke.edu/academics/premed</a>
+          </div>
+
+          <div style="margin-top:14px; font-size:12px; color:#888; line-height:1.8;">
+            主要官方参考链接：
+            <a href="https://advising.duke.edu/prehealth/" target="_blank" style="color:#003366;">Duke Pre-Health Advising总页面</a> &nbsp;|&nbsp;
+            <a href="https://advising.duke.edu/prehealth/prepare/course/" target="_blank" style="color:#003366;">医学院先修课程要求</a> &nbsp;|&nbsp;
+            <a href="https://advising.duke.edu/prehealth/apply/" target="_blank" style="color:#003366;">申请医学院流程说明</a> &nbsp;|&nbsp;
+            <a href="https://advising.duke.edu/prehealth/prepare/activities/" target="_blank" style="color:#003366;">推荐经历与活动</a> &nbsp;|&nbsp;
+            <a href="https://advising.duke.edu/prehealth/prepare/mcat/" target="_blank" style="color:#003366;">MCAT准备指南</a> &nbsp;|&nbsp;
             <a href="https://medschool.duke.edu/" target="_blank" style="color:#003366;">Duke School of Medicine</a> &nbsp;|&nbsp;
-            <a href="https://globalhealth.duke.edu/" target="_blank" style="color:#003366;">Duke Global Health Institute</a> &nbsp;|&nbsp;
-            <a href="https://bassconnections.duke.edu/" target="_blank" style="color:#003366;">Bass Connections</a> &nbsp;|&nbsp;
-            <a href="https://dukeengage.duke.edu/" target="_blank" style="color:#003366;">DukeEngage</a> &nbsp;|&nbsp;
-            <a href="https://studentaffairs.duke.edu/caps" target="_blank" style="color:#003366;">CAPS心理咨询</a> &nbsp;|&nbsp;
-            <a href="https://studentaffairs.duke.edu/duwell" target="_blank" style="color:#003366;">DuWell健康项目</a>
+            <a href="https://medschool.duke.edu/education/health-professions-education-programs/duke-clinical-research-training-program" target="_blank" style="color:#003366;">Duke临床科研培训项目</a> &nbsp;|&nbsp;
+            <a href="https://muser.duke.edu/" target="_blank" style="color:#003366;">Duke科研机会数据库(muser)</a> &nbsp;|&nbsp;
+            <a href="https://globalhealth.duke.edu/" target="_blank" style="color:#003366;">Duke全球健康研究院</a> &nbsp;|&nbsp;
+            <a href="https://bassconnections.duke.edu/" target="_blank" style="color:#003366;">Bass Connections跨学科项目</a> &nbsp;|&nbsp;
+            <a href="https://dukeengage.duke.edu/" target="_blank" style="color:#003366;">DukeEngage暑期服务</a> &nbsp;|&nbsp;
+            <a href="https://studentaffairs.duke.edu/caps" target="_blank" style="color:#003366;">CAPS心理咨询中心</a> &nbsp;|&nbsp;
+            <a href="https://studentaffairs.duke.edu/duwell" target="_blank" style="color:#003366;">DuWell健康与健全项目</a> &nbsp;|&nbsp;
+            <a href="https://aamc.org/students/applying/amcas/" target="_blank" style="color:#003366;">AMCAS主申请系统(官方)</a> &nbsp;|&nbsp;
+            <a href="https://students.aamc.org/apply-medical-school/article/mcat-registration/" target="_blank" style="color:#003366;">MCAT报名官网</a> &nbsp;|&nbsp;
+            <a href="https://www.aamc.org/data-reports/facts/interactive-data/medical-school-applicants-matriculants-and-graduates-2023-2024" target="_blank" style="color:#003366;">AAMC医学院申请数据</a> &nbsp;|&nbsp;
+            <a href="https://registrar.duke.edu/faculty-staff-resources/academic-policies/grade-point-average/" target="_blank" style="color:#003366;">Duke GPA计算规则</a> &nbsp;|&nbsp;
+            <a href="https://premed.duke.edu/shadowing/" target="_blank" style="color:#003366;">临床观摩(shadowing)资源</a>
           </div>
 
         </div>
@@ -1051,12 +1116,336 @@ document.addEventListener("keydown", function(e) {
 
         
 
+      <!-- ===== 互相观望各自精彩 ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>互相观望各自精彩</span><span class="accordion-arrow">▸</span>
+        </button>
+        <div class="accordion-body">
+
+          <div class="jingcai-header">
+            <div class="jingcai-header-bg"></div>
+            <div class="jingcai-header-content">
+              <div class="jingcai-title-main">互相观望 各自精彩</div>
+              <p class="jingcai-subtitle">家长们的天地，不具一格，随心分享</p>
+              <p class="jingcai-hint">旅行见闻、生活感悟、美食探店、读书笔记、摄影作品……你的精彩，大家来看</p>
+            </div>
+          </div>
+
+          <div id="jingcai-list" class="jingcai-list-wrap">
+            <div id="jingcai-items" class="jingcai-loading">
+              <span class="jingcai-loading-dot"></span>
+              <span class="jingcai-loading-dot"></span>
+              <span class="jingcai-loading-dot"></span>
+            </div>
+          </div>
+
+          <div class="jingcai-upload-trigger">
+            <button class="jingcai-post-btn" onclick="toggleJingcaiUpload()">
+              上传我的内容
+            </button>
+          </div>
+
+          <div id="jingcaiUploadBox" class="jingcai-form-wrap" style="display:none;">
+            <div class="jingcai-form">
+              <div class="jingcai-form-title">分享你的精彩</div>
+
+              <div id="jingcaiDropZone" class="jingcai-dropzone"
+                ondragover="event.preventDefault(); this.classList.add('jingcai-dropzone-active');"
+                ondragleave="this.classList.remove('jingcai-dropzone-active');"
+                ondrop="jingcaiFileDrop(event)"
+                onclick="this.querySelector('input').click()">
+                <div class="jingcai-dropzone-icon">&#8679;</div>
+                <div class="jingcai-dropzone-text">点击或拖拽文件到此处</div>
+                <div class="jingcai-dropzone-hint">图片、PDF、Word、PPT均可，最大50MB</div>
+                <input type="file" id="jingcaiFileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.doc,.docx,.ppt,.pptx" style="display:none;" onchange="jingcaiFileSelected(this.files)">
+              </div>
+
+              <div id="jingcaiFilePreview" class="jingcai-preview" style="display:none;">
+                <div class="jingcai-preview-icon">&#128206;</div>
+                <div class="jingcai-preview-info">
+                  <span id="jingcaiPreviewNameText" class="jingcai-preview-name"></span>
+                  <span id="jingcaiPreviewSize" class="jingcai-preview-size"></span>
+                </div>
+              </div>
+
+              <input type="text" id="jingcaiFileTitle"
+                placeholder="给你的分享起个标题"
+                maxlength="80"
+                class="jingcai-input">
+
+              <div class="jingcai-form-note">提交后经管理员审核发布，上传时间自动记录</div>
+
+              <button onclick="submitJingcaiFile()" class="jingcai-submit-btn">提交分享</button>
+              <p id="jingcaiUploadMsg" class="jingcai-msg"></p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+<style>
+/* ===== 互相观望各自精彩 样式 ===== */
+.jingcai-header {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.jingcai-header-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #e8f4e8 0%, #f0ede0 40%, #fdf4e0 70%, #e8f0fd 100%);
+  opacity: 0.95;
+}
+.jingcai-header-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 15% 60%, rgba(120,180,120,0.18) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(180,160,100,0.18) 0%, transparent 50%);
+}
+.jingcai-header-content {
+  position: relative;
+  z-index: 1;
+  padding: 28px 20px 22px;
+}
+.jingcai-title-main {
+  font-size: 19px;
+  font-weight: 700;
+  color: #2e5a2e;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+.jingcai-subtitle {
+  font-size: 13px;
+  color: #7a6a30;
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+.jingcai-hint {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+  line-height: 1.6;
+}
+.jingcai-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 28px 0;
+}
+.jingcai-loading-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #a0b890;
+  animation: jingcai-blink 1.2s ease-in-out infinite;
+}
+.jingcai-loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.jingcai-loading-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes jingcai-blink {
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+.jingcai-list-wrap {
+  min-height: 60px;
+  margin-bottom: 16px;
+}
+.jingcai-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  padding: 4px 0 8px;
+}
+.jingcai-card {
+  background: #fff;
+  border: 1px solid #dde8d8;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(60,100,60,0.07);
+  transition: box-shadow 0.2s;
+}
+.jingcai-card:hover { box-shadow: 0 4px 16px rgba(60,100,60,0.14); }
+.jingcai-card-thumb {
+  width: 100%;
+  height: 148px;
+  object-fit: cover;
+  display: block;
+  cursor: zoom-in;
+  background: #f0f4ef;
+}
+.jingcai-card-icon {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  background: #f5f7f2;
+}
+.jingcai-card-body {
+  padding: 10px 12px 12px;
+}
+.jingcai-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2e5a2e;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.jingcai-card-meta {
+  font-size: 11px;
+  color: #aaa;
+  margin-bottom: 8px;
+}
+.jingcai-card-btn {
+  display: inline-block;
+  font-size: 12px;
+  color: #fff;
+  background: #4a7a4a;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.jingcai-card-btn:hover { background: #2e5a2e; }
+.jingcai-empty {
+  text-align: center;
+  padding: 30px 0 20px;
+  color: #aaa;
+  font-size: 14px;
+}
+.jingcai-empty-icon { font-size: 36px; margin-bottom: 8px; }
+.jingcai-upload-trigger {
+  text-align: center;
+  margin: 12px 0 6px;
+}
+.jingcai-post-btn {
+  background: #4a7a4a;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 28px;
+  font-size: 14px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: background 0.2s;
+}
+.jingcai-post-btn:hover { background: #2e5a2e; }
+.jingcai-form-wrap {
+  margin-top: 16px;
+}
+.jingcai-form {
+  background: #f7fbf5;
+  border: 1px solid #c8ddc0;
+  border-radius: 12px;
+  padding: 20px 18px 18px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.jingcai-form-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2e5a2e;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.jingcai-dropzone {
+  border: 2px dashed #7aaa7a;
+  border-radius: 8px;
+  padding: 26px 20px;
+  text-align: center;
+  cursor: pointer;
+  background: #f0f7ee;
+  margin-bottom: 12px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.jingcai-dropzone-active {
+  background: #d8efd4;
+  border-color: #4a7a4a;
+}
+.jingcai-dropzone-icon {
+  font-size: 32px;
+  color: #7aaa7a;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.jingcai-dropzone-text {
+  color: #2e5a2e;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.jingcai-dropzone-hint {
+  color: #999;
+  font-size: 12px;
+}
+.jingcai-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #e8f2e5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.jingcai-preview-icon { font-size: 22px; }
+.jingcai-preview-name { color: #2e5a2e; font-weight: 600; word-break: break-all; }
+.jingcai-preview-size { color: #999; font-size: 12px; margin-left: 8px; }
+.jingcai-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 13px;
+  border: 1px solid #b8d4b0;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.jingcai-input:focus { border-color: #4a7a4a; }
+.jingcai-form-note {
+  font-size: 11px;
+  color: #aaa;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.jingcai-submit-btn {
+  width: 100%;
+  padding: 11px;
+  background: #4a7a4a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: background 0.2s;
+}
+.jingcai-submit-btn:hover { background: #2e5a2e; }
+.jingcai-msg {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 13px;
+  min-height: 20px;
+}
+@media (max-width: 600px) {
+  .jingcai-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .jingcai-card-thumb { height: 110px; }
+}
+</style>
+
       <!-- ===== 资助 ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>资助</span><span class="accordion-arrow">▸</span>
         </button>
-        <div class="accordion-body" style="padding:16px 20px; font-size:14px; color:#222; line-height:1.7;">
+        <div class="accordion-body" style="padding:16px 0; font-size:14px; color:#222; line-height:1.7;">
 
           <!-- 资助总览 -->
           <h3 style="color:#003366; margin:0 0 6px;">Duke University助学金(Financial Aid)和奖学金(Merit Scholarships)</h3>
@@ -1256,7 +1645,7 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>Sarah P. Duke Gardens</span><span class="accordion-arrow">▸</span>
         </button>
-        <div class="accordion-body" style="padding:16px 20px; font-size:14px; color:#222; line-height:1.7;">
+        <div class="accordion-body" style="padding:16px 0; font-size:14px; color:#222; line-height:1.7;">
 
           <!-- 导言 -->
           <h3 style="color:#003366; margin:0 0 6px;">Duke花园：校园里的世界级植物园</h3>
@@ -1265,13 +1654,13 @@ document.addEventListener("keydown", function(e) {
           <!-- 历史 -->
           <h3 style="color:#003366; margin:16px 0 6px;">历史背景</h3>
           <p style="margin:0 0 10px;">花园的起源要追溯到20世纪30年代初。Duke医学院早期教员Frederic M. Hanes博士是一位园艺爱好者，他说服了大学创始人之一Benjamin N. Duke的遗孀Sarah P. Duke捐款20,000美元兴建一座以她名字命名的花园。1939年，花园正式对外开放。</p>
-          <p style="margin:0 0 14px;">花园的设计由美国景观设计先驱Ellen Biddle Shipman(1869-1950)主持，她以意大利风格台地园(Italianate terraces)闻名，而Duke花园的台地区被许多人认为是她毕生最出色的作品。在她设计的约650座花园中，大多数已随岁月消失，Duke花园却至今保存完好，超过80年来持续服务于Duke和Durham社区。</p>
+          <p style="margin:0 0 14px;">花园的设计由美国景观设计先驱Ellen Biddle Shipman(1869-1950)主持，她以意大利风格台地园(Italianate terraces)闻名，而Duke花园的层台被许多人认为是她毕生最出色的作品。在她设计的约650座花园中，大多数已随岁月消失，Duke花园却至今保存完好，超过80年来持续服务于Duke和Durham社区。</p>
 
           <!-- 四大分区 -->
           <h3 style="color:#003366; margin:16px 0 6px;">四大园区</h3>
           <p style="margin:0 0 8px;">花园由四个各具特色的主题区域组成，共有5英里的小径和步道，种植了超过2,500种植物。</p>
 
-          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://gardens.duke.edu/gardens/historic-gardens/" target="_blank" style="color:#003366;">Historic Gardens & Terraces(历史花园与台地区)</a></h4>
+          <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://gardens.duke.edu/gardens/historic-gardens/" target="_blank" style="color:#003366;">Historic Gardens & Terraces(历史花园与层台)</a></h4>
           <p style="margin:0 0 12px;">这是花园的核心区域，由Ellen Biddle Shipman以意大利文艺复兴风格设计。层叠的台地花坛、玫瑰园、鸢尾花圃、百年喷泉和紫藤长廊构成了经典的正式园林景观。这里也是花园内最具拍照价值的区域，春季百花齐放时尤为壮观。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://gardens.duke.edu/gardens/blomquist-garden-of-native-plants/" target="_blank" style="color:#003366;">H.L. Blomquist Garden of Native Plants(本土植物园)</a></h4>
@@ -1289,53 +1678,53 @@ document.addEventListener("keydown", function(e) {
 
           <h4 style="color:#003366; margin:12px 0 4px;">Historic Gardens & Terraces的代表植物</h4>
 
-          <p style="margin:0 0 6px;"><a href="https://gardens.duke.edu/garden-talk/dawn-redwood/" target="_blank" style="color:#003366;">水杉(Dawn Redwood，学名Metasequoia glyptostroboides)</a>——台地区脚下最标志性的一棵树，种植于1949年，是这片土地上的活化石。水杉曾被认为已灭绝，仅见于化石记录，直到1943年才在中国四川重新被发现。Duke花园的这棵水杉树龄超过75年，夏季树冠郁郁葱葱，秋季叶片转为铁锈红色后大量落叶，是观赏四季变化的极佳对象。对应地图编号H3。</p>
+          <p style="margin:0 0 6px;"><a href="https://gardens.duke.edu/garden-talk/dawn-redwood/" target="_blank" style="color:#003366;">水杉(Dawn Redwood，学名Metasequoia glyptostroboides)</a>，层台脚下最标志性的一棵树，种植于1949年，是这片土地上的活化石。水杉曾被认为已灭绝，仅见于化石记录，直到1943年才在中国四川重新被发现。Duke花园的这棵水杉树龄超过75年，夏季树冠郁郁葱葱，秋季叶片转为铁锈红色后大量落叶，是观赏四季变化的极佳对象。对应地图编号H3。</p>
 
-          <p style="margin:0 0 6px;">杜鹃花(Azalea)——台地区的Azalea Court是花园最著名的景点之一，每年4月，数十株各色杜鹃同期盛开，粉、红、白、紫交织，围绕中央雕塑形成环形花墙，是花园拍照打卡人气最高的角落。对应地图编号H1。</p>
+          <p style="margin:0 0 6px;">杜鹃花(Azalea)，层台的Azalea Court是花园最著名的景点之一，每年4月，数十株各色杜鹃同期盛开，粉、红、白、紫交织，围绕中央雕塑形成环形花墙，是花园拍照打卡人气最高的角落。对应地图编号H1。</p>
 
-          <p style="margin:0 0 6px;">山茶花(Camellia)——台地区专设有Camellia Garden山茶园，种有多个品种的山茶，花期从秋末延续至早春(11月至次年3月)，是冬季花园为数不多的开花植物之一，花色包括深红、粉红和白色。</p>
+          <p style="margin:0 0 6px;">山茶花(Camellia)，层台专设有Camellia Garden山茶园，种有多个品种的山茶，花期从秋末延续至早春(11月至次年3月)，是冬季花园为数不多的开花植物之一，花色包括深红、粉红和白色。</p>
 
-          <p style="margin:0 0 6px;">鸢尾花(Iris)——台地区各处种植有大量鸢尾，包括须根鸢尾(Bearded Iris)和路易斯安那鸢尾(Louisiana Iris)，花期集中在4月下旬至5月，颜色从深紫、淡蓝到白色和黄色不等，是台地区春季最精彩的花卉景观之一。</p>
+          <p style="margin:0 0 6px;">鸢尾花(Iris)，层台各处种植有大量鸢尾，包括须根鸢尾(Bearded Iris)和路易斯安那鸢尾(Louisiana Iris)，花期集中在4月下旬至5月，颜色从深紫、淡蓝到白色和黄色不等，是层台春季最精彩的花卉景观之一。</p>
 
-          <p style="margin:0 0 6px;">玫瑰(Rose)——台地区设有玫瑰园，种植了多种现代和古典玫瑰品种，花期从5月下旬延续至秋季，以粉色和红色品种为主，配以攀爬在石柱和铁艺架上的藤本玫瑰，构成经典的英式花园风格。</p>
+          <p style="margin:0 0 6px;">玫瑰(Rose)，层台设有玫瑰园，种植了多种现代和古典玫瑰品种，花期从5月下旬延续至秋季，以粉色和红色品种为主，配以攀爬在石柱和铁艺架上的藤本玫瑰，构成经典的英式花园风格。</p>
 
-          <p style="margin:0 0 6px;">紫藤(Wisteria)——台地区有一条紫藤长廊，每年4月中旬至5月初，紫藤垂挂成帘，花香浓郁，是花园内气味最迷人的赏花体验之一。</p>
+          <p style="margin:0 0 6px;">紫藤(Wisteria)，层台有一条紫藤长廊，每年4月中旬至5月初，紫藤垂挂成帘，花香浓郁，是花园内气味最迷人的赏花体验之一。</p>
 
-          <p style="margin:0 0 12px;">蝴蝶草园(Butterfly Garden)——台地区另设有蝴蝶花园，种植了大量吸引授粉昆虫的蜜源植物，包括马利筋(Milkweed)、金光菊(Black-eyed Susan)、马鞭草(Verbena)和松果菊(Coneflower)等，夏秋季节可以观察到大批蝴蝶和蜂鸟在此觅食。</p>
+          <p style="margin:0 0 12px;">蝴蝶草园(Butterfly Garden)，层台另设有蝴蝶花园，种植了大量吸引授粉昆虫的蜜源植物，包括马利筋(Milkweed)、金光菊(Black-eyed Susan)、马鞭草(Verbena)和松果菊(Coneflower)等，夏秋季节可以观察到大批蝴蝶和蜂鸟在此觅食。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">Culberson Asiatic Arboretum的代表植物</h4>
 
-          <p style="margin:0 0 6px;">日本樱花(Japanese Cherry，学名Prunus serrulata等)——亚洲植物园最受瞩目的植物，园内设有专门的Cherry Allee樱花大道，两侧种植了多株日本樱花，花期通常在每年3月中旬至4月初，粉色花瓣飘落时犹如置身京都。花园官网设有<a href="https://gardens.duke.edu/cherry-blossoms/" target="_blank" style="color:#003366;">樱花实时追踪页面</a>，每日更新开花进度。</p>
+          <p style="margin:0 0 6px;">日本樱花(Japanese Cherry，学名Prunus serrulata等)，亚洲植物园最受瞩目的植物，园内设有专门的Cherry Allee樱花大道，两侧种植了多株日本樱花，花期通常在每年3月中旬至4月初，粉色花瓣飘落时犹如置身京都。花园官网设有<a href="https://gardens.duke.edu/cherry-blossoms/" target="_blank" style="color:#003366;">樱花实时追踪页面</a>，每日更新开花进度。</p>
 
-          <p style="margin:0 0 6px;">日本枫(Japanese Maple，学名Acer palmatum)——亚洲植物园内有多棵形态各异的日本枫，叶形精巧，部分品种全年保持深红色，另有品种春季嫩绿、秋季转为橙红。日本枫树形优美，是园内全年皆宜拍照的树种。</p>
+          <p style="margin:0 0 6px;">日本枫(Japanese Maple，学名Acer palmatum)，亚洲植物园内有多棵形态各异的日本枫，叶形精巧，部分品种全年保持深红色，另有品种春季嫩绿、秋季转为橙红。日本枫树形优美，是园内全年皆宜拍照的树种。</p>
 
-          <p style="margin:0 0 6px;">牡丹(Peony，学名Paeonia)——亚洲植物园种有多种牡丹，花期在4月下旬至5月，花朵硕大，颜色从纯白、浅粉到深玫红均有，是杜克花园里观赏价值极高的春季花卉。</p>
+          <p style="margin:0 0 6px;">牡丹(Peony，学名Paeonia)，亚洲植物园种有多种牡丹，花期在4月下旬至5月，花朵硕大，颜色从纯白、浅粉到深玫红均有，是杜克花园里观赏价值极高的春季花卉。</p>
 
-          <p style="margin:0 0 6px;">姜百合(Ginger Lily，学名Hedychium)——亚洲植物园的夏季明星植物，花期7至9月，花序高挑，白色或橙色花朵香气馥郁，是花园夏季最芬芳的角落之一。</p>
+          <p style="margin:0 0 6px;">姜百合(Ginger Lily，学名Hedychium)，亚洲植物园的夏季明星植物，花期7至9月，花序高挑，白色或橙色花朵香气馥郁，是花园夏季最芬芳的角落之一。</p>
 
-          <p style="margin:0 0 6px;">苔藓园(Kremen Interpretive Moss Garden)——亚洲植物园专设苔藓解说园，展示了数十种苔藓植物，是北美少有的以苔藓为主题的公共展示花园。苔藓种类繁多，在阴湿环境中构成绿色地毯，全年常绿，雨后尤为精彩。对应地图编号A2。</p>
+          <p style="margin:0 0 6px;">苔藓园(Kremen Interpretive Moss Garden)，亚洲植物园专设苔藓解说园，展示了数十种苔藓植物，是北美少有的以苔藓为主题的公共展示花园。苔藓种类繁多，在阴湿环境中构成绿色地毯，全年常绿，雨后尤为精彩。对应地图编号A2。</p>
 
-          <p style="margin:0 0 6px;">竹林(Bamboo)——亚洲植物园内有竹林区，种有多种亚洲竹类，夏日竹影婆娑，是花园内气氛最清幽的区域之一。</p>
+          <p style="margin:0 0 6px;">竹林(Bamboo)，亚洲植物园内有竹林区，种有多种亚洲竹类，夏日竹影婆娑，是花园内气氛最清幽的区域之一。</p>
 
-          <p style="margin:0 0 12px;">水生植物与锦鲤池——亚洲植物园内设有锦鲤池和水生植物区，种有荷花(Lotus)、睡莲(Water Lily)和芦苇等水生植物，夏季荷花盛开时景观尤为雅致。</p>
+          <p style="margin:0 0 12px;">水生植物与锦鲤池，亚洲植物园内设有锦鲤池和水生植物区，种有荷花(Lotus)、睡莲(Water Lily)和芦苇等水生植物，夏季荷花盛开时景观尤为雅致。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">Blomquist Garden of Native Plants的代表植物</h4>
 
           <p style="margin:0 0 6px;">Blomquist本土植物园占地6.5英亩，收录超过900种植物分类单元，绝大多数为美国东南部原生种，是认识北卡罗来纳州本土植被的最佳场所。</p>
 
-          <p style="margin:0 0 6px;">野生蓝铃花(Virginia Bluebell，学名Mertensia virginica)——春季最先开放的本土野花之一，淡蓝紫色钟形花朵成片盛开，花期3至4月，是Blomquist园区春季标志性的景观。</p>
+          <p style="margin:0 0 6px;">野生蓝铃花(Virginia Bluebell，学名Mertensia virginica)，春季最先开放的本土野花之一，淡蓝紫色钟形花朵成片盛开，花期3至4月，是Blomquist园区春季标志性的景观。</p>
 
-          <p style="margin:0 0 6px;">血根草(Bloodroot，学名Sanguinaria canadensis)——北卡原生林地野花，花期2至3月，是花园里最早开放的野花之一，白色花瓣衬托金黄花蕊，花期短暂，仅持续数天，显得格外珍贵。</p>
+          <p style="margin:0 0 6px;">血根草(Bloodroot，学名Sanguinaria canadensis)，北卡原生林地野花，花期2至3月，是花园里最早开放的野花之一，白色花瓣衬托金黄花蕊，花期短暂，仅持续数天，显得格外珍贵。</p>
 
-          <p style="margin:0 0 6px;">美国本土杜鹃(Native Azalea，学名Rhododendron spp.)——与台地区的亚洲杜鹃不同，Blomquist园区种植的是北卡罗来纳州本土杜鹃，花色以橙红和粉白为主，花期4至5月，且多数品种散发清淡香气，亚洲品种则通常无香。</p>
+          <p style="margin:0 0 6px;">美国本土杜鹃(Native Azalea，学名Rhododendron spp.)，与层台的亚洲杜鹃不同，Blomquist园区种植的是北卡罗来纳州本土杜鹃，花色以橙红和粉白为主，花期4至5月，且多数品种散发清淡香气，亚洲品种则通常无香。</p>
 
-          <p style="margin:0 0 6px;">蕨类植物(Ferns)——园区内设有Fern Ravine蕨类峡谷木栈道，种植了北美东南部原产的多种蕨类，包括肉桂蕨(Cinnamon Fern)、鸵鸟蕨(Ostrich Fern)和皇家蕨(Royal Fern)，春季新芽展开时形态极具观赏价值。</p>
+          <p style="margin:0 0 6px;">蕨类植物(Ferns)，园区内设有Fern Ravine蕨类峡谷木栈道，种植了北美东南部原产的多种蕨类，包括肉桂蕨(Cinnamon Fern)、鸵鸟蕨(Ostrich Fern)和皇家蕨(Royal Fern)，春季新芽展开时形态极具观赏价值。</p>
 
-          <p style="margin:0 0 6px;">草地松果菊(Purple Coneflower，学名Echinacea purpurea)——北美最具代表性的本土宿根花卉，夏秋季大量盛开，深粉紫色花瓣围绕橙棕色球形花心，是授粉昆虫的重要蜜源，也是最常见的本土园艺植物之一。</p>
+          <p style="margin:0 0 6px;">草地松果菊(Purple Coneflower，学名Echinacea purpurea)，北美最具代表性的本土宿根花卉，夏秋季大量盛开，深粉紫色花瓣围绕橙棕色球形花心，是授粉昆虫的重要蜜源，也是最常见的本土园艺植物之一。</p>
 
-          <p style="margin:0 0 6px;">北美金缕梅(American Witch-hazel，学名Hamamelis virginiana)——Blomquist园区冬季最特别的植物，花期11至12月，在其他植物凋零的晚秋初冬季节绽放金黄色细丝状花朵，花期持续数周，是花园冬季值得专程观赏的珍奇植物。</p>
+          <p style="margin:0 0 6px;">北美金缕梅(American Witch-hazel，学名Hamamelis virginiana)，Blomquist园区冬季最特别的植物，花期11至12月，在其他植物凋零的晚秋初冬季节绽放金黄色细丝状花朵，花期持续数周，是花园冬季值得专程观赏的珍奇植物。</p>
 
-          <p style="margin:0 0 12px;">Piedmont Prairie草原区——园区内设有一片以北卡Piedmont地区草地为蓝本还原的本土草原，种植了北美须芒草(Big Bluestem)、印第安草(Indiangrass)和多种本土野花，秋季草穗摇曳，景观大气而充满野性。配套设置有Piedmont Prairie Classroom户外教室，是花园环境教育的重要场所。</p>
+          <p style="margin:0 0 12px;">Piedmont Prairie草原区，园区内设有一片以北卡Piedmont地区草地为蓝本还原的本土草原，种植了北美须芒草(Big Bluestem)、印第安草(Indiangrass)和多种本土野花，秋季草穗摇曳，景观大气而充满野性。配套设置有Piedmont Prairie Classroom户外教室，是花园环境教育的重要场所。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">全园特别收藏：栎树(Oaks)</h4>
           <p style="margin:0 0 12px;">Duke花园专门维护了一份<a href="https://gardens.duke.edu/oaks-at-duke-gardens/" target="_blank" style="color:#003366;">栎树收藏目录</a>，园内种植有来自北美、欧洲和亚洲的多种栎树，包括北美白栎(White Oak)、切缝栎(Shumard Oak)、柳叶栎(Willow Oak)和夏栎(English Oak)。这些栎树中，部分树龄超过百年，树干粗壮，是花园里最古老的生命见证者，也是对Durham地区生态历史的活体档案。</p>
@@ -1362,7 +1751,7 @@ document.addEventListener("keydown", function(e) {
           <p style="margin:0 0 12px;">施工期间，宠物狗仅允许在每天上午10时前及下午5时后入园，需牵绳，且不得进入建筑物内。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">园内设施</h4>
-          <p style="margin:0 0 12px;">园内设有咖啡馆(Cafe)和礼品店，提供轻餐饮和植物相关纪念品。台地区和亚洲植物园各设有洗手间，施工期间Lewis Street临时入口旁也有临时卫生间可用。</p>
+          <p style="margin:0 0 12px;">园内设有咖啡馆(Cafe)和礼品店，提供轻餐饮和植物相关纪念品。层台和亚洲植物园各设有洗手间，施工期间Lewis Street临时入口旁也有临时卫生间可用。</p>
 
           <!-- 樱花 -->
           <h3 style="color:#003366; margin:16px 0 6px;">樱花季特别提示</h3>
@@ -1405,7 +1794,7 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>AI工具</span><span class="accordion-arrow">▸</span>
         </button>
-        <div class="accordion-body" style="padding:16px 20px; font-size:14px; color:#222; line-height:1.7;">
+        <div class="accordion-body" style="padding:16px 0; font-size:14px; color:#222; line-height:1.7;">
 
           <!-- 导言 -->
           <h3 style="color:#003366; margin:0 0 6px;">在Duke用好AI：从入门到高效</h3>
@@ -1733,6 +2122,7 @@ document.addEventListener("keydown", function(e) {
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_video',this)">⏳ 待审核视频</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_file',this)">⏳ 待审核文件</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_yuanfen',this)">⏳ 待审核启示</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('pending_jingcai',this)">⏳ 待审核精彩</button>
         </div>
 
         <!-- Tab 内容面板 -->
@@ -1819,6 +2209,15 @@ document.addEventListener("keydown", function(e) {
             <button onclick="loadPendingYuanfen()" class="admin-action-btn">🔄 刷新</button>
           </div>
           <div id="pendingYuanfenList" style="color:#555;">加载中...</div>
+        </div>
+
+        <!-- 待审核互相观望各自精彩 -->
+        <div id="adminTab-pending_jingcai" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;">互相观望各自精彩 待审核内容</span>
+            <button onclick="loadPendingJingcai()" class="admin-action-btn">🔄 刷新</button>
+          </div>
+          <div id="pendingJingcaiList" style="color:#555;">加载中...</div>
         </div>
 
       </div>
@@ -1913,7 +2312,7 @@ function verifyAdmin() {
     loadPendingVideos();
     loadPendingPpts();
     loadPendingYuanfen();
-  } else {
+    loadPendingJingcai();
     err.textContent = "❌ 密码错误，请重试";
   }
 }
@@ -3263,6 +3662,144 @@ function yuanfenFileSelected(files) {
   }
 }
 
+async function submitJingcaiFile() {
+  var supabase = window._supabaseClient;
+  var msg = document.getElementById("jingcaiUploadMsg");
+  if (!supabase) { msg.textContent = "请先登录网站"; msg.style.color = "crimson"; return; }
+  if (!userPendingJingcai) { msg.textContent = "请先选择文件"; msg.style.color = "crimson"; return; }
+  var title = document.getElementById("jingcaiFileTitle").value.trim();
+  if (!title) { msg.textContent = "请填写标题"; msg.style.color = "crimson"; return; }
+  msg.textContent = "上传中，请稍候...";
+  msg.style.color = "#2e5a2e";
+  var ext = userPendingJingcai.name.split(".").pop().toLowerCase();
+  var filePath = "pending_jingcai/" + Date.now() + "." + ext;
+  var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingJingcai, { upsert: true });
+  if (uploadResult.error) { msg.textContent = "上传失败：" + uploadResult.error.message; msg.style.color = "crimson"; return; }
+  var { data: { user } } = await supabase.auth.getUser();
+  var uploadedBy = user && user.email ? user.email : "匿名";
+  var dbResult = await supabase.from("pending_uploads").insert({
+    file_path: filePath,
+    file_name: userPendingJingcai.name,
+    title: title,
+    uploaded_by: uploadedBy,
+    status: "pending",
+    file_type: "jingcai"
+  });
+  if (dbResult.error) { msg.textContent = "提交失败：" + dbResult.error.message; msg.style.color = "crimson"; return; }
+  msg.textContent = "提交成功！等待管理员审核后将发布。";
+  msg.style.color = "green";
+  userPendingJingcai = null;
+  document.getElementById("jingcaiFileTitle").value = "";
+  document.getElementById("jingcaiFilePreview").style.display = "none";
+  document.getElementById("jingcaiFileInput").value = "";
+}
+
+var userPendingJingcai = null;
+
+function jingcaiFileSelected(files) {
+  if (!files || !files[0]) return;
+  userPendingJingcai = files[0];
+  var preview = document.getElementById("jingcaiFilePreview");
+  document.getElementById("jingcaiPreviewNameText").textContent = files[0].name;
+  document.getElementById("jingcaiPreviewSize").textContent = (files[0].size / 1024 / 1024).toFixed(2) + " MB";
+  preview.style.display = "flex";
+}
+
+function jingcaiFileDrop(e) {
+  e.preventDefault();
+  document.getElementById("jingcaiDropZone").classList.remove("jingcai-dropzone-active");
+  jingcaiFileSelected(e.dataTransfer.files);
+}
+
+function toggleJingcaiUpload() {
+  var box = document.getElementById("jingcaiUploadBox");
+  box.style.display = box.style.display === "none" ? "block" : "none";
+}
+
+async function loadJingcaiItems() {
+  var supabase = window._supabaseClient;
+  var container = document.getElementById("jingcai-items");
+  if (!container) return;
+  if (!supabase) {
+    container.innerHTML = '<div class="jingcai-empty"><div class="jingcai-empty-icon">&#128274;</div><div>请登录后查看</div></div>';
+    return;
+  }
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "approved").eq("file_type", "jingcai")
+    .order("uploaded_at", { ascending: false });
+  if (result.error || !result.data || !result.data.length) {
+    container.innerHTML = '<div class="jingcai-empty"><div class="jingcai-empty-icon">&#10024;</div><div>暂无内容，快来第一个分享吧</div></div>';
+    return;
+  }
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var html = '<div class="jingcai-grid">';
+  result.data.forEach(function(item) {
+    var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var ext = item.file_name.split(".").pop().toUpperCase();
+    var isImg = ["JPG","JPEG","PNG","GIF"].includes(ext);
+    var date = new Date(item.uploaded_at).toLocaleDateString("zh-CN", { year:'numeric', month:'long', day:'numeric' });
+    var uploader = item.uploaded_by ? item.uploaded_by.split('@')[0] : '匿名';
+    var icon = ext === 'PDF' ? '&#128196;' : (['PPT','PPTX'].includes(ext) ? '&#128202;' : ['DOC','DOCX'].includes(ext) ? '&#128221;' : '&#128196;');
+    html += '<div class="jingcai-card">';
+    if (isImg) {
+      html += '<img src="' + pubUrl + '" class="jingcai-card-thumb" onclick="openOverlay(\'' + pubUrl + '\', \'' + item.title + '\')" alt="' + item.title + '">';
+    } else {
+      html += '<div class="jingcai-card-icon">' + icon + '</div>';
+    }
+    html += '<div class="jingcai-card-body">' +
+      '<div class="jingcai-card-title">' + item.title + '</div>' +
+      '<div class="jingcai-card-meta">' + uploader + ' · ' + date + '</div>' +
+      '<a href="' + pubUrl + '" target="_blank" class="jingcai-card-btn">查看 →</a>' +
+      '</div></div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// 管理员：加载待审核精彩内容
+async function loadPendingJingcai() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("pendingJingcaiList");
+  if (!container) return;
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "pending").eq("file_type", "jingcai")
+    .order("uploaded_at", { ascending: false });
+  if (result.error) { container.innerHTML = '<span style="color:crimson;">加载失败</span>'; return; }
+  var items = result.data;
+  if (!items.length) { container.innerHTML = '<span style="color:#aaa;">暂无待审核内容</span>'; return; }
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var html = '';
+  items.forEach(function(item) {
+    var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var date = new Date(item.uploaded_at).toLocaleString("zh-CN");
+    html += '<div style="border:1px solid #c8ddc0; border-radius:8px; padding:12px; margin-bottom:12px; background:#f7fbf5;">' +
+      '<div style="font-weight:bold; color:#2e5a2e; margin-bottom:4px;">&#128204; ' + item.title + '</div>' +
+      '<div style="font-size:12px; color:#888; margin-bottom:4px;">上传者：' + (item.uploaded_by||'匿名') + ' · ' + date + '</div>' +
+      '<a href="' + pubUrl + '" target="_blank" style="font-size:12px; color:#4a7a4a;">预览/下载</a>' +
+      '<div style="margin-top:10px; display:flex; gap:8px;">' +
+      '<button onclick="approveJingcai(\'' + item.id + '\')" style="flex:1; padding:8px; background:#4a7a4a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">批准发布</button>' +
+      '<button onclick="rejectPendingItem(\'' + item.id + '\', \'' + item.file_path + '\')" style="flex:1; padding:8px; background:#c00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">拒绝删除</button>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+async function approveJingcai(id) {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", id);
+  loadPendingJingcai();
+  loadJingcaiItems();
+}
+
+// 加载时触发
+document.addEventListener("supabaseReady", function() {
+  loadJingcaiItems();
+});
+
+
 async function submitYuanfenFile() {
   var supabase = window._supabaseClient;
   var msg = document.getElementById("yuanfenUploadMsg");
@@ -3708,6 +4245,9 @@ async function rejectPendingItem(id, filePath) {
     // === 加载已发布的有缘启示 ===
     loadYuanfenItems();
 
+    // === 加载互相观望各自精彩 ===
+    loadJingcaiItems();
+
     // === 加载管理员精选相册 ===
     loadApprovedAdminPhotos();
   }
@@ -3873,6 +4413,12 @@ async function rejectPendingItem(id, filePath) {
     border-top: 1px solid #ddd;
   }
 
+  div.accordion-body ul,
+  div.accordion-body ol {
+    padding-left: 0;
+    margin-left: 0;
+  }
+
   .accordion-body.open {
     display: block;
     animation: accordionOpen 0.25s ease;
@@ -3885,7 +4431,7 @@ async function rejectPendingItem(id, filePath) {
 
   .accordion-body li a {
     display: block;
-    padding: 6px 0 6px 32px;
+    padding: 6px 0 6px 0;
     font-size: 18px;
     color: #000080;
     text-decoration: none;
