@@ -3081,16 +3081,8 @@ document.addEventListener("keydown", function(e) {
       </button>
       <div class="accordion-body accordion-body-qa">
 
-        <!-- 密码保护区 -->
-        <div class="qa-section">
-          <input type="password" id="qaPassword" placeholder="请输入密码查看 Q&amp;A" aria-label="Q&A密码">
-          <button type="button" id="qaShowPwd" aria-label="显示或隐藏密码">显示密码</button>
-          <button id="qaSubmit" type="button">提交</button>
-        </div>
-        <button id="qaClose" style="display:none;" type="button">关闭 Q&amp;A</button>
-
         <!-- Q&A 内容 -->
-        <div class="qa-content" style="display:none;" role="region" aria-label="Q&A 家长询问和回答">
+        <div class="qa-content" role="region" aria-label="Q&A 家长询问和回答">
 
           <p style="font-size:12px; color:#888; margin:0 0 14px; padding:0 4px;">以下问答来自扯谈Duke家长群，由群内有经验的家长解答，供参考。</p>
 
@@ -5363,54 +5355,6 @@ async function rejectPendingItem(id, filePath) {
           if (match && !firstMatch && keyword !== "") firstMatch = el;
         });
         if (firstMatch) firstMatch.scrollIntoView({ behavior: "smooth", block: "center" });
-      });
-    }
-
-    // === Q&A 密码 ===
-    const qaPassword = "Duke2030";
-    const qaContent = main.querySelector(".qa-content");
-    const qaInput = main.querySelector("#qaPassword");
-    const qaSubmit = main.querySelector("#qaSubmit");
-    const qaClose = main.querySelector("#qaClose");
-    const qaShowPwd = main.querySelector("#qaShowPwd");
-
-    if (qaSubmit && qaInput && qaContent) {
-      qaSubmit.addEventListener("click", function() {
-        if (qaInput.value === qaPassword) {
-          qaContent.style.display = "block";
-          qaInput.style.display = "none";
-          qaSubmit.style.display = "none";
-          if (qaClose) qaClose.style.display = "inline-block";
-        } else {
-          alert("密码错误，请重试！");
-        }
-      });
-
-      // Enter键提交Q&A密码
-      qaInput.addEventListener("keydown", function(e) {
-        if (e.key === "Enter") qaSubmit.click();
-      });
-    }
-
-    if (qaClose && qaContent && qaInput && qaSubmit) {
-      qaClose.addEventListener("click", function() {
-        qaContent.style.display = "none";
-        qaInput.style.display = "inline-block";
-        qaSubmit.style.display = "inline-block";
-        qaClose.style.display = "none";
-        qaInput.value = "";
-      });
-    }
-
-    if (qaShowPwd && qaInput) {
-      qaShowPwd.addEventListener("click", function() {
-        if (qaInput.type === "password") {
-          qaInput.type = "text";
-          qaShowPwd.textContent = "隐藏密码";
-        } else {
-          qaInput.type = "password";
-          qaShowPwd.textContent = "显示密码";
-        }
       });
     }
 
