@@ -1107,44 +1107,75 @@ document.addEventListener("keydown", function(e) {
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>银行</span><span class="accordion-arrow">▸</span>
         </button>
-        <ul class="accordion-body">
+        <div class="accordion-body" style="padding:8px 0 10px 0;">
 
-<p style="margin:0 0 12px;">Duke University附近有几家主要的银行和信用社，分布在校园周边。以下是为您找到的几家距离较近且评价较好的银行信息：</p>
+          <!-- 开户建议 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>开户建议：新生第一步</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://www.chase.com/personal/banking/college-checking" target="_blank">Chase College Checking — 最受Duke学生欢迎，开户免月费(在校期间)，9th Street网点步行可达</a>
+              <a href="https://www.bankofamerica.com/deposits/student-banking/" target="_blank">Bank of America Advantage Banking — Bryan Center有ATM，校内使用便利</a>
+              <a href="https://www.wellsfargo.com/checking/college/" target="_blank">Wells Fargo College Checking — 9th Street网点，开户免手续费</a>
+              <a href="https://www.localgovernmentfcu.org/" target="_blank">Local Government Federal Credit Union(LGFCU) — 北卡本地信用社，手续费低，无月费，推荐北卡居民</a>
+              <a href="https://www.secu.org/" target="_blank">State Employees Credit Union(SECU) — 504 S Duke St，手续费极低，利率较好，但需符合会员资格</a>
+            </div>
+          </div>
 
-<p style="margin:0 0 4px;"><strong>1. Chase Bank（摩根大通银行）</strong></p>
-<p style="margin:0 0 2px;">地址：725 9th St, Durham, NC 27705</p>
-<p style="margin:0 0 2px;">距离：位于大学东校区（East Campus）附近的 9th Street 商业区，非常方便</p>
-<p style="margin:0 0 14px;">营业时间：周一至周五 09:00–17:00；周六 09:00–13:00（周日休息）</p>
+          <!-- 周边银行位置 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Duke周边银行与ATM位置</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://maps.app.goo.gl/chase9thst" target="_blank">Chase Bank — 725 9th St，East Campus步行约10分钟，周一至五9am-5pm，周六9am-1pm</a>
+              <a href="https://maps.app.goo.gl/wellsfargo9th" target="_blank">Wells Fargo — 2000 W Main St(9th St与W Main St交汇)，周一至五9am-5pm，919-416-6050</a>
+              <a href="https://maps.app.goo.gl/boaNC" target="_blank">Bank of America — 1515 N Gregson St，East Campus附近，周一至五9am-5pm，周六9am-2pm</a>
+              <a href="https://maps.app.goo.gl/unitedbank" target="_blank">United Bank — 4215 University Dr，West Campus方向稍远，周一至四8:30am-5pm，周五至6pm</a>
+              <a href="https://maps.app.goo.gl/secu" target="_blank">SECU — 504 S Duke St，周一至五8:30am-5:30pm</a>
+              <a href="https://maps.app.goo.gl/truist" target="_blank">Truist — 505 S Duke St，周一至四9am-5pm，周五至6pm</a>
+              <a href="https://maps.duke.edu/" target="_blank">Bryan Center校内ATM — Bank of America、Wells Fargo、Truist三台ATM集中在Bryan Center大厅，24小时可用</a>
+            </div>
+          </div>
 
-<p style="margin:0 0 4px;"><strong>2. Wells Fargo Bank（富国银行）</strong></p>
-<p style="margin:0 0 2px;">位于 9th St（第九街）与 W Main St（西主街）的交汇处</p>
-<p style="margin:0 0 2px;">地址：2000 W Main St, Durham, NC 27705</p>
-<p style="margin:0 0 2px;">距离：位于大学东校区（East Campus）附近的 9th Street 商业区，非常方便</p>
-<p style="margin:0 0 2px;">营业时间：周一至周五 09:00–17:00（周六和周日休息）</p>
-<p style="margin:0 0 14px;">联系电话：+1 919-416-6050</p>
+          <!-- ATM图 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Bryan Center校内ATM实拍图</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body" style="padding:10px 12px;">
+              <img data-src="ATM.jpg" alt="Bryan Center校内ATM" onclick="openOverlay(this.src, this.alt)" style="max-width:100%; height:auto; display:block; border-radius:6px; cursor:zoom-in;">
+              <p style="font-size:12px; color:#888; margin:8px 0 0;">Bank of America、Wells Fargo、Truist三台ATM，位于Bryan Center一楼大厅，24小时可用</p>
+            </div>
+          </div>
 
-<p style="margin:0 0 4px;"><strong>3. United Bank</strong></p>
-<p style="margin:0 0 2px;">地址：4215 University Dr, Durham, NC 27707</p>
-<p style="margin:0 0 2px;">距离：位于 University Drive 上，距离主校区稍远</p>
-<p style="margin:0 0 14px;">营业时间：周一至周四 08:30–17:00；周五 08:30–18:00（周末休息）</p>
+          <!-- Venmo -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Venmo：Duke学生日常支付神器</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body" style="padding:10px 14px; font-size:13px; line-height:1.8; color:#222;">
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">Venmo是什么？</strong>Venmo是美国最主流的手机端P2P(个人对个人)转账应用，由PayPal旗下运营。<a href="https://venmo.com/" target="_blank">venmo.com</a>。全美有超过8300万活跃用户，大学生群体中渗透率极高——PayPal CEO公开表示"全美1900万大学生中超过一半有Venmo账户"。</p>
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">Duke学生怎么用？</strong>在Duke校园中，Venmo几乎是学生之间收付款的默认工具，几乎人手一个账户。典型场景包括：</p>
+              <ul style="margin:0 0 10px; padding-left:0;">
+                <li>几个人一起去Durham餐厅吃饭，一人付账然后Venmo均摊</li>
+                <li>室友之间分摊日用品、外卖、Uber费用</li>
+                <li>购买社团活动票(DCD、ASA Showcase、Hoof n Horn等演出门票)</li>
+                <li>K-Ville搭帐篷期间团购外卖均摊</li>
+                <li>Greek life活动、社团会费收取</li>
+                <li>买卖二手书、宿舍用品(配合Facebook Marketplace)</li>
+              </ul>
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">怎么开户？</strong>下载Venmo App → 用美国手机号注册 → 绑定美国银行账户或借记卡 → 完成身份验证。国际生需要先开好美国银行账户才能绑定。未验证账户每周转账上限$299.99，完成身份验证后可提升至每周$6,999.99。</p>
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">转账费用：</strong>Venmo账户余额互转完全免费；从银行账户或借记卡转账也免费(1-3个工作日到账)；若要即时到账(Instant Transfer)转至银行账户，收取1.75%手续费(最低$0.25，最高$25)。</p>
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">注意事项：</strong>付款发出后无法撤销，务必核对收款人用户名；转账备注默认公开(好友可见)，涉及隐私的备注建议改为"仅自己可见"；不建议用Venmo接收来自陌生人的大额转账，有被冻结账户风险。</p>
+              <p style="margin:0 0 4px;"><strong style="color:#003366;">与Zelle的区别：</strong>Zelle直接走银行账户之间转账，无需单独App，适合家长从中国账户以外的美国账户向孩子转账；Venmo有App内余额，更适合学生之间高频小额均摊。Duke学生日常优先用Venmo，家长转生活费多数用Zelle或银行电汇。</p>
+              <a href="https://venmo.com/" target="_blank" style="display:block; margin-top:10px;">Venmo官网注册与下载</a>
+              <a href="https://help.venmo.com/hc/en-us" target="_blank">Venmo帮助中心(常见问题)</a>
+            </div>
+          </div>
 
-<p style="margin:0 0 4px;"><strong>4. Bank of America（美国银行 - 带开车办理 ATM）</strong></p>
-<p style="margin:0 0 2px;">地址：1515 N Gregson St, Durham, NC 27701</p>
-<p style="margin:0 0 2px;">距离：位于 North Pointe 购物中心附近，距离东校区较近</p>
-<p style="margin:0 0 14px;">营业时间：周一至周五 09:00–17:00；周六 09:00–14:00（周日休息）</p>
-
-<p style="margin:0 0 4px;"><strong>5. State Employees' Credit Union（SECU）</strong></p>
-<p style="margin:0 0 2px;">地址：504 S Duke St, Durham, NC 27701</p>
-<p style="margin:0 0 2px;">特色：北卡罗来纳州州立雇员信用社，通常提供较低的费用和较好的利息（需符合会员资格）</p>
-<p style="margin:0 0 14px;">营业时间：周一至周五 08:30–17:30（周末休息）</p>
-
-<p style="margin:0 0 4px;"><strong>6. Truist</strong></p>
-<p style="margin:0 0 2px;">地址：505 S Duke St, Durham, NC 27701</p>
-<p style="margin:0 0 14px;">营业时间：周一至周四 09:00–17:00；周五 09:00–18:00（周末休息）</p>
-
-<p style="margin:0;">Chase Bank 在 9th Street 的网点地理位置非常优越。此外，大学校内Bryan Center设有Bank of America, Wells Fargo和Truist ATM 机，方便进行简单的存取款操作。</p>
-<img data-src="ATM.jpg" alt="ATM" onclick="openOverlay(this.src, this.alt)" style="max-width:100%; height:auto; display:block; border-radius:6px; margin-top:10px;">
-            
+        </div>
       </div>
 
         
