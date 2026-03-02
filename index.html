@@ -344,6 +344,122 @@ document.addEventListener("keydown", function(e) {
             </div>
           </div>
 
+          <!-- 子手风琴：AP学分转换详表 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>AP学分转换：Trinity与Pratt完整对照表</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body" style="padding:10px 14px; font-size:13px; line-height:1.8; color:#222;">
+
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">总体原则</strong> Duke承认College Board的AP考试，4分或5分可获得学分，部分科目仅限5分。所有AP成绩须由College Board直接发送给Duke注册处(CEEB代码：5156)，不能使用招生时自行申报的成绩。建议在大一注册前提前发送成绩，但毕业前提交均有效，无需另外申请批准。</p>
+
+              <p style="margin:0 0 6px;"><strong style="color:#003366;">Trinity文理学院：AP学分使用规则</strong></p>
+              <p style="margin:0 0 10px;">毕业共需34学分，AP学分最多计入2个选修学分；若提前毕业最多可多用6个加速学分。即便有超过2个AP学分，其余均可用于豁免入门课程、满足专业/辅修要求，但不计入34学分。AP英语学分不免除Writing 101要求。</p>
+
+              <p style="margin:0 0 6px;"><strong style="color:#003366;">Pratt工程学院：AP学分使用规则(2025年秋起重大变化)</strong></p>
+              <p style="margin:0 0 10px;">Pratt与Trinity同样承认AP学分用于豁免入门课程和专业要求，但自2025年秋季新课程起，<strong>AP学分不再用于抵扣文理通识课(人文/社科)要求</strong>，即Pratt学生须亲自在Duke修读文理类课程，不可用AP学分绕过。此政策旨在确保工科生获得完整的文理教育体验。</p>
+
+              <a href="https://trinity.duke.edu/undergraduate/academic-policies/AP-credit-by-department" target="_blank">Trinity AP学分完整对照表(官方，含Duke课程等效编号)</a>
+              <a href="https://registrar.duke.edu/student-resources/advanced-placement-credit/" target="_blank">Duke注册处AP学分官方说明(2025-26年适用)</a>
+
+              <p style="margin:14px 0 6px;"><strong style="color:#003366;">AP科目对照表(4分或5分除非另注)</strong></p>
+              <div style="overflow-x:auto;">
+              <table style="width:100%; border-collapse:collapse; font-size:12px; margin:0 0 10px;">
+                <thead>
+                  <tr style="background:#003366; color:#fff;">
+                    <th style="padding:7px 8px; text-align:left;">AP科目</th>
+                    <th style="padding:7px 8px; text-align:center;">所需分数</th>
+                    <th style="padding:7px 8px; text-align:left;">Duke等效学分</th>
+                    <th style="padding:7px 8px; text-align:left;">可选修课程</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">African American Studies</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">AAAS 99</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">任意课程</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Art History</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">ARTHIST 20</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">200-400级课程</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Studio Art: Drawing / 2-D / 3-D</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">ARTSVIS 21</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">高级课程</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Biology</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">BIOLOGY 20或21</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">BIOLOGY 201L或202L(需先修CHEM)</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Chemistry</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">CHEM 20</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">CHEM 110DL(秋季)或101DL</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Chemistry</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">CHEM 21</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">CHEM 201DL或110DL；Pratt BME须另修CHEM 110DL+210DL</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Chinese: Language and Culture</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">CHINESE 203</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">CHINESE 204或200-400级</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Computer Science A</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">COMPSCI 101L</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">COMPSCI 201</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Computer Science: Principles</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">COMPSCI 20</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">任意CS课程</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Economics: Macro/Micro</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">不接受</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">N/A</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">N/A</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">English: Literature</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">ENGLISH 20</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">任意英文课(不免Writing 101)</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">English: Language</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">ENGLISH 22</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">任意英文课(不免Writing 101)</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Environmental Science</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">ENVIRON 20</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">ENVIRON 201</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">French: Language and Culture</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">FRENCH 20</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">FRENCH 204或300级</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">German: Language and Culture</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">GERMAN 29</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">GERMAN 204或305S</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">German: Language and Culture</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">GERMAN 29</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">GERMAN 305S或以上</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">History: European</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">HIST 25 + 26(2学分)</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">任意课程；History专业最多计1个AP学分</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">History: United States</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">HIST 23 + 24(2学分)</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">任意课程</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">History: World</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">HISTORY 21</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">任意课程</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Human Geography</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">不接受</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">N/A</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">N/A</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Italian: Language and Culture</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">ITALIAN 203</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">ITALIAN 301</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Italian: Language and Culture</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">ITALIAN 203</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">任意300级课程</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Japanese: Language and Culture</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">JAPANESE 203</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">JAPANESE 204</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Japanese: Language and Culture</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">JAPANESE 203</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">JPN 204、305或306</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Latin: Literature</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">LATIN 25</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">LATIN 204</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Latin: Literature</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">LATIN 25</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">300级课程</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Math: Calculus AB</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">MATH 21</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">MATH 122L(秋)或112L(春)</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Math: Calculus BC</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">MATH 21</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">MATH 122L(秋)或112L(春)</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Math: Calculus BC</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">MATH 21 + 22(2学分)</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">MATH 202、212、218或221</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Music: Theory</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">MUSIC 161</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">任意课程</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Physics C: Mechanics</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">PHYSICS 25</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">咨询物理系；Pratt须另修至少一门Duke物理课</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Physics C: E&amp;M</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">PHYSICS 26</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Pratt须选修PHY 153L以上，或放弃AP学分选PHY 152L</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Physics 1 / Physics 2(代数)</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">不接受</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">N/A</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">N/A</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Political Science: US Gov</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">POLSCI 20</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">200-400级课程</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Political Science: Comparative Gov</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">POLSCI 21</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">200-400级课程</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Psychology</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">PSYCHOLOGY 11</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">任意课程</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Spanish: Language and Culture</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">SPANISH 204</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">300级课程</td></tr>
+                  <tr><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">Spanish: Literature and Culture</td><td style="padding:6px 8px; text-align:center; border-bottom:1px solid #e0e8f5;">4或5</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">SPANISH 204</td><td style="padding:6px 8px; border-bottom:1px solid #e0e8f5;">300级课程</td></tr>
+                  <tr style="background:#f7f9fc;"><td style="padding:6px 8px;">Statistical Science</td><td style="padding:6px 8px; text-align:center;">5</td><td style="padding:6px 8px;">STA 20</td><td style="padding:6px 8px;">STA 101、102、198或199；仅限Trinity，Pratt不接受</td></tr>
+                </tbody>
+              </table>
+              </div>
+
+              <p style="margin:0 0 4px; font-size:12px; color:#666;"><strong>不被接受的AP科目：</strong>Economics(宏/微观)、Physics 1、Physics 2(代数)、Human Geography。Calculus AB需5分才得MATH 21学分，4分无学分。Statistics AP仅对Trinity学生有效。发送成绩拨College Board：888-225-5427，Duke CEEB代码：5156。</p>
+            </div>
+          </div>
+
+          <!-- 子手风琴：Trinity与Pratt互转 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Trinity与Pratt互转：要求与手续</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body" style="padding:10px 14px; font-size:13px; line-height:1.8; color:#222;">
+
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">谁可以申请互转</strong> Trinity文理学院和Pratt工程学院的在校本科生，在各自学院完成至少一个学期的学习后，均可申请转往对方学院。申请获批前，学生须继续满足原学院的所有学业要求，原顾问负责注册资格直到正式转籍完成。</p>
+
+              <p style="margin:0 0 6px;"><strong style="color:#003366;">Trinity转Pratt：主要要求</strong></p>
+              <ul style="margin:0 0 12px; padding-left:16px;">
+                <li>在Trinity期间须已修过工程相关课程(如Calculus、Physics、Chemistry、CS等)，说明你在认真准备工科方向</li>
+                <li>建议申请前与Pratt招生副院长Dean Lupita Temiquel-McMillian面谈，确认课程路径合理</li>
+                <li>申请须完整提交，不完整申请不予受理；准备材料需要超过一周，务必提前规划</li>
+                <li>转入Pratt后须完成所有Pratt毕业要求，包括工程核心课、设计课、文理通识课(2025年秋起须亲自在Duke修读，不可用AP学分替代)</li>
+              </ul>
+
+              <p style="margin:0 0 6px;"><strong style="color:#003366;">Pratt转Trinity：主要要求</strong></p>
+              <ul style="margin:0 0 12px; padding-left:16px;">
+                <li>须已完成至少一个学期的Pratt学习</li>
+                <li>转入Trinity后须满足Trinity的T-Reqs毕业要求，包括34学分、Writing 101、Constellations等新课程框架(2025年起入学学生适用)</li>
+                <li>原有Pratt课程学分由注册处评估，部分可转为Trinity选修或通识学分</li>
+              </ul>
+
+              <p style="margin:0 0 6px;"><strong style="color:#003366;">申请流程</strong></p>
+              <ul style="margin:0 0 12px; padding-left:16px;">
+                <li>登录Trinity-Pratt Transfer专属网站，仔细阅读完整说明和截止日期(申请准备需一周以上)</li>
+                <li>申请一般在大一下学期或大二上学期提交</li>
+                <li>申请获批后，新学院顾问接手，旧学院顾问同时在档直到正式转籍完成</li>
+                <li>转籍期间继续按原学院要求注册选课，直到审批结果公布</li>
+              </ul>
+
+              <a href="https://trinity.duke.edu/undergraduate/academic-policies/transfer-to-from-pratt" target="_blank">Trinity-Pratt互转官方政策页</a>
+              <a href="Trinity_to_Pratt.html" target="_blank">Trinity转Pratt详解(本站整理版)</a>
+              <a href="https://pratt.duke.edu/academics/undergrad/policies/" target="_blank">Pratt School本科生政策与手续</a>
+              <a href="https://advising.duke.edu/trinity-undergraduate-advising/transfer-students/" target="_blank">Duke Advising Center：Trinity-Pratt转学指引</a>
+            </div>
+          </div>
+
           <!-- 子手风琴：FOCUS项目 -->
           <div class="sub-accordion">
             <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
@@ -1130,12 +1246,18 @@ document.addEventListener("keydown", function(e) {
             </button>
             <div class="sub-accordion-body">
               <a href="https://www.google.com/maps/search/?api=1&query=Chase+Bank+725+9th+St+Durham+NC" target="_blank">Chase Bank — 725 9th St，East Campus步行约10分钟，周一至五9am-5pm，周六9am-1pm</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=Wells+Fargo+2000+W+Main+St+Durham+NC" target="_blank">Wells Fargo — 2000 W Main St(9th St与W Main St交汇)，周一至五9am-5pm，919-416-6050</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=Bank+of+America+1515+N+Gregson+St+Durham+NC" target="_blank">Bank of America — 1515 N Gregson St，East Campus附近，周一至五9am-5pm，周六9am-2pm</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=United+Bank+4215+University+Dr+Durham+NC" target="_blank">United Bank — 4215 University Dr，West Campus方向稍远，周一至四8:30am-5pm，周五至6pm</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=SECU+504+S+Duke+St+Durham+NC" target="_blank">SECU(ncsecu.org) — 504 S Duke St，周一至五8:30am-5:30pm</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=Truist+Bank+505+S+Duke+St+Durham+NC" target="_blank">Truist — 505 S Duke St，周一至四9am-5pm，周五至6pm</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=Bryan+Center+Duke+University+Durham+NC" target="_blank">Bryan Center校内ATM — Bank of America、Wells Fargo、Truist三台ATM集中在Bryan Center大厅，24小时可用</a>
+              <a href="tel:+19197675661" style="color:#003366; font-weight:600;">☎ (919)767-5661</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=Wells+Fargo+2000+W+Main+St+Durham+NC" target="_blank">Wells Fargo — 2000 W Main St，周一至五9am-5pm，含Drive-Thru，ATM 24小时</a>
+              <a href="tel:+19194166050" style="color:#003366; font-weight:600;">☎ (919)416-6050</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=Bank+of+America+1515+N+Gregson+St+Durham+NC" target="_blank">Bank of America — 1515 N Gregson St，周一至五9am-5pm，周六9am-2pm，含Drive-Thru ATM</a>
+              <a href="tel:+19199562254" style="color:#003366; font-weight:600;">☎ (919)956-2254</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=United+Bank+4215+University+Dr+Durham+NC" target="_blank">United Bank — 4215 University Dr，周一至四8:30am-5pm，周五至6pm</a>
+              <a href="tel:+19194031000" style="color:#003366; font-weight:600;">☎ (919)403-1000</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=SECU+504+S+Duke+St+Durham+NC" target="_blank">SECU(ncsecu.org) — 504 S Duke St，周一至五8:30am-5:30pm，含Drive-Thru ATM</a>
+              <a href="tel:+19196829602" style="color:#003366; font-weight:600;">☎ (919)682-9602</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=Truist+Bank+505+S+Duke+St+Durham+NC" target="_blank">Truist — 505 S Duke St，周一至五9am-5pm</a>
+              <a href="tel:+19196877200" style="color:#003366; font-weight:600;">☎ (919)687-7200</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=Bryan+Center+Duke+University+Durham+NC" target="_blank">Bryan Center校内ATM — Bank of America、Wells Fargo、Truist三台ATM，24小时可用</a>
             </div>
           </div>
 
@@ -1156,7 +1278,7 @@ document.addEventListener("keydown", function(e) {
               <span>Venmo：Duke学生日常支付神器</span><span class="sub-accordion-arrow">▸</span>
             </button>
             <div class="sub-accordion-body" style="padding:10px 14px; font-size:13px; line-height:1.8; color:#222;">
-              <p style="margin:0 0 10px;"><strong style="color:#003366;">Venmo是什么？</strong>Venmo是美国最主流的手机端P2P(个人对个人)转账应用，由PayPal旗下运营(<a href="https://venmo.com/" target="_blank">venmo.com</a>)。全美有超过8300万活跃用户，大学生群体中渗透率极高——PayPal CEO公开表示"全美1900万大学生中超过一半有Venmo账户"。</p>
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">Venmo是什么？</strong>Venmo是美国最主流的手机端P2P(个人对个人)转账应用，由PayPal旗下运营(<a href="https://venmo.com/" target="_blank">venmo.com</a>)。全美有超过8300万活跃用户，大学生群体中渗透率极高，PayPal CEO公开表示"全美1900万大学生中超过一半有Venmo账户"。</p>
               <p style="margin:0 0 10px;"><strong style="color:#003366;">Duke学生怎么用？</strong>在Duke校园中，Venmo几乎是学生之间收付款的默认工具，几乎人手一个账户。典型场景包括：</p>
               <ul style="margin:0 0 10px; padding-left:0;">
                 <li>几个人一起去Durham餐厅吃饭，一人付账然后Venmo均摊</li>
