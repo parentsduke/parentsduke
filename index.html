@@ -1003,10 +1003,84 @@ document.addEventListener("keydown", function(e) {
             </div>
           </div>
 
+          <!-- 子手风琴：毕业去向数据 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>毕业去向数据(2024届官方报告，2025届春季发布)</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body" style="padding:10px 14px; font-size:13px; line-height:1.8; color:#222;">
+
+              <p style="margin:0 0 8px; font-size:12px; color:#888;">数据来源：Duke Career Center Senior Outcomes Survey，每年收集至毕业后6个月，次年春季公布。LinkedIn不对外开放数据抓取，Duke官方数据均来自毕业生调查，86%知晓率。2025届正式报告预计2026年春季发布，以下为目前最新完整数据：2024届(Class of 2024)。</p>
+
+              <p style="margin:0 0 6px;"><strong style="color:#003366;">2024届整体去向(1022名受访学生)</strong></p>
+              <div style="overflow-x:auto; margin:0 0 12px;">
+              <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                <tr style="background:#003366; color:#fff;">
+                  <th style="padding:7px 10px; text-align:left;">去向类型</th>
+                  <th style="padding:7px 10px; text-align:center;">比例</th>
+                </tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">全职就业</td><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">77%</td></tr>
+                <tr><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">继续深造(研究生/专业学院)</td><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">20%</td></tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">服役/志愿服务</td><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">1.5%</td></tr>
+                <tr><td style="padding:6px 10px;">仍在寻找/未求职</td><td style="padding:6px 10px; text-align:center;">1.5%</td></tr>
+              </table>
+              </div>
+
+              <p style="margin:0 0 6px;"><strong style="color:#003366;">热门行业分布</strong></p>
+              <div style="overflow-x:auto; margin:0 0 12px;">
+              <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                <tr style="background:#003366; color:#fff;">
+                  <th style="padding:7px 10px; text-align:left;">行业</th>
+                  <th style="padding:7px 10px; text-align:center;">比例</th>
+                </tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">金融</td><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">19%</td></tr>
+                <tr><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">计算机/IT/科技</td><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">16%</td></tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">商业与管理咨询</td><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">12%</td></tr>
+                <tr><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">医疗与健康</td><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">10%</td></tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">教育</td><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">6%</td></tr>
+                <tr><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">工程/建筑/设计</td><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">5%</td></tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px;">科学与研究</td><td style="padding:6px 10px; text-align:center;">4%</td></tr>
+              </table>
+              </div>
+
+              <p style="margin:0 0 6px;"><strong style="color:#003366;">Top 10雇主(按录用人数排序)</strong></p>
+              <div style="overflow-x:auto; margin:0 0 12px;">
+              <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                <tr style="background:#003366; color:#fff;">
+                  <th style="padding:7px 10px; text-align:center;">排名</th>
+                  <th style="padding:7px 10px; text-align:left;">雇主</th>
+                  <th style="padding:7px 10px; text-align:left;">行业</th>
+                </tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">1</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">Capital One</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">金融科技</td></tr>
+                <tr><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">2</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">JP Morgan Chase</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">投资银行/金融</td></tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">3</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">Bain & Company</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">管理咨询</td></tr>
+                <tr><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">4</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">McKinsey & Company</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">管理咨询</td></tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">5</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">Microsoft</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">科技</td></tr>
+                <tr><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">6</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">Duke University</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">高等教育/研究</td></tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">7</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">Meta</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">科技/社交媒体</td></tr>
+                <tr><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">8</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">Morgan Stanley</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">投资银行/金融</td></tr>
+                <tr style="background:#f7f9fc;"><td style="padding:6px 10px; text-align:center; border-bottom:1px solid #e0e8f5;">9</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">Goldman Sachs</td><td style="padding:6px 10px; border-bottom:1px solid #e0e8f5;">投资银行/金融</td></tr>
+                <tr><td style="padding:6px 10px; text-align:center;">10</td><td style="padding:6px 10px;">Duke Health</td><td style="padding:6px 10px;">医疗健康</td></tr>
+              </table>
+              </div>
+              <p style="margin:0 0 4px; font-size:12px; color:#666;">602家独立雇主录用了毕业生；53家录用3人以上；12家录用10人以上。</p>
+
+              <p style="margin:12px 0 6px;"><strong style="color:#003366;">继续深造：Top 5读研院校(15%留在Duke)</strong></p>
+              <p style="margin:0 0 12px; font-size:12px;">Duke University、UNC Chapel Hill、Stanford University、Harvard University、Columbia University</p>
+
+              <p style="margin:0 0 6px;"><strong style="color:#003366;">毕业后居住地</strong></p>
+              <p style="margin:0 0 4px; font-size:12px;"><strong>美国境内(前五州)：</strong>纽约州、北卡罗来纳州、加利福尼亚州、马萨诸塞州、华盛顿DC</p>
+              <p style="margin:0 0 12px; font-size:12px;"><strong>美国境外(前五国)：</strong>英国、法国、德国、加拿大、西班牙</p>
+
+              <a href="https://careerhub.students.duke.edu/resources/class-of-2024-outcomes/" target="_blank">Duke Career Hub：2024届完整毕业去向报告</a>
+              <a href="https://online.fliphtml5.com/xvxbp/tupv/" target="_blank">Trinity文理学院2024届详细报告(fliphtml5)</a>
+              <a href="https://online.fliphtml5.com/xvxbp/runo/" target="_blank">Pratt工程学院2024届详细报告(fliphtml5)</a>
+              <a href="https://careerhub.students.duke.edu/resources/class-of-2023-outcomes/" target="_blank">2023届去向报告(对比参考)</a>
+            </div>
+          </div>
+
         </div>
       </div>
-
-<!-- ===== Pre-med track ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>医学预科方向 Pre-med track</span><span class="accordion-arrow">▸</span>
@@ -3017,67 +3091,110 @@ document.addEventListener("keydown", function(e) {
 
         <!-- Q&A 内容 -->
         <div class="qa-content" style="display:none;" role="region" aria-label="Q&A 家长询问和回答">
+
+          <p style="font-size:12px; color:#888; margin:0 0 14px; padding:0 4px;">以下问答来自扯谈Duke家长群，由群内有经验的家长解答，供参考。</p>
+
+          <!-- 群与社群 -->
+          <div style="background:#e8eef7; border-radius:6px; padding:6px 12px; margin:14px 0 6px; font-size:12px; font-weight:600; color:#003366; letter-spacing:1px;">关于家长群与社群活动</div>
+
           <details class="qa-card">
-            <summary>Q1: 扯谈Duke群是什么群?</summary>
-            <p>Duke家长群。</p>
+            <summary>Q1：扯谈Duke群是什么群？</summary>
+            <p>Duke在校学生家长群，供家长互相交流经验、分享资讯、组织活动。</p>
           </details>
+
           <details class="qa-card">
-            <summary>Q2: 大一工学和文理学院的必修课是否一样？
-                有哪些热门课需提前抢？
-                大一选课策略。
-                选宿舍和适配室友机制：选宿舍适配室友信息表格内容，什么时候提交，实际上学校会按所交表格信息进行匹配室友吗？
-                可以自选室友吗?
-                国际生VISA签证的银行资金证明具体要求?</summary>
-            <p>具体专业课肯定不一样。比较热门的还是CS，Econ，Math等大课堂。选课策略一般建议循序渐进，特别是第一学期。可以选一门与以后所学专业有关的课程，其他的稍微轻松的人文需修课。室友不能自己直接互选，学校大概在五月底会发表格供学生填信息，但是也不用期望会完全匹配每个人的意愿，有时看上去就是随机组合的。存款证明不需要冻结，开资产证明就行，证明有付学费的能力。银行有格式化的存款证明，手机银行上就可以申请开具。</p>
+            <summary>Q3：学年里有哪些线下活动值得家长参加？</summary>
+            <p>主要是Family Weekend，强烈建议参加，可以广泛了解熟悉学校，有讲座、参观Duke Lemur Center，学校会安排一场橄榄球比赛，扯谈Duke群也会组织家长聚会。</p>
           </details>
+
+          <!-- 入学报到与新生生活 -->
+          <div style="background:#e8eef7; border-radius:6px; padding:6px 12px; margin:14px 0 6px; font-size:12px; font-weight:600; color:#003366; letter-spacing:1px;">入学报到与新生生活</div>
+
           <details class="qa-card">
-            <summary>Q3-Xiaobing: 学年里有什么线下活动家长需要或者值得参加?</summary>
-            <p>主要是Family Weekend 建议大家参加，了解熟悉学校。</p>
+            <summary>Q5：Freshman住宿经验分享，哪些物件有用？Whole Foods能步行到吗？要带自行车吗？Freshman开车多不多？</summary>
+            <p>网页上有Packing List可以参考。Whole Foods距离East Campus一步之遥，步行即可。自行车可以有，但用处不大。大一开车不多，主要是停车不方便且停车场离宿舍较远。</p>
           </details>
+
           <details class="qa-card">
-            <summary>Q4-Yi: 学费是怎样交的，一次付完一年？还是每月交?</summary>
-            <p>一次或多次分期付，参考网页上的具体信息。</p>
+            <summary>Q8：十月四天秋假，州外生都回家吗？还是留在学校？</summary>
+            <p>视个人情况而定，部分回家，部分留校。Family Weekend通常在十月底或十一月，建议家长尽量参加，内容丰富。</p>
           </details>
+
+          <!-- 选课与学业 -->
+          <div style="background:#e8eef7; border-radius:6px; padding:6px 12px; margin:14px 0 6px; font-size:12px; font-weight:600; color:#003366; letter-spacing:1px;">选课、学业与专业规划</div>
+
           <details class="qa-card">
-            <summary>Q5-Xiaobing: Freshman 住宿经验， 什么物件有用没用。 Whole Foods能步行到吗？要自行车吗？Freshman开车的多不多?</summary>
-            <p>有pack-list 可以参考，在网页上。Whole Foods 一步之遥。自行车可以有，但用处不大。第一年开车不多，主要是停车远不方便。</p>
+            <summary>Q2：工学和文理学院大一必修课一样吗？有哪些热门课要提前抢？大一选课策略是什么？</summary>
+            <p>具体专业课肯定不一样。比较热门的是CS、Econ、Math等大课堂，容易抢不到。选课策略建议循序渐进，特别是第一学期，可以选一门与未来专业有关的课程，其余选稍微轻松的人文通识课。</p>
           </details>
+
           <details class="qa-card">
-            <summary>Q6-Sharon-Xiaobing: 学校里有啥工程相关的club可以参加？兄弟会要参加吗？有网球club吗？门槛高不高？工程学院的学生有没有时间参加这些活动？ Convocation有什么特别的活动吗？家长要不要参加?</summary>
-            <p>与工程相关的活动可能会是 Duke Aerospace engineering、Robotics。有Duke Club Tennis。Fraternities and sororities都是基于个人的兴趣，许多都已经脱离Duke正式的管理系统了。新生Convocation本身没有什么特别，如果家长仍旧在学校，可以去观看，但是学校不正式邀请家长们。</p>
+            <summary>Q7：大一大二转系去读BME专业需要掌握什么数学和物理？</summary>
+            <p>专业敲定最晚在二年级结束时。BME专业有专门的手册供详细阅读了解。物理：PHYS 141&amp;142(pre-med)或PHYS 151&amp;152(BME)；化学：CHEM 101；数学：Multivariable Calculus + Linear Algebra。</p>
           </details>
+
           <details class="qa-card">
-            <summary>Q7-Sharon: 大一大二转系去读BME专业的需要掌握什么级别的数学和物理知识?</summary>
-            <p>专业敲定最晚在二年级结束时，所以前面谈不上转专业。BME 专业有专门的手册供详细阅读了解。物理学phys141&amp;142 for premed，phys151&amp;152 Chem 101 for BME。数学 Multivariable Calculus，Linear。</p>
+            <summary>Q12：FOCUS和Constellations怎么选？大多数孩子选哪个？体验如何？</summary>
+            <p>Pre-med学生可能偏向FOCUS，因为课程设置涵盖生物医学较多，且FOCUS学生可以住在一起，有社群感。大多数学生跟着Constellations走。两者各有特色，建议根据孩子兴趣和目标专业选择。</p>
           </details>
+
           <details class="qa-card">
-            <summary>Q8-Xiaobing: 十月份的四天秋假，州外生都回家吗？还是会留在学校？ 十月底或十一月的family weekend, 家长们都会参加吗？主要是什么内容?</summary>
-            <p>建议Family Weekend 家长可以的话都参加，基本是广泛地了解熟悉学校，有一些讲座，也可以参观Duke Lemur Center。学校会安排一场橄榄球🏈比赛。另外，扯谈Duke 群也会组织家长们聚会。</p>
+            <summary>Q13：Work-Study是什么样的工作？在校园内吗？工资多少？怎么申请？学习繁忙还能做吗？</summary>
+            <p>所有校园内的工作都算，包括图书馆、实验室、OIT部门、餐饮等。当前最低工资每小时$16.50。学生在学校内部Joblist上自行寻找职位。很多孩子都在做，也是平衡学习生活的一部分。</p>
           </details>
+
+          <!-- 室友与宿舍 -->
+          <div style="background:#e8eef7; border-radius:6px; padding:6px 12px; margin:14px 0 6px; font-size:12px; font-weight:600; color:#003366; letter-spacing:1px;">室友匹配与宿舍</div>
+
           <details class="qa-card">
-            <summary>Q9-Jing: 如果Pre-med，选课需要注意什么？有什么weed out课程吗？兄弟姐妹会对pre-med学生作用大吗？另外，学校的pre-health advising 效果怎样?</summary>
-            <p>除草课程基本是有机化学。Fraternities and sororities对pre-med track 学生没有作用。Health Professions Advising要很好地利用。杜克学生每学期有钱可以和老师吃饭聊天，每学期请老师吃饭，互相了解，有利于写推荐信。</p>
+            <summary>Q2(续)：室友匹配机制是什么？可以自选室友吗？</summary>
+            <p>室友不能自己直接互选。学校大约在五月底发表格供学生填写生活习惯信息，但不要期望完全按表格匹配，有时看起来就是随机组合的。</p>
           </details>
+
+          <!-- 社团与课外活动 -->
+          <div style="background:#e8eef7; border-radius:6px; padding:6px 12px; margin:14px 0 6px; font-size:12px; font-weight:600; color:#003366; letter-spacing:1px;">社团、课外活动与兄弟姐妹会</div>
+
           <details class="qa-card">
-            <summary>Q10: 请问杜克的冰球队水平如何？大概是什么级别的?</summary>
-            <p>一般水平，你家杜娃可能从小开始冰球训练和比赛，应该具备资格参加杜克冰球队，具体可以参考28届家长细雨的孩子情况。</p>
+            <summary>Q6：工程相关社团有哪些？有没有网球Club？兄弟会要参加吗？门槛高不高？Convocation家长要参加吗？</summary>
+            <p>工程相关社团有Duke Aerospace Engineering、Robotics等。有Duke Club Tennis，对所有学生开放，门槛不高。Fraternities and sororities基于个人兴趣，许多已脱离Duke正式管理系统，是否参加完全自愿。新生Convocation本身没有特别内容，如果家长还在校园，可以去观看，但学校不正式邀请家长。</p>
           </details>
+
           <details class="qa-card">
-            <summary>Q11：申请Merit Scholarship奖学金需要什么条件？怎样申请？什么时候申请？</summary>
-            <p>Duke学生，除了Robertson Scholarship外，其它的不用另外申请。Robertson Scholarship可以在第一学年中第二次申请，具体看其网页信息。</p>
+            <summary>Q10：杜克冰球队水平如何？大概是什么级别？</summary>
+            <p>属于一般水平的Club Sports俱乐部队，非NCAA Division I。从小有冰球训练和比赛基础的学生基本具备参加资格，具体可以参考群内有孩子参与冰球队的家长经验。</p>
           </details>
+
+          <!-- Pre-med与医学预科 -->
+          <div style="background:#e8eef7; border-radius:6px; padding:6px 12px; margin:14px 0 6px; font-size:12px; font-weight:600; color:#003366; letter-spacing:1px;">Pre-med医学预科方向</div>
+
           <details class="qa-card">
-            <summary>Q12-Tianluo：关于FOCUS和Constellations怎么选择？大多孩子选了哪个？体验是什么？觉得哪个更好？</summary>
-            <p>Pre-med track 学生可能会选FOCUS，因为课程设置偏生物医学较多。FOCUS 的引人之处之一是大家可以住在一起。大多数跟着Constellations走。</p>
+            <summary>Q9：Pre-med选课注意什么？有weed-out课程吗？兄弟姐妹会对pre-med有帮助吗？学校pre-health advising效果怎样？</summary>
+            <p>公认的weed-out(淘汰)课程是有机化学(Organic Chemistry)。Fraternities and sororities对pre-med学生帮助不大。Health Professions Advising要充分利用。Duke学生每学期有经费可以与教授吃饭交流，建议利用此机会与教授建立关系，有利于将来申请医学院时的推荐信。</p>
           </details>
+
+          <!-- 奖学金与财务 -->
+          <div style="background:#e8eef7; border-radius:6px; padding:6px 12px; margin:14px 0 6px; font-size:12px; font-weight:600; color:#003366; letter-spacing:1px;">奖学金、财务与签证</div>
+
           <details class="qa-card">
-            <summary>Q13：关于work-study，都是什么样的工作？在校园里吗？工资rate是多少？怎么申请？孩子在繁忙的学习中是否可以再做work-study？</summary>
-            <p>所有校园内的工作，包括图书馆、实验室、OIT部门、WU餐饮等等。现在最低工资每小时$16.50。学生自己在学校内部的Joblist上找。很多孩子都在做，也是平衡的学习吧。</p>
+            <summary>Q11：申请Merit Scholarship需要什么条件？怎样申请？什么时候？</summary>
+            <p>Duke学生除Robertson Scholarship外，其他Merit Scholarships均无需另外单独申请，由学校主动评选通知。Robertson Scholarship需在申请Duke时同步提交，截止日期为11月15日，详见其官网。</p>
           </details>
+
           <details class="qa-card">
-            <summary>Q14：关于Loan，在financial aid estimate里提到的Loan是否无息？毕业后才开始有利息？</summary>
-            <p>The Federal Government，State Governments/State Agencies和Private Lenders。学校主要是The Federal Government loan，至于Direct Subsidized还是unsubsidized要看你的FASFA申请的结果。Subsidized四年学习期间家庭不用付利息。</p>
+            <summary>Q14：Financial Aid里提到的Loan是否无息？毕业后才开始有利息？</summary>
+            <p>联邦学生贷款分两种：Direct Subsidized Loan在校期间由政府代付利息，学生不产生利息负担；Direct Unsubsidized Loan从发放当日起计息，在校期间如不还利息，利息会资本化并入本金。具体获得哪种贷款取决于FAFSA申请结果。毕业后均有6个月宽限期后开始正式还款。</p>
           </details>
+
+          <details class="qa-card">
+            <summary>Q2(续)：国际生VISA签证银行资金证明具体要求？</summary>
+            <p>存款证明不需要冻结，开具资产证明即可，证明有支付学费的能力。银行有格式化的存款证明，通过手机银行App即可申请开具，无需去柜台。</p>
+          </details>
+
+          <details class="qa-card">
+            <summary>Q4：学费怎么交？一次付完一年还是每月交？</summary>
+            <p>每学期出账单，可以一次付清，也可以报名分期付款计划(最多每学期5期)。详见网页上的银行与学费缴纳说明。</p>
+          </details>
+
         </div>
 
       </div>
