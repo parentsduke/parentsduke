@@ -48,6 +48,47 @@ function initAdminAlbum() {
   if (typeof adminSlide === 'undefined') return;
 }
 
+
+// ===== 加载轮播照片（修复data-src属性） =====
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('[轮播] 初始化照片加载...');
+  
+  // 获取所有使用data-src的img标签
+  var imgs = document.querySelectorAll('img[data-src]');
+  console.log('[轮播] 找到' + imgs.length + '张照片需要加载');
+  
+  imgs.forEach(function(img) {
+    var dataSrc = img.getAttribute('data-src');
+    if (dataSrc && !img.src) {
+      // 假设照片在同级目录或uploads目录
+      // 尝试多个可能的路径
+      var possiblePaths = [
+        dataSrc,
+        '/uploads/' + dataSrc,
+        './uploads/' + dataSrc,
+        '../uploads/' + dataSrc
+      ];
+      
+      // 先用第一个路径
+      img.src = possiblePaths[0];
+      
+      // 设置错误处理，尝试其他路径
+      img.onerror = function() {
+        for (var i = 1; i < possiblePaths.length; i++) {
+          var newSrc = possiblePaths[i];
+          // 检查这个路径是否可用
+          var tempImg = new Image();
+          tempImg.onload = function() {
+            img.src = newSrc;
+          };
+          tempImg.src = newSrc;
+        }
+      };
+    }
+  });
+});
+
+
 function openOverlay(src, alt) {
   var overlay = document.getElementById("overlay");
   var overlayImg = document.getElementById("overlay-img");
