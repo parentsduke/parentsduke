@@ -4989,7 +4989,7 @@ async function loadApprovedPhotoManager() {
       : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
     html += '<div class="admin-mgr-card" data-id="' + item.id + '" data-path="' + encodeURIComponent(item.file_path) + '" data-title="' + encodeURIComponent(item.title||"") + '" data-type="photo">' +
-      '<img class="admin-mgr-thumb" src="' + imgUrl + '" onclick="openOverlay(\'' + imgUrl + '\',\'\')">' +
+      '<img class="admin-mgr-thumb" src="' + imgUrl + '" onclick="openOverlay(\'' + imgUrl + '\',\'\')" onerror="var c=this.closest(\'.admin-mgr-card\');if(c){c.style.display=\'none\';var sb=window._supabaseClient;if(sb)sb.from(\'pending_uploads\').delete().eq(\'id\',' + item.id + ');}">' +
       '<div class="admin-mgr-body">' +
         '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
         '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||"匿名") + ' · ' + date + '</div>' +
