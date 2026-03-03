@@ -4969,6 +4969,33 @@ async function deleteAllApprovedPhotos() {
   loadApprovedPhotoManager();
 }
 
+// ===== 精选相册删除记录管理 =====
+// 获取已删除照片的列表
+function getDeletedAdminPhotos() {
+  var deleted = localStorage.getItem('deletedAdminPhotos');
+  return deleted ? JSON.parse(deleted) : [];
+}
+
+// 保存删除记录
+function saveDeletedAdminPhotos(deletedList) {
+  localStorage.setItem('deletedAdminPhotos', JSON.stringify(deletedList));
+}
+
+// 标记照片为已删除
+function markPhotoAsDeleted(imgSrc) {
+  var deleted = getDeletedAdminPhotos();
+  if (!deleted.includes(imgSrc)) {
+    deleted.push(imgSrc);
+    saveDeletedAdminPhotos(deleted);
+  }
+}
+
+// 检查照片是否已删除
+function isPhotoDeleted(imgSrc) {
+  var deleted = getDeletedAdminPhotos();
+  return deleted.includes(imgSrc);
+}
+
 // 从精选相册轮播中移除指定 URL 的 slide
 function removeAdminAlbumPhoto(imgSrc) {
   var track = document.getElementById("adminSlideshowTrack");
@@ -4976,6 +5003,9 @@ function removeAdminAlbumPhoto(imgSrc) {
   var counter = document.getElementById("adminSlideCounter");
   var section = document.getElementById("adminAlbumSection");
   if (!track) return;
+
+  // 标记为已删除
+  markPhotoAsDeleted(imgSrc);
 
   var slides = Array.from(track.querySelectorAll(".slide"));
   var idx = -1;
@@ -5263,19 +5293,30 @@ async function loadApprovedAdminPhotos() {
   if (!supabase) return;
 
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var deletedPhotos = getDeletedAdminPhotos();
 
   var result = await supabase
     .from("pending_uploads")
     .select("*")
     .eq("status", "approved")
-    .neq("file_path", null)  // ✅ 排除file_path为null的（已删除的）
     .order("uploaded_at", { ascending: false });
 
   if (result.error || !result.data) return;
 
   var items = result.data.filter(function(i) { 
-    // ✅ 只显示图片，且必须有有效的file_path
-    return (!i.file_type || i.file_type === "image") && i.file_path && i.file_path.trim() !== "";
+    // 过滤：只保留图片且未被删除的项目
+    if (i.file_type && i.file_type !== "image") return false;
+    
+    // 构造URL并检查是否已删除
+    var imgUrl;
+    if (i.file_path && i.file_path.startsWith("github:")) {
+      imgUrl = i.file_path.replace("github:", "");
+    } else {
+      imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + i.file_path;
+    }
+    
+    // 返回false表示过滤掉（如果已删除）
+    return !deletedPhotos.includes(imgUrl);
   });
   
   if (!items.length) return;
@@ -5287,7 +5328,11 @@ async function loadApprovedAdminPhotos() {
     } else {
       imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     }
-    addAdminAlbumPhoto(imgUrl, item.title || "");
+    
+    // 再次检查确保不在已删除列表中
+    if (!isPhotoDeleted(imgUrl)) {
+      addAdminAlbumPhoto(imgUrl, item.title || "");
+    }
   });
 }
 
