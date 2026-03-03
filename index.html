@@ -4944,6 +4944,7 @@ async function loadApprovedPhotoManager() {
   container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
 
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var deletedPhotos = getDeletedAdminPhotos();
   var result = await supabase
     .from("pending_uploads")
     .select("*")
@@ -4956,15 +4957,27 @@ async function loadApprovedPhotoManager() {
   }
 
   var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
-  if (badge) badge.textContent = items.length > 0 ? items.length + " 张" : "0 张";
+  
+  // 【关键】过滤已删除的照片
+  var validItems = items.filter(function(item) {
+    var imgUrl = item.file_path.startsWith("github:")
+      ? item.file_path.replace("github:", "")
+      : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var isDeleted = deletedPhotos.some(function(d) {
+      return d === imgUrl || (d && imgUrl && imgUrl.includes(d.split('/').pop()));
+    });
+    return !isDeleted;
+  });
+  
+  if (badge) badge.textContent = validItems.length > 0 ? validItems.length + " 张" : "0 张";
 
-  if (!items.length) {
+  if (!validItems.length) {
     container.innerHTML = '<span style="color:#aaa;">精选相册暂无照片</span>';
     return;
   }
 
   var html = '';
-  items.forEach(function(item) {
+  validItems.forEach(function(item) {
     var imgUrl = item.file_path.startsWith("github:")
       ? item.file_path.replace("github:", "")
       : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
@@ -5145,6 +5158,14 @@ function removeAdminAlbumPhoto(imgSrc) {
       adminList.innerHTML = '<span style="color:#aaa;">暂无待审核照片</span>';
     }
     console.log('[精选相册] 删除完成：所有照片已删除，清空管理员缩略图');
+    // 【新增】重新加载待审核列表
+    if (typeof loadPendingUploads === 'function') {
+      loadPendingUploads();
+    }
+    // 【新增】重新加载已批准列表（显示已删除后的列表）
+    if (typeof loadApprovedPhotoManager === 'function') {
+      loadApprovedPhotoManager();
+    }
     return;
   }
 
@@ -5413,6 +5434,7 @@ async function loadApprovedAdminPhotos() {
   if (!supabase) return;
 
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var deletedPhotos = getDeletedAdminPhotos();
 
   var result = await supabase
     .from("pending_uploads")
@@ -5425,6 +5447,26 @@ async function loadApprovedAdminPhotos() {
   var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
   if (!items.length) return;
 
+  // 【关键】检查是否所有照片都被删除
+  var hasValidPhotos = false;
+  items.forEach(function(checkItem) {
+    var checkUrl = checkItem.file_path && checkItem.file_path.startsWith("github:") 
+      ? checkItem.file_path.replace("github:", "")
+      : supabaseUrl + "/storage/v1/object/public/uploads/" + checkItem.file_path;
+    var isDeleted = deletedPhotos.some(function(d) {
+      return d === checkUrl || (d && checkUrl && checkUrl.includes(d.split('/').pop()));
+    });
+    if (!isDeleted) hasValidPhotos = true;
+  });
+
+  // 【关键】如果全部删除，隐藏精选相册区块
+  if (!hasValidPhotos) {
+    console.log('[精选相册] 全部' + items.length + '张照片都已删除，隐藏');
+    var section = document.getElementById("adminAlbumSection");
+    if (section) section.style.display = "none";
+    return;
+  }
+
   items.forEach(function(item) {
     var imgUrl;
     if (item.file_path && item.file_path.startsWith("github:")) {
@@ -5432,7 +5474,15 @@ async function loadApprovedAdminPhotos() {
     } else {
       imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     }
-    addAdminAlbumPhoto(imgUrl, item.title || "");
+    
+    // 【关键】只加载未删除的照片
+    var isDeleted = deletedPhotos.some(function(d) {
+      return d === imgUrl || (d && imgUrl && imgUrl.includes(d.split('/').pop()));
+    });
+    
+    if (!isDeleted) {
+      addAdminAlbumPhoto(imgUrl, item.title || "");
+    }
   });
 }
 
