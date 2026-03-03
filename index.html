@@ -1355,570 +1355,9 @@ document.addEventListener("keydown", function(e) {
         </div>
       </div>
 
-      <!-- ===== 杜克图书馆 Duke Libraries ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>杜克图书馆 Duke Libraries</span><span class="accordion-arrow">▸</span>
-        </button>
-        <div class="accordion-body" style="padding:12px 0 16px 0;">
-
-          <!-- 图书馆概览 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>图书馆系统总览</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">
-                <strong>杜克大学图书馆系统</strong>是全美最大的私立大学图书馆之一，拥有超过600万册书籍、电子资源和学术数据库。学生可以免费访问所有资源，这对学术研究和学习至关重要。
-              </div>
-              <a href="https://library.duke.edu/" target="_blank">杜克图书馆官网 - 资源导航中心</a>
-              <a href="https://library.duke.edu/about" target="_blank">图书馆系统统计与历史</a>
-              <a href="https://library.duke.edu/services" target="_blank">学生服务总览</a>
-              <a href="https://library.duke.edu/find" target="_blank">资源搜索(Duke Discovery)</a>
-            </div>
-          </div>
-
-          <!-- 主要图书馆 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>主要图书馆建筑</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">Perkins Library - 珀金斯图书馆（最大）</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • 杜克最大的图书馆，位于West Campus中心<br>
-                • 拥有250多万册书籍和无数电子资源<br>
-                • 设有研究室、学习空间、咖啡馆<br>
-                • 营业时间：周一至周日（各季度不同）
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">Rubenstein Library - 鲁宾斯坦图书馆</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • 特藏和手稿收藏（Rare Books &amp; Manuscripts）<br>
-                • 历史文献和珍贵出版物<br>
-                • 需要事先预约访问某些藏品<br>
-                • 面向所有学生开放阅览室
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">Bostock Library - 博斯托克图书馆</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • 科学、工程、健康科学领域资源<br>
-                • 最新出版的学术期刊和数据库<br>
-                • 配备高端学习和研究设施<br>
-                • Pratt工程学院学生的主要图书馆
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">其他专业图书馆</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366;">
-                • <strong>Divinity Library</strong> - 神学与宗教研究<br>
-                • <strong>Law Library</strong> - 法学研究<br>
-                • <strong>Music Library</strong> - 音乐与表演艺术<br>
-                • <strong>East Campus Library</strong> - 一年级学生学习空间
-              </div>
-            </div>
-          </div>
-
-          <!-- 研究与数据库 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>学术数据库与研究资源</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">杜克图书馆订阅了数百个学术数据库，学生可以免费访问全球最权威的学术资源。
-              </div>
-              <a href="https://library.duke.edu/databases" target="_blank">全部数据库列表(A-Z)</a>
-              <a href="https://library.duke.edu/research" target="_blank">学科研究指南</a>
-              <a href="https://libguides.duke.edu/" target="_blank">主题研究指南(LibGuides)</a>
-              <a href="https://library.duke.edu/about/data-management" target="_blank">数据管理与存储</a>
-              <a href="https://library.duke.edu/services/research-impact" target="_blank">论文影响力分析工具</a>
-              <div style="padding:10px 0 6px 0; color:#555; font-size:13px; font-weight:bold;">常用数据库示例：</div>
-              <div style="padding:0 0 8px 0; color:#666; font-size:13px; margin-left:10px;">
-                • JSTOR - 人文社科期刊 | ProQuest - 学位论文<br>
-                • ScienceDirect - 科学期刊 | Web of Science - 学术影响力<br>
-                • PubMed - 生物医学 | Scopus - 跨学科检索
-              </div>
-            </div>
-          </div>
-
-          <!-- 学习空间与设施 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>学习空间与设施</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">技术与设备</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • 开放计算机实验室（PC &amp; Mac）<br>
-                • 高速打印/扫描/复印服务<br>
-                • 视频编辑套件和音频工作室<br>
-                • 虚拟现实和3D打印设施
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">合作学习空间</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • 小组讨论室（Group Study Rooms）<br>
-                • 白板和投影仪配置<br>
-                • 预订系统(可在线预约)<br>
-                • 适合小组项目和演讲排练
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">安静学习区</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366;">
-                • Quiet Floors - 完全禁声区<br>
-                • Silent Study Zones - 手机无声区<br>
-                • 个人自习区和研究小间<br>
-                • 考试周延长营业时间
-              </div>
-
-              <a href="https://library.duke.edu/spaces" target="_blank">图书馆空间预订系统</a>
-            </div>
-          </div>
-
-          <!-- 参考咨询与课程 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>‍ 参考咨询与信息素养</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">杜克图书馆员是学术研究的专家，可以帮助学生找到资源、规划研究策略、撰写论文。
-              </div>
-              <a href="https://library.duke.edu/ask" target="_blank">在线参考咨询（Ask a Librarian）</a>
-              <a href="https://library.duke.edu/services/instruction" target="_blank">信息素养课程与工作坊</a>
-              <a href="https://library.duke.edu/services/research-consultations" target="_blank">一对一研究咨询预约</a>
-              <a href="https://library.duke.edu/services/citation-management" target="_blank">文献引用工具教学（APA/MLA/Chicago）</a>
-              <a href="https://library.duke.edu/services/writing-support" target="_blank">写作支持与编辑建议</a>
-            </div>
-          </div>
-
-          <!-- 借阅系统与政策 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>借阅系统、政策与罚款</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">
-                <strong>基本借阅权限：</strong>
-              </div>
-              <div style="padding:0 0 12px 0; color:#666; font-size:13px; margin-left:10px;">
-                • 本科生：可借50本书，借期28天<br>
-                • 研究生：可借100本书，借期1学年<br>
-                • 可在线续借（如无人预约）<br>
-                • 跨校借阅系统（Triangle Research Libraries）
-              </div>
-              <a href="https://library.duke.edu/services/borrowing" target="_blank">借阅政策详解</a>
-              <a href="https://library.duke.edu/services/interlibrary-loan" target="_blank">馆际互借（ILL）</a>
-              <a href="https://accounts.duke.edu/library/" target="_blank">查询借阅状态与罚款</a>
-              <a href="https://library.duke.edu/services/recalls" target="_blank">⏰ 图书催还与预约系统</a>
-              <div style="padding:10px 0 0 0; color:#d9534f; font-size:12px; font-weight:bold;">逾期罚款：$0.25每本/每天，最多 $15/本；视听资料另计。建议设置提醒或提前续借。
-              </div>
-            </div>
-          </div>
-
-          <!-- 电子资源与访问 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>电子资源与校外访问</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">所有杜克学生可以在校内外24/7访问数字资源。
-              </div>
-              <a href="https://library.duke.edu/ebooks" target="_blank">电子书合集与电子期刊</a>
-              <a href="https://find.library.duke.edu/" target="_blank">统一资源搜索引擎(Duke Discovery)</a>
-              <a href="https://library.duke.edu/using-library-off-campus" target="_blank">校外远程访问设置</a>
-              <a href="https://library.duke.edu/services/vpn" target="_blank">VPN与远程访问</a>
-              <div style="padding:10px 0 6px 0; color:#555; font-size:13px; font-weight:bold;">小贴士：</div>
-              <div style="padding:0 0 8px 0; color:#666; font-size:13px; margin-left:10px;">
-                • 大多数电子期刊仅限Duke IP访问<br>
-                • 校外需要用Duke NetID +密码认证<br>
-                • 或使用VPN后访问<br>
-                • 某些资源支持学生个人账户离线下载
-              </div>
-            </div>
-          </div>
-
-          <!-- 特殊资源与服务 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>⭐ 特殊资源与增值服务</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">课程预留资源(Course Reserves)</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • 教授预留的课程必读书和文章<br>
-                • 借期更短但优先级更高<br>
-                • 可在线查询和催还
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">学位论文与毕业论文</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • ProQuest论文数据库访问权限<br>
-                • 毕业论文提交与存档指导<br>
-                • 开放获取选项
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">开放获取资源(Open Access)</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366;">
-                • Duke OA期刊合作<br>
-                • 全球开放获取期刊导航<br>
-                • 研究者权利与版权指导
-              </div>
-
-              <a href="https://library.duke.edu/about/special-collections" target="_blank">特殊馆藏与展览</a>
-              <a href="https://library.duke.edu/services/exhibitions" target="_blank">图书馆展览与活动日历</a>
-            </div>
-          </div>
-
-          <!-- 实用建议 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>新生实用建议</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:0 0 10px 0; color:#555; font-size:13px; font-weight:bold;">第一周必做：</div>
-              <div style="padding:0 0 12px 10px; color:#666; font-size:13px; margin-left:0;">
-                1⃣ 参加图书馆新生导览（Orientation期间）<br>
-                2⃣ 在MyDuke激活图书馆账户<br>
-                3⃣ 下载Duke移动应用查询资源<br>
-                4⃣ 熟悉最近的图书馆位置<br>
-                5⃣ 加入图书馆邮件列表了解活动
-              </div>
-
-              <div style="padding:0 0 10px 0; color:#555; font-size:13px; font-weight:bold;">高效学习技巧：</div>
-              <div style="padding:0 0 12px 10px; color:#666; font-size:13px; margin-left:0;">
-                • 考试周提前进行小组室预订<br>
-                • 利用参考咨询节省研究时间<br>
-                • 学习使用文献管理工具（Zotero/Mendeley）<br>
-                • 参加信息素养工作坊了解数据库<br>
-                • 在线预留图书避免失借
-              </div>
-
-              <div style="padding:0 0 10px 0; color:#555; font-size:13px; font-weight:bold;">联系信息：</div>
-              <div style="padding:0 0 0 10px; color:#666; font-size:13px; margin-left:0;">
-                • 综合咨询：<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3c50555e4e5d4e457c5849575912595849">[email&#160;protected]</a><br>
-                • 在线聊天：<a href="https://library.duke.edu/ask" target="_blank" style="color:#0066cc;">Ask a Librarian</a><br>
-                • 电话：(919) 660-5800<br>
-                • Twitter：@DukeLibraries
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ===== 杜克教堂 Duke Chapel ===== -->
-      <div class="accordion">
-        <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>杜克教堂 Duke Chapel</span><span class="accordion-arrow">▸</span>
-        </button>
-        <div class="accordion-body" style="padding:12px 0 16px 0;">
-
-          <!-- 教堂概览与历史 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>教堂概览与历史</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">
-                <strong>杜克教堂（Duke Chapel）</strong>是杜克大学最具标志性的建筑，完成于1935年，融合了哥特复兴建筑风格。这座高耸的教堂象征着杜克对追求真理、服务人类和精神成长的承诺，是校园的精神中心。
-              </div>
-              <div style="padding:0 0 10px 0; color:#666; font-size:13px; line-height:1.6;">
-                <strong>建筑特点：</strong><br>
-                • 高度：210英尺（64米），校园最高建筑<br>
-                • 建筑风格：哥特复兴（Gothic Revival）<br>
-                • 建造时间：1930-1935年<br>
-                • 设计师：Julian Abele（著名非裔美国建筑师）<br>
-                • 座位容纳：1,600人<br>
-                • 管风琴：4,000根管子（美国最大的管风琴之一）
-              </div>
-              <a href="https://chapel.duke.edu/" target="_blank">杜克教堂官网</a>
-              <a href="https://chapel.duke.edu/about/history" target="_blank">教堂历史与建筑背景</a>
-              <a href="https://chapel.duke.edu/about/architecture" target="_blank">建筑设计与艺术特色</a>
-              <a href="https://students.duke.edu/live-learn/living/east-campus/" target="_blank">教堂虚拟游览</a>
-            </div>
-          </div>
-
-          <!-- 宗教信仰与社群 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>宗教包容与多信仰社群</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">
-                <strong>杜克教堂的独特之处：</strong>虽然名为"教堂"，但它是一个<strong>非宗派性的多信仰灵性中心</strong>，欢迎所有宗教背景的学生。教堂的使命是促进精神成长、伦理思考和社群建设，而不是推崇特定的宗教信仰。
-              </div>
-              <div style="padding:0 0 10px 0; color:#666; font-size:13px; line-height:1.6;">
-                <strong>宗教组织与服务：</strong><br>
-                • 超过130个学生宗教组织<br>
-                • 包括基督教、伊斯兰教、犹太教、佛教、印度教等<br>
-                • 定期举办多信仰对话与活动<br>
-                • 为所有学生提供灵性支持和咨询
-              </div>
-              <a href="https://chapel.duke.edu/community/religious-groups" target="_blank">宗教组织目录</a>
-              <a href="https://chapel.duke.edu/community/interfaith" target="_blank">多信仰项目与倡议</a>
-              <a href="https://chaplain.duke.edu/" target="_blank">‍ 校园牧师与灵性顾问</a>
-              <a href="https://chapel.duke.edu/community/faith-facilities" target="_blank">祈祷室与信仰设施</a>
-            </div>
-          </div>
-
-          <!-- 礼拜仪式与活动 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>礼拜、音乐与活动</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">定期礼拜服务</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • <strong>主日礼拜</strong>（周日上午）- 传统新教服务<br>
-                • <strong>晚间祷告</strong>（周一至周五）- 5分钟冥想和祈祷<br>
-                • <strong>节日庆祝</strong> - 复活节、圣诞节等<br>
-                • <strong>特殊仪式</strong> - 新生开学典礼、毕业典礼<br>
-                • <strong>所有学生欢迎参与</strong> - 无论宗教背景
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">Duke Chapel Choir &音乐项目</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • <strong>Duke Chapel Choir</strong> - 精英合唱团（选拔制）<br>
-                • <strong>Vespers Choir</strong> - 为晚间服务而设<br>
-                • <strong>Hand Bell Choir</strong> - 手铃合唱团<br>
-                • 定期音乐会和表演机会<br>
-                • 免费参加所有音乐活动（开放给全校学生）
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">特殊活动与节目</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366;">
-                • <strong>新生开学典礼</strong> - 8月下旬，全校规模<br>
-                • <strong>毕业典礼</strong> - 5月，家长和校友云集<br>
-                • <strong>Chapel Carols</strong> - 12月圣诞音乐会<br>
-                • <strong>Dinner and Dialogue</strong> - 宗教讨论小组<br>
-                • <strong>灵性静修周末</strong> - 学期中的校外活动
-              </div>
-
-              <a href="https://chapel.duke.edu/worship" target="_blank">礼拜时间表与日历</a>
-              <a href="https://chapel.duke.edu/worship/music" target="_blank">音乐项目与合唱团</a>
-              <a href="https://chapel.duke.edu/events" target="_blank">教堂活动日历</a>
-            </div>
-          </div>
-
-          <!-- 学术与灵性 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>宗教研究与灵性学术</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">杜克大学有全面的宗教研究学位课程，包括学士、硕士和博士项目。即使不专修宗教，学生也可以选修相关课程。
-              </div>
-              <a href="https://divinity.duke.edu/" target="_blank">杜克神学院（Divinity School）</a>
-              <a href="https://religion.duke.edu/" target="_blank">宗教研究系</a>
-              <a href="https://trinity.duke.edu/academics/curriculum/religion" target="_blank">宗教课程选项</a>
-              <a href="https://chapel.duke.edu/community/academic-programs" target="_blank">教堂赞助的学术项目</a>
-              <div style="padding:10px 0 0 0; color:#555; font-size:13px;">
-                <strong>课程示例：</strong>世界宗教、宗教伦理、比较神学、宗教与社会、古典宗教文本等
-              </div>
-            </div>
-          </div>
-
-          <!-- 社区服务与外展 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>社区服务与社会正义</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">杜克教堂强烈关注社会正义、贫困救济和人类尊严。教堂积极支持社区外展项目和学生志愿服务。
-              </div>
-              <div style="padding:0 0 10px 0; color:#666; font-size:13px; line-height:1.6;">
-                <strong>主要项目：</strong><br>
-                • <strong>Durham Neighborhood Initiative</strong> - 与当地社区合作<br>
-                • <strong>Chaplain for Social Justice</strong> - 社会正义倡导者<br>
-                • <strong>Student Service Trips</strong> - 寒暑假志愿服务<br>
-                • <strong>Food Pantry & Outreach</strong> - 食品援助计划<br>
-                • <strong>Interfaith Service Projects</strong> - 多信仰志愿活动
-              </div>
-              <a href="https://chapel.duke.edu/community/service" target="_blank">志愿服务与外展机会</a>
-              <a href="https://chapel.duke.edu/news/social-justice" target="_blank">社会正义倡议</a>
-              <a href="https://students.duke.edu/get-involved/service-learning/" target="_blank">服务学习项目</a>
-            </div>
-          </div>
-
-          <!-- 访问与参观指南 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>参观指南与实用信息</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">位置与交通</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • 位于West Campus中心<br>
-                • 靠近East Campus和中央广场<br>
-                • 校园多数建筑步行距离内<br>
-                • 停车场：East Campus Lot或West Campus Lot
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">开放时间</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • <strong>平日：</strong>上午8点 - 下午5点<br>
-                • <strong>礼拜日：</strong>上午11点 - 下午5点<br>
-                • <strong>特殊活动：</strong>详见官网日历<br>
-                • <strong>假期与特殊日期：</strong>可能有所调整
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">访问与参观</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366; margin-bottom:10px;">
-                • <strong>免费开放</strong> - 所有Duke学生、访客无需预约<br>
-                • <strong>导览服务</strong> - 提前联系安排团体导览<br>
-                • <strong>摄影</strong> - 允许个人摄影，商业摄影需申请<br>
-                • <strong>特殊活动</strong> - 婚礼、追悼会等需提前预约
-              </div>
-
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px; font-weight:bold;">无障碍设施</div>
-              <div style="padding:0 0 10px 10px; color:#666; font-size:13px; line-height:1.6; border-left: 3px solid #003366;">
-                • 轮椅通道和电梯<br>
-                • 助听系统和字幕服务<br>
-                • 无障碍洗手间<br>
-                • 特殊需求咨询可联系管理部门
-              </div>
-
-              <a href="https://chapel.duke.edu/visit" target="_blank">访问者信息</a>
-              <a href="https://chapel.duke.edu/contact" target="_blank">联系方式与预约</a>
-            </div>
-          </div>
-
-          <!-- 学生组织与参与 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>学生组织与参与机会</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">杜克教堂为学生提供众多参与和领导机会，无论宗教背景如何。
-              </div>
-              <div style="padding:0 0 10px 0; color:#666; font-size:13px; line-height:1.6;">
-                <strong>主要参与方式：</strong><br>
-                • <strong>Chapel Choir</strong> - 参加选拔和音乐表演<br>
-                • <strong>Student Advisory Board</strong> - 教堂学生委员会<br>
-                • <strong>Acolyte Program</strong> - 礼拜仪式助手<br>
-                • <strong>Usher Corps</strong> - 欢迎和指引访客<br>
-                • <strong>Student Ministry Teams</strong> - 灵性生活领导者<br>
-                • <strong>宗教俱乐部</strong> - 超过130个学生宗教组织
-              </div>
-              <a href="https://chapel.duke.edu/community/get-involved" target="_blank">参与机会总览</a>
-              <a href="https://orgs.duke.edu/" target="_blank">查找宗教学生组织</a>
-              <a href="https://chapel.duke.edu/community/leadership-opportunities" target="_blank">⭐ 领导力机会</a>
-            </div>
-          </div>
-
-          <!-- 精神成长与心理健康 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>精神成长与心理健康</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">研究表明，精神实践与社群参与对心理健康和学业成功有积极影响。杜克教堂为学生提供支持。
-              </div>
-              <div style="padding:0 0 10px 0; color:#666; font-size:13px; line-height:1.6;">
-                <strong>支持资源：</strong><br>
-                • <strong>Chaplains</strong> - 提供精神指导与心理支持<br>
-                • <strong>Meditation & Mindfulness</strong> - 冥想和正念活动<br>
-                • <strong>Peer Support Groups</strong> - 同龄人支持小组<br>
-                • <strong>Crisis Support</strong> - 危机应对和辅导<br>
-                • <strong>Wellness Retreats</strong> - 健康和灵性静修
-              </div>
-              <a href="https://chapel.duke.edu/wellbeing" target="_blank">心理健康与福祉资源</a>
-              <a href="https://students.duke.edu/wellness/" target="_blank">学生健康与咨询服务</a>
-              <a href="https://chapel.duke.edu/community/peer-support" target="_blank">同龄人支持项目</a>
-            </div>
-          </div>
-
-          <!-- 新生与国际学生 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>新生与国际学生指南</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">新生和国际学生特别受欢迎加入教堂社群。教堂的多信仰环境帮助学生找到家乡的灵性家园或探索新的信仰传统。
-              </div>
-              <div style="padding:0 0 10px 0; color:#666; font-size:13px; line-height:1.6;">
-                <strong>新生必知：</strong><br>
-                • <strong>Orientation期间有Chapel介绍</strong><br>
-                • <strong>新生礼拜</strong> - 欢迎活动与社交机会<br>
-                • <strong>宗教组织博览会</strong> - 秋季找到志同道合的朋友<br>
-                • <strong>国际学生资源</strong> - 特别针对海外学生的灵性支持<br>
-                • <strong>无宗教信仰学生也欢迎</strong> - 参与社群和文化活动
-              </div>
-              <a href="https://chapel.duke.edu/welcome/first-year" target="_blank">新生欢迎信息</a>
-              <a href="https://chapel.duke.edu/welcome/international" target="_blank">国际学生资源</a>
-              <a href="https://international.duke.edu/" target="_blank">国际学生办公室</a>
-              <a href="https://orgs.duke.edu/organizations" target="_blank">找宗教学生俱乐部</a>
-            </div>
-          </div>
-
-          <!-- 有趣的事实 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>有趣的事实与传统</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:6px 0 10px 0; color:#444; font-size:13px; line-height:1.6;">
-                <strong>你可能不知道的杜克教堂有趣事实：</strong>
-              </div>
-              <div style="padding:0 0 12px 0; color:#666; font-size:13px; line-height:1.8; margin-left:10px;">
-                 <strong>建筑之谜：</strong>教堂的设计师Julian Abele是美国第一批非裔建筑师之一，但许多历史记录长期忽视了他的贡献。<br><br>
-
-                 <strong>管风琴奇迹：</strong>教堂的管风琴有4,000根管子，是美国最大的管风琴之一。每周都有专业演奏家进行音乐会。<br><br>
-
-                 <strong>校园地标：</strong>许多Duke校友表示，从教堂顶部眺望整个校园是最美妙的体验。<br><br>
-
-                 <strong>婚礼圣地：</strong>许多Duke校友选择在此结婚，教堂已是度过人生重要时刻的地点。<br><br>
-
-                 <strong>夜间灯光：</strong>晚上教堂被照亮，是校园最美丽的景观之一，是拍照的完美地点。<br><br>
-
-                 <strong>学术渊源：</strong>教堂的建造受到英国剑桥、牛津大学教堂的启发，象征学术传统。<br><br>
-
-                 <strong>和平象征：</strong>教堂钟楼每天钟声象征着和平、反思和社群团结。<br><br>
-
-                 <strong>包容历史：</strong> 1963年，Duke教堂成为首批开放礼拜给所有种族的南方宗教机构之一。
-              </div>
-            </div>
-          </div>
-
-          <!-- 联系与资源 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>联系信息与资源链接</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:0 0 10px 0; color:#555; font-size:13px; font-weight:bold;">主要联系方式</div>
-              <div style="padding:0 0 12px 10px; color:#666; font-size:13px; margin-left:0;">
-                • <strong>总机：</strong> (919) 684-2573<br>
-                • <strong>电邮：</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5e3d363f2e3b321e3a2b353b703b3a2b">[email&#160;protected]</a><br>
-                • <strong>网站：</strong>chapel.duke.edu<br>
-                • <strong>社交媒体：</strong> @DukeChapel (Instagram, Twitter)
-              </div>
-
-              <div style="padding:0 0 10px 0; color:#555; font-size:13px; font-weight:bold;">部门与办公室</div>
-              <div style="padding:0 0 12px 10px; color:#666; font-size:13px; margin-left:0;">
-                • <strong>Dean of Chapel</strong> - 教堂主任办公室<br>
-                • <strong>Chapel Administration</strong> - 行政部门<br>
-                • <strong>Chaplains Office</strong> - 校园牧师办公室<br>
-                • <strong>Chapel Music</strong> - 音乐部门<br>
-                • <strong>Events Coordination</strong> - 活动协调
-              </div>
-
-              <div style="padding:0 0 10px 0; color:#555; font-size:13px; font-weight:bold;">重要链接</div>
-              <div style="padding:0 0 0 10px; color:#666; font-size:13px; margin-left:0;">
-                <a href="https://chapel.duke.edu/" target="_blank">杜克教堂官网</a><br>
-                <a href="https://chaplain.duke.edu/" target="_blank">‍ 校园牧师办公室</a><br>
-                <a href="https://chapel.duke.edu/community/religious-groups" target="_blank">宗教学生组织</a><br>
-                <a href="https://divinity.duke.edu/" target="_blank">杜克神学院</a><br>
-                <a href="https://students.duke.edu/wellness/" target="_blank">学生福祉资源</a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="accordion">
-        <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>医学预科方向Pre-med track</span><span class="accordion-arrow">▸</span>
+          <span>医学预科方向 Pre-med track</span><span class="accordion-arrow">▸</span>
         </button>
         <div class="accordion-body" style="padding:16px 0; font-size:14px; color:#222; line-height:1.7;">
 
@@ -1928,7 +1367,8 @@ document.addEventListener("keydown", function(e) {
           <p style="margin:0 0 14px;">需要特别说明的是，Duke本校学生申请Duke School of Medicine并没有特别优待，录取标准与其他申请者相同。拥有Duke学籍不等于进Duke医学院有捷径，家长和学生需要对此有清醒认知。</p>
 
           <div style="background:#f0f5ff; border:1px solid #b0c8f0; border-radius:8px; padding:14px 18px; margin:0 0 12px;">
-            <div style="font-size:13px; color:#003366; margin-bottom:10px;">Duke University Pre-Med Course Requirements &nbsp;<a href="https://advising.duke.edu/prehealth/prepare/course/" target="_blank" style="font-size:12px; color:#1a6bbf;">advising.duke.edu</a>
+            <div style="font-size:13px; color:#003366; margin-bottom:10px;">
+              Duke University Pre-Med Course Requirements &nbsp;<a href="https://advising.duke.edu/prehealth/prepare/course/" target="_blank" style="font-size:12px; color:#1a6bbf;">advising.duke.edu</a>
             </div>
             <table style="width:100%; border-collapse:collapse; font-size:13px;">
               <thead>
@@ -1980,7 +1420,7 @@ document.addEventListener("keydown", function(e) {
 
           <h4 style="color:#003366; margin:12px 0 4px;">选课策略</h4>
           <p style="margin:0 0 4px;">最常见的错误：大一把生物+化学+物理+微积分全堆在一起，结果GPA掉到3.5以下。在Duke这种情况极为普遍，一旦发生很难挽救。</p>
-          <p style="margin:0 0 8px;">推荐节奏，Fall学期：General Chemistry I + Writing/Seminar +一门相对轻松的人文或社科课(统计或心理都是好选择，同时为MCAT打基础)。Spring学期：Biology I + General Chemistry II +一门平衡性课程。不建议大一就修Organic Chemistry，那是大二的核心战场。</p>
+          <p style="margin:0 0 8px;">推荐节奏，Fall学期：General Chemistry I + Writing/Seminar + 一门相对轻松的人文或社科课(统计或心理都是好选择，同时为MCAT打基础)。Spring学期：Biology I + General Chemistry II + 一门平衡性课程。不建议大一就修Organic Chemistry，那是大二的核心战场。</p>
 
           <h4 style="color:#003366; margin:12px 0 4px;">大一课外安排</h4>
           <p style="margin:0 0 8px;">大一上学期专注GPA，不要分心。大一下学期开始申请Duke University Hospital的志愿者项目，安排1–2次跟诊体验，有条件尽量联系进一个lab(不需要马上出成果，先建立关系)。</p>
@@ -2119,10 +1559,12 @@ document.addEventListener("keydown", function(e) {
           <h4 style="color:#003366; margin:12px 0 4px;">真正理性的判断标准</h4>
           <p style="margin:0 0 12px;">不要问"我够不够好"，而要问"今年是我成功率最高的一年吗？"如果回答有任何犹豫，通常说明还有可以继续准备的空间。在强校里：直接申成功者，通常各项准备都已非常完整；边缘型直接申请者，后悔率相当高；主动gap者，面试表现普遍更成熟、故事更完整。</p>
 
-          <div style="background:#fffbe6; border:1px solid #f0c040; border-radius:8px; padding:12px 16px; font-size:13px;">官网：<a href="https://advising.duke.edu/prehealth/" target="_blank" style="color:#003366;">advising.duke.edu/prehealth</a> &nbsp;|&nbsp;电话：(919) 684-5637 &nbsp;|&nbsp; MCAT备考：<a href="https://students.duke.edu/academics/premed/" target="_blank" style="color:#003366;">students.duke.edu/academics/premed</a>
+          <div style="background:#fffbe6; border:1px solid #f0c040; border-radius:8px; padding:12px 16px; font-size:13px;">
+            官网：<a href="https://advising.duke.edu/prehealth/" target="_blank" style="color:#003366;">advising.duke.edu/prehealth</a> &nbsp;|&nbsp; 电话：(919) 684-5637 &nbsp;|&nbsp; MCAT备考：<a href="https://students.duke.edu/academics/premed/" target="_blank" style="color:#003366;">students.duke.edu/academics/premed</a>
           </div>
 
-          <div style="margin-top:14px; font-size:12px; color:#888; line-height:1.8;">主要官方参考链接：
+          <div style="margin-top:14px; font-size:12px; color:#888; line-height:1.8;">
+            主要官方参考链接：
             <a href="https://advising.duke.edu/prehealth/" target="_blank" style="color:#003366;">Duke Pre-Health Advising总页面</a> &nbsp;|&nbsp;
             <a href="https://advising.duke.edu/prehealth/prepare/course/" target="_blank" style="color:#003366;">医学院先修课程要求</a> &nbsp;|&nbsp;
             <a href="https://advising.duke.edu/prehealth/apply/" target="_blank" style="color:#003366;">申请医学院流程说明</a> &nbsp;|&nbsp;
@@ -2148,7 +1590,7 @@ document.addEventListener("keydown", function(e) {
       <!-- ===== Duke法学院 JD ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>Duke 法学院 JD申请与就读指南</span><span class="accordion-arrow">▸</span>
+          <span>Duke法学院 JD申请与就读指南</span><span class="accordion-arrow">▸</span>
         </button>
         <div class="accordion-body" style="padding:16px 0; font-size:14px; color:#222; line-height:1.7;">
 
@@ -2439,7 +1881,7 @@ document.addEventListener("keydown", function(e) {
       <!-- ===== Duke Fuqua商学院 MBA ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>Duke Fuqua 商学院 MBA申请与就读指南</span><span class="accordion-arrow">▸</span>
+          <span>Duke Fuqua商学院 MBA申请与就读指南</span><span class="accordion-arrow">▸</span>
         </button>
         <div class="accordion-body" style="padding:16px 0; font-size:14px; color:#222; line-height:1.7;">
 
@@ -4915,7 +4357,7 @@ document.addEventListener("keydown", function(e) {
 }
 </style>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ===== 管理员面板逻辑 =====
 const ADMIN_PASSWORD = "Jyswswhj098)(*"; // ← 可在此修改管理员密码
 
@@ -5806,7 +5248,14 @@ async function loadPendingUploads() {
       '</div></div>' +
       '<div style="margin-top:10px; display:flex; gap:8px;">' +
       '<button onclick="approvePhoto(\'' + item.id + '\', \'' + pubUrl + '\', \'' + item.title + '\')" style="flex:1; padding:8px; background:#003366; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">✅ 批准加入精选相册</button>' +
-      '<button onclick="rejectPendingItem(\'' + item.id + '\', \'' + item.file_path + '\')" stlkwqpwlcjwemhfqd.supabase.co/functions/v1/github-upload";
+      '<button onclick="rejectPendingItem(\'' + item.id + '\', \'' + item.file_path + '\')" style="flex:1; padding:8px; background:#c00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">❌ 拒绝删除</button>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ===== GitHub 上传核心函数（通过 Supabase Edge Function，Token 在服务端）=====
+const EDGE_FUNCTION_URL = "https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/github-upload";
 
 // 调用服务端 Edge Function 完成上传，前端不持有任何 Token
 async function uploadToGitHubViaEdge(pendingId, folder) {
