@@ -5556,6 +5556,8 @@ async function submitUserPhoto() {
   var imgExt = userPendingFile.name.split(".").pop().toLowerCase();
   var safeImgName = Date.now() + "." + imgExt;
   var filePath = "pending/" + safeImgName;
+  
+  // 【修改】先上传到Supabase（临时），再转存到GitHub
   var uploadResult = await supabase.storage.from("uploads").upload(filePath, userPendingFile, { upsert: true });
 
   if (uploadResult.error) {
@@ -5568,7 +5570,7 @@ async function submitUserPhoto() {
   var { data: { user } } = await supabase.auth.getUser();
   var uploadedBy = user && user.email ? user.email : "匿名";
 
-  // 写入数据库
+  // 【修改】先写入pending记录，然后转存到GitHub
   var dbResult = await supabase.from("pending_uploads").insert({
     file_path: filePath,
     file_name: userPendingFile.name,
@@ -5576,7 +5578,7 @@ async function submitUserPhoto() {
     uploaded_by: uploadedBy,
     status: "pending",
     file_type: "image"
-  });
+  }).select().single();
 
   if (dbResult.error) {
     msg.textContent = "提交失败：" + dbResult.error.message;
@@ -5584,8 +5586,23 @@ async function submitUserPhoto() {
     return;
   }
 
-  msg.textContent = "提交成功！等待管理员审核后将加入相册。";
-  msg.style.color = "green";
+  var pendingId = dbResult.data.id;
+
+  // 【新增】转存到GitHub
+  msg.textContent = "转存到GitHub中...";
+  msg.style.color = "#c07000";
+  
+  try {
+    var ghUrl = await uploadToGitHubViaEdge(pendingId, "images");
+    msg.textContent = "✅ 上传成功！已保存到GitHub，等待管理员审核。";
+    msg.style.color = "green";
+  } catch (e) {
+    // 转存失败时，保留Supabase备份
+    await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", pendingId);
+    msg.textContent = "⚠️ 已提交审核（GitHub转存失败，使用备份存储）";
+    msg.style.color = "#c07000";
+  }
+
   userPendingFile = null;
   document.getElementById("userPhotoTitle").value = "";
   document.getElementById("userFilePreview").style.display = "none";
