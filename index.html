@@ -4542,26 +4542,61 @@ async function adminDeleteItem(btn) {
   var filePath = decodeURIComponent(card.dataset.path || "");
   var supabase = window._supabaseClient;
   btn.textContent = "删除中..."; btn.disabled = true;
-  await supabase.from("pending_uploads").delete().eq("id", id);
-  if (filePath && !filePath.startsWith("github:")) {
-    await supabase.storage.from("uploads").remove([filePath]);
+  
+  try {
+    // 删除数据库记录
+    await supabase.from("pending_uploads").delete().eq("id", id);
+    
+    // 删除文件（包括缿略图）
+    if (filePath && !filePath.startsWith("github:")) {
+      var filesToDelete = [filePath];
+      
+      // 如果是照片，同时删除缿略图
+      if (type === 'photo') {
+        var thumbPath = generateThumbnailPath(filePath);
+        filesToDelete.push(thumbPath);
+        console.log("[删除] 照片: " + filePath + " | 缿略图: " + thumbPath);
+      }
+      
+      await supabase.storage.from("uploads").remove(filesToDelete);
+    }
+    
+    // 如果是照片，从精选相册轮播移除
+    if (type === 'photo') {
+      var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+      var imgUrl = filePath.startsWith("github:") ? filePath.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+filePath;
+      removeAdminAlbumPhoto(imgUrl);
+    }
+    
+    // 从管理列表中移除卡片
+    card.style.transition = "opacity 0.3s";
+    card.style.opacity = "0";
+    setTimeout(function() { card.remove(); }, 300);
+    
+    // 更新badge
+    var badgeMap = {photo:'approvedPhotoBadge', video:'approvedVideoBadge', document:'approvedFileBadge', yuanfen:'approvedYuanfenBadge'};
+    var badge = document.getElementById(badgeMap[type]);
+    if (badge) { var n = parseInt(badge.textContent)||1; badge.textContent = Math.max(0, n-1) + (type==='photo'?' 张':' 个'); }
+    
+    console.log("[删除] ✅ 操作完成！");
+    alert("✅ " + label + "已删除");
+  } catch (e) {
+    console.error("[删除] ❌ 错误: " + e.message);
+    alert("❌ 删除出错: " + e.message);
+  } finally {
+    btn.textContent = "🗑 删除";
+    btn.disabled = false;
   }
-  // 如果是照片，从精选相册轮播移除
-  if (type === 'photo') {
-    var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
-    var imgUrl = filePath.startsWith("github:") ? filePath.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+filePath;
-    removeAdminAlbumPhoto(imgUrl);
+}
+
+// 生成缿略图路径 - 根据原始文件路径生成对应的缿略图路径
+function generateThumbnailPath(originalPath) {
+  var lastDot = originalPath.lastIndexOf('.');
+  if (lastDot === -1) {
+    return originalPath + '_thumb.webp';
   }
-  // 从管理列表中移除卡片
-  card.style.transition = "opacity 0.3s";
-  card.style.opacity = "0";
-  setTimeout(function() { card.remove(); }, 300);
-  // 更新badge
-  var reloader = type === 'photo' ? loadApprovedPhotoManager : type === 'video' ? loadApprovedVideoManager : type === 'document' ? loadApprovedFileManager : loadApprovedYuanfenManager;
-  // 不重新加载整个列表，只更新badge数字
-  var badgeMap = {photo:'approvedPhotoBadge', video:'approvedVideoBadge', document:'approvedFileBadge', yuanfen:'approvedYuanfenBadge'};
-  var badge = document.getElementById(badgeMap[type]);
-  if (badge) { var n = parseInt(badge.textContent)||1; badge.textContent = Math.max(0, n-1) + (type==='photo'?' 张':' 个'); }
+  var beforeExt = originalPath.substring(0, lastDot);
+  return beforeExt + '_thumb.webp';
 }
 
 // ===== 视频集管理 =====
@@ -4823,15 +4858,24 @@ async function deleteAllApprovedPhotos() {
 
   var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
 
-  // 收集各类路径
-  var storagePaths = items.map(function(i){return i.file_path;}).filter(function(p){return !p.startsWith("github:");});
-  var githubUrls   = items.map(function(i){return i.file_path;}).filter(function(p){return p.startsWith("github:");}).map(function(p){return p.replace("github:","");});
+  // 收集各类路径 - 包括缿略图
+  var storagePaths = [];
+  items.forEach(function(item) {
+    if (!item.file_path.startsWith("github:")) {
+      storagePaths.push(item.file_path);
+      // 为每个照片添加对应的缿略图路径
+      var thumbPath = generateThumbnailPath(item.file_path);
+      storagePaths.push(thumbPath);
+    }
+  });
+  
+  var githubUrls = items.map(function(i){return i.file_path;}).filter(function(p){return p.startsWith("github:");}).map(function(p){return p.replace("github:","");});
 
   // 删数据库
   var ids = items.map(function(i){return i.id;});
   if (ids.length) await supabase.from("pending_uploads").delete().in("id", ids);
 
-  // 删 Supabase Storage
+  // 删 Supabase Storage（包括缿略图）
   if (storagePaths.length) await supabase.storage.from("uploads").remove(storagePaths);
 
   // 删 GitHub 文件（逐个调用 Edge Function）
@@ -4849,7 +4893,7 @@ async function deleteAllApprovedPhotos() {
   adminSlide.current = 0; adminSlide.total = 0;
   if (section) section.style.display = "none";
 
-  alert("已永久清空精选相册（共 " + items.length + " 张）");
+  alert("✅ 已永久清空精选相册及所有缿略图（共 " + items.length + " 张）");
   loadApprovedPhotoManager();
 }
 
