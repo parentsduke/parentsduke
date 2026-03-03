@@ -166,6 +166,12 @@ document.addEventListener('DOMContentLoaded', function() {
       if (counter) counter.textContent = "1 / " + remaining;
     } else {
       if (section) section.style.display = "none";
+      // 【新增】清空管理员审核列表中的缩略图
+      var adminList = document.getElementById("pendingUploadsList");
+      if (adminList) {
+        adminList.innerHTML = '<span style="color:#aaa;">暂无待审核照片</span>';
+      }
+      console.log('[精选相册] 初始化：所有照片已删除，隐藏管理员缩略图');
     }
     
     if (typeof adminSlide !== 'undefined') {
@@ -5133,6 +5139,12 @@ function removeAdminAlbumPhoto(imgSrc) {
     // 没有照片了，隐藏整个区块
     clearInterval(adminSlide.timer);
     if (section) section.style.display = "none";
+    // 【新增】清空管理员审核列表中的缩略图
+    var adminList = document.getElementById("pendingUploadsList");
+    if (adminList) {
+      adminList.innerHTML = '<span style="color:#aaa;">暂无待审核照片</span>';
+    }
+    console.log('[精选相册] 删除完成：所有照片已删除，清空管理员缩略图');
     return;
   }
 
@@ -5411,28 +5423,9 @@ async function loadApprovedAdminPhotos() {
   if (result.error || !result.data) return;
 
   var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
-if (!items.length) return;
+  if (!items.length) return;
 
-// 【关键修复】检查是否所有照片都被删除
-var hasValidPhotos = false;
-items.forEach(function(tempItem) {
-  var tempUrl = tempItem.file_path && tempItem.file_path.startsWith("github:") 
-    ? tempItem.file_path.replace("github:", "")
-    : supabaseUrl + "/storage/v1/object/public/uploads/" + tempItem.file_path;
-  var isDeleted = deletedPhotos.some(function(d) {
-    return d === tempUrl || (d && tempUrl && tempUrl.includes(d.split('/').pop()));
-  });
-  if (!isDeleted) hasValidPhotos = true;
-});
-
-if (!hasValidPhotos) {
-  console.log('[精选相册] 全部' + items.length + '张照片都已删除，隐藏');
-  var section = document.getElementById("adminAlbumSection");
-  if (section) section.style.display = "none";
-  return;
-}
-
-items.forEach(function(item) {
+  items.forEach(function(item) {
     var imgUrl;
     if (item.file_path && item.file_path.startsWith("github:")) {
       imgUrl = item.file_path.replace("github:", "");
