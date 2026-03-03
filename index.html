@@ -29,8 +29,29 @@ function markPhotoAsDeleted(imgSrc) {
 
 function isPhotoDeleted(imgSrc) {
   var deleted = getDeletedAdminPhotos();
-  return deleted.some(function(d) {
-    return d === imgSrc || (d && imgSrc && imgSrc.includes(d.split('/').pop()));
+  if (!imgSrc) return false;
+  
+  return deleted.some(function(deletedUrl) {
+    if (!deletedUrl) return false;
+    
+    // 方法1：完整URL精确匹配
+    if (deletedUrl === imgSrc) return true;
+    
+    // 方法2：提取文件名并匹配
+    var deletedFileName = deletedUrl.split('/').pop();
+    var imgFileName = imgSrc.split('/').pop();
+    if (deletedFileName && imgFileName && deletedFileName === imgFileName) {
+      return true;
+    }
+    
+    // 方法3：提取不含查询参数的路径并匹配
+    var deletedPath = deletedUrl.split('?')[0];
+    var imgPath = imgSrc.split('?')[0];
+    if (deletedPath && imgPath && deletedPath === imgPath) {
+      return true;
+    }
+    
+    return false;
   });
 }
 
@@ -5404,8 +5425,14 @@ async function loadApprovedAdminPhotos() {
     
     // 关键：检查这张照片是否已被删除
     var isDeleted = deletedPhotos.some(function(deletedUrl) {
-      return deletedUrl === imgUrl || 
-             (deletedUrl && imgUrl && imgUrl.includes(deletedUrl.split('/').pop()));
+      if (!deletedUrl) return false;
+      // 精确匹配
+      if (deletedUrl === imgUrl) return true;
+      // 文件名匹配
+      var dFileName = deletedUrl.split('/').pop().split('?')[0];
+      var iFileName = imgUrl.split('/').pop().split('?')[0];
+      if (dFileName && iFileName && dFileName === iFileName) return true;
+      return false;
     });
     
     // 只加载未删除的照片
