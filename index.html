@@ -5268,11 +5268,16 @@ async function loadApprovedAdminPhotos() {
     .from("pending_uploads")
     .select("*")
     .eq("status", "approved")
+    .neq("file_path", null)  // ✅ 排除file_path为null的（已删除的）
     .order("uploaded_at", { ascending: false });
 
   if (result.error || !result.data) return;
 
-  var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
+  var items = result.data.filter(function(i) { 
+    // ✅ 只显示图片，且必须有有效的file_path
+    return (!i.file_type || i.file_type === "image") && i.file_path && i.file_path.trim() !== "";
+  });
+  
   if (!items.length) return;
 
   items.forEach(function(item) {
