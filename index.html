@@ -4768,21 +4768,49 @@ async function loadApprovedPhotoManager() {
   container.innerHTML = html || '<span style="color:#aaa;">暂无照片</span>';
 }
 
-async function deleteApprovedPhotoItem(id, filePath) {
-  if (!confirm("确认从精选相册删除这张照片？")) return;
+// 通过 Edge Function 删除 GitHub 上的文件
+const GITHUB_DELETE_EDGE_URL = "https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/github-upload";
+async function deleteFromGitHubViaEdge(githubUrl) {
   var supabase = window._supabaseClient;
+  var { data: { session } } = await supabase.auth.getSession();
+  if (!session) return;
+  try {
+    await fetch(GITHUB_DELETE_EDGE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + session.access_token
+      },
+      body: JSON.stringify({ action: "delete", url: githubUrl })
+    });
+  } catch(e) {
+    console.warn("GitHub 文件删除失败（不影响数据库删除）：", e);
+  }
+}
+
+async function deleteApprovedPhotoItem(id, filePath) {
+  if (!confirm("确认从精选相册永久删除这张照片？\n将同时从数据库和 GitHub 彻底删除，不可恢复。")) return;
+  var supabase = window._supabaseClient;
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+
+  // 1. 删数据库记录
   await supabase.from("pending_uploads").delete().eq("id", id);
-  if (!filePath.startsWith("github:")) {
+
+  // 2. 删文件（GitHub 或 Supabase Storage）
+  if (filePath.startsWith("github:")) {
+    await deleteFromGitHubViaEdge(filePath.replace("github:", ""));
+  } else {
     await supabase.storage.from("uploads").remove([filePath]);
   }
-  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+
+  // 3. 从轮播移除
   var imgUrl = filePath.startsWith("github:") ? filePath.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+filePath;
   removeAdminAlbumPhoto(imgUrl);
   loadApprovedPhotoManager();
 }
 
 async function deleteAllApprovedPhotos() {
-  if (!confirm("确认清空精选相册全部照片？\n此操作不可恢复。")) return;
+  if (!confirm("确认永久清空精选相册全部照片？\n将同时从数据库和 GitHub 彻底删除，此操作不可恢复。")) return;
   var supabase = window._supabaseClient;
 
   // 先查出所有 approved 图片记录
@@ -4795,17 +4823,21 @@ async function deleteAllApprovedPhotos() {
 
   var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
 
-  // 收集 Supabase Storage 路径（非 github: 的）
-  var storagePaths = items
-    .map(function(i) { return i.file_path; })
-    .filter(function(p) { return !p.startsWith("github:"); });
+  // 收集各类路径
+  var storagePaths = items.map(function(i){return i.file_path;}).filter(function(p){return !p.startsWith("github:");});
+  var githubUrls   = items.map(function(i){return i.file_path;}).filter(function(p){return p.startsWith("github:");}).map(function(p){return p.replace("github:","");});
 
   // 删数据库
-  var ids = items.map(function(i) { return i.id; });
+  var ids = items.map(function(i){return i.id;});
   if (ids.length) await supabase.from("pending_uploads").delete().in("id", ids);
 
-  // 删 Storage 文件
+  // 删 Supabase Storage
   if (storagePaths.length) await supabase.storage.from("uploads").remove(storagePaths);
+
+  // 删 GitHub 文件（逐个调用 Edge Function）
+  for (var i = 0; i < githubUrls.length; i++) {
+    await deleteFromGitHubViaEdge(githubUrls[i]);
+  }
 
   // 清空精选相册轮播
   var track = document.getElementById("adminSlideshowTrack");
@@ -4817,7 +4849,7 @@ async function deleteAllApprovedPhotos() {
   adminSlide.current = 0; adminSlide.total = 0;
   if (section) section.style.display = "none";
 
-  alert("已清空精选相册（共 " + items.length + " 张）");
+  alert("已永久清空精选相册（共 " + items.length + " 张）");
   loadApprovedPhotoManager();
 }
 
