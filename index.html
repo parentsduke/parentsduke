@@ -4950,7 +4950,6 @@ async function loadApprovedPhotoManager() {
   container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
 
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
-  var deletedPhotos = getDeletedAdminPhotos();
   var result = await supabase
     .from("pending_uploads")
     .select("*")
@@ -4963,18 +4962,35 @@ async function loadApprovedPhotoManager() {
   }
 
   var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
-  
-  // 【关键】过滤已删除的照片
-  var validItems = items.filter(function(item) {
+
+  // 逐一检测图片是否可访问，过滤失效记录并删除数据库条目
+  var validItems = [];
+  var brokenIds = [];
+  await Promise.all(items.map(async function(item) {
     var imgUrl = item.file_path.startsWith("github:")
       ? item.file_path.replace("github:", "")
       : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
-    var isDeleted = deletedPhotos.some(function(d) {
-      return d === imgUrl || (d && imgUrl && imgUrl.includes(d.split('/').pop()));
-    });
-    return !isDeleted;
-  });
-  
+    try {
+      var resp = await fetch(imgUrl, { method: "HEAD", cache: "no-cache" });
+      if (resp.ok) {
+        validItems.push(item);
+      } else {
+        brokenIds.push(item.id);
+      }
+    } catch(e) {
+      brokenIds.push(item.id);
+    }
+  }));
+
+  // 批量删除失效记录
+  if (brokenIds.length > 0) {
+    await supabase.from("pending_uploads").delete().in("id", brokenIds);
+    console.log("[精选相册] 自动清理失效记录 " + brokenIds.length + " 条");
+  }
+
+  // 按上传时间排序
+  validItems.sort(function(a, b) { return new Date(b.uploaded_at) - new Date(a.uploaded_at); });
+
   if (badge) badge.textContent = validItems.length > 0 ? validItems.length + " 张" : "0 张";
 
   if (!validItems.length) {
@@ -4989,7 +5005,7 @@ async function loadApprovedPhotoManager() {
       : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
     html += '<div class="admin-mgr-card" data-id="' + item.id + '" data-path="' + encodeURIComponent(item.file_path) + '" data-title="' + encodeURIComponent(item.title||"") + '" data-type="photo">' +
-      '<img class="admin-mgr-thumb" src="' + imgUrl + '" onclick="openOverlay(\'' + imgUrl + '\',\'\')" onerror="var c=this.closest(\'.admin-mgr-card\');if(c){c.style.display=\'none\';var sb=window._supabaseClient;if(sb)sb.from(\'pending_uploads\').delete().eq(\'id\',' + item.id + ');}">' +
+      '<img class="admin-mgr-thumb" src="' + imgUrl + '" onclick="openOverlay(\'' + imgUrl + '\',\'\')">' +
       '<div class="admin-mgr-body">' +
         '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
         '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||"匿名") + ' · ' + date + '</div>' +
