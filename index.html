@@ -5093,15 +5093,20 @@ async function uploadToGitHubViaEdge(pendingId, folder) {
 }
 
 async function approvePhoto(id, pubUrl, title) {
-  if (!confirm("批准此照片并上传到 GitHub 精选相册？")) return;
+  if (!confirm("批准此照片？")) return;
   var btn = event.target;
-  btn.textContent = "上传中..."; btn.disabled = true;
+  btn.textContent = "处理中..."; btn.disabled = true;
 
   try {
-    var ghUrl = await uploadToGitHubViaEdge(id, "images");
-
-    addSlideToShow(ghUrl, title);
-    alert("已批准！照片已上传到 GitHub 并加入精选相册。");
+    // ✅ 直接使用Supabase URL，不调用GitHub
+    var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+    var fileUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + pubUrl;
+    
+    var supabase = window._supabaseClient;
+    await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", id);
+    
+    addSlideToShow(fileUrl, title);
+    alert("已批准！照片已加入精选相册。");
     loadPendingUploads();
   } catch(e) {
     alert("失败：" + e.message);
@@ -5110,15 +5115,20 @@ async function approvePhoto(id, pubUrl, title) {
 }
 
 async function approveVideo(id, pubUrl, title) {
-  if (!confirm("批准此视频并上传到 GitHub？\n注意：视频较大，上传需要一点时间。")) return;
+  if (!confirm("批准此视频？")) return;
   var btn = event.target;
-  btn.textContent = "上传中..."; btn.disabled = true;
+  btn.textContent = "处理中..."; btn.disabled = true;
 
   try {
-    var ghUrl = await uploadToGitHubViaEdge(id, "videos");
+    // ✅ 直接使用Supabase URL，不调用GitHub
+    var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+    var fileUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + pubUrl;
+    
+    var supabase = window._supabaseClient;
+    await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", id);
 
-    addVideoThumb(ghUrl, title);
-    alert("已批准！视频已上传到 GitHub 并加入视频区。");
+    addVideoThumb(fileUrl, title);
+    alert("已批准！视频已加入视频区。");
     loadPendingVideos();
   } catch(e) {
     alert("失败：" + e.message);
@@ -5127,15 +5137,20 @@ async function approveVideo(id, pubUrl, title) {
 }
 
 async function approvePpt(id, pubUrl, title, fileName) {
-  if (!confirm("批准此文件并上传到 GitHub？")) return;
+  if (!confirm("批准此文件？")) return;
   var btn = event.target;
-  btn.textContent = "上传中..."; btn.disabled = true;
+  btn.textContent = "处理中..."; btn.disabled = true;
 
   try {
-    var ghUrl = await uploadToGitHubViaEdge(id, "shared-files");
+    // ✅ 直接使用Supabase URL，不调用GitHub
+    var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+    var fileUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + pubUrl;
+    
+    var supabase = window._supabaseClient;
+    await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", id);
 
-    addPptFileEntry(ghUrl, title, fileName);
-    alert("已批准！文件已上传到 GitHub 并发布到文件区。");
+    addPptFileEntry(fileUrl, title, fileName);
+    alert("已批准！文件已发布到文件区。");
     loadPendingPpts();
   } catch(e) {
     alert("失败：" + e.message);
