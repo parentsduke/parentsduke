@@ -9,6 +9,46 @@
 // ===== IMAGE / VIDEO OVERLAY =====
 // openOverlay/closeOverlay defined here in <head> so onclick attributes work immediately
 
+// ===== 精选相册删除记录管理 =====
+function getDeletedAdminPhotos() {
+  var deleted = localStorage.getItem('deletedAdminPhotos');
+  return deleted ? JSON.parse(deleted) : [];
+}
+
+function saveDeletedAdminPhotos(deletedList) {
+  localStorage.setItem('deletedAdminPhotos', JSON.stringify(deletedList));
+}
+
+function markPhotoAsDeleted(imgSrc) {
+  var deleted = getDeletedAdminPhotos();
+  if (!deleted.includes(imgSrc)) {
+    deleted.push(imgSrc);
+    saveDeletedAdminPhotos(deleted);
+  }
+}
+
+function isPhotoDeleted(imgSrc) {
+  var deleted = getDeletedAdminPhotos();
+  return deleted.some(function(d) {
+    return d === imgSrc || (d && imgSrc && imgSrc.includes(d.split('/').pop()));
+  });
+}
+
+function initAdminAlbum() {
+  if (typeof adminSlide === 'undefined') return;
+  var track = document.getElementById("adminSlideshowTrack");
+  var dots = document.getElementById("adminSlideDots");
+  var section = document.getElementById("adminAlbumSection");
+  if (track) track.innerHTML = "";
+  if (dots) dots.innerHTML = "";
+  adminSlide.current = 0;
+  adminSlide.total = 0;
+  if (adminSlide.timer) clearInterval(adminSlide.timer);
+}
+
+// ===== IMAGE / VIDEO OVERLAY =====
+// openOverlay/closeOverlay defined here in <head> so onclick attributes work immediately
+
 function openOverlay(src, alt) {
   var overlay = document.getElementById("overlay");
   var overlayImg = document.getElementById("overlay-img");
@@ -4969,34 +5009,7 @@ async function deleteAllApprovedPhotos() {
   loadApprovedPhotoManager();
 }
 
-// ===== 精选相册删除记录管理 =====
-// 获取已删除照片的列表
-function getDeletedAdminPhotos() {
-  var deleted = localStorage.getItem('deletedAdminPhotos');
-  return deleted ? JSON.parse(deleted) : [];
-}
-
-// 保存删除记录
-function saveDeletedAdminPhotos(deletedList) {
-  localStorage.setItem('deletedAdminPhotos', JSON.stringify(deletedList));
-}
-
-// 标记照片为已删除
-function markPhotoAsDeleted(imgSrc) {
-  var deleted = getDeletedAdminPhotos();
-  if (!deleted.includes(imgSrc)) {
-    deleted.push(imgSrc);
-    saveDeletedAdminPhotos(deleted);
-  }
-}
-
-// 检查照片是否已删除
-function isPhotoDeleted(imgSrc) {
-  var deleted = getDeletedAdminPhotos();
-  return deleted.includes(imgSrc);
-}
-
-// 从精选相册轮播中移除指定 URL 的 slide
+// 从精选相册轮播中移除指定 URL 的 slide（改进版本 - 删除后不显示且计数正确）
 function removeAdminAlbumPhoto(imgSrc) {
   var track = document.getElementById("adminSlideshowTrack");
   var dots  = document.getElementById("adminSlideDots");
@@ -5004,34 +5017,45 @@ function removeAdminAlbumPhoto(imgSrc) {
   var section = document.getElementById("adminAlbumSection");
   if (!track) return;
 
-  // 标记为已删除
+  // 关键：标记为已删除（用于页面刷新后过滤）
   markPhotoAsDeleted(imgSrc);
 
+  // 查找匹配的slide
   var slides = Array.from(track.querySelectorAll(".slide"));
   var idx = -1;
   slides.forEach(function(slide, i) {
     var img = slide.querySelector("img");
-    if (img && img.src === imgSrc) idx = i;
+    if (img && img.src) {
+      if (img.src === imgSrc || (imgSrc && img.src && img.src.endsWith(imgSrc.split('/').pop()))) {
+        idx = i;
+      }
+    }
   });
   if (idx === -1) return;
 
-  // 移除 slide 和对应圆点
+  // 彻底移除 slide 和对应圆点（不留空洞）
   track.children[idx].remove();
   if (dots && dots.children[idx]) dots.children[idx].remove();
 
+  // 关键：更新总计数
   adminSlide.total--;
 
-  if (adminSlide.total === 0) {
+  if (adminSlide.total <= 0) {
     // 没有照片了，隐藏整个区块
     clearInterval(adminSlide.timer);
     if (section) section.style.display = "none";
+    adminSlide.current = 0;
+    adminSlide.total = 0;
+    if (counter) counter.textContent = "0 / 0";
     return;
   }
 
   // 重建圆点的 onclick（索引已变）
-  Array.from(dots.children).forEach(function(dot, i) {
-    dot.onclick = function() { adminGoTo(i); adminResetAuto(); };
-  });
+  if (dots) {
+    Array.from(dots.children).forEach(function(dot, i) {
+      dot.onclick = function() { adminGoTo(i); adminResetAuto(); };
+    });
+  }
 
   // 修正 current 指针
   if (adminSlide.current >= adminSlide.total) adminSlide.current = adminSlide.total - 1;
@@ -5039,9 +5063,12 @@ function removeAdminAlbumPhoto(imgSrc) {
   // 确保有一张是 active
   var remaining = track.querySelectorAll(".slide");
   remaining.forEach(function(s) { s.classList.remove("active"); });
-  Array.from(dots.children).forEach(function(d) { d.classList.remove("active"); });
-  remaining[adminSlide.current].classList.add("active");
-  if (dots.children[adminSlide.current]) dots.children[adminSlide.current].classList.add("active");
+  if (dots) Array.from(dots.children).forEach(function(d) { d.classList.remove("active"); });
+  
+  if (remaining[adminSlide.current]) remaining[adminSlide.current].classList.add("active");
+  if (dots && dots.children[adminSlide.current]) dots.children[adminSlide.current].classList.add("active");
+  
+  // 关键：更新计数器显示（这解决了"7/23"不变的问题）
   if (counter) counter.textContent = (adminSlide.current + 1) + " / " + adminSlide.total;
 }
 
@@ -5293,7 +5320,6 @@ async function loadApprovedAdminPhotos() {
   if (!supabase) return;
 
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
-  var deletedPhotos = getDeletedAdminPhotos();
 
   var result = await supabase
     .from("pending_uploads")
@@ -5303,22 +5329,7 @@ async function loadApprovedAdminPhotos() {
 
   if (result.error || !result.data) return;
 
-  var items = result.data.filter(function(i) { 
-    // 过滤：只保留图片且未被删除的项目
-    if (i.file_type && i.file_type !== "image") return false;
-    
-    // 构造URL并检查是否已删除
-    var imgUrl;
-    if (i.file_path && i.file_path.startsWith("github:")) {
-      imgUrl = i.file_path.replace("github:", "");
-    } else {
-      imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + i.file_path;
-    }
-    
-    // 返回false表示过滤掉（如果已删除）
-    return !deletedPhotos.includes(imgUrl);
-  });
-  
+  var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
   if (!items.length) return;
 
   items.forEach(function(item) {
@@ -5328,11 +5339,7 @@ async function loadApprovedAdminPhotos() {
     } else {
       imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     }
-    
-    // 再次检查确保不在已删除列表中
-    if (!isPhotoDeleted(imgUrl)) {
-      addAdminAlbumPhoto(imgUrl, item.title || "");
-    }
+    addAdminAlbumPhoto(imgUrl, item.title || "");
   });
 }
 
