@@ -5411,9 +5411,28 @@ async function loadApprovedAdminPhotos() {
   if (result.error || !result.data) return;
 
   var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
-  if (!items.length) return;
+if (!items.length) return;
 
-  items.forEach(function(item) {
+// 【关键修复】检查是否所有照片都被删除
+var hasValidPhotos = false;
+items.forEach(function(tempItem) {
+  var tempUrl = tempItem.file_path && tempItem.file_path.startsWith("github:") 
+    ? tempItem.file_path.replace("github:", "")
+    : supabaseUrl + "/storage/v1/object/public/uploads/" + tempItem.file_path;
+  var isDeleted = deletedPhotos.some(function(d) {
+    return d === tempUrl || (d && tempUrl && tempUrl.includes(d.split('/').pop()));
+  });
+  if (!isDeleted) hasValidPhotos = true;
+});
+
+if (!hasValidPhotos) {
+  console.log('[精选相册] 全部' + items.length + '张照片都已删除，隐藏');
+  var section = document.getElementById("adminAlbumSection");
+  if (section) section.style.display = "none";
+  return;
+}
+
+items.forEach(function(item) {
     var imgUrl;
     if (item.file_path && item.file_path.startsWith("github:")) {
       imgUrl = item.file_path.replace("github:", "");
