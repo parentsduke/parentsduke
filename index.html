@@ -35,15 +35,9 @@ function isPhotoDeleted(imgSrc) {
 }
 
 function initAdminAlbum() {
+  // 不要在这里清空！loadApprovedAdminPhotos会逐个添加照片
+  // 只在需要时重置计数
   if (typeof adminSlide === 'undefined') return;
-  var track = document.getElementById("adminSlideshowTrack");
-  var dots = document.getElementById("adminSlideDots");
-  var section = document.getElementById("adminAlbumSection");
-  if (track) track.innerHTML = "";
-  if (dots) dots.innerHTML = "";
-  adminSlide.current = 0;
-  adminSlide.total = 0;
-  if (adminSlide.timer) clearInterval(adminSlide.timer);
 }
 
 // ===== IMAGE / VIDEO OVERLAY =====
@@ -68,6 +62,71 @@ document.addEventListener("click", function(e) {
   if (e.target && e.target.id === "overlay") {
     closeOverlay();
   }
+// ===== 页面加载时清理已删除的精选相册照片 =====
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('[精选相册] 初始化开始...');
+  
+  // 等待adminSlide定义完毕
+  setTimeout(function() {
+    var deleted = getDeletedAdminPhotos();
+    if (deleted.length === 0) {
+      console.log('[精选相册] ✅ 无已删除照片');
+      return;
+    }
+    
+    console.log('[精选相册] 📝 已删除:', deleted.length + '张');
+    
+    var track = document.getElementById("adminSlideshowTrack");
+    if (!track) {
+      console.log('[精选相册] ⚠️ 未找到adminSlideshowTrack');
+      return;
+    }
+    
+    var slides = Array.from(track.querySelectorAll(".slide"));
+    var toRemove = [];
+    
+    slides.forEach(function(slide, i) {
+      var img = slide.querySelector("img");
+      if (!img) return;
+      
+      var shouldRemove = deleted.some(function(d) {
+        return img.src === d || (img.src && d && img.src.includes(d.split('/').pop()));
+      });
+      
+      if (shouldRemove) {
+        toRemove.push(i);
+        console.log('[精选相册] ❌ 删除slide ' + i);
+      }
+    });
+    
+    // 从后往前删
+    for (var i = toRemove.length - 1; i >= 0; i--) {
+      var idx = toRemove[i];
+      if (track.children[idx]) track.children[idx].remove();
+      var dots = document.getElementById("adminSlideDots");
+      if (dots && dots.children[idx]) dots.children[idx].remove();
+    }
+    
+    // 更新计数
+    var remaining = track.querySelectorAll(".slide").length;
+    var counter = document.getElementById("adminSlideCounter");
+    var section = document.getElementById("adminAlbumSection");
+    
+    if (remaining > 0) {
+      if (counter) counter.textContent = "1 / " + remaining;
+      console.log('[精选相册] ✅ 剩余' + remaining + '张照片');
+    } else {
+      if (section) section.style.display = "none";
+      console.log('[精选相册] 🔲 无照片，隐藏区块');
+    }
+    
+    if (typeof adminSlide !== 'undefined') {
+      adminSlide.total = remaining;
+      adminSlide.current = 0;
+    }
+  }, 500);
+});
+
   // 点击video-overlay背景关闭视频
   if (e.target && e.target.id === "video-overlay") {
     var overlayVideo = document.getElementById("overlay-video");
@@ -5320,6 +5379,9 @@ async function loadApprovedAdminPhotos() {
   if (!supabase) return;
 
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  
+  // 获取已删除照片列表
+  var deletedPhotos = getDeletedAdminPhotos();
 
   var result = await supabase
     .from("pending_uploads")
@@ -5339,7 +5401,17 @@ async function loadApprovedAdminPhotos() {
     } else {
       imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     }
-    addAdminAlbumPhoto(imgUrl, item.title || "");
+    
+    // 关键：检查这张照片是否已被删除
+    var isDeleted = deletedPhotos.some(function(deletedUrl) {
+      return deletedUrl === imgUrl || 
+             (deletedUrl && imgUrl && imgUrl.includes(deletedUrl.split('/').pop()));
+    });
+    
+    // 只加载未删除的照片
+    if (!isDeleted) {
+      addAdminAlbumPhoto(imgUrl, item.title || "");
+    }
   });
 }
 
