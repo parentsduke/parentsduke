@@ -4503,16 +4503,22 @@ async function startAdminUpload() {
 
     // 调用 Edge Function 转存到 GitHub（会自动更新记录状态为 approved，file_path 改为 github: URL）
     try {
+      if (statusEl) { statusEl.textContent = "转存 GitHub 中..."; statusEl.style.color = "#c07000"; }
       var ghUrl = await uploadToGitHubViaEdge(pendingId, "images");
       if (statusEl) { statusEl.textContent = "成功 ✓ GitHub"; statusEl.style.color = "green"; }
       // 加入精选相册（使用 GitHub URL）
       addAdminAlbumPhoto(ghUrl, displayName);
     } catch (e) {
-      // Edge Function 失败时回退：直接用 Supabase URL，并把状态改为 approved
-      var fallbackUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + filePath;
-      await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", pendingId);
-      if (statusEl) { statusEl.textContent = "GitHub失败，已存Supabase"; statusEl.style.color = "#c07000"; }
-      addAdminAlbumPhoto(fallbackUrl, displayName);
+      // 转存失败：删除 pending 记录，提示用户具体错误
+      await supabase.from("pending_uploads").delete().eq("id", pendingId);
+      var errMsg = e.message || "未知错误";
+      if (statusEl) {
+        statusEl.textContent = "GitHub转存失败";
+        statusEl.style.color = "crimson";
+        statusEl.title = errMsg; // 鼠标悬停可看详细错误
+      }
+      console.error("[GitHub转存失败] 文件:", file.name, "| 错误:", errMsg);
+      alert("图片「" + file.name + "」转存 GitHub 失败：\n" + errMsg + "\n\n请检查：\n1. Supabase Edge Function「github-upload」是否已部署\n2. Edge Function 中的 GitHub Token 是否有效\n3. GitHub 仓库名/路径配置是否正确");
     }
   }
 
@@ -5268,9 +5274,17 @@ async function uploadToGitHubViaEdge(pendingId, folder) {
     body: JSON.stringify({ pendingId: pendingId, folder: folder })
   });
 
-  var result = await resp.json();
+  // 尝试解析响应体（无论成功失败都尝试）
+  var result;
+  try {
+    result = await resp.json();
+  } catch (parseErr) {
+    throw new Error("Edge Function 返回非 JSON（HTTP " + resp.status + "）：" + resp.statusText);
+  }
+
   if (!resp.ok || result.error) {
-    throw new Error(result.error || "Edge Function 调用失败");
+    var detail = result.error || result.message || JSON.stringify(result);
+    throw new Error("HTTP " + resp.status + " - " + detail);
   }
   return result.url; // 返回 GitHub 文件的公开 URL
 }
@@ -5597,9 +5611,10 @@ async function submitUserPhoto() {
     msg.textContent = "✅ 上传成功！已保存到GitHub，等待管理员审核。";
     msg.style.color = "green";
   } catch (e) {
-    // 转存失败时，保留Supabase备份
-    await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", pendingId);
-    msg.textContent = "⚠️ 已提交审核（GitHub转存失败，使用备份存储）";
+    // 转存失败时：保留 pending 记录（等待管理员审核），提示用户
+    var errMsg = e.message || "未知错误";
+    console.error("[用户投稿 GitHub转存失败]", errMsg);
+    msg.textContent = "⚠️ 已提交审核，等待管理员审核（GitHub转存失败：" + errMsg + "）";
     msg.style.color = "#c07000";
   }
 
