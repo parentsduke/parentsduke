@@ -5063,6 +5063,18 @@ async function deleteAllApprovedPhotos() {
     return;
   }
 
+  // 【新增】标记所有照片为已删除（本地localStorage）
+  var deletedList = [];
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  items.forEach(function(item) {
+    var url = item.file_path.startsWith("github:")
+      ? item.file_path.replace("github:", "")
+      : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    deletedList.push(url);
+  });
+  localStorage.setItem('deletedAdminPhotos', JSON.stringify(deletedList));
+  console.log("[批量删除] ✅ 已保存删除记录到localStorage");
+
   // 收集各类路径 - 包括缿略图
   var storagePaths = [];
   var githubUrls = [];
@@ -5445,7 +5457,15 @@ async function loadApprovedAdminPhotos() {
   if (result.error || !result.data) return;
 
   var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
-  if (!items.length) return;
+  
+  // 【修改】即使items为空，也要检查是否真的全部删除了
+  if (!items.length) {
+    // 如果Supabase中没有任何记录，隐藏精选相册区块
+    console.log('[精选相册] 数据库中无任何照片，隐藏');
+    var section = document.getElementById("adminAlbumSection");
+    if (section) section.style.display = "none";
+    return;
+  }
 
   // 【关键】检查是否所有照片都被删除
   var hasValidPhotos = false;
