@@ -4544,45 +4544,81 @@ async function adminDeleteItem(btn) {
   btn.textContent = "删除中..."; btn.disabled = true;
   
   try {
-    // 删除数据库记录
-    await supabase.from("pending_uploads").delete().eq("id", id);
+    console.log("========== 删除开始 ==========");
+    console.log("ID: " + id);
+    console.log("文件路径: " + filePath);
+    console.log("文件类型: " + type);
     
-    // 删除文件（包括缿略图）
+    // 步骤1：删除数据库记录
+    console.log("\n[步骤1] 删除数据库记录...");
+    var dbResult = await supabase.from("pending_uploads").delete().eq("id", id);
+    console.log("数据库删除结果: ", dbResult);
+    
+    // 步骤2：删除存储文件
     if (filePath && !filePath.startsWith("github:")) {
+      console.log("\n[步骤2] 删除存储文件...");
+      console.log("原始文件: " + filePath);
+      
       var filesToDelete = [filePath];
       
       // 如果是照片，同时删除缿略图
       if (type === 'photo') {
         var thumbPath = generateThumbnailPath(filePath);
         filesToDelete.push(thumbPath);
-        console.log("[删除] 照片: " + filePath + " | 缿略图: " + thumbPath);
+        console.log("缿略图: " + thumbPath);
       }
       
-      await supabase.storage.from("uploads").remove(filesToDelete);
+      console.log("待删除文件列表: ", filesToDelete);
+      console.log("开始调用 remove()...");
+      
+      var storageResult = await supabase.storage.from("uploads").remove(filesToDelete);
+      
+      console.log("======= Storage 删除结果 =======");
+      console.log("结果对象: ", storageResult);
+      console.log("错误信息: ", storageResult.error);
+      console.log("删除数据: ", storageResult.data);
+      console.log("================================");
+      
+      if (storageResult.error) {
+        console.error("❌ Storage 删除出错!");
+        console.error("错误类型: ", storageResult.error.message);
+        alert("⚠️ 存储删除失败！\n\n错误信息：" + storageResult.error.message + "\n\n数据库记录已删除，但文件可能仍在存储中。\n\n请检查 Supabase RLS 权限设置。");
+      } else {
+        console.log("✅ Storage 删除成功");
+      }
     }
     
-    // 如果是照片，从精选相册轮播移除
+    // 步骤3：从精选相册移除
     if (type === 'photo') {
+      console.log("\n[步骤3] 从精选相册移除...");
       var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
       var imgUrl = filePath.startsWith("github:") ? filePath.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+filePath;
       removeAdminAlbumPhoto(imgUrl);
+      console.log("✅ 精选相册已更新");
     }
     
-    // 从管理列表中移除卡片
+    // 步骤4：从管理列表中移除卡片
     card.style.transition = "opacity 0.3s";
     card.style.opacity = "0";
     setTimeout(function() { card.remove(); }, 300);
     
-    // 更新badge
+    // 步骤5：更新badge
     var badgeMap = {photo:'approvedPhotoBadge', video:'approvedVideoBadge', document:'approvedFileBadge', yuanfen:'approvedYuanfenBadge'};
     var badge = document.getElementById(badgeMap[type]);
-    if (badge) { var n = parseInt(badge.textContent)||1; badge.textContent = Math.max(0, n-1) + (type==='photo'?' 张':' 个'); }
+    if (badge) { 
+      var n = parseInt(badge.textContent)||1; 
+      badge.textContent = Math.max(0, n-1) + (type==='photo'?' 张':' 个'); 
+    }
+    console.log("✅ UI已更新");
     
-    console.log("[删除] ✅ 操作完成！");
-    alert("✅ " + label + "已删除");
+    console.log("\n========== 删除完成 ==========\n");
+    alert("✅ " + label + "已删除\n\n请查看浏览器控制台（F12）获取详细日志。");
+    
   } catch (e) {
-    console.error("[删除] ❌ 错误: " + e.message);
-    alert("❌ 删除出错: " + e.message);
+    console.error("\n❌ 删除过程出错：");
+    console.error("错误信息: " + e.message);
+    console.error("错误堆栈: ", e);
+    alert("❌ 删除出错：" + e.message + "\n\n详情请查看浏览器控制台（F12）。");
   } finally {
     btn.textContent = "🗑 删除";
     btn.disabled = false;
@@ -4848,42 +4884,77 @@ async function deleteAllApprovedPhotos() {
   if (!confirm("确认永久清空精选相册全部照片？\n将同时从数据库和 GitHub 彻底删除，此操作不可恢复。")) return;
   var supabase = window._supabaseClient;
 
+  console.log("[批量删除开始] 正在获取所有照片...");
+  
   // 先查出所有 approved 图片记录
   var result = await supabase
     .from("pending_uploads")
     .select("id,file_path,file_type")
     .eq("status", "approved");
 
-  if (result.error || !result.data) { alert("获取列表失败"); return; }
+  if (result.error || !result.data) { 
+    console.error("[批量删除] 获取列表失败: ", result.error);
+    alert("获取列表失败: " + (result.error ? result.error.message : "未知错误")); 
+    return; 
+  }
 
   var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
+  console.log("[批量删除] 找到 " + items.length + " 张照片");
+
+  if (items.length === 0) {
+    alert("没有找到要删除的照片");
+    return;
+  }
 
   // 收集各类路径 - 包括缿略图
   var storagePaths = [];
+  var githubUrls = [];
+  
   items.forEach(function(item) {
-    if (!item.file_path.startsWith("github:")) {
+    if (item.file_path.startsWith("github:")) {
+      githubUrls.push(item.file_path.replace("github:", ""));
+    } else {
       storagePaths.push(item.file_path);
       // 为每个照片添加对应的缿略图路径
       var thumbPath = generateThumbnailPath(item.file_path);
       storagePaths.push(thumbPath);
+      console.log("[批量删除] 照片: " + item.file_path + " | 缿略图: " + thumbPath);
     }
   });
-  
-  var githubUrls = items.map(function(i){return i.file_path;}).filter(function(p){return p.startsWith("github:");}).map(function(p){return p.replace("github:","");});
 
-  // 删数据库
+  console.log("[批量删除] 待删除 Storage 文件数: " + storagePaths.length);
+  console.log("[批量删除] 待删除 GitHub 文件数: " + githubUrls.length);
+
+  // 步骤1：删除数据库记录
+  console.log("[步骤1] 正在删除数据库记录...");
   var ids = items.map(function(i){return i.id;});
-  if (ids.length) await supabase.from("pending_uploads").delete().in("id", ids);
-
-  // 删 Supabase Storage（包括缿略图）
-  if (storagePaths.length) await supabase.storage.from("uploads").remove(storagePaths);
-
-  // 删 GitHub 文件（逐个调用 Edge Function）
-  for (var i = 0; i < githubUrls.length; i++) {
-    await deleteFromGitHubViaEdge(githubUrls[i]);
+  if (ids.length) {
+    var dbDeleteResult = await supabase.from("pending_uploads").delete().in("id", ids);
+    console.log("[步骤1] ✅ 数据库删除结果: ", dbDeleteResult);
   }
 
-  // 清空精选相册轮播
+  // 步骤2：删除 Supabase Storage
+  console.log("[步骤2] 正在删除 Supabase Storage 文件...");
+  if (storagePaths.length) {
+    var storageDeleteResult = await supabase.storage.from("uploads").remove(storagePaths);
+    console.log("[步骤2] ✅ Storage 删除结果: ", storageDeleteResult);
+    
+    if (storageDeleteResult.error) {
+      console.error("[错误] Storage 删除失败: ", storageDeleteResult.error);
+      alert("⚠️ Storage 文件删除失败: " + storageDeleteResult.error.message);
+    }
+  }
+
+  // 步骤3：删除 GitHub 文件（逐个调用 Edge Function）
+  console.log("[步骤3] 正在删除 GitHub 文件...");
+  for (var i = 0; i < githubUrls.length; i++) {
+    console.log("[步骤3] 删除 GitHub 文件 " + (i+1) + "/" + githubUrls.length + ": " + githubUrls[i]);
+    await deleteFromGitHubViaEdge(githubUrls[i]);
+  }
+  console.log("[步骤3] ✅ GitHub 文件删除完成");
+
+  // 步骤4：清空精选相册轮播
+  console.log("[步骤4] 正在更新UI...");
   var track = document.getElementById("adminSlideshowTrack");
   var dots  = document.getElementById("adminSlideDots");
   var section = document.getElementById("adminAlbumSection");
@@ -4893,7 +4964,8 @@ async function deleteAllApprovedPhotos() {
   adminSlide.current = 0; adminSlide.total = 0;
   if (section) section.style.display = "none";
 
-  alert("✅ 已永久清空精选相册及所有缿略图（共 " + items.length + " 张）");
+  console.log("[批量删除] ✅ 操作完成！");
+  alert("✅ 已永久清空精选相册及所有缿略图（共 " + items.length + " 张）\n\n请查看浏览器控制台（F12）获取详细日志。");
   loadApprovedPhotoManager();
 }
 
