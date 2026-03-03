@@ -9,6 +9,7 @@
 // ===== IMAGE / VIDEO OVERLAY =====
 // openOverlay/closeOverlay defined here in <head> so onclick attributes work immediately
 
+
 // ===== 精选相册删除记录管理 =====
 function getDeletedAdminPhotos() {
   var deleted = localStorage.getItem('deletedAdminPhotos');
@@ -33,36 +34,19 @@ function isPhotoDeleted(imgSrc) {
   
   return deleted.some(function(deletedUrl) {
     if (!deletedUrl) return false;
-    
     // 方法1：完整URL精确匹配
     if (deletedUrl === imgSrc) return true;
-    
     // 方法2：提取文件名并匹配
-    var deletedFileName = deletedUrl.split('/').pop();
-    var imgFileName = imgSrc.split('/').pop();
-    if (deletedFileName && imgFileName && deletedFileName === imgFileName) {
-      return true;
-    }
-    
-    // 方法3：提取不含查询参数的路径并匹配
-    var deletedPath = deletedUrl.split('?')[0];
-    var imgPath = imgSrc.split('?')[0];
-    if (deletedPath && imgPath && deletedPath === imgPath) {
-      return true;
-    }
-    
+    var deletedFileName = deletedUrl.split('/').pop().split('?')[0];
+    var imgFileName = imgSrc.split('/').pop().split('?')[0];
+    if (deletedFileName && imgFileName && deletedFileName === imgFileName) return true;
     return false;
   });
 }
 
 function initAdminAlbum() {
-  // 不要在这里清空！loadApprovedAdminPhotos会逐个添加照片
-  // 只在需要时重置计数
   if (typeof adminSlide === 'undefined') return;
 }
-
-// ===== IMAGE / VIDEO OVERLAY =====
-// openOverlay/closeOverlay defined here in <head> so onclick attributes work immediately
 
 function openOverlay(src, alt) {
   var overlay = document.getElementById("overlay");
@@ -83,71 +67,6 @@ document.addEventListener("click", function(e) {
   if (e.target && e.target.id === "overlay") {
     closeOverlay();
   }
-// ===== 页面加载时清理已删除的精选相册照片 =====
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('[精选相册] 初始化开始...');
-  
-  // 等待adminSlide定义完毕
-  setTimeout(function() {
-    var deleted = getDeletedAdminPhotos();
-    if (deleted.length === 0) {
-      console.log('[精选相册] ✅ 无已删除照片');
-      return;
-    }
-    
-    console.log('[精选相册] 📝 已删除:', deleted.length + '张');
-    
-    var track = document.getElementById("adminSlideshowTrack");
-    if (!track) {
-      console.log('[精选相册] ⚠️ 未找到adminSlideshowTrack');
-      return;
-    }
-    
-    var slides = Array.from(track.querySelectorAll(".slide"));
-    var toRemove = [];
-    
-    slides.forEach(function(slide, i) {
-      var img = slide.querySelector("img");
-      if (!img) return;
-      
-      var shouldRemove = deleted.some(function(d) {
-        return img.src === d || (img.src && d && img.src.includes(d.split('/').pop()));
-      });
-      
-      if (shouldRemove) {
-        toRemove.push(i);
-        console.log('[精选相册] ❌ 删除slide ' + i);
-      }
-    });
-    
-    // 从后往前删
-    for (var i = toRemove.length - 1; i >= 0; i--) {
-      var idx = toRemove[i];
-      if (track.children[idx]) track.children[idx].remove();
-      var dots = document.getElementById("adminSlideDots");
-      if (dots && dots.children[idx]) dots.children[idx].remove();
-    }
-    
-    // 更新计数
-    var remaining = track.querySelectorAll(".slide").length;
-    var counter = document.getElementById("adminSlideCounter");
-    var section = document.getElementById("adminAlbumSection");
-    
-    if (remaining > 0) {
-      if (counter) counter.textContent = "1 / " + remaining;
-      console.log('[精选相册] ✅ 剩余' + remaining + '张照片');
-    } else {
-      if (section) section.style.display = "none";
-      console.log('[精选相册] 🔲 无照片，隐藏区块');
-    }
-    
-    if (typeof adminSlide !== 'undefined') {
-      adminSlide.total = remaining;
-      adminSlide.current = 0;
-    }
-  }, 500);
-});
-
   // 点击video-overlay背景关闭视频
   if (e.target && e.target.id === "video-overlay") {
     var overlayVideo = document.getElementById("overlay-video");
@@ -157,6 +76,64 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // 按 Escape 关闭
+
+// ===== 页面加载时清理已删除的精选相册照片 =====
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('[精选相册] 初始化开始...');
+  
+  setTimeout(function() {
+    var deleted = getDeletedAdminPhotos();
+    if (deleted.length === 0) {
+      console.log('[精选相册] ✅ 无已删除照片');
+      return;
+    }
+    
+    console.log('[精选相册] 📝 已删除:' + deleted.length + '张');
+    
+    var track = document.getElementById("adminSlideshowTrack");
+    if (!track) return;
+    
+    var slides = Array.from(track.querySelectorAll(".slide"));
+    var toRemove = [];
+    
+    slides.forEach(function(slide, i) {
+      var img = slide.querySelector("img");
+      if (!img) return;
+      
+      var shouldRemove = deleted.some(function(d) {
+        if (d === img.src) return true;
+        var dName = d.split('/').pop().split('?')[0];
+        var iName = img.src.split('/').pop().split('?')[0];
+        return dName && iName && dName === iName;
+      });
+      
+      if (shouldRemove) toRemove.push(i);
+    });
+    
+    for (var i = toRemove.length - 1; i >= 0; i--) {
+      var idx = toRemove[i];
+      if (track.children[idx]) track.children[idx].remove();
+      var dots = document.getElementById("adminSlideDots");
+      if (dots && dots.children[idx]) dots.children[idx].remove();
+    }
+    
+    var remaining = track.querySelectorAll(".slide").length;
+    var counter = document.getElementById("adminSlideCounter");
+    var section = document.getElementById("adminAlbumSection");
+    
+    if (remaining > 0) {
+      if (counter) counter.textContent = "1 / " + remaining;
+    } else {
+      if (section) section.style.display = "none";
+    }
+    
+    if (typeof adminSlide !== 'undefined') {
+      adminSlide.total = remaining;
+      adminSlide.current = 0;
+    }
+  }, 500);
+});
+
 document.addEventListener("keydown", function(e) {
   if (e.key === "Escape") {
     closeOverlay();
@@ -5089,7 +5066,7 @@ async function deleteAllApprovedPhotos() {
   loadApprovedPhotoManager();
 }
 
-// 从精选相册轮播中移除指定 URL 的 slide（改进版本 - 删除后不显示且计数正确）
+// 从精选相册轮播中移除指定 URL 的 slide
 function removeAdminAlbumPhoto(imgSrc) {
   var track = document.getElementById("adminSlideshowTrack");
   var dots  = document.getElementById("adminSlideDots");
@@ -5097,45 +5074,31 @@ function removeAdminAlbumPhoto(imgSrc) {
   var section = document.getElementById("adminAlbumSection");
   if (!track) return;
 
-  // 关键：标记为已删除（用于页面刷新后过滤）
-  markPhotoAsDeleted(imgSrc);
-
-  // 查找匹配的slide
   var slides = Array.from(track.querySelectorAll(".slide"));
   var idx = -1;
   slides.forEach(function(slide, i) {
     var img = slide.querySelector("img");
-    if (img && img.src) {
-      if (img.src === imgSrc || (imgSrc && img.src && img.src.endsWith(imgSrc.split('/').pop()))) {
-        idx = i;
-      }
-    }
+    if (img && img.src === imgSrc) idx = i;
   });
   if (idx === -1) return;
 
-  // 彻底移除 slide 和对应圆点（不留空洞）
+  // 移除 slide 和对应圆点
   track.children[idx].remove();
   if (dots && dots.children[idx]) dots.children[idx].remove();
 
-  // 关键：更新总计数
   adminSlide.total--;
 
-  if (adminSlide.total <= 0) {
+  if (adminSlide.total === 0) {
     // 没有照片了，隐藏整个区块
     clearInterval(adminSlide.timer);
     if (section) section.style.display = "none";
-    adminSlide.current = 0;
-    adminSlide.total = 0;
-    if (counter) counter.textContent = "0 / 0";
     return;
   }
 
   // 重建圆点的 onclick（索引已变）
-  if (dots) {
-    Array.from(dots.children).forEach(function(dot, i) {
-      dot.onclick = function() { adminGoTo(i); adminResetAuto(); };
-    });
-  }
+  Array.from(dots.children).forEach(function(dot, i) {
+    dot.onclick = function() { adminGoTo(i); adminResetAuto(); };
+  });
 
   // 修正 current 指针
   if (adminSlide.current >= adminSlide.total) adminSlide.current = adminSlide.total - 1;
@@ -5143,12 +5106,9 @@ function removeAdminAlbumPhoto(imgSrc) {
   // 确保有一张是 active
   var remaining = track.querySelectorAll(".slide");
   remaining.forEach(function(s) { s.classList.remove("active"); });
-  if (dots) Array.from(dots.children).forEach(function(d) { d.classList.remove("active"); });
-  
-  if (remaining[adminSlide.current]) remaining[adminSlide.current].classList.add("active");
-  if (dots && dots.children[adminSlide.current]) dots.children[adminSlide.current].classList.add("active");
-  
-  // 关键：更新计数器显示（这解决了"7/23"不变的问题）
+  Array.from(dots.children).forEach(function(d) { d.classList.remove("active"); });
+  remaining[adminSlide.current].classList.add("active");
+  if (dots.children[adminSlide.current]) dots.children[adminSlide.current].classList.add("active");
   if (counter) counter.textContent = (adminSlide.current + 1) + " / " + adminSlide.total;
 }
 
@@ -5400,9 +5360,6 @@ async function loadApprovedAdminPhotos() {
   if (!supabase) return;
 
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
-  
-  // 获取已删除照片列表
-  var deletedPhotos = getDeletedAdminPhotos();
 
   var result = await supabase
     .from("pending_uploads")
@@ -5422,23 +5379,7 @@ async function loadApprovedAdminPhotos() {
     } else {
       imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     }
-    
-    // 关键：检查这张照片是否已被删除
-    var isDeleted = deletedPhotos.some(function(deletedUrl) {
-      if (!deletedUrl) return false;
-      // 精确匹配
-      if (deletedUrl === imgUrl) return true;
-      // 文件名匹配
-      var dFileName = deletedUrl.split('/').pop().split('?')[0];
-      var iFileName = imgUrl.split('/').pop().split('?')[0];
-      if (dFileName && iFileName && dFileName === iFileName) return true;
-      return false;
-    });
-    
-    // 只加载未删除的照片
-    if (!isDeleted) {
-      addAdminAlbumPhoto(imgUrl, item.title || "");
-    }
+    addAdminAlbumPhoto(imgUrl, item.title || "");
   });
 }
 
