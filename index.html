@@ -4787,6 +4787,22 @@ document.addEventListener("keydown", function(e) {
       </button>
       <div class="accordion-body accordion-body-qa">
 
+        <!-- 上传提问功能 -->
+        <div style="background:#fff3cd; border:1px solid #ffc107; border-radius:8px; padding:14px; margin:0 0 16px; font-size:13px;">
+          <div style="margin-bottom:10px; font-weight:700; color:#856404;">家长提问上传入口</div>
+          <p style="margin:0 0 10px; color:#856404; font-size:12px;">欢迎提交您的问题，群内有经验的家长或管理员将逐一审核并回答。提交的问题经审核后将被添加到Q&A部分。</p>
+          <button class="user-upload-toggle-btn" onclick="toggleQAUpload()" style="background:#ffc107; color:#333; border:none; padding:10px 16px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600;">提交新问题</button>
+          <div id="qaUploadBox" style="display:none; margin-top:12px; background:#fff; border:1px solid #ddd; border-radius:6px; padding:12px;">
+            <h4 style="margin:0 0 12px; color:#003366; font-size:14px;">提交问题</h4>
+            <input type="text" id="qaQuestion" placeholder="请输入问题(必填)" maxlength="200" style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:13px; margin-bottom:10px;">
+            <textarea id="qaContext" placeholder="补充背景信息或详细说明(可选，有助于更好地理解您的问题)" maxlength="500" style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:13px; margin-bottom:10px; height:80px; resize:vertical;"></textarea>
+            <input type="text" id="qaName" placeholder="您的名字或昵称(必填，用于在答案中标注来源)" maxlength="50" style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:13px; margin-bottom:10px;">
+            <div style="font-size:11px; color:#aaa; margin-bottom:10px;">提交日期将自动记录。所有问题需经管理员审核后显示。</div>
+            <button onclick="submitQAQuestion()" style="width:100%; padding:10px; background:#003366; color:#fff; border:none; border-radius:6px; font-size:14px; cursor:pointer; font-weight:600;">提交审核</button>
+            <p id="qaUploadMsg" style="text-align:center; margin-top:10px; font-size:13px; color:#666;"></p>
+          </div>
+        </div>
+
         <!-- Q&A 内容 -->
         <div class="qa-content" role="region" aria-label="Q&A 家长询问和回答">
 
@@ -4984,6 +5000,7 @@ document.addEventListener("keydown", function(e) {
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_file',this)">⏳ 待审核文件</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_yuanfen',this)">⏳ 待审核启示</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_jingcai',this)">⏳ 待审核精彩</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('pending_qa',this)">❓ 待审核Q&A</button>
         </div>
 
         <!-- Tab 内容面板 -->
@@ -5079,6 +5096,15 @@ document.addEventListener("keydown", function(e) {
             <button onclick="loadPendingJingcai()" class="admin-action-btn">🔄 刷新</button>
           </div>
           <div id="pendingJingcaiList" style="color:#555;">加载中...</div>
+        </div>
+
+        <!-- 待审核Q&A问题 -->
+        <div id="adminTab-pending_qa" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;">家长提问 待审核内容 <b id="pendingQABadge" style="color:crimson;"></b></span>
+            <button onclick="loadPendingQA()" class="admin-action-btn">🔄 刷新</button>
+          </div>
+          <div id="pendingQAList" style="color:#555;">加载中...</div>
         </div>
 
       </div>
@@ -6433,6 +6459,64 @@ async function submitUserPhoto() {
   document.getElementById("userFileInput").value = "";
 }
 
+// ===== Q&A 提问上传功能 =====
+function toggleQAUpload() {
+  var box = document.getElementById("qaUploadBox");
+  if (box) box.style.display = box.style.display === "none" ? "block" : "none";
+}
+
+async function submitQAQuestion() {
+  var supabase = window._supabaseClient;
+  if (!supabase) { alert("请先登录网站"); return; }
+
+  var question = document.getElementById("qaQuestion").value.trim();
+  var context = document.getElementById("qaContext").value.trim();
+  var name = document.getElementById("qaName").value.trim();
+
+  if (!question) { alert("请输入问题"); return; }
+  if (!name) { alert("请填写您的名字或昵称"); return; }
+
+  var msg = document.getElementById("qaUploadMsg");
+  msg.textContent = "提交中...";
+  msg.style.color = "#003366";
+
+  // 获取当前用户信息
+  var { data: { user } } = await supabase.auth.getUser();
+  var uploadedBy = user && user.email ? user.email : name;
+
+  // 插入pending_uploads表中，file_type为"qa_question"
+  var dbResult = await supabase.from("pending_uploads").insert({
+    file_name: question,
+    title: question,
+    file_path: "qa:" + name,
+    uploaded_by: uploadedBy,
+    status: "pending",
+    file_type: "qa_question",
+    metadata: JSON.stringify({
+      context: context,
+      submitter_name: name,
+      submitted_at: new Date().toISOString()
+    })
+  }).select().single();
+
+  if (dbResult.error) {
+    msg.textContent = "提交失败：" + dbResult.error.message;
+    msg.style.color = "crimson";
+    return;
+  }
+
+  msg.textContent = "✅ 问题已提交！感谢您的提问，管理员将审核后添加到Q&A部分。";
+  msg.style.color = "green";
+
+  setTimeout(function() {
+    document.getElementById("qaQuestion").value = "";
+    document.getElementById("qaContext").value = "";
+    document.getElementById("qaName").value = "";
+    document.getElementById("qaUploadBox").style.display = "none";
+    msg.textContent = "";
+  }, 2000);
+}
+
 // ===== 用户上传视频功能 =====
 var userPendingVideo = null;
 
@@ -6943,6 +7027,91 @@ async function approveJingcai(id) {
   await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", id);
   loadPendingJingcai();
   loadJingcaiItems();
+}
+
+// ===== 管理员：加载待审核Q&A问题 =====
+async function loadPendingQA() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("pendingQAList");
+  if (!container) return;
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "pending")
+    .eq("file_type", "qa_question")
+    .order("uploaded_at", { ascending: false });
+
+  if (result.error) {
+    container.innerHTML = '<span style="color:crimson;">加载失败：' + result.error.message + '</span>';
+    return;
+  }
+
+  var items = result.data;
+  var badge = document.getElementById("pendingQABadge");
+  if (badge) badge.textContent = items.length > 0 ? items.length + "条" : "";
+
+  if (!items.length) {
+    container.innerHTML = '<span style="color:#aaa;">暂无待审核问题</span>';
+    return;
+  }
+
+  var html = '';
+  items.forEach(function(item) {
+    var metadata = {};
+    try {
+      metadata = JSON.parse(item.metadata || "{}");
+    } catch(e) {}
+
+    var date = new Date(item.uploaded_at).toLocaleString("zh-CN");
+    var question = item.title || item.file_name;
+    var context = metadata.context || "（无补充说明）";
+    var submitterName = metadata.submitter_name || "未知";
+
+    html += '<div style="border:1px solid #b3d9ff; border-radius:8px; padding:14px; margin-bottom:12px; background:#f0f7ff;">' +
+      '<div style="font-weight:bold; color:#003366; margin-bottom:6px; font-size:14px;">❓ ' + question + '</div>' +
+      '<div style="font-size:12px; color:#555; margin-bottom:8px; padding:8px; background:#e8f1ff; border-radius:4px; border-left:3px solid #003366;">' +
+      '<strong>补充说明：</strong>' + context + '</div>' +
+      '<div style="font-size:12px; color:#888; margin-bottom:10px;">' +
+      '提问者：<strong>' + submitterName + '</strong> · ' + date + '<br>' +
+      '邮箱：' + (item.uploaded_by || '匿名') + '</div>' +
+      '<div style="margin-top:10px; display:flex; gap:8px;">' +
+      '<button onclick="approveQA(\'' + item.id + '\')" style="flex:1; padding:10px; background:#003366; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">✅ 批准发布</button>' +
+      '<button onclick="rejectQA(\'' + item.id + '\')" style="flex:1; padding:10px; background:#c00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">❌ 拒绝删除</button>' +
+      '</div></div>';
+  });
+
+  container.innerHTML = html;
+}
+
+async function approveQA(id) {
+  if (!confirm("批准此问题并添加到Q&A部分？")) return;
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+
+  var result = await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", id);
+
+  if (result.error) {
+    alert("操作失败：" + result.error.message);
+  } else {
+    alert("✅ 问题已批准发布！");
+    loadPendingQA();
+  }
+}
+
+async function rejectQA(id) {
+  if (!confirm("确认拒绝此问题？")) return;
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+
+  var result = await supabase.from("pending_uploads").update({ status: "rejected" }).eq("id", id);
+
+  if (result.error) {
+    alert("操作失败：" + result.error.message);
+  } else {
+    alert("已拒绝此问题。");
+    loadPendingQA();
+  }
 }
 
 // 加载时触发
