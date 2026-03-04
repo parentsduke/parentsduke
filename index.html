@@ -678,105 +678,7 @@ document.addEventListener("keydown", function(e) {
         </div>
       </div>
 
-      <!-- ===== Duke University宿舍详情(独立手风琴) ===== -->
-      <div class="accordion">
-        <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>Duke宿舍详情：East Campus与West Campus完全指南</span><span class="accordion-arrow">▸</span>
-        </button>
-        <div class="accordion-body" style="padding:10px 14px; font-size:13px; line-height:1.8; color:#222;">
-          
-          <p style="margin:0 0 12px;"><strong style="color:#003366;">一、宿舍系统总览</strong></p>
-          <p style="margin:0 0 10px;">Duke大学住宿分为两大阶段：一年级统一在East Campus(东校区)，二年级及以上在West Campus(西校区)。两个校区各自具有独特的社区文化、生活特色与管理体系。</p>
-          
-          <p style="margin:0 0 6px;"><strong style="color:#003366;">East Campus东校区(一年级)</strong></p>
-          <ul style="margin:0 0 12px; padding-left:20px;">
-            <li>地点：Duke主校园东侧，步行至Main Campus约10-15分钟</li>
-            <li>容纳：全校约1600名一年级新生</li>
-            <li>宿舍结构：12个独立的Residential Colleges(House)，各约60-70人</li>
-            <li>设施：每个House配有Kitchen、Laundry、Common Room、Quad(院子)</li>
-            <li>特点：紧密社区环境、Faculty-in-Residence指导、集中的迎新活动与初年体验</li>
-          </ul>
-          
-          <p style="margin:0 0 6px;"><strong style="color:#003366;">West Campus西校区(二年级及以上)</strong></p>
-          <ul style="margin:0 0 12px; padding-left:20px;">
-            <li>地点：Duke主校园西侧，靠近工程学院与音乐学院</li>
-            <li>容纳：约2000名二年级及以上学生</li>
-            <li>宿舍结构：4个主要Quad(East、Central、West、North)，细分为各类公寓</li>
-            <li>房型多样：studio、suite(套房)、apartment(公寓)等</li>
-            <li>特点：更高独立性、self-governance、多样化房间配置、4月room selection</li>
-          </ul>
-          
-          <div style="background:#eef3fa; border-left:4px solid #003366; padding:12px; margin:10px 0; border-radius:4px;">
-            <strong>重要提醒：</strong>Duke一年级必须住East Campus，不可申请West Campus或校外租住。West Campus选房从二年级开始，竞争激烈，需提前准备。
-          </div>
-
-          <p style="margin:14px 0 6px;"><strong style="color:#003366;">二、East Campus12个House详解</strong></p>
-          <p style="margin:0 0 10px;">每个House约60-70名一
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>学费缴纳与财务</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://finance.duke.edu/bursar/Payments/" target="_blank">Bursar在线缴学费(信用卡/ACH)</a>
-              <a href="https://mycollegepaymentplan.com/duke/" target="_blank">分期付款计划注册(每学期最多5期)</a>
-              <a href="Bank Wire.html" target="_blank">国际电汇(Bank Wire)付款指南</a>
-              <a href="https://financialaid.duke.edu/" target="_blank">Duke Financial Aid Office(Karsh Office)</a>
-              <a href="https://financialaid.duke.edu/apply-aid/renew-your-aid/" target="_blank">助学金续签：每年重新提交FAFSA+CSS Profile</a>
-              <a href="https://duke.qualtrics.com/jfe/form/SV_eepMhBZXr4qkJuJ" target="_blank">外部奖学金必须申报(影响助学金计算)</a>
-              <a href="https://sites.duke.edu/dukessa/home/miscellaneous/filing-taxes/" target="_blank">国际生美国报税指南(F-1签证)</a>
-            </div>
-          </div>
-
-          <!-- 子手风琴：校园生活与设施 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>校园生活与实用设施</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://maps.duke.edu/" target="_blank">Duke校园互动地图</a>
-              <a href="https://parking.duke.edu/" target="_blank">校园停车与交通</a>
-              <a href="https://shop.duke.edu/" target="_blank">Duke Store校园商店(教材/Blue Devil周边)</a>
-              <a href="https://postoffice.duke.edu/locations/" target="_blank">Campus Mail Center邮件中心各楼位置</a>
-              <a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">邮寄地址填写规范(含姓名/宿舍/Box号)</a>
-              <a href="信件包裹网站购物地址.pdf" target="_blank">网购收件地址格式PDF(本站整理)</a>
-              <a href="https://recreation.duke.edu/" target="_blank">Duke Recreation健身房/泳池/运动场地</a>
-              <a href="https://studentaffairs.duke.edu/studentinvolvement" target="_blank">学生社团与社团活动总览(400+社团)</a>
-              <a href="https://police.duke.edu/" target="_blank">Duke警察局(紧急电话：919-684-2444)</a>
-            </div>
-          </div>
-
-          <!-- 子手风琴：健康与支持资源 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>健康、心理与国际生支持</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://students.duke.edu/wellness/studenthealth/" target="_blank">Duke Student Health医务室(预约/急诊)</a>
-              <a href="https://students.duke.edu/wellness/caps/" target="_blank">CAPS心理咨询中心(首次评估免费)</a>
-              <a href="https://studentaffairs.duke.edu/duwell" target="_blank">DuWell健康与幸福感项目</a>
-              <a href="https://students.duke.edu/belonging/icr/disc/" target="_blank">DISC国际生资源中心(签证/文化适应/活动)</a>
-              <a href="https://globalservices.duke.edu/" target="_blank">Duke Global Services国际生签证与身份管理</a>
-              <a href="https://access.duke.edu/" target="_blank">SDAO残障学生辅助服务</a>
-              <a href="https://students.duke.edu/belonging/icr/oae/" target="_blank">Office of Affinity Engagement多元文化归属感</a>
-            </div>
-          </div>
-
-          <!-- 子手风琴：新生社群与Facebook -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>新生社群与Facebook</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://www.facebook.com/groups/1527980028032445/" target="_blank">'28届学生Facebook群</a>
-              <a href="https://www.facebook.com/groups/1215919983029350/" target="_blank">'29届学生Facebook群</a>
-              <a href="https://www.facebook.com/groups/1737750673588075/" target="_blank">'30届学生Facebook群</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ===== 二年级 ===== -->
+            <!-- ===== 二年级 ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>二年级</span><span class="accordion-arrow">▸</span>
@@ -2140,6 +2042,68 @@ document.addEventListener("keydown", function(e) {
 
           <div style="background:#eef3fa; border-left:4px solid #003366; padding:12px; margin:12px 0; border-radius:4px; font-size:13px;">
             <strong>Residential Life Support：</strong>East Campus每个House配备peer advisors(senior student leaders)、graduate resident coordinators(graduate students)与Faculty-in-Residence。若遇问题——academic stress、homesickness、roommate conflict等——不要犹豫寻求help。support resources非常robust。
+          </div>
+
+          <!-- 子手风琴：学费缴纳与财务 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>学费缴纳与财务</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://finance.duke.edu/bursar/Payments/" target="_blank">Bursar在线缴学费(信用卡/ACH)</a>
+              <a href="https://mycollegepaymentplan.com/duke/" target="_blank">分期付款计划注册(每学期最多5期)</a>
+              <a href="Bank Wire.html" target="_blank">国际电汇(Bank Wire)付款指南</a>
+              <a href="https://financialaid.duke.edu/" target="_blank">Duke Financial Aid Office(Karsh Office)</a>
+              <a href="https://financialaid.duke.edu/apply-aid/renew-your-aid/" target="_blank">助学金续签：每年重新提交FAFSA+CSS Profile</a>
+              <a href="https://duke.qualtrics.com/jfe/form/SV_eepMhBZXr4qkJuJ" target="_blank">外部奖学金必须申报(影响助学金计算)</a>
+              <a href="https://sites.duke.edu/dukessa/home/miscellaneous/filing-taxes/" target="_blank">国际生美国报税指南(F-1签证)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：校园生活与设施 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>校园生活与实用设施</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://maps.duke.edu/" target="_blank">Duke校园互动地图</a>
+              <a href="https://parking.duke.edu/" target="_blank">校园停车与交通</a>
+              <a href="https://shop.duke.edu/" target="_blank">Duke Store校园商店(教材/Blue Devil周边)</a>
+              <a href="https://postoffice.duke.edu/locations/" target="_blank">Campus Mail Center邮件中心各楼位置</a>
+              <a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">邮寄地址填写规范(含姓名/宿舍/Box号)</a>
+              <a href="信件包裹网站购物地址.pdf" target="_blank">网购收件地址格式PDF(本站整理)</a>
+              <a href="https://recreation.duke.edu/" target="_blank">Duke Recreation健身房/泳池/运动场地</a>
+              <a href="https://studentaffairs.duke.edu/studentinvolvement" target="_blank">学生社团与社团活动总览(400+社团)</a>
+              <a href="https://police.duke.edu/" target="_blank">Duke警察局(紧急电话：919-684-2444)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：健康与支持资源 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>健康、心理与国际生支持</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/wellness/studenthealth/" target="_blank">Duke Student Health医务室(预约/急诊)</a>
+              <a href="https://students.duke.edu/wellness/caps/" target="_blank">CAPS心理咨询中心(首次评估免费)</a>
+              <a href="https://studentaffairs.duke.edu/duwell" target="_blank">DuWell健康与幸福感项目</a>
+              <a href="https://students.duke.edu/belonging/icr/disc/" target="_blank">DISC国际生资源中心(签证/文化适应/活动)</a>
+              <a href="https://globalservices.duke.edu/" target="_blank">Duke Global Services国际生签证与身份管理</a>
+              <a href="https://access.duke.edu/" target="_blank">SDAO残障学生辅助服务</a>
+              <a href="https://students.duke.edu/belonging/icr/oae/" target="_blank">Office of Affinity Engagement多元文化归属感</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：新生社群与Facebook -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>新生社群与Facebook</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://www.facebook.com/groups/1527980028032445/" target="_blank">'28届学生Facebook群</a>
+              <a href="https://www.facebook.com/groups/1215919983029350/" target="_blank">'29届学生Facebook群</a>
+              <a href="https://www.facebook.com/groups/1737750673588075/" target="_blank">'30届学生Facebook群</a>
+            </div>
           </div>
 
         </div>
