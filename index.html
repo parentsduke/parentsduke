@@ -4646,8 +4646,7 @@ function switchAdminTab(tab, btn) {
 // ===== 通用删除单条已发布内容 =====
 async function deleteApprovedItem(id, filePath, onDone) {
   var supabase = window._supabaseClient;
-  // ✅ 改为软删除：将file_path设为null，这样loadApprovedAdminPhotos就不会显示它
-  await supabase.from("pending_uploads").update({ file_path: null }).eq("id", id);
+  await supabase.from("pending_uploads").delete().eq("id", id);
   if (filePath && !filePath.startsWith("github:")) {
     await supabase.storage.from("uploads").remove([filePath]);
   }
@@ -5422,6 +5421,23 @@ function addAdminAlbumPhoto(imgSrc, altText) {
   var slide = document.createElement("div");
   slide.className = "slide" + (isFirst ? " active" : "");
   slide.innerHTML = '<img src="' + imgSrc + '" alt="' + (altText || "照片") + '" onclick="openOverlay(this.src, this.alt)" style="width:100%;max-height:480px;object-fit:contain;cursor:zoom-in;display:block;margin:0 auto;background:#000;">';
+  
+  // ✅ 添加图片加载错误处理
+  var img = slide.querySelector('img');
+  if (img) {
+    img.onerror = function() {
+      console.log('[精选相册] 图片加载失败，移除:', imgSrc);
+      // 移除失败的slide和对应的dot
+      slide.remove();
+      if (dots && dots.children[adminSlide.total - 1]) {
+        dots.children[adminSlide.total - 1].remove();
+      }
+      // 重新计数
+      adminSlide.total--;
+      if (counter) counter.textContent = (adminSlide.current + 1) + " / " + adminSlide.total;
+    };
+  }
+  
   track.appendChild(slide);
 
   // 创建圆点
@@ -5478,37 +5494,46 @@ async function loadApprovedAdminPhotos() {
 
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
 
+  // ✅ 直接在SQL查询中排除file_path为null和空字符串的记录
   var result = await supabase
     .from("pending_uploads")
     .select("*")
     .eq("status", "approved")
+    .neq("file_path", null)  // ✅ 直接排除file_path为null
     .order("uploaded_at", { ascending: false });
 
-  if (result.error || !result.data) return;
+  if (result.error || !result.data) {
+    console.log('[精选相册] 查询错误或无数据');
+    return;
+  }
 
-  // ✅ 只过滤图片，并确保file_path不为null和空字符串
+  // ✅ 额外验证：过滤掉file_path为空字符串的
   var items = result.data.filter(function(i) { 
     return (!i.file_type || i.file_type === "image") && 
-           i.file_path &&  // file_path不为null
-           i.file_path.trim() !== "";  // file_path不为空字符串
+           i.file_path &&  
+           typeof i.file_path === 'string' &&
+           i.file_path.trim() !== "";
   });
   
+  console.log('[精选相册] 找到有效照片数:', items.length);
+  
   if (!items.length) {
-    console.log('[精选相册] 没有有效的照片');
+    console.log('[精选相册] 没有有效的照片，隐藏区块');
     var section = document.getElementById("adminAlbumSection");
     if (section) section.style.display = "none";
     return;
   }
 
-  // ✅ 直接加载有效的照片，不需要任何localStorage检查
+  // ✅ 直接加载所有有效的照片
   items.forEach(function(item) {
     var imgUrl;
-    if (item.file_path && item.file_path.startsWith("github:")) {
+    if (item.file_path.startsWith("github:")) {
       imgUrl = item.file_path.replace("github:", "");
     } else {
       imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     }
     
+    console.log('[精选相册] 加载图片:', imgUrl);
     addAdminAlbumPhoto(imgUrl, item.title || "");
   });
 }
