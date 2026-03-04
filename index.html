@@ -5214,7 +5214,8 @@ function switchAdminTab(tab, btn) {
 // ===== 通用删除单条已发布内容 =====
 async function deleteApprovedItem(id, filePath, onDone) {
   var supabase = window._supabaseClient;
-  await supabase.from("pending_uploads").delete().eq("id", id);
+  // 软删除：只将file_path设为null，这样精选相册就不会显示
+  await supabase.from("pending_uploads").update({ file_path: null }).eq("id", id);
   if (filePath && !filePath.startsWith("github:")) {
     await supabase.storage.from("uploads").remove([filePath]);
   }
@@ -5989,6 +5990,23 @@ function addAdminAlbumPhoto(imgSrc, altText) {
   var slide = document.createElement("div");
   slide.className = "slide" + (isFirst ? " active" : "");
   slide.innerHTML = '<img src="' + imgSrc + '" alt="' + (altText || "照片") + '" onclick="openOverlay(this.src, this.alt)" style="width:100%;max-height:480px;object-fit:contain;cursor:zoom-in;display:block;margin:0 auto;background:#000;">';
+  
+  // 加入图片加载错误处理
+  var img = slide.querySelector('img');
+  if (img) {
+    img.onerror = function() {
+      console.log('[精选相册] 图片加载失败，移除:', imgSrc);
+      // 移除失败的slide和对应的dot
+      slide.remove();
+      if (dots && dots.children[adminSlide.total - 1]) {
+        dots.children[adminSlide.total - 1].remove();
+      }
+      // 重新计数
+      adminSlide.total--;
+      if (counter) counter.textContent = (adminSlide.current + 1) + " / " + adminSlide.total;
+    };
+  }
+  
   track.appendChild(slide);
 
   // 创建圆点
@@ -6044,63 +6062,48 @@ async function loadApprovedAdminPhotos() {
   if (!supabase) return;
 
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
-  var deletedPhotos = getDeletedAdminPhotos();
 
+  // 直接在数据库查询中排除file_path为null的记录
   var result = await supabase
     .from("pending_uploads")
     .select("*")
     .eq("status", "approved")
+    .neq("file_path", null)
     .order("uploaded_at", { ascending: false });
 
-  if (result.error || !result.data) return;
-
-  var items = result.data.filter(function(i) { return !i.file_type || i.file_type === "image"; });
-  
-  // 【修改】即使items为空，也要检查是否真的全部删除了
-  if (!items.length) {
-    // 如果Supabase中没有任何记录，隐藏精选相册区块
-    console.log('[精选相册] 数据库中无任何照片，隐藏');
-    var section = document.getElementById("adminAlbumSection");
-    if (section) section.style.display = "none";
+  if (result.error || !result.data) {
+    console.log('[精选相册] 查询错误或无数据');
     return;
   }
 
-  // 【关键】检查是否所有照片都被删除
-  var hasValidPhotos = false;
-  items.forEach(function(checkItem) {
-    var checkUrl = checkItem.file_path && checkItem.file_path.startsWith("github:") 
-      ? checkItem.file_path.replace("github:", "")
-      : supabaseUrl + "/storage/v1/object/public/uploads/" + checkItem.file_path;
-    var isDeleted = deletedPhotos.some(function(d) {
-      return d === checkUrl || (d && checkUrl && checkUrl.includes(d.split('/').pop()));
-    });
-    if (!isDeleted) hasValidPhotos = true;
+  // 二次过滤：确保file_path是有效的字符串
+  var items = result.data.filter(function(i) { 
+    return (!i.file_type || i.file_type === "image") && 
+           i.file_path &&  
+           typeof i.file_path === 'string' &&
+           i.file_path.trim() !== "";
   });
-
-  // 【关键】如果全部删除，隐藏精选相册区块
-  if (!hasValidPhotos) {
-    console.log('[精选相册] 全部' + items.length + '张照片都已删除，隐藏');
+  
+  console.log('[精选相册] 找到有效照片数:', items.length);
+  
+  if (!items.length) {
+    console.log('[精选相册] 没有有效的照片，隐藏区块');
     var section = document.getElementById("adminAlbumSection");
     if (section) section.style.display = "none";
     return;
   }
 
+  // 直接加载所有有效的照片
   items.forEach(function(item) {
     var imgUrl;
-    if (item.file_path && item.file_path.startsWith("github:")) {
+    if (item.file_path.startsWith("github:")) {
       imgUrl = item.file_path.replace("github:", "");
     } else {
       imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     }
     
-    // 【关键】只加载未删除的照片
-    var isDeleted = deletedPhotos.some(function(d) {
-      return d === imgUrl || (d && imgUrl && imgUrl.includes(d.split('/').pop()));
-    });
-    
-    if (!isDeleted) {
-      addAdminAlbumPhoto(imgUrl, item.title || "");
-    }
+    console.log('[精选相册] 加载图片:', imgUrl);
+    addAdminAlbumPhoto(imgUrl, item.title || "");
   });
 }
 
