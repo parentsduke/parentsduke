@@ -4646,16 +4646,11 @@ function switchAdminTab(tab, btn) {
 // ===== 通用删除单条已发布内容 =====
 async function deleteApprovedItem(id, filePath, onDone) {
   var supabase = window._supabaseClient;
-  
-  // ✅ 改为软删除：只将file_path设置为null，不删除数据库记录
-  // 这样精选相册就不会显示空洞
+  // ✅ 改为软删除：将file_path设为null，这样loadApprovedAdminPhotos就不会显示它
   await supabase.from("pending_uploads").update({ file_path: null }).eq("id", id);
-  
-  // 从Supabase存储中删除物理文件
   if (filePath && !filePath.startsWith("github:")) {
     await supabase.storage.from("uploads").remove([filePath]);
   }
-  
   if (onDone) onDone();
 }
 
@@ -5487,27 +5482,25 @@ async function loadApprovedAdminPhotos() {
     .from("pending_uploads")
     .select("*")
     .eq("status", "approved")
-    .neq("file_path", null)  // ✅ 只查询file_path不为null的记录（未删除的）
     .order("uploaded_at", { ascending: false });
 
   if (result.error || !result.data) return;
 
-  // ✅ 只过滤图片，且file_path必须有效且不为空字符串
+  // ✅ 只过滤图片，并确保file_path不为null和空字符串
   var items = result.data.filter(function(i) { 
     return (!i.file_type || i.file_type === "image") && 
-           i.file_path && 
-           i.file_path.trim() !== "";
+           i.file_path &&  // file_path不为null
+           i.file_path.trim() !== "";  // file_path不为空字符串
   });
   
   if (!items.length) {
-    // 如果没有有效的照片，隐藏相册区块
-    console.log('[精选相册] 没有有效的照片，隐藏区块');
+    console.log('[精选相册] 没有有效的照片');
     var section = document.getElementById("adminAlbumSection");
     if (section) section.style.display = "none";
     return;
   }
 
-  // ✅ 加载所有有效的照片（不依赖localStorage的deletedPhotos）
+  // ✅ 直接加载有效的照片，不需要任何localStorage检查
   items.forEach(function(item) {
     var imgUrl;
     if (item.file_path && item.file_path.startsWith("github:")) {
@@ -5516,7 +5509,6 @@ async function loadApprovedAdminPhotos() {
       imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     }
     
-    // ✅ 直接添加，因为我们已经过滤了file_path != null
     addAdminAlbumPhoto(imgUrl, item.title || "");
   });
 }
