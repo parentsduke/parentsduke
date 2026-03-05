@@ -958,6 +958,351 @@ document.addEventListener("keydown", function(e) {
     </div><!-- /accordion-body -->
   </div><!-- /accordion -->
 
+      <!-- ===== 医疗保险豁免 ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>医疗保险豁免(Health Insurance Waiver 2025-2026)</span><span class="accordion-arrow">&#9658;</span>
+        </button>
+        <div class="accordion-body" style="padding:10px 0 16px 0;">
+
+          <div class="cal-highlight">
+            <strong>核心要点</strong><br>
+            Duke自动为所有学生注册学生医疗保险计划(SMIP)。如已有符合条件的自购保险，须在截止日期前主动申请豁免，否则将被收取保费且无法退款。<br>
+            国际生(F-1/J-1签证)：必须参加SMIP，<strong>不可豁免</strong>。<br>
+            国内学生：可申请豁免，须满足Duke的审核条件。
+          </div>
+
+          <!-- 子手风琴：关键日期与截止日 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>关键日期与截止日<span class="tag tag-exam">截止</span></span>
+              <span class="sub-accordion-arrow">&#9658;</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div class="cal-highlight">
+                <strong>秋季截止：2025年9月15日(周一)</strong><br>
+                <strong>春季截止：2026年1月31日(周六)</strong><br>
+                截止日后无法修改或提交，逾期将自动按全年计费，不可撤销。
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">6月中旬</div>
+                <div><div class="cal-desc">年度豁免申请窗口开放(Gallagher门户)</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">8月1日</div>
+                <div><div class="cal-desc">SMIP保险正式生效；此日期后使用过保险则<strong>不可再申请豁免</strong></div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">8月25日前后</div>
+                <div><div class="cal-desc">秋季开学，强烈建议开学前尽早完成豁免申请</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">2025年9月15日(周一)</div>
+                <div><div class="cal-desc">秋季豁免申请截止(晚11:59)——<strong>逾期不候</strong></div><div class="cal-note">截止后系统锁定，不可修改或追交</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">11月中旬</div>
+                <div><div class="cal-desc">春季入学学生豁免申请窗口开放</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">2026年1月31日(周六)</div>
+                <div><div class="cal-desc">春季豁免申请截止</div></div>
+              </div>
+              <div class="cal-warn">
+                豁免获批后，每学年须重新提交一次，不可延续上一年的结果。建议收到Duke录取后立即整理保险材料，开放申请后第一时间提交。
+              </div>
+            </div>
+          </div>
+
+          <!-- 子手风琴：SMIP保费与覆盖范围 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>SMIP保费与覆盖范围(2025-2026)<span class="tag tag-key">保费</span></span>
+              <span class="sub-accordion-arrow">&#9658;</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div class="cal-highlight">
+                <strong>承保方：Blue Cross and Blue Shield of North Carolina(Student Blue)</strong><br>
+                保险年度：2025年8月1日 &#8212; 2026年7月31日
+              </div>
+              <div class="section-title">2025-2026年度保费</div>
+              <div class="cal-item">
+                <div class="cal-date">学生本人(年度)</div>
+                <div><div class="cal-desc">$3,751.56</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">配偶/伴侣(年度附加)</div>
+                <div><div class="cal-desc">$3,577.74</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">子女(年度附加)</div>
+                <div><div class="cal-desc">$3,992.15</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">配偶+子女(年度附加)</div>
+                <div><div class="cal-desc">$7,625.61</div></div>
+              </div>
+              <div class="section-title">覆盖内容</div>
+              <div class="cal-item">
+                <div class="cal-date">医疗</div>
+                <div><div class="cal-desc">Durham地区含Duke Medicine的门诊、急诊、住院，含初级保健、专科、预防保健、实验室、X光和影像检查</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">心理健康</div>
+                <div><div class="cal-desc">门诊和住院心理健康护理，每年至少30次就诊，含药物依赖治疗</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">处方药</div>
+                <div><div class="cal-desc">无限量覆盖处方药</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">视力</div>
+                <div><div class="cal-desc">含视力保健福利</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">全球覆盖</div>
+                <div><div class="cal-desc">提供全球范围急诊覆盖</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">ACA合规</div>
+                <div><div class="cal-desc">符合美国《平价医疗法》(Affordable Care Act)要求</div></div>
+              </div>
+              <a href="https://students.duke.edu/wellness/studenthealth/insurance/smip-benefits/" target="_blank">SMIP完整福利说明(Duke Student Affairs)</a>
+              <a href="https://www.bluecrossnc.com/content/dam/bcbsnc/pdf/members/student-blue/duke-university/duke-brochure-25-26.pdf" target="_blank">Student Blue保险手册PDF(2025-2026)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：豁免资格要求 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>豁免资格要求(国内学生)<span class="tag tag-fall">资格</span></span>
+              <span class="sub-accordion-arrow">&#9658;</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div class="cal-highlight">
+                <strong>豁免申请须满足以下全部条件，缺一不可。</strong><br>
+                国际生(F-1/J-1签证)不可豁免，下列条件仅适用于国内学生。
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">签证身份</div>
+                <div><div class="cal-desc">不持有F-1或J-1签证</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">ACA合规</div>
+                <div><div class="cal-desc">保险计划须符合美国《平价医疗法》(ACA Compliant)</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">美国境内理赔</div>
+                <div><div class="cal-desc">保险公司的理赔管理机构须在美国境内，有美国电话号码和地址，且保单不得在美国境外签发</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">本地覆盖(关键)</div>
+                <div><div class="cal-desc">须在Durham, NC地区提供无限量急诊和非急诊常规医疗及心理健康福利，含Duke Health设施的网内就诊权益</div><div class="cal-note">具体须覆盖：初级保健诊所就诊、专科就诊、预防保健、实验室、X光和影像检查</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">心理健康</div>
+                <div><div class="cal-desc">须提供每年至少30次的门诊和住院心理健康护理，含药物依赖治疗</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">处方药</div>
+                <div><div class="cal-desc">须提供无限量处方药覆盖</div></div>
+              </div>
+              <div class="cal-warn">
+                <strong>以下保险类型不符合豁免条件：</strong>外州Medicaid/CHIP(儿童医疗保险)、HMO计划、Kaiser Permanente保险。这些保险不覆盖Durham的非急诊就医，均会被拒绝。
+              </div>
+              <a href="https://students.duke.edu/wellness/studenthealth/insurance/faqs-contact-us/" target="_blank">豁免资格完整FAQ(Duke Student Affairs)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：豁免申请步骤 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>豁免申请步骤(How to Waive)<span class="tag tag-spring">操作</span></span>
+              <span class="sub-accordion-arrow">&#9658;</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div class="cal-highlight">
+                <strong>准备材料：</strong>保险公司名称 + 医疗保险卡(Medical ID Card) + 出生日期。<br>
+                无需在初次提交时上传证明文件；如需补充材料，系统会发送邮件通知。
+              </div>
+              <div class="section-title">操作步骤</div>
+              <div class="cal-item">
+                <div class="cal-date">第1步</div>
+                <div><div class="cal-desc">访问Gallagher学生门户：<strong>gallagherstudent.com/duke</strong>，或通过DukeHub学生门户进入</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">第2步</div>
+                <div><div class="cal-desc">用NetID登录，选择"Waive"(豁免)选项</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">第3步</div>
+                <div><div class="cal-desc">按提示填写现有保险信息，包括保险公司名称、保单号、有效期</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">第4步</div>
+                <div><div class="cal-desc">提交申请，关注Duke邮箱中来自Gallagher的审核结果通知</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">第5步</div>
+                <div><div class="cal-desc">收到<strong>批准确认邮件</strong>后，操作完成，Duke账单上的保险费用将被移除</div></div>
+              </div>
+              <div class="section-title">注意事项</div>
+              <div class="cal-item">
+                <div class="cal-date">已使用过保险</div>
+                <div><div class="cal-desc">若2025年8月1日后已使用过SMIP，则不可再申请豁免</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">审核可能被抽查</div>
+                <div><div class="cal-desc">系统自动审批后，所有申请仍可能被人工复核，若不符合要求将被强制注册SMIP</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">撤回豁免</div>
+                <div><div class="cal-desc">若已提交豁免但想改为参保，可在截止日前撤回；截止日后无法反悔</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">每年须重新申请</div>
+                <div><div class="cal-desc">豁免批准不延续，每学年须重新完成一次申请</div></div>
+              </div>
+              <a href="https://go.gallagherstudent.com/Universities/Duke%20University/Home" target="_blank">Gallagher学生门户(申请豁免/注册入口)</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/insurance/enrolling-in-or-waiving-smip/" target="_blank">Duke官方：如何注册或豁免SMIP</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：助学金与保险费用 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>助学金与保险费用<span class="tag tag-family">财务</span></span>
+              <span class="sub-accordion-arrow">&#9658;</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div class="cal-highlight">
+                <strong>需要助学金覆盖保险费的学生，必须先完成豁免申请流程，即使保险不符合条件也要提交。</strong>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">豁免获批</div>
+                <div><div class="cal-desc">Duke账单中的SMIP费用被移除，不再产生保险费用</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">豁免被拒(有助学金)</div>
+                <div><div class="cal-desc">Duke Financial Aid Office会自动为受助学金覆盖的学生承担SMIP费用，无需额外申请</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">无保险学生</div>
+                <div><div class="cal-desc">即便没有任何保险，也须按流程提交豁免申请(系统会拒绝)，以触发Financial Aid Office的自动援助机制</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">返校生(已有助学金覆盖)</div>
+                <div><div class="cal-desc">若去年参加了Duke保险并获得保险补贴，今年无需再申请豁免，直接"Enroll"，后续助学金中自动包含保险资助</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">外部奖学金</div>
+                <div><div class="cal-desc">外部奖学金须向Duke申报，可能影响助学金重新计算</div></div>
+              </div>
+              <a href="https://financialaid.duke.edu/making-most-your-aid/health-insurance/" target="_blank">Karsh Financial Aid Office：保险费用与助学金说明</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：丧失保险后的特殊注册 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>丧失保险后的特殊注册(Qualifying Life Events)<span class="tag tag-holiday">特殊情况</span></span>
+              <span class="sub-accordion-arrow">&#9658;</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div class="cal-highlight">
+                已获豁免后若丧失原有保险，可在豁免截止日后申请加入SMIP。须在发生变化后<strong>30天内</strong>联系保险办公室。
+              </div>
+              <div class="section-title">可触发特殊注册的情形</div>
+              <div class="cal-item">
+                <div class="cal-date">非自愿失去保险</div>
+                <div><div class="cal-desc">被移出父母保单、保险失效等情况</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">超出年龄上限</div>
+                <div><div class="cal-desc">达到其他保险计划的年龄上限(通常为26岁)</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">婚姻/家庭变化</div>
+                <div><div class="cal-desc">结婚、离婚、生育子女等家庭状况变化</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">家属注册</div>
+                <div><div class="cal-desc">学生加入SMIP后，可为配偶/子女另行注册，须通过studentbluenc.com/#/duke办理</div><div class="cal-note">家属注册截止：秋季8月30日 / 春季1月30日</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">家属保费支付</div>
+                <div><div class="cal-desc">家属保费直接向Student Blue缴纳，Duke不代为办理家属注册</div></div>
+              </div>
+              <a href="https://students.duke.edu/wellness/studenthealth/insurance/dependents/" target="_blank">家属注册说明(Duke Student Affairs)</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/insurance/faqs-contact-us/" target="_blank">联系保险办公室</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：牙科保险 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>牙科保险(Dental Plan 2025-2026)<span class="tag tag-key">牙科</span></span>
+              <span class="sub-accordion-arrow">&#9658;</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div class="cal-highlight">
+                Duke与Aetna Student Health合作提供牙科保险，<strong>独立于医疗保险</strong>，需单独注册。国际生和PhD学生可选择退出，国内学生需主动选择参加。
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">国内学生</div>
+                <div><div class="cal-desc">通过Gallagher门户点击"Enroll"主动参加牙科计划；豁免截止后不可加入</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">国际生/PhD学生</div>
+                <div><div class="cal-desc">发送邮件至Quincy.BSD.enrollmentteam@AJG.com选择退出(Opt Out)</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">截止日期</div>
+                <div><div class="cal-desc">与医疗保险豁免截止日相同：秋季9月15日 / 春季1月31日</div></div>
+              </div>
+              <a href="https://students.duke.edu/wellness/studenthealth/insurance/dental-plan/" target="_blank">牙科保险详情(Duke Student Affairs)</a>
+              <a href="https://go.gallagherstudent.com/Universities/Duke%20University/Home" target="_blank">Gallagher门户(牙科注册/退出入口)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：联系方式与相关链接 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>联系方式与相关链接</span>
+              <span class="sub-accordion-arrow">&#9658;</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div class="section-title">官方联系方式</div>
+              <div class="cal-item">
+                <div class="cal-date">Duke保险办公室</div>
+                <div><div class="cal-desc">insurance@studentaffairs.duke.edu</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">Gallagher(注册/豁免)</div>
+                <div><div class="cal-desc">866-931-5275 / GGB.JCB.Studentservices@ajg.com</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">Student Blue(保险卡/理赔)</div>
+                <div><div class="cal-desc">1-888-234-2417</div></div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">Duke Student Health医务室</div>
+                <div><div class="cal-desc">(919)681-9355，选项1预约</div></div>
+              </div>
+              <div class="section-title">官方链接</div>
+              <a href="https://go.gallagherstudent.com/Universities/Duke%20University/Home" target="_blank">Gallagher学生门户(豁免/注册申请)</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/insurance/" target="_blank">Duke医疗保险总览(Duke Student Affairs)</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/insurance/enrolling-in-or-waiving-smip/" target="_blank">注册或豁免SMIP操作指南</a>
+              <a href="https://students.duke.edu/wellness/studenthealth/insurance/faqs-contact-us/" target="_blank">保险FAQ与联系方式</a>
+              <a href="https://financialaid.duke.edu/making-most-your-aid/health-insurance/" target="_blank">Karsh助学金办公室：保险费用说明</a>
+              <a href="https://go.gallagherstudent.com/-/media/files/gsh/universities/duke-university/25-26-plan/20252026-duke-university-smip-faq.pdf" target="_blank">2025-2026 SMIP FAQ完整PDF(Gallagher)</a>
+              <a href="https://www.bluecrossnc.com/content/dam/bcbsnc/pdf/members/student-blue/duke-university/duke-brochure-25-26.pdf" target="_blank">Student Blue保险手册PDF</a>
+            </div>
+          </div>
+
+        </div><!-- /accordion-body -->
+      </div><!-- /accordion -->
+
       <!-- ===== 新生 ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
