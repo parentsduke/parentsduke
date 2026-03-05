@@ -8240,26 +8240,45 @@ async function rejectPendingItem(id, filePath) {
     document.body.appendChild(logoutBtn);
 
     // === 动态注入官方链接（绕过Cloudflare链接保护）===
-    var insuranceLinks = main.querySelector("#insurance-official-links");
-    if (insuranceLinks) {
-      var links = [
-        { url: "https://go.gallagherstudent.com/Universities/Duke%20University/Home", text: "🔗 Gallagher学生门户(豁免/注册申请)" },
-        { url: "https://students.duke.edu/wellness/studenthealth/insurance/", text: "🔗 Duke医疗保险总览(Duke Student Affairs)" },
-        { url: "https://students.duke.edu/wellness/studenthealth/insurance/enrolling-in-or-waiving-smip/", text: "🔗 注册或豁免SMIP操作指南" },
-        { url: "https://students.duke.edu/wellness/studenthealth/insurance/faqs-contact-us/", text: "🔗 保险FAQ与联系方式" },
-        { url: "https://financialaid.duke.edu/making-most-your-aid/health-insurance/", text: "🔗 Karsh助学金办公室：保险费用说明" },
-        { url: "https://go.gallagherstudent.com/-/media/files/gsh/universities/duke-university/25-26-plan/20252026-duke-university-smip-faq.pdf", text: "📄 2025-2026 SMIP FAQ完整PDF(Gallagher)" },
-        { url: "https://www.bluecrossnc.com/content/dam/bcbsnc/pdf/members/student-blue/duke-university/duke-brochure-25-26.pdf", text: "📄 Student Blue保险手册PDF" }
+    (function() {
+      var officialLinks = [
+        { url: "https://go.gallagherstudent.com/Universities/Duke%20University/Home", text: "\uD83D\uDD17 Gallagher\u5b66\u751f\u95E8\u6237(\u8C41\u514D/\u6CE8\u518C\u7533\u8BF7)" },
+        { url: "https://students.duke.edu/wellness/studenthealth/insurance/", text: "\uD83D\uDD17 Duke\u533B\u7597\u4FDD\u9669\u603B\u89C8(Duke Student Affairs)" },
+        { url: "https://students.duke.edu/wellness/studenthealth/insurance/enrolling-in-or-waiving-smip/", text: "\uD83D\uDD17 \u6CE8\u518C\u6216\u8C41\u514DSMIP\u64CD\u4F5C\u6307\u5357" },
+        { url: "https://students.duke.edu/wellness/studenthealth/insurance/faqs-contact-us/", text: "\uD83D\uDD17 \u4FDD\u9669FAQ\u4E0E\u8054\u7CFB\u65B9\u5F0F" },
+        { url: "https://financialaid.duke.edu/making-most-your-aid/health-insurance/", text: "\uD83D\uDD17 Karsh\u52A9\u5B66\u91D1\u529E\u516C\u5BA4\uFF1A\u4FDD\u9669\u8D39\u7528\u8BF4\u660E" },
+        { url: "https://go.gallagherstudent.com/-/media/files/gsh/universities/duke-university/25-26-plan/20252026-duke-university-smip-faq.pdf", text: "\uD83D\uDCC4 2025-2026 SMIP FAQ\u5B8C\u6574PDF(Gallagher)" },
+        { url: "https://www.bluecrossnc.com/content/dam/bcbsnc/pdf/members/student-blue/duke-university/duke-brochure-25-26.pdf", text: "\uD83D\uDCC4 Student Blue\u4FDD\u9669\u624B\u518CPDF" }
       ];
-      links.forEach(function(item) {
-        var a = document.createElement("a");
-        a.href = item.url;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.textContent = item.text;
-        insuranceLinks.appendChild(a);
-      });
-    }
+
+      function injectLinks(container) {
+        container.innerHTML = "";
+        officialLinks.forEach(function(item) {
+          var a = document.createElement("a");
+          a.setAttribute("href", item.url);
+          a.setAttribute("target", "_blank");
+          a.setAttribute("rel", "noopener noreferrer");
+          a.appendChild(document.createTextNode(item.text));
+          container.appendChild(a);
+        });
+      }
+
+      // 方法1：通过id查找
+      var byId = main.querySelector("#insurance-official-links");
+      if (byId) { injectLinks(byId); return; }
+
+      // 方法2：通过遍历所有section-title找"官方链接"
+      var titles = main.querySelectorAll(".section-title");
+      for (var i = 0; i < titles.length; i++) {
+        if (titles[i].textContent.trim() === "\u5B98\u65B9\u94FE\u63A5") {
+          var container = document.createElement("div");
+          container.id = "insurance-official-links";
+          titles[i].parentNode.insertBefore(container, titles[i].nextSibling);
+          injectLinks(container);
+          return;
+        }
+      }
+    })();
 
     // === 登录后还原图片/视频/PDF的真实路径 ===
     main.querySelectorAll("img[data-src]").forEach(function(el) {
