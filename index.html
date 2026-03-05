@@ -437,6 +437,527 @@ document.addEventListener("keydown", function(e) {
 
     <div class="link-list">
 
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">
+      <span>Duke University校历与重要日程(2025-2026学年)</span><span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body">
+
+      <div class="cal-highlight">
+        <strong>2025-2026学年总览</strong><br>
+        秋季学期：2025年8月25日(周一)开课 &#8594; 12月15日(周一)期末结束<br>
+        寒假/圣诞：2025年12月16日(周二) &#8594; 2026年1月6日(周二)<br>
+        春季学期：2026年1月7日(周三)开课 &#8594; 5月11日(周一)期末结束<br>
+        暑假：2026年5月中旬起<br>
+        <a href="https://registrar.duke.edu/2025-2026-academic-calendar/" target="_blank" style="color:#012169; font-size:12px;">官方校历原文(Duke Registrar)</a>
+      </div>
+
+      <!-- 秋假 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>秋假(Fall Break 2025)<span class="tag tag-fall">秋季</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>秋假：10月10日(周五)晚7:00 &#8212; 10月14日(周二)</strong><br>
+            10月15日(周三)上午8:30复课。共约4.5天，是秋季学期中段的短暂休整。
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">10月10日(周五)</div>
+            <div><div class="cal-desc">秋假开始(晚7:00起)</div><div class="cal-note">同日：期中成绩(Midsemester Grades)上报截止</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">10月11日(周六)&#8212;10月14日(周二)</div>
+            <div><div class="cal-desc">秋假，无课</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">10月15日(周三)</div>
+            <div><div class="cal-desc">复课(上午8:30)</div></div>
+          </div>
+          <div class="section-title">秋假前后其他重要节点</div>
+          <div class="cal-item">
+            <div class="cal-date">9月1日(周一)</div>
+            <div><div class="cal-desc">Labor Day，无课</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">9月5日(周五)</div>
+            <div><div class="cal-desc">Drop/Add截止(晚11:59)</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">11月7日(周五)</div>
+            <div><div class="cal-desc">秋季W退课截止(仅本科生)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 感恩节 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>感恩节假期(Thanksgiving Break 2025)<span class="tag tag-holiday">假日</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>感恩节假期：11月25日(周二)晚10:30 &#8212; 11月30日(周日)</strong><br>
+            12月1日(周一)上午8:30复课。感恩节当天为11月27日(周四)。假期结束后仅剩约一周上课便进入期末备考期。
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">11月25日(周二)</div>
+            <div><div class="cal-desc">感恩节假期开始(晚10:30起)</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">11月27日(周四)</div>
+            <div><div class="cal-desc">感恩节(Thanksgiving Day)</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">11月28日(周五)</div>
+            <div><div class="cal-desc">Black Friday，假期延续，无课</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月1日(周一)</div>
+            <div><div class="cal-desc">本科生复课(上午8:30)</div></div>
+          </div>
+          <div class="cal-warn">
+            感恩节假期结束后仅剩约一周上课时间便进入期末备考期，建议提前安排好复习计划，避免假期后措手不及。
+          </div>
+          <div class="section-title">感恩节之后的秋季尾声</div>
+          <div class="cal-item">
+            <div class="cal-date">12月5日(周五)</div>
+            <div><div class="cal-desc">本科生最后一天上课</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月6日(周六)&#8212;12月9日(周二)</div>
+            <div><div class="cal-desc">Reading Period(备考期)，无正式课程</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月10日(周三)&#8212;12月15日(周一)</div>
+            <div><div class="cal-desc">秋季期末考试(Final Examinations)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 秋季期末考试 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>秋季期末考试(Fall Finals 2025)<span class="tag tag-exam">期末</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>秋季期末考试：12月10日(周三) &#8212; 12月15日(周一)晚10:00</strong><br>
+            考前设4天Reading Period备考期(12月6日&#8212;9日)。具体每门课的考试时间由Registrar统一排定，开课几周后公布。
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月5日(周五)</div>
+            <div><div class="cal-desc">本科生最后一天上课</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月6日(周六)&#8212;12月9日(周二)</div>
+            <div><div class="cal-desc">Reading Period(备考期)，无正式课，图书馆延长开放</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月10日(周三)</div>
+            <div><div class="cal-desc">秋季期末考试正式开始</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月15日(周一)晚10:00</div>
+            <div><div class="cal-desc">秋季期末考试全部结束</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月16日(周二)</div>
+            <div><div class="cal-desc">寒假正式开始，部分宿舍关闭</div></div>
+          </div>
+          <div class="section-title">实用提示</div>
+          <div class="cal-item">
+            <div class="cal-date">考试安排查询</div>
+            <div><div class="cal-desc">登录DukeHub &#8594; Student Records &#8594; Final Exam Schedule</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">Take-Home考试</div>
+            <div><div class="cal-desc">部分课程采用Take-Home形式，截止时间通常为12月15日晚10:00</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">成绩发布</div>
+            <div><div class="cal-desc">期末成绩通常在考试结束约1周后在DukeHub公布</div></div>
+          </div>
+          <a href="https://registrar.duke.edu/2025-2026-academic-calendar/" target="_blank">秋季考试日程官方页面(Duke Registrar)</a>
+          <a href="https://sissoffice.duke.edu/" target="_blank">DukeHub(查询个人考试时间)</a>
+        </div>
+      </div>
+
+      <!-- 寒假/圣诞 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>寒假与圣诞节(Winter Break / Christmas 2025-2026)<span class="tag tag-holiday">假日</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>寒假：2025年12月16日(周二) &#8212; 2026年1月6日(周二)</strong><br>
+            共约22天。圣诞节为12月25日，元旦为1月1日。这是全学年最长的假期，春季学期于1月7日(周三)开课。
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月15日(周一)晚10:00</div>
+            <div><div class="cal-desc">秋季期末考试结束</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月16日(周二)</div>
+            <div><div class="cal-desc">寒假正式开始，部分宿舍楼关闭</div><div class="cal-note">East Campus宿舍关闭时间以Housing Office通知为准</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月24日(周三)&#8212;12月25日(周四)</div>
+            <div><div class="cal-desc">平安夜与圣诞节(Christmas Eve &amp; Christmas Day)，学校行政关闭</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">12月31日(周三)&#8212;2026年1月1日(周四)</div>
+            <div><div class="cal-desc">新年前夕与元旦(New Year's Eve &amp; New Year's Day)，学校行政关闭</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">2026年1月5日(周一)</div>
+            <div><div class="cal-desc">学校行政恢复正常运营，宿舍重新开放</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">2026年1月7日(周三)</div>
+            <div><div class="cal-desc">春季学期正式开课(按周一课表上课)</div></div>
+          </div>
+          <div class="section-title">寒假注意事项</div>
+          <div class="cal-item">
+            <div class="cal-date">宿舍留宿</div>
+            <div><div class="cal-desc">寒假期间不允许留宿，有特殊需求需提前向Housing Office申请豁免</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">行李存放</div>
+            <div><div class="cal-desc">部分宿舍提供Storage Room，需提前联系Residential Staff预约</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">国际生签证</div>
+            <div><div class="cal-desc">持F-1签证的国际生离境须保持有效I-20，回国前确认签证有效期，联系Duke Global Services</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">春季选课</div>
+            <div><div class="cal-desc">春季Drop/Add在开学后继续开放至1月21日(周三)截止</div></div>
+          </div>
+          <a href="https://students.duke.edu/living/housing/annual-housing-calendar/" target="_blank">Housing年度日历(宿舍开关楼日期)</a>
+          <a href="https://globalservices.duke.edu/" target="_blank">Duke Global Services国际生签证与出行指引</a>
+        </div>
+      </div>
+
+      <!-- 春假 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>春假(Spring Break 2026)<span class="tag tag-spring">春季</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>春假：3月6日(周五)晚7:00 &#8212; 3月15日(周日)</strong><br>
+            3月16日(周一)上午8:30复课。共约10天，是春季学期中段最大的休整机会。
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">3月6日(周五)</div>
+            <div><div class="cal-desc">春假开始(晚7:00起)</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">3月7日(周六)&#8212;3月15日(周日)</div>
+            <div><div class="cal-desc">春假期间，无课</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">3月16日(周一)</div>
+            <div><div class="cal-desc">复课(上午8:30)</div></div>
+          </div>
+          <div class="section-title">春假前后重要节点</div>
+          <div class="cal-item">
+            <div class="cal-date">1月19日(周一)</div>
+            <div><div class="cal-desc">Martin Luther King Jr. Day，无课</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">1月21日(周三)</div>
+            <div><div class="cal-desc">Drop/Add截止(晚11:59)</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">2月20日(周五)</div>
+            <div><div class="cal-desc">春季期中成绩上报截止</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">3月23日(周一)</div>
+            <div><div class="cal-desc">2026-27秋季选课购物车开放</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">3月25日(周三)</div>
+            <div><div class="cal-desc">春季W退课截止(仅本科生)</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">4月1日(周三)</div>
+            <div><div class="cal-desc">2026-27秋季注册开始</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 春季期末考试 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>春季期末考试(Spring Finals 2026)<span class="tag tag-exam">期末</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>春季期末考试：5月6日(周三) &#8212; 5月11日(周一)晚10:00</strong><br>
+            考前设4天Reading Period备考期(5月2日&#8212;5月5日)。考试结束后宿舍须在24小时内退房。
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">5月1日(周五)</div>
+            <div><div class="cal-desc">本科生最后一天上课</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">5月2日(周六)&#8212;5月5日(周二)</div>
+            <div><div class="cal-desc">Reading Period(备考期)，无正式课，图书馆延长开放</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">5月6日(周三)</div>
+            <div><div class="cal-desc">春季期末考试正式开始</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">约5月10日(周日)</div>
+            <div><div class="cal-desc">毕业典礼(Commencement)，具体日期待官方公布</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">5月11日(周一)晚10:00</div>
+            <div><div class="cal-desc">春季期末考试全部结束</div></div>
+          </div>
+          <div class="section-title">实用提示</div>
+          <div class="cal-item">
+            <div class="cal-date">考试安排查询</div>
+            <div><div class="cal-desc">登录DukeHub &#8594; Student Records &#8594; Final Exam Schedule</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">Take-Home考试</div>
+            <div><div class="cal-desc">部分课程以Take-Home形式完成，截止时间通常为5月11日晚10:00</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">成绩发布</div>
+            <div><div class="cal-desc">期末成绩通常在考试结束约1周后在DukeHub公布</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">宿舍退房</div>
+            <div><div class="cal-desc">非毕业生须在考试结束后24小时内退房；毕业生另有单独安排</div></div>
+          </div>
+          <a href="https://registrar.duke.edu/2025-2026-academic-calendar/" target="_blank">春季考试日程官方页面(Duke Registrar)</a>
+          <a href="https://commencement.duke.edu/" target="_blank">毕业典礼官方网站</a>
+          <a href="https://sissoffice.duke.edu/" target="_blank">DukeHub(查询个人考试时间)</a>
+        </div>
+      </div>
+
+      <!-- 暑假 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>暑假(Summer 2026)<span class="tag tag-summer">暑期</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>暑假：2026年5月中旬 &#8212; 8月下旬</strong><br>
+            Duke暑期分为Session I(约6周)和Session II(约6周)，也可选择不上课休整。暑期课程可累计学分，满足部分毕业要求。
+          </div>
+          <div class="section-title">暑期课程安排(Summer Sessions 2026)</div>
+          <div class="cal-item">
+            <div class="cal-date">Session I</div>
+            <div><div class="cal-desc">约5月18日(周一)&#8212;6月26日(周五)，为期约6周</div><div class="cal-note">具体日期以官方公告为准</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">Session II</div>
+            <div><div class="cal-desc">约6月29日(周一)&#8212;8月7日(周五)，为期约6周</div><div class="cal-note">具体日期以官方公告为准</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">暑期完整课程</div>
+            <div><div class="cal-desc">约5月18日&#8212;8月7日，为期约12周，涵盖两个Session</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">7月4日(周六)</div>
+            <div><div class="cal-desc">Independence Day(美国国庆日)，无课</div></div>
+          </div>
+          <div class="section-title">暑期实习与研究</div>
+          <div class="cal-item">
+            <div class="cal-date">Duke暑研项目</div>
+            <div><div class="cal-desc">BSURF、MEMS Research等项目通常在1月&#8212;3月开放申请，夏季在校进行</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">实习(Internship)</div>
+            <div><div class="cal-desc">大多数暑期实习于5月底至8月初进行，建议秋季学期即开始申请</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">暑期住宿</div>
+            <div><div class="cal-desc">修暑期课程的学生可申请留宿校内，需通过Housing Office单独预定，费用另计</div></div>
+          </div>
+          <div class="section-title">暑期注册截止日期</div>
+          <div class="cal-item">
+            <div class="cal-date">2月9日(周一)</div>
+            <div><div class="cal-desc">2026暑期课程购物车(Shopping Carts)开放</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">2月16日(周一)</div>
+            <div><div class="cal-desc">2026暑期课程注册(Registration)开始</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">2026年8月下旬</div>
+            <div><div class="cal-desc">2026-27学年秋季学期开课(具体日期待公布)</div></div>
+          </div>
+          <a href="https://summersession.duke.edu/" target="_blank">Duke Summer Session官方网站</a>
+          <a href="https://students.duke.edu/living/housing/summer-housing/" target="_blank">暑期住宿申请(Summer Housing)</a>
+          <a href="https://studentaffairs.duke.edu/career/" target="_blank">Duke Career Center暑期实习资源</a>
+        </div>
+      </div>
+
+      <!-- 家长周末 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>家长周末(Family Weekend 2025)<span class="tag tag-family">家长</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>2025年家长周末：10月17日(周五) &#8212; 10月19日(周日)</strong><br>
+            Duke每年一度的家长专属活动，紧接秋假之后举行，提供讲座、演出、球赛等多种体验项目。
+          </div>
+          <div class="section-title">主要活动安排</div>
+          <div class="cal-item">
+            <div class="cal-date">10月17日(周五)</div>
+            <div>
+              <div class="cal-desc">家长周末开始</div>
+              <div class="cal-note">下午1:00&#8211;3:00：Duke-Margolis健康政策学院专场(JB Duke Hotel)</div>
+              <div class="cal-note">晚上6:00&#8211;8:30：Jewish Life at Duke欢迎晚宴(Freeman Center)</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">10月18日(周六)</div>
+            <div>
+              <div class="cal-desc">主活动日，含讲座、参观、主场美式足球赛</div>
+              <div class="cal-note">Duke主场对阵Georgia Tech</div>
+              <div class="cal-note">晚上7:00：音乐演出(Baldwin Auditorium)</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">10月19日(周日)</div>
+            <div>
+              <div class="cal-desc">家长周末结束日</div>
+              <div class="cal-note">上午10:00&#8211;12:00：Jewish Life at Duke早午餐(Freeman Center)</div>
+            </div>
+          </div>
+          <div class="section-title">实用信息</div>
+          <div class="cal-item">
+            <div class="cal-date">注册报名</div>
+            <div><div class="cal-desc">秋季开学后在官网开放注册，部分活动需购票</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">足球票务</div>
+            <div><div class="cal-desc">duaatix@duke.edu / (919)681-2583</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">活动票务</div>
+            <div><div class="cal-desc">Duke Box Office：tickets@duke.edu / 919-684-4444</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">一般咨询</div>
+            <div><div class="cal-desc">familyprograms@duke.edu / 919-684-3511</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">住宿(JB Duke Hotel)</div>
+            <div><div class="cal-desc">抽签(lottery)制度，需提前关注开放时间 / 844-490-7100</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">住宿(Washington Duke Inn)</div>
+            <div><div class="cal-desc">抽签已关闭，可致电加候补名单 / (800)443-3853</div></div>
+          </div>
+          <a href="https://students.duke.edu/info-for/families/family-weekend/" target="_blank">Family Weekend官方页面(含日程与FAQ)</a>
+          <a href="https://calendar.duke.edu/index?cf%5B%5D=Parents'+and+Family+Weekend" target="_blank">Duke活动日历：家长周末专属页</a>
+          <a href="https://www.jbdukehotel.com/duke/duke-events" target="_blank">JB Duke Hotel住宿信息</a>
+          <a href="https://www.washingtondukeinn.com/duke/duke-events/family-weekend-2025" target="_blank">Washington Duke Inn住宿信息</a>
+        </div>
+      </div>
+
+      <!-- 毕业典礼 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>毕业典礼(Commencement 2026)<span class="tag tag-key">毕业</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>2026年毕业典礼：约5月10日(周日)</strong><br>
+            具体日期待Duke官方正式公布，通常在春季期末考试结束后的周日举行于Wallace Wade Stadium。建议提前预订住宿和机票，校内酒店将开放抽签。
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">5月6日&#8212;5月11日</div>
+            <div><div class="cal-desc">春季期末考试周</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">约5月8日(周五)</div>
+            <div><div class="cal-desc">各学院毕业仪式(Diploma Ceremony)，具体安排待公布</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">约5月10日(周日)</div>
+            <div><div class="cal-desc">全校毕业典礼(Commencement Ceremony)，Wallace Wade Stadium露天举行</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">住宿预订</div>
+            <div><div class="cal-desc">JB Duke Hotel和Washington Duke Inn均采用抽签制度，提前关注开放时间</div></div>
+          </div>
+          <a href="https://commencement.duke.edu/" target="_blank">Duke毕业典礼官方网站</a>
+        </div>
+      </div>
+
+      <!-- 选课注册全年日期 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>选课与注册全年关键日期(2025-2026)<span class="tag tag-key">注册</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="section-title">2025秋季学期</div>
+          <div class="cal-item"><div class="cal-date">8月25日(周一)</div><div><div class="cal-desc">秋季学期开课，Drop/Add继续</div></div></div>
+          <div class="cal-item"><div class="cal-date">9月1日(周一)</div><div><div class="cal-desc">Labor Day，无课</div></div></div>
+          <div class="cal-item"><div class="cal-date">9月5日(周五)</div><div><div class="cal-desc">Drop/Add截止(晚11:59)</div></div></div>
+          <div class="cal-item"><div class="cal-date">10月10日(周五)</div><div><div class="cal-desc">秋假开始 / 期中成绩上报截止</div></div></div>
+          <div class="cal-item"><div class="cal-date">10月15日(周三)</div><div><div class="cal-desc">秋假结束，复课</div></div></div>
+          <div class="cal-item"><div class="cal-date">10月17日&#8212;10月19日</div><div><div class="cal-desc">Family Weekend(家长周末)</div></div></div>
+          <div class="cal-item"><div class="cal-date">10月20日(周一)</div><div><div class="cal-desc">春季2026购物车开放</div></div></div>
+          <div class="cal-item"><div class="cal-date">10月29日(周三)</div><div><div class="cal-desc">春季2026注册开始</div></div></div>
+          <div class="cal-item"><div class="cal-date">11月7日(周五)</div><div><div class="cal-desc">秋季W退课截止(仅本科生)</div></div></div>
+          <div class="cal-item"><div class="cal-date">11月10日(周一)</div><div><div class="cal-desc">春季2026注册截止</div></div></div>
+          <div class="cal-item"><div class="cal-date">11月25日(周二)晚10:30</div><div><div class="cal-desc">感恩节假期开始</div></div></div>
+          <div class="cal-item"><div class="cal-date">12月1日(周一)</div><div><div class="cal-desc">复课</div></div></div>
+          <div class="cal-item"><div class="cal-date">12月5日(周五)</div><div><div class="cal-desc">本科生最后一天上课</div></div></div>
+          <div class="cal-item"><div class="cal-date">12月6日&#8212;12月9日</div><div><div class="cal-desc">Reading Period(备考期)</div></div></div>
+          <div class="cal-item"><div class="cal-date">12月10日&#8212;12月15日</div><div><div class="cal-desc">秋季期末考试</div></div></div>
+          <div class="cal-item"><div class="cal-date">12月16日&#8212;2026年1月6日</div><div><div class="cal-desc">寒假 / 圣诞节 / 元旦</div></div></div>
+
+          <div class="section-title">2026春季学期</div>
+          <div class="cal-item"><div class="cal-date">1月7日(周三)</div><div><div class="cal-desc">春季学期开课，Drop/Add继续</div></div></div>
+          <div class="cal-item"><div class="cal-date">1月19日(周一)</div><div><div class="cal-desc">Martin Luther King Jr. Day，无课</div></div></div>
+          <div class="cal-item"><div class="cal-date">1月21日(周三)</div><div><div class="cal-desc">Drop/Add截止(晚11:59)</div></div></div>
+          <div class="cal-item"><div class="cal-date">2月9日(周一)</div><div><div class="cal-desc">暑期购物车开放</div></div></div>
+          <div class="cal-item"><div class="cal-date">2月16日(周一)</div><div><div class="cal-desc">暑期注册开始</div></div></div>
+          <div class="cal-item"><div class="cal-date">2月20日(周五)</div><div><div class="cal-desc">春季期中成绩上报截止</div></div></div>
+          <div class="cal-item"><div class="cal-date">3月6日(周五)晚7:00</div><div><div class="cal-desc">春假开始</div></div></div>
+          <div class="cal-item"><div class="cal-date">3月16日(周一)</div><div><div class="cal-desc">春假结束，复课</div></div></div>
+          <div class="cal-item"><div class="cal-date">3月23日(周一)</div><div><div class="cal-desc">2026-27秋季购物车开放</div></div></div>
+          <div class="cal-item"><div class="cal-date">3月25日(周三)</div><div><div class="cal-desc">春季W退课截止(仅本科生)</div></div></div>
+          <div class="cal-item"><div class="cal-date">4月1日(周三)</div><div><div class="cal-desc">2026-27秋季注册开始</div></div></div>
+          <div class="cal-item"><div class="cal-date">5月1日(周五)</div><div><div class="cal-desc">本科生最后一天上课</div></div></div>
+          <div class="cal-item"><div class="cal-date">5月2日&#8212;5月5日</div><div><div class="cal-desc">Reading Period(备考期)</div></div></div>
+          <div class="cal-item"><div class="cal-date">5月6日&#8212;5月11日</div><div><div class="cal-desc">春季期末考试</div></div></div>
+          <div class="cal-item"><div class="cal-date">约5月10日(周日)</div><div><div class="cal-desc">毕业典礼(Commencement)</div></div></div>
+          <div class="cal-item"><div class="cal-date">5月中旬起</div><div><div class="cal-desc">暑假开始，Summer Session I开课</div></div></div>
+
+          <a href="https://registrar.duke.edu/2025-2026-academic-calendar/" target="_blank">官方校历完整版(Duke Registrar)</a>
+          <a href="https://undergraduate.bulletins.duke.edu/about-duke/calendar" target="_blank">本科生课程手册校历</a>
+          <a href="https://sissoffice.duke.edu/" target="_blank">DukeHub学生门户</a>
+        </div>
+      </div>
+
+    </div><!-- /accordion-body -->
+  </div><!-- /accordion -->
+
       <!-- ===== 新生 ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
@@ -678,7 +1199,105 @@ document.addEventListener("keydown", function(e) {
         </div>
       </div>
 
-            <!-- ===== 二年级 ===== -->
+      <!-- ===== Duke University宿舍详情(独立手风琴) ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>Duke宿舍详情：East Campus与West Campus完全指南</span><span class="accordion-arrow">▸</span>
+        </button>
+        <div class="accordion-body" style="padding:10px 14px; font-size:13px; line-height:1.8; color:#222;">
+          
+          <p style="margin:0 0 12px;"><strong style="color:#003366;">一、宿舍系统总览</strong></p>
+          <p style="margin:0 0 10px;">Duke大学住宿分为两大阶段：一年级统一在East Campus(东校区)，二年级及以上在West Campus(西校区)。两个校区各自具有独特的社区文化、生活特色与管理体系。</p>
+          
+          <p style="margin:0 0 6px;"><strong style="color:#003366;">East Campus东校区(一年级)</strong></p>
+          <ul style="margin:0 0 12px; padding-left:20px;">
+            <li>地点：Duke主校园东侧，步行至Main Campus约10-15分钟</li>
+            <li>容纳：全校约1600名一年级新生</li>
+            <li>宿舍结构：12个独立的Residential Colleges(House)，各约60-70人</li>
+            <li>设施：每个House配有Kitchen、Laundry、Common Room、Quad(院子)</li>
+            <li>特点：紧密社区环境、Faculty-in-Residence指导、集中的迎新活动与初年体验</li>
+          </ul>
+          
+          <p style="margin:0 0 6px;"><strong style="color:#003366;">West Campus西校区(二年级及以上)</strong></p>
+          <ul style="margin:0 0 12px; padding-left:20px;">
+            <li>地点：Duke主校园西侧，靠近工程学院与音乐学院</li>
+            <li>容纳：约2000名二年级及以上学生</li>
+            <li>宿舍结构：4个主要Quad(East、Central、West、North)，细分为各类公寓</li>
+            <li>房型多样：studio、suite(套房)、apartment(公寓)等</li>
+            <li>特点：更高独立性、self-governance、多样化房间配置、4月room selection</li>
+          </ul>
+          
+          <div style="background:#eef3fa; border-left:4px solid #003366; padding:12px; margin:10px 0; border-radius:4px;">
+            <strong>重要提醒：</strong>Duke一年级必须住East Campus，不可申请West Campus或校外租住。West Campus选房从二年级开始，竞争激烈，需提前准备。
+          </div>
+
+          <p style="margin:14px 0 6px;"><strong style="color:#003366;">二、East Campus12个House详解</strong></p>
+          <p style="margin:0 0 10px;">每个House约60-70名一
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>学费缴纳与财务</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://finance.duke.edu/bursar/Payments/" target="_blank">Bursar在线缴学费(信用卡/ACH)</a>
+              <a href="https://mycollegepaymentplan.com/duke/" target="_blank">分期付款计划注册(每学期最多5期)</a>
+              <a href="Bank Wire.html" target="_blank">国际电汇(Bank Wire)付款指南</a>
+              <a href="https://financialaid.duke.edu/" target="_blank">Duke Financial Aid Office(Karsh Office)</a>
+              <a href="https://financialaid.duke.edu/apply-aid/renew-your-aid/" target="_blank">助学金续签：每年重新提交FAFSA+CSS Profile</a>
+              <a href="https://duke.qualtrics.com/jfe/form/SV_eepMhBZXr4qkJuJ" target="_blank">外部奖学金必须申报(影响助学金计算)</a>
+              <a href="https://sites.duke.edu/dukessa/home/miscellaneous/filing-taxes/" target="_blank">国际生美国报税指南(F-1签证)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：校园生活与设施 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>校园生活与实用设施</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://maps.duke.edu/" target="_blank">Duke校园互动地图</a>
+              <a href="https://parking.duke.edu/" target="_blank">校园停车与交通</a>
+              <a href="https://shop.duke.edu/" target="_blank">Duke Store校园商店(教材/Blue Devil周边)</a>
+              <a href="https://postoffice.duke.edu/locations/" target="_blank">Campus Mail Center邮件中心各楼位置</a>
+              <a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">邮寄地址填写规范(含姓名/宿舍/Box号)</a>
+              <a href="信件包裹网站购物地址.pdf" target="_blank">网购收件地址格式PDF(本站整理)</a>
+              <a href="https://recreation.duke.edu/" target="_blank">Duke Recreation健身房/泳池/运动场地</a>
+              <a href="https://studentaffairs.duke.edu/studentinvolvement" target="_blank">学生社团与社团活动总览(400+社团)</a>
+              <a href="https://police.duke.edu/" target="_blank">Duke警察局(紧急电话：919-684-2444)</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：健康与支持资源 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>健康、心理与国际生支持</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/wellness/studenthealth/" target="_blank">Duke Student Health医务室(预约/急诊)</a>
+              <a href="https://students.duke.edu/wellness/caps/" target="_blank">CAPS心理咨询中心(首次评估免费)</a>
+              <a href="https://studentaffairs.duke.edu/duwell" target="_blank">DuWell健康与幸福感项目</a>
+              <a href="https://students.duke.edu/belonging/icr/disc/" target="_blank">DISC国际生资源中心(签证/文化适应/活动)</a>
+              <a href="https://globalservices.duke.edu/" target="_blank">Duke Global Services国际生签证与身份管理</a>
+              <a href="https://access.duke.edu/" target="_blank">SDAO残障学生辅助服务</a>
+              <a href="https://students.duke.edu/belonging/icr/oae/" target="_blank">Office of Affinity Engagement多元文化归属感</a>
+            </div>
+          </div>
+
+          <!-- 子手风琴：新生社群与Facebook -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>新生社群与Facebook</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://www.facebook.com/groups/1527980028032445/" target="_blank">'28届学生Facebook群</a>
+              <a href="https://www.facebook.com/groups/1215919983029350/" target="_blank">'29届学生Facebook群</a>
+              <a href="https://www.facebook.com/groups/1737750673588075/" target="_blank">'30届学生Facebook群</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== 二年级 ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
           <span>二年级</span><span class="accordion-arrow">▸</span>
@@ -1864,7 +2483,7 @@ document.addEventListener("keydown", function(e) {
       <!-- ===== Duke University宿舍详情 ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>Duke宿舍详情 East Campus与West Campus指南</span><span class="accordion-arrow">▸</span>
+          <span>Duke宿舍详情：East Campus与West Campus完全指南</span><span class="accordion-arrow">▸</span>
         </button>
         <div class="accordion-body" style="padding:14px; font-size:13px; line-height:1.8; color:#222;">
           
@@ -2042,68 +2661,6 @@ document.addEventListener("keydown", function(e) {
 
           <div style="background:#eef3fa; border-left:4px solid #003366; padding:12px; margin:12px 0; border-radius:4px; font-size:13px;">
             <strong>Residential Life Support：</strong>East Campus每个House配备peer advisors(senior student leaders)、graduate resident coordinators(graduate students)与Faculty-in-Residence。若遇问题——academic stress、homesickness、roommate conflict等——不要犹豫寻求help。support resources非常robust。
-          </div>
-
-          <!-- 子手风琴：学费缴纳与财务 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>学费缴纳与财务</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://finance.duke.edu/bursar/Payments/" target="_blank">Bursar在线缴学费(信用卡/ACH)</a>
-              <a href="https://mycollegepaymentplan.com/duke/" target="_blank">分期付款计划注册(每学期最多5期)</a>
-              <a href="Bank Wire.html" target="_blank">国际电汇(Bank Wire)付款指南</a>
-              <a href="https://financialaid.duke.edu/" target="_blank">Duke Financial Aid Office(Karsh Office)</a>
-              <a href="https://financialaid.duke.edu/apply-aid/renew-your-aid/" target="_blank">助学金续签：每年重新提交FAFSA+CSS Profile</a>
-              <a href="https://duke.qualtrics.com/jfe/form/SV_eepMhBZXr4qkJuJ" target="_blank">外部奖学金必须申报(影响助学金计算)</a>
-              <a href="https://sites.duke.edu/dukessa/home/miscellaneous/filing-taxes/" target="_blank">国际生美国报税指南(F-1签证)</a>
-            </div>
-          </div>
-
-          <!-- 子手风琴：校园生活与设施 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>校园生活与实用设施</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://maps.duke.edu/" target="_blank">Duke校园互动地图</a>
-              <a href="https://parking.duke.edu/" target="_blank">校园停车与交通</a>
-              <a href="https://shop.duke.edu/" target="_blank">Duke Store校园商店(教材/Blue Devil周边)</a>
-              <a href="https://postoffice.duke.edu/locations/" target="_blank">Campus Mail Center邮件中心各楼位置</a>
-              <a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">邮寄地址填写规范(含姓名/宿舍/Box号)</a>
-              <a href="信件包裹网站购物地址.pdf" target="_blank">网购收件地址格式PDF(本站整理)</a>
-              <a href="https://recreation.duke.edu/" target="_blank">Duke Recreation健身房/泳池/运动场地</a>
-              <a href="https://studentaffairs.duke.edu/studentinvolvement" target="_blank">学生社团与社团活动总览(400+社团)</a>
-              <a href="https://police.duke.edu/" target="_blank">Duke警察局(紧急电话：919-684-2444)</a>
-            </div>
-          </div>
-
-          <!-- 子手风琴：健康与支持资源 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>健康、心理与国际生支持</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://students.duke.edu/wellness/studenthealth/" target="_blank">Duke Student Health医务室(预约/急诊)</a>
-              <a href="https://students.duke.edu/wellness/caps/" target="_blank">CAPS心理咨询中心(首次评估免费)</a>
-              <a href="https://studentaffairs.duke.edu/duwell" target="_blank">DuWell健康与幸福感项目</a>
-              <a href="https://students.duke.edu/belonging/icr/disc/" target="_blank">DISC国际生资源中心(签证/文化适应/活动)</a>
-              <a href="https://globalservices.duke.edu/" target="_blank">Duke Global Services国际生签证与身份管理</a>
-              <a href="https://access.duke.edu/" target="_blank">SDAO残障学生辅助服务</a>
-              <a href="https://students.duke.edu/belonging/icr/oae/" target="_blank">Office of Affinity Engagement多元文化归属感</a>
-            </div>
-          </div>
-
-          <!-- 子手风琴：新生社群与Facebook -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>新生社群与Facebook</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://www.facebook.com/groups/1527980028032445/" target="_blank">'28届学生Facebook群</a>
-              <a href="https://www.facebook.com/groups/1215919983029350/" target="_blank">'29届学生Facebook群</a>
-              <a href="https://www.facebook.com/groups/1737750673588075/" target="_blank">'30届学生Facebook群</a>
-            </div>
           </div>
 
         </div>
@@ -8013,6 +8570,74 @@ async function rejectPendingItem(id, filePath) {
     letter-spacing: 0.05em;
     text-align: left;
     opacity: 0.8;
+  }
+
+  /* ===== 校历手风琴专用样式 ===== */
+  .tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .tag-fall    { background: #c8510c; color: #fff; }
+  .tag-spring  { background: #0c6b2b; color: #fff; }
+  .tag-key     { background: #7b2d8b; color: #fff; }
+  .tag-family  { background: #c9a84c; color: #012169; }
+  .tag-exam    { background: #b71c1c; color: #fff; }
+  .tag-holiday { background: #1a5276; color: #fff; }
+  .tag-summer  { background: #e65100; color: #fff; }
+
+  .cal-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .cal-item:last-child { border-bottom: none; }
+  .cal-date {
+    min-width: 175px;
+    font-weight: 600;
+    color: #012169;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+  .cal-desc { font-size: 13px; color: #333; }
+  .cal-note { font-size: 11.5px; color: #888; margin-top: 2px; }
+
+  .cal-highlight {
+    background: #eef3fa;
+    border-left: 4px solid #012169;
+    padding: 10px 14px;
+    margin: 8px 0;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #222;
+    line-height: 1.7;
+  }
+  .cal-highlight strong { color: #012169; }
+
+  .cal-warn {
+    background: #fff8e1;
+    border-left: 4px solid #c9a84c;
+    padding: 10px 14px;
+    margin: 8px 0;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #5a4000;
+    line-height: 1.7;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #012169;
+    margin: 14px 0 6px;
+    border-bottom: 1px solid #d0d8e8;
+    padding-bottom: 4px;
   }
 </style>
 
