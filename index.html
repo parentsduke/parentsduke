@@ -1588,7 +1588,42 @@ document.addEventListener("keydown", function(e) {
             </div>
           </div>
 
-          <!-- 子手风琴：FOCUS项目 -->
+
+          <!-- 子手风琴：东校区生活与宿舍 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>East Campus东校区生活</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://students.duke.edu/living/housing/first-year-housing/" target="_blank">East Campus 12个House宿舍楼介绍</a>
+              <a href="https://students.duke.edu/living/housing/first-year-housing/frequently-asked-questions/" target="_blank">一年级宿舍FAQ(室友/DukeCard/QuadEx)</a>
+              <a href="https://www.youtube.com/watch?v=RcyQZ-sIC1o" target="_blank">宿舍参观视频(YouTube - AthanWright)</a>
+              <a href="https://pan.baidu.com/s/1uGKjnqTruzG1kmhuB0lFPw" target="_blank">宿舍参观视频(百度网盘 - AthanWright)</a>
+              <a href="https://pan.baidu.com/s/11EPSrtfjqiBWsEeOuxIGkA?pwd=Duke" target="_blank">2029届Opening Convocation视频(百度网盘)</a>
+              <a href="https://students.duke.edu/living/dining/" target="_blank">Duke Dining东校区餐厅总览(Marketplace)</a>
+              <a href="https://students.duke.edu/living/dining/plans-points/" target="_blank">餐饮计划选择：Plan A/B/C/D与Food Points</a>
+              <a href="https://transportation.duke.edu/routes-and-schedules" target="_blank">East-West校区班车时刻表(C1/C2等路线)</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+
+
+      <!-- ===== FOCUS 与 Constellations ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>FOCUS 与 Constellations</span><span class="accordion-arrow">&#9658;</span>
+        </button>
+        <div class="accordion-body" style="padding:10px 0 16px 0;">
+
+          <div class="cal-highlight">
+            大一新生必选其一：FOCUS是30年历史的小班沉浸式项目(约25%录取率)，Constellations是2025年起全新推出的全年学术社群项目，所有Trinity学生必须参加两者之一。
+          </div>
+
+<!-- 子手风琴：FOCUS项目 -->
           <div class="sub-accordion">
             <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
               <span>FOCUS新生跨学科项目</span><span class="sub-accordion-arrow">▸</span>
@@ -1621,27 +1656,131 @@ document.addEventListener("keydown", function(e) {
             </div>
           </div>
 
-          <!-- 子手风琴：东校区生活与宿舍 -->
+          <!-- 子手风琴：FOCUS vs Constellations 对比 -->
           <div class="sub-accordion">
             <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>East Campus东校区生活</span><span class="sub-accordion-arrow">▸</span>
+              <span>FOCUS vs Constellations — 详细对比与学生反馈<span class="tag tag-key">必读</span></span>
+              <span class="sub-accordion-arrow">&#9658;</span>
             </button>
             <div class="sub-accordion-body">
-              <a href="https://students.duke.edu/living/housing/first-year-housing/" target="_blank">East Campus 12个House宿舍楼介绍</a>
-              <a href="https://students.duke.edu/living/housing/first-year-housing/frequently-asked-questions/" target="_blank">一年级宿舍FAQ(室友/DukeCard/QuadEx)</a>
-              <a href="https://www.youtube.com/watch?v=RcyQZ-sIC1o" target="_blank">宿舍参观视频(YouTube - AthanWright)</a>
-              <a href="https://pan.baidu.com/s/1uGKjnqTruzG1kmhuB0lFPw" target="_blank">宿舍参观视频(百度网盘 - AthanWright)</a>
-              <a href="https://pan.baidu.com/s/11EPSrtfjqiBWsEeOuxIGkA?pwd=Duke" target="_blank">2029届Opening Convocation视频(百度网盘)</a>
-              <a href="https://students.duke.edu/living/dining/" target="_blank">Duke Dining东校区餐厅总览(Marketplace)</a>
-              <a href="https://students.duke.edu/living/dining/plans-points/" target="_blank">餐饮计划选择：Plan A/B/C/D与Food Points</a>
-              <a href="https://transportation.duke.edu/routes-and-schedules" target="_blank">East-West校区班车时刻表(C1/C2等路线)</a>
+
+              <div class="cal-highlight">
+                <strong>背景说明</strong><br>
+                FOCUS是Duke已有30多年历史的传统项目，每年录取约25-30%的大一新生。Constellations从2025年秋季(Class of 2029)起正式推出，所有Trinity文理学院学生必须参加两者之一——不再有"不参加任何项目"的选项。
+              </div>
+
+              <div class="section-title">结构对比</div>
+
+              <div class="cal-item">
+                <div class="cal-date">时长</div>
+                <div>
+                  <div class="cal-desc"><strong>FOCUS：</strong>大一秋季学期(半年)</div>
+                  <div class="cal-desc"><strong>Constellations：</strong>大一全年(秋季+春季)</div>
+                </div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">课程安排</div>
+                <div>
+                  <div class="cal-desc"><strong>FOCUS：</strong>秋季2门FOCUS课 + 春季Writing 120</div>
+                  <div class="cal-desc"><strong>Constellations：</strong>秋季1门 + 春季1门 + Writing 120，每个Constellation含4-13门课可选</div>
+                </div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">住宿安排</div>
+                <div>
+                  <div class="cal-desc"><strong>FOCUS：</strong>✅ 与同cluster同学住同一栋宿舍楼，社群凝聚力强</div>
+                  <div class="cal-desc"><strong>Constellations：</strong>❌ 无共同住宿安排，社交需主动建立</div>
+                </div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">规模</div>
+                <div>
+                  <div class="cal-desc"><strong>FOCUS：</strong>约500学生，20个cluster，每课最多18人</div>
+                  <div class="cal-desc"><strong>Constellations：</strong>约900学生，17个主题，cohort规模更大</div>
+                </div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">社群活动</div>
+                <div>
+                  <div class="cal-desc"><strong>FOCUS：</strong>秋季每周共同晚餐，教授深度参与</div>
+                  <div class="cal-desc"><strong>Constellations：</strong>每学期至少1次experiential活动，强调低风险评估、鼓励探索</div>
+                </div>
+              </div>
+
+              <div class="section-title">学生真实反馈</div>
+
+              <div class="cal-item">
+                <div class="cal-date">FOCUS<br>正面评价</div>
+                <div>
+                  <div class="cal-desc">「住在同栋楼、上同样的课、有相似兴趣，让Duke立刻有了家的感觉。FOCUS不仅帮助了社交适应，也帮助了学业适应。」</div>
+                  <div class="cal-note">来源：Duke官方学生反馈</div>
+                </div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">FOCUS<br>正面评价</div>
+                <div>
+                  <div class="cal-desc">「FOCUS让我意识到自己的热情与智识追求的交汇点。教授们积极发展与学生的关系，成为真正的导师，小班规模让深度学习成为可能。」</div>
+                  <div class="cal-note">来源：Duke官方学生反馈</div>
+                </div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">FOCUS<br>注意事项</div>
+                <div>
+                  <div class="cal-desc">阅读写作量大，节奏紧张，不适合所有人。工程(Pratt)学生若没有大量AP学分，排课会比较困难。部分学生希望有更多自由选课空间。</div>
+                  <div class="cal-note">FOCUS仅录取约25%新生，需主动申请，竞争一定</div>
+                </div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">Constellations<br>初期反应</div>
+                <div>
+                  <div class="cal-desc">2025年8月Class of 2029迎新周后首次集体见面，学生与教授、图书馆员和研究生助理共同参与活动，初次印象积极正面。</div>
+                  <div class="cal-note">项目2025年秋才正式启动，长期口碑尚在积累中</div>
+                </div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">Constellations<br>主要批评</div>
+                <div>
+                  <div class="cal-desc">部分学生反映课程是被分配的，选课自由度不足，希望有更多自主权。但也有学生认为与自己的兴趣高度契合。</div>
+                  <div class="cal-note">来源：Duke Chronicle 2025年报道</div>
+                </div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">Constellations<br>设计理念</div>
+                <div>
+                  <div class="cal-desc">学校刻意减少评分压力，鼓励"为学习而学习"，采用低风险评估方式，让学生敢于探索和犯错——这与传统GPA导向文化有所不同，适应程度因人而异。</div>
+                </div>
+              </div>
+
+              <div class="section-title">如何选择？</div>
+
+              <div class="cal-item">
+                <div class="cal-date">选FOCUS<br>更适合你</div>
+                <div>
+                  <div class="cal-desc">✅ 希望大一就有紧密住宿社群和固定小圈子<br>
+                  ✅ 喜欢强度大、沉浸式跨学科探索<br>
+                  ✅ 已有明确兴趣方向，能找到匹配的cluster<br>
+                  ✅ Trinity文科方向，课程负担相对灵活</div>
+                </div>
+              </div>
+              <div class="cal-item">
+                <div class="cal-date">选Constellations<br>更适合你</div>
+                <div>
+                  <div class="cal-desc">✅ 希望全年都有结构化学术社群，而非只有秋季<br>
+                  ✅ 不想被强制住在同一栋楼，倾向自主社交<br>
+                  ✅ 课表已排满(理工科/Pre-med/Pratt学生)<br>
+                  ✅ 喜欢更大cohort和更多元的同学背景</div>
+                </div>
+              </div>
+
+              <div class="cal-warn">
+                <strong>重要提醒：</strong>FOCUS需要主动申请，录取率约25%，且读写研究量较大。Constellations是所有未进入FOCUS的Trinity学生的默认选项，通过填写偏好表匹配。两者均对大一学术和社交适应有显著帮助，关键是找到与自己气质匹配的那个。
+              </div>
+
             </div>
           </div>
 
         </div>
       </div>
-
-
 
       <!-- ===== 二年级 ===== -->
       <div class="accordion">
