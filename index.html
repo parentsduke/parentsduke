@@ -1393,27 +1393,7 @@ document.addEventListener("keydown", function(e) {
                 <div><div class="cal-desc">(919)681-9355，选项1预约</div></div>
               </div>
               <div class="section-title">官方链接</div>
-              <div class="cal-item">
-                <div class="cal-desc"><a href="https://go.gallagherstudent.com/Universities/Duke%20University/Home" target="_blank" style="color:#012169;">🔗 Gallagher学生门户(豁免/注册申请)</a></div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-desc"><a href="https://students.duke.edu/wellness/studenthealth/insurance/" target="_blank" style="color:#012169;">🔗 Duke医疗保险总览(Duke Student Affairs)</a></div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-desc"><a href="https://students.duke.edu/wellness/studenthealth/insurance/enrolling-in-or-waiving-smip/" target="_blank" style="color:#012169;">🔗 注册或豁免SMIP操作指南</a></div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-desc"><a href="https://students.duke.edu/wellness/studenthealth/insurance/faqs-contact-us/" target="_blank" style="color:#012169;">🔗 保险FAQ与联系方式</a></div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-desc"><a href="https://financialaid.duke.edu/making-most-your-aid/health-insurance/" target="_blank" style="color:#012169;">🔗 Karsh助学金办公室：保险费用说明</a></div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-desc"><a href="https://go.gallagherstudent.com/-/media/files/gsh/universities/duke-university/25-26-plan/20252026-duke-university-smip-faq.pdf" target="_blank" style="color:#012169;">📄 2025-2026 SMIP FAQ完整PDF(Gallagher)</a></div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-desc"><a href="https://www.bluecrossnc.com/content/dam/bcbsnc/pdf/members/student-blue/duke-university/duke-brochure-25-26.pdf" target="_blank" style="color:#012169;">📄 Student Blue保险手册PDF</a></div>
-              </div>
+              <div id="insurance-official-links"></div>
             </div>
           </div>
 
@@ -8258,6 +8238,28 @@ async function rejectPendingItem(id, filePath) {
       location.reload();
     };
     document.body.appendChild(logoutBtn);
+
+    // === 动态注入官方链接（绕过Cloudflare链接保护）===
+    var insuranceLinks = main.querySelector("#insurance-official-links");
+    if (insuranceLinks) {
+      var links = [
+        { url: "https://go.gallagherstudent.com/Universities/Duke%20University/Home", text: "🔗 Gallagher学生门户(豁免/注册申请)" },
+        { url: "https://students.duke.edu/wellness/studenthealth/insurance/", text: "🔗 Duke医疗保险总览(Duke Student Affairs)" },
+        { url: "https://students.duke.edu/wellness/studenthealth/insurance/enrolling-in-or-waiving-smip/", text: "🔗 注册或豁免SMIP操作指南" },
+        { url: "https://students.duke.edu/wellness/studenthealth/insurance/faqs-contact-us/", text: "🔗 保险FAQ与联系方式" },
+        { url: "https://financialaid.duke.edu/making-most-your-aid/health-insurance/", text: "🔗 Karsh助学金办公室：保险费用说明" },
+        { url: "https://go.gallagherstudent.com/-/media/files/gsh/universities/duke-university/25-26-plan/20252026-duke-university-smip-faq.pdf", text: "📄 2025-2026 SMIP FAQ完整PDF(Gallagher)" },
+        { url: "https://www.bluecrossnc.com/content/dam/bcbsnc/pdf/members/student-blue/duke-university/duke-brochure-25-26.pdf", text: "📄 Student Blue保险手册PDF" }
+      ];
+      links.forEach(function(item) {
+        var a = document.createElement("a");
+        a.href = item.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = item.text;
+        insuranceLinks.appendChild(a);
+      });
+    }
 
     // === 登录后还原图片/视频/PDF的真实路径 ===
     main.querySelectorAll("img[data-src]").forEach(function(el) {
