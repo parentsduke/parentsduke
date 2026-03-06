@@ -5974,6 +5974,125 @@ document.addEventListener("keydown", function(e) {
           <p style="margin:0 0 8px;">Claude是目前公认在长文本理解、写作质量和逻辑推理方面表现最突出的AI之一。它特别适合处理复杂的学术写作任务，比如论文初稿、文献综述的框架搭建、对一段复杂论点的分析与反驳。Claude的回答通常更有条理、更审慎，不容易乱说话，这对需要准确信息的学术场景尤为重要。</p>
           <p style="margin:0 0 12px;">Claude对长对话的记忆能力也很强，可以在一次对话里反复修改同一篇文章，不会"忘记"之前的版本。免费版已经够用，Claude Pro(约$20/月)提供更强的模型和更多使用次数。</p>
 
+
+          <div style="background:#eef3fa; border-left:4px solid #003366; padding:14px 16px; margin:0 0 12px; border-radius:6px; font-size:13px;">
+            <strong style="color:#003366; font-size:14px;">🛠 进阶功能：Claude Skills（技能）</strong><br><br>
+            Skills 是 Claude 最强大的进阶功能之一——把你的工作流程打包成一个文件夹，一次配置，每次对话都能自动调用，无需重复解释。对于有固定学习或科研流程的同学，Skills 可以大幅提升效率。
+
+            <div style="margin:12px 0 6px; font-size:12px; color:#555; line-height:1.8;">
+              预计只需 <strong>15–30 分钟</strong>即可完成你的第一个可用技能。
+            </div>
+
+            <!-- 章节导航 -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px; margin:10px 0 14px;">
+              <div style="background:#fff; border:1px solid #c8d4ea; border-radius:6px; padding:7px 10px; font-size:11px; color:#003366; font-weight:600;">第1章 基础概念</div>
+              <div style="background:#fff; border:1px solid #c8d4ea; border-radius:6px; padding:7px 10px; font-size:11px; color:#003366; font-weight:600;">第2章 规划与设计</div>
+              <div style="background:#fff; border:1px solid #c8d4ea; border-radius:6px; padding:7px 10px; font-size:11px; color:#003366; font-weight:600;">第3章 测试与迭代</div>
+              <div style="background:#fff; border:1px solid #c8d4ea; border-radius:6px; padding:7px 10px; font-size:11px; color:#003366; font-weight:600;">第4章 分发与共享</div>
+              <div style="background:#fff; border:1px solid #c8d4ea; border-radius:6px; padding:7px 10px; font-size:11px; color:#003366; font-weight:600;">第5章 模式与故障排除</div>
+            </div>
+
+            <!-- 第1章：基础 -->
+            <div style="border-top:1px solid #d0d8ee; padding-top:10px; margin-top:4px;">
+              <strong style="color:#003366;">📖 第1章：基础概念</strong><br>
+              <div style="margin:6px 0 4px; font-size:12px; color:#333; line-height:1.7;">
+                技能是一个文件夹，核心是 <code style="background:#e8ecf5; padding:1px 5px; border-radius:3px;">SKILL.md</code> 文件，采用三级渐进式加载设计：
+              </div>
+              <ul style="margin:4px 0 6px; padding-left:18px; font-size:12px; color:#444; line-height:1.8;">
+                <li><strong>第一级（YAML前置元数据）：</strong>始终加载，告诉 Claude 何时使用此技能</li>
+                <li><strong>第二级（SKILL.md 正文）：</strong>任务相关时加载，包含完整指令</li>
+                <li><strong>第三级（链接文件）：</strong>按需加载，详细文档或模板资产</li>
+              </ul>
+              <div style="background:#f4f6fb; border-radius:6px; padding:8px 12px; margin:6px 0; font-family:monospace; font-size:11px; color:#222; line-height:1.8;">
+                your-skill-name/<br>
+                ├── SKILL.md &nbsp;&nbsp;&nbsp;← 必需<br>
+                ├── scripts/ &nbsp;&nbsp;&nbsp;← 可选，Python/Bash脚本<br>
+                ├── references/ ← 可选，参考文档<br>
+                └── assets/ &nbsp;&nbsp;&nbsp;← 可选，模板素材
+              </div>
+            </div>
+
+            <!-- 第2章：规划与设计 -->
+            <div style="border-top:1px solid #d0d8ee; padding-top:10px; margin-top:10px;">
+              <strong style="color:#003366;">📐 第2章：规划与设计</strong><br>
+              <div style="margin:6px 0 4px; font-size:12px; color:#333; line-height:1.7;">
+                先确定 2–3 个具体用例，再开始写代码。SKILL.md 的格式：
+              </div>
+              <div style="background:#f4f6fb; border-radius:6px; padding:8px 12px; margin:6px 0; font-family:monospace; font-size:11px; color:#222; line-height:1.8;">
+                ---<br>
+                name: my-skill &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 短横线命名，无空格大写<br>
+                description: 功能说明+触发短语 ← 必须包含"何时使用"<br>
+                ---<br><br>
+                # 正文：给 Claude 的具体操作步骤
+              </div>
+              <div style="font-size:12px; color:#444; line-height:1.7; margin-top:4px;">
+                <strong>三类常见用途：</strong>
+                <ul style="margin:4px 0; padding-left:18px; line-height:1.8;">
+                  <li>📄 <strong>文档创建：</strong>论文框架、实验报告、周报等固定格式输出</li>
+                  <li>🔄 <strong>工作流自动化：</strong>多步骤科研流程，含验证门和错误处理</li>
+                  <li>🔗 <strong>MCP 增强：</strong>配合 Notion、Linear、GitHub 等工具的专属工作流</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 第3章：测试与迭代 -->
+            <div style="border-top:1px solid #d0d8ee; padding-top:10px; margin-top:10px;">
+              <strong style="color:#003366;">🧪 第3章：测试与迭代</strong><br>
+              <div style="font-size:12px; color:#444; line-height:1.8; margin-top:6px;">
+                <strong>专业提示：</strong>先针对单个最难的任务反复迭代，成功后再扩展到多个测试用例。<br>
+                测试三个维度：
+                <ul style="margin:4px 0; padding-left:18px;">
+                  <li><strong>触发测试：</strong>技能在正确时机加载（运行10–20个测试查询）</li>
+                  <li><strong>功能测试：</strong>输出正确、API调用成功、边缘情况处理有效</li>
+                  <li><strong>性能对比：</strong>与不使用技能相比，Token消耗、来回次数、失败率</li>
+                </ul>
+                <strong>调试技巧：</strong>问 Claude「你什么时候会使用 [技能名称]？」—— Claude 会引用描述来回答，根据缺失内容调整。
+              </div>
+            </div>
+
+            <!-- 第4章：分发与共享 -->
+            <div style="border-top:1px solid #d0d8ee; padding-top:10px; margin-top:10px;">
+              <strong style="color:#003366;">📦 第4章：安装与分发</strong><br>
+              <div style="font-size:12px; color:#444; line-height:1.8; margin-top:6px;">
+                <strong>安装方式（个人）：</strong><br>
+                claude.ai → 设置 → 能力 → 技能 → 上传 .zip 文件<br><br>
+                <strong>组织级：</strong>管理员可部署工作区范围技能，自动更新，集中管理（2025年12月起支持）<br><br>
+                <strong>通过 GitHub 分发：</strong>公开仓库 + 清晰 README + 安装指南，让其他人也能使用你的技能。
+              </div>
+            </div>
+
+            <!-- 第5章：模式与故障排除 -->
+            <div style="border-top:1px solid #d0d8ee; padding-top:10px; margin-top:10px;">
+              <strong style="color:#003366;">🔧 第5章：常用模式与故障排除</strong><br>
+              <div style="font-size:12px; color:#444; line-height:1.8; margin-top:6px;">
+                <strong>五大常用模式：</strong>
+                <ul style="margin:4px 0; padding-left:18px;">
+                  <li>顺序工作流程编排（多步骤按序执行）</li>
+                  <li>多 MCP 协调（跨服务数据传递）</li>
+                  <li>迭代优化（输出质量循环提升）</li>
+                  <li>上下文感知工具选择（根据情况选不同工具）</li>
+                  <li>领域特定智能（嵌入专业知识）</li>
+                </ul>
+                <strong>常见问题：</strong>
+                <ul style="margin:4px 0; padding-left:18px;">
+                  <li>技能未触发 → 描述太模糊，补充用户实际会说的触发短语</li>
+                  <li>触发过于频繁 → 添加负面触发器，明确适用范围</li>
+                  <li>指令未遵循 → 关键指令置顶，用项目符号，避免模糊语言</li>
+                  <li>文件上传失败 → 检查文件名是否严格为 <code style="background:#e8ecf5; padding:1px 4px; border-radius:3px;">SKILL.md</code>（区分大小写）</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 快速上手 + PDF下载 -->
+            <div style="border-top:1px solid #d0d8ee; padding-top:10px; margin-top:10px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+              <div style="font-size:12px; color:#333;">
+                <strong>🚀 快速上手：</strong>在 Claude 对话框输入<br>
+                <span style="background:#e8ecf5; padding:2px 8px; border-radius:4px; font-family:monospace; font-size:11px;">请用 skill-creator 帮我创建一个[你的用途]的 skill</span>
+              </div>
+              <a href="Claude技能构建完全指南.pdf" target="_blank" style="display:inline-block; background:#003366; color:#fff; padding:7px 14px; border-radius:6px; font-size:12px; font-weight:600; text-decoration:none; white-space:nowrap;">📥 下载完整指南 PDF</a>
+            </div>
+
+          </div>
           <h4 style="color:#003366; margin:12px 0 4px;"><a href="https://chatgpt.com" target="_blank" style="color:#003366;">ChatGPT(OpenAI)</a></h4>
           <p style="margin:0 0 8px;">ChatGPT是知名度最高、用户最多的AI工具，也是目前生态最完整的平台。它的最大优势是功能全面：可以联网搜索获取实时信息，可以生成图片(DALL·E)，可以分析上传的Excel/PDF文件，可以运行Python代码。对于需要多种能力组合的任务，ChatGPT的生态是目前最强的。</p>
           <p style="margin:0 0 12px;">GPT-4o是目前的主力模型，免费用户每天有一定次数限制，ChatGPT Plus($20/月)可以解锁更多功能。如果你只用一个AI，ChatGPT的通用性使它成为最合适的默认选择。</p>
