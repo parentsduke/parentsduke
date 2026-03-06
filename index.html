@@ -440,7 +440,7 @@ document.addEventListener("keydown", function(e) {
   <!-- ===== 新动向 ===== -->
   <div class="accordion">
     <button class="accordion-btn" onclick="toggleAccordion(this)">
-      <span>新动向</span><span class="accordion-arrow">&#9658;</span>
+      <span>🔔新动向</span><span class="accordion-arrow">&#9658;</span>
     </button>
     <div class="accordion-body" style="padding:10px 0 16px 0;">
 
@@ -8418,7 +8418,7 @@ async function submitUserVideo(btn) {
     uploaded_by: uploadedBy,
     status: "pending",
     file_type: "video"
-  });
+  }).select().single();
 
   if (dbResult.error) {
     msg.textContent = "提交失败：" + dbResult.error.message;
@@ -8426,8 +8426,23 @@ async function submitUserVideo(btn) {
     return;
   }
 
-  msg.textContent = "提交成功！等待管理员审核后将加入视频区。";
-  msg.style.color = "green";
+  var pendingId = dbResult.data.id;
+
+  // 转存到GitHub
+  msg.textContent = "转存到GitHub中...";
+  msg.style.color = "#c07000";
+
+  try {
+    await uploadToGitHubViaEdge(pendingId, "videos");
+    msg.textContent = "✅ 上传成功！已保存到GitHub，等待管理员审核。";
+    msg.style.color = "green";
+  } catch (e) {
+    var errMsg = e.message || "未知错误";
+    console.error("[视频投稿 GitHub转存失败]", errMsg);
+    msg.textContent = "⚠️ 已提交审核，等待管理员审核（GitHub转存失败：" + errMsg + "）";
+    msg.style.color = "#c07000";
+  }
+
   sendResendNotification('视频', title, uploadedBy);
   userPendingVideo = null;
   if (titleInput) titleInput.value = "";
@@ -8523,7 +8538,7 @@ async function submitPptFile() {
     uploaded_by: uploadedBy,
     status: "pending",
     file_type: "document"
-  });
+  }).select().single();
 
   if (dbResult.error) {
     msg.textContent = "提交失败：" + dbResult.error.message;
@@ -8531,8 +8546,21 @@ async function submitPptFile() {
     return;
   }
 
-  msg.textContent = "提交成功！等待管理员审核后将发布到文件区。";
-  msg.style.color = "green";
+  var pendingId = dbResult.data.id;
+
+  msg.textContent = "转存到GitHub中...";
+  msg.style.color = "#c07000";
+
+  try {
+    await uploadToGitHubViaEdge(pendingId, "documents");
+    msg.textContent = "✅ 上传成功！已保存到GitHub，等待管理员审核。";
+    msg.style.color = "green";
+  } catch (e) {
+    console.error("[文件投稿 GitHub转存失败]", e.message);
+    msg.textContent = "⚠️ 已提交审核，等待管理员审核（GitHub转存失败：" + e.message + "）";
+    msg.style.color = "#c07000";
+  }
+
   sendResendNotification('文件', title, uploadedBy);
   userPendingPpt = null;
   document.getElementById("pptFileTitle").value = "";
@@ -8740,10 +8768,23 @@ async function submitJingcaiFile() {
     uploaded_by: uploadedBy,
     status: "pending",
     file_type: "jingcai"
-  });
+  }).select().single();
   if (dbResult.error) { msg.textContent = "提交失败：" + dbResult.error.message; msg.style.color = "crimson"; return; }
-  msg.textContent = "提交成功！等待管理员审核后将发布。";
-  msg.style.color = "green";
+
+  var pendingId = dbResult.data.id;
+  msg.textContent = "转存到GitHub中...";
+  msg.style.color = "#c07000";
+
+  try {
+    await uploadToGitHubViaEdge(pendingId, "jingcai");
+    msg.textContent = "✅ 上传成功！已保存到GitHub，等待管理员审核。";
+    msg.style.color = "green";
+  } catch (e) {
+    console.error("[精彩分享 GitHub转存失败]", e.message);
+    msg.textContent = "⚠️ 已提交审核，等待管理员审核（GitHub转存失败：" + e.message + "）";
+    msg.style.color = "#c07000";
+  }
+
   sendResendNotification('精彩分享', title, uploadedBy);
   userPendingJingcai = null;
   document.getElementById("jingcaiFileTitle").value = "";
@@ -8974,7 +9015,7 @@ async function submitYuanfenFile() {
     uploaded_by: uploadedBy,
     status: "pending",
     file_type: "yuanfen"
-  });
+  }).select().single();
 
   if (dbResult.error) {
     msg.textContent = "提交失败：" + dbResult.error.message;
@@ -8982,8 +9023,20 @@ async function submitYuanfenFile() {
     return;
   }
 
-  msg.textContent = "提交成功！等待管理员审核后将发布。";
-  msg.style.color = "green";
+  var pendingId = dbResult.data.id;
+  msg.textContent = "转存到GitHub中...";
+  msg.style.color = "#c07000";
+
+  try {
+    await uploadToGitHubViaEdge(pendingId, "yuanfen");
+    msg.textContent = "✅ 上传成功！已保存到GitHub，等待管理员审核。";
+    msg.style.color = "green";
+  } catch (e) {
+    console.error("[有缘启示 GitHub转存失败]", e.message);
+    msg.textContent = "⚠️ 已提交审核，等待管理员审核（GitHub转存失败：" + e.message + "）";
+    msg.style.color = "#c07000";
+  }
+
   sendResendNotification('有缘启示', title, uploadedBy);
   userPendingYuanfen = null;
   document.getElementById("yuanfenFileTitle").value = "";
