@@ -440,7 +440,7 @@ document.addEventListener("keydown", function(e) {
   <!-- ===== 新动向 ===== -->
   <div class="accordion">
     <button class="accordion-btn" onclick="toggleAccordion(this)">
-      <span>🔔 新动向</span><span class="accordion-arrow">&#9658;</span>
+      <span>新动向</span><span class="accordion-arrow">&#9658;</span>
     </button>
     <div class="accordion-body" style="padding:10px 0 16px 0;">
 
@@ -7109,6 +7109,22 @@ function switchAdminTab(tab, btn) {
   if (tab === 'xindongxiang') loadXdxEntries();
 }
 
+// ===== Resend 邮件通知（通过Supabase Edge Function） =====
+async function sendResendNotification(type, title, submittedBy) {
+  try {
+    await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/send-notification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8'
+      },
+      body: JSON.stringify({ type, title, submittedBy })
+    });
+  } catch(e) {
+    console.warn('[通知发送失败]', e.message);
+  }
+}
+
 // ===== 新动向 AI生成与管理 =====
 
 async function generateXdxEntry() {
@@ -8246,6 +8262,7 @@ async function submitUserPhoto() {
     var ghUrl = await uploadToGitHubViaEdge(pendingId, "images");
     msg.textContent = "✅ 上传成功！已保存到GitHub，等待管理员审核。";
     msg.style.color = "green";
+    sendResendNotification('照片', title, uploadedBy);
   } catch (e) {
     // 转存失败时：保留 pending 记录（等待管理员审核），提示用户
     var errMsg = e.message || "未知错误";
@@ -8308,6 +8325,7 @@ async function submitQAQuestion() {
 
   msg.textContent = "✅ 问题已提交！感谢您的提问，管理员将审核后添加到Q&A部分。";
   msg.style.color = "green";
+  sendResendNotification('Q&A', question, uploadedBy);
 
   setTimeout(function() {
     document.getElementById("qaQuestion").value = "";
@@ -8410,6 +8428,7 @@ async function submitUserVideo(btn) {
 
   msg.textContent = "提交成功！等待管理员审核后将加入视频区。";
   msg.style.color = "green";
+  sendResendNotification('视频', title, uploadedBy);
   userPendingVideo = null;
   if (titleInput) titleInput.value = "";
   var preview = container.querySelector('#videoFilePreview');
@@ -8514,6 +8533,7 @@ async function submitPptFile() {
 
   msg.textContent = "提交成功！等待管理员审核后将发布到文件区。";
   msg.style.color = "green";
+  sendResendNotification('文件', title, uploadedBy);
   userPendingPpt = null;
   document.getElementById("pptFileTitle").value = "";
   document.getElementById("pptFilePreview").style.display = "none";
@@ -8724,6 +8744,7 @@ async function submitJingcaiFile() {
   if (dbResult.error) { msg.textContent = "提交失败：" + dbResult.error.message; msg.style.color = "crimson"; return; }
   msg.textContent = "提交成功！等待管理员审核后将发布。";
   msg.style.color = "green";
+  sendResendNotification('精彩分享', title, uploadedBy);
   userPendingJingcai = null;
   document.getElementById("jingcaiFileTitle").value = "";
   document.getElementById("jingcaiFilePreview").style.display = "none";
@@ -8963,6 +8984,7 @@ async function submitYuanfenFile() {
 
   msg.textContent = "提交成功！等待管理员审核后将发布。";
   msg.style.color = "green";
+  sendResendNotification('有缘启示', title, uploadedBy);
   userPendingYuanfen = null;
   document.getElementById("yuanfenFileTitle").value = "";
   document.getElementById("yuanfenFilePreview").style.display = "none";
