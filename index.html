@@ -288,7 +288,24 @@ document.addEventListener("keydown", function(e) {
       </div>
     </div>
 
-    <!-- ===== 视频集（动态加载） ===== -->
+    <!-- ===== 光影录（管理员专属，动态加载） ===== -->
+    <div class="admin-album-label" id="adminVideoLabel" style="display:none;">🎬 光影录</div>
+    <div class="video-gallery-container" id="adminVideoGalleryContainer" style="display:none;">
+      <div class="video-gallery-main">
+        <video id="adminMainVideo" class="video-gallery-player" controls>
+          <source src="" type="video/mp4">
+        </video>
+        <div class="video-gallery-title" id="adminVideoTitle">🎬 加载中...</div>
+      </div>
+      <div class="video-gallery-thumbs" id="adminVideoThumbs">
+        <div class="video-thumb active" id="adminVideoLoadingThumb">
+          <div class="video-thumb-icon">⏳</div>
+          <div class="video-thumb-label">加载中...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 大家拍（动态加载） ===== -->
     <div class="video-gallery-container" id="videoGalleryContainer">
       <div class="video-gallery-main">
         <video id="mainVideo" class="video-gallery-player" controls>
@@ -6560,8 +6577,9 @@ document.addEventListener("keydown", function(e) {
         <div id="adminTabNav" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
           <button class="admin-tab-btn admin-tab-active" onclick="switchAdminTab('xindongxiang',this)">🔔 新动向</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('album',this)">🗂 聚会吧</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('admin_video',this)">🎬 光影录</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('photos',this)">📸 风景线</button>
-          <button class="admin-tab-btn" onclick="switchAdminTab('videos',this)">🎬 视频集</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('videos',this)">🎬 大家拍</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('files',this)">📁 PPT/文件</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('yuanfen',this)">💞 有缘启示</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_photo',this)">⏳ 待审核照片</button>
@@ -6623,6 +6641,29 @@ document.addEventListener("keydown", function(e) {
           </div>
         </div>
 
+        <!-- 光影录 -->
+        <div id="adminTab-admin_video" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;">共 <b id="approvedAdminVideoBadge">-</b></span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="loadApprovedAdminVideoManager()" class="admin-action-btn">🔄 刷新</button>
+              <button onclick="deleteAllAdminVideos()" class="admin-danger-btn">🗑 全部清空</button>
+            </div>
+          </div>
+          <div style="border:2px dashed #003366;border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#eef3fa;margin-bottom:14px;"
+            ondragover="event.preventDefault();this.style.background='#d8e8fc';"
+            ondragleave="this.style.background='#eef3fa';"
+            ondrop="adminVideoFileDrop2(event)"
+            onclick="document.getElementById('adminVideoFileInput2').click()">
+            <div style="font-size:28px;">🎬</div>
+            <div style="color:#003366;font-weight:bold;margin-top:4px;font-size:13px;">点击或拖拽视频直接上传（无需审核，直接发布）</div>
+            <div style="color:#888;font-size:11px;margin-top:2px;">支持 MP4、MOV、AVI 等格式</div>
+            <input type="file" id="adminVideoFileInput2" accept="video/*" multiple style="display:none;" onchange="adminVideoFilesSelected(this.files)">
+          </div>
+          <div id="adminVideoUploadProgress2" style="font-size:13px;color:#555;margin-bottom:10px;"></div>
+          <div id="approvedAdminVideoManager" style="color:#aaa;font-size:13px;">点击刷新加载已上传视频</div>
+        </div>
+
         <!-- 聚会吧 -->
         <div id="adminTab-album" class="admin-tab-panel" style="display:none;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -6659,7 +6700,7 @@ document.addEventListener("keydown", function(e) {
           <div id="approvedPhotoManager" style="color:#aaa;font-size:13px;">加载中...</div>
         </div>
 
-        <!-- 视频集 -->
+        <!-- 大家拍 -->
         <div id="adminTab-videos" class="admin-tab-panel" style="display:none;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
             <span style="font-size:13px;color:#555;">共 <b id="approvedVideoBadge">-</b> 个</span>
@@ -6864,6 +6905,7 @@ function verifyAdmin() {
     loadApprovedJingcaiManager();
     loadAlbumPhotoManager();
     loadVideoGallery();
+    loadApprovedAdminVideoManager();
     loadPendingUploads();
     loadPendingVideos();
     loadPendingPpts();
@@ -7445,8 +7487,8 @@ function generateThumbnailPath(originalPath) {
   return beforeExt + '_thumb.webp';
 }
 
-// ===== 视频集管理 =====
-// ===== 视频集动态加载 =====
+// ===== 大家拍管理 =====
+// ===== 大家拍动态加载 =====
 async function loadVideoGallery() {
   var supabase = window._supabaseClient;
   var thumbsEl = document.getElementById("videoThumbs");
@@ -7525,6 +7567,166 @@ function videoAdminFileDrop(event) {
   event.currentTarget.style.background = "#eef3fa";
   var files = Array.from(event.dataTransfer.files).filter(function(f){ return f.type.startsWith("video/"); });
   if (files.length) videoAdminFilesSelected(files);
+}
+
+// ===== 光影录管理（管理员专属，无需审核）=====
+async function loadAdminVideoGallery() {
+  var supabase = window._supabaseClient;
+  var thumbsEl = document.getElementById("adminVideoThumbs");
+  var mainVideo = document.getElementById("adminMainVideo");
+  var titleEl = document.getElementById("adminVideoTitle");
+  var container = document.getElementById("adminVideoGalleryContainer");
+  var label = document.getElementById("adminVideoLabel");
+  if (!supabase || !thumbsEl) return;
+
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "approved").eq("file_type", "admin_video")
+    .order("uploaded_at", { ascending: true });
+
+  var loadingThumb = document.getElementById("adminVideoLoadingThumb");
+  if (loadingThumb) loadingThumb.remove();
+
+  if (result.error || !result.data || !result.data.length) {
+    if (container) container.style.display = "none";
+    if (label) label.style.display = "none";
+    return;
+  }
+
+  if (container) container.style.display = "";
+  if (label) label.style.display = "";
+
+  var supabaseUrl = "https://ritglkwqpwlcjwemhfqd.supabase.co";
+  window.adminVideoList = [];
+  thumbsEl.innerHTML = "";
+
+  result.data.forEach(function(item, idx) {
+    var src = item.file_path.startsWith("github:")
+      ? item.file_path.replace("github:", "")
+      : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    window.adminVideoList.push({ src: src, label: item.title || item.file_name });
+
+    var div = document.createElement("div");
+    div.className = "video-thumb" + (idx === 0 ? " active" : "");
+    div.setAttribute("data-admin-video-id", item.id);
+    div.innerHTML = '<div class="video-thumb-icon">▶</div><div class="video-thumb-label">' + (item.title || item.file_name) + '</div>';
+    div.onclick = (function(i, el) { return function() { switchAdminVideo(i, el); }; })(idx, div);
+    thumbsEl.appendChild(div);
+  });
+
+  if (window.adminVideoList.length > 0 && mainVideo) {
+    mainVideo.querySelector("source").src = window.adminVideoList[0].src;
+    mainVideo.load();
+    if (titleEl) titleEl.textContent = "🎬 " + window.adminVideoList[0].label;
+  }
+}
+
+window.switchAdminVideo = function(index, thumbEl) {
+  var mainVideo = document.getElementById("adminMainVideo");
+  var titleEl = document.getElementById("adminVideoTitle");
+  var thumbs = document.querySelectorAll("#adminVideoThumbs .video-thumb");
+  if (!mainVideo || !window.adminVideoList || !window.adminVideoList[index]) return;
+  mainVideo.pause();
+  mainVideo.querySelector("source").src = window.adminVideoList[index].src;
+  mainVideo.load();
+  if (titleEl) titleEl.textContent = "🎬 " + window.adminVideoList[index].label;
+  thumbs.forEach(function(t) { t.classList.remove("active"); });
+  if (thumbEl) thumbEl.classList.add("active");
+};
+
+async function adminVideoFilesSelected(files) {
+  var supabase = window._supabaseClient;
+  if (!supabase || !files.length) return;
+  var prog = document.getElementById("adminVideoUploadProgress2");
+  var supabaseUrl = "https://ritglkwqpwlcjwemhfqd.supabase.co";
+  var { data: { session } } = await supabase.auth.getSession();
+  var uploader = session ? session.user.email : "admin";
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    if (prog) prog.textContent = "上传中 " + (i+1) + "/" + files.length + "：" + file.name;
+    var ext = file.name.split(".").pop().toLowerCase();
+    var filePath = "admin_video/" + Date.now() + "_" + Math.random().toString(36).substr(2,6) + "." + ext;
+    var uploadRes = await supabase.storage.from("uploads").upload(filePath, file, { upsert: false });
+    if (uploadRes.error) { if (prog) prog.textContent = "❌ 上传失败：" + uploadRes.error.message; continue; }
+    var title = file.name.replace(/\.[^.]+$/, "");
+    await supabase.from("pending_uploads").insert({
+      file_path: filePath, file_name: file.name, title: title,
+      uploaded_by: uploader, status: "approved", file_type: "admin_video"
+    });
+  }
+  if (prog) prog.textContent = "✅ 上传完成（共 " + files.length + " 个）";
+  loadAdminVideoGallery();
+  loadApprovedAdminVideoManager();
+}
+
+function adminVideoFileDrop2(event) {
+  event.preventDefault();
+  event.currentTarget.style.background = "#eef3fa";
+  var files = Array.from(event.dataTransfer.files).filter(function(f){ return f.type.startsWith("video/"); });
+  if (files.length) adminVideoFilesSelected(files);
+}
+
+async function loadApprovedAdminVideoManager() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("approvedAdminVideoManager");
+  var badge = document.getElementById("approvedAdminVideoBadge");
+  if (!container) return;
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "approved").eq("file_type", "admin_video")
+    .order("uploaded_at", { ascending: false });
+  var items = result.data || [];
+  if (badge) badge.textContent = items.length + " 个";
+  if (!items.length) { container.innerHTML = '<span style="color:#aaa;">暂无光影录</span>'; return; }
+  var supabaseUrl = "https://ritglkwqpwlcjwemhfqd.supabase.co";
+  var html = "";
+  items.forEach(function(item) {
+    var url = item.file_path.startsWith("github:") ? item.file_path.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+item.file_path;
+    var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
+    html += '<div class="admin-mgr-card" data-id="' + item.id + '" data-path="' + encodeURIComponent(item.file_path) + '" data-title="' + encodeURIComponent(item.title||"") + '" data-type="admin_video">' +
+      '<div class="admin-mgr-icon">🎬</div>' +
+      '<div class="admin-mgr-body">' +
+        '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
+        '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||"管理员") + ' · ' + date + '</div>' +
+        '<div class="admin-mgr-actions">' +
+          '<a href="' + url + '" target="_blank" class="admin-mgr-edit-btn" style="text-decoration:none;">▶ 预览</a>' +
+          '<button class="admin-mgr-edit-btn" onclick="adminEditTitle(this)">✏️ 改标题</button>' +
+          '<button class="admin-mgr-del-btn" onclick="deleteAdminVideoItem(this)">🗑 删除</button>' +
+        '</div>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+async function deleteAdminVideoItem(btn) {
+  var card = btn.closest(".admin-mgr-card");
+  var id = card.dataset.id;
+  var filePath = decodeURIComponent(card.dataset.path);
+  if (!confirm("确认永久删除这个视频？不可恢复。")) return;
+  btn.disabled = true; btn.textContent = "删除中...";
+  var supabase = window._supabaseClient;
+  await supabase.from("pending_uploads").delete().eq("id", id);
+  if (!filePath.startsWith("github:")) {
+    await supabase.storage.from("uploads").remove([filePath]);
+  }
+  card.style.opacity = "0";
+  setTimeout(function(){ card.remove(); }, 300);
+  loadAdminVideoGallery();
+  loadApprovedAdminVideoManager();
+}
+
+async function deleteAllAdminVideos() {
+  if (!confirm("确认清空全部光影录？此操作不可恢复。")) return;
+  var supabase = window._supabaseClient;
+  var result = await supabase.from("pending_uploads").select("id,file_path").eq("status","approved").eq("file_type","admin_video");
+  if (result.error || !result.data.length) { alert("暂无视频可清空"); return; }
+  var ids = result.data.map(function(i){return i.id;});
+  var paths = result.data.map(function(i){return i.file_path;}).filter(function(p){return !p.startsWith("github:");});
+  await supabase.from("pending_uploads").delete().in("id", ids);
+  if (paths.length) await supabase.storage.from("uploads").remove(paths);
+  loadAdminVideoGallery();
+  loadApprovedAdminVideoManager();
+  alert("✅ 已清空全部光影录（共 " + ids.length + " 个）");
 }
 
 async function loadApprovedVideoManager() {
@@ -9741,7 +9943,7 @@ async function rejectPendingItem(id, filePath) {
       }, { passive: true });
     })();
 
-    // === 视频集切换（动态加载）===
+    // === 大家拍切换（动态加载）===
     window.videoList = [];  // 由 loadVideoGallery() 填充
 
     window.switchVideo = function(index, thumbEl) {
@@ -9811,7 +10013,10 @@ async function rejectPendingItem(id, filePath) {
     // === 加载互相观望各自精彩 ===
     loadJingcaiItems();
 
-    // === 加载视频集 ===
+    // === 加载光影录 ===
+    loadAdminVideoGallery();
+
+    // === 加载大家拍 ===
     loadVideoGallery();
 
     // === 加载聚会吧动态照片 ===
@@ -10161,7 +10366,7 @@ async function rejectPendingItem(id, filePath) {
     color: #0f2044;
   }
 
-  /* ===== 视频集 ===== */
+  /* ===== 大家拍 ===== */
   .video-gallery-container {
     max-width: 700px;
     margin: 20px auto;
