@@ -10,7 +10,7 @@
 // openOverlay/closeOverlay defined here in <head> so onclick attributes work immediately
 
 
-// ===== 精选相册删除记录管理 =====
+// ===== 风景线删除记录管理 =====
 function getDeletedAdminPhotos() {
   var deleted = localStorage.getItem('deletedAdminPhotos');
   return deleted ? JSON.parse(deleted) : [];
@@ -118,18 +118,18 @@ document.addEventListener("click", function(e) {
 
 // 按 Escape 关闭
 
-// ===== 页面加载时清理已删除的精选相册照片 =====
+// ===== 页面加载时清理已删除的风景线照片 =====
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('[精选相册] 初始化开始...');
+  console.log('[风景线] 初始化开始...');
   
   setTimeout(function() {
     var deleted = getDeletedAdminPhotos();
     if (deleted.length === 0) {
-      console.log('[精选相册] ✅ 无已删除照片');
+      console.log('[风景线] ✅ 无已删除照片');
       return;
     }
     
-    console.log('[精选相册] 📝 已删除:' + deleted.length + '张');
+    console.log('[风景线] 📝 已删除:' + deleted.length + '张');
     
     var track = document.getElementById("adminSlideshowTrack");
     if (!track) return;
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (adminList) {
         adminList.innerHTML = '<span style="color:#aaa;">暂无待审核照片</span>';
       }
-      console.log('[精选相册] 初始化：所有照片已删除，隐藏管理员缩略图');
+      console.log('[风景线] 初始化：所有照片已删除，隐藏管理员缩略图');
     }
     
     if (typeof adminSlide !== 'undefined') {
@@ -220,64 +220,28 @@ document.addEventListener("keydown", function(e) {
 <template id="real-content">
   <div>
 
-    <!-- ===== 照片轮播相册 ===== -->
-    <div class="slideshow-container">
+    <!-- ===== 照片轮播相册（动态加载） ===== -->
+    <div class="slideshow-container" id="mainAlbumContainer">
       <div class="slideshow-track" id="slideshowTrack">
-        <div class="slide active">
-          <img data-src="231104S.png" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="231104P.png" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="110423F.jpg" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="240511.png" alt="活动照片" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="聚会.png" alt="聚会照片" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="SH30.png" alt="上海30届" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="聚会4.png" alt="聚会照片" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="BJ30.png" alt="北京30届" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="BJ29.png" alt="北京29届" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="GD29.png" alt="广东29届" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="agenda.png" alt="议程" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="30_1.png" alt="30届照片1" onclick="openOverlay(this.src, this.alt)">
-        </div>
-        <div class="slide">
-          <img data-src="30_2.png" alt="30届照片2" onclick="openOverlay(this.src, this.alt)">
+        <!-- 照片由 loadAlbumPhotosToSlideshow() 动态注入 -->
+        <div class="slide active" id="albumLoadingSlide">
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;min-height:260px;color:#aaa;font-size:14px;">
+            <span>📷 加载中...</span>
+          </div>
         </div>
       </div>
-
       <!-- 左右箭头 -->
       <button class="slide-btn slide-prev" onclick="moveSlide(-1)">&#10094;</button>
       <button class="slide-btn slide-next" onclick="moveSlide(1)">&#10095;</button>
-
       <!-- 圆点指示器 -->
       <div class="slide-dots" id="slideDots"></div>
-
       <!-- 计数器 -->
-      <div class="slide-counter" id="slideCounter">1 / 13</div>
+      <div class="slide-counter" id="slideCounter"></div>
     </div>
 
-    <!-- ===== 管理员精选相册（幻灯片轮播） ===== -->
+    <!-- ===== 管理员风景线（幻灯片轮播） ===== -->
     <div id="adminAlbumSection" style="display:none;">
-      <div class="admin-album-label">📸 精选相册</div>
+      <div class="admin-album-label">📸 风景线</div>
       <div class="slideshow-container" id="adminSlideshowContainer">
         <div class="slideshow-track" id="adminSlideshowTrack">
           <!-- 照片动态加载 -->
@@ -6599,7 +6563,8 @@ document.addEventListener("keydown", function(e) {
         <!-- Tab 导航 -->
         <div id="adminTabNav" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
           <button class="admin-tab-btn admin-tab-active" onclick="switchAdminTab('xindongxiang',this)">🔔 新动向</button>
-          <button class="admin-tab-btn" onclick="switchAdminTab('photos',this)">📸 精选相册</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('album',this)">🗂 聚会吧</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('photos',this)">📸 风景线</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('videos',this)">🎬 视频集</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('files',this)">📁 PPT/文件</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('yuanfen',this)">💞 有缘启示</button>
@@ -6607,6 +6572,7 @@ document.addEventListener("keydown", function(e) {
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_video',this)">⏳ 待审核视频</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_file',this)">⏳ 待审核文件</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_yuanfen',this)">⏳ 待审核启示</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('jingcai',this)">🖼 已发布精彩</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_jingcai',this)">⏳ 待审核精彩</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_qa',this)">❓ 待审核Q&A</button>
         </div>
@@ -6661,7 +6627,31 @@ document.addEventListener("keydown", function(e) {
           </div>
         </div>
 
-        <!-- 精选相册 -->
+        <!-- 聚会吧 -->
+        <div id="adminTab-album" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;">共 <b id="albumPhotoBadge">-</b> 张（静态照片不计入）</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="loadAlbumPhotoManager()" class="admin-action-btn">🔄 刷新</button>
+              <button onclick="deleteAllAlbumPhotos()" class="admin-danger-btn">🗑 全部清空</button>
+            </div>
+          </div>
+          <!-- 上传区 -->
+          <div style="border:2px dashed #003366;border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#eef3fa;margin-bottom:14px;"
+            ondragover="event.preventDefault();this.style.background='#d8e8fc';"
+            ondragleave="this.style.background='#eef3fa';"
+            ondrop="albumAdminFileDrop(event)"
+            onclick="document.getElementById('albumAdminFileInput').click()">
+            <div style="font-size:28px;">🖼️</div>
+            <div style="color:#003366;font-weight:bold;margin-top:4px;font-size:13px;">点击或拖拽图片直接上传到聚会吧</div>
+            <div style="color:#888;font-size:11px;margin-top:2px;">支持 JPG、PNG、GIF（无需审核，直接发布）</div>
+            <input type="file" id="albumAdminFileInput" accept="image/*" multiple style="display:none;" onchange="albumAdminFilesSelected(this.files)">
+          </div>
+          <div id="albumUploadProgress" style="font-size:13px;color:#555;margin-bottom:10px;"></div>
+          <div id="albumPhotoManager" style="color:#aaa;font-size:13px;">点击刷新加载已上传照片</div>
+        </div>
+
+        <!-- 风景线 -->
         <div id="adminTab-photos" class="admin-tab-panel" style="display:none;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
             <span style="font-size:13px;color:#555;">共 <b id="approvedPhotoBadge">-</b> 张</span>
@@ -6746,6 +6736,18 @@ document.addEventListener("keydown", function(e) {
         </div>
 
         <!-- 待审核互相观望各自精彩 -->
+        <!-- 已发布精彩 -->
+        <div id="adminTab-jingcai" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;">共 <b id="approvedJingcaiBadge">-</b> 条</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="loadApprovedJingcaiManager()" class="admin-action-btn">🔄 刷新</button>
+              <button onclick="deleteAllApprovedJingcai()" class="admin-danger-btn">🗑 全部清空</button>
+            </div>
+          </div>
+          <div id="approvedJingcaiManager" style="color:#aaa;font-size:13px;">加载中...</div>
+        </div>
+
         <div id="adminTab-pending_jingcai" class="admin-tab-panel" style="display:none;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
             <span style="font-size:13px;color:#555;">互相观望各自精彩 待审核内容</span>
@@ -6851,6 +6853,8 @@ function verifyAdmin() {
     loadApprovedVideoManager();
     loadApprovedFileManager();
     loadApprovedYuanfenManager();
+    loadApprovedJingcaiManager();
+    loadAlbumPhotoManager();
     loadPendingUploads();
     loadPendingVideos();
     loadPendingPpts();
@@ -6981,7 +6985,7 @@ async function startAdminUpload() {
       if (statusEl) { statusEl.textContent = "转存 GitHub 中..."; statusEl.style.color = "#c07000"; }
       var ghUrl = await uploadToGitHubViaEdge(pendingId, "images");
       if (statusEl) { statusEl.textContent = "成功 ✓ GitHub"; statusEl.style.color = "green"; }
-      // 加入精选相册（使用 GitHub URL）
+      // 加入风景线（使用 GitHub URL）
       addAdminAlbumPhoto(ghUrl, displayName);
     } catch (e) {
       // 转存失败：删除 pending 记录，提示用户具体错误
@@ -7064,7 +7068,7 @@ function copyAdminUrl(url) {
 async function deleteAdminFile(filePath, folder) {
   var isImage = folder === "images";
   var msg = isImage
-    ? "确认删除此图片？\n将同时从精选相册中移除。\n\n" + filePath
+    ? "确认删除此图片？\n将同时从风景线中移除。\n\n" + filePath
     : "确认删除此文件？\n" + filePath;
   if (!confirm(msg)) return;
 
@@ -7090,7 +7094,7 @@ async function deleteAdminFile(filePath, folder) {
       await supabase.from("pending_uploads").delete().like("file_path", "github:%").eq("file_name", filePath.split("/").pop());
     }
 
-    // 3. 从精选相册轮播中移除
+    // 3. 从风景线轮播中移除
     removeAdminAlbumPhoto(pubUrl);
     // 同时尝试移除 GitHub raw URL（如果 Edge Function 成功转存过）
     var track = document.getElementById("adminSlideshowTrack");
@@ -7108,7 +7112,7 @@ async function deleteAdminFile(filePath, folder) {
   loadAdminFileList();
 }
 
-// ===== 精选相册管理（管理员可选择性删除）=====
+// ===== 风景线管理（管理员可选择性删除）=====
 // ===== Tab 切换 =====
 function switchAdminTab(tab, btn) {
   document.querySelectorAll('.admin-tab-panel').forEach(function(p) { p.style.display = 'none'; });
@@ -7289,7 +7293,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 // ===== 通用删除单条已发布内容 =====
 async function deleteApprovedItem(id, filePath, onDone) {
   var supabase = window._supabaseClient;
-  // 软删除：只将file_path设为null，这样精选相册就不会显示
+  // 软删除：只将file_path设为null，这样风景线就不会显示
   await supabase.from("pending_uploads").update({ file_path: null }).eq("id", id);
   if (filePath && !filePath.startsWith("github:")) {
     await supabase.storage.from("uploads").remove([filePath]);
@@ -7382,13 +7386,13 @@ async function adminDeleteItem(btn) {
       }
     }
     
-    // 步骤3：从精选相册移除
+    // 步骤3：从风景线移除
     if (type === 'photo') {
-      console.log("\n[步骤3] 从精选相册移除...");
+      console.log("\n[步骤3] 从风景线移除...");
       var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
       var imgUrl = filePath.startsWith("github:") ? filePath.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+filePath;
       removeAdminAlbumPhoto(imgUrl);
-      console.log("✅ 精选相册已更新");
+      console.log("✅ 风景线已更新");
     }
     
     // 步骤4：从管理列表中移除卡片
@@ -7585,6 +7589,203 @@ async function deleteAllApprovedYuanfen() {
   loadApprovedYuanfenManager();
 }
 
+// ===== 聚会吧管理（管理员直接上传，无需审核）=====
+async function loadAlbumPhotoManager() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("albumPhotoManager");
+  var badge = document.getElementById("albumPhotoBadge");
+  if (!container) return;
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "approved").eq("file_type", "album")
+    .order("uploaded_at", { ascending: false });
+  if (result.error) { container.innerHTML = '<span style="color:crimson;">加载失败：' + result.error.message + '</span>'; return; }
+  var items = result.data || [];
+  if (badge) badge.textContent = items.length + " 张";
+  if (!items.length) { container.innerHTML = '<span style="color:#aaa;">暂无动态上传照片（静态照片在HTML中）</span>'; return; }
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var html = '';
+  items.forEach(function(item) {
+    var imgUrl = item.file_path.startsWith("github:")
+      ? item.file_path.replace("github:", "")
+      : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
+    html += '<div class="admin-mgr-card" data-id="' + item.id + '" data-path="' + encodeURIComponent(item.file_path) + '" data-title="' + encodeURIComponent(item.title||"") + '" data-type="album">' +
+      '<img class="admin-mgr-thumb" src="' + imgUrl + '" onclick="openOverlay('' + imgUrl + '','')">' +
+      '<div class="admin-mgr-body">' +
+        '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
+        '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||"管理员") + ' · ' + date + '</div>' +
+        '<div class="admin-mgr-actions">' +
+          '<button class="admin-mgr-edit-btn" onclick="adminEditTitle(this)">✏️ 改标题</button>' +
+          '<button class="admin-mgr-del-btn" onclick="deleteAlbumPhotoItem(this)">🗑 删除</button>' +
+        '</div>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+async function deleteAlbumPhotoItem(btn) {
+  var card = btn.closest('.admin-mgr-card');
+  var id = card.dataset.id;
+  var filePath = decodeURIComponent(card.dataset.path);
+  if (!confirm("确认永久删除这张照片？不可恢复。")) return;
+  btn.disabled = true; btn.textContent = "删除中...";
+  var supabase = window._supabaseClient;
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  await supabase.from("pending_uploads").delete().eq("id", id);
+  if (filePath.startsWith("github:")) {
+    await deleteFromGitHubViaEdge(filePath.replace("github:", ""));
+  } else {
+    await supabase.storage.from("uploads").remove([filePath]);
+  }
+  // 从前台轮播移除
+  var imgUrl = filePath.startsWith("github:") ? filePath.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+filePath;
+  removeAlbumSlide(imgUrl);
+  loadAlbumPhotoManager();
+}
+
+async function deleteAllAlbumPhotos() {
+  if (!confirm("确认清空全部动态上传的聚会吧照片？静态照片不受影响，此操作不可恢复。")) return;
+  var supabase = window._supabaseClient;
+  var result = await supabase.from("pending_uploads").select("id,file_path").eq("status","approved").eq("file_type","album");
+  if (result.error || !result.data.length) { alert("暂无动态照片可清空"); return; }
+  var ids = result.data.map(function(i){return i.id;});
+  var paths = result.data.map(function(i){return i.file_path;});
+  await supabase.from("pending_uploads").delete().in("id", ids);
+  var staticPaths = paths.filter(function(p){return !p.startsWith("github:");});
+  if (staticPaths.length) await supabase.storage.from("uploads").remove(staticPaths);
+  for (var p of paths.filter(function(p){return p.startsWith("github:");})) {
+    await deleteFromGitHubViaEdge(p.replace("github:",""));
+  }
+  // 清空前台动态slides
+  var track = document.getElementById("slideshowTrack");
+  if (track) {
+    track.querySelectorAll('.slide[data-dynamic="1"]').forEach(function(s){s.remove();});
+    reinitMainSlideshow();
+  }
+  loadAlbumPhotoManager();
+  alert("✅ 已清空全部动态上传照片（共 " + ids.length + " 张）");
+}
+
+// 管理员直接上传照片到聚会吧（无需审核）
+async function albumAdminFilesSelected(files) {
+  var supabase = window._supabaseClient;
+  if (!supabase || !files.length) return;
+  var prog = document.getElementById("albumUploadProgress");
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var { data: { session } } = await supabase.auth.getSession();
+  var uploader = session ? session.user.email : "admin";
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    if (prog) prog.textContent = "上传中 " + (i+1) + "/" + files.length + "：" + file.name;
+    var ext = file.name.split(".").pop().toLowerCase();
+    var filePath = "album/" + Date.now() + "_" + Math.random().toString(36).substr(2,6) + "." + ext;
+    var uploadRes = await supabase.storage.from("uploads").upload(filePath, file, { upsert: false });
+    if (uploadRes.error) { if (prog) prog.textContent = "❌ 上传失败：" + uploadRes.error.message; continue; }
+    var title = file.name.replace(/\.[^.]+$/, "");
+    await supabase.from("pending_uploads").insert({
+      file_path: filePath, file_name: file.name, title: title,
+      uploaded_by: uploader, status: "approved", file_type: "album"
+    });
+    // 追加到前台轮播
+    var imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + filePath;
+    appendAlbumSlide(imgUrl, title);
+  }
+  if (prog) prog.textContent = "✅ 上传完成（共 " + files.length + " 张）";
+  loadAlbumPhotoManager();
+}
+
+function albumAdminFileDrop(event) {
+  event.preventDefault();
+  event.currentTarget.style.background = '#eef3fa';
+  var files = event.dataTransfer.files;
+  var imageFiles = Array.from(files).filter(function(f){return f.type.startsWith("image/");});
+  if (imageFiles.length) albumAdminFilesSelected(imageFiles);
+}
+
+// 向前台聚会吧轮播追加一张动态照片（管理员上传后实时追加）
+function appendAlbumSlide(imgUrl, title) {
+  var track = document.getElementById("slideshowTrack");
+  if (!track) return;
+  var div = document.createElement("div");
+  div.className = "slide";
+  div.setAttribute("data-dynamic", "1");
+  div.setAttribute("data-url", imgUrl);
+  div.innerHTML = '<img src="' + imgUrl + '" alt="' + (title||"") + '" onclick="openOverlay(this.src, this.alt)">';
+  track.appendChild(div);
+  reinitMainSlideshow();
+}
+
+// 从前台聚会吧轮播移除指定url的slide
+function removeAlbumSlide(imgUrl) {
+  var track = document.getElementById("slideshowTrack");
+  if (!track) return;
+  track.querySelectorAll('.slide[data-dynamic="1"]').forEach(function(slide) {
+    if (slide.dataset.url === imgUrl) slide.remove();
+  });
+  reinitMainSlideshow();
+}
+
+// 重新初始化前台主轮播（聚会吧）计数器和圆点
+function reinitMainSlideshow() {
+  var slides = document.querySelectorAll('#slideshowTrack .slide');
+  var total = slides.length;
+  // 确保只有第一张active
+  slides.forEach(function(s, i) { s.classList.toggle('active', i === 0); });
+  // 重置全局轮播状态
+  if (typeof slide !== 'undefined') { slide.current = 0; slide.total = total; }
+  // 更新计数器
+  var counter = document.getElementById("slideCounter");
+  if (counter) counter.textContent = total > 0 ? "1 / " + total : "";
+  // 重建圆点
+  var dots = document.getElementById("slideDots");
+  if (dots) {
+    dots.innerHTML = '';
+    for (var i = 0; i < total; i++) {
+      var d = document.createElement("span");
+      d.className = "dot" + (i === 0 ? " active" : "");
+      d.setAttribute("onclick", "goToSlide(" + i + ")");
+      dots.appendChild(d);
+    }
+  }
+}
+
+// 页面加载时动态加载聚会吧全部照片
+async function loadAlbumPhotosToSlideshow() {
+  var supabase = window._supabaseClient;
+  var track = document.getElementById("slideshowTrack");
+  if (!supabase || !track) return;
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status","approved").eq("file_type","album")
+    .order("uploaded_at", { ascending: true });
+  // 移除loading占位
+  var loadingSlide = document.getElementById("albumLoadingSlide");
+  if (loadingSlide) loadingSlide.remove();
+  if (result.error || !result.data || !result.data.length) {
+    // 无照片时显示空状态
+    var empty = document.createElement("div");
+    empty.className = "slide active";
+    empty.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;min-height:260px;color:#aaa;font-size:14px;">📷 相册暂无照片，管理员可在后台上传</div>';
+    track.appendChild(empty);
+    reinitMainSlideshow();
+    return;
+  }
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  result.data.forEach(function(item, idx) {
+    var imgUrl = item.file_path.startsWith("github:")
+      ? item.file_path.replace("github:","")
+      : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var div = document.createElement("div");
+    div.className = "slide" + (idx === 0 ? " active" : "");
+    div.setAttribute("data-dynamic", "1");
+    div.setAttribute("data-url", imgUrl);
+    div.innerHTML = '<img src="' + imgUrl + '" alt="' + (item.title||"") + '" onclick="openOverlay(this.src, this.alt)">';
+    track.appendChild(div);
+  });
+  reinitMainSlideshow();
+}
+
 async function loadApprovedPhotoManager() {
   var supabase = window._supabaseClient;
   if (!supabase) return;
@@ -7629,7 +7830,7 @@ async function loadApprovedPhotoManager() {
   // 批量删除失效记录
   if (brokenIds.length > 0) {
     await supabase.from("pending_uploads").delete().in("id", brokenIds);
-    console.log("[精选相册] 自动清理失效记录 " + brokenIds.length + " 条");
+    console.log("[风景线] 自动清理失效记录 " + brokenIds.length + " 条");
   }
 
   // 按上传时间排序
@@ -7638,7 +7839,7 @@ async function loadApprovedPhotoManager() {
   if (badge) badge.textContent = validItems.length > 0 ? validItems.length + " 张" : "0 张";
 
   if (!validItems.length) {
-    container.innerHTML = '<span style="color:#aaa;">精选相册暂无照片</span>';
+    container.innerHTML = '<span style="color:#aaa;">风景线暂无照片</span>';
     return;
   }
 
@@ -7683,7 +7884,7 @@ async function deleteFromGitHubViaEdge(githubUrl) {
 }
 
 async function deleteApprovedPhotoItem(id, filePath) {
-  if (!confirm("确认从精选相册永久删除这张照片？\n将同时从数据库和 GitHub 彻底删除，不可恢复。")) return;
+  if (!confirm("确认从风景线永久删除这张照片？\n将同时从数据库和 GitHub 彻底删除，不可恢复。")) return;
   var supabase = window._supabaseClient;
   var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
 
@@ -7704,7 +7905,7 @@ async function deleteApprovedPhotoItem(id, filePath) {
 }
 
 async function deleteAllApprovedPhotos() {
-  if (!confirm("确认永久清空精选相册全部照片？\n将同时从数据库和 GitHub 彻底删除，此操作不可恢复。")) return;
+  if (!confirm("确认永久清空风景线全部照片？\n将同时从数据库和 GitHub 彻底删除，此操作不可恢复。")) return;
   var supabase = window._supabaseClient;
 
   console.log("[批量删除开始] 正在获取所有照片...");
@@ -7788,7 +7989,7 @@ async function deleteAllApprovedPhotos() {
   }
   console.log("[步骤3] ✅ GitHub 文件删除完成");
 
-  // 步骤4：清空精选相册轮播
+  // 步骤4：清空风景线轮播
   console.log("[步骤4] 正在更新UI...");
   var track = document.getElementById("adminSlideshowTrack");
   var dots  = document.getElementById("adminSlideDots");
@@ -7800,11 +8001,11 @@ async function deleteAllApprovedPhotos() {
   if (section) section.style.display = "none";
 
   console.log("[批量删除] ✅ 操作完成！");
-  alert("✅ 已永久清空精选相册及所有缿略图（共 " + items.length + " 张）\n\n请查看浏览器控制台（F12）获取详细日志。");
+  alert("✅ 已永久清空风景线及所有缿略图（共 " + items.length + " 张）\n\n请查看浏览器控制台（F12）获取详细日志。");
   loadApprovedPhotoManager();
 }
 
-// 从精选相册轮播中移除指定 URL 的 slide
+// 从风景线轮播中移除指定 URL 的 slide
 function removeAdminAlbumPhoto(imgSrc) {
   var track = document.getElementById("adminSlideshowTrack");
   var dots  = document.getElementById("adminSlideDots");
@@ -7835,7 +8036,7 @@ function removeAdminAlbumPhoto(imgSrc) {
     if (adminList) {
       adminList.innerHTML = '<span style="color:#aaa;">暂无待审核照片</span>';
     }
-    console.log('[精选相册] 删除完成：所有照片已删除，清空管理员缩略图');
+    console.log('[风景线] 删除完成：所有照片已删除，清空管理员缩略图');
     // 【新增】重新加载待审核列表
     if (typeof loadPendingUploads === 'function') {
       loadPendingUploads();
@@ -7907,7 +8108,7 @@ async function loadPendingUploads() {
       '<div style="font-size:12px; color:#888; word-break:break-all;">文件：' + item.file_name + '</div>' +
       '</div></div>' +
       '<div style="margin-top:10px; display:flex; gap:8px;">' +
-      '<button onclick="approvePhoto(\'' + item.id + '\', \'' + pubUrl + '\', \'' + item.title + '\')" style="flex:1; padding:8px; background:#003366; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">✅ 批准加入精选相册</button>' +
+      '<button onclick="approvePhoto(\'' + item.id + '\', \'' + pubUrl + '\', \'' + item.title + '\')" style="flex:1; padding:8px; background:#003366; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">✅ 批准加入风景线</button>' +
       '<button onclick="rejectPendingItem(\'' + item.id + '\', \'' + item.file_path + '\')" style="flex:1; padding:8px; background:#c00; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px;">❌ 拒绝删除</button>' +
       '</div></div>';
   });
@@ -7963,11 +8164,11 @@ async function approvePhoto(id, pubUrl, title) {
     await supabase.from("pending_uploads").update({ status: "approved" }).eq("id", id);
     
     addSlideToShow(fileUrl, title);
-    alert("已批准！照片已加入精选相册。");
+    alert("已批准！照片已加入风景线。");
     loadPendingUploads();
   } catch(e) {
     alert("失败：" + e.message);
-    btn.textContent = "批准加入精选相册"; btn.disabled = false;
+    btn.textContent = "批准加入风景线"; btn.disabled = false;
   }
 }
 
@@ -8017,7 +8218,7 @@ async function approvePpt(id, pubUrl, title, fileName) {
 
 // ===== 通用拒绝函数（照片/视频/文件共用） =====
 
-// ===== 管理员精选相册（幻灯片）=====
+// ===== 管理员风景线（幻灯片）=====
 var adminSlide = {
   current: 0,
   total: 0,
@@ -8051,7 +8252,7 @@ function adminResetAuto() {
   adminStartAuto();
 }
 
-// 添加单张照片到管理员精选相册轮播
+// 添加单张照片到管理员风景线轮播
 function addAdminAlbumPhoto(imgSrc, altText) {
   var track = document.getElementById("adminSlideshowTrack");
   var dots  = document.getElementById("adminSlideDots");
@@ -8070,7 +8271,7 @@ function addAdminAlbumPhoto(imgSrc, altText) {
   var img = slide.querySelector('img');
   if (img) {
     img.onerror = function() {
-      console.log('[精选相册] 图片加载失败，移除:', imgSrc);
+      console.log('[风景线] 图片加载失败，移除:', imgSrc);
       // 移除失败的slide和对应的dot
       slide.remove();
       if (dots && dots.children[adminSlide.total - 1]) {
@@ -8148,7 +8349,7 @@ async function loadApprovedAdminPhotos() {
     .order("uploaded_at", { ascending: false });
 
   if (result.error || !result.data) {
-    console.log('[精选相册] 查询错误或无数据');
+    console.log('[风景线] 查询错误或无数据');
     return;
   }
 
@@ -8160,10 +8361,10 @@ async function loadApprovedAdminPhotos() {
            i.file_path.trim() !== "";
   });
   
-  console.log('[精选相册] 找到有效照片数:', items.length);
+  console.log('[风景线] 找到有效照片数:', items.length);
   
   if (!items.length) {
-    console.log('[精选相册] 没有有效的照片，隐藏区块');
+    console.log('[风景线] 没有有效的照片，隐藏区块');
     var section = document.getElementById("adminAlbumSection");
     if (section) section.style.display = "none";
     return;
@@ -8178,7 +8379,7 @@ async function loadApprovedAdminPhotos() {
       imgUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     }
     
-    console.log('[精选相册] 加载图片:', imgUrl);
+    console.log('[风景线] 加载图片:', imgUrl);
     addAdminAlbumPhoto(imgUrl, item.title || "");
   });
 }
@@ -8865,6 +9066,77 @@ async function loadJingcaiItems() {
   container.innerHTML = html;
 }
 
+// ===== 已发布精彩管理 =====
+async function loadApprovedJingcaiManager() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById("approvedJingcaiManager");
+  var badge = document.getElementById("approvedJingcaiBadge");
+  if (!container) return;
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "approved").eq("file_type", "jingcai")
+    .order("uploaded_at", { ascending: false });
+  if (result.error) {
+    container.innerHTML = '<span style="color:crimson;">加载失败：' + result.error.message + '</span>';
+    return;
+  }
+  var items = result.data || [];
+  if (badge) badge.textContent = items.length + " 条";
+  if (!items.length) {
+    container.innerHTML = '<span style="color:#aaa;">暂无已发布内容</span>';
+    return;
+  }
+  var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  var html = '';
+  items.forEach(function(item) {
+    var pubUrl = supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    var ext = (item.file_name || '').split('.').pop().toUpperCase();
+    var isImg = ['JPG','JPEG','PNG','GIF','WEBP'].includes(ext);
+    var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString('zh-CN') : '';
+    html += '<div class="admin-mgr-card" data-id="' + item.id + '" data-path="' + encodeURIComponent(item.file_path) + '" data-title="' + encodeURIComponent(item.title||'') + '" data-type="jingcai">';
+    if (isImg) {
+      html += '<img class="admin-mgr-thumb" src="' + pubUrl + '" onclick="openOverlay('' + pubUrl + '','')">';
+    } else {
+      html += '<div class="admin-mgr-thumb" style="background:#eef3fa;display:flex;align-items:center;justify-content:center;font-size:32px;">📄</div>';
+    }
+    html += '<div class="admin-mgr-body">' +
+      '<div class="admin-mgr-title">' + (item.title||'未命名') + '</div>' +
+      '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||'匿名') + ' · ' + date + '</div>' +
+      '<div class="admin-mgr-actions">' +
+        '<button class="admin-mgr-edit-btn" onclick="adminEditTitle(this)">✏️ 改标题</button>' +
+        '<button class="admin-mgr-del-btn" onclick="deleteApprovedJingcaiItem('' + item.id + '', '' + item.file_path + '', this)">🗑 删除</button>' +
+      '</div>' +
+    '</div></div>';
+  });
+  container.innerHTML = html || '<span style="color:#aaa;">暂无内容</span>';
+}
+
+async function deleteApprovedJingcaiItem(id, filePath, btn) {
+  if (!confirm('确认永久删除这条精彩内容？将同时从数据库和存储中删除，不可恢复。')) return;
+  if (btn) { btn.disabled = true; btn.textContent = '删除中...'; }
+  var supabase = window._supabaseClient;
+  await supabase.from('pending_uploads').delete().eq('id', id);
+  await supabase.storage.from('uploads').remove([filePath]);
+  loadApprovedJingcaiManager();
+  loadJingcaiItems();
+}
+
+async function deleteAllApprovedJingcai() {
+  if (!confirm('确认清空全部已发布精彩内容？此操作不可恢复。')) return;
+  var supabase = window._supabaseClient;
+  var result = await supabase.from('pending_uploads').select('id,file_path')
+    .eq('status','approved').eq('file_type','jingcai');
+  if (result.error || !result.data.length) { alert('暂无内容可清空'); return; }
+  var ids = result.data.map(function(i){return i.id;});
+  var paths = result.data.map(function(i){return i.file_path;});
+  await supabase.from('pending_uploads').delete().in('id', ids);
+  await supabase.storage.from('uploads').remove(paths);
+  loadApprovedJingcaiManager();
+  loadJingcaiItems();
+  alert('✅ 已清空全部精彩内容（共 ' + ids.length + ' 条）');
+}
+
 // 管理员：加载待审核精彩内容
 async function loadPendingJingcai() {
   var supabase = window._supabaseClient;
@@ -9457,7 +9729,10 @@ async function rejectPendingItem(id, filePath) {
     // === 加载互相观望各自精彩 ===
     loadJingcaiItems();
 
-    // === 加载管理员精选相册 ===
+    // === 加载聚会吧动态照片 ===
+    loadAlbumPhotosToSlideshow();
+
+    // === 加载管理员风景线 ===
     loadApprovedAdminPhotos();
   }
 
@@ -9966,7 +10241,7 @@ async function rejectPendingItem(id, filePath) {
     .slide-btn { padding: 8px 12px; font-size: 16px; }
   }
 
-  /* ===== 管理员精选相册标签 ===== */
+  /* ===== 管理员风景线标签 ===== */
   .admin-album-label {
     max-width: 700px;
     margin: 24px auto 4px;
