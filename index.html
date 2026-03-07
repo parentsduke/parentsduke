@@ -8133,6 +8133,7 @@ async function loadApprovedAdminPhotos() {
     .from("pending_uploads")
     .select("*")
     .eq("status", "approved")
+    .eq("file_type", "image")
     .neq("file_path", null)
     .order("uploaded_at", { ascending: false });
 
@@ -8143,7 +8144,7 @@ async function loadApprovedAdminPhotos() {
 
   // 二次过滤：确保file_path是有效的字符串
   var items = result.data.filter(function(i) { 
-    return (!i.file_type || i.file_type === "image") && 
+    return i.file_type === "image" && 
            i.file_path &&  
            typeof i.file_path === 'string' &&
            i.file_path.trim() !== "";
