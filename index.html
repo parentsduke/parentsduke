@@ -288,22 +288,18 @@ document.addEventListener("keydown", function(e) {
       </div>
     </div>
 
-    <!-- ===== 视频集 ===== -->
-    <div class="video-gallery-container">
+    <!-- ===== 视频集（动态加载） ===== -->
+    <div class="video-gallery-container" id="videoGalleryContainer">
       <div class="video-gallery-main">
         <video id="mainVideo" class="video-gallery-player" controls>
-          <source data-src="2030.mp4" type="video/mp4">
+          <source src="" type="video/mp4">
         </video>
-        <div class="video-gallery-title" id="videoTitle">🎬 2030届视频</div>
+        <div class="video-gallery-title" id="videoTitle">🎬 加载中...</div>
       </div>
       <div class="video-gallery-thumbs" id="videoThumbs">
-        <div class="video-thumb active" onclick="switchVideo(0, this)">
-          <div class="video-thumb-icon">▶</div>
-          <div class="video-thumb-label">2030届视频</div>
-        </div>
-        <div class="video-thumb" onclick="switchVideo(1, this)">
-          <div class="video-thumb-icon">▶</div>
-          <div class="video-thumb-label">Justin视频</div>
+        <div class="video-thumb active" id="videoLoadingThumb">
+          <div class="video-thumb-icon">⏳</div>
+          <div class="video-thumb-label">加载中...</div>
         </div>
       </div>
     </div>
@@ -6672,6 +6668,18 @@ document.addEventListener("keydown", function(e) {
               <button onclick="deleteAllApprovedVideos()" class="admin-danger-btn">🗑 全部清空</button>
             </div>
           </div>
+          <!-- 直接上传区 -->
+          <div style="border:2px dashed #003366;border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#eef3fa;margin-bottom:14px;"
+            ondragover="event.preventDefault();this.style.background='#d8e8fc';"
+            ondragleave="this.style.background='#eef3fa';"
+            ondrop="videoAdminFileDrop(event)"
+            onclick="document.getElementById('videoAdminFileInput').click()">
+            <div style="font-size:28px;">🎬</div>
+            <div style="color:#003366;font-weight:bold;margin-top:4px;font-size:13px;">点击或拖拽视频直接上传（无需审核，直接发布）</div>
+            <div style="color:#888;font-size:11px;margin-top:2px;">支持 MP4、MOV、AVI 等格式</div>
+            <input type="file" id="videoAdminFileInput" accept="video/*" multiple style="display:none;" onchange="videoAdminFilesSelected(this.files)">
+          </div>
+          <div id="videoAdminUploadProgress" style="font-size:13px;color:#555;margin-bottom:10px;"></div>
           <div id="approvedVideoManager" style="color:#aaa;font-size:13px;">加载中...</div>
         </div>
 
@@ -6855,6 +6863,7 @@ function verifyAdmin() {
     loadApprovedYuanfenManager();
     loadApprovedJingcaiManager();
     loadAlbumPhotoManager();
+    loadVideoGallery();
     loadPendingUploads();
     loadPendingVideos();
     loadPendingPpts();
@@ -7386,13 +7395,16 @@ async function adminDeleteItem(btn) {
       }
     }
     
-    // 步骤3：从风景线移除
+    // 步骤3：从前台移除
     if (type === 'photo') {
       console.log("\n[步骤3] 从风景线移除...");
       var supabaseUrl = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
       var imgUrl = filePath.startsWith("github:") ? filePath.replace("github:","") : supabaseUrl+"/storage/v1/object/public/uploads/"+filePath;
       removeAdminAlbumPhoto(imgUrl);
       console.log("✅ 风景线已更新");
+    }
+    if (type === 'video') {
+      loadVideoGallery();
     }
     
     // 步骤4：从管理列表中移除卡片
@@ -7434,6 +7446,87 @@ function generateThumbnailPath(originalPath) {
 }
 
 // ===== 视频集管理 =====
+// ===== 视频集动态加载 =====
+async function loadVideoGallery() {
+  var supabase = window._supabaseClient;
+  var thumbsEl = document.getElementById("videoThumbs");
+  var mainVideo = document.getElementById("mainVideo");
+  var titleEl = document.getElementById("videoTitle");
+  if (!supabase || !thumbsEl) return;
+
+  var result = await supabase.from("pending_uploads").select("*")
+    .eq("status", "approved").eq("file_type", "video")
+    .order("uploaded_at", { ascending: true });
+
+  // 移除loading占位
+  var loadingThumb = document.getElementById("videoLoadingThumb");
+  if (loadingThumb) loadingThumb.remove();
+
+  if (result.error || !result.data || !result.data.length) {
+    thumbsEl.innerHTML = '<div class="video-thumb active"><div class="video-thumb-icon">📭</div><div class="video-thumb-label">暂无视频</div></div>';
+    if (titleEl) titleEl.textContent = "🎬 暂无视频";
+    return;
+  }
+
+  var supabaseUrl = "https://ritglkwqpwlcjwemhfqd.supabase.co";
+  window.videoList = [];
+  thumbsEl.innerHTML = "";
+
+  result.data.forEach(function(item, idx) {
+    var src = item.file_path.startsWith("github:")
+      ? item.file_path.replace("github:", "")
+      : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
+    window.videoList.push({ src: src, label: item.title || item.file_name });
+
+    var div = document.createElement("div");
+    div.className = "video-thumb" + (idx === 0 ? " active" : "");
+    div.setAttribute("data-video-id", item.id);
+    div.innerHTML = '<div class="video-thumb-icon">▶</div><div class="video-thumb-label">' + (item.title || item.file_name) + '</div>';
+    div.onclick = (function(i, el) { return function() { switchVideo(i, el); }; })(idx, div);
+    thumbsEl.appendChild(div);
+  });
+
+  // 加载第一个视频
+  if (window.videoList.length > 0 && mainVideo) {
+    mainVideo.querySelector("source").src = window.videoList[0].src;
+    mainVideo.load();
+    if (titleEl) titleEl.textContent = "🎬 " + window.videoList[0].label;
+  }
+}
+
+// 管理员直接上传视频（无需审核）
+async function videoAdminFilesSelected(files) {
+  var supabase = window._supabaseClient;
+  if (!supabase || !files.length) return;
+  var prog = document.getElementById("videoAdminUploadProgress");
+  var supabaseUrl = "https://ritglkwqpwlcjwemhfqd.supabase.co";
+  var { data: { session } } = await supabase.auth.getSession();
+  var uploader = session ? session.user.email : "admin";
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    if (prog) prog.textContent = "上传中 " + (i+1) + "/" + files.length + "：" + file.name;
+    var ext = file.name.split(".").pop().toLowerCase();
+    var filePath = "video/" + Date.now() + "_" + Math.random().toString(36).substr(2,6) + "." + ext;
+    var uploadRes = await supabase.storage.from("uploads").upload(filePath, file, { upsert: false });
+    if (uploadRes.error) { if (prog) prog.textContent = "❌ 上传失败：" + uploadRes.error.message; continue; }
+    var title = file.name.replace(/\.[^.]+$/, "");
+    await supabase.from("pending_uploads").insert({
+      file_path: filePath, file_name: file.name, title: title,
+      uploaded_by: uploader, status: "approved", file_type: "video"
+    });
+  }
+  if (prog) prog.textContent = "✅ 上传完成（共 " + files.length + " 个）";
+  loadVideoGallery();
+  loadApprovedVideoManager();
+}
+
+function videoAdminFileDrop(event) {
+  event.preventDefault();
+  event.currentTarget.style.background = "#eef3fa";
+  var files = Array.from(event.dataTransfer.files).filter(function(f){ return f.type.startsWith("video/"); });
+  if (files.length) videoAdminFilesSelected(files);
+}
+
 async function loadApprovedVideoManager() {
   var supabase = window._supabaseClient;
   if (!supabase) return;
@@ -7481,6 +7574,7 @@ async function deleteAllApprovedVideos() {
   if (paths.length) await supabase.storage.from("uploads").remove(paths);
   alert("已清空 " + items.length + " 个视频");
   loadApprovedVideoManager();
+  loadVideoGallery();
 }
 
 // ===== PPT/文件管理 =====
@@ -9647,30 +9741,18 @@ async function rejectPendingItem(id, filePath) {
       }, { passive: true });
     })();
 
-    // === 视频集切换 ===
-    var videoList = [
-      { src: "2030.mp4",  label: "🎬 2030届视频" },
-      { src: "Justin.mp4", label: "🎬 Justin视频" }
-    ];
+    // === 视频集切换（动态加载）===
+    window.videoList = [];  // 由 loadVideoGallery() 填充
 
     window.switchVideo = function(index, thumbEl) {
       var mainVideo = main.querySelector("#mainVideo");
       var titleEl   = main.querySelector("#videoTitle");
       var thumbs    = main.querySelectorAll(".video-thumb");
-
-      if (!mainVideo) return;
-
-      // 停止当前视频
+      if (!mainVideo || !window.videoList[index]) return;
       mainVideo.pause();
-
-      // 切换 source
-      mainVideo.querySelector("source").src = videoList[index].src;
+      mainVideo.querySelector("source").src = window.videoList[index].src;
       mainVideo.load();
-
-      // 更新标题
-      if (titleEl) titleEl.textContent = videoList[index].label;
-
-      // 更新高亮
+      if (titleEl) titleEl.textContent = "🎬 " + window.videoList[index].label;
       thumbs.forEach(function(t) { t.classList.remove("active"); });
       if (thumbEl) thumbEl.classList.add("active");
     };
@@ -9728,6 +9810,9 @@ async function rejectPendingItem(id, filePath) {
 
     // === 加载互相观望各自精彩 ===
     loadJingcaiItems();
+
+    // === 加载视频集 ===
+    loadVideoGallery();
 
     // === 加载聚会吧动态照片 ===
     loadAlbumPhotosToSlideshow();
