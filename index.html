@@ -8025,27 +8025,10 @@ function removeAlbumSlide(imgUrl) {
   reinitMainSlideshow();
 }
 
-// 重新初始化前台主轮播（聚会吧）计数器和圆点
+// 重新初始化前台主轮播（聚会吧）
 function reinitMainSlideshow() {
-  var slides = document.querySelectorAll('#slideshowTrack .slide');
-  var total = slides.length;
-  // 确保只有第一张active
-  slides.forEach(function(s, i) { s.classList.toggle('active', i === 0); });
-  // 重置全局轮播状态
-  if (typeof slide !== 'undefined') { slide.current = 0; slide.total = total; }
-  // 更新计数器
-  var counter = document.getElementById("slideCounter");
-  if (counter) counter.textContent = total > 0 ? "1 / " + total : "";
-  // 重建圆点
-  var dots = document.getElementById("slideDots");
-  if (dots) {
-    dots.innerHTML = '';
-    for (var i = 0; i < total; i++) {
-      var d = document.createElement("span");
-      d.className = "dot" + (i === 0 ? " active" : "");
-      d.setAttribute("onclick", "goToSlide(" + i + ")");
-      dots.appendChild(d);
-    }
+  if (typeof window.initMainSlideshow === 'function') {
+    window.initMainSlideshow();
   }
 }
 
@@ -9778,12 +9761,27 @@ async function rejectPendingItem(id, filePath) {
   </div>
   <div class="site-counter">
     <h6>Since February 17, 2026</h6> 👣
-    <span id="busuanzi_value_site_pv">0</span>
+    <span id="busuanzi_value_site_pv">…</span>
   </div>
 </footer>
 
-<!-- 访问统计 -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- 访问统计（Supabase自建） -->
+<script>
+(function() {
+  // 等Supabase client初始化后再执行
+  function incrementPV() {
+    var supabase = window._supabaseClient;
+    if (!supabase) { setTimeout(incrementPV, 500); return; }
+    supabase.rpc('increment_pv').then(function(res) {
+      if (res.data !== null && res.data !== undefined) {
+        var el = document.getElementById('busuanzi_value_site_pv');
+        if (el) el.textContent = res.data.toLocaleString();
+      }
+    });
+  }
+  setTimeout(incrementPV, 800);
+})();
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -9889,17 +9887,25 @@ async function rejectPendingItem(id, filePath) {
     });
 
     // === 轮播相册初始化 ===
-    (function() {
-      var slides = main.querySelectorAll(".slide");
+    // === 轮播相册初始化（动态加载后调用）===
+    var _slideshowState = { current: 0, total: 0, autoTimer: null, inited: false };
+
+    window.initMainSlideshow = function() {
+      var slides = main.querySelectorAll("#slideshowTrack .slide");
       var dotsContainer = main.querySelector("#slideDots");
       var counter = main.querySelector("#slideCounter");
-      var current = 0;
-      var total = slides.length;
-      var autoTimer = null;
-
       if (!slides.length) return;
 
-      // 创建圆点
+      // 重置状态
+      clearInterval(_slideshowState.autoTimer);
+      _slideshowState.current = 0;
+      _slideshowState.total = slides.length;
+
+      // 确保第一张active
+      slides.forEach(function(s, i) { s.classList.toggle("active", i === 0); });
+
+      // 重建圆点
+      dotsContainer.innerHTML = "";
       slides.forEach(function(_, i) {
         var dot = document.createElement("span");
         dot.className = "slide-dot" + (i === 0 ? " active" : "");
@@ -9907,43 +9913,48 @@ async function rejectPendingItem(id, filePath) {
         dotsContainer.appendChild(dot);
       });
 
+      // 更新计数器
+      counter.textContent = "1 / " + slides.length;
+
       function goTo(n) {
-        slides[current].classList.remove("active");
-        dotsContainer.children[current].classList.remove("active");
-        current = (n + total) % total;
-        slides[current].classList.add("active");
-        dotsContainer.children[current].classList.add("active");
-        counter.textContent = (current + 1) + " / " + total;
+        var s = main.querySelectorAll("#slideshowTrack .slide");
+        var d = dotsContainer.children;
+        if (!s.length) return;
+        var total = s.length;
+        s[_slideshowState.current] && s[_slideshowState.current].classList.remove("active");
+        d[_slideshowState.current] && d[_slideshowState.current].classList.remove("active");
+        _slideshowState.current = (n + total) % total;
+        s[_slideshowState.current] && s[_slideshowState.current].classList.add("active");
+        d[_slideshowState.current] && d[_slideshowState.current].classList.add("active");
+        counter.textContent = (_slideshowState.current + 1) + " / " + total;
       }
 
-      // 暴露给按钮 onclick
-      main.querySelector(".slide-prev").onclick = function() { goTo(current - 1); resetAuto(); };
-      main.querySelector(".slide-next").onclick = function() { goTo(current + 1); resetAuto(); };
+      main.querySelector(".slide-prev").onclick = function() { goTo(_slideshowState.current - 1); resetAuto(); };
+      main.querySelector(".slide-next").onclick = function() { goTo(_slideshowState.current + 1); resetAuto(); };
 
-      // 自动播放（4秒切换）
       function startAuto() {
-        autoTimer = setInterval(function() { goTo(current + 1); }, 4000);
+        _slideshowState.autoTimer = setInterval(function() { goTo(_slideshowState.current + 1); }, 4000);
       }
       function resetAuto() {
-        clearInterval(autoTimer);
+        clearInterval(_slideshowState.autoTimer);
         startAuto();
       }
       startAuto();
 
       // 触摸滑动支持（手机）
       var touchStartX = 0;
-      var track = main.querySelector(".slideshow-container");
-      track.addEventListener("touchstart", function(e) {
-        touchStartX = e.touches[0].clientX;
-      }, { passive: true });
-      track.addEventListener("touchend", function(e) {
-        var diff = touchStartX - e.changedTouches[0].clientX;
-        if (Math.abs(diff) > 40) {
-          goTo(diff > 0 ? current + 1 : current - 1);
-          resetAuto();
-        }
-      }, { passive: true });
-    })();
+      var trackEl = main.querySelector(".slideshow-container");
+      if (!_slideshowState.inited) {
+        trackEl.addEventListener("touchstart", function(e) {
+          touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+        trackEl.addEventListener("touchend", function(e) {
+          var diff = touchStartX - e.changedTouches[0].clientX;
+          if (Math.abs(diff) > 40) { goTo(_slideshowState.current + (diff > 0 ? 1 : -1)); resetAuto(); }
+        }, { passive: true });
+        _slideshowState.inited = true;
+      }
+    };
 
     // === 大家拍切换（动态加载）===
     window.videoList = [];  // 由 loadVideoGallery() 填充
