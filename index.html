@@ -7706,7 +7706,7 @@ async function loadAlbumPhotoManager() {
       : supabaseUrl + "/storage/v1/object/public/uploads/" + item.file_path;
     var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString("zh-CN") : "";
     html += '<div class="admin-mgr-card" data-id="' + item.id + '" data-path="' + encodeURIComponent(item.file_path) + '" data-title="' + encodeURIComponent(item.title||"") + '" data-type="album">' +
-      '<img class="admin-mgr-thumb" src="' + imgUrl + '" onclick="openOverlay('' + imgUrl + '','')">' +
+      '<img class="admin-mgr-thumb" src="' + imgUrl + '" onclick="openOverlay(this.src,\'\')">' +
       '<div class="admin-mgr-body">' +
         '<div class="admin-mgr-title">' + (item.title||"未命名") + '</div>' +
         '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||"管理员") + ' · ' + date + '</div>' +
@@ -9190,7 +9190,7 @@ async function loadApprovedJingcaiManager() {
     var date = item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString('zh-CN') : '';
     html += '<div class="admin-mgr-card" data-id="' + item.id + '" data-path="' + encodeURIComponent(item.file_path) + '" data-title="' + encodeURIComponent(item.title||'') + '" data-type="jingcai">';
     if (isImg) {
-      html += '<img class="admin-mgr-thumb" src="' + pubUrl + '" onclick="openOverlay('' + pubUrl + '','')">';
+      html += '<img class="admin-mgr-thumb" src="' + pubUrl + '" onclick="openOverlay(this.src,\'\')">';
     } else {
       html += '<div class="admin-mgr-thumb" style="background:#eef3fa;display:flex;align-items:center;justify-content:center;font-size:32px;">📄</div>';
     }
@@ -9199,7 +9199,7 @@ async function loadApprovedJingcaiManager() {
       '<div class="admin-mgr-meta">上传者：' + (item.uploaded_by||'匿名') + ' · ' + date + '</div>' +
       '<div class="admin-mgr-actions">' +
         '<button class="admin-mgr-edit-btn" onclick="adminEditTitle(this)">✏️ 改标题</button>' +
-        '<button class="admin-mgr-del-btn" onclick="deleteApprovedJingcaiItem('' + item.id + '', '' + item.file_path + '', this)">🗑 删除</button>' +
+        '<button class="admin-mgr-del-btn" onclick="deleteApprovedJingcaiItem(\' + item.id + \', \' + item.file_path + \', this)">🗑 删除</button>' +
       '</div>' +
     '</div></div>';
   });
