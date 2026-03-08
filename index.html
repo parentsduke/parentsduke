@@ -6618,6 +6618,11 @@ document.addEventListener("keydown", function(e) {
               <input type="text" id="xdx-date" placeholder="例：2026.3.15" style="width:160px; padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:13px;">
             </div>
 
+            <div style="margin-bottom:14px;">
+              <label style="font-size:13px; font-weight:600; color:#003366; display:block; margin-bottom:4px;">Anthropic API Key</label>
+              <input type="password" id="xdx-api-key" placeholder="sk-ant-..." style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:13px;" oninput="localStorage.setItem('xdx_api_key', this.value)">
+              <div style="font-size:11px; color:#aaa; margin-top:3px;">仅保存在本机浏览器，不会上传</div>
+            </div>
             <button onclick="generateXdxEntry()" id="xdx-gen-btn" style="padding:9px 24px; background:#003366; color:#fff; border:none; border-radius:7px; font-size:14px; font-weight:600; cursor:pointer;">✨ AI生成条目</button>
             <span id="xdx-loading" style="display:none; margin-left:12px; font-size:13px; color:#888;">生成中...</span>
           </div>
@@ -6916,6 +6921,9 @@ function verifyAdmin() {
     loadXdxEntries();
     // 默认显示新动向tab
     switchAdminTab('xindongxiang', document.querySelector('.admin-tab-btn'));
+    // 读取已保存的API key
+    var savedKey = localStorage.getItem('xdx_api_key');
+    if (savedKey) { var keyInput = document.getElementById('xdx-api-key'); if (keyInput) keyInput.value = savedKey; }
     err.textContent = "❌ 密码错误，请重试";
   }
 }
@@ -7199,8 +7207,13 @@ async function generateXdxEntry() {
   var summary = document.getElementById('xdx-summary').value.trim();
   var url = document.getElementById('xdx-url').value.trim();
   var date = document.getElementById('xdx-date').value.trim();
+  var apiKey = (document.getElementById('xdx-api-key') && document.getElementById('xdx-api-key').value.trim()) || localStorage.getItem('xdx_api_key') || '';
   if (!title || !summary) {
     alert('请填写文章标题和摘要');
+    return;
+  }
+  if (!apiKey) {
+    alert('请填写 Anthropic API Key');
     return;
   }
   document.getElementById('xdx-loading').style.display = 'inline';
@@ -7244,7 +7257,12 @@ ${summary}
   try {
     var res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
@@ -7252,6 +7270,7 @@ ${summary}
       })
     });
     var data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'API错误');
     var html = (data.content || []).map(function(b) { return b.text || ''; }).join('').trim();
     // 去除可能的markdown代码块
     html = html.replace(/^```html\n?/i, '').replace(/\n?```$/i, '').trim();
