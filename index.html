@@ -7327,7 +7327,7 @@ async function loadXdxEntries() {
     list.innerHTML = entries.map(function(e) {
       return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;">' +
         '<div><span style="font-weight:600;color:#003366;">' + (e.title || '无标题') + '</span><span style="color:#aaa;font-size:11px;margin-left:8px;">' + (e.date || '') + '</span></div>' +
-        '<button onclick="deleteXdxEntry(' + JSON.stringify(e.id) + ')" style="padding:4px 10px;background:#fdd;border:1px solid #e99;border-radius:4px;font-size:12px;cursor:pointer;color:#900;">删除</button>' +
+        '<button data-xdx-id="' + e.id + '" onclick="deleteXdxEntry(this.getAttribute(\'data-xdx-id\'))" style="padding:4px 10px;background:#fdd;border:1px solid #e99;border-radius:4px;font-size:12px;cursor:pointer;color:#900;">删除</button>' +
         '</div>';
     }).join('');
   } catch(e) {
