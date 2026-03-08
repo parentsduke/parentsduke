@@ -7287,61 +7287,61 @@ ${summary}
 async function publishXdxEntry() {
   var html = document.getElementById('xdx-preview').value.trim();
   if (!html) return;
+  var supabase = window._supabaseClient;
+  if (!supabase) { alert('数据库未连接'); return; }
   var title = document.getElementById('xdx-title').value.trim();
   var date = document.getElementById('xdx-date').value.trim() || new Date().toLocaleDateString('zh-CN');
+  var msg = document.getElementById('xdx-publish-msg');
 
   try {
-    var existing = null;
-    try { var r = await window.storage.get('xdx-entries'); existing = r ? JSON.parse(r.value) : []; } catch(e) { existing = []; }
-    var entry = { id: Date.now(), title: title, date: date, html: html };
-    existing.unshift(entry);
-    await window.storage.set('xdx-entries', JSON.stringify(existing));
-    renderXdxDynamic(existing);
-    document.getElementById('xdx-publish-msg').style.color = '#0a7c3e';
-    document.getElementById('xdx-publish-msg').textContent = '✅ 发布成功！已显示在新动向中。';
+    var res = await supabase.from('xdx_entries').insert({ title: title, date: date, html: html });
+    if (res.error) throw new Error(res.error.message);
+    msg.style.color = '#0a7c3e';
+    msg.textContent = '✅ 发布成功！已显示在新动向中。';
     loadXdxEntries();
-    // 清空输入框
     document.getElementById('xdx-title').value = '';
     document.getElementById('xdx-url').value = '';
     document.getElementById('xdx-summary').value = '';
     document.getElementById('xdx-date').value = '';
     setTimeout(function() { document.getElementById('xdx-preview-box').style.display = 'none'; }, 1500);
   } catch(e) {
-    document.getElementById('xdx-publish-msg').style.color = 'crimson';
-    document.getElementById('xdx-publish-msg').textContent = '发布失败：' + e.message;
+    msg.style.color = 'crimson';
+    msg.textContent = '发布失败：' + e.message;
   }
 }
 
 async function loadXdxEntries() {
   var list = document.getElementById('xdx-entries-list');
   if (!list) return;
+  var supabase = window._supabaseClient;
+  if (!supabase) { list.innerHTML = '<span style="color:crimson;">数据库未连接</span>'; return; }
   try {
-    var r = await window.storage.get('xdx-entries');
-    var entries = r ? JSON.parse(r.value) : [];
+    var res = await supabase.from('xdx_entries').select('*').order('created_at', { ascending: false });
+    if (res.error) throw new Error(res.error.message);
+    var entries = res.data || [];
     renderXdxDynamic(entries);
     if (entries.length === 0) {
       list.innerHTML = '<span style="color:#aaa;">暂无动态发布的条目</span>';
       return;
     }
-    list.innerHTML = entries.map(function(e, i) {
+    list.innerHTML = entries.map(function(e) {
       return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;">' +
         '<div><span style="font-weight:600;color:#003366;">' + (e.title || '无标题') + '</span><span style="color:#aaa;font-size:11px;margin-left:8px;">' + (e.date || '') + '</span></div>' +
-        '<button onclick="deleteXdxEntry(' + e.id + ')" style="padding:4px 10px;background:#fdd;border:1px solid #e99;border-radius:4px;font-size:12px;cursor:pointer;color:#900;">删除</button>' +
+        '<button onclick="deleteXdxEntry(' + JSON.stringify(e.id) + ')" style="padding:4px 10px;background:#fdd;border:1px solid #e99;border-radius:4px;font-size:12px;cursor:pointer;color:#900;">删除</button>' +
         '</div>';
     }).join('');
   } catch(e) {
-    list.innerHTML = '<span style="color:crimson;">加载失败</span>';
+    list.innerHTML = '<span style="color:crimson;">加载失败：' + e.message + '</span>';
   }
 }
 
 async function deleteXdxEntry(id) {
   if (!confirm('确认删除此条目？')) return;
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
   try {
-    var r = await window.storage.get('xdx-entries');
-    var entries = r ? JSON.parse(r.value) : [];
-    entries = entries.filter(function(e) { return e.id !== id; });
-    await window.storage.set('xdx-entries', JSON.stringify(entries));
-    renderXdxDynamic(entries);
+    var res = await supabase.from('xdx_entries').delete().eq('id', id);
+    if (res.error) throw new Error(res.error.message);
     loadXdxEntries();
   } catch(e) { alert('删除失败：' + e.message); }
 }
@@ -7353,14 +7353,16 @@ function renderXdxDynamic(entries) {
   container.innerHTML = entries.map(function(e) { return e.html; }).join('\n');
 }
 
-// 页面加载时自动渲染已存储的新动向条目
-document.addEventListener('DOMContentLoaded', async function() {
+// 页面加载时从Supabase渲染新动向条目
+async function loadXdxFrontend() {
+  var supabase = window._supabaseClient;
+  if (!supabase) { setTimeout(loadXdxFrontend, 500); return; }
   try {
-    var r = await window.storage.get('xdx-entries');
-    var entries = r ? JSON.parse(r.value) : [];
-    renderXdxDynamic(entries);
+    var res = await supabase.from('xdx_entries').select('*').order('created_at', { ascending: false });
+    renderXdxDynamic(res.data || []);
   } catch(e) {}
-});
+}
+loadXdxFrontend();
 
 // ===== 通用删除单条已发布内容 =====
 async function deleteApprovedItem(id, filePath, onDone) {
