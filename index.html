@@ -508,6 +508,202 @@ document.addEventListener("keydown", function(e) {
     </div><!-- /accordion-body -->
   </div><!-- /accordion 新动向 -->
 
+  <!-- ===== 疫苗与SMIP保险 ===== -->
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">
+      <span>疫苗接种与SMIP保险覆盖</span><span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body" style="padding:10px 0 16px 0;">
+
+      <div class="cal-highlight">
+        <strong>Duke学生SMIP疫苗覆盖总览</strong><br>
+        Duke SMIP(学生医疗保险计划)是由Blue Cross Blue Shield of NC承保的铂金级ACA合规保险。根据平价医疗法案，所有由ACIP(疫苗接种咨询委员会)推荐的预防性疫苗，在<strong>网络内接种时100%覆盖、无需自付</strong>。BCBS已承诺至少延续此政策至2026年底。<br><br>
+        <strong>注意：国际旅行相关疫苗(如霍乱、黄热病等)不在SMIP覆盖范围内。</strong>
+      </div>
+
+      <!-- 子手风琴：如何接种额外疫苗 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>如何接种额外疫苗(HPV、流感、脑膜炎B等)<span class="tag tag-key">必读</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            Duke学生如需接种HPV、流感、脑膜炎B等额外疫苗，须在<strong>10月1日之后</strong>预约Student Health，避开入学强制疫苗提交高峰期。
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">预约方式</div>
+            <div>
+              <div class="cal-desc">通过<strong>Duke My Health患者门户</strong>在线预约，或致电<strong>(919) 681-9355</strong>预约当日门诊。</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">接种时间建议</div>
+            <div>
+              <div class="cal-desc">每年<strong>10月1日之后</strong>开始预约，此时Student Health已完成入学强制疫苗高峰期，可专注服务额外接种需求。</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">费用</div>
+            <div>
+              <div class="cal-desc">使用SMIP在Student Health接种ACA推荐预防疫苗：<strong>100%覆盖，无需自付</strong>。非SMIP保险或非ACA推荐疫苗可能产生费用，建议事先确认。</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">联系方式</div>
+            <div>
+              <div class="cal-desc">SMIP保险咨询：<strong>insurance@studentaffairs.duke.edu</strong>或致电<strong>866-931-5275</strong>(Gallagher)</div>
+            </div>
+          </div>
+          <div class="cal-warn">
+            注意：国际旅行相关疫苗(如霍乱、伤寒、黄热病等)不被SMIP覆盖。如有出行计划，请提前联系Student Health旅行门诊并自行承担费用。
+          </div>
+        </div>
+      </div>
+
+      <!-- 子手风琴：SMIP覆盖的疫苗完整列表 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>SMIP覆盖疫苗完整列表(约13种)<span class="tag tag-spring">100%覆盖</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            以下疫苗均为ACA/ACIP推荐预防疫苗，在Duke Student Health(网络内)接种时<strong>SMIP全额覆盖，无需自付</strong>。
+          </div>
+
+          <div class="section-title">常规推荐疫苗</div>
+          <div class="cal-item">
+            <div class="cal-date">流感(Flu)</div>
+            <div><div class="cal-desc">每年接种，强烈推荐所有学生。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">HPV疫苗</div>
+            <div><div class="cal-desc">推荐26岁以下学生接种，<strong>非强制但SMIP全覆盖</strong>，需主动预约。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">脑膜炎(MenACWY)</div>
+            <div><div class="cal-desc">大学生入学<strong>强制接种</strong>，需提交记录。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">脑膜炎B(Meningitis B)</div>
+            <div><div class="cal-desc">可选，非强制，但SMIP覆盖；需10月1日后预约。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">破伤风/百日咳/白喉(Tdap)</div>
+            <div><div class="cal-desc">成人推荐，每10年补种一次。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">麻疹/腮腺炎/风疹(MMR)</div>
+            <div><div class="cal-desc">两剂系列，入学强制要求之一。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">水痘(Varicella)</div>
+            <div><div class="cal-desc">未患过水痘的学生须接种两剂，入学要求。</div></div>
+          </div>
+
+          <div class="section-title">肝炎系列</div>
+          <div class="cal-item">
+            <div class="cal-date">甲肝(Hepatitis A)</div>
+            <div><div class="cal-desc">两剂系列，6-18个月内完成。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">乙肝(Hepatitis B)</div>
+            <div><div class="cal-desc">三剂系列，入学要求之一。</div></div>
+          </div>
+
+          <div class="section-title">其他可覆盖疫苗</div>
+          <div class="cal-item">
+            <div class="cal-date">新冠疫苗(COVID-19)</div>
+            <div><div class="cal-desc">推荐每年更新接种最新版本。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">肺炎球菌(Pneumococcal)</div>
+            <div><div class="cal-desc">适用于特定高风险人群(如免疫功能低下者)。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">带状疱疹(Shingrix)</div>
+            <div><div class="cal-desc">主要推荐50岁以上，大多数在校学生暂不需要。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">脊髓灰质炎(Polio)</div>
+            <div><div class="cal-desc">成人通常无需补种，特殊情况下SMIP覆盖。</div></div>
+          </div>
+
+          <div class="cal-warn">
+            以下疫苗<strong>不在SMIP覆盖范围</strong>：霍乱、黄热病、伤寒、狂犬病、日本脑炎等国际旅行专项疫苗，费用须自理。
+          </div>
+        </div>
+      </div>
+
+      <!-- 子手风琴：HPV专题 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>HPV疫苗专题：谁需要打？怎么预约？<span class="tag tag-family">重点</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>HPV疫苗(人乳头瘤病毒疫苗)</strong>在Duke并非入学强制要求，但<strong>SMIP100%覆盖</strong>，强烈建议26岁以下未完成接种的学生主动预约。
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">推荐人群</div>
+            <div><div class="cal-desc"><strong>26岁及以下</strong>的学生，无论性别，CDC均推荐完成HPV疫苗接种系列。27-45岁人群可与医生协商后决定是否接种。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">接种剂次</div>
+            <div>
+              <div class="cal-desc">15岁前开始接种：<strong>2剂</strong>(间隔6-12个月)</div>
+              <div class="cal-note">15岁或以后开始接种：<strong>3剂</strong>(第0、1-2、6个月)</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">费用</div>
+            <div><div class="cal-desc">持SMIP在Duke Student Health接种：<strong>全额覆盖，无自付费用</strong>。</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">预约方式</div>
+            <div><div class="cal-desc">通过Duke My Health Portal在线预约，或致电<strong>(919) 681-9355</strong>，请在<strong>10月1日之后</strong>预约以确保顺利安排。</div></div>
+          </div>
+          <a href="https://studenthealth.duke.edu/services/immunizations/" target="_blank">Duke Student Health疫苗页面</a>
+        </div>
+      </div>
+
+      <!-- 子手风琴：SMIP联系方式 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>SMIP保险咨询与官方资源</span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-item">
+            <div class="cal-date">保险咨询邮箱</div>
+            <div><div class="cal-desc">insurance@studentaffairs.duke.edu</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">Gallagher客服电话</div>
+            <div><div class="cal-desc">866-931-5275</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">Student Health预约电话</div>
+            <div><div class="cal-desc">(919) 681-9355</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">保险福利详情</div>
+            <div><div class="cal-desc">访问studentbluenc.com(搜索"Duke"查看保险计划福利手册)</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">预防性医疗覆盖</div>
+            <div><div class="cal-desc">访问bcbsnc.com/preventive查看ACA覆盖预防疫苗完整清单</div></div>
+          </div>
+          <a href="https://studenthealth.duke.edu/services/immunizations/" target="_blank">Duke Student Health疫苗服务官网</a>
+          <a href="https://studentaffairs.duke.edu/studenthealth/health-insurance" target="_blank">Duke SMIP保险官网</a>
+        </div>
+      </div>
+
+    </div><!-- /accordion-body 疫苗 -->
+  </div><!-- /accordion 疫苗与SMIP保险 -->
+
   <div class="accordion">
     <button class="accordion-btn" onclick="toggleAccordion(this)">
       <span>校历与重要日程 2025-2026学年</span><span class="accordion-arrow">&#9658;</span>
