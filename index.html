@@ -9786,22 +9786,30 @@ async function rejectPendingItem(id, filePath) {
   </div>
 </footer>
 
-<!-- 访问统计（Supabase自建） -->
+<!-- 访问统计（Supabase自建，登录时计数） -->
 <script>
-(function() {
-  // 等Supabase client初始化后再执行
-  function incrementPV() {
-    var supabase = window._supabaseClient;
-    if (!supabase) { setTimeout(incrementPV, 500); return; }
-    supabase.rpc('increment_pv').then(function(res) {
-      if (res.data !== null && res.data !== undefined) {
-        var el = document.getElementById('busuanzi_value_site_pv');
-        if (el) el.textContent = res.data.toLocaleString();
-      }
-    });
-  }
-  setTimeout(incrementPV, 800);
-})();
+window.incrementAndShowPV = function() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  supabase.rpc('increment_pv').then(function(res) {
+    if (res.data !== null && res.data !== undefined) {
+      var el = document.getElementById('busuanzi_value_site_pv');
+      if (el) el.textContent = res.data.toLocaleString();
+    }
+  });
+};
+// 只显示当前计数，不增加
+window.showPV = function() {
+  var supabase = window._supabaseClient;
+  if (!supabase) { setTimeout(window.showPV, 500); return; }
+  supabase.from('site_stats').select('pv').eq('id','main').single().then(function(res) {
+    if (res.data) {
+      var el = document.getElementById('busuanzi_value_site_pv');
+      if (el) el.textContent = res.data.pv.toLocaleString();
+    }
+  });
+};
+window.showPV();
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -9829,6 +9837,8 @@ async function rejectPendingItem(id, filePath) {
   }
 
   function showContent(user) {
+    // 登录成功，计数+1
+    if (typeof window.incrementAndShowPV === "function") window.incrementAndShowPV();
     const template = document.getElementById("real-content");
     const clone = template.content.cloneNode(true);
     const main = document.getElementById("protected-area");
