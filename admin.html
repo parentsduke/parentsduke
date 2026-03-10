@@ -146,6 +146,18 @@
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #fafbff; }
 
+    .delete-btn {
+      padding: 5px 12px;
+      background: #fff0f0;
+      color: #c62828;
+      border: 1.5px solid #ffcdd2;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .delete-btn:hover { background: #fdecea; }
+
     .avatar {
       width: 36px;
       height: 36px;
@@ -269,6 +281,7 @@
           <th>邮箱</th>
           <th>注册时间</th>
           <th>密码状态</th>
+          <th>操作</th>
         </tr>
       </thead>
       <tbody id="userTableBody">
@@ -365,7 +378,7 @@
     const tbody = document.getElementById('userTableBody');
     const errorMsg = document.getElementById('errorMsg');
     errorMsg.style.display = 'none';
-    tbody.innerHTML = '<tr class="loading-row"><td colspan="4">⏳ 加载中...</td></tr>';
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="5">⏳ 加载中...</td></tr>';
 
     const { data, error } = await client
       .from('profiles')
@@ -375,7 +388,7 @@
     if (error) {
       errorMsg.textContent = '❌ 加载失败：' + error.message;
       errorMsg.style.display = 'block';
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">暂无数据</td></tr>';
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">暂无数据</td></tr>';
       return;
     }
 
@@ -386,10 +399,28 @@
       '最后更新：' + new Date().toLocaleTimeString('zh-CN');
   }
 
+  async function deleteUser(userId, email) {
+    if (!confirm(`确认删除用户 ${email}？\n此操作不可撤销。`)) return;
+
+    // 先删除 profiles 记录
+    const { error: profileErr } = await client
+      .from('profiles')
+      .delete()
+      .eq('id', userId);
+
+    if (profileErr) {
+      alert('❌ 删除失败：' + profileErr.message);
+      return;
+    }
+
+    alert('✅ 用户已从名单中移除。\n注意：如需完全删除登录账号，请在 Supabase Authentication 后台手动删除。');
+    loadUsers();
+  }
+
   function renderTable(users) {
     const tbody = document.getElementById('userTableBody');
     if (users.length === 0) {
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="4">暂无用户数据</td></tr>';
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">暂无用户数据</td></tr>';
       return;
     }
 
@@ -419,6 +450,9 @@
             <span class="badge ${passwordSet ? 'set' : 'not-set'}">
               ${passwordSet ? '✅ 已设置' : '⏳ 待设置'}
             </span>
+          </td>
+          <td>
+            <button class="delete-btn" onclick="deleteUser('${user.id}', '${email}')">🗑 删除</button>
           </td>
         </tr>
       `;
