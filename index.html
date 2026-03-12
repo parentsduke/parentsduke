@@ -4148,6 +4148,90 @@ document.addEventListener("keydown", function(e) {
         </div>
       </div>
 
+      <!-- ===== 学生校园停车 ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>学生校园停车</span><span class="accordion-arrow">&#9658;</span>
+        </button>
+        <div class="accordion-body" style="padding:14px; font-size:13px; line-height:1.8; color:#222;">
+
+          <p style="margin:0 0 10px;">Duke校园停车由 <strong>Parking & Transportation Services（PTS）</strong> 统一管理。全校近13,000名学生，停车位有限，<strong>不保证每位学生都能获得停车位</strong>，分配依据是学生的居住地或学习地点。停车费每年6月自动从Bursar账户扣除，每年涨幅约3–5%。</p>
+
+          <div style="background:#fff3cd; border-left:4px solid #c9a84c; padding:10px; margin:0 0 12px; border-radius:4px; font-size:12px; color:#5a4000;">
+            ⚠️ <strong>一年级本科生</strong>只能申请 Smith Warehouse South（SGS）停车场，<strong>不可开车去上课</strong>（学术楼附近停车位仅限有效证件持有人）。摩托车、自行车、电动车是更好的替代选择。
+          </div>
+
+          <div class="cal-item">
+            <div class="cal-date" style="min-width:100px;">📋 按学生类型<br>分配停车区</div>
+            <div>
+              <div class="cal-desc"><strong>一年级本科生：</strong>仅限 Smith Warehouse South（SGS）</div>
+              <div class="cal-desc"><strong>West Campus住宿或走读本科生：</strong>Blue Zone（BLU）</div>
+              <div class="cal-desc"><strong>300/301 Swift Avenue住宿生：</strong>Swift（S）停车证</div>
+              <div class="cal-desc"><strong>Blue Light Living住宿生：</strong>Blue Light Living（BLL）停车证</div>
+              <div class="cal-desc"><strong>研究生/专业学生：</strong>Science Drive Garage（SDG）或 Parking Garage 3（PG3），依学院而定</div>
+              <div class="cal-note">停车证不可转让、赠送或出售；证件年份前两位数字即到期年份（如"28"表示2028年8月15日到期）</div>
+            </div>
+          </div>
+
+          <div class="cal-item">
+            <div class="cal-date" style="min-width:100px;">📅 购买时间</div>
+            <div>
+              <div class="cal-desc"><strong>本科生：</strong>2025年6月11日起在 My Parking Account 购买2025–2026年停车证</div>
+              <div class="cal-desc"><strong>研究生/专业学生：</strong>2025年6月30日起开放购买</div>
+              <div class="cal-desc">建议<strong>7月26日前</strong>完成购买，确保开学前收到实体停车牌</div>
+              <div class="cal-note">多年期停车证持有者无需重新购买，到期日自动延期；费用每年6月自动从Bursar账户扣除</div>
+            </div>
+          </div>
+
+          <div class="cal-item">
+            <div class="cal-date" style="min-width:100px;">🌙 夜间/周末停车证<br>Night Permit（NGT）</div>
+            <div>
+              <div class="cal-desc">无需年度停车证即可在<strong>工作日下午5点–次日早上6:59、及周六/日全天</strong>停放于大多数门禁停车场</div>
+              <div class="cal-desc">证件本身免费，仅收 <strong>$5 行政费</strong> + $0.15 刷卡手续费</div>
+              <div class="cal-desc">2025–26年度NGT停车证7月18日起开放购买；仅限PDF格式，无实体停车牌</div>
+              <div class="cal-note">不退款；特殊活动期间部分停车场夜间/周末停车权限会临时限制，届时会提前张贴告示</div>
+            </div>
+          </div>
+
+          <div class="cal-item">
+            <div class="cal-date" style="min-width:100px;">🎟 临时/单日停车</div>
+            <div>
+              <div class="cal-desc"><strong>单日停车证：</strong>研究生/专业学生 $10/天，可在 My Parking Account 购买</div>
+              <div class="cal-desc"><strong>多日停车证：</strong>$24/次，7天内可使用3次，自选起始日期</div>
+              <div class="cal-desc">Duke Blue Spot App 也可购买单日及小时停车证</div>
+              <div class="cal-note">所有停车证销售不退款，不可更换</div>
+            </div>
+          </div>
+
+          <div class="cal-item">
+            <div class="cal-date" style="min-width:100px;">🚗 入场方式</div>
+            <div>
+              <div class="cal-desc">实体停车牌（hangtag）挂后视镜，接近道闸时系统自动识别抬杆</div>
+              <div class="cal-desc">忘带停车牌时可刷 DukeCard 进出</div>
+              <div class="cal-desc">新购停车证初期会收到带二维码的PDF临时证，正式停车牌邮寄到达前使用</div>
+              <div class="cal-note">停车时必须始终展示停车证（含学术假期和节假日）；他人用你的证产生的罚款由你承担</div>
+            </div>
+          </div>
+
+          <div class="cal-item">
+            <div class="cal-date" style="min-width:100px;">🚲 替代交通方式</div>
+            <div>
+              <div class="cal-desc"><strong>Duke Transit免费班车：</strong>覆盖East/West Campus及医学院，无需停车证</div>
+              <div class="cal-desc"><strong>自行车：</strong>校园内设有大量自行车停放区，骑车上课更灵活</div>
+              <div class="cal-desc"><strong>摩托车/电动车/滑板车：</strong>须停放在指定区域，不可停自行车位</div>
+              <div class="cal-note">注册为拼车或全职骑行通勤者每月可获3次免费单日停车证</div>
+            </div>
+          </div>
+
+          <a href="https://parking.duke.edu/parking-permits/annual-permits/student-annual-parking-permits/" target="_blank">学生年度停车证官方页面（含购买资格详情）</a>
+          <a href="https://parking.duke.edu/parking-permits/annual-permits/night/" target="_blank">夜间/周末停车证（NGT）申请</a>
+          <a href="https://parking.duke.edu/occasional-parking-options/" target="_blank">临时停车选项（单日/多日）</a>
+          <a href="https://parking.duke.edu/parking-permits/garages-lots-fees/" target="_blank">停车场位置与收费标准</a>
+          <a href="https://parking.duke.edu/parking-regulations/" target="_blank">停车规则与罚款说明</a>
+
+        </div>
+      </div>
+
       <!-- ===== Duke Canine / Service Dogs ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
