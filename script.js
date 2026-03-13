@@ -30,20 +30,19 @@ function renderCSV(csvText, tableId) {
 
 // =======================================
 // 通用：向 Supabase 验证 CSV 密码
-// 密码不再写在前端！
+// 密码比对在数据库内完成，前端只收到 true/false
 // =======================================
 async function verifyCSVPassword(csvName, inputPassword) {
   const client = getClient();
   if (!client) return false;
 
-  const { data, error } = await client
-    .from("csv_access")
-    .select("password")
-    .eq("name", csvName)
-    .single();
+  const { data, error } = await client.rpc("check_csv_password", {
+    csv_name: csvName,
+    input_pwd: inputPassword
+  });
 
-  if (error || !data) return false;
-  return data.password === inputPassword;
+  if (error) return false;
+  return data === true;
 }
 
 // =======================================
