@@ -10544,15 +10544,17 @@ async function approveJingcai(id) {
 // ===== 管理员：加载待审核Q&A问题 =====
 // ===== 申请入群 =====
 async function submitInviteRequest(btn) {
-  var classVal  = (document.getElementById('invite-class')  || {}).value || '';
-  var nameVal   = (document.getElementById('invite-name')   || {}).value || '';
-  var emailVal  = (document.getElementById('invite-email')  || {}).value || '';
-  var msg       = document.getElementById('invite-msg');
+  var classVal   = (document.getElementById('invite-class')   || {}).value || '';
+  var wxgroupVal = (document.getElementById('invite-wxgroup') || {}).value || '';
+  var nameVal    = (document.getElementById('invite-name')    || {}).value || '';
+  var emailVal   = (document.getElementById('invite-email')   || {}).value || '';
+  var msg        = document.getElementById('invite-msg');
 
-  classVal = classVal.trim(); nameVal = nameVal.trim(); emailVal = emailVal.trim();
+  classVal = classVal.trim(); wxgroupVal = wxgroupVal.trim();
+  nameVal = nameVal.trim(); emailVal = emailVal.trim();
 
-  if (!classVal || !nameVal || !emailVal) {
-    msg.style.color = 'crimson'; msg.textContent = '请填写全部三项信息'; return;
+  if (!classVal || !wxgroupVal || !nameVal || !emailVal) {
+    msg.style.color = 'crimson'; msg.textContent = '请填写全部四项信息'; return;
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
     msg.style.color = 'crimson'; msg.textContent = '请输入有效的电子邮件地址'; return;
@@ -10573,17 +10575,19 @@ async function submitInviteRequest(btn) {
         submittedBy: classVal,
         email:       emailVal,
         name:        nameVal,
-        class:       classVal
+        class:       classVal,
+        wxgroup:     wxgroupVal
       })
     });
 
     btn.disabled = false; btn.textContent = '提交申请';
 
     if (resp.ok) {
-      msg.style.color = '#0a7c3e'; msg.textContent = '申请已提交，管理员将尽快与您联系';
-      document.getElementById('invite-class').value  = '';
-      document.getElementById('invite-name').value   = '';
-      document.getElementById('invite-email').value  = '';
+      msg.style.color = '#0a7c3e'; msg.textContent = '已提交';
+      document.getElementById('invite-class').value   = '';
+      document.getElementById('invite-wxgroup').value = '';
+      document.getElementById('invite-name').value    = '';
+      document.getElementById('invite-email').value   = '';
     } else {
       var errData = await resp.json().catch(function(){ return {}; });
       msg.style.color = 'crimson';
@@ -11827,7 +11831,11 @@ window.showPV();
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
     </div>
     <div style="margin-bottom:12px;">
-      <input id="invite-name" type="text" placeholder="学生姓名" maxlength="30"
+      <input id="invite-wxgroup" type="text" placeholder="微信群名称" maxlength="50"
+        style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
+    </div>
+    <div style="margin-bottom:12px;">
+      <input id="invite-name" type="text" placeholder="微信群昵称" maxlength="30"
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
     </div>
     <div style="margin-bottom:16px;">
