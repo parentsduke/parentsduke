@@ -4049,8 +4049,11 @@ document.addEventListener("keydown", function(e) {
 
       <!-- ===== 学费与缴费 ===== -->
       <div class="accordion">
+
+      <!-- ===== 学费与缴费（修复版本） ===== -->
+      <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>学费与缴费 Tuition &amp; Payment</span><span class="accordion-arrow">&#9658;</span>
+          <span>学费与缴费 Tuition & Payment</span><span class="accordion-arrow">&#9658;</span>
         </button>
         <div class="accordion-body">
 
@@ -4088,6 +4091,7 @@ document.addEventListener("keydown", function(e) {
           <p style="margin:0 0 10px;"><strong style="color:#003366;">三、缴费方式</strong></p>
           <div style="display:flex; flex-direction:column; gap:10px; margin:0 0 14px;">
 
+            <!-- 支付宝 -->
             <div style="background:#f5f7fa; border-radius:8px; padding:12px 14px; border:1px solid #dde4ef;">
               <div style="font-weight:700; color:#003366; margin-bottom:8px;">支付宝留学缴费(国内家长推荐)</div>
               <div style="font-size:12.5px; line-height:1.8;">
@@ -4128,9 +4132,14 @@ document.addEventListener("keydown", function(e) {
                 </div>
               </div>
             </div>
-              <div style="font-size:12.5px; line-height:1.7;">登录<strong>DukeHub → Finances → Make a Payment</strong>，支持美国银行ACH转账(免手续费)或信用卡(收约2.9%手续费)。</div>
+
+            <!-- DukeHub/美国本地付款 -->
+            <div style="background:#f5f7fa; border-radius:8px; padding:12px 14px; border:1px solid #dde4ef;">
+              <div style="font-weight:700; color:#003366; margin-bottom:8px;">DukeHub在线支付(美国本地)</div>
+              <div style="font-size:12.5px; line-height:1.8;">登录<strong>DukeHub → Finances → Make a Payment</strong>，支持美国银行ACH转账(免手续费)或信用卡(收约2.9%手续费)。</div>
             </div>
 
+            <!-- 招商银行 -->
             <div style="background:#f5f7fa; border-radius:8px; padding:12px 14px; border:1px solid #dde4ef;">
               <div style="font-weight:700; color:#003366; margin-bottom:8px;">招商银行留学快汇</div>
               <div style="font-size:12.5px; line-height:1.8;">
@@ -4161,40 +4170,9 @@ document.addEventListener("keydown", function(e) {
               </div>
             </div>
 
+            <!-- 云闪付 -->
             <div style="background:#f5f7fa; border-radius:8px; padding:12px 14px; border:1px solid #dde4ef;">
-              <div style="font-weight:700; color:#003366; margin-bottom:8px;">其他国内银行电汇</div>
-              <div style="font-size:12.5px; line-height:1.8;">
-                除招行外，工商银行、中国银行、建设银行、农业银行、汇丰中国等均可直接办理跨境电汇缴学费。<strong>须付款人为持中国大陆居民身份证(或港澳台居民来往内地通行证)的境内个人</strong>，不要求留学生本人为中国籍。凭留学证明材料可<strong>不占用付款人年度5万美元便利化购汇额度</strong>；不提供材料则占用便利化额度，超出5万须另行审核。
-
-                <div style="margin:10px 0 6px; font-weight:600; color:#003366; font-size:12.5px;">手续费对比</div>
-                <div style="background:#fff; border:1px solid #dde4ef; border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:12px; line-height:1.8;">
-                  <div style="display:grid; grid-template-columns:auto auto 1fr; gap:5px 14px;">
-                    <div style="font-weight:600; color:#003366;">银行</div>
-                    <div style="font-weight:600; color:#003366;">汇款手续费</div>
-                    <div style="font-weight:600; color:#003366;">电报费</div>
-                    <div>中国银行</div><div>1‰，最低50元，最高260元</div><div>150元/笔(港澳台80元)</div>
-                    <div>工商银行</div><div>1‰，最低50元，最高260元</div><div>150元/笔</div>
-                    <div>建设银行</div><div>1‰，最低50元，最高260元</div><div>80元/笔</div>
-                    <div>农业银行</div><div>1‰，最低50元，最高260元</div><div>80元/笔</div>
-                    <div>兴业银行</div><div>1‰，最低50元，最高260元</div><div>100元/笔</div>
-                    <div>中信银行</div><div>1‰，最低50元，最高260元</div><div>100元/笔</div>
-                    <div>汇丰中国</div><div>通过手机银行/微信服务号操作，费用以页面显示为准</div><div>—</div>
-                  </div>
-                  <div style="margin-top:8px; color:#666;">持白金卡、黑金卡、钻石卡等高端客户，各行手续费普遍可享折扣甚至全免。</div>
-                </div>
-
-                <div style="margin:10px 0 6px; font-weight:600; color:#003366; font-size:12.5px;">操作方式</div>
-                <div style="background:#fff; border:1px solid #dde4ef; border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:12px; line-height:1.8;">
-                  <div style="margin-bottom:6px;"><strong>手机银行/网银(推荐)：</strong>登录各行App → 转账汇款 → 跨境汇款，填写收款方信息(Duke的银行账号、ABA Routing Number、SWIFT Code)、学生姓名及学号，上传留学证明材料，提交审核后系统自动购汇汇出</div>
-                  <div><strong>银行柜台：</strong>携带身份证、银行卡、offer/录取通知书、学费账单，填写"因私汇款申请单"，需用英文填写收款方信息，首次汇款建议柜台办理</div>
-                </div>
-
-                <div style="margin:10px 0 6px; font-weight:600; color:#003366; font-size:12.5px;">到账时间</div>
-                <div style="background:#fff; border:1px solid #dde4ef; border-radius:6px; padding:10px 12px; margin-bottom:6px; font-size:12px; line-height:1.8;">
-                  一般<strong>3-7个工作日</strong>，首次电汇需要银行审核购汇材料，时间可能稍长。建议缴费截止日前<strong>至少10个工作日</strong>操作，并保留汇款回单以备查询。
-                </div>
-              </div>
-            </div>
+              <div style="font-weight:700; color:#003366; margin-bottom:8px;">云闪付(UnionPay Quick Pass)</div>
               <div style="font-size:12.5px; line-height:1.8;">
                 中国银联旗下云闪付App内置<strong>留学缴费</strong>功能，由易思汇提供技术支持，绑定任意银联卡即可使用，全程中文操作，支持学费、住宿费、报名费、押金等多类费用。
 
@@ -4220,6 +4198,7 @@ document.addEventListener("keydown", function(e) {
               </div>
             </div>
 
+            <!-- 易思汇 -->
             <div style="background:#f5f7fa; border-radius:8px; padding:12px 14px; border:1px solid #dde4ef;">
               <div style="font-weight:700; color:#003366; margin-bottom:8px;">易思汇(iSpeedPay)</div>
               <div style="font-size:12.5px; line-height:1.8;">
@@ -4247,6 +4226,7 @@ document.addEventListener("keydown", function(e) {
               </div>
             </div>
 
+            <!-- 微信腾讯留学 -->
             <div style="background:#f5f7fa; border-radius:8px; padding:12px 14px; border:1px solid #dde4ef;">
               <div style="font-weight:700; color:#003366; margin-bottom:8px;">微信腾讯留学缴费</div>
               <div style="font-size:12.5px; line-height:1.8;">
@@ -4273,6 +4253,7 @@ document.addEventListener("keydown", function(e) {
               </div>
             </div>
 
+            <!-- 国际电汇 -->
             <div style="background:#f5f7fa; border-radius:8px; padding:12px 14px; border:1px solid #dde4ef;">
               <div style="font-weight:700; color:#003366; margin-bottom:8px;">国际电汇(International Wire)</div>
               <div style="font-size:12.5px; line-height:1.8;">
@@ -4315,13 +4296,14 @@ document.addEventListener("keydown", function(e) {
                 <div style="margin-top:8px; font-size:12px; color:#555;">
                   Flywire：<a href="https://pay.flywire.com/" target="_blank" style="color:#003366;">pay.flywire.com</a> &nbsp;|&nbsp;
                   Convera：通过DukeHub International Payment入口进入 &nbsp;|&nbsp;
-                  Bursar's Office：<a href="/cdn-cgi/l/email-protection#3a584f48495b487a5e4f515f145f5e4f" style="color:#003366;"><span class="__cf_email__" data-cfemail="afcddadddcceddefcbdac4ca81cacbda">[email&#160;protected]</span></a> 或(919) 684-3531
+                  Bursar's Office：<a href="/cdn-cgi/l/email-protection#7e1c0b0c0d1f0c3e1a0b151b501b1a0b" style="color:#003366;"><span class="__cf_email__" data-cfemail="a2c0d7d0d1c3d0e2c6d7c9c78cc7c6d7">[email&#160;protected]</span></a> 或(919) 684-3531
                 </div>
               </div>
             </div>
 
+            <!-- 分期付款 -->
             <div style="background:#f5f7fa; border-radius:8px; padding:12px 14px; border:1px solid #dde4ef;">
-              <div style="font-weight:700; color:#003366; margin-bottom:8px;">分期付款计划(Nelnet)</div>
+              <div style="font-weight:700; color:#003366; margin-bottom:8px;">分期付款计划(Nelnet Payment Plan)</div>
               <div style="font-size:12.5px; line-height:1.8;">
                 Duke与<strong>Nelnet</strong>合作，允许学生及家长将每学期账单分5期月付，无需一次性支付全款。
 
@@ -4332,44 +4314,21 @@ document.addEventListener("keydown", function(e) {
                   <div>报名须由<strong>学生本人</strong>登录DukeHub操作，家长Proxy账户无法直接创建计划(但报名后可被学生添加为授权付款人)</div>
                 </div>
 
-                <div style="margin:10px 0 6px; font-weight:600; color:#003366; font-size:12.5px;">2025-26分期日程</div>
-                <div style="background:#fff; border:1px solid #dde4ef; border-radius:6px; padding:10px 12px; margin-bottom:10px;">
-                  <div style="display:grid; grid-template-columns:auto 1fr; gap:3px 14px; font-size:12px;">
-                    <div style="font-weight:600; color:#003366;">秋季计划</div><div>报名开放：2025年6月1日起</div>
-                    <div></div><div>还款期：2025年7月1日、8月1日、9月1日、10月1日、11月1日(共5期)</div>
-                    <div style="font-weight:600; color:#003366; padding-top:6px;">春季计划</div><div style="padding-top:6px;">报名开放：2025年11月1日起</div>
-                    <div></div><div>还款期：2025年12月1日、2026年1月1日、2月1日、3月1日、4月1日(共5期)</div>
-                  </div>
-                </div>
-
-                <div style="margin:10px 0 6px; font-weight:600; color:#003366; font-size:12.5px;">分期金额怎么算?</div>
-                <div style="background:#fff; border:1px solid #dde4ef; border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:12px; line-height:1.8;">
-                  以秋季为例：账单总额(学费+住宿+餐饮等) 减去 已获得的助学金/奖学金 = <strong>净应缴金额</strong>，再除以5即为每期金额。<br>
-                  Duke提供Nelnet计算表(Worksheet)，可在Canvas课程页面 → Tuition and Aid → Payment Options中找到，建议报名前先计算。<br>
-                  每期扣款后，Bursar仍会定期发送账单，账单余额须由当期剩余Nelnet付款覆盖；若不足，需另行补缴差额。
-                </div>
-
-                <div style="margin:10px 0 6px; font-weight:600; color:#003366; font-size:12.5px;">如何报名</div>
-                <div style="background:#fff; border:1px solid #dde4ef; border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:12px; line-height:1.8;">
-                  1. 学生登录<strong>DukeHub → Student Center → Finances</strong><br>
-                  2. 点击<strong>Nelnet Payment Plan</strong>入口<br>
-                  3. 选择学期计划，输入银行账户信息，确认报名并支付$40报名费<br>
-                  4. 如需家长付款，在Nelnet内添加授权付款人(Authorized Payer)
+                <div style="margin:10px 0 6px; font-weight:600; color:#003366; font-size:12.5px;">分期费用与时间安排</div>
+                <div style="background:#fff; border:1px solid #dde4ef; border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:12px;">
+                  <div style="margin-bottom:8px;"><strong style="color:#003366;">秋季计划</strong><br>报名开放：2025年6月1日起<br>扣款期：2025年7月1日、8月1日、9月1日、10月1日、11月1日(共5期)</div>
+                  <div><strong style="color:#003366;">春季计划</strong><br>报名开放：2025年11月1日起<br>扣款期：2025年12月1日、2026年1月1日、2月1日、3月1日、4月1日(共5期)</div>
                 </div>
 
                 <div style="margin:10px 0 6px; font-weight:600; color:#003366; font-size:12.5px;">相关费用与罚则</div>
                 <div style="background:#fff; border:1px solid #dde4ef; border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:12px; line-height:1.8;">
                   <div style="display:grid; grid-template-columns:auto 1fr; gap:5px 14px;">
-                    <div style="font-weight:600; color:#003366; white-space:nowrap;">报名费</div>
-                    <div>$40/学期，不退款，每学期重新报名须再次缴纳</div>
-                    <div style="font-weight:600; color:#003366; white-space:nowrap;">利息</div>
-                    <div><strong>无利息</strong>，Nelnet计划本身不收利息</div>
-                    <div style="font-weight:600; color:#003366; white-space:nowrap;">扣款方式</div>
-                    <div>ACH(Automated Clearing House，美国银行间自动清算网络)是美国银行之间电子划转资金的标准方式，类似中国的银行间转账，但须提前授权对方定期从账户自动扣款。Nelnet报名时须提供：美国银行的<strong>路由号(Routing Number，9位，标识银行)</strong>和<strong>账号(Account Number，标识个人账户)</strong>，两者均可在支票本底部或网银账户信息页找到。报名完成后，Nelnet每月到期日自动从该账户划扣当期金额，无需手动操作。<strong>不支持信用卡、借记卡或国际银行账户</strong>。国内家长如无美国账户，可由学生用其在美开立的银行账户报名，授权家长为付款人后，由学生账户按月扣款</div>
-                    <div style="font-weight:600; color:#003366; white-space:nowrap;">退票手续费</div>
-                    <div>若银行因余额不足或账户关闭导致扣款失败，Duke将向学生账户收取<strong>$25退票费</strong>(每次，无论金额大小)；如多次发生，Duke可能暂停该学生支票写作权限</div>
+                    <div style="font-weight:600; color:#003366; white-space:nowrap;">无利息</div>
+                    <div>Nelnet计划本身不收利息，仅收$40/学期报名费</div>
+                    <div style="font-weight:600; color:#003366; white-space:nowrap;">退票费</div>
+                    <div>若银行因余额不足或账户关闭导致扣款失败，Duke将向学生账户收取<strong>$25/次</strong></div>
                     <div style="font-weight:600; color:#003366; white-space:nowrap;">逾期罚款</div>
-                    <div>账单截止日后仍有余额未清，下一期账单将收取<strong>逾期余额的1.25%</strong>作为滞纳金；持续未付可能导致注册限制、无法获取成绩单及文凭，严重者可能被行政退学</div>
+                    <div>账单截止日后仍有余额未清，下一期账单将收取<strong>逾期余额的1.25%</strong>作为滞纳金</div>
                   </div>
                 </div>
 
@@ -4379,13 +4338,14 @@ document.addEventListener("keydown", function(e) {
               </div>
             </div>
 
+            <!-- 其他方式 -->
             <div style="background:#f5f7fa; border-radius:8px; padding:12px 14px; border:1px solid #dde4ef;">
               <div style="font-weight:700; color:#003366; margin-bottom:4px;">支票/汇票(邮寄)</div>
               <div style="font-size:12.5px; line-height:1.7;">抬头写<strong>"Duke University"</strong>，注明学生姓名及学号，邮寄至：<br>Duke University Cashiering Office, Box 90759, Durham, NC 27708</div>
             </div>
 
             <div style="background:#f5f7fa; border-radius:8px; padding:12px 14px; border:1px solid #dde4ef;">
-              <div style="font-weight:700; color:#003366; margin-bottom:4px;">529/预付学费计划</div>
+              <div style="font-weight:700; color:#003366; margin-bottom:4px;">529教育储蓄计划</div>
               <div style="font-size:12.5px; line-height:1.7;">支票邮寄至上述地址，注明学生ID。如有疑问请联系529计划管理方，Duke不直接处理529事宜。</div>
             </div>
 
@@ -4411,7 +4371,7 @@ document.addEventListener("keydown", function(e) {
 
           <div style="margin-bottom:8px; background:#f9f9f9; border-radius:6px; border:1px solid #e0e0e0;">
             <div onclick="var c=this.nextElementSibling;var a=this.querySelector('.faq-arrow');var open=c.style.display==='block';c.style.display=open?'none':'block';a.textContent=open?'▸':'▾';" style="font-weight:600; cursor:pointer; color:#003366; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">逾期未缴会有什么后果?<span class="faq-arrow">▸</span></div>
-            <div style="display:none; padding:0 14px 10px; font-size:12.5px; line-height:1.7;">逾期可能产生滞纳金，且可能影响选课、成绩单申请及毕业认证。请务必在截止日前完成付款，如有困难请及时联系Bursar's Office：<a href="/cdn-cgi/l/email-protection#442631363725360420312f216a212031" style="color:#003366;"><span class="__cf_email__" data-cfemail="8fedfafdfceefdcfebfae4eaa1eaebfa">[email&#160;protected]</span></a>或(919) 684-3531。</div>
+            <div style="display:none; padding:0 14px 10px; font-size:12.5px; line-height:1.7;">逾期可能产生滞纳金，且可能影响选课、成绩单申请及毕业认证。请务必在截止日前完成付款，如有困难请及时联系Bursar's Office：<a href="/cdn-cgi/l/email-protection#066473747567744662736d6328636273" style="color:#003366;"><span class="__cf_email__" data-cfemail="d0b2a5a2a3b1a290b4a5bbb5feb5b4a5">[email&#160;protected]</span></a> 或(919) 684-3531。</div>
           </div>
 
           <div style="margin-bottom:8px; background:#f9f9f9; border-radius:6px; border:1px solid #e0e0e0;">
@@ -4421,15 +4381,16 @@ document.addEventListener("keydown", function(e) {
 
           <!-- 官方参考链接 -->
           <p style="margin:14px 0 10px; border-top:2px solid #e0e0e0; padding-top:14px;"><strong style="color:#003366;">官方参考链接 Official Resources</strong></p>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-            <a href="https://finance.duke.edu/bursar/TuitionFees/tuition/" target="_blank" style="background:#f5f7fa; border:1px solid #dde4ef; border-radius:6px; padding:10px; text-align:center; color:#0066cc; text-decoration:none; font-weight:600; font-size:12px; transition:all 0.2s; display:block;" onmouseover="this.style.background='#dde8f8'; this.style.borderColor='#003366';" onmouseout="this.style.background='#f5f7fa'; this.style.borderColor='#dde4ef';">📋 学费明细</a>
-            <a href="https://finance.duke.edu/bursar/Billing/" target="_blank" style="background:#f5f7fa; border:1px solid #dde4ef; border-radius:6px; padding:10px; text-align:center; color:#0066cc; text-decoration:none; font-weight:600; font-size:12px; transition:all 0.2s; display:block;" onmouseover="this.style.background='#dde8f8'; this.style.borderColor='#003366';" onmouseout="this.style.background='#f5f7fa'; this.style.borderColor='#dde4ef';">📅 缴费截止日</a>
-            <a href="https://finance.duke.edu/bursar/Payments/" target="_blank" style="background:#f5f7fa; border:1px solid #dde4ef; border-radius:6px; padding:10px; text-align:center; color:#0066cc; text-decoration:none; font-weight:600; font-size:12px; transition:all 0.2s; display:block;" onmouseover="this.style.background='#dde8f8'; this.style.borderColor='#003366';" onmouseout="this.style.background='#f5f7fa'; this.style.borderColor='#dde4ef';">💳 缴费方式</a>
-            <a href="https://financialaid.duke.edu/how-aid-calculated/cost-attendance/" target="_blank" style="background:#f5f7fa; border:1px solid #dde4ef; border-radius:6px; padding:10px; text-align:center; color:#0066cc; text-decoration:none; font-weight:600; font-size:12px; transition:all 0.2s; display:block;" onmouseover="this.style.background='#dde8f8'; this.style.borderColor='#003366';" onmouseout="this.style.background='#f5f7fa'; this.style.borderColor='#dde4ef';">💰 就读总费用</a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 0 14px;">
+            <a href="https://finance.duke.edu/bursar/TuitionFees/tuition/" target="_blank" style="background:#f5f7fa; border:1px solid #dde4ef; border-radius:6px; padding:10px; text-align:center; color:#0066cc; text-decoration:none; font-weight:600; font-size:12px; transition:all 0.2s;" onmouseover="this.style.background='#dde8f8'; this.style.borderColor='#003366';" onmouseout="this.style.background='#f5f7fa'; this.style.borderColor='#dde4ef';">📋 学费明细</a>
+            <a href="https://finance.duke.edu/bursar/Billing/" target="_blank" style="background:#f5f7fa; border:1px solid #dde4ef; border-radius:6px; padding:10px; text-align:center; color:#0066cc; text-decoration:none; font-weight:600; font-size:12px; transition:all 0.2s;" onmouseover="this.style.background='#dde8f8'; this.style.borderColor='#003366';" onmouseout="this.style.background='#f5f7fa'; this.style.borderColor='#dde4ef';">📅 缴费截止日</a>
+            <a href="https://finance.duke.edu/bursar/Payments/" target="_blank" style="background:#f5f7fa; border:1px solid #dde4ef; border-radius:6px; padding:10px; text-align:center; color:#0066cc; text-decoration:none; font-weight:600; font-size:12px; transition:all 0.2s;" onmouseover="this.style.background='#dde8f8'; this.style.borderColor='#003366';" onmouseout="this.style.background='#f5f7fa'; this.style.borderColor='#dde4ef';">💳 缴费方式</a>
+            <a href="https://financialaid.duke.edu/how-aid-calculated/cost-attendance/" target="_blank" style="background:#f5f7fa; border:1px solid #dde4ef; border-radius:6px; padding:10px; text-align:center; color:#0066cc; text-decoration:none; font-weight:600; font-size:12px; transition:all 0.2s;" onmouseover="this.style.background='#dde8f8'; this.style.borderColor='#003366';" onmouseout="this.style.background='#f5f7fa'; this.style.borderColor='#dde4ef';">💰 就读总费用</a>
           </div>
 
         </div>
       </div>
+
       <!-- ===== Duke Lemur Center ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
@@ -7984,7 +7945,7 @@ document.addEventListener("keydown", function(e) {
 }
 </style>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ===== 管理员面板逻辑 =====
 const ADMIN_PASSWORD = "Jyswswhj098)(*"; // ← 可在此修改管理员密码
 
@@ -11737,22 +11698,4 @@ window.showPV();
     margin: 8px 0;
     border-radius: 4px;
     font-size: 13px;
-    color: #5a4000;
-    line-height: 1.7;
-  }
-
-  .section-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: #012169;
-    margin: 14px 0 6px;
-    border-bottom: 1px solid #d0d8e8;
-    padding-bottom: 4px;
-  }
-</style>
-
-<script>
-// ===== CSV 函数 =====
-function renderCSV(csvText, tableId) {
-  var rows = csvText.trim().split("\n");
-  var table = document.getElementB
+    color: #5a400
