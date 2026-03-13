@@ -10568,8 +10568,8 @@ async function submitInviteRequest(btn) {
     file_type:   'invite_request',
     status:      'pending',
     title:       classVal + '届 - ' + nameVal,
-    metadata:    JSON.stringify({ class: classVal, name: nameVal, email: emailVal }),
-    uploaded_at: new Date().toISOString()
+    file_path:   emailVal,
+    uploaded_by: classVal
   });
 
   btn.disabled = false; btn.textContent = '提交申请';
@@ -10608,12 +10608,10 @@ async function loadInviteRequests() {
   items.forEach(function(item) {
     var meta = {};
     try { meta = JSON.parse(item.metadata || '{}'); } catch(e) {}
-    var date = new Date(item.uploaded_at).toLocaleString('zh-CN');
     html += '<div style="background:#f8faff;border:1px solid #d0d8ee;border-radius:8px;padding:14px 16px;margin-bottom:10px;">'
           + '<div style="font-size:14px;font-weight:700;color:#012169;margin-bottom:6px;">'
-          + (meta.class || '') + '届 &nbsp;|&nbsp; ' + (meta.name || item.file_name) + '</div>'
-          + '<div style="font-size:13px;color:#333;margin-bottom:4px;">邮箱：<a href="mailto:' + (meta.email || '') + '" style="color:#1a6bbf;">' + (meta.email || '—') + '</a></div>'
-          + '<div style="font-size:11px;color:#aaa;margin-bottom:10px;">提交时间：' + date + '</div>'
+          + (item.uploaded_by || '') + '届 &nbsp;|&nbsp; ' + item.file_name + '</div>'
+          + '<div style="font-size:13px;color:#333;margin-bottom:4px;">邮箱：<a href="mailto:' + (item.file_path || '') + '" style="color:#1a6bbf;">' + (item.file_path || '—') + '</a></div>'
           + '<button onclick="markInviteDone(' + item.id + ',this)" style="padding:5px 14px;background:#0a7c3e;color:#fff;border:none;border-radius:5px;font-size:12px;cursor:pointer;margin-right:8px;">已处理</button>'
           + '<button onclick="deleteInvite(' + item.id + ',this)" style="padding:5px 14px;background:#c0392b;color:#fff;border:none;border-radius:5px;font-size:12px;cursor:pointer;">删除</button>'
           + '</div>';
