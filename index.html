@@ -244,19 +244,24 @@ function toggleBannerMusic() {
   100% { background-position: 200% center; }
 }
 @keyframes rd-imgswitch {
-  0%,28%  { opacity:1; }
-  33%,95% { opacity:0; }
+  0%,20%  { opacity:1; }
+  25%,95% { opacity:0; }
   100%    { opacity:1; }
 }
 @keyframes rd-imgswitch2 {
-  0%,28%  { opacity:0; }
-  33%,61% { opacity:1; }
-  66%,100%{ opacity:0; }
+  0%,20%  { opacity:0; }
+  25%,45% { opacity:1; }
+  50%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch3 {
-  0%,61%  { opacity:0; }
-  66%,94% { opacity:1; }
-  99%,100%{ opacity:0; }
+  0%,45%  { opacity:0; }
+  50%,70% { opacity:1; }
+  75%,100%{ opacity:0; }
+}
+@keyframes rd-imgswitch4 {
+  0%,70%  { opacity:0; }
+  75%,95% { opacity:1; }
+  100%    { opacity:0; }
 }
 #rd-banner-inner { animation: rd-fadein 0.6s cubic-bezier(0.34,1.56,0.64,1) both; font-family: SIMLI, serif; }
 #rd-banner-inner * { font-family: SIMLI, serif; }
@@ -280,18 +285,22 @@ function toggleBannerMusic() {
     position:relative;
   ">
 
-    <!-- 全背景图片：Chapel + Gardens + 樱花 交替淡化 -->
+    <!-- 全背景图片：Chapel + Gardens + 樱花 + 历届新生 交替淡化 -->
     <img src="https://dukeparents.org/images/chapel.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;
-             animation:rd-imgswitch 15s ease-in-out infinite;
+             animation:rd-imgswitch 20s ease-in-out infinite;
              filter:brightness(1) saturate(1.0);">
     <img src="https://dukeparents.org/images/gardens.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%;
-             animation:rd-imgswitch2 15s ease-in-out infinite;
+             animation:rd-imgswitch2 20s ease-in-out infinite;
              filter:brightness(1) saturate(1.0);">
     <img src="https://dukeparents.org/images/gardens2.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;
-             animation:rd-imgswitch3 15s ease-in-out infinite;
+             animation:rd-imgswitch3 20s ease-in-out infinite;
+             filter:brightness(1) saturate(1.0);">
+    <img src="https://dukeparents.org/images/classes_collage.jpg"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 50%;
+             animation:rd-imgswitch4 20s ease-in-out infinite;
              filter:brightness(1) saturate(1.0);">
 
     <!-- 深色渐变遮罩 -->
@@ -498,7 +507,7 @@ function toggleBannerMusic() {
       <!-- 按钮 -->
       <!-- 校训 -->
       <div style="font-size:15px; color:#012169; font-style:italic; letter-spacing:0.15em;
-                  font-weight:800; margin-bottom:10px;
+                  font-weight:800; margin-bottom:auto;
                   -webkit-text-stroke:0.4px rgba(255,255,255,0.7); text-stroke:0.4px rgba(255,255,255,0.7); paint-order:stroke fill;">
         Eruditio et Religio
       </div>
