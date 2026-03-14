@@ -310,7 +310,7 @@ function toggleBannerMusic() {
     ">✕</button>
 
 
-<!-- 烟火Canvas -->
+<!-- 烟火Canvas - 星形+瀑布+双层混合 -->
 <canvas id="rd-fireworks" style="position:absolute; inset:0; width:100%; height:100%; z-index:4; pointer-events:none;"></canvas>
 <script>
 (function() {
@@ -320,41 +320,81 @@ function toggleBannerMusic() {
   var particles = [];
   var rockets = [];
 
-  function resize() {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-  }
+  function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
   resize();
   window.addEventListener('resize', resize);
-
   function rand(min, max) { return Math.random() * (max - min) + min; }
 
-  var colors = ['#FFD700','#FF6B6B','#4ECDC4','#45B7D1','#FFA07A','#98D8C8','#F7DC6F','#BB8FCE','#82E0AA','#F1948A'];
+  var colors = ['#FFD700','#FF6B6B','#4ECDC4','#45B7D1','#FFA07A','#F7DC6F','#BB8FCE','#82E0AA','#ffffff','#FFB6C1'];
+
+  function drawStar(cx, cy, spikes, outerR, innerR, color, alpha) {
+    ctx.save(); ctx.globalAlpha = alpha; ctx.beginPath();
+    var rot = -Math.PI / 2, step = Math.PI / spikes;
+    ctx.moveTo(cx, cy - outerR);
+    for (var i = 0; i < spikes; i++) {
+      ctx.lineTo(cx + Math.cos(rot) * outerR, cy + Math.sin(rot) * outerR); rot += step;
+      ctx.lineTo(cx + Math.cos(rot) * innerR, cy + Math.sin(rot) * innerR); rot += step;
+    }
+    ctx.closePath(); ctx.fillStyle = color; ctx.fill(); ctx.restore();
+  }
 
   function createRocket() {
-    var x = rand(canvas.width * 0.2, canvas.width * 0.8);
+    var types = ['star', 'waterfall', 'double'];
     rockets.push({
-      x: x, y: canvas.height,
-      vx: rand(-1, 1), vy: rand(-12, -8),
+      x: rand(canvas.width * 0.15, canvas.width * 0.85),
+      y: canvas.height,
+      vx: rand(-0.5, 0.5), vy: rand(-18, -14),
       color: colors[Math.floor(rand(0, colors.length))],
-      size: 3
+      type: types[Math.floor(rand(0, 3))]
     });
   }
 
-  function explode(x, y, color) {
-    var count = Math.floor(rand(60, 100));
-    for (var i = 0; i < count; i++) {
-      var angle = (Math.PI * 2 / count) * i;
-      var speed = rand(1, 6);
-      particles.push({
-        x: x, y: y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        alpha: 1,
-        color: color,
-        size: rand(1.5, 3.5),
-        gravity: 0.08
-      });
+  // 星形爆炸
+  function explodeStar(x, y, color) {
+    for (var arm = 0; arm < 5; arm++) {
+      var base = (Math.PI * 2 / 5) * arm - Math.PI / 2;
+      for (var k = 0; k < 12; k++) {
+        var angle = base + rand(-0.15, 0.15), speed = rand(3, 7);
+        particles.push({ x:x, y:y, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed,
+          alpha:1, color:color, size:rand(3,6), spikes:5, gravity:0.07, type:'star' });
+      }
+    }
+    for (var i = 0; i < 15; i++) {
+      var a = rand(0, Math.PI*2);
+      particles.push({ x:x, y:y, vx:Math.cos(a)*rand(1,3), vy:Math.sin(a)*rand(1,3),
+        alpha:1, color:'#ffffff', size:rand(2,3.5), spikes:4, gravity:0.05, type:'star' });
+    }
+  }
+
+  // 瀑布型
+  function explodeWaterfall(x, y, color) {
+    for (var i = 0; i < 100; i++) {
+      var angle = rand(-Math.PI*0.8, -Math.PI*0.2), speed = rand(2, 8);
+      particles.push({ x:x, y:y, vx:Math.cos(angle)*speed*rand(0.5,1.5), vy:Math.sin(angle)*speed,
+        alpha:1, color:color, size:rand(1.5,3), gravity:rand(0.1,0.18), type:'dot' });
+    }
+  }
+
+  // 双层爆炸
+  function explodeDouble(x, y, color) {
+    var color2 = colors[Math.floor(rand(0, colors.length))];
+    // 外层大圆
+    for (var i = 0; i < 60; i++) {
+      var angle = (Math.PI * 2 / 60) * i, speed = rand(5, 9);
+      particles.push({ x:x, y:y, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed,
+        alpha:1, color:color, size:rand(2,4), spikes:5, gravity:0.06, type:'star' });
+    }
+    // 内层小圆（延迟爆炸模拟：速度慢一半）
+    for (var j = 0; j < 40; j++) {
+      var a2 = (Math.PI * 2 / 40) * j, s2 = rand(2, 4);
+      particles.push({ x:x, y:y, vx:Math.cos(a2)*s2, vy:Math.sin(a2)*s2,
+        alpha:1, color:color2, size:rand(3,5), spikes:6, gravity:0.05, type:'star' });
+    }
+    // 中心闪光
+    for (var k = 0; k < 20; k++) {
+      var ak = rand(0, Math.PI*2);
+      particles.push({ x:x, y:y, vx:Math.cos(ak)*rand(0.5,2), vy:Math.sin(ak)*rand(0.5,2),
+        alpha:1, color:'#ffffff', size:rand(2,4), spikes:4, gravity:0.03, type:'star' });
     }
   }
 
@@ -363,49 +403,40 @@ function toggleBannerMusic() {
     var banner = document.getElementById('rd-banner');
     if (!banner || banner.style.display === 'none') return;
     requestAnimationFrame(animate);
-
-    ctx.fillStyle = 'rgba(0,0,0,0.15)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     frameCount++;
-    if (frameCount % 45 === 0) createRocket();
+    if (frameCount % 180 === 0) createRocket();
 
-    // Rockets
     for (var i = rockets.length - 1; i >= 0; i--) {
       var r = rockets[i];
       r.x += r.vx; r.y += r.vy; r.vy += 0.3;
-      ctx.beginPath();
-      ctx.arc(r.x, r.y, r.size, 0, Math.PI * 2);
-      ctx.fillStyle = r.color;
-      ctx.fill();
-      if (r.vy >= 0) {
-        explode(r.x, r.y, r.color);
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath(); ctx.arc(r.x, r.y, 3, 0, Math.PI*2);
+      ctx.fillStyle = r.color; ctx.fill(); ctx.globalAlpha = 1;
+      if (r.vy >= -2) {
+        if (r.type === 'star') explodeStar(r.x, r.y, r.color);
+        else if (r.type === 'waterfall') explodeWaterfall(r.x, r.y, r.color);
+        else explodeDouble(r.x, r.y, r.color);
         rockets.splice(i, 1);
       }
     }
 
-    // Particles
     for (var j = particles.length - 1; j >= 0; j--) {
       var p = particles[j];
-      p.x += p.vx; p.y += p.vy;
-      p.vy += p.gravity;
-      p.alpha -= 0.018;
+      p.x += p.vx; p.y += p.vy; p.vy += p.gravity; p.vx *= 0.98; p.alpha -= 0.016;
       if (p.alpha <= 0) { particles.splice(j, 1); continue; }
-      ctx.globalAlpha = p.alpha;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.fill();
+      if (p.type === 'star') {
+        drawStar(p.x, p.y, p.spikes, p.size, p.size*0.45, p.color, p.alpha);
+      } else {
+        ctx.globalAlpha = p.alpha;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fillStyle = p.color; ctx.fill(); ctx.globalAlpha = 1;
+      }
     }
     ctx.globalAlpha = 1;
   }
 
-  // 等待banner显示后启动
-  setTimeout(function() {
-    resize();
-    createRocket();
-    animate();
-  }, 300);
+  setTimeout(function() { resize(); createRocket(); animate(); }, 300);
 })();
 </script>
     <!-- 全部内容叠在图片上 -->
@@ -445,7 +476,7 @@ function toggleBannerMusic() {
       <!-- 正文 -->
       <div style="font-size:clamp(20px,4.5vw,28px); color:#012169; line-height:2.2; font-weight:700; margin-bottom:14px;
                   -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill;">
-        扯谈Duke群专为Duke家长打造<br>汇聚历届家长资源与经验分享<br>
+        扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群专为<span class="gothic">𝔇𝔲𝔨𝔢</span>家长打造<br>汇聚历届家长资源与经验分享<br>
         <span style="color:#012169; font-size:16px;">请扫描首页二维码和填写底部表格申请加入</span>
       </div>
 
@@ -453,7 +484,7 @@ function toggleBannerMusic() {
       <button class="rd-enter-btn" onclick="closeBanner()" style="
         background:linear-gradient(135deg,#c9a84c,#e8c96a,#c9a84c);
         color:#012169; border:none; border-radius:50px;
-        padding:8px 24px; font-size:clamp(13px,2.5vw,16px); font-weight:800;
+        padding:5px 14px; font-size:clamp(10px,1.8vw,12px); font-weight:800;
         cursor:pointer; letter-spacing:0.1em;
         box-shadow:0 6px 24px rgba(201,168,76,0.4);
         transition:all 0.25s ease; margin-bottom:12px;
@@ -465,7 +496,7 @@ function toggleBannerMusic() {
           background:rgba(255,255,255,0.15);
           border:2px solid rgba(255,255,255,0.8);
           color:#012169; border-radius:50px;
-          padding:10px 28px; font-size:15px;
+          padding:4px 12px; font-size:9px;
           cursor:pointer; transition:all 0.25s ease;
           letter-spacing:0.05em; font-family:SIMLI,serif;
           text-shadow:none;
