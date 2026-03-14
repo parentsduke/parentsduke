@@ -515,24 +515,25 @@ function toggleBannerMusic() {
       </div>
 
       <!-- 两个按钮并排 -->
-      <div style="display:flex; gap:10px; align-items:center; justify-content:center;">
-        <button class="rd-enter-btn" onclick="closeBanner()" style="
-          background:linear-gradient(135deg,#c9a84c,#e8c96a,#c9a84c);
-          color:#012169; border:none; border-radius:50px;
-          padding:3px 8px; font-size:clamp(8px,1.5vw,10px); font-weight:800;
-          cursor:pointer; letter-spacing:0.1em;
-          box-shadow:0 4px 12px rgba(201,168,76,0.4);
-          transition:all 0.25s ease;
-        ">进入网站 &nbsp;→</button>
+      <div style="display:inline-flex; align-items:center; gap:16px;">
         <button id="rd-music-btn" onclick="toggleBannerMusic()" style="
-          background:rgba(255,255,255,0.15);
-          border:1px solid rgba(255,255,255,0.8);
-          color:#012169; border-radius:50px;
+          background:rgba(201,168,76,0.15);
+          border:1px solid #c9a84c;
+          color:#c9a84c; border-radius:50px;
           padding:2px 8px; font-size:7px;
           cursor:pointer; transition:all 0.25s ease;
           letter-spacing:0.05em; font-family:SIMLI,serif;
           text-shadow:none;
         ">🔊 播放欢庆音乐</button>
+        <button class="rd-enter-btn" onclick="closeBanner()" style="
+          background:rgba(201,168,76,0.15);
+          border:1px solid #c9a84c;
+          color:#c9a84c; border-radius:50px;
+          padding:3px 8px; font-size:clamp(8px,1.5vw,10px); font-weight:800;
+          cursor:pointer; letter-spacing:0.1em;
+          transition:all 0.25s ease;
+          text-shadow:none;
+        ">进入网站 &nbsp;→</button>
       </div>
     </div>
 
@@ -1901,7 +1902,7 @@ function toggleBannerMusic() {
             <div><strong>Step 3</strong>——如未满18岁（2025年8月1日前），家长须填写 Minor Consent to Treat Form</div>
             <div><strong>Step 4</strong>——由医生/诊所填写官方 Mandatory Immunization Requirements Form（家庭成员不可签署）</div>
             <div><strong>Step 5</strong>——上传表格至 Student Health Gateway → Medical Clearances</div>
-            <div style="margin-top:6px; color:#888;">📧 邮件提交：<a href="mailto:immunizationrecords@studentaffairs.duke.edu">immunizationrecords@studentaffairs.duke.edu</a></div>
+            <div style="margin-top:6px; color:#888;">📧 邮件提交：<a href="/cdn-cgi/l/email-protection#6b0206061e0502110a1f020405190e0804190f182b181f1e0f0e051f0a0d0d0a021918450f1e000e450e0f1e"><span class="__cf_email__" data-cfemail="284145455d464152495c4147465a4d4b475a4c5b685b5c5d4c4d465c494e4e49415a5b064c5d434d064d4c5d">[email&#160;protected]</span></a></div>
             <div style="color:#888;">⏱ 处理时间：最长30天，完成后系统发送通知</div>
           </div>
 
@@ -9108,7 +9109,7 @@ function toggleBannerMusic() {
 }
 </style>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ===== 管理员面板逻辑 =====
 const ADMIN_PASSWORD = "Jyswswhj098)(*"; // ← 可在此修改管理员密码
 
@@ -12990,9 +12991,4 @@ window.showPV();
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
     </div>
     <button onclick="submitInviteRequest(this)"
-      style="width:100%; padding:10px; background:#012169; color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
-      提交申请
-    </button>
-    <p id="invite-msg" style="text-align:center; margin:10px 0 0; font-size:13px; min-height:18px;"></p>
-  </div>
-</div>
+      style="wid
