@@ -11172,11 +11172,13 @@ async function submitInviteRequest(btn) {
   var supabase = window._supabaseClient;
   if (!supabase) { msg.style.color = 'crimson'; msg.textContent = '提交失败，请稍后重试'; return; }
   btn.disabled = true; btn.textContent = '提交中...';
+  var nicknameVal = (document.getElementById('invite-nickname') || {}).value || '';
+  nicknameVal = nicknameVal.trim();
   var result = await supabase.from('pending_uploads').insert({
-    file_name:   nameVal,
+    file_name:   nameVal + (nicknameVal ? ' (' + nicknameVal + ')' : ''),
     file_type:   'invite_request',
     status:      'pending',
-    title:       classVal + '届 - ' + nameVal,
+    title:       classVal + '届 - ' + nameVal + (nicknameVal ? ' (' + nicknameVal + ')' : ''),
     file_path:   emailVal,
     uploaded_by: classVal
   });
@@ -11186,8 +11188,9 @@ async function submitInviteRequest(btn) {
   } else {
     msg.style.color = '#0a7c3e'; msg.textContent = '申请已提交，管理员将尽快与您联系';
     document.getElementById('invite-class').value = '';
-    document.getElementById('invite-name').value  = '';
-    document.getElementById('invite-email').value = '';
+    document.getElementById('invite-name').value     = '';
+    document.getElementById('invite-nickname').value = '';
+    document.getElementById('invite-email').value    = '';
   }
 }
 
@@ -12409,14 +12412,18 @@ window.showPV();
 <!-- ===== 申请入群表单（页面底部，登录后隐藏） ===== -->
 <div id="invite-request-section" style="max-width:480px; margin:40px auto 0; padding:0 16px 48px;">
   <div style="background:#fff; border:1px solid #d0d8e8; border-radius:10px; padding:22px 24px; box-shadow:0 2px 10px rgba(1,33,105,0.07);">
-    <div style="font-size:15px; font-weight:700; color:#012169; margin-bottom:6px;">申请加入家长群</div>
-    <div style="font-size:12px; color:#888; margin-bottom:16px;">本群仅限扯谈Duke群体系家长申请加入。填写后管理员将向您的电子邮箱发送一封来自noreply&#64;dukeparents.org的注册邀请，请点击其中的Accept the invite链接。</div>
+    <div style="font-size:15px; font-weight:700; color:#012169; margin-bottom:6px;">申请登录扯谈Duke群网站</div>
+    <div style="font-size:12px; color:#888; margin-bottom:16px;">本网站仅限扯谈Duke群体系家长申请登录。填写后管理员将向您的电子邮箱发送一封来自noreply&#64;dukeparents.org的注册邀请，请点击其中的Accept the invite链接。</div>
     <div style="margin-bottom:12px;">
       <input id="invite-class" type="text" placeholder="届（如：2030）" maxlength="10"
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
     </div>
     <div style="margin-bottom:12px;">
-      <input id="invite-name" type="text" placeholder="学生姓名" maxlength="30"
+      <input id="invite-name" type="text" placeholder="微信群名称" maxlength="30"
+        style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
+    </div>
+    <div style="margin-bottom:12px;">
+      <input id="invite-nickname" type="text" placeholder="微信群昵称" maxlength="30"
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
     </div>
     <div style="margin-bottom:16px;">
