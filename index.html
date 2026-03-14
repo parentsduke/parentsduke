@@ -461,60 +461,63 @@ function toggleBannerMusic() {
     <!-- 全部内容叠在图片上 -->
     <div style="
       position:absolute; inset:0; z-index:5;
-      display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
-      padding:48px 24px 24px; text-align:center;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:16px 24px; text-align:center;
       overflow-y:auto; -webkit-overflow-scrolling:touch;
     ">
-      <!-- 彩带 -->
-      <img src="https://dukeparents.org/images/bluedevil.png" style="height:30px; width:auto; margin-bottom:16px; filter:drop-shadow(0 4px 16px rgba(0,0,0,0.7));">
+      <!-- 蓝魔 -->
+      <img src="https://dukeparents.org/images/bluedevil.png" style="height:clamp(20px,3vh,30px); width:auto; margin-bottom:clamp(4px,1vh,10px); filter:drop-shadow(0 4px 16px rgba(0,0,0,0.7));">
 
       <!-- 副标题 -->
-      <div style="text-align:center; margin-bottom:8px;">
-        <div style="font-size:18px; letter-spacing:0.3em; font-weight:700; text-transform:uppercase;
+      <div style="text-align:center; margin-bottom:clamp(4px,1vh,8px);">
+        <div style="font-size:clamp(11px,1.8vw,16px); letter-spacing:0.25em; font-weight:700; text-transform:uppercase;
                     background:linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c);
                     -webkit-background-clip:text; -webkit-text-fill-color:transparent;
                     background-clip:text;">Congratulations</div>
-        <div style="font-size:18px; letter-spacing:0.3em; font-weight:700; text-transform:uppercase;
+        <div style="font-size:clamp(11px,1.8vw,16px); letter-spacing:0.25em; font-weight:700; text-transform:uppercase;
                     background:linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c);
                     -webkit-background-clip:text; -webkit-text-fill-color:transparent;
                     background-clip:text;">Class of 2030</div>
       </div>
 
       <!-- 主标题 -->
-      <div style="font-size:clamp(48px,11vw,80px); font-weight:900; color:#012169; -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill; letter-spacing:0.04em;
-                  text-shadow:0 4px 20px rgba(0,0,0,0.7); margin-bottom:10px;">
+      <div style="font-size:clamp(32px,7vw,60px); font-weight:900; color:#012169;
+                  -webkit-text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill;
+                  letter-spacing:0.04em; margin-bottom:clamp(4px,1vh,8px);">
         热烈祝贺
       </div>
 
-      <div style="font-size:clamp(28px,6.5vw,44px); font-weight:800; color:#012169; -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill; line-height:1.8; margin-bottom:14px;
-                  text-shadow:0 2px 12px rgba(0,0,0,0.6);">
+      <div style="font-size:clamp(18px,4vw,32px); font-weight:800; color:#012169;
+                  -webkit-text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill;
+                  line-height:1.5; margin-bottom:clamp(6px,1.5vh,12px);">
         2030届 <span class="gothic">ℜ𝔇</span> 录取家长<br>欢迎加入 <span class="gothic">𝔇𝔲𝔨𝔢</span> 大家庭！
       </div>
 
       <!-- 分隔线 -->
-      <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px; width:60%;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:clamp(6px,1.5vh,12px); width:50%;">
         <div style="flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.6));"></div>
-        <div style="color:#c9a84c; font-size:16px;">⚜</div>
+        <div style="color:#c9a84c; font-size:13px;">⚜</div>
         <div style="flex:1; height:1px; background:linear-gradient(90deg,rgba(201,168,76,0.6),transparent);"></div>
       </div>
 
       <!-- 正文 -->
-      <div style="font-size:clamp(20px,4.5vw,28px); color:#012169; line-height:2.2; font-weight:700; margin-bottom:14px;
-                  -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill;">
-        扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群专为<span class="gothic">𝔇𝔲𝔨𝔢</span>家长打造<br>汇聚历届家长资源与经验分享<br>
-        <span style="color:#012169; font-size:16px;">请扫描首页二维码和填写底部表格申请加入</span>
+      <div style="font-size:clamp(13px,2.5vw,18px); color:#012169; line-height:1.8; font-weight:700;
+                  -webkit-text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill;
+                  margin-bottom:clamp(6px,1.5vh,12px);">
+        扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群专为<span class="gothic">𝔇𝔲𝔨𝔢</span>家长打造<br>
+        汇聚历届家长资源与经验分享<br>
+        <span style="color:#012169; font-size:clamp(11px,2vw,14px);">请扫描首页二维码和填写底部表格申请加入</span>
       </div>
 
-      <!-- 按钮 -->
       <!-- 校训 -->
-      <div style="font-size:15px; color:#012169; font-style:italic; letter-spacing:0.15em;
-                  font-weight:800; margin-bottom:auto;
-                  -webkit-text-stroke:0.4px rgba(255,255,255,0.7); text-stroke:0.4px rgba(255,255,255,0.7); paint-order:stroke fill;">
+      <div style="font-size:clamp(11px,1.8vw,14px); color:#012169; font-style:italic; letter-spacing:0.15em;
+                  font-weight:800; margin-bottom:clamp(8px,2vh,16px);
+                  -webkit-text-stroke:0.4px rgba(255,255,255,0.7); paint-order:stroke fill;">
         Eruditio et Religio
       </div>
 
       <!-- 两个按钮并排 -->
-      <div style="display:flex; gap:10px; align-items:center; justify-content:center; margin-bottom:8px;">
+      <div style="display:flex; gap:10px; align-items:center; justify-content:center;">
         <button class="rd-enter-btn" onclick="closeBanner()" style="
           background:linear-gradient(135deg,#c9a84c,#e8c96a,#c9a84c);
           color:#012169; border:none; border-radius:50px;
