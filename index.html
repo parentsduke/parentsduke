@@ -312,39 +312,39 @@ function toggleBannerMusic() {
     <!-- 全部内容叠在图片上 -->
     <div style="
       position:absolute; inset:0; z-index:5;
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      padding:24px 24px; text-align:center;
-      overflow-y:auto;
+      display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+      padding:48px 24px 24px; text-align:center;
+      overflow-y:auto; -webkit-overflow-scrolling:touch;
     ">
       <!-- 彩带 -->
       <img src="https://dukeparents.org/images/bluedevil.png" style="height:60px; width:auto; margin-bottom:16px; filter:drop-shadow(0 4px 16px rgba(0,0,0,0.7));">
 
       <!-- 副标题 -->
       <div style="font-size:18px; letter-spacing:0.3em; color:#012169; text-transform:uppercase; font-weight:600;
-                  text-shadow:0 1px 8px rgba(0,0,0,0.8); margin-bottom:14px;">
+                  text-shadow:0 1px 8px rgba(0,0,0,0.8); margin-bottom:8px;">
         Congratulations · Class of 2030
       </div>
 
       <!-- 主标题 -->
-      <div style="font-size:clamp(36px,8vw,64px); font-weight:900; color:#012169; -webkit-text-stroke:1.5px #ffffff; text-stroke:1.5px #ffffff; paint-order:stroke fill; letter-spacing:0.04em;
+      <div style="font-size:clamp(36px,8vw,64px); font-weight:900; color:#012169; -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill; letter-spacing:0.04em;
                   text-shadow:0 4px 20px rgba(0,0,0,0.7); margin-bottom:10px;">
         热烈祝贺
       </div>
 
-      <div style="font-size:clamp(22px,5vw,34px); font-weight:700; color:#012169; -webkit-text-stroke:1px #ffffff; text-stroke:1px #ffffff; paint-order:stroke fill; line-height:1.8; margin-bottom:28px;
+      <div style="font-size:clamp(22px,5vw,34px); font-weight:700; color:#012169; -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill; line-height:1.8; margin-bottom:14px;
                   text-shadow:0 2px 12px rgba(0,0,0,0.6);">
         2030届 <span class="gothic">ℜ𝔇</span> 录取家长<br>欢迎加入 <span class="gothic">𝔇𝔲𝔨𝔢</span> 大家庭！
       </div>
 
       <!-- 分隔线 -->
-      <div style="display:flex; align-items:center; gap:14px; margin-bottom:26px; width:60%;">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px; width:60%;">
         <div style="flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.6));"></div>
         <div style="color:#c9a84c; font-size:16px;">⚜</div>
         <div style="flex:1; height:1px; background:linear-gradient(90deg,rgba(201,168,76,0.6),transparent);"></div>
       </div>
 
       <!-- 正文 -->
-      <div style="font-size:clamp(18px,4vw,24px); color:#012169; line-height:2.2; margin-bottom:32px;
+      <div style="font-size:clamp(18px,4vw,24px); color:#012169; line-height:2.2; margin-bottom:14px;
                   text-shadow:0 1px 8px rgba(0,0,0,0.8);">
         扯谈Duke群是专为Duke家长打造的中文社区<br>
         汇聚历届家长资源与经验分享<br>
@@ -358,7 +358,7 @@ function toggleBannerMusic() {
         padding:12px 40px; font-size:clamp(18px,4vw,24px); font-weight:800;
         cursor:pointer; letter-spacing:0.1em;
         box-shadow:0 6px 24px rgba(201,168,76,0.4);
-        transition:all 0.25s ease; margin-bottom:20px;
+        transition:all 0.25s ease; margin-bottom:12px;
       ">进入网站 &nbsp;→</button>
 
       <!-- 音乐按钮 -->
@@ -2772,7 +2772,7 @@ function toggleBannerMusic() {
           <!-- 优秀奖学金 -->
           <h3 style="color:#003366; margin:22px 0 8px;">Duke Merit Scholarships 荣誉奖学金详解</h3>
 
-          <div style="background:#e8f0fb; border-left:4px solid #003366; border-radius:4px; padding:10px 14px; margin-bottom:14px; font-size:13px;">
+          <div style="background:#e8f0fb; border-left:4px solid #003366; border-radius:4px; padding:10px 14px; margin-bottom:8px; font-size:13px;">
             <strong>申请方式说明：</strong>绝大多数Duke Merit Scholarships无需单独申请，Duke招生办公室在审阅录取申请时会自动考量候选人资格。唯一例外是Robertson Scholars Program，需在11月15日前提交独立申请。入围决赛者(Finalists)将于次年3月初收到OUSF发出的邮件通知，并参加四天校园访问和面试，奖项于5月1日前公布。
           </div>
 
@@ -2841,7 +2841,7 @@ function toggleBannerMusic() {
           </div>
 
           <!-- 7. Trinity / Alumni Endowed -->
-          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:14px; background:#fff;">
+          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:8px; background:#fff;">
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
               <span style="background:#4a7fc1; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">南北卡/校友子女</span>
               <strong style="color:#003366; font-size:15px;">Trinity Scholarships & Alumni Endowed Scholarship</strong>
@@ -2943,7 +2943,7 @@ function toggleBannerMusic() {
           <h4 style="color:#003366; margin:0 0 4px;">5. 自行预估方法</h4>
           <p style="margin:0 0 12px;">Duke提供Net Price Calculator和MyinTuition Calculator，可输入家庭收入、人数、资产等获取个性化资助预测。<a href="https://financialaid.duke.edu/apply-aid/estimate-your-aid/" target="_blank">相关链接</a></p>
 
-          <div style="background:#fffbe6; border:1px solid #f0c040; border-radius:6px; padding:8px 14px; margin-bottom:14px; font-size:13px;">
+          <div style="background:#fffbe6; border:1px solid #f0c040; border-radius:6px; padding:8px 14px; margin-bottom:8px; font-size:13px;">
             只有在提交 FAFSA + CSS Profile 并被录取后，学校才会发放最终实际资助通知(Financial Aid Offer)。
           </div>
 
@@ -8493,7 +8493,7 @@ function toggleBannerMusic() {
       </div>
 
       <!-- 文件夹分类选择 -->
-      <div style="margin-bottom:14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <div style="margin-bottom:8px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <label style="font-size:14px; color:#333; font-weight:bold;">上传至分类：</label>
         <select id="adminFolderSelect" style="padding:7px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; background:#fff;">
           <option value="images">图片 (images/)</option>
@@ -8549,7 +8549,7 @@ function toggleBannerMusic() {
 
         <!-- 新动向管理 -->
         <div id="adminTab-xindongxiang" class="admin-tab-panel">
-          <div style="margin-bottom:14px;">
+          <div style="margin-bottom:8px;">
             <div style="font-size:13px; color:#555; margin-bottom:12px;">粘贴文章标题和摘要，AI自动生成格式化条目并添加到"新动向"手风琴。</div>
 
             <!-- 输入区 -->
@@ -8565,12 +8565,12 @@ function toggleBannerMusic() {
               <label style="font-size:13px; font-weight:600; color:#003366; display:block; margin-bottom:4px;">文章摘要 / 要点（粘贴英文或中文均可）</label>
               <textarea id="xdx-summary" rows="6" placeholder="粘贴文章内容摘要、关键段落或你整理的要点..." style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:13px; resize:vertical;"></textarea>
             </div>
-            <div style="margin-bottom:14px;">
+            <div style="margin-bottom:8px;">
               <label style="font-size:13px; font-weight:600; color:#003366; display:block; margin-bottom:4px;">发布日期</label>
               <input type="text" id="xdx-date" placeholder="例：2026.3.15" style="width:160px; padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:13px;">
             </div>
 
-            <div style="margin-bottom:14px;">
+            <div style="margin-bottom:8px;">
               <label style="font-size:13px; font-weight:600; color:#003366; display:block; margin-bottom:4px;">Anthropic API Key</label>
               <input type="password" id="xdx-api-key" placeholder="sk-ant-..." style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid #ccc; border-radius:6px; font-size:13px;" oninput="localStorage.setItem('xdx_api_key', this.value)">
               <div style="font-size:11px; color:#aaa; margin-top:3px;">仅保存在本机浏览器，不会上传</div>
@@ -8609,7 +8609,7 @@ function toggleBannerMusic() {
               <button onclick="deleteAllAdminVideos()" class="admin-danger-btn">🗑 全部清空</button>
             </div>
           </div>
-          <div style="border:2px dashed #003366;border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#eef3fa;margin-bottom:14px;"
+          <div style="border:2px dashed #003366;border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#eef3fa;margin-bottom:8px;"
             ondragover="event.preventDefault();this.style.background='#d8e8fc';"
             ondragleave="this.style.background='#eef3fa';"
             ondrop="adminVideoFileDrop2(event)"
@@ -8633,7 +8633,7 @@ function toggleBannerMusic() {
             </div>
           </div>
           <!-- 上传区 -->
-          <div style="border:2px dashed #003366;border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#eef3fa;margin-bottom:14px;"
+          <div style="border:2px dashed #003366;border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#eef3fa;margin-bottom:8px;"
             ondragover="event.preventDefault();this.style.background='#d8e8fc';"
             ondragleave="this.style.background='#eef3fa';"
             ondrop="albumAdminFileDrop(event)"
@@ -8669,7 +8669,7 @@ function toggleBannerMusic() {
             </div>
           </div>
           <!-- 直接上传区 -->
-          <div style="border:2px dashed #003366;border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#eef3fa;margin-bottom:14px;"
+          <div style="border:2px dashed #003366;border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#eef3fa;margin-bottom:8px;"
             ondragover="event.preventDefault();this.style.background='#d8e8fc';"
             ondragleave="this.style.background='#eef3fa';"
             ondrop="videoAdminFileDrop(event)"
