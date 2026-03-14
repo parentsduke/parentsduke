@@ -309,6 +309,105 @@ function toggleBannerMusic() {
       display:flex; align-items:center; justify-content:center;
     ">✕</button>
 
+
+<!-- 烟火Canvas -->
+<canvas id="rd-fireworks" style="position:absolute; inset:0; width:100%; height:100%; z-index:4; pointer-events:none;"></canvas>
+<script>
+(function() {
+  var canvas = document.getElementById('rd-fireworks');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var rockets = [];
+
+  function resize() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+
+  var colors = ['#FFD700','#FF6B6B','#4ECDC4','#45B7D1','#FFA07A','#98D8C8','#F7DC6F','#BB8FCE','#82E0AA','#F1948A'];
+
+  function createRocket() {
+    var x = rand(canvas.width * 0.2, canvas.width * 0.8);
+    rockets.push({
+      x: x, y: canvas.height,
+      vx: rand(-1, 1), vy: rand(-12, -8),
+      color: colors[Math.floor(rand(0, colors.length))],
+      size: 3
+    });
+  }
+
+  function explode(x, y, color) {
+    var count = Math.floor(rand(60, 100));
+    for (var i = 0; i < count; i++) {
+      var angle = (Math.PI * 2 / count) * i;
+      var speed = rand(1, 6);
+      particles.push({
+        x: x, y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        alpha: 1,
+        color: color,
+        size: rand(1.5, 3.5),
+        gravity: 0.08
+      });
+    }
+  }
+
+  var frameCount = 0;
+  function animate() {
+    var banner = document.getElementById('rd-banner');
+    if (!banner || banner.style.display === 'none') return;
+    requestAnimationFrame(animate);
+
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    frameCount++;
+    if (frameCount % 45 === 0) createRocket();
+
+    // Rockets
+    for (var i = rockets.length - 1; i >= 0; i--) {
+      var r = rockets[i];
+      r.x += r.vx; r.y += r.vy; r.vy += 0.3;
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, r.size, 0, Math.PI * 2);
+      ctx.fillStyle = r.color;
+      ctx.fill();
+      if (r.vy >= 0) {
+        explode(r.x, r.y, r.color);
+        rockets.splice(i, 1);
+      }
+    }
+
+    // Particles
+    for (var j = particles.length - 1; j >= 0; j--) {
+      var p = particles[j];
+      p.x += p.vx; p.y += p.vy;
+      p.vy += p.gravity;
+      p.alpha -= 0.018;
+      if (p.alpha <= 0) { particles.splice(j, 1); continue; }
+      ctx.globalAlpha = p.alpha;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // 等待banner显示后启动
+  setTimeout(function() {
+    resize();
+    createRocket();
+    animate();
+  }, 300);
+})();
+</script>
     <!-- 全部内容叠在图片上 -->
     <div style="
       position:absolute; inset:0; z-index:5;
@@ -320,18 +419,18 @@ function toggleBannerMusic() {
       <img src="https://dukeparents.org/images/bluedevil.png" style="height:60px; width:auto; margin-bottom:16px; filter:drop-shadow(0 4px 16px rgba(0,0,0,0.7));">
 
       <!-- 副标题 -->
-      <div style="font-size:18px; letter-spacing:0.3em; color:#012169; text-transform:uppercase; font-weight:600;
+      <div style="font-size:20px; letter-spacing:0.3em; color:#012169; font-weight:700; text-transform:uppercase; font-weight:600;
                   text-shadow:0 1px 8px rgba(0,0,0,0.8); margin-bottom:8px;">
         Congratulations · Class of 2030
       </div>
 
       <!-- 主标题 -->
-      <div style="font-size:clamp(36px,8vw,64px); font-weight:900; color:#012169; -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill; letter-spacing:0.04em;
+      <div style="font-size:clamp(48px,11vw,80px); font-weight:900; color:#012169; -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill; letter-spacing:0.04em;
                   text-shadow:0 4px 20px rgba(0,0,0,0.7); margin-bottom:10px;">
         热烈祝贺
       </div>
 
-      <div style="font-size:clamp(22px,5vw,34px); font-weight:700; color:#012169; -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill; line-height:1.8; margin-bottom:14px;
+      <div style="font-size:clamp(28px,6.5vw,44px); font-weight:800; color:#012169; -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill; line-height:1.8; margin-bottom:14px;
                   text-shadow:0 2px 12px rgba(0,0,0,0.6);">
         2030届 <span class="gothic">ℜ𝔇</span> 录取家长<br>欢迎加入 <span class="gothic">𝔇𝔲𝔨𝔢</span> 大家庭！
       </div>
@@ -344,7 +443,7 @@ function toggleBannerMusic() {
       </div>
 
       <!-- 正文 -->
-      <div style="font-size:clamp(18px,4vw,24px); color:#012169; line-height:2.2; margin-bottom:14px;
+      <div style="font-size:clamp(20px,4.5vw,28px); color:#012169; line-height:2.2; font-weight:700; margin-bottom:14px;
                   -webkit-text-stroke:0.5px rgba(255,255,255,0.6); text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill;">
         扯谈Duke群专为Duke家长打造<br>汇聚历届家长资源与经验分享<br>
         <span style="color:#012169; font-size:16px;">请扫描首页二维码和填写底部表格申请加入</span>
@@ -354,7 +453,7 @@ function toggleBannerMusic() {
       <button class="rd-enter-btn" onclick="closeBanner()" style="
         background:linear-gradient(135deg,#c9a84c,#e8c96a,#c9a84c);
         color:#012169; border:none; border-radius:50px;
-        padding:12px 40px; font-size:clamp(18px,4vw,24px); font-weight:800;
+        padding:8px 24px; font-size:clamp(13px,2.5vw,16px); font-weight:800;
         cursor:pointer; letter-spacing:0.1em;
         box-shadow:0 6px 24px rgba(201,168,76,0.4);
         transition:all 0.25s ease; margin-bottom:12px;
