@@ -8263,6 +8263,7 @@ document.addEventListener("keydown", function(e) {
           <button class="admin-tab-btn" onclick="switchAdminTab('jingcai',this)">🖼 已发布精彩</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_jingcai',this)">⏳ 待审核精彩</button>
           <button class="admin-tab-btn" onclick="switchAdminTab('pending_qa',this)">❓ 待审核Q&A</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('invite_requests',this)">📩 入群申请</button>
         </div>
 
         <!-- Tab 内容面板 -->
@@ -8491,6 +8492,14 @@ document.addEventListener("keydown", function(e) {
             <button onclick="loadPendingQA()" class="admin-action-btn">🔄 刷新</button>
           </div>
           <div id="pendingQAList" style="color:#555;">加载中...</div>
+        </div>
+
+        <div id="adminTab-invite_requests" class="admin-tab-panel" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:13px;color:#555;">入群申请 <b id="inviteRequestBadge" style="color:crimson;"></b></span>
+            <button onclick="loadInviteRequests()" class="admin-action-btn">🔄 刷新</button>
+          </div>
+          <div id="inviteRequestList" style="color:#555;">加载中...</div>
         </div>
 
       </div>
@@ -11147,6 +11156,86 @@ async function approveJingcai(id) {
 }
 
 // ===== 管理员：加载待审核Q&A问题 =====
+// ===== 申请入群 =====
+async function submitInviteRequest(btn) {
+  var classVal = (document.getElementById('invite-class') || {}).value || '';
+  var nameVal  = (document.getElementById('invite-name')  || {}).value || '';
+  var emailVal = (document.getElementById('invite-email') || {}).value || '';
+  var msg      = document.getElementById('invite-msg');
+  classVal = classVal.trim(); nameVal = nameVal.trim(); emailVal = emailVal.trim();
+  if (!classVal || !nameVal || !emailVal) {
+    msg.style.color = 'crimson'; msg.textContent = '请填写全部三项信息'; return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+    msg.style.color = 'crimson'; msg.textContent = '请输入有效的电子邮件地址'; return;
+  }
+  var supabase = window._supabaseClient;
+  if (!supabase) { msg.style.color = 'crimson'; msg.textContent = '提交失败，请稍后重试'; return; }
+  btn.disabled = true; btn.textContent = '提交中...';
+  var result = await supabase.from('pending_uploads').insert({
+    file_name:   nameVal,
+    file_type:   'invite_request',
+    status:      'pending',
+    title:       classVal + '届 - ' + nameVal,
+    file_path:   emailVal,
+    uploaded_by: classVal
+  });
+  btn.disabled = false; btn.textContent = '提交申请';
+  if (result.error) {
+    msg.style.color = 'crimson'; msg.textContent = '提交失败：' + result.error.message;
+  } else {
+    msg.style.color = '#0a7c3e'; msg.textContent = '申请已提交，管理员将尽快与您联系';
+    document.getElementById('invite-class').value = '';
+    document.getElementById('invite-name').value  = '';
+    document.getElementById('invite-email').value = '';
+  }
+}
+
+async function loadInviteRequests() {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  var container = document.getElementById('inviteRequestList');
+  var badge     = document.getElementById('inviteRequestBadge');
+  if (!container) return;
+  container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
+  var result = await supabase.from('pending_uploads').select('*')
+    .eq('status', 'pending').eq('file_type', 'invite_request')
+    .order('uploaded_at', { ascending: false });
+  if (result.error) {
+    container.innerHTML = '<span style="color:crimson;">加载失败：' + result.error.message + '</span>'; return;
+  }
+  var items = result.data || [];
+  if (badge) badge.textContent = items.length ? '(' + items.length + ')' : '';
+  if (!items.length) { container.innerHTML = '<span style="color:#aaa;">暂无待处理申请</span>'; return; }
+  var html = '';
+  items.forEach(function(item) {
+    html += '<div style="background:#f8faff;border:1px solid #d0d8ee;border-radius:8px;padding:14px 16px;margin-bottom:10px;">'
+          + '<div style="font-size:14px;font-weight:700;color:#012169;margin-bottom:6px;">'
+          + (item.uploaded_by || '') + '届 &nbsp;|&nbsp; ' + item.file_name + '</div>'
+          + '<div style="font-size:13px;color:#333;margin-bottom:4px;">邮箱：<a href="mailto:' + (item.file_path || '') + '" style="color:#1a6bbf;">' + (item.file_path || '—') + '</a></div>'
+          + '<button onclick="markInviteDone(' + item.id + ',this)" style="padding:5px 14px;background:#0a7c3e;color:#fff;border:none;border-radius:5px;font-size:12px;cursor:pointer;margin-right:8px;">已处理</button>'
+          + '<button onclick="deleteInvite(' + item.id + ',this)" style="padding:5px 14px;background:#c0392b;color:#fff;border:none;border-radius:5px;font-size:12px;cursor:pointer;">删除</button>'
+          + '</div>';
+  });
+  container.innerHTML = html;
+}
+
+async function markInviteDone(id, btn) {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  btn.disabled = true;
+  await supabase.from('pending_uploads').update({ status: 'approved' }).eq('id', id);
+  loadInviteRequests();
+}
+
+async function deleteInvite(id, btn) {
+  var supabase = window._supabaseClient;
+  if (!supabase) return;
+  btn.disabled = true;
+  await supabase.from('pending_uploads').delete().eq('id', id);
+  loadInviteRequests();
+}
+
 async function loadPendingQA() {
   var supabase = window._supabaseClient;
   if (!supabase) return;
@@ -11513,6 +11602,7 @@ window.showPV();
     const main = document.getElementById("protected-area");
     main.innerHTML = "";
     main.appendChild(clone);
+    var invSec = document.getElementById("invite-request-section"); if (invSec) invSec.style.display = "none";
 
     // === 退出登录按钮 ===
     const oldBtn = document.getElementById("logoutBtnFixed");
@@ -12312,4 +12402,31 @@ window.showPV();
     margin: 8px 0;
     border-radius: 4px;
     font-size: 13px;
-    color: #5a400
+    color: #5a4000;
+  }
+</style>
+
+<!-- ===== 申请入群表单（页面底部，登录后隐藏） ===== -->
+<div id="invite-request-section" style="max-width:480px; margin:40px auto 0; padding:0 16px 48px;">
+  <div style="background:#fff; border:1px solid #d0d8e8; border-radius:10px; padding:22px 24px; box-shadow:0 2px 10px rgba(1,33,105,0.07);">
+    <div style="font-size:15px; font-weight:700; color:#012169; margin-bottom:6px;">申请加入家长群</div>
+    <div style="font-size:12px; color:#888; margin-bottom:16px;">本群仅限扯谈Duke群体系家长申请加入。填写后管理员将向您的电子邮箱发送一封来自noreply&#64;dukeparents.org的注册邀请，请点击其中的Accept the invite链接。</div>
+    <div style="margin-bottom:12px;">
+      <input id="invite-class" type="text" placeholder="届（如：2030）" maxlength="10"
+        style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
+    </div>
+    <div style="margin-bottom:12px;">
+      <input id="invite-name" type="text" placeholder="学生姓名" maxlength="30"
+        style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
+    </div>
+    <div style="margin-bottom:16px;">
+      <input id="invite-email" type="email" placeholder="电子邮件地址" maxlength="80"
+        style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
+    </div>
+    <button onclick="submitInviteRequest(this)"
+      style="width:100%; padding:10px; background:#012169; color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
+      提交申请
+    </button>
+    <p id="invite-msg" style="text-align:center; margin:10px 0 0; font-size:13px; min-height:18px;"></p>
+  </div>
+</div>
