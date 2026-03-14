@@ -206,6 +206,33 @@ document.addEventListener("keydown", function(e) {
 
 
 <!-- ===== RD录取悬浮广告 ===== -->
+<audio id="rd-audio" loop preload="auto">
+  <source src="https://dukeparents.org/images/celebrate.mp3" type="audio/mpeg">
+</audio>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var audio = document.getElementById('rd-audio');
+  if (audio) {
+    audio.volume = 0.5;
+    var playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(function() {
+        // 自动播放被阻止时，点击任意位置开始播放
+        document.addEventListener('click', function startAudio() {
+          audio.play();
+          document.removeEventListener('click', startAudio);
+        }, { once: true });
+      });
+    }
+  }
+});
+// 关闭弹窗时停止音乐
+function closeBanner() {
+  document.getElementById('rd-banner').style.display = 'none';
+  var audio = document.getElementById('rd-audio');
+  if (audio) { audio.pause(); audio.currentTime = 0; }
+}
+</script>
 <style>
 @keyframes rd-fadein {
   from { opacity:0; transform:scale(0.9) translateY(20px); }
@@ -251,11 +278,11 @@ document.addEventListener("keydown", function(e) {
     <img src="https://dukeparents.org/images/chapel.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;
              animation:rd-imgswitch 10s ease-in-out infinite;
-             filter:brightness(0.45) saturate(1.0);">
+             filter:brightness(0.7) saturate(1.0);">
     <img src="https://dukeparents.org/images/gardens.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%;
              animation:rd-imgswitch2 10s ease-in-out infinite;
-             filter:brightness(0.45) saturate(1.0);">
+             filter:brightness(0.7) saturate(1.0);">
 
     <!-- 深色渐变遮罩 -->
     <div style="position:absolute; inset:0;
@@ -272,7 +299,7 @@ document.addEventListener("keydown", function(e) {
       background-size:200% auto; animation:rd-shimmer 3s linear infinite reverse;"></div>
 
     <!-- 关闭按钮 -->
-    <button class="rd-close-btn" onclick="document.getElementById('rd-banner').style.display='none'" style="
+    <button class="rd-close-btn" onclick="closeBanner()" style="
       position:absolute; top:16px; right:18px; z-index:10;
       background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2);
       color:rgba(255,255,255,0.7); font-size:15px;
@@ -304,7 +331,7 @@ document.addEventListener("keydown", function(e) {
 
       <div style="font-size:26px; font-weight:700; color:#c9a84c; line-height:1.8; margin-bottom:28px;
                   text-shadow:0 2px 12px rgba(0,0,0,0.6);">
-        2030届 RD 录取家长<br>欢迎加入 Duke 大家庭！
+        2030届 <span class="gothic">ℜ𝔇</span> 录取家长<br>欢迎加入 <span class="gothic">𝔇𝔲𝔨𝔢</span> 大家庭！
       </div>
 
       <!-- 分隔线 -->
@@ -323,7 +350,7 @@ document.addEventListener("keydown", function(e) {
       </div>
 
       <!-- 按钮 -->
-      <button class="rd-enter-btn" onclick="document.getElementById('rd-banner').style.display='none'" style="
+      <button class="rd-enter-btn" onclick="closeBanner()" style="
         background:linear-gradient(135deg,#c9a84c,#e8c96a,#c9a84c);
         color:#012169; border:none; border-radius:50px;
         padding:16px 64px; font-size:20px; font-weight:800;
