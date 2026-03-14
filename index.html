@@ -210,27 +210,28 @@ document.addEventListener("keydown", function(e) {
   <source src="https://dukeparents.org/images/celebrate.mp3" type="audio/mpeg">
 </audio>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var audio = document.getElementById('rd-audio');
-  if (audio) {
-    audio.volume = 0.5;
-    var playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(function() {
-        // 自动播放被阻止时，点击任意位置开始播放
-        document.addEventListener('click', function startAudio() {
-          audio.play();
-          document.removeEventListener('click', startAudio);
-        }, { once: true });
-      });
-    }
-  }
-});
 // 关闭弹窗时停止音乐
 function closeBanner() {
   document.getElementById('rd-banner').style.display = 'none';
   var audio = document.getElementById('rd-audio');
   if (audio) { audio.pause(); audio.currentTime = 0; }
+}
+
+function toggleBannerMusic() {
+  var audio = document.getElementById('rd-audio');
+  var btn = document.getElementById('rd-music-btn');
+  if (!audio) return;
+  if (audio.paused) {
+    audio.volume = 0.5;
+    audio.play();
+    btn.textContent = '🔇 关闭音乐';
+    btn.style.background = 'rgba(201,168,76,0.2)';
+  } else {
+    audio.pause();
+    audio.currentTime = 0;
+    btn.textContent = '🔊 播放欢庆音乐';
+    btn.style.background = 'rgba(255,255,255,0.1)';
+  }
 }
 </script>
 <style>
