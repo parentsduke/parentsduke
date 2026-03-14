@@ -11158,39 +11158,58 @@ async function approveJingcai(id) {
 // ===== 管理员：加载待审核Q&A问题 =====
 // ===== 申请入群 =====
 async function submitInviteRequest(btn) {
-  var classVal = (document.getElementById('invite-class') || {}).value || '';
-  var nameVal  = (document.getElementById('invite-name')  || {}).value || '';
-  var emailVal = (document.getElementById('invite-email') || {}).value || '';
-  var msg      = document.getElementById('invite-msg');
-  classVal = classVal.trim(); nameVal = nameVal.trim(); emailVal = emailVal.trim();
-  if (!classVal || !nameVal || !emailVal) {
-    msg.style.color = 'crimson'; msg.textContent = '请填写全部三项信息'; return;
+  var classVal    = (document.getElementById('invite-class')    || {}).value || '';
+  var wxgroupVal  = (document.getElementById('invite-name')     || {}).value || '';
+  var nicknameVal = (document.getElementById('invite-nickname') || {}).value || '';
+  var emailVal    = (document.getElementById('invite-email')    || {}).value || '';
+  var msg         = document.getElementById('invite-msg');
+
+  classVal = classVal.trim(); wxgroupVal = wxgroupVal.trim();
+  nicknameVal = nicknameVal.trim(); emailVal = emailVal.trim();
+
+  if (!classVal || !wxgroupVal || !nicknameVal || !emailVal) {
+    msg.style.color = 'crimson'; msg.textContent = '请填写全部四项信息'; return;
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
     msg.style.color = 'crimson'; msg.textContent = '请输入有效的电子邮件地址'; return;
   }
-  var supabase = window._supabaseClient;
-  if (!supabase) { msg.style.color = 'crimson'; msg.textContent = '提交失败，请稍后重试'; return; }
+
   btn.disabled = true; btn.textContent = '提交中...';
-  var nicknameVal = (document.getElementById('invite-nickname') || {}).value || '';
-  nicknameVal = nicknameVal.trim();
-  var result = await supabase.from('pending_uploads').insert({
-    file_name:   nameVal + (nicknameVal ? ' (' + nicknameVal + ')' : ''),
-    file_type:   'invite_request',
-    status:      'pending',
-    title:       classVal + '届 - ' + nameVal + (nicknameVal ? ' (' + nicknameVal + ')' : ''),
-    file_path:   emailVal,
-    uploaded_by: classVal
-  });
-  btn.disabled = false; btn.textContent = '提交申请';
-  if (result.error) {
-    msg.style.color = 'crimson'; msg.textContent = '提交失败：' + result.error.message;
-  } else {
-    msg.style.color = '#0a7c3e'; msg.textContent = '申请已提交，管理员将尽快与您联系';
-    document.getElementById('invite-class').value = '';
-    document.getElementById('invite-name').value     = '';
-    document.getElementById('invite-nickname').value = '';
-    document.getElementById('invite-email').value    = '';
+
+  try {
+    var resp = await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/send-notification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8'
+      },
+      body: JSON.stringify({
+        type:        'invite_request',
+        title:       classVal + '届 - ' + wxgroupVal + ' - ' + nicknameVal,
+        submittedBy: classVal,
+        email:       emailVal,
+        name:        nicknameVal,
+        class:       classVal,
+        wxgroup:     wxgroupVal
+      })
+    });
+
+    btn.disabled = false; btn.textContent = '提交申请';
+
+    if (resp.ok) {
+      msg.style.color = '#0a7c3e'; msg.textContent = '已提交';
+      document.getElementById('invite-class').value    = '';
+      document.getElementById('invite-name').value     = '';
+      document.getElementById('invite-nickname').value = '';
+      document.getElementById('invite-email').value    = '';
+    } else {
+      var errData = await resp.json().catch(function(){ return {}; });
+      msg.style.color = 'crimson';
+      msg.textContent = '提交失败：' + (errData.error || errData.message || resp.status);
+    }
+  } catch(e) {
+    btn.disabled = false; btn.textContent = '提交申请';
+    msg.style.color = 'crimson'; msg.textContent = '提交失败，请检查网络连接后重试';
   }
 }
 
