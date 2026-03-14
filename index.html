@@ -2396,6 +2396,434 @@ document.addEventListener("keydown", function(e) {
         </div>
       </div>
 
+      <!-- ===== Amazon Lockers ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>校园自提柜 Amazon Lockers</span><span class="accordion-arrow">&#9658;</span>
+        </button>
+        <div class="accordion-body">
+          <p>Duke校园内共设有7个Amazon Parcel Locker自提柜，2022年11月由Amazon与Duke Campus Mail Services合作安装，分布在East Campus、West Campus和Central Campus的宿舍楼附近，学生可在下单时直接选择就近的Locker地址收包裹，全程无需等待快递员上门。</p>
+
+          <p style="margin-top:14px; font-weight:600; color:#003366;">7个Locker具体位置一览(来源：<a href="https://postoffice.duke.edu/packages/amazon/" target="_blank" style="color:#003366;">Duke Campus Mail Services官网</a>)</p>
+
+          <table style="width:100%; border-collapse:collapse; font-size:13px; margin:8px 0 4px;">
+            <thead>
+              <tr style="background:#003366; color:#fff;">
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">Locker名称</th>
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">所在建筑</th>
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">校区</th>
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">具体地址</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Ceyln</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Swift Apartments</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Central Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">300 Swift Ave, Durham, NC 27705</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Elsa</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Bell Tower Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">40 Brodie Gym Drive, Durham, NC 27705</td>
+              </tr>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Elinor</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Blackwell Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">51 Brodie Gym Drive, Durham, NC 27705</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Ljuba</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus Union (室内)</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">1324 Campus Drive, Durham, NC 27705</td>
+              </tr>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Lennie</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Randolph Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">50 Brodie Gym Drive, Durham, NC 27705</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Arkadiusz Jad</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Edens (near Schafer House)</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">West Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">117 Edens Drive, Durham, NC 27705</td>
+              </tr>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Dawood</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Keohane Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">West Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">101 Wannamaker Drive, Durham, NC 27705</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:12px; color:#888; margin:4px 0 14px;">注：East Campus有4个Locker(Elsa、Elinor、Ljuba、Lennie)，West Campus有2个(Arkadiusz Jad、Dawood)，Central Campus有1个(Ceyln)。一年级新生住East Campus，以上四个Locker均步行可达。</p>
+
+          <p style="margin-top:12px; font-weight:600; color:#003366;">使用流程</p>
+          <ul style="margin:6px 0 0 0; padding:0;">
+            <li>在Amazon下单时，在送货地址处按Locker名称搜索(如"Elsa"或"Dawood")，选中对应点位即可</li>
+            <li>必须提前在手机上下载Amazon App，并开启蓝牙(Bluetooth)，这是取件的必要条件</li>
+            <li>包裹送达后，Amazon会发送邮件通知，带上手机前往Locker，Locker会通过蓝牙自动识别手机并弹开对应柜门，无需手动输入取件码</li>
+            <li>取件时限为3天(72小时)，超时包裹将被退回给卖家并全额退款</li>
+            <li>存在尺寸和重量限制，超大件或超重件无法使用Locker，Amazon会自动改送至宿舍front desk</li>
+          </ul>
+
+          <p style="margin-top:12px; font-weight:600; color:#003366;">注意事项</p>
+          <ul style="margin:6px 0 0 0; padding:0;">
+            <li>Amazon Prime会员在校期间可申请<a href="https://www.amazon.com/b?ie=UTF8&node=668781011" target="_blank">Prime Student</a>优惠，6个月免费试用后折扣续费，每年约$7.49/月</li>
+            <li>Duke邮局(Post Office)位于West Campus Bryan Center地下1楼，电话919-684-3367，可寄发USPS/FedEx/UPS包裹，不处理Amazon Locker事务</li>
+            <li>校园内Amazon Locker仅供Amazon订单使用，其他快递公司(FedEx、UPS、USPS)的包裹须送至宿舍门卫或Bryan Center邮局</li>
+            <li>如包裹尺寸超过Locker限制，Amazon会自动改送至学生宿舍门卫室(front desk)，并发送另行通知</li>
+            <li>Locker机器偶发故障，可访问<a href="http://www.amazon.com/ulp" target="_blank">amazon.com/ulp</a>或拨打Amazon客服电话1-877-346-6244获取帮助</li>
+          </ul>
+
+          <p style="margin-top:12px; font-weight:600; color:#003366;">实用链接</p>
+          <ul style="margin:6px 0 0 0; padding:0;">
+            <li><a href="https://postoffice.duke.edu/packages/amazon/" target="_blank">Duke邮局官方Amazon Locker说明页面</a></li>
+            <li><a href="https://postoffice.duke.edu/locations/" target="_blank">Duke邮局各取件点位置</a></li>
+            <li><a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">信件及包裹地址填写规范</a></li>
+          </ul>
+        </div>
+      </div>
+
+   <!-- ===== 银行 ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>银行</span><span class="accordion-arrow">&#9658;</span>
+        </button>
+        <div class="accordion-body">
+
+          <!-- 开户建议 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>开户建议：新生第一步</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://www.chase.com/personal/checking/student-checking" target="_blank">Chase College Checking — 最受Duke学生欢迎，在校期间免月费(最长5年)，9th Street网点步行可达</a>
+              <a href="https://www.bankofamerica.com/student-banking/" target="_blank">Bank of America SafeBalance Banking — 24岁以下在校学生免月费，Bryan Center有ATM，国际生可开户</a>
+              <a href="https://www.wellsfargo.com/checking/college/" target="_blank">Wells Fargo College Checking — 9th Street网点，17-24岁在校学生免月费</a>
+              <a href="https://www.civicfcu.org/" target="_blank">Civic Federal Credit Union — 原LGFCU于2025年6月正式更名，北卡本地政府雇员信用社，无月费，利率优于大银行</a>
+              <a href="https://www.ncsecu.org/" target="_blank">State Employees Credit Union(SECU) — 504 S Duke St，北卡最大信用社，手续费极低，需符合北卡州雇员或家属会员资格</a>
+            </div>
+          </div>
+
+          <!-- 周边银行位置 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Duke周边银行与ATM位置</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://www.google.com/maps/search/?api=1&query=Chase+Bank+725+9th+St+Durham+NC" target="_blank">Chase Bank — 725 9th St，East Campus步行约10分钟，周一至五9am-5pm，周六9am-1pm</a>
+              <a href="tel:+19197675661" style="color:#003366; font-weight:600;">☎ (919)767-5661</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=Wells+Fargo+2000+W+Main+St+Durham+NC" target="_blank">Wells Fargo — 2000 W Main St，周一至五9am-5pm，含Drive-Thru，ATM 24小时</a>
+              <a href="tel:+19194166050" style="color:#003366; font-weight:600;">☎ (919)416-6050</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=Bank+of+America+1515+N+Gregson+St+Durham+NC" target="_blank">Bank of America — 1515 N Gregson St，周一至五9am-5pm，周六9am-2pm，含Drive-Thru ATM</a>
+              <a href="tel:+19199562254" style="color:#003366; font-weight:600;">☎ (919)956-2254</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=United+Bank+4215+University+Dr+Durham+NC" target="_blank">United Bank — 4215 University Dr，周一至四8:30am-5pm，周五至6pm</a>
+              <a href="tel:+19194031000" style="color:#003366; font-weight:600;">☎ (919)403-1000</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=SECU+504+S+Duke+St+Durham+NC" target="_blank">SECU(ncsecu.org) — 504 S Duke St，周一至五8:30am-5:30pm，含Drive-Thru ATM</a>
+              <a href="tel:+19196829602" style="color:#003366; font-weight:600;">☎ (919)682-9602</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=Truist+Bank+505+S+Duke+St+Durham+NC" target="_blank">Truist — 505 S Duke St，周一至五9am-5pm</a>
+              <a href="tel:+19196877200" style="color:#003366; font-weight:600;">☎ (919)687-7200</a>
+              <a href="https://www.google.com/maps/search/?api=1&query=Bryan+Center+Duke+University+Durham+NC" target="_blank">Bryan Center校内ATM — Bank of America、Wells Fargo、Truist三台ATM，24小时可用</a>
+            </div>
+          </div>
+
+          <!-- ATM图 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Bryan Center校内ATM实拍图</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body" style="padding:10px 12px;">
+              <img data-src="ATM.jpg" alt="Bryan Center校内ATM" onclick="openOverlay(this.src, this.alt)" style="max-width:100%; height:auto; display:block; border-radius:6px; cursor:zoom-in;">
+              <p style="font-size:12px; color:#888; margin:8px 0 0;">Bank of America、Wells Fargo、Truist三台ATM，位于Bryan Center一楼大厅，24小时可用</p>
+            </div>
+          </div>
+
+          <!-- Venmo -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Venmo：Duke学生日常支付神器</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body" style="padding:10px 14px; font-size:13px; line-height:1.8; color:#222;">
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">Venmo是什么？</strong>Venmo是美国最主流的手机端P2P(个人对个人)转账应用，由PayPal旗下运营(<a href="https://venmo.com/" target="_blank">venmo.com</a>)。全美有超过8300万活跃用户，大学生群体中渗透率极高，PayPal CEO公开表示"全美1900万大学生中超过一半有Venmo账户"。</p>
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">Duke学生怎么用？</strong>在Duke校园中，Venmo几乎是学生之间收付款的默认工具，几乎人手一个账户。典型场景包括：</p>
+              <ul style="margin:0 0 10px; padding-left:0;">
+                <li>几个人一起去Durham餐厅吃饭，一人付账然后Venmo均摊</li>
+                <li>室友之间分摊日用品、外卖、Uber费用</li>
+                <li>购买社团活动票(DCD、ASA Showcase、Hoof n Horn等演出门票)</li>
+                <li>K-Ville搭帐篷期间团购外卖均摊</li>
+                <li>Greek life活动、社团会费收取</li>
+                <li>买卖二手书、宿舍用品(配合Facebook Marketplace)</li>
+              </ul>
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">怎么开户？</strong>下载Venmo App → 用美国手机号注册 → 绑定美国银行账户或借记卡 → 完成身份验证。国际生需要先开好美国银行账户才能绑定。未验证账户每周转账上限$299.99，完成身份验证后可提升至每周$6,999.99。</p>
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">转账费用：</strong>Venmo账户余额互转完全免费；从银行账户或借记卡转账也免费(1-3个工作日到账)；若要即时到账(Instant Transfer)转至银行账户，收取1.75%手续费(最低$0.25，最高$25)。</p>
+              <p style="margin:0 0 10px;"><strong style="color:#003366;">注意事项：</strong>付款发出后无法撤销，务必核对收款人用户名；转账备注默认公开(好友可见)，涉及隐私的备注建议改为"仅自己可见"；不建议用Venmo接收来自陌生人的大额转账，有被冻结账户风险。</p>
+              <p style="margin:0 0 4px;"><strong style="color:#003366;">与Zelle的区别：</strong>Zelle直接走银行账户之间转账，无需单独App，适合家长从中国账户以外的美国账户向孩子转账；Venmo有App内余额，更适合学生之间高频小额均摊。Duke学生日常优先用Venmo，家长转生活费多数用Zelle或银行电汇。</p>
+              <a href="https://venmo.com/" target="_blank" style="display:block; margin-top:10px;">Venmo官网注册与下载</a>
+              <a href="https://help.venmo.com/hc/en-us" target="_blank">Venmo帮助中心(常见问题)</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== 资助 ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>助学金与奖学金</span><span class="accordion-arrow">&#9658;</span>
+        </button>
+        <div class="accordion-body">
+
+          <!-- 资助总览 -->
+          <h3 style="color:#003366; margin:0 0 6px;">Duke University助学金(Financial Aid)和奖学金(Merit Scholarships)</h3>
+
+          <!-- 需求型资助 -->
+          <h4 style="color:#003366; margin:14px 0 4px;">需求型资助(Need-Based Aid)</h4>
+          <p style="margin:0 0 8px;">Duke的资助体系主要基于家庭经济需要提供助学金，不需要偿还。资助来源包括 Duke本身提供的机构助学金(institutional grants)以及联邦/州政府资助(如Pell Grant)。约50%的本科生会获得某种助学金。</p>
+          <p style="margin:0 0 8px;">满足100%需求。Duke承诺满足所有被录取学生经评估后的经济需求(通过FAFSA+CSS Profile计算)。如家庭支付能力低，大学会用助学金弥补差额。</p>
+          <div style="background:#e8f0fb; border-left:4px solid #003366; border-radius:4px; padding:10px 14px; margin-bottom:10px;">
+            Carolinas Initiatives 南北卡州家庭特别支持(2023年起)：<br>
+            家庭收入低于$150,000的北卡/南卡学生，获得全额学费援助<br>
+            家庭收入低于$65,000的本州学生，额外获得住宿、餐食等生活费补助(无需贷款)
+          </div>
+
+          <!-- 优秀奖学金 -->
+          <h3 style="color:#003366; margin:22px 0 8px;">Duke Merit Scholarships 荣誉奖学金详解</h3>
+
+          <div style="background:#e8f0fb; border-left:4px solid #003366; border-radius:4px; padding:10px 14px; margin-bottom:14px; font-size:13px;">
+            <strong>申请方式说明：</strong>绝大多数Duke Merit Scholarships无需单独申请，Duke招生办公室在审阅录取申请时会自动考量候选人资格。唯一例外是Robertson Scholars Program，需在11月15日前提交独立申请。入围决赛者(Finalists)将于次年3月初收到OUSF发出的邮件通知，并参加四天校园访问和面试，奖项于5月1日前公布。
+          </div>
+
+          <!-- 1. Robertson -->
+          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <span style="background:#003366; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">Full Ride</span>
+              <strong style="color:#003366; font-size:15px;">Robertson Scholars Leadership Program</strong>
+            </div>
+            <p style="margin:0 0 6px; font-size:13px;">Duke与UNC-Chapel Hill联合设立的最高荣誉奖学金，由Julian Robertson于2000年捐资2400万美元创立，旨在培养改变社会的领袖人才。</p>
+            <p style="margin:0 0 6px; font-size:13px;"><strong>覆盖内容：</strong>八学期全额学费+住宿+餐费+强制性费用；三个暑期资助(社区服务/领导力培训/国际探索)；全年学术会议经费；两学期海外学习资助。</p>
+            <p style="margin:0 0 6px; font-size:13px;"><strong>特色：</strong>学者拥有Duke和UNC"双重公民"身份，需在对方校园完成至少5门课；大二下学期需在"姐妹校园"居住一学期。Robertson Express Bus往返两校约30-40分钟。每届全美录取约25-30人。</p>
+            <p style="margin:0 0 0; font-size:13px;"><strong>申请截止：</strong>11月15日(需单独申请，与Duke录取申请分开)；对象为高中生，也接受大一在读生申请。</p>
+          </div>
+
+          <!-- 2. A.B. Duke -->
+          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <span style="background:#003366; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">全额学费</span>
+              <strong style="color:#003366; font-size:15px;">Angier B. Duke (A.B. Duke) Scholarship</strong>
+            </div>
+            <p style="margin:0 0 6px; font-size:13px;">Duke历史最悠久的荣誉奖学金，1925年由Benjamin N. Duke为纪念其子Angier Buchanan Duke而设立，为旗舰级学术奖学金。历届获奖者曾荣获Marshall、Rhodes奖学金及普利策奖。每届约录取15人。</p>
+            <p style="margin:0 0 6px; font-size:13px;"><strong>覆盖内容：</strong>八学期全额学费+住宿+餐费+强制性费用(估计四年总价值约$315,000)；若仍有经济需求，Duke助学金补足缺口；国内外暑期体验丰厚资助；大二暑期可赴牛津大学New College学习。</p>
+            <p style="margin:0 0 0; font-size:13px;"><strong>申请对象：</strong>全球所有申请Duke的高中生，无需单独申请，招生时自动考量；评选标准为卓越学术能力、创造力和领袖潜质。</p>
+          </div>
+
+          <!-- 3. Karsh International -->
+          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <span style="background:#1a6bbf; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">国际生全额</span>
+              <strong style="color:#003366; font-size:15px;">Karsh International Scholarship</strong>
+            </div>
+            <p style="margin:0 0 6px; font-size:13px;">2010年由Martha L. 和Bruce A. Karsh捐资设立，是Duke专为国际本科生设立的最高荣誉奖学金，现有学者来自博茨瓦纳、巴西、印度、肯尼亚、越南等数十个国家和地区。</p>
+            <p style="margin:0 0 6px; font-size:13px;"><strong>覆盖内容：</strong>全额学费+住宿+餐费+强制性费用+经评估超出上述费用的额外经济需求；三个暑期科研/无薪实习/学术拓展资助；Faculty Advisor一对一指导；加入OUSF学者社区。</p>
+            <p style="margin:0 0 0; font-size:13px;"><strong>申请条件：</strong>须为非美国公民国际生；须在申请Duke时同时申请助学金(勾选"financial aid interest"并提交CSS Profile)；以学术能力和经济需求为主要评选标准。</p>
+          </div>
+
+          <!-- 4. Reginaldo Howard -->
+          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <span style="background:#003366; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">Full Ride</span>
+              <strong style="color:#003366; font-size:15px;">Reginaldo Howard Memorial Scholars Program</strong>
+            </div>
+            <p style="margin:0 0 6px; font-size:13px;">以Duke首位非裔美国人学生会主席Reginaldo Howard命名，面向具有非裔传承的学生，奖励在学术成就、领导力和社会正义服务方面表现杰出的申请者。</p>
+            <p style="margin:0 0 0; font-size:13px;"><strong>覆盖内容：</strong>四年全额学费+强制性费用+住宿+餐费；融入OUSF学者网络，参与civic engagement活动；无需单独申请，录取时自动考量。</p>
+          </div>
+
+          <!-- 5. Benjamin N. Duke -->
+          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <span style="background:#4a7fc1; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">南北卡州生</span>
+              <strong style="color:#003366; font-size:15px;">Benjamin N. Duke (B.N. Duke) Scholarship</strong>
+            </div>
+            <p style="margin:0 0 6px; font-size:13px;">专为来自北卡罗来纳州或南卡罗来纳州的学生设立，奖励在学业、社区参与和领袖潜质方面表现突出者。</p>
+            <p style="margin:0 0 0; font-size:13px;"><strong>覆盖内容：</strong>八学期全额学费+住宿+餐费+强制性费用；两个暑期体验资助；须为南北卡居民，无需单独申请。</p>
+          </div>
+
+          <!-- 6. University Scholarship -->
+          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <span style="background:#4a7fc1; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">全额+需求</span>
+              <strong style="color:#003366; font-size:15px;">University Scholarship</strong>
+            </div>
+            <p style="margin:0 0 6px; font-size:13px;">奖励对跨学科研究、协作思维和创新学术充满热情的学生，同时须展示经济需求。</p>
+            <p style="margin:0 0 0; font-size:13px;"><strong>覆盖内容：</strong>全额学费+住宿+餐费+强制性费用；若仍有经济缺口，Duke助学金补足；涵盖暑期科研和拓展体验资助；无需单独申请，经济需求为必要条件之一。</p>
+          </div>
+
+          <!-- 7. Trinity / Alumni Endowed -->
+          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:14px; background:#fff;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+              <span style="background:#4a7fc1; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">南北卡/校友子女</span>
+              <strong style="color:#003366; font-size:15px;">Trinity Scholarships & Alumni Endowed Scholarship</strong>
+            </div>
+            <p style="margin:0 0 6px; font-size:13px;"><strong>Trinity Scholarships：</strong>面向北卡/南卡不同地区的优秀学生，部分奖项同时要求经济需求，涵盖多个具体子项目；无需单独申请，按地区和学业自动考量。</p>
+            <p style="margin:0 0 0; font-size:13px;"><strong>Alumni Endowed Scholarship：</strong>面向Duke校友的子女或孙子女，同时需具备出色学业成绩和一定程度的经济需求；由OUSF录取时自动考量，无需单独申请。</p>
+          </div>
+
+          <!-- 重要说明框 -->
+          <div style="background:#fff8e6; border:1px solid #f0c040; border-radius:6px; padding:10px 14px; margin-bottom:16px; font-size:13px;">
+            <strong>重要：</strong>Duke不参与National Merit Scholarship自动奖励，也不提供Stamps Scholarship。Merit奖学金与需求型助学金一般不叠加——全额奖学金会替代Duke助学金，但不影响外部奖学金。所有Merit奖学金由OUSF(Office of University Scholars and Fellows)负责评选，与Karsh Office of Undergraduate Financial Support(负责需求型助学金)是两个独立机构。
+          </div>
+
+          <!-- 申请步骤 -->
+          <h4 style="color:#003366; margin:14px 0 4px;">申请资助的步骤</h4>
+          <ol style="margin:0 0 8px; padding-left:0;">
+            <li>填写CSS Profile(所有申请者)</li>
+            <li>填写FAFSA(仅美国公民/永久居民)</li>
+            <li>提交额外文件(如税表等)</li>
+          </ol>
+          <p style="margin:0 0 8px; font-size:13px;">国际学生资助较少，通常不是need-blind招生(需要资助的国际申请者录取难度更大)。但部分优秀奖学金对国际生开放。</p>
+
+          <!-- 资助来源 -->
+          <h4 style="color:#003366; margin:14px 0 4px;">资助来源</h4>
+          <p style="margin:0 0 12px;">募款与基金捐赠(endowments/donors)、学费收入、政府资助(联邦/州grant)、学生工作学习(work-study)。</p>
+
+          <!-- 金额预估 -->
+          <h3 style="color:#003366; margin:16px 0 6px;">Duke 2025–26学年本科生资助金额预估</h3>
+
+          <h4 style="color:#003366; margin:0 0 4px;">1. 总体费用(Cost of Attendance)</h4>
+          <p style="margin:0 0 12px;">本科生全年总费用(未扣助学金前)约$98,500/年，包括学费、住宿、膳食、书籍、个人开支等。</p>
+
+          <h4 style="color:#003366; margin:0 0 4px;">2. 计算公式</h4>
+          <div style="background:#f0f5ff; border:1px solid #b0c8f0; border-radius:8px; padding:10px 16px; margin-bottom:12px; text-align:center; font-size:15px;">
+            助学金 = 总费用 − 预计家庭贡献(EFC)
+          </div>
+          <p style="margin:0 0 12px; font-size:13px;">预计家庭贡献(Expected Family Contribution)通过FAFSA+CSS Profile评估。</p>
+
+          <h4 style="color:#003366; margin:0 0 8px;">3. 模拟案例(2025-26学年)</h4>
+          <div style="overflow-x:auto; margin-bottom:12px;">
+            <table style="width:100%; border-collapse:collapse; font-size:13px; min-width:400px;">
+              <thead>
+                <tr style="background:#003366; color:#fff;">
+                  <th style="padding:8px 10px; text-align:left; border-radius:4px 0 0 0;">家境</th>
+                  <th style="padding:8px 10px; text-align:right;">总费用</th>
+                  <th style="padding:8px 10px; text-align:right;">家庭贡献</th>
+                  <th style="padding:8px 10px; text-align:right;">助学金</th>
+                  <th style="padding:8px 10px; text-align:right;">Work-Study</th>
+                  <th style="padding:8px 10px; text-align:right; border-radius:0 4px 0 0;">联邦贷款</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#fff;">
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5;">例1：家庭贡献$0</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$98,500</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$0</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$94,200</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$4,300</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$0</td>
+                </tr>
+                <tr style="background:#f7faff;">
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5;">例2：家庭贡献$10,000</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$97,500</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$10,000</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$78,700</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$4,800</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$4,000(可选)</td>
+                </tr>
+                <tr style="background:#fff;">
+                  <td style="padding:7px 10px;">例3：家庭贡献$20,000</td>
+                  <td style="padding:7px 10px; text-align:right;">$98,500</td>
+                  <td style="padding:7px 10px; text-align:right;">$20,000</td>
+                  <td style="padding:7px 10px; text-align:right;">$68,700</td>
+                  <td style="padding:7px 10px; text-align:right;">$4,800</td>
+                  <td style="padding:7px 10px; text-align:right;">$5,000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4 style="color:#003366; margin:0 0 6px;">4. 资助包的构成</h4>
+          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <div style="flex:1; min-width:160px; background:#eaf4ea; border-radius:8px; padding:10px 14px;">
+              <div style="margin-bottom:4px;">Grants / Scholarships</div>
+              <div style="font-size:12px;">助学金/奖学金，无需偿还</div>
+            </div>
+            <div style="flex:1; min-width:160px; background:#fff8e8; border-radius:8px; padding:10px 14px;">
+              <div style="margin-bottom:4px;">Federal Work-Study</div>
+              <div style="font-size:12px;">联邦校园工作，赚取劳务报酬</div>
+            </div>
+            <div style="flex:1; min-width:160px; background:#f0f0f8; border-radius:8px; padding:10px 14px;">
+              <div style="margin-bottom:4px;">Federal Loan</div>
+              <div style="font-size:12px;">联邦贷款，需还款，金额取决于家庭收入</div>
+            </div>
+          </div>
+          <p style="margin:0 0 4px; font-size:13px;">家庭收入&lt; $65,000：通常无校方强制贷款($0)</p>
+          <p style="margin:0 0 12px; font-size:13px;">家庭收入较高：可能包含$3,000–$5,000的联邦贷款部分</p>
+
+          <h4 style="color:#003366; margin:0 0 4px;">5. 自行预估方法</h4>
+          <p style="margin:0 0 12px;">Duke提供Net Price Calculator和MyinTuition Calculator，可输入家庭收入、人数、资产等获取个性化资助预测。<a href="https://financialaid.duke.edu/apply-aid/estimate-your-aid/" target="_blank">相关链接</a></p>
+
+          <div style="background:#fffbe6; border:1px solid #f0c040; border-radius:6px; padding:8px 14px; margin-bottom:14px; font-size:13px;">
+            只有在提交 FAFSA + CSS Profile 并被录取后，学校才会发放最终实际资助通知(Financial Aid Offer)。
+          </div>
+
+          <!-- 贷款利率 -->
+          <h3 style="color:#003366; margin:16px 0 6px;">联邦学生贷款利率说明(2025-2026学年)</h3>
+          <div style="overflow-x:auto; margin-bottom:10px;">
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+              <thead>
+                <tr style="background:#003366; color:#fff;">
+                  <th style="padding:8px 10px; text-align:left; border-radius:4px 0 0 0;">贷款类型</th>
+                  <th style="padding:8px 10px; text-align:center;">固定利率</th>
+                  <th style="padding:8px 10px; text-align:left; border-radius:0 4px 0 0;">说明</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#fff;">
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5;">Direct Subsidized Loan(有补贴贷款)</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:center;">6.53%</td>
+                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5;">在校期间、宽限期及延期期间，政府代付利息，不会利滚利</td>
+                </tr>
+                <tr style="background:#f7faff;">
+                  <td style="padding:7px 10px;">Direct Unsubsidized Loan(无补贴贷款)</td>
+                  <td style="padding:7px 10px; text-align:center;">6.53%</td>
+                  <td style="padding:7px 10px;">贷款发放当日起计息，若在校期间不付利息，利息会资本化(加入本金)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin:0 0 14px; font-size:13px;">还款时间为毕业后6个月宽限期，之后开始正式还款，标准还款期10年。</p>
+
+          <!-- 参考链接 -->
+          <h3 style="color:#003366; margin:22px 0 8px;">参考链接</h3>
+
+          <p style="margin:0 0 6px; font-size:13px; color:#555;">Merit Scholarships — 官方页面</p>
+          <ul style="margin:0 0 12px; padding-left:0; font-size:13px;">
+            <li><a href="https://ousf.duke.edu/merit-scholarships/merit-scholarships-incoming-first-year-students/" target="_blank">OUSF — Merit Scholarships总览(官方)</a></li>
+            <li><a href="https://robertsonscholars.org/" target="_blank">Robertson Scholars Leadership Program官网</a></li>
+            <li><a href="https://ousf.duke.edu/merit-scholarships/ab-duke-scholars-program/" target="_blank">A.B. Duke Scholars Program官方页</a></li>
+            <li><a href="https://ousf.duke.edu/merit-scholarships/karsh-international-scholars-program/" target="_blank">Karsh International Scholars Program官方页</a></li>
+            <li><a href="https://ousf.duke.edu/merit-scholarships/bn-duke-scholars-program/" target="_blank">Benjamin N. Duke Scholarship官方页</a></li>
+            <li><a href="https://ousf.duke.edu/merit-scholarships/university-scholars-program/" target="_blank">University Scholarship官方页</a></li>
+            <li><a href="https://ousf.duke.edu/merit-scholarships/trinity-scholars-program/" target="_blank">Trinity Scholarships官方页</a></li>
+            <li><a href="https://ousf.duke.edu/merit-scholarships/alumni-endowed-scholars-program/" target="_blank">Alumni Endowed Scholarship官方页</a></li>
+          </ul>
+
+          <p style="margin:0 0 6px; font-size:13px; color:#555;">需求型助学金 — 官方页面</p>
+          <ul style="margin:0 0 12px; padding-left:0; font-size:13px;">
+            <li><a href="https://financialaid.duke.edu/" target="_blank">Duke Financial Aid官网(Karsh Office)</a></li>
+            <li><a href="https://financialaid.duke.edu/apply-aid/estimate-your-aid/" target="_blank">资助预估计算器(Net Price Calculator / MyinTuition)</a></li>
+            <li><a href="https://financialaid.duke.edu/types-aid/merit-scholarships/" target="_blank">Merit Scholarships说明(Financial Aid Office视角)</a></li>
+            <li><a href="https://financialaid.duke.edu/international-students/" target="_blank">国际生助学金说明</a></li>
+            <li><a href="https://studentaid.gov/fsa-id/sign-in/landing" target="_blank">FAFSA申请</a></li>
+            <li><a href="https://cssprofile.collegeboard.org/" target="_blank">CSS Profile申请</a></li>
+          </ul>
+
+        </div>
+      </div>
+
 
 
       </div><!-- /accordion -->
@@ -2899,6 +3327,136 @@ document.addEventListener("keydown", function(e) {
                 <strong>重要提醒：</strong>FOCUS需要主动申请，录取率约25%，且读写研究量较大。Constellations是所有未进入FOCUS的Trinity学生的默认选项，通过填写偏好表匹配。两者均对大一学术和社交适应有显著帮助，关键是找到与自己气质匹配的那个。
               </div>
 
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== Duke +Programs ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>暑期项目 +Programs</span><span class="accordion-arrow">&#9658;</span>
+        </button>
+        <div class="accordion-body">
+
+          <!-- Applied Ethics+ -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Applied Ethics+（应用伦理学）</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">10周全职暑期项目 | 本科生 &amp; 研究生</div>
+              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">与领先机构合作，学习批判性评估政策与科技伦理问题，探讨政策、技术与研究中的道德挑战。</div>
+              <a href="https://scienceandsociety.duke.edu/learn/applied-ethics-plus/" target="_blank">Applied Ethics+官网</a>
+            </div>
+          </div>
+
+          <!-- Arts+ -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Arts+（艺术项目）</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">6周暑期项目 | 本科生 &amp; 研究生</div>
+              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">Duke Arts主导，深入了解艺术行政与创意制作幕后工作，亲手参与艺术产品的创作全过程。</div>
+              <a href="https://arts.duke.edu/arts-plus/" target="_blank">Arts+官网</a>
+            </div>
+          </div>
+
+          <!-- Climate+ -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Climate+（气候与可持续发展）</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">10周暑期项目（Data+子项目） | 本科生 &amp; 研究生</div>
+              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">响应Duke气候承诺，聚焦气候危机解决方案，以数据科学方法研究能源、气候与可持续发展议题，培养新一代创新者。</div>
+              <a href="https://bigdata.duke.edu/participate/climate-plus/" target="_blank">Climate+官网</a>
+            </div>
+          </div>
+
+          <!-- Code+ -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Code+（软件开发实践）</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">10周暑期项目 | 仅限本科生</div>
+              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">以团队形式解决真实工程挑战，在IT专业人士指导下接触前沿技术。适合零技术基础同学，可获得顶尖科技公司的职业发展机会。</div>
+              <a href="https://codeplus.duke.edu/" target="_blank">Code+官网</a>
+            </div>
+          </div>
+
+          <!-- CS+ -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>CS+（计算机科学研究）</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">暑期项目 | 仅限本科生</div>
+              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">3-4人小组与教授及研究生合作，深入探索计算机科学研究，体验课堂以外的真实科研应用。</div>
+              <a href="https://cs.duke.edu/undergraduate/research/csplus" target="_blank">CS+官网</a>
+            </div>
+          </div>
+
+          <!-- Data+ -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Data+（数据科学研究）</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">暑期项目 | 本科生 &amp; 研究生（所有专业均可申请）</div>
+              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">以数据驱动方式解决跨学科挑战，小团队合作分析、可视化和解读数据，开放全专业全年级申请。由Rhodes信息倡议中心主办。</div>
+              <a href="https://bigdata.duke.edu/participate/data-plus/" target="_blank">Data+官网</a>
+            </div>
+          </div>
+
+          <!-- Doc+ -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Doc+（纪录片创作）</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">6周暑期项目 | 仅限本科生</div>
+              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">Duke纪录片研究中心主办，探索电影、摄影、音频等纪录片媒介，在创意导师带领下完成真实纪录片项目。</div>
+              <a href="https://documentarystudies.duke.edu/doc-plus" target="_blank">Doc+官网</a>
+            </div>
+          </div>
+
+          <!-- History+ -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>History+（历史研究）</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">10周暑期项目 | 仅限本科生</div>
+              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">在研究生和教师指导下组队进行历史研究，与社区伙伴合作，将历史学术知识应用于真实情境。</div>
+              <a href="https://history.duke.edu/node/3020" target="_blank">History+官网</a>
+            </div>
+          </div>
+
+          <!-- Math+ -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>Math+（数学研究）</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">8周暑期项目 | 仅限本科生</div>
+              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">小团队在教师和研究生助手带领下攻克纯数学或应用数学方向研究课题，对数学背景要求不高，全体本科生均可申请。</div>
+              <a href="https://math.duke.edu/mathplus" target="_blank">Math+官网</a>
+            </div>
+          </div>
+
+          <!-- 总览链接 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>+Programs 总览与申请</span><span class="sub-accordion-arrow">▸</span>
+            </button>
+            <div class="sub-accordion-body">
+              <a href="https://plusprograms.duke.edu/" target="_blank">Duke +Programs 官方主页</a>
+              <a href="https://plusprograms.duke.edu/plusprograms/" target="_blank">所有项目一览</a>
+              <a href="https://plusprograms.duke.edu/apply/" target="_blank">申请入口（每年春季开放）</a>
             </div>
           </div>
 
@@ -3600,228 +4158,7 @@ document.addEventListener("keydown", function(e) {
 
         </div>
       </div>
-      <!-- ===== Amazon Lockers ===== -->
-      <div class="accordion">
-        <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>校园自提柜 Amazon Lockers</span><span class="accordion-arrow">&#9658;</span>
-        </button>
-        <div class="accordion-body">
-          <p>Duke校园内共设有7个Amazon Parcel Locker自提柜，2022年11月由Amazon与Duke Campus Mail Services合作安装，分布在East Campus、West Campus和Central Campus的宿舍楼附近，学生可在下单时直接选择就近的Locker地址收包裹，全程无需等待快递员上门。</p>
 
-          <p style="margin-top:14px; font-weight:600; color:#003366;">7个Locker具体位置一览(来源：<a href="https://postoffice.duke.edu/packages/amazon/" target="_blank" style="color:#003366;">Duke Campus Mail Services官网</a>)</p>
-
-          <table style="width:100%; border-collapse:collapse; font-size:13px; margin:8px 0 4px;">
-            <thead>
-              <tr style="background:#003366; color:#fff;">
-                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">Locker名称</th>
-                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">所在建筑</th>
-                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">校区</th>
-                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">具体地址</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="background:#f7f9fc;">
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Ceyln</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Swift Apartments</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Central Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">300 Swift Ave, Durham, NC 27705</td>
-              </tr>
-              <tr>
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Elsa</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Bell Tower Breezeway</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">40 Brodie Gym Drive, Durham, NC 27705</td>
-              </tr>
-              <tr style="background:#f7f9fc;">
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Elinor</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Blackwell Breezeway</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">51 Brodie Gym Drive, Durham, NC 27705</td>
-              </tr>
-              <tr>
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Ljuba</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus Union (室内)</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">1324 Campus Drive, Durham, NC 27705</td>
-              </tr>
-              <tr style="background:#f7f9fc;">
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Lennie</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Randolph Breezeway</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">50 Brodie Gym Drive, Durham, NC 27705</td>
-              </tr>
-              <tr>
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Arkadiusz Jad</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Edens (near Schafer House)</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">West Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">117 Edens Drive, Durham, NC 27705</td>
-              </tr>
-              <tr style="background:#f7f9fc;">
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Dawood</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Keohane Breezeway</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">West Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">101 Wannamaker Drive, Durham, NC 27705</td>
-              </tr>
-            </tbody>
-          </table>
-          <p style="font-size:12px; color:#888; margin:4px 0 14px;">注：East Campus有4个Locker(Elsa、Elinor、Ljuba、Lennie)，West Campus有2个(Arkadiusz Jad、Dawood)，Central Campus有1个(Ceyln)。一年级新生住East Campus，以上四个Locker均步行可达。</p>
-
-          <p style="margin-top:12px; font-weight:600; color:#003366;">使用流程</p>
-          <ul style="margin:6px 0 0 0; padding:0;">
-            <li>在Amazon下单时，在送货地址处按Locker名称搜索(如"Elsa"或"Dawood")，选中对应点位即可</li>
-            <li>必须提前在手机上下载Amazon App，并开启蓝牙(Bluetooth)，这是取件的必要条件</li>
-            <li>包裹送达后，Amazon会发送邮件通知，带上手机前往Locker，Locker会通过蓝牙自动识别手机并弹开对应柜门，无需手动输入取件码</li>
-            <li>取件时限为3天(72小时)，超时包裹将被退回给卖家并全额退款</li>
-            <li>存在尺寸和重量限制，超大件或超重件无法使用Locker，Amazon会自动改送至宿舍front desk</li>
-          </ul>
-
-          <p style="margin-top:12px; font-weight:600; color:#003366;">注意事项</p>
-          <ul style="margin:6px 0 0 0; padding:0;">
-            <li>Amazon Prime会员在校期间可申请<a href="https://www.amazon.com/b?ie=UTF8&node=668781011" target="_blank">Prime Student</a>优惠，6个月免费试用后折扣续费，每年约$7.49/月</li>
-            <li>Duke邮局(Post Office)位于West Campus Bryan Center地下1楼，电话919-684-3367，可寄发USPS/FedEx/UPS包裹，不处理Amazon Locker事务</li>
-            <li>校园内Amazon Locker仅供Amazon订单使用，其他快递公司(FedEx、UPS、USPS)的包裹须送至宿舍门卫或Bryan Center邮局</li>
-            <li>如包裹尺寸超过Locker限制，Amazon会自动改送至学生宿舍门卫室(front desk)，并发送另行通知</li>
-            <li>Locker机器偶发故障，可访问<a href="http://www.amazon.com/ulp" target="_blank">amazon.com/ulp</a>或拨打Amazon客服电话1-877-346-6244获取帮助</li>
-          </ul>
-
-          <p style="margin-top:12px; font-weight:600; color:#003366;">实用链接</p>
-          <ul style="margin:6px 0 0 0; padding:0;">
-            <li><a href="https://postoffice.duke.edu/packages/amazon/" target="_blank">Duke邮局官方Amazon Locker说明页面</a></li>
-            <li><a href="https://postoffice.duke.edu/locations/" target="_blank">Duke邮局各取件点位置</a></li>
-            <li><a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">信件及包裹地址填写规范</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- ===== Duke +Programs ===== -->
-      <div class="accordion">
-        <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>暑期项目 +Programs</span><span class="accordion-arrow">&#9658;</span>
-        </button>
-        <div class="accordion-body">
-
-          <!-- Applied Ethics+ -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>Applied Ethics+（应用伦理学）</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">10周全职暑期项目 | 本科生 &amp; 研究生</div>
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">与领先机构合作，学习批判性评估政策与科技伦理问题，探讨政策、技术与研究中的道德挑战。</div>
-              <a href="https://scienceandsociety.duke.edu/learn/applied-ethics-plus/" target="_blank">Applied Ethics+官网</a>
-            </div>
-          </div>
-
-          <!-- Arts+ -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>Arts+（艺术项目）</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">6周暑期项目 | 本科生 &amp; 研究生</div>
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">Duke Arts主导，深入了解艺术行政与创意制作幕后工作，亲手参与艺术产品的创作全过程。</div>
-              <a href="https://arts.duke.edu/arts-plus/" target="_blank">Arts+官网</a>
-            </div>
-          </div>
-
-          <!-- Climate+ -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>Climate+（气候与可持续发展）</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">10周暑期项目（Data+子项目） | 本科生 &amp; 研究生</div>
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">响应Duke气候承诺，聚焦气候危机解决方案，以数据科学方法研究能源、气候与可持续发展议题，培养新一代创新者。</div>
-              <a href="https://bigdata.duke.edu/participate/climate-plus/" target="_blank">Climate+官网</a>
-            </div>
-          </div>
-
-          <!-- Code+ -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>Code+（软件开发实践）</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">10周暑期项目 | 仅限本科生</div>
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">以团队形式解决真实工程挑战，在IT专业人士指导下接触前沿技术。适合零技术基础同学，可获得顶尖科技公司的职业发展机会。</div>
-              <a href="https://codeplus.duke.edu/" target="_blank">Code+官网</a>
-            </div>
-          </div>
-
-          <!-- CS+ -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>CS+（计算机科学研究）</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">暑期项目 | 仅限本科生</div>
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">3-4人小组与教授及研究生合作，深入探索计算机科学研究，体验课堂以外的真实科研应用。</div>
-              <a href="https://cs.duke.edu/undergraduate/research/csplus" target="_blank">CS+官网</a>
-            </div>
-          </div>
-
-          <!-- Data+ -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>Data+（数据科学研究）</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">暑期项目 | 本科生 &amp; 研究生（所有专业均可申请）</div>
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">以数据驱动方式解决跨学科挑战，小团队合作分析、可视化和解读数据，开放全专业全年级申请。由Rhodes信息倡议中心主办。</div>
-              <a href="https://bigdata.duke.edu/participate/data-plus/" target="_blank">Data+官网</a>
-            </div>
-          </div>
-
-          <!-- Doc+ -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>Doc+（纪录片创作）</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">6周暑期项目 | 仅限本科生</div>
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">Duke纪录片研究中心主办，探索电影、摄影、音频等纪录片媒介，在创意导师带领下完成真实纪录片项目。</div>
-              <a href="https://documentarystudies.duke.edu/doc-plus" target="_blank">Doc+官网</a>
-            </div>
-          </div>
-
-          <!-- History+ -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>History+（历史研究）</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">10周暑期项目 | 仅限本科生</div>
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">在研究生和教师指导下组队进行历史研究，与社区伙伴合作，将历史学术知识应用于真实情境。</div>
-              <a href="https://history.duke.edu/node/3020" target="_blank">History+官网</a>
-            </div>
-          </div>
-
-          <!-- Math+ -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>Math+（数学研究）</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <div style="padding:4px 0 8px 0; color:#444; font-size:13px;">8周暑期项目 | 仅限本科生</div>
-              <div style="padding:0 0 8px 0; color:#555; font-size:13px;">小团队在教师和研究生助手带领下攻克纯数学或应用数学方向研究课题，对数学背景要求不高，全体本科生均可申请。</div>
-              <a href="https://math.duke.edu/mathplus" target="_blank">Math+官网</a>
-            </div>
-          </div>
-
-          <!-- 总览链接 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>+Programs 总览与申请</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://plusprograms.duke.edu/" target="_blank">Duke +Programs 官方主页</a>
-              <a href="https://plusprograms.duke.edu/plusprograms/" target="_blank">所有项目一览</a>
-              <a href="https://plusprograms.duke.edu/apply/" target="_blank">申请入口（每年春季开放）</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
 
       <!-- 杜克图书馆Duke Libraries -->
       <div class="accordion">
@@ -6158,87 +6495,6 @@ document.addEventListener("keydown", function(e) {
         </div>
       </div>
 
-   <!-- ===== 银行 ===== -->
-      <div class="accordion">
-        <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>银行</span><span class="accordion-arrow">&#9658;</span>
-        </button>
-        <div class="accordion-body">
-
-          <!-- 开户建议 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>开户建议：新生第一步</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://www.chase.com/personal/checking/student-checking" target="_blank">Chase College Checking — 最受Duke学生欢迎，在校期间免月费(最长5年)，9th Street网点步行可达</a>
-              <a href="https://www.bankofamerica.com/student-banking/" target="_blank">Bank of America SafeBalance Banking — 24岁以下在校学生免月费，Bryan Center有ATM，国际生可开户</a>
-              <a href="https://www.wellsfargo.com/checking/college/" target="_blank">Wells Fargo College Checking — 9th Street网点，17-24岁在校学生免月费</a>
-              <a href="https://www.civicfcu.org/" target="_blank">Civic Federal Credit Union — 原LGFCU于2025年6月正式更名，北卡本地政府雇员信用社，无月费，利率优于大银行</a>
-              <a href="https://www.ncsecu.org/" target="_blank">State Employees Credit Union(SECU) — 504 S Duke St，北卡最大信用社，手续费极低，需符合北卡州雇员或家属会员资格</a>
-            </div>
-          </div>
-
-          <!-- 周边银行位置 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>Duke周边银行与ATM位置</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body">
-              <a href="https://www.google.com/maps/search/?api=1&query=Chase+Bank+725+9th+St+Durham+NC" target="_blank">Chase Bank — 725 9th St，East Campus步行约10分钟，周一至五9am-5pm，周六9am-1pm</a>
-              <a href="tel:+19197675661" style="color:#003366; font-weight:600;">☎ (919)767-5661</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=Wells+Fargo+2000+W+Main+St+Durham+NC" target="_blank">Wells Fargo — 2000 W Main St，周一至五9am-5pm，含Drive-Thru，ATM 24小时</a>
-              <a href="tel:+19194166050" style="color:#003366; font-weight:600;">☎ (919)416-6050</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=Bank+of+America+1515+N+Gregson+St+Durham+NC" target="_blank">Bank of America — 1515 N Gregson St，周一至五9am-5pm，周六9am-2pm，含Drive-Thru ATM</a>
-              <a href="tel:+19199562254" style="color:#003366; font-weight:600;">☎ (919)956-2254</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=United+Bank+4215+University+Dr+Durham+NC" target="_blank">United Bank — 4215 University Dr，周一至四8:30am-5pm，周五至6pm</a>
-              <a href="tel:+19194031000" style="color:#003366; font-weight:600;">☎ (919)403-1000</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=SECU+504+S+Duke+St+Durham+NC" target="_blank">SECU(ncsecu.org) — 504 S Duke St，周一至五8:30am-5:30pm，含Drive-Thru ATM</a>
-              <a href="tel:+19196829602" style="color:#003366; font-weight:600;">☎ (919)682-9602</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=Truist+Bank+505+S+Duke+St+Durham+NC" target="_blank">Truist — 505 S Duke St，周一至五9am-5pm</a>
-              <a href="tel:+19196877200" style="color:#003366; font-weight:600;">☎ (919)687-7200</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=Bryan+Center+Duke+University+Durham+NC" target="_blank">Bryan Center校内ATM — Bank of America、Wells Fargo、Truist三台ATM，24小时可用</a>
-            </div>
-          </div>
-
-          <!-- ATM图 -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>Bryan Center校内ATM实拍图</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body" style="padding:10px 12px;">
-              <img data-src="ATM.jpg" alt="Bryan Center校内ATM" onclick="openOverlay(this.src, this.alt)" style="max-width:100%; height:auto; display:block; border-radius:6px; cursor:zoom-in;">
-              <p style="font-size:12px; color:#888; margin:8px 0 0;">Bank of America、Wells Fargo、Truist三台ATM，位于Bryan Center一楼大厅，24小时可用</p>
-            </div>
-          </div>
-
-          <!-- Venmo -->
-          <div class="sub-accordion">
-            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>Venmo：Duke学生日常支付神器</span><span class="sub-accordion-arrow">▸</span>
-            </button>
-            <div class="sub-accordion-body" style="padding:10px 14px; font-size:13px; line-height:1.8; color:#222;">
-              <p style="margin:0 0 10px;"><strong style="color:#003366;">Venmo是什么？</strong>Venmo是美国最主流的手机端P2P(个人对个人)转账应用，由PayPal旗下运营(<a href="https://venmo.com/" target="_blank">venmo.com</a>)。全美有超过8300万活跃用户，大学生群体中渗透率极高，PayPal CEO公开表示"全美1900万大学生中超过一半有Venmo账户"。</p>
-              <p style="margin:0 0 10px;"><strong style="color:#003366;">Duke学生怎么用？</strong>在Duke校园中，Venmo几乎是学生之间收付款的默认工具，几乎人手一个账户。典型场景包括：</p>
-              <ul style="margin:0 0 10px; padding-left:0;">
-                <li>几个人一起去Durham餐厅吃饭，一人付账然后Venmo均摊</li>
-                <li>室友之间分摊日用品、外卖、Uber费用</li>
-                <li>购买社团活动票(DCD、ASA Showcase、Hoof n Horn等演出门票)</li>
-                <li>K-Ville搭帐篷期间团购外卖均摊</li>
-                <li>Greek life活动、社团会费收取</li>
-                <li>买卖二手书、宿舍用品(配合Facebook Marketplace)</li>
-              </ul>
-              <p style="margin:0 0 10px;"><strong style="color:#003366;">怎么开户？</strong>下载Venmo App → 用美国手机号注册 → 绑定美国银行账户或借记卡 → 完成身份验证。国际生需要先开好美国银行账户才能绑定。未验证账户每周转账上限$299.99，完成身份验证后可提升至每周$6,999.99。</p>
-              <p style="margin:0 0 10px;"><strong style="color:#003366;">转账费用：</strong>Venmo账户余额互转完全免费；从银行账户或借记卡转账也免费(1-3个工作日到账)；若要即时到账(Instant Transfer)转至银行账户，收取1.75%手续费(最低$0.25，最高$25)。</p>
-              <p style="margin:0 0 10px;"><strong style="color:#003366;">注意事项：</strong>付款发出后无法撤销，务必核对收款人用户名；转账备注默认公开(好友可见)，涉及隐私的备注建议改为"仅自己可见"；不建议用Venmo接收来自陌生人的大额转账，有被冻结账户风险。</p>
-              <p style="margin:0 0 4px;"><strong style="color:#003366;">与Zelle的区别：</strong>Zelle直接走银行账户之间转账，无需单独App，适合家长从中国账户以外的美国账户向孩子转账；Venmo有App内余额，更适合学生之间高频小额均摊。Duke学生日常优先用Venmo，家长转生活费多数用Zelle或银行电汇。</p>
-              <a href="https://venmo.com/" target="_blank" style="display:block; margin-top:10px;">Venmo官网注册与下载</a>
-              <a href="https://help.venmo.com/hc/en-us" target="_blank">Venmo帮助中心(常见问题)</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
 
         
 <!-- ===== 有缘千里来相会 ===== -->
@@ -6915,258 +7171,6 @@ document.addEventListener("keydown", function(e) {
 }
 </style>
 
-      <!-- ===== 资助 ===== -->
-      <div class="accordion">
-        <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>助学金与奖学金</span><span class="accordion-arrow">&#9658;</span>
-        </button>
-        <div class="accordion-body">
-
-          <!-- 资助总览 -->
-          <h3 style="color:#003366; margin:0 0 6px;">Duke University助学金(Financial Aid)和奖学金(Merit Scholarships)</h3>
-
-          <!-- 需求型资助 -->
-          <h4 style="color:#003366; margin:14px 0 4px;">需求型资助(Need-Based Aid)</h4>
-          <p style="margin:0 0 8px;">Duke的资助体系主要基于家庭经济需要提供助学金，不需要偿还。资助来源包括 Duke本身提供的机构助学金(institutional grants)以及联邦/州政府资助(如Pell Grant)。约50%的本科生会获得某种助学金。</p>
-          <p style="margin:0 0 8px;">满足100%需求。Duke承诺满足所有被录取学生经评估后的经济需求(通过FAFSA+CSS Profile计算)。如家庭支付能力低，大学会用助学金弥补差额。</p>
-          <div style="background:#e8f0fb; border-left:4px solid #003366; border-radius:4px; padding:10px 14px; margin-bottom:10px;">
-            Carolinas Initiatives 南北卡州家庭特别支持(2023年起)：<br>
-            家庭收入低于$150,000的北卡/南卡学生，获得全额学费援助<br>
-            家庭收入低于$65,000的本州学生，额外获得住宿、餐食等生活费补助(无需贷款)
-          </div>
-
-          <!-- 优秀奖学金 -->
-          <h3 style="color:#003366; margin:22px 0 8px;">Duke Merit Scholarships 荣誉奖学金详解</h3>
-
-          <div style="background:#e8f0fb; border-left:4px solid #003366; border-radius:4px; padding:10px 14px; margin-bottom:14px; font-size:13px;">
-            <strong>申请方式说明：</strong>绝大多数Duke Merit Scholarships无需单独申请，Duke招生办公室在审阅录取申请时会自动考量候选人资格。唯一例外是Robertson Scholars Program，需在11月15日前提交独立申请。入围决赛者(Finalists)将于次年3月初收到OUSF发出的邮件通知，并参加四天校园访问和面试，奖项于5月1日前公布。
-          </div>
-
-          <!-- 1. Robertson -->
-          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-              <span style="background:#003366; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">Full Ride</span>
-              <strong style="color:#003366; font-size:15px;">Robertson Scholars Leadership Program</strong>
-            </div>
-            <p style="margin:0 0 6px; font-size:13px;">Duke与UNC-Chapel Hill联合设立的最高荣誉奖学金，由Julian Robertson于2000年捐资2400万美元创立，旨在培养改变社会的领袖人才。</p>
-            <p style="margin:0 0 6px; font-size:13px;"><strong>覆盖内容：</strong>八学期全额学费+住宿+餐费+强制性费用；三个暑期资助(社区服务/领导力培训/国际探索)；全年学术会议经费；两学期海外学习资助。</p>
-            <p style="margin:0 0 6px; font-size:13px;"><strong>特色：</strong>学者拥有Duke和UNC"双重公民"身份，需在对方校园完成至少5门课；大二下学期需在"姐妹校园"居住一学期。Robertson Express Bus往返两校约30-40分钟。每届全美录取约25-30人。</p>
-            <p style="margin:0 0 0; font-size:13px;"><strong>申请截止：</strong>11月15日(需单独申请，与Duke录取申请分开)；对象为高中生，也接受大一在读生申请。</p>
-          </div>
-
-          <!-- 2. A.B. Duke -->
-          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-              <span style="background:#003366; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">全额学费</span>
-              <strong style="color:#003366; font-size:15px;">Angier B. Duke (A.B. Duke) Scholarship</strong>
-            </div>
-            <p style="margin:0 0 6px; font-size:13px;">Duke历史最悠久的荣誉奖学金，1925年由Benjamin N. Duke为纪念其子Angier Buchanan Duke而设立，为旗舰级学术奖学金。历届获奖者曾荣获Marshall、Rhodes奖学金及普利策奖。每届约录取15人。</p>
-            <p style="margin:0 0 6px; font-size:13px;"><strong>覆盖内容：</strong>八学期全额学费+住宿+餐费+强制性费用(估计四年总价值约$315,000)；若仍有经济需求，Duke助学金补足缺口；国内外暑期体验丰厚资助；大二暑期可赴牛津大学New College学习。</p>
-            <p style="margin:0 0 0; font-size:13px;"><strong>申请对象：</strong>全球所有申请Duke的高中生，无需单独申请，招生时自动考量；评选标准为卓越学术能力、创造力和领袖潜质。</p>
-          </div>
-
-          <!-- 3. Karsh International -->
-          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-              <span style="background:#1a6bbf; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">国际生全额</span>
-              <strong style="color:#003366; font-size:15px;">Karsh International Scholarship</strong>
-            </div>
-            <p style="margin:0 0 6px; font-size:13px;">2010年由Martha L. 和Bruce A. Karsh捐资设立，是Duke专为国际本科生设立的最高荣誉奖学金，现有学者来自博茨瓦纳、巴西、印度、肯尼亚、越南等数十个国家和地区。</p>
-            <p style="margin:0 0 6px; font-size:13px;"><strong>覆盖内容：</strong>全额学费+住宿+餐费+强制性费用+经评估超出上述费用的额外经济需求；三个暑期科研/无薪实习/学术拓展资助；Faculty Advisor一对一指导；加入OUSF学者社区。</p>
-            <p style="margin:0 0 0; font-size:13px;"><strong>申请条件：</strong>须为非美国公民国际生；须在申请Duke时同时申请助学金(勾选"financial aid interest"并提交CSS Profile)；以学术能力和经济需求为主要评选标准。</p>
-          </div>
-
-          <!-- 4. Reginaldo Howard -->
-          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-              <span style="background:#003366; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">Full Ride</span>
-              <strong style="color:#003366; font-size:15px;">Reginaldo Howard Memorial Scholars Program</strong>
-            </div>
-            <p style="margin:0 0 6px; font-size:13px;">以Duke首位非裔美国人学生会主席Reginaldo Howard命名，面向具有非裔传承的学生，奖励在学术成就、领导力和社会正义服务方面表现杰出的申请者。</p>
-            <p style="margin:0 0 0; font-size:13px;"><strong>覆盖内容：</strong>四年全额学费+强制性费用+住宿+餐费；融入OUSF学者网络，参与civic engagement活动；无需单独申请，录取时自动考量。</p>
-          </div>
-
-          <!-- 5. Benjamin N. Duke -->
-          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-              <span style="background:#4a7fc1; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">南北卡州生</span>
-              <strong style="color:#003366; font-size:15px;">Benjamin N. Duke (B.N. Duke) Scholarship</strong>
-            </div>
-            <p style="margin:0 0 6px; font-size:13px;">专为来自北卡罗来纳州或南卡罗来纳州的学生设立，奖励在学业、社区参与和领袖潜质方面表现突出者。</p>
-            <p style="margin:0 0 0; font-size:13px;"><strong>覆盖内容：</strong>八学期全额学费+住宿+餐费+强制性费用；两个暑期体验资助；须为南北卡居民，无需单独申请。</p>
-          </div>
-
-          <!-- 6. University Scholarship -->
-          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:12px; background:#fff;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-              <span style="background:#4a7fc1; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">全额+需求</span>
-              <strong style="color:#003366; font-size:15px;">University Scholarship</strong>
-            </div>
-            <p style="margin:0 0 6px; font-size:13px;">奖励对跨学科研究、协作思维和创新学术充满热情的学生，同时须展示经济需求。</p>
-            <p style="margin:0 0 0; font-size:13px;"><strong>覆盖内容：</strong>全额学费+住宿+餐费+强制性费用；若仍有经济缺口，Duke助学金补足；涵盖暑期科研和拓展体验资助；无需单独申请，经济需求为必要条件之一。</p>
-          </div>
-
-          <!-- 7. Trinity / Alumni Endowed -->
-          <div style="border:1px solid #b0c8f0; border-radius:8px; padding:14px 16px; margin-bottom:14px; background:#fff;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-              <span style="background:#4a7fc1; color:#fff; border-radius:4px; padding:2px 10px; font-size:12px; font-weight:700; white-space:nowrap;">南北卡/校友子女</span>
-              <strong style="color:#003366; font-size:15px;">Trinity Scholarships & Alumni Endowed Scholarship</strong>
-            </div>
-            <p style="margin:0 0 6px; font-size:13px;"><strong>Trinity Scholarships：</strong>面向北卡/南卡不同地区的优秀学生，部分奖项同时要求经济需求，涵盖多个具体子项目；无需单独申请，按地区和学业自动考量。</p>
-            <p style="margin:0 0 0; font-size:13px;"><strong>Alumni Endowed Scholarship：</strong>面向Duke校友的子女或孙子女，同时需具备出色学业成绩和一定程度的经济需求；由OUSF录取时自动考量，无需单独申请。</p>
-          </div>
-
-          <!-- 重要说明框 -->
-          <div style="background:#fff8e6; border:1px solid #f0c040; border-radius:6px; padding:10px 14px; margin-bottom:16px; font-size:13px;">
-            <strong>重要：</strong>Duke不参与National Merit Scholarship自动奖励，也不提供Stamps Scholarship。Merit奖学金与需求型助学金一般不叠加——全额奖学金会替代Duke助学金，但不影响外部奖学金。所有Merit奖学金由OUSF(Office of University Scholars and Fellows)负责评选，与Karsh Office of Undergraduate Financial Support(负责需求型助学金)是两个独立机构。
-          </div>
-
-          <!-- 申请步骤 -->
-          <h4 style="color:#003366; margin:14px 0 4px;">申请资助的步骤</h4>
-          <ol style="margin:0 0 8px; padding-left:0;">
-            <li>填写CSS Profile(所有申请者)</li>
-            <li>填写FAFSA(仅美国公民/永久居民)</li>
-            <li>提交额外文件(如税表等)</li>
-          </ol>
-          <p style="margin:0 0 8px; font-size:13px;">国际学生资助较少，通常不是need-blind招生(需要资助的国际申请者录取难度更大)。但部分优秀奖学金对国际生开放。</p>
-
-          <!-- 资助来源 -->
-          <h4 style="color:#003366; margin:14px 0 4px;">资助来源</h4>
-          <p style="margin:0 0 12px;">募款与基金捐赠(endowments/donors)、学费收入、政府资助(联邦/州grant)、学生工作学习(work-study)。</p>
-
-          <!-- 金额预估 -->
-          <h3 style="color:#003366; margin:16px 0 6px;">Duke 2025–26学年本科生资助金额预估</h3>
-
-          <h4 style="color:#003366; margin:0 0 4px;">1. 总体费用(Cost of Attendance)</h4>
-          <p style="margin:0 0 12px;">本科生全年总费用(未扣助学金前)约$98,500/年，包括学费、住宿、膳食、书籍、个人开支等。</p>
-
-          <h4 style="color:#003366; margin:0 0 4px;">2. 计算公式</h4>
-          <div style="background:#f0f5ff; border:1px solid #b0c8f0; border-radius:8px; padding:10px 16px; margin-bottom:12px; text-align:center; font-size:15px;">
-            助学金 = 总费用 − 预计家庭贡献(EFC)
-          </div>
-          <p style="margin:0 0 12px; font-size:13px;">预计家庭贡献(Expected Family Contribution)通过FAFSA+CSS Profile评估。</p>
-
-          <h4 style="color:#003366; margin:0 0 8px;">3. 模拟案例(2025-26学年)</h4>
-          <div style="overflow-x:auto; margin-bottom:12px;">
-            <table style="width:100%; border-collapse:collapse; font-size:13px; min-width:400px;">
-              <thead>
-                <tr style="background:#003366; color:#fff;">
-                  <th style="padding:8px 10px; text-align:left; border-radius:4px 0 0 0;">家境</th>
-                  <th style="padding:8px 10px; text-align:right;">总费用</th>
-                  <th style="padding:8px 10px; text-align:right;">家庭贡献</th>
-                  <th style="padding:8px 10px; text-align:right;">助学金</th>
-                  <th style="padding:8px 10px; text-align:right;">Work-Study</th>
-                  <th style="padding:8px 10px; text-align:right; border-radius:0 4px 0 0;">联邦贷款</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="background:#fff;">
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5;">例1：家庭贡献$0</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$98,500</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$0</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$94,200</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$4,300</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$0</td>
-                </tr>
-                <tr style="background:#f7faff;">
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5;">例2：家庭贡献$10,000</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$97,500</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$10,000</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$78,700</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$4,800</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:right;">$4,000(可选)</td>
-                </tr>
-                <tr style="background:#fff;">
-                  <td style="padding:7px 10px;">例3：家庭贡献$20,000</td>
-                  <td style="padding:7px 10px; text-align:right;">$98,500</td>
-                  <td style="padding:7px 10px; text-align:right;">$20,000</td>
-                  <td style="padding:7px 10px; text-align:right;">$68,700</td>
-                  <td style="padding:7px 10px; text-align:right;">$4,800</td>
-                  <td style="padding:7px 10px; text-align:right;">$5,000</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h4 style="color:#003366; margin:0 0 6px;">4. 资助包的构成</h4>
-          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-            <div style="flex:1; min-width:160px; background:#eaf4ea; border-radius:8px; padding:10px 14px;">
-              <div style="margin-bottom:4px;">Grants / Scholarships</div>
-              <div style="font-size:12px;">助学金/奖学金，无需偿还</div>
-            </div>
-            <div style="flex:1; min-width:160px; background:#fff8e8; border-radius:8px; padding:10px 14px;">
-              <div style="margin-bottom:4px;">Federal Work-Study</div>
-              <div style="font-size:12px;">联邦校园工作，赚取劳务报酬</div>
-            </div>
-            <div style="flex:1; min-width:160px; background:#f0f0f8; border-radius:8px; padding:10px 14px;">
-              <div style="margin-bottom:4px;">Federal Loan</div>
-              <div style="font-size:12px;">联邦贷款，需还款，金额取决于家庭收入</div>
-            </div>
-          </div>
-          <p style="margin:0 0 4px; font-size:13px;">家庭收入&lt; $65,000：通常无校方强制贷款($0)</p>
-          <p style="margin:0 0 12px; font-size:13px;">家庭收入较高：可能包含$3,000–$5,000的联邦贷款部分</p>
-
-          <h4 style="color:#003366; margin:0 0 4px;">5. 自行预估方法</h4>
-          <p style="margin:0 0 12px;">Duke提供Net Price Calculator和MyinTuition Calculator，可输入家庭收入、人数、资产等获取个性化资助预测。<a href="https://financialaid.duke.edu/apply-aid/estimate-your-aid/" target="_blank">相关链接</a></p>
-
-          <div style="background:#fffbe6; border:1px solid #f0c040; border-radius:6px; padding:8px 14px; margin-bottom:14px; font-size:13px;">
-            只有在提交 FAFSA + CSS Profile 并被录取后，学校才会发放最终实际资助通知(Financial Aid Offer)。
-          </div>
-
-          <!-- 贷款利率 -->
-          <h3 style="color:#003366; margin:16px 0 6px;">联邦学生贷款利率说明(2025-2026学年)</h3>
-          <div style="overflow-x:auto; margin-bottom:10px;">
-            <table style="width:100%; border-collapse:collapse; font-size:13px;">
-              <thead>
-                <tr style="background:#003366; color:#fff;">
-                  <th style="padding:8px 10px; text-align:left; border-radius:4px 0 0 0;">贷款类型</th>
-                  <th style="padding:8px 10px; text-align:center;">固定利率</th>
-                  <th style="padding:8px 10px; text-align:left; border-radius:0 4px 0 0;">说明</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="background:#fff;">
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5;">Direct Subsidized Loan(有补贴贷款)</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5; text-align:center;">6.53%</td>
-                  <td style="padding:7px 10px; border-bottom:1px solid #dde6f5;">在校期间、宽限期及延期期间，政府代付利息，不会利滚利</td>
-                </tr>
-                <tr style="background:#f7faff;">
-                  <td style="padding:7px 10px;">Direct Unsubsidized Loan(无补贴贷款)</td>
-                  <td style="padding:7px 10px; text-align:center;">6.53%</td>
-                  <td style="padding:7px 10px;">贷款发放当日起计息，若在校期间不付利息，利息会资本化(加入本金)</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p style="margin:0 0 14px; font-size:13px;">还款时间为毕业后6个月宽限期，之后开始正式还款，标准还款期10年。</p>
-
-          <!-- 参考链接 -->
-          <h3 style="color:#003366; margin:22px 0 8px;">参考链接</h3>
-
-          <p style="margin:0 0 6px; font-size:13px; color:#555;">Merit Scholarships — 官方页面</p>
-          <ul style="margin:0 0 12px; padding-left:0; font-size:13px;">
-            <li><a href="https://ousf.duke.edu/merit-scholarships/merit-scholarships-incoming-first-year-students/" target="_blank">OUSF — Merit Scholarships总览(官方)</a></li>
-            <li><a href="https://robertsonscholars.org/" target="_blank">Robertson Scholars Leadership Program官网</a></li>
-            <li><a href="https://ousf.duke.edu/merit-scholarships/ab-duke-scholars-program/" target="_blank">A.B. Duke Scholars Program官方页</a></li>
-            <li><a href="https://ousf.duke.edu/merit-scholarships/karsh-international-scholars-program/" target="_blank">Karsh International Scholars Program官方页</a></li>
-            <li><a href="https://ousf.duke.edu/merit-scholarships/bn-duke-scholars-program/" target="_blank">Benjamin N. Duke Scholarship官方页</a></li>
-            <li><a href="https://ousf.duke.edu/merit-scholarships/university-scholars-program/" target="_blank">University Scholarship官方页</a></li>
-            <li><a href="https://ousf.duke.edu/merit-scholarships/trinity-scholars-program/" target="_blank">Trinity Scholarships官方页</a></li>
-            <li><a href="https://ousf.duke.edu/merit-scholarships/alumni-endowed-scholars-program/" target="_blank">Alumni Endowed Scholarship官方页</a></li>
-          </ul>
-
-          <p style="margin:0 0 6px; font-size:13px; color:#555;">需求型助学金 — 官方页面</p>
-          <ul style="margin:0 0 12px; padding-left:0; font-size:13px;">
-            <li><a href="https://financialaid.duke.edu/" target="_blank">Duke Financial Aid官网(Karsh Office)</a></li>
-            <li><a href="https://financialaid.duke.edu/apply-aid/estimate-your-aid/" target="_blank">资助预估计算器(Net Price Calculator / MyinTuition)</a></li>
-            <li><a href="https://financialaid.duke.edu/types-aid/merit-scholarships/" target="_blank">Merit Scholarships说明(Financial Aid Office视角)</a></li>
-            <li><a href="https://financialaid.duke.edu/international-students/" target="_blank">国际生助学金说明</a></li>
-            <li><a href="https://studentaid.gov/fsa-id/sign-in/landing" target="_blank">FAFSA申请</a></li>
-            <li><a href="https://cssprofile.collegeboard.org/" target="_blank">CSS Profile申请</a></li>
-          </ul>
-
-        </div>
-      </div>
 
 
       <!-- ===== 校园生活 ===== -->
