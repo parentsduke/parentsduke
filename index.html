@@ -2737,6 +2737,99 @@ document.addEventListener("keydown", function(e) {
 
 
 
+      <!-- ===== Amazon Lockers ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>校园自提柜 Amazon Lockers</span><span class="accordion-arrow">&#9658;</span>
+        </button>
+        <div class="accordion-body">
+          <p>Duke校园内共设有7个Amazon Parcel Locker自提柜，2022年11月由Amazon与Duke Campus Mail Services合作安装，分布在East Campus、West Campus和Central Campus的宿舍楼附近，学生可在下单时直接选择就近的Locker地址收包裹，全程无需等待快递员上门。</p>
+
+          <p style="margin-top:14px; font-weight:600; color:#003366;">7个Locker具体位置一览(来源：<a href="https://postoffice.duke.edu/packages/amazon/" target="_blank" style="color:#003366;">Duke Campus Mail Services官网</a>)</p>
+
+          <table style="width:100%; border-collapse:collapse; font-size:13px; margin:8px 0 4px;">
+            <thead>
+              <tr style="background:#003366; color:#fff;">
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">Locker名称</th>
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">所在建筑</th>
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">校区</th>
+                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">具体地址</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Ceyln</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Swift Apartments</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Central Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">300 Swift Ave, Durham, NC 27705</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Elsa</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Bell Tower Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">40 Brodie Gym Drive, Durham, NC 27705</td>
+              </tr>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Elinor</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Blackwell Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">51 Brodie Gym Drive, Durham, NC 27705</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Ljuba</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus Union (室内)</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">1324 Campus Drive, Durham, NC 27705</td>
+              </tr>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Lennie</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Randolph Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">50 Brodie Gym Drive, Durham, NC 27705</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Arkadiusz Jad</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Edens (near Schafer House)</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">West Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">117 Edens Drive, Durham, NC 27705</td>
+              </tr>
+              <tr style="background:#f7f9fc;">
+                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Dawood</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">Keohane Breezeway</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">West Campus</td>
+                <td style="padding:7px 10px; border:1px solid #ddd;">101 Wannamaker Drive, Durham, NC 27705</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:12px; color:#888; margin:4px 0 14px;">注：East Campus有4个Locker(Elsa、Elinor、Ljuba、Lennie)，West Campus有2个(Arkadiusz Jad、Dawood)，Central Campus有1个(Ceyln)。一年级新生住East Campus，以上四个Locker均步行可达。</p>
+
+          <p style="margin-top:12px; font-weight:600; color:#003366;">使用流程</p>
+          <ul style="margin:6px 0 0 0; padding:0;">
+            <li>在Amazon下单时，在送货地址处按Locker名称搜索(如"Elsa"或"Dawood")，选中对应点位即可</li>
+            <li>必须提前在手机上下载Amazon App，并开启蓝牙(Bluetooth)，这是取件的必要条件</li>
+            <li>包裹送达后，Amazon会发送邮件通知，带上手机前往Locker，Locker会通过蓝牙自动识别手机并弹开对应柜门，无需手动输入取件码</li>
+            <li>取件时限为3天(72小时)，超时包裹将被退回给卖家并全额退款</li>
+            <li>存在尺寸和重量限制，超大件或超重件无法使用Locker，Amazon会自动改送至宿舍front desk</li>
+          </ul>
+
+          <p style="margin-top:12px; font-weight:600; color:#003366;">注意事项</p>
+          <ul style="margin:6px 0 0 0; padding:0;">
+            <li>Amazon Prime会员在校期间可申请<a href="https://www.amazon.com/b?ie=UTF8&node=668781011" target="_blank">Prime Student</a>优惠，6个月免费试用后折扣续费，每年约$7.49/月</li>
+            <li>Duke邮局(Post Office)位于West Campus Bryan Center地下1楼，电话919-684-3367，可寄发USPS/FedEx/UPS包裹，不处理Amazon Locker事务</li>
+            <li>校园内Amazon Locker仅供Amazon订单使用，其他快递公司(FedEx、UPS、USPS)的包裹须送至宿舍门卫或Bryan Center邮局</li>
+            <li>如包裹尺寸超过Locker限制，Amazon会自动改送至学生宿舍门卫室(front desk)，并发送另行通知</li>
+            <li>Locker机器偶发故障，可访问<a href="http://www.amazon.com/ulp" target="_blank">amazon.com/ulp</a>或拨打Amazon客服电话1-877-346-6244获取帮助</li>
+          </ul>
+
+          <p style="margin-top:12px; font-weight:600; color:#003366;">实用链接</p>
+          <ul style="margin:6px 0 0 0; padding:0;">
+            <li><a href="https://postoffice.duke.edu/packages/amazon/" target="_blank">Duke邮局官方Amazon Locker说明页面</a></li>
+            <li><a href="https://postoffice.duke.edu/locations/" target="_blank">Duke邮局各取件点位置</a></li>
+            <li><a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">信件及包裹地址填写规范</a></li>
+          </ul>
+        </div>
+      </div>
+
       <!-- ===== FOCUS 与 Constellations ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
@@ -3602,99 +3695,6 @@ document.addEventListener("keydown", function(e) {
 
         </div>
       </div>
-      <!-- ===== Amazon Lockers ===== -->
-      <div class="accordion">
-        <button class="accordion-btn" onclick="toggleAccordion(this)">
-          <span>校园自提柜 Amazon Lockers</span><span class="accordion-arrow">&#9658;</span>
-        </button>
-        <div class="accordion-body">
-          <p>Duke校园内共设有7个Amazon Parcel Locker自提柜，2022年11月由Amazon与Duke Campus Mail Services合作安装，分布在East Campus、West Campus和Central Campus的宿舍楼附近，学生可在下单时直接选择就近的Locker地址收包裹，全程无需等待快递员上门。</p>
-
-          <p style="margin-top:14px; font-weight:600; color:#003366;">7个Locker具体位置一览(来源：<a href="https://postoffice.duke.edu/packages/amazon/" target="_blank" style="color:#003366;">Duke Campus Mail Services官网</a>)</p>
-
-          <table style="width:100%; border-collapse:collapse; font-size:13px; margin:8px 0 4px;">
-            <thead>
-              <tr style="background:#003366; color:#fff;">
-                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">Locker名称</th>
-                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">所在建筑</th>
-                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">校区</th>
-                <th style="padding:8px 10px; text-align:left; border:1px solid #ccc;">具体地址</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="background:#f7f9fc;">
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Ceyln</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Swift Apartments</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Central Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">300 Swift Ave, Durham, NC 27705</td>
-              </tr>
-              <tr>
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Elsa</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Bell Tower Breezeway</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">40 Brodie Gym Drive, Durham, NC 27705</td>
-              </tr>
-              <tr style="background:#f7f9fc;">
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Elinor</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Blackwell Breezeway</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">51 Brodie Gym Drive, Durham, NC 27705</td>
-              </tr>
-              <tr>
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Ljuba</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus Union (室内)</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">1324 Campus Drive, Durham, NC 27705</td>
-              </tr>
-              <tr style="background:#f7f9fc;">
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Lennie</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Randolph Breezeway</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">East Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">50 Brodie Gym Drive, Durham, NC 27705</td>
-              </tr>
-              <tr>
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Arkadiusz Jad</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Edens (near Schafer House)</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">West Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">117 Edens Drive, Durham, NC 27705</td>
-              </tr>
-              <tr style="background:#f7f9fc;">
-                <td style="padding:7px 10px; border:1px solid #ddd; font-weight:600;">Dawood</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">Keohane Breezeway</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">West Campus</td>
-                <td style="padding:7px 10px; border:1px solid #ddd;">101 Wannamaker Drive, Durham, NC 27705</td>
-              </tr>
-            </tbody>
-          </table>
-          <p style="font-size:12px; color:#888; margin:4px 0 14px;">注：East Campus有4个Locker(Elsa、Elinor、Ljuba、Lennie)，West Campus有2个(Arkadiusz Jad、Dawood)，Central Campus有1个(Ceyln)。一年级新生住East Campus，以上四个Locker均步行可达。</p>
-
-          <p style="margin-top:12px; font-weight:600; color:#003366;">使用流程</p>
-          <ul style="margin:6px 0 0 0; padding:0;">
-            <li>在Amazon下单时，在送货地址处按Locker名称搜索(如"Elsa"或"Dawood")，选中对应点位即可</li>
-            <li>必须提前在手机上下载Amazon App，并开启蓝牙(Bluetooth)，这是取件的必要条件</li>
-            <li>包裹送达后，Amazon会发送邮件通知，带上手机前往Locker，Locker会通过蓝牙自动识别手机并弹开对应柜门，无需手动输入取件码</li>
-            <li>取件时限为3天(72小时)，超时包裹将被退回给卖家并全额退款</li>
-            <li>存在尺寸和重量限制，超大件或超重件无法使用Locker，Amazon会自动改送至宿舍front desk</li>
-          </ul>
-
-          <p style="margin-top:12px; font-weight:600; color:#003366;">注意事项</p>
-          <ul style="margin:6px 0 0 0; padding:0;">
-            <li>Amazon Prime会员在校期间可申请<a href="https://www.amazon.com/b?ie=UTF8&node=668781011" target="_blank">Prime Student</a>优惠，6个月免费试用后折扣续费，每年约$7.49/月</li>
-            <li>Duke邮局(Post Office)位于West Campus Bryan Center地下1楼，电话919-684-3367，可寄发USPS/FedEx/UPS包裹，不处理Amazon Locker事务</li>
-            <li>校园内Amazon Locker仅供Amazon订单使用，其他快递公司(FedEx、UPS、USPS)的包裹须送至宿舍门卫或Bryan Center邮局</li>
-            <li>如包裹尺寸超过Locker限制，Amazon会自动改送至学生宿舍门卫室(front desk)，并发送另行通知</li>
-            <li>Locker机器偶发故障，可访问<a href="http://www.amazon.com/ulp" target="_blank">amazon.com/ulp</a>或拨打Amazon客服电话1-877-346-6244获取帮助</li>
-          </ul>
-
-          <p style="margin-top:12px; font-weight:600; color:#003366;">实用链接</p>
-          <ul style="margin:6px 0 0 0; padding:0;">
-            <li><a href="https://postoffice.duke.edu/packages/amazon/" target="_blank">Duke邮局官方Amazon Locker说明页面</a></li>
-            <li><a href="https://postoffice.duke.edu/locations/" target="_blank">Duke邮局各取件点位置</a></li>
-            <li><a href="https://postoffice.duke.edu/addressing-mail-duke/" target="_blank">信件及包裹地址填写规范</a></li>
-          </ul>
-        </div>
-      </div>
-
       <!-- ===== Duke +Programs ===== -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordion(this)">
