@@ -244,39 +244,34 @@ function toggleBannerMusic() {
   100% { background-position: 200% center; }
 }
 @keyframes rd-imgswitch {
-  0%,12%  { opacity:1; }
-  16%,98% { opacity:0; }
+  0%,14%  { opacity:1; }
+  18%,98% { opacity:0; }
   100%    { opacity:1; }
 }
 @keyframes rd-imgswitch2 {
-  0%,13%  { opacity:0; }
-  14%,26% { opacity:1; }
-  30%,100%{ opacity:0; }
+  0%,15%  { opacity:0; }
+  16%,30% { opacity:1; }
+  34%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch3 {
-  0%,27%  { opacity:0; }
-  28%,40% { opacity:1; }
-  44%,100%{ opacity:0; }
+  0%,31%  { opacity:0; }
+  32%,46% { opacity:1; }
+  50%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch4 {
-  0%,41%  { opacity:0; }
-  42%,54% { opacity:1; }
-  58%,100%{ opacity:0; }
+  0%,47%  { opacity:0; }
+  48%,62% { opacity:1; }
+  66%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch5 {
-  0%,55%  { opacity:0; }
-  56%,68% { opacity:1; }
-  72%,100%{ opacity:0; }
+  0%,63%  { opacity:0; }
+  64%,78% { opacity:1; }
+  82%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch6 {
-  0%,69%  { opacity:0; }
-  70%,82% { opacity:1; }
-  86%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch7 {
-  0%,83%  { opacity:0; }
-  84%,96% { opacity:1; }
-  100%    { opacity:0; }
+  0%,79%  { opacity:0; }
+  80%,94% { opacity:1; }
+  98%,100%{ opacity:0; }
 }
 
 #rd-banner-inner { animation: rd-fadein 0.6s cubic-bezier(0.34,1.56,0.64,1) both; font-family: SIMLI, serif; }
@@ -301,34 +296,30 @@ function toggleBannerMusic() {
     position:relative;
   ">
 
-    <!-- 全背景图片：7张交替淡化 -->
+    <!-- 全背景图片：6张交替淡化 -->
     <img src="https://dukeparents.org/images/chapel.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;
-             animation:rd-imgswitch 35s ease-in-out infinite;
-             filter:brightness(1) saturate(1.0);">
-    <img src="https://dukeparents.org/images/gardens.jpg"
-      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%;
-             animation:rd-imgswitch2 35s ease-in-out infinite;
+             animation:rd-imgswitch 30s ease-in-out infinite;
              filter:brightness(1) saturate(1.0);">
     <img src="https://dukeparents.org/images/gardens2.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;
-             animation:rd-imgswitch3 35s ease-in-out infinite;
-             filter:brightness(1) saturate(1.0);">
-    <img src="https://dukeparents.org/images/classes_collage.jpg"
-      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch4 35s ease-in-out infinite;
+             animation:rd-imgswitch2 30s ease-in-out infinite;
              filter:brightness(1) saturate(1.0);">
     <img src="https://dukeparents.org/images/acc.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch5 35s ease-in-out infinite;
+             animation:rd-imgswitch3 30s ease-in-out infinite;
+             filter:brightness(1) saturate(1.0);">
+    <img src="https://dukeparents.org/images/classes_collage2.jpg"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             animation:rd-imgswitch4 30s ease-in-out infinite;
              filter:brightness(1) saturate(1.0);">
     <img src="https://dukeparents.org/images/classes_collage3.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch6 35s ease-in-out infinite;
+             animation:rd-imgswitch5 30s ease-in-out infinite;
              filter:brightness(1) saturate(1.0);">
     <img src="https://dukeparents.org/images/parents.png"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch7 35s ease-in-out infinite;
+             animation:rd-imgswitch6 30s ease-in-out infinite;
              filter:brightness(1) saturate(1.0);">
 
     <!-- 深色渐变遮罩 -->
@@ -1852,47 +1843,55 @@ function toggleBannerMusic() {
             <strong>北卡州法律要求：</strong>所有在北卡大学就读的学生须在入学前提交疫苗接种证明。<strong>开学后第30天未达标将被取消DukeCard并无法上课及选课。</strong>
           </div>
 
-          <p style="margin:10px 0 6px;"><strong style="color:#003366;">一、必须疫苗（本科/研究生/专业学生）</strong></p>
+          <p style="margin:10px 0 6px;"><strong style="color:#003366;">一、必须疫苗(本科/研究生/专业学生)</strong></p>
           <div style="font-size:13px; line-height:2; color:#333;">
-            <div><strong>麻疹/腮腺炎/风疹 MMR</strong>——2剂，第一剂须在1岁生日后接种</div>
-            <div><strong>水痘 Varicella</strong>——2剂，或提供已患水痘的医疗证明</div>
-            <div><strong>乙肝 Hepatitis B</strong>——3剂全程</div>
-            <div><strong>脑膜炎 Meningococcal（MenACWY）</strong>——1剂，16岁后接种；若16岁前接种须补打加强针<br>
-            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 针对A/C/W/Y四种血清型 | 品牌：Menactra、Menveo、MenQuadfi | <strong>北卡州法律强制要求</strong></span></div>
-            <div><strong>百白破 Tdap</strong>——1剂（需含Pertussis百日咳成分）</div>
-            <div><strong>结核病筛查 TB Screening</strong>——须在线填写问卷；若问卷显示高风险须在美国境内完成TST或IGRA检测（境外检测不被接受）</div>
+            <div><strong>麻疹/腮腺炎/风疹 MMR(麻腮风疫苗)</strong>——2剂，第一剂须在1岁生日后接种<br>
+            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 中文俗称：麻疹-流行性腮腺炎-风疹三联疫苗 | 品牌：M-M-R II、ProQuad</span></div>
+            <div><strong>水痘 Varicella(水痘疫苗)</strong>——2剂，或提供已患水痘的医疗证明<br>
+            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 中文俗称：水痘疫苗、带状疱疹前驱疫苗 | 品牌：Varivax</span></div>
+            <div><strong>乙肝 Hepatitis B(乙型肝炎疫苗)</strong>——3剂全程(0/1/6个月)<br>
+            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 中文俗称：乙肝疫苗 | 品牌：Engerix-B、Recombivax HB、Heplisav-B(2剂)</span></div>
+            <div><strong>脑膜炎 Meningococcal MenACWY(四价脑膜炎球菌疫苗)</strong>——1剂，16岁后接种；若16岁前接种须补打加强针<br>
+            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 中文俗称：流脑疫苗(A+C+W+Y型)| 品牌：Menactra、Menveo、MenQuadfi | <strong>北卡州法律强制要求</strong></span></div>
+            <div><strong>百白破 Tdap(破伤风-白喉-百日咳联合疫苗)</strong>——1剂(需含Pertussis百日咳成分)<br>
+            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 中文俗称：百白破疫苗加强针 | 品牌：Boostrix、Adacel | 注意：Td(不含百日咳)不符合要求</span></div>
+            <div><strong>结核病筛查 TB Screening(结核病检测)</strong>——须在线填写问卷；若问卷显示高风险须在美国境内完成TST或IGRA检测(境外检测不被接受)<br>
+            <span style="font-size:12px; color:#666; padding-left:16px;">▸ TST：结核菌素皮肤试验(PPD试验)| IGRA：QuantiFERON TB Gold或T-Spot血液检测 | BCG接种者须做IGRA</span></div>
           </div>
 
           <p style="margin:12px 0 6px;"><strong style="color:#003366;">二、推荐但非强制</strong></p>
           <div style="font-size:13px; line-height:2; color:#333;">
-            <div><strong>新冠 COVID-19</strong>——不再强制，但强烈建议高风险学生接种</div>
-            <div><strong>流感 Flu</strong>——普通本科生建议接种，Health Science学生强制（须在8/1后接种）</div>
-            <div><strong>脑膜炎B MenB</strong>——强烈推荐，SMIP 100%覆盖<br>
-            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 只针对B型，与MenACWY完全不同，需分开接种 | 品牌：Bexsero（2剂）或Trumenba（2-3剂）</span></div>
-            <div><strong>HPV</strong>——强烈推荐，SMIP 100%覆盖</div>
+            <div><strong>新冠 COVID-19(新冠疫苗)</strong>——不再强制，但强烈建议高风险学生接种<br>
+            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 品牌：Moderna、Pfizer-BioNTech mRNA疫苗 | 建议接种最新更新版本</span></div>
+            <div><strong>流感 Flu(流行性感冒疫苗)</strong>——普通本科生建议接种，Health Science学生强制(须在8/1后接种)<br>
+            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 中文俗称：流感针 | 每年秋季更新 | Student Health免费接种</span></div>
+            <div><strong>脑膜炎B MenB(B型脑膜炎球菌疫苗)</strong>——强烈推荐，SMIP 100%覆盖<br>
+            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 中文俗称：流脑B型疫苗 | 与MenACWY完全不同需分开接种 | 品牌：Bexsero(2剂)或Trumenba(2-3剂)</span></div>
+            <div><strong>HPV(人乳头瘤病毒疫苗)</strong>——强烈推荐，SMIP 100%覆盖<br>
+            <span style="font-size:12px; color:#666; padding-left:16px;">▸ 中文俗称：宫颈癌疫苗、HPV疫苗 | 品牌：Gardasil 9(9价)| 26岁以下男女均推荐接种</span></div>
           </div>
 
           <!-- MenACWY vs MenB 对比 -->
           <div style="background:#fff8e1; border-left:4px solid #c9a84c; padding:12px 14px; margin:12px 0; border-radius:4px; font-size:13px;">
-            <strong style="color:#003366;">⚠️ MenACWY 与 MenB 的重要区别</strong>
+            <strong style="color:#003366;">MenACWY 与 MenB 的重要区别</strong>
             <div style="margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
               <div style="background:#eef3fa; border-radius:6px; padding:10px;">
-                <div style="font-weight:700; color:#012169; margin-bottom:4px;">MenACWY（四价）</div>
-                <div style="color:#333; line-height:1.8;">覆盖：A/C/W/Y型<br>Duke：<strong>强制要求</strong><br>北卡州法律规定<br>品牌：Menactra、Menveo<br>剂数：1剂（16岁后）</div>
+                <div style="font-weight:700; color:#012169; margin-bottom:4px;">MenACWY(四价)</div>
+                <div style="color:#333; line-height:1.8;">覆盖：A/C/W/Y型<br>Duke：<strong>强制要求</strong><br>北卡州法律规定<br>品牌：Menactra、Menveo<br>剂数：1剂(16岁后)</div>
               </div>
               <div style="background:#eef3fa; border-radius:6px; padding:10px;">
-                <div style="font-weight:700; color:#012169; margin-bottom:4px;">MenB（单价B型）</div>
+                <div style="font-weight:700; color:#012169; margin-bottom:4px;">MenB(单价B型)</div>
                 <div style="color:#333; line-height:1.8;">覆盖：仅B型<br>Duke：<strong>推荐但不强制</strong><br>大学校园高发！<br>品牌：Bexsero、Trumenba<br>剂数：2-3剂</div>
               </div>
             </div>
-            <div style="margin-top:8px; color:#666; font-size:12px;">💡 两者针对不同细菌株，一个疫苗无法覆盖另一个，须分开接种。美国大学校园是脑膜炎B的高发环境，CDC特别推荐大学生接种，SMIP 100%覆盖。</div>
+            <div style="margin-top:8px; color:#666; font-size:12px;">两者针对不同细菌株，一个疫苗无法覆盖另一个，须分开接种。美国大学校园是脑膜炎B的高发环境，CDC特别推荐大学生接种，SMIP 100%覆盖。</div>
           </div>
 
           <!-- Bexsero vs Trumenba 选择指南 -->
           <div style="background:#eef3fa; border-left:4px solid #003366; padding:12px 14px; margin:10px 0; border-radius:4px; font-size:13px;">
             <strong style="color:#003366;">MenB：Bexsero 还是 Trumenba？</strong>
             <div style="margin-top:8px; line-height:1.9; color:#333;">
-              <div style="margin-bottom:6px;"><strong>⚠️ 最重要原则：两种品牌不可混用</strong>，接种系列必须用同一品牌完成。</div>
+              <div style="margin-bottom:6px;"><strong>最重要原则：两种品牌不可混用</strong>，接种系列必须用同一品牌完成。</div>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0;">
                 <div style="background:#fff; border-radius:6px; padding:10px; border:1px solid #d0d8e8;">
                   <div style="font-weight:700; color:#012169; margin-bottom:4px;">Bexsero</div>
@@ -1926,15 +1925,15 @@ function toggleBannerMusic() {
           <div style="font-size:13px; line-height:1.9; color:#333;">
             <div><strong>Step 1</strong>——登录 <a href="https://gateway.studentaffairs.duke.edu/" target="_blank">Student Health Gateway</a>，在线填写疫苗接种历史</div>
             <div><strong>Step 2</strong>——在线完成TB筛查问卷</div>
-            <div><strong>Step 3</strong>——如未满18岁（2025年8月1日前），家长须填写 Minor Consent to Treat Form</div>
-            <div><strong>Step 4</strong>——由医生/诊所填写官方 Mandatory Immunization Requirements Form（家庭成员不可签署）</div>
+            <div><strong>Step 3</strong>——如未满18岁(2025年8月1日前)，家长须填写 Minor Consent to Treat Form</div>
+            <div><strong>Step 4</strong>——由医生/诊所填写官方 Mandatory Immunization Requirements Form(家庭成员不可签署)</div>
             <div><strong>Step 5</strong>——上传表格至 Student Health Gateway → Medical Clearances</div>
             <div style="margin-top:6px; color:#888;">邮件提交：<a href="/cdn-cgi/l/email-protection#6b0206061e0502110a1f020405190e0804190f182b181f1e0f0e051f0a0d0d0a021918450f1e000e450e0f1e"><span class="__cf_email__" data-cfemail="284145455d464152495c4147465a4d4b475a4c5b685b5c5d4c4d465c494e4e49415a5b064c5d434d064d4c5d">[email&#160;protected]</span></a></div>
             <div style="color:#888;">处理时间：最长30天，完成后系统发送通知</div>
           </div>
 
           <div class="cal-warn" style="margin-top:12px;">
-            ⚠️ <strong>国际学生特别注意：</strong>TB检测必须在美国境内完成，境外检测结果不被接受。已接种BCG疫苗者须做IGRA血液检测（QuantiFERON TB Gold或T-Spot），不接受TST皮肤测试。
+            <strong>国际学生特别注意：</strong>TB检测必须在美国境内完成，境外检测结果不被接受。已接种BCG疫苗者须做IGRA血液检测(QuantiFERON TB Gold或T-Spot)，不接受TST皮肤测试。
           </div>
 
           <div style="margin-top:10px; font-size:13px;">
@@ -1953,17 +1952,17 @@ function toggleBannerMusic() {
       <!-- 子手风琴：如何接种额外疫苗 -->
       <div class="sub-accordion">
         <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-          <span>如何接种额外疫苗(HPV、流感、脑膜炎B等)<span class="tag tag-key">必读</span></span>
+          <span>如何接种额外疫苗(人乳头瘤病毒HPV、流行性感冒Flu、脑膜炎B型MenB等)<span class="tag tag-key">必读</span></span>
           <span class="sub-accordion-arrow">&#9658;</span>
         </button>
         <div class="sub-accordion-body">
           <div class="cal-highlight">
-            Duke学生如需接种HPV、流感、脑膜炎B等额外疫苗，须在<strong>10月1日之后</strong>预约Student Health，避开入学强制疫苗提交高峰期。
+            Duke学生如需接种<strong>人乳头瘤病毒疫苗(HPV/宫颈癌疫苗)、流行性感冒疫苗(流感针/Flu)、B型脑膜炎球菌疫苗(脑膜炎B/MenB)</strong>等额外疫苗，须在<strong>10月1日之后</strong>预约Student Health，避开入学强制疫苗提交高峰期。
           </div>
           <div class="cal-item">
             <div class="cal-date">预约方式</div>
             <div>
-              <div class="cal-desc">通过<strong>Duke My Health患者门户</strong>在线预约，或致电<strong>(919) 681-9355</strong>预约当日门诊。</div>
+              <div class="cal-desc">通过<strong>Duke My Health患者门户</strong>在线预约，或致电<strong>(919)681-9355</strong>预约当日门诊。</div>
             </div>
           </div>
           <div class="cal-item">
@@ -2060,7 +2059,7 @@ function toggleBannerMusic() {
           </div>
 
           <div class="cal-warn">
-            以下疫苗<strong>不在SMIP覆盖范围</strong>：霍乱、黄热病、伤寒、狂犬病、日本脑炎等国际旅行专项疫苗，费用须自理。
+            以下疫苗<strong>不在SMIP覆盖范围</strong>：霍乱(Cholera)、黄热病(Yellow Fever)、伤寒(Typhoid)、狂犬病(Rabies)、日本脑炎(Japanese Encephalitis)等国际旅行专项疫苗，费用须自理。
           </div>
         </div>
       </div>
@@ -2092,7 +2091,7 @@ function toggleBannerMusic() {
           </div>
           <div class="cal-item">
             <div class="cal-date">预约方式</div>
-            <div><div class="cal-desc">通过Duke My Health Portal在线预约，或致电<strong>(919) 681-9355</strong>，请在<strong>10月1日之后</strong>预约以确保顺利安排。</div></div>
+            <div><div class="cal-desc">通过Duke My Health Portal在线预约，或致电<strong>(919)681-9355</strong>，请在<strong>10月1日之后</strong>预约以确保顺利安排。</div></div>
           </div>
           <a href="https://studenthealth.duke.edu/services/immunizations/" target="_blank">Duke Student Health疫苗页面</a>
         </div>
@@ -2115,7 +2114,7 @@ function toggleBannerMusic() {
           </div>
           <div class="cal-item">
             <div class="cal-date">Student Health预约电话</div>
-            <div><div class="cal-desc">(919) 681-9355</div></div>
+            <div><div class="cal-desc">(919)681-9355</div></div>
           </div>
           <div class="cal-item">
             <div class="cal-date">保险福利详情</div>
