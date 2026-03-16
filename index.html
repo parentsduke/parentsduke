@@ -344,9 +344,11 @@ function toggleBannerMusic() {
         img.style.animation = '';
         img.style.zIndex = '';
       });
-      // Hide replay button
+      // Hide replay and enter buttons
       var btn = document.getElementById('rd-replay-btn');
       if (btn) btn.style.display = 'none';
+      var enterBtn = document.querySelector('.rd-enter-btn');
+      if (enterBtn) enterBtn.style.display = 'none';
       // Restart stop timer
       startBannerStopTimer();
     }
@@ -368,9 +370,11 @@ function toggleBannerMusic() {
             img.style.animation = 'none';
           }
         });
-        // Show replay button
+        // Show replay and enter buttons
         var btn = document.getElementById('rd-replay-btn');
         if (btn) btn.style.display = 'inline-block';
+        var enterBtn = document.querySelector('.rd-enter-btn');
+        if (enterBtn) enterBtn.style.display = 'inline-block';
       }, delay);
     }
 
