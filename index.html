@@ -244,59 +244,64 @@ function toggleBannerMusic() {
   100% { background-position: 200% center; }
 }
 @keyframes rd-imgswitch {
-  0%,7%   { opacity:1; }
-  10%,98% { opacity:0; }
+  0%,6%   { opacity:1; }
+  9%,98%  { opacity:0; }
   100%    { opacity:1; }
 }
 @keyframes rd-imgswitch2 {
-  0%,8%   { opacity:0; }
-  9%,16%  { opacity:1; }
-  19%,100%{ opacity:0; }
+  0%,7%   { opacity:0; }
+  8%,14%  { opacity:1; }
+  17%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch3 {
-  0%,17%  { opacity:0; }
-  18%,25% { opacity:1; }
-  28%,100%{ opacity:0; }
+  0%,15%  { opacity:0; }
+  16%,22% { opacity:1; }
+  25%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch4 {
-  0%,26%  { opacity:0; }
-  27%,34% { opacity:1; }
-  37%,100%{ opacity:0; }
+  0%,23%  { opacity:0; }
+  24%,30% { opacity:1; }
+  33%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch5 {
-  0%,35%  { opacity:0; }
-  36%,43% { opacity:1; }
-  46%,100%{ opacity:0; }
+  0%,31%  { opacity:0; }
+  32%,38% { opacity:1; }
+  41%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch6 {
-  0%,44%  { opacity:0; }
-  45%,52% { opacity:1; }
-  55%,100%{ opacity:0; }
+  0%,39%  { opacity:0; }
+  40%,46% { opacity:1; }
+  49%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch7 {
-  0%,54%  { opacity:0; }
-  56%,64% { opacity:1; }
-  67%,100%{ opacity:0; }
+  0%,48%  { opacity:0; }
+  50%,56% { opacity:1; }
+  59%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch8 {
-  0%,66%  { opacity:0; }
-  68%,74% { opacity:1; }
-  77%,100%{ opacity:0; }
+  0%,58%  { opacity:0; }
+  60%,66% { opacity:1; }
+  69%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch9 {
-  0%,76%  { opacity:0; }
-  78%,84% { opacity:1; }
-  87%,100%{ opacity:0; }
+  0%,68%  { opacity:0; }
+  70%,76% { opacity:1; }
+  79%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch10 {
-  0%,86%  { opacity:0; }
-  88%,94% { opacity:1; }
-  97%,100%{ opacity:0; }
+  0%,78%  { opacity:0; }
+  80%,86% { opacity:1; }
+  89%,100%{ opacity:0; }
 }
 @keyframes rd-imgswitch11 {
-  0%,96%  { opacity:0; }
-  98%,99% { opacity:1; }
-  100%    { opacity:0; }
+  0%,88%  { opacity:0; }
+  90%,96% { opacity:1; }
+  99%,100%{ opacity:0; }
+}
+@keyframes rd-imgswitch12 {
+  0%,98%  { opacity:0; }
+  99%     { opacity:1; }
+  100%    { opacity:1; }
 }
 
 #rd-banner-inner { animation: rd-fadein 0.6s cubic-bezier(0.34,1.56,0.64,1) both; font-family: SIMLI, serif; }
@@ -351,21 +356,25 @@ function toggleBannerMusic() {
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
              animation:rd-imgswitch7 50s ease-in-out infinite;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/dp1.jpg"
+    <img src="https://dukeparents.org/images/dp0.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
              animation:rd-imgswitch8 50s ease-in-out infinite;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/dp2.jpg"
+    <img src="https://dukeparents.org/images/dp1.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
              animation:rd-imgswitch9 50s ease-in-out infinite;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/dp3.jpg"
+    <img src="https://dukeparents.org/images/dp2.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
              animation:rd-imgswitch10 50s ease-in-out infinite;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/paper.jpg"
+    <img src="https://dukeparents.org/images/dp3.jpg"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
              animation:rd-imgswitch11 50s ease-in-out infinite;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/paper.jpg"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             animation:rd-imgswitch12 50s ease-in-out infinite;
              filter:brightness(1.15) saturate(1.05);">
 
     <!-- paper.jpg 停止轮播脚本 -->
@@ -373,13 +382,16 @@ function toggleBannerMusic() {
     function replayBannerSlideshow() {
       var banner = document.getElementById('rd-banner');
       if (!banner) return;
-      // Restore all animations
+      // Step 1: remove all inline animation overrides
       var allImgs = banner.querySelectorAll('img');
       allImgs.forEach(function(img) {
-        img.style.opacity = '';
-        img.style.animation = '';
-        img.style.zIndex = '';
+        img.style.removeProperty('opacity');
+        img.style.removeProperty('animation');
+        img.style.removeProperty('z-index');
+        img.style.removeProperty('zIndex');
       });
+      // Step 2: force reflow so browser resets animation state
+      void banner.offsetWidth;
       // Hide replay and enter buttons
       var btn = document.getElementById('rd-replay-btn');
       if (btn) btn.style.display = 'none';
@@ -391,7 +403,7 @@ function toggleBannerMusic() {
 
     function startBannerStopTimer() {
       var cycle = 50000;
-      var delay = cycle * 0.96;
+      var delay = cycle * 0.98;
       setTimeout(function() {
         var banner = document.getElementById('rd-banner');
         if (!banner || banner.style.display === 'none') return;
@@ -13100,7 +13112,7 @@ window.showPV();
 <div id="invite-request-section" style="max-width:480px; margin:40px auto 0; padding:0 16px 48px;">
   <div style="background:#fff; border:1px solid #d0d8e8; border-radius:10px; padding:22px 24px; box-shadow:0 2px 10px rgba(1,33,105,0.07);">
     <div style="font-size:15px; font-weight:700; color:#012169; margin-bottom:6px;">申请登录扯谈Duke群网站</div>
-    <div style="font-size:12px; color:#888; margin-bottom:16px;">本网站仅限扯谈Duke群体系家长申请登录。填写后管理员将向您的电子邮箱发送一封来自noreply&#64;dukeparents.org的注册邀请，请点击其中的Accept the invite链接。</div>
+    <div style="font-size:12px; color:#888; margin-bottom:16px;">本网站仅限扯谈Duke群体系家长申请登录。填写后管理员将向您的电子邮箱发送一封来自noreply&#64;dukeparents.org的注册邀请邮件，其中有Accept the invite链接。<strong style="color:#c0392b;">此链接有时效性，请及时点击完成密码设置。</strong> 如果没有在Inbox中找到该链接，通常被送达在Spam folder中。</div>
     <div style="margin-bottom:12px;">
       <input id="invite-class" type="text" placeholder="届" maxlength="10"
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
