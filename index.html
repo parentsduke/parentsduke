@@ -243,65 +243,6 @@ function toggleBannerMusic() {
   0%   { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
-@keyframes rd-imgswitch {
-  0%,6%   { opacity:1; }
-  9%,98%  { opacity:0; }
-  100%    { opacity:1; }
-}
-@keyframes rd-imgswitch2 {
-  0%,7%   { opacity:0; }
-  8%,14%  { opacity:1; }
-  17%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch3 {
-  0%,15%  { opacity:0; }
-  16%,22% { opacity:1; }
-  25%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch4 {
-  0%,23%  { opacity:0; }
-  24%,30% { opacity:1; }
-  33%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch5 {
-  0%,31%  { opacity:0; }
-  32%,38% { opacity:1; }
-  41%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch6 {
-  0%,39%  { opacity:0; }
-  40%,46% { opacity:1; }
-  49%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch7 {
-  0%,48%  { opacity:0; }
-  50%,56% { opacity:1; }
-  59%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch8 {
-  0%,58%  { opacity:0; }
-  60%,66% { opacity:1; }
-  69%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch9 {
-  0%,68%  { opacity:0; }
-  70%,76% { opacity:1; }
-  79%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch10 {
-  0%,78%  { opacity:0; }
-  80%,86% { opacity:1; }
-  89%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch11 {
-  0%,88%  { opacity:0; }
-  90%,96% { opacity:1; }
-  99%,100%{ opacity:0; }
-}
-@keyframes rd-imgswitch12 {
-  0%,98%  { opacity:0; }
-  99%     { opacity:1; }
-  100%    { opacity:1; }
 }
 
 #rd-banner-inner { animation: rd-fadein 0.6s cubic-bezier(0.34,1.56,0.64,1) both; font-family: SIMLI, serif; }
@@ -327,106 +268,108 @@ function toggleBannerMusic() {
   ">
 
     <!-- 全背景图片：6张交替淡化 -->
-    <img src="https://dukeparents.org/images/chapel.jpg"
-      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;
-             animation:rd-imgswitch 50s ease-in-out infinite;
+    <img src="https://dukeparents.org/images/chapel.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:1; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.4) saturate(1.05);">
-    <img src="https://dukeparents.org/images/gardens2.jpg"
-      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;
-             animation:rd-imgswitch2 50s ease-in-out infinite;
+    <img src="https://dukeparents.org/images/gardens2.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.4) saturate(1.05);">
-    <img src="https://dukeparents.org/images/acc.jpg"
+    <img src="https://dukeparents.org/images/acc.jpg" class="rd-slide"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch3 50s ease-in-out infinite;
+             opacity:0; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/classes_collage2.jpg"
+    <img src="https://dukeparents.org/images/classes_collage2.jpg" class="rd-slide"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch4 50s ease-in-out infinite;
+             opacity:0; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/classes_collage3.jpg"
+    <img src="https://dukeparents.org/images/classes_collage3.jpg" class="rd-slide"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch5 50s ease-in-out infinite;
+             opacity:0; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/parents.png"
+    <img src="https://dukeparents.org/images/parents.png" class="rd-slide"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch6 50s ease-in-out infinite;
+             opacity:0; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.15) saturate(1.05);">
-
-    <img src="https://dukeparents.org/images/ed.png"
+    <img src="https://dukeparents.org/images/ed.jpg" class="rd-slide"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch7 50s ease-in-out infinite;
+             opacity:0; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/dp0.jpg"
+    <img src="https://dukeparents.org/images/dp1.jpg" class="rd-slide"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch8 50s ease-in-out infinite;
+             opacity:0; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/dp1.jpg"
+    <img src="https://dukeparents.org/images/dp2.jpg" class="rd-slide"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch9 50s ease-in-out infinite;
+             opacity:0; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/dp2.jpg"
+    <img src="https://dukeparents.org/images/dp3.jpg" class="rd-slide"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch10 50s ease-in-out infinite;
+             opacity:0; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/dp3.jpg"
+    <img src="https://dukeparents.org/images/paper.jpg" class="rd-slide"
       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch11 50s ease-in-out infinite;
+             opacity:0; transition:opacity 1.5s ease-in-out;
              filter:brightness(1.15) saturate(1.05);">
-    <img src="https://dukeparents.org/images/paper.jpg"
-      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
-             animation:rd-imgswitch12 50s ease-in-out infinite;
-             filter:brightness(1.15) saturate(1.05);">
-
-    <!-- paper.jpg 停止轮播脚本 -->
+        <!-- JS 幻灯片控制 -->
     <script>
-    function replayBannerSlideshow() {
-      var banner = document.getElementById('rd-banner');
-      if (!banner) return;
-      // Step 1: remove all inline animation overrides
-      var allImgs = banner.querySelectorAll('img');
-      allImgs.forEach(function(img) {
-        img.style.removeProperty('opacity');
-        img.style.removeProperty('animation');
-        img.style.removeProperty('z-index');
-        img.style.removeProperty('zIndex');
-      });
-      // Step 2: force reflow so browser resets animation state
-      void banner.offsetWidth;
-      // Hide replay and enter buttons
-      var btn = document.getElementById('rd-replay-btn');
-      if (btn) btn.style.display = 'none';
-      var enterBtn = document.querySelector('.rd-enter-btn');
-      if (enterBtn) enterBtn.style.display = 'none';
-      // Restart stop timer
-      startBannerStopTimer();
-    }
+    (function() {
+      var SLIDE_DURATION = 6000;
+      var LAST_DURATION  = 10000;
+      var currentSlide = 0;
+      var slides = [];
+      var timer = null;
 
-    function startBannerStopTimer() {
-      var cycle = 50000;
-      var delay = cycle * 0.98;
-      setTimeout(function() {
-        var banner = document.getElementById('rd-banner');
-        if (!banner || banner.style.display === 'none') return;
-        var allImgs = banner.querySelectorAll('img');
-        allImgs.forEach(function(img) {
-          if (img.src && img.src.indexOf('paper.jpg') !== -1) {
-            img.style.opacity = '1';
-            img.style.animation = 'none';
-            img.style.zIndex = '3';
-          } else if (img.src && img.src.indexOf('bluedevil') === -1) {
-            img.style.opacity = '0';
-            img.style.animation = 'none';
+      function init() {
+        slides = Array.from(document.querySelectorAll('#rd-banner-inner .rd-slide'));
+        if (!slides.length) return;
+        slides.forEach(function(s,i){ s.style.opacity = i===0?'1':'0'; });
+        currentSlide = 0;
+        scheduleNext();
+      }
+
+      function scheduleNext() {
+        var isLast = (currentSlide === slides.length - 1);
+        timer = setTimeout(function() {
+          if (isLast) {
+            showButtons();
+          } else {
+            goTo(currentSlide + 1);
+            scheduleNext();
           }
-        });
-        // Show replay and enter buttons
-        var btn = document.getElementById('rd-replay-btn');
-        if (btn) btn.style.display = 'inline-block';
-        var enterBtn = document.querySelector('.rd-enter-btn');
-        if (enterBtn) enterBtn.style.display = 'inline-block';
-      }, delay);
-    }
+        }, isLast ? LAST_DURATION : SLIDE_DURATION);
+      }
 
-    (function() { startBannerStopTimer(); })();
+      function goTo(idx) {
+        slides[currentSlide].style.opacity = '0';
+        currentSlide = idx;
+        slides[currentSlide].style.opacity = '1';
+      }
+
+      function showButtons() {
+        var r = document.getElementById('rd-replay-btn');
+        var e = document.querySelector('.rd-enter-btn');
+        if (r) r.style.display = 'inline-block';
+        if (e) e.style.display  = 'inline-block';
+      }
+
+      function hideButtons() {
+        var r = document.getElementById('rd-replay-btn');
+        var e = document.querySelector('.rd-enter-btn');
+        if (r) r.style.display = 'none';
+        if (e) e.style.display  = 'none';
+      }
+
+      window.replayBannerSlideshow = function() {
+        if (timer) { clearTimeout(timer); timer = null; }
+        hideButtons();
+        goTo(0);
+        scheduleNext();
+      };
+
+      setTimeout(init, 400);
+    })();
     </script>
 
     <!-- 深色渐变遮罩 -->
