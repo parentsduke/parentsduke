@@ -332,6 +332,51 @@ function toggleBannerMusic() {
              animation:rd-imgswitch7 50s ease-in-out infinite;
              filter:brightness(1.15) saturate(1.05);">
 
+    <!-- paper.jpg 停止轮播脚本 -->
+    <script>
+    function replayBannerSlideshow() {
+      var banner = document.getElementById('rd-banner');
+      if (!banner) return;
+      // Restore all animations
+      var allImgs = banner.querySelectorAll('img');
+      allImgs.forEach(function(img) {
+        img.style.opacity = '';
+        img.style.animation = '';
+        img.style.zIndex = '';
+      });
+      // Hide replay button
+      var btn = document.getElementById('rd-replay-btn');
+      if (btn) btn.style.display = 'none';
+      // Restart stop timer
+      startBannerStopTimer();
+    }
+
+    function startBannerStopTimer() {
+      var cycle = 50000;
+      var delay = cycle * 0.80;
+      setTimeout(function() {
+        var banner = document.getElementById('rd-banner');
+        if (!banner || banner.style.display === 'none') return;
+        var allImgs = banner.querySelectorAll('img');
+        allImgs.forEach(function(img) {
+          if (img.src && img.src.indexOf('paper.jpg') !== -1) {
+            img.style.opacity = '1';
+            img.style.animation = 'none';
+            img.style.zIndex = '3';
+          } else if (img.src && img.src.indexOf('bluedevil') === -1) {
+            img.style.opacity = '0';
+            img.style.animation = 'none';
+          }
+        });
+        // Show replay button
+        var btn = document.getElementById('rd-replay-btn');
+        if (btn) btn.style.display = 'inline-block';
+      }, delay);
+    }
+
+    (function() { startBannerStopTimer(); })();
+    </script>
+
     <!-- 深色渐变遮罩 -->
     <div style="position:absolute; inset:0;
       background:linear-gradient(160deg, rgba(1,33,105,0.05) 0%, rgba(0,10,40,0.10) 100%);"></div>
@@ -542,8 +587,17 @@ function toggleBannerMusic() {
         Eruditio et Religio
       </div>
 
-      <!-- 两个按钮并排 -->
+      <!-- 三个按钮：重新播放 | 音乐 | 进入网站 -->
       <div style="display:inline-flex; align-items:center; gap:16px;">
+        <button id="rd-replay-btn" onclick="replayBannerSlideshow()" style="
+          display:none;
+          background:rgba(201,168,76,0.15);
+          border:1px solid #c9a84c;
+          color:#c9a84c; border-radius:50px;
+          padding:3px 8px; font-size:clamp(8px,1.5vw,10px); font-weight:800;
+          cursor:pointer; letter-spacing:0.1em;
+          transition:all 0.25s ease;
+        ">▶ 重新播放</button>
         <button id="rd-music-btn" onclick="toggleBannerMusic()" style="
           background:rgba(201,168,76,0.15);
           border:1px solid #c9a84c;
