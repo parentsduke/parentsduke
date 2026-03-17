@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RD录取弹窗</title>
+  <style>
+    
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#012169; }
+  </style>
+</head>
+<body>
+
+<!-- ===== RD录取悬浮广告 ===== -->
+<audio id="rd-audio" loop preload="auto">
+  <source src="https://dukeparents.org/images/celebrate.mp3" type="audio/mpeg">
+</audio>
+<script>
+// 关闭弹窗时停止音乐
+function closeBanner() {
+  document.getElementById('rd-banner').style.display = 'none';
+  var audio = document.getElementById('rd-audio');
+  if (audio) { audio.pause(); audio.currentTime = 0; }
+}
+
+function toggleBannerMusic() {
+  var audio = document.getElementById('rd-audio');
+  var btn = document.getElementById('rd-music-btn');
+  if (!audio) return;
+  if (audio.paused) {
+    audio.volume = 0.5;
+    audio.play();
+    btn.textContent = '🔇 关闭音乐';
+    btn.style.background = 'rgba(201,168,76,0.2)';
+  } else {
+    audio.pause();
+    audio.currentTime = 0;
+    btn.textContent = '🔊 播放欢庆音乐';
+    btn.style.background = 'rgba(255,255,255,0.1)';
+  }
+}
+</script>
+<style>
+@keyframes rd-fadein {
+  from { opacity:0; transform:scale(0.9) translateY(20px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+@keyframes rd-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+}
+
+#rd-banner-inner { animation: rd-fadein 0.6s cubic-bezier(0.34,1.56,0.64,1) both; font-family: SIMLI, serif; }
+#rd-banner-inner * { font-family: SIMLI, serif; }
+@media (min-width: 768px) {
+  #rd-banner-inner {
+    width: 90vw !important;
+    max-width: 1200px !important;
+    height: 85vh !important;
+    max-height: 85vh !important;
+  }
+  .login-hero {
+    background-size: contain !important;
+    background-color: #001a3a;
+    min-height: 480px !important;
+  }
+}
+.rd-close-btn:hover { background:rgba(255,255,255,0.18)!important; transform:rotate(90deg) scale(1.1); }
+.rd-enter-btn:hover { transform:translateY(-3px)!important; box-shadow:0 12px 32px rgba(201,168,76,0.55)!important; }
+</style>
+
+<div id="rd-banner" style="
+  position:fixed; top:0; left:0; right:0; bottom:0;
+  background:rgba(0,5,20,0.85);
+  backdrop-filter:blur(8px);
+  z-index:9999;
+  display:flex; align-items:center; justify-content:center;
+  padding:16px;
+">
+  <div id="rd-banner-inner" style="font-family: SIMLI, serif;
+    max-width:92vw; width:92vw; height:88vh; max-height:700px;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 40px 100px rgba(0,0,0,0.8), 0 0 0 1.5px rgba(201,168,76,0.5);
+    position:relative;
+  ">
+
+    <!-- 全背景图片：6张交替淡化 -->
+    <img src="https://dukeparents.org/images/chapel.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:1; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.4) saturate(1.05);">
+    <img src="https://dukeparents.org/images/gardens2.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.4) saturate(1.05);">
+    <img src="https://dukeparents.org/images/acc.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/classes_collage1.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/classes_collage2.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/classes_collage3.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/classes_collage4.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/parents.png" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/parents2.png" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/ed.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/dp1.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/dp2.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/dp3.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+    <img src="https://dukeparents.org/images/paper.jpg" class="rd-slide"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;
+             opacity:0; transition:opacity 1.5s ease-in-out;
+             filter:brightness(1.15) saturate(1.05);">
+        <!-- JS 幻灯片控制 -->
+    <script>
+    (function() {
+      var SLIDE_DURATION = 10000;
+      var LAST_DURATION  = 10000;
+      var currentSlide = 0;
+      var slides = [];
+      var timer = null;
+
+      function init() {
+        slides = Array.from(document.querySelectorAll('#rd-banner-inner .rd-slide'));
+        if (!slides.length) return;
+        slides.forEach(function(s,i){ s.style.opacity = i===0?'1':'0'; });
+        currentSlide = 0;
+        scheduleNext();
+      }
+
+      function scheduleNext() {
+        var isLast = (currentSlide === slides.length - 1);
+        timer = setTimeout(function() {
+          if (isLast) {
+            showButtons();
+          } else {
+            goTo(currentSlide + 1);
+            scheduleNext();
+          }
+        }, isLast ? LAST_DURATION : SLIDE_DURATION);
+      }
+
+      function goTo(idx) {
+        slides[currentSlide].style.opacity = '0';
+        currentSlide = idx;
+        slides[currentSlide].style.opacity = '1';
+      }
+
+      function showButtons() {
+        var r = document.getElementById('rd-replay-btn');
+        var e = document.querySelector('.rd-enter-btn');
+        if (r) r.style.display = 'inline-block';
+        if (e) e.style.display  = 'inline-block';
+      }
+
+      function hideButtons() {
+        var r = document.getElementById('rd-replay-btn');
+        var e = document.querySelector('.rd-enter-btn');
+        if (r) r.style.display = 'none';
+        if (e) e.style.display  = 'none';
+      }
+
+      window.replayBannerSlideshow = function() {
+        if (timer) { clearTimeout(timer); timer = null; }
+        hideButtons();
+        goTo(0);
+        scheduleNext();
+      };
+
+      setTimeout(init, 400);
+    })();
+    </script>
+
+    <!-- 深色渐变遮罩 -->
+    <div style="position:absolute; inset:0;
+      background:linear-gradient(160deg, rgba(1,33,105,0.05) 0%, rgba(0,10,40,0.10) 100%);"></div>
+
+    <!-- 流光顶线 -->
+    <div style="position:absolute; top:0; left:0; right:0; height:3px; z-index:2;
+      background:linear-gradient(90deg,transparent,#c9a84c,#f0d080,#c9a84c,transparent);
+      background-size:200% auto; animation:rd-shimmer 3s linear infinite;"></div>
+
+    <!-- 流光底线 -->
+    <div style="position:absolute; bottom:0; left:0; right:0; height:3px; z-index:2;
+      background:linear-gradient(90deg,transparent,#c9a84c,#f0d080,#c9a84c,transparent);
+      background-size:200% auto; animation:rd-shimmer 3s linear infinite reverse;"></div>
+
+    <!-- 关闭按钮 -->
+    <button class="rd-close-btn" onclick="closeBanner()" style="
+      position:absolute; top:16px; right:18px; z-index:10;
+      background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2);
+      color:rgba(255,255,255,0.7); font-size:15px;
+      width:32px; height:32px; border-radius:50%;
+      cursor:pointer; transition:all 0.25s ease;
+      display:flex; align-items:center; justify-content:center;
+    ">✕</button>
+
+
+<!-- 烟火Canvas - 星形+瀑布+双层混合 -->
+<canvas id="rd-fireworks" style="position:absolute; inset:0; width:100%; height:100%; z-index:4; pointer-events:none;"></canvas>
+<script>
+(function() {
+  var canvas = document.getElementById('rd-fireworks');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var rockets = [];
+
+  function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+
+  var colors = ['#FFD700','#FF6B6B','#4ECDC4','#45B7D1','#FFA07A','#F7DC6F','#BB8FCE','#82E0AA','#ffffff','#FFB6C1'];
+
+  function drawStar(cx, cy, spikes, outerR, innerR, color, alpha) {
+    ctx.save(); ctx.globalAlpha = alpha; ctx.beginPath();
+    var rot = -Math.PI / 2, step = Math.PI / spikes;
+    ctx.moveTo(cx, cy - outerR);
+    for (var i = 0; i < spikes; i++) {
+      ctx.lineTo(cx + Math.cos(rot) * outerR, cy + Math.sin(rot) * outerR); rot += step;
+      ctx.lineTo(cx + Math.cos(rot) * innerR, cy + Math.sin(rot) * innerR); rot += step;
+    }
+    ctx.closePath(); ctx.fillStyle = color; ctx.fill(); ctx.restore();
+  }
+
+  function createRocket() {
+    var types = ['star', 'waterfall', 'double'];
+    rockets.push({
+      x: rand(canvas.width * 0.15, canvas.width * 0.85),
+      y: canvas.height,
+      vx: rand(-0.5, 0.5), vy: rand(-18, -14),
+      color: colors[Math.floor(rand(0, colors.length))],
+      type: types[Math.floor(rand(0, 3))]
+    });
+  }
+
+  // 星形爆炸
+  function explodeStar(x, y, color) {
+    for (var arm = 0; arm < 5; arm++) {
+      var base = (Math.PI * 2 / 5) * arm - Math.PI / 2;
+      for (var k = 0; k < 12; k++) {
+        var angle = base + rand(-0.15, 0.15), speed = rand(3, 7);
+        particles.push({ x:x, y:y, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed,
+          alpha:1, color:color, size:rand(3,6), spikes:5, gravity:0.07, type:'star' });
+      }
+    }
+    for (var i = 0; i < 15; i++) {
+      var a = rand(0, Math.PI*2);
+      particles.push({ x:x, y:y, vx:Math.cos(a)*rand(1,3), vy:Math.sin(a)*rand(1,3),
+        alpha:1, color:'#ffffff', size:rand(2,3.5), spikes:4, gravity:0.05, type:'star' });
+    }
+  }
+
+  // 瀑布型
+  function explodeWaterfall(x, y, color) {
+    for (var i = 0; i < 100; i++) {
+      var angle = rand(-Math.PI*0.8, -Math.PI*0.2), speed = rand(2, 8);
+      particles.push({ x:x, y:y, vx:Math.cos(angle)*speed*rand(0.5,1.5), vy:Math.sin(angle)*speed,
+        alpha:1, color:color, size:rand(1.5,3), gravity:rand(0.1,0.18), type:'dot' });
+    }
+  }
+
+  // 双层爆炸
+  function explodeDouble(x, y, color) {
+    var color2 = colors[Math.floor(rand(0, colors.length))];
+    // 外层大圆
+    for (var i = 0; i < 60; i++) {
+      var angle = (Math.PI * 2 / 60) * i, speed = rand(5, 9);
+      particles.push({ x:x, y:y, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed,
+        alpha:1, color:color, size:rand(2,4), spikes:5, gravity:0.06, type:'star' });
+    }
+    // 内层小圆（延迟爆炸模拟：速度慢一半）
+    for (var j = 0; j < 40; j++) {
+      var a2 = (Math.PI * 2 / 40) * j, s2 = rand(2, 4);
+      particles.push({ x:x, y:y, vx:Math.cos(a2)*s2, vy:Math.sin(a2)*s2,
+        alpha:1, color:color2, size:rand(3,5), spikes:6, gravity:0.05, type:'star' });
+    }
+    // 中心闪光
+    for (var k = 0; k < 20; k++) {
+      var ak = rand(0, Math.PI*2);
+      particles.push({ x:x, y:y, vx:Math.cos(ak)*rand(0.5,2), vy:Math.sin(ak)*rand(0.5,2),
+        alpha:1, color:'#ffffff', size:rand(2,4), spikes:4, gravity:0.03, type:'star' });
+    }
+  }
+
+  var frameCount = 0;
+  function animate() {
+    var banner = document.getElementById('rd-banner');
+    if (!banner || banner.style.display === 'none') return;
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    frameCount++;
+    if (frameCount % 180 === 0) createRocket();
+
+    for (var i = rockets.length - 1; i >= 0; i--) {
+      var r = rockets[i];
+      r.x += r.vx; r.y += r.vy; r.vy += 0.3;
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath(); ctx.arc(r.x, r.y, 3, 0, Math.PI*2);
+      ctx.fillStyle = r.color; ctx.fill(); ctx.globalAlpha = 1;
+      if (r.vy >= -2) {
+        if (r.type === 'star') explodeStar(r.x, r.y, r.color);
+        else if (r.type === 'waterfall') explodeWaterfall(r.x, r.y, r.color);
+        else explodeDouble(r.x, r.y, r.color);
+        rockets.splice(i, 1);
+      }
+    }
+
+    for (var j = particles.length - 1; j >= 0; j--) {
+      var p = particles[j];
+      p.x += p.vx; p.y += p.vy; p.vy += p.gravity; p.vx *= 0.98; p.alpha -= 0.016;
+      if (p.alpha <= 0) { particles.splice(j, 1); continue; }
+      if (p.type === 'star') {
+        drawStar(p.x, p.y, p.spikes, p.size, p.size*0.45, p.color, p.alpha);
+      } else {
+        ctx.globalAlpha = p.alpha;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fillStyle = p.color; ctx.fill(); ctx.globalAlpha = 1;
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  setTimeout(function() { resize(); createRocket(); animate(); }, 300);
+})();
+</script>
+    <!-- 全部内容叠在图片上 -->
+    <div style="
+      position:absolute; inset:0; z-index:5;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:16px 24px; text-align:center;
+      overflow-y:auto; -webkit-overflow-scrolling:touch;
+    ">
+      <!-- 蓝魔 -->
+      <img src="https://dukeparents.org/images/bluedevil.png" style="height:clamp(20px,3vh,30px); width:auto; margin-bottom:clamp(4px,1vh,10px); filter:drop-shadow(0 4px 16px rgba(0,0,0,0.7));">
+
+      <!-- 副标题 -->
+      <div style="text-align:center; margin-bottom:clamp(4px,1vh,8px);">
+        <div style="font-size:clamp(20px,3.5vw,30px); letter-spacing:0.25em; font-weight:900; text-transform:uppercase;
+                    -webkit-text-stroke:1.5px #7a5c10;
+                    color:#a07820; text-shadow:1px 1px 0 #7a5c10, 0 0 16px rgba(160,120,32,0.7);">Congratulations</div>
+        <div style="font-size:clamp(20px,3.5vw,30px); letter-spacing:0.25em; font-weight:900; text-transform:uppercase;
+                    -webkit-text-stroke:1.5px #7a5c10;
+                    color:#a07820; text-shadow:1px 1px 0 #7a5c10, 0 0 16px rgba(160,120,32,0.7);">Class of 2030</div>
+      </div>
+
+      <!-- 主标题 -->
+      <div style="font-size:clamp(32px,7vw,60px); font-weight:900; color:#012169;
+                  -webkit-text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill;
+                  letter-spacing:0.04em; margin-bottom:clamp(4px,1vh,8px);">
+        热烈祝贺
+      </div>
+
+      <div style="font-size:clamp(26px,5vw,44px); font-weight:800; color:#012169;
+                  -webkit-text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill;
+                  line-height:1.5; margin-bottom:clamp(6px,1.5vh,12px); text-align:center;">
+        <span style="font-family:Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif; letter-spacing:0.05em;">2030</span>届 <span class="gothic">ℜ𝔇</span> 录取家长<br>欢迎加入 <span class="gothic">𝔇𝔲𝔨𝔢</span> 大家庭
+      </div>
+
+      <!-- 分隔线 -->
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:clamp(6px,1.5vh,12px); width:50%;">
+        <div style="flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.6));"></div>
+        <div style="color:#c9a84c; font-size:13px;">⚜</div>
+        <div style="flex:1; height:1px; background:linear-gradient(90deg,rgba(201,168,76,0.6),transparent);"></div>
+      </div>
+
+      <!-- 正文 -->
+      <div style="font-size:clamp(22px,4vw,30px); color:#012169; line-height:1.8; font-weight:700;
+                  -webkit-text-stroke:0.5px rgba(255,255,255,0.6); paint-order:stroke fill;
+                  margin-bottom:clamp(6px,1.5vh,12px);">
+        扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群专为<span class="gothic">𝔇𝔲𝔨𝔢</span>家长打造<br>
+        汇聚历届家长资源与经验分享<br>
+        <span style="color:#012169; font-size:clamp(17px,2.8vw,21px);">请扫描首页二维码和填写底部表格申请加入</span>
+      </div>
+
+      <!-- 校训 -->
+      <div style="font-size:clamp(17px,2.5vw,22px); color:#012169; font-style:italic; letter-spacing:0.15em;
+                  font-weight:800; margin-bottom:clamp(8px,2vh,16px);
+                  -webkit-text-stroke:0.4px rgba(255,255,255,0.7); paint-order:stroke fill;">
+        Eruditio et Religio
+      </div>
+
+      <!-- 三个按钮：重新播放 | 音乐 | 进入网站 -->
+      <div style="display:inline-flex; align-items:center; gap:16px;">
+        <button id="rd-replay-btn" onclick="replayBannerSlideshow()" style="
+          display:none;
+          background:rgba(201,168,76,0.15); border:1px solid #c9a84c;
+          color:#c9a84c; border-radius:50px; width:72px; height:22px;
+          font-size:clamp(8px,1.5vw,10px); font-weight:800;
+          cursor:pointer; letter-spacing:0.08em;
+          transition:all 0.25s ease; font-family:SIMLI,serif;
+        ">▶ 重新播放</button>
+        <button id="rd-music-btn" onclick="toggleBannerMusic()" style="
+          background:rgba(201,168,76,0.15); border:1px solid #c9a84c;
+          color:#c9a84c; border-radius:50px;
+          padding:2px 8px; font-size:7px;
+          cursor:pointer; transition:all 0.25s ease;
+          letter-spacing:0.05em; font-family:SIMLI,serif;
+          text-shadow:none;
+        ">🔊 播放欢庆音乐</button>
+        <button class="rd-enter-btn" onclick="closeBanner()" style="
+          display:none;
+          background:rgba(201,168,76,0.15); border:1px solid #c9a84c;
+          color:#c9a84c; border-radius:50px; width:72px; height:22px;
+          font-size:clamp(8px,1.5vw,10px); font-weight:800;
+          cursor:pointer; letter-spacing:0.08em;
+          transition:all 0.25s ease; font-family:SIMLI,serif;
+        ">进入网站 →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+</body>
+</html>
