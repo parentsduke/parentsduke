@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>扯谈Duke群 海报</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'STLiti', 'SimLi', 'LiSu', '隶书', 'Noto Serif SC', serif;
+  }
+
+  .poster {
+    width: 600px;
+    height: 850px;
+    background: #012169;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 背景纹理 */
+  .poster::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 20%, rgba(201,168,76,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(1,33,105,0.6) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 70%, rgba(201,168,76,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* 金色边框 */
+  .border-outer {
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(201,168,76,0.35);
+    pointer-events: none;
+  }
+  .border-inner {
+    position: absolute;
+    inset: 24px;
+    border: 1px solid rgba(201,168,76,0.15);
+    pointer-events: none;
+  }
+
+  /* 角装饰 */
+  .corner {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-color: #c9a84c;
+    border-style: solid;
+  }
+  .corner.tl { top: 14px; left: 14px; border-width: 2px 0 0 2px; }
+  .corner.tr { top: 14px; right: 14px; border-width: 2px 2px 0 0; }
+  .corner.bl { bottom: 14px; left: 14px; border-width: 0 0 2px 2px; }
+  .corner.br { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; }
+
+  /* 顶部装饰线 */
+  .deco-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    animation: fadeUp 1s ease both;
+  }
+  .deco-line::before,
+  .deco-line::after {
+    content: '';
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+  }
+  .deco-diamond {
+    width: 6px;
+    height: 6px;
+    background: #c9a84c;
+    transform: rotate(45deg);
+  }
+
+  /* 主标题 */
+  .site-label {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: rgba(201,168,76,0.7);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    animation: fadeUp 1s 0.1s ease both;
+  }
+
+  .gothic-title {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 64px;
+    color: #ffffff;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 6px;
+    -webkit-text-stroke: 1.5px #012169;
+    text-shadow: 0 0 40px rgba(255,255,255,0.15);
+    animation: fadeUp 1s 0.2s ease both;
+  }
+
+  .cn-title {
+    font-size: 16px;
+    font-family: 'STLiti', 'SimLi', 'LiSu', '隶书', serif;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.4em;
+    margin-bottom: 48px;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+
+  /* 主广告语 */
+  .divider {
+    width: 280px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
+    margin-bottom: 40px;
+    animation: fadeUp 1s 0.4s ease both;
+  }
+
+  .slogan-main {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeUp 1s 0.5s ease both;
+  }
+
+  .slogan-main .line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .slogan-main .line:last-child { margin-bottom: 0; }
+
+  .slogan-dot {
+    width: 4px;
+    height: 4px;
+    background: #c9a84c;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .slogan-main .zh {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: 'STLiti', 'SimLi', 'LiSu', '隶书', serif;
+    color: #c9a84c;
+    letter-spacing: 0.1em;
+  }
+
+  .slogan-main .zh em {
+    font-style: normal;
+    color: #c9a84c;
+  }
+
+  /* 副广告语 */
+  .divider2 {
+    width: 180px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+    margin-bottom: 32px;
+    animation: fadeUp 1s 0.6s ease both;
+  }
+
+  .slogan-sub {
+    text-align: center;
+    animation: fadeUp 1s 0.7s ease both;
+  }
+
+  .slogan-sub .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 10px;
+  }
+
+  .slogan-sub .row:last-child { margin-bottom: 0; }
+
+  .slogan-sub .item {
+    font-size: 15px;
+    font-family: 'STLiti', 'SimLi', 'LiSu', '隶书', serif;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.12em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .slogan-sub .item::before {
+    content: '';
+    width: 3px;
+    height: 3px;
+    background: rgba(201,168,76,0.6);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* 底部 */
+  .divider3 {
+    width: 280px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
+    margin: 40px 0 24px;
+    animation: fadeUp 1s 0.8s ease both;
+  }
+
+  .footer-text {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: rgba(201,168,76,0.4);
+    text-transform: uppercase;
+    animation: fadeUp 1s 0.9s ease both;
+  }
+
+  /* 背景细节——竖线 */
+  .bg-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    opacity: 0.04;
+  }
+  .bg-lines::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: #c9a84c;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 打印/截图优化 */
+  @media print {
+    body { background: white; }
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+  <div class="bg-lines"></div>
+  <div class="border-outer"></div>
+  <div class="border-inner"></div>
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <div class="deco-line">
+    <div class="deco-diamond"></div>
+  </div>
+
+  <div class="site-label">Duke Parents Community</div>
+  <div class="gothic-title">𝔇𝔲𝔨𝔢</div>
+  <div class="cn-title">扯谈群 &amp; 扯谈站</div>
+
+  <div class="divider"></div>
+
+  <div class="slogan-main">
+    <div class="line">
+      <div class="slogan-dot"></div>
+      <div class="zh">聊杜克，<em>进扯群</em></div>
+      <div class="slogan-dot"></div>
+    </div>
+    <div class="line">
+      <div class="slogan-dot"></div>
+      <div class="zh">淘信息，<em>上扯站</em></div>
+      <div class="slogan-dot"></div>
+    </div>
+  </div>
+
+  <div class="divider2"></div>
+
+  <div class="slogan-sub">
+    <div class="row">
+      <div class="item">进扯群，不孤单</div>
+      <div class="item">上扯站，不迷茫</div>
+    </div>
+  </div>
+
+  <div class="divider3"></div>
+  <div class="footer-text">dukeparents.org</div>
+
+</div>
+
+</body>
+</html>
