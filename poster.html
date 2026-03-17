@@ -141,7 +141,7 @@
 
   /* 主广告语 */
   .divider {
-    width: 280px;
+    width: min(280px, 80%);
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
     margin-bottom: 40px;
@@ -187,7 +187,7 @@
 
   /* 副广告语 */
   .divider2 {
-    width: 180px;
+    width: min(180px, 60%);
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
     margin-bottom: 32px;
@@ -225,10 +225,10 @@
 
   /* 底部 */
   .divider3 {
-    width: 280px;
+    width: min(280px, 80%);
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
-    margin: 40px 0 24px;
+    margin: 40px auto 24px;
     animation: fadeUp 1s 0.8s ease both;
   }
 
@@ -239,7 +239,9 @@
     text-transform: uppercase;
     animation: fadeUp 1s 0.9s ease both;
     text-align: center;
-    padding-right: 0.3em;
+    width: 100%;
+    padding: 0 0.3em;
+    word-break: break-all;
   }
 
   /* 背景细节——竖线 */
