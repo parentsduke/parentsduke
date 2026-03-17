@@ -12839,6 +12839,11 @@ window.showPV();
   .cal-desc { font-size: 13px; color: #333; }
   .cal-note { font-size: 11.5px; color: #888; margin-top: 2px; }
 
+  @media (max-width: 600px) {
+    .cal-item { flex-direction: column; gap: 2px; }
+    .cal-date { min-width: unset; white-space: normal; }
+  }
+
   .cal-highlight {
     background: #eef3fa;
     border-left: 4px solid #012169;
