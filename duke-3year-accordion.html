@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duke 三年毕业 — 扯谈站</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Noto+Serif+SC:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:       #012169;
+    --navy-deep:  #010f3a;
+    --navy-light: #0a2d7a;
+    --gold:       #c9a84c;
+    --gold-light: #e2c47a;
+    --cream:      #faf7f0;
+    --text:       #1a1a2e;
+    --muted:      #6b6b80;
+    --border:     rgba(201,168,76,0.22);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0a0a0f;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 20px 64px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 680px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .header-deco {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .header-deco::before, .header-deco::after {
+    content: '';
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .diamond {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  .header-label {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+
+  .header-title {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 36px;
+    color: #fff;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .header-sub {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    color: rgba(201,168,76,0.7);
+    letter-spacing: 0.12em;
+  }
+
+  /* Accordion */
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item {
+    background: linear-gradient(135deg, rgba(1,33,105,0.85) 0%, rgba(1,15,58,0.95) 100%);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .item:nth-child(1) { animation-delay: 0.1s; }
+  .item:nth-child(2) { animation-delay: 0.18s; }
+  .item:nth-child(3) { animation-delay: 0.26s; }
+  .item:nth-child(4) { animation-delay: 0.34s; }
+  .item:nth-child(5) { animation-delay: 0.42s; }
+
+  .item.open {
+    border-color: rgba(201,168,76,0.5);
+  }
+
+  .trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+    transition: background 0.2s;
+  }
+
+  .trigger:hover {
+    background: rgba(201,168,76,0.06);
+  }
+
+  .trigger-num {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 22px;
+    color: var(--gold);
+    opacity: 0.5;
+    min-width: 28px;
+    line-height: 1;
+    transition: opacity 0.3s;
+  }
+
+  .item.open .trigger-num {
+    opacity: 1;
+  }
+
+  .trigger-text {
+    flex: 1;
+  }
+
+  .trigger-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    margin-bottom: 3px;
+  }
+
+  .trigger-subtitle {
+    font-size: 12px;
+    color: rgba(201,168,76,0.65);
+    letter-spacing: 0.08em;
+  }
+
+  .trigger-icon {
+    width: 28px; height: 28px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), border-color 0.3s, background 0.3s;
+  }
+
+  .item.open .trigger-icon {
+    transform: rotate(45deg);
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.12);
+  }
+
+  .trigger-icon svg {
+    width: 12px; height: 12px;
+    stroke: var(--gold);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  /* Body */
+  .body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .item.open .body {
+    max-height: 800px;
+  }
+
+  .body-inner {
+    padding: 0 24px 24px 68px;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .body-inner p {
+    font-size: 14px;
+    line-height: 1.85;
+    color: rgba(255,255,255,0.72);
+    margin-top: 16px;
+  }
+
+  .body-inner p + p {
+    margin-top: 10px;
+  }
+
+  .highlight {
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-family: 'Noto Serif SC', serif;
+    letter-spacing: 0.08em;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin: 2px 3px 2px 0;
+    vertical-align: middle;
+  }
+
+  .tag-trinity {
+    background: rgba(30,100,200,0.25);
+    color: #7ab3f5;
+    border: 1px solid rgba(100,160,255,0.3);
+  }
+
+  .tag-pratt {
+    background: rgba(180,100,30,0.25);
+    color: #f5c07a;
+    border: 1px solid rgba(255,180,80,0.3);
+  }
+
+  .tag-note {
+    background: rgba(201,168,76,0.12);
+    color: var(--gold-light);
+    border: 1px solid rgba(201,168,76,0.25);
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    flex: 1;
+    min-width: 120px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 8px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 26px;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.06em;
+  }
+
+  .divider-sm {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent);
+    margin: 14px 0;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 36px;
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+
+  .footer-deco {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .footer-deco::before, .footer-deco::after {
+    content: '';
+    width: 40px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.35), transparent);
+  }
+
+  .footer-text {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 12px;
+    letter-spacing: 2.5px;
+    color: rgba(201,168,76,0.45);
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 500px) {
+    .body-inner { padding: 0 16px 20px 16px; }
+    .trigger { padding: 16px 18px; }
+    .trigger-num { display: none; }
+    .stat-val { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="header-deco"><div class="diamond"></div></div>
+    <div class="header-label">Duke Parents Community</div>
+    <div class="header-title">三年毕业那回事</div>
+    <div class="header-sub">Duke 本科生提前毕业全解析</div>
+  </div>
+
+  <div class="accordion">
+
+    <!-- 1 -->
+    <div class="item" onclick="toggle(this)">
+      <button class="trigger">
+        <span class="trigger-num">I</span>
+        <span class="trigger-text">
+          <span class="trigger-title">三年毕业的比率有多少？</span>
+          <span class="trigger-subtitle">全校数据概览</span>
+        </span>
+        <span class="trigger-icon">
+          <svg viewBox="0 0 12 12"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+        </span>
+      </button>
+      <div class="body">
+        <div class="body-inner">
+          <div class="stat-row">
+            <div class="stat">
+              <div class="stat-val">~5%</div>
+              <div class="stat-label">三年毕业估算比率</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val">87%</div>
+              <div class="stat-label">四年毕业率</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val">97%</div>
+              <div class="stat-label">六年毕业率</div>
+            </div>
+          </div>
+          <p>Duke 没有公开单独统计"三年毕业"人数，官方数据以四年和六年为基准节点。根据校方政策和各方估算，<span class="highlight">每届约有 3%–7% 的本科生选择提前一到两个学期毕业</span>，完整三年（六学期）毕业的占少数。</p>
+          <p>四年毕业率约 87%，剩余约 10% 在第五、六年完成学业，极少数延期更久。三年毕业并不是 Duke 鼓励的主流路径，更多是高度准备的学生主动选择。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="item" onclick="toggle(this)">
+      <button class="trigger">
+        <span class="trigger-num">II</span>
+        <span class="trigger-text">
+          <span class="trigger-title">为什么能三年毕业？</span>
+          <span class="trigger-subtitle">政策机制与前提条件</span>
+        </span>
+        <span class="trigger-icon">
+          <svg viewBox="0 0 12 12"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+        </span>
+      </button>
+      <div class="body">
+        <div class="body-inner">
+          <p>Duke 官方政策允许本科生在完成所有学位要求后，<span class="highlight">提前一学期或两学期毕业</span>（即第七学期或第六学期结束后离校）。核心机制是"加速学分"（Acceleration Credits）：</p>
+          <div class="divider-sm"></div>
+          <p><span class="tag tag-note">所有学生</span> 默认可将最多 2 个 AP/IB/预修学分计入毕业所需的 34 学分。</p>
+          <p><span class="tag tag-note">提前一学期</span> 可额外激活 2 个加速学分，合计最多 4 个课前学分抵扣。</p>
+          <p><span class="tag tag-note">提前两学期</span> 可额外激活 6 个加速学分，合计最多 8 个课前学分抵扣。</p>
+          <div class="divider-sm"></div>
+          <p>前提条件：必须已声明专业、持续注册六或七个连续学期（暑期不算）、完成所有课程要求。加速学分不能用于弥补休学或退学损失的时间。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="item" onclick="toggle(this)">
+      <button class="trigger">
+        <span class="trigger-num">III</span>
+        <span class="trigger-text">
+          <span class="trigger-title">怎么做到三年毕业？</span>
+          <span class="trigger-subtitle">实操路径拆解</span>
+        </span>
+        <span class="trigger-icon">
+          <svg viewBox="0 0 12 12"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+        </span>
+      </button>
+      <div class="body">
+        <div class="body-inner">
+          <p>能三年毕业的学生通常在入学前已积累大量 AP/IB/双学分，加上在 Duke 期间保持高课业量。典型路径：</p>
+          <div class="divider-sm"></div>
+          <p><span class="highlight">① 入学带足 AP 分数</span> — 高中拿下 6–10 门 AP 5分，提前抵消大量基础课和通识要求。</p>
+          <p><span class="highlight">② 每学期选课密集</span> — 正常负荷是每学期 4–5 门课（4–5学分），三年毕业者常保持 5–6 门。</p>
+          <p><span class="highlight">③ 善用暑期</span> — Duke 暑期课程或其他大学暑期课（需预批准转学分）补足学分缺口。</p>
+          <p><span class="highlight">④ 精简专业选择</span> — 选修要求较少的专业，或将双修缩减为辅修，减少必修课总量。</p>
+          <p><span class="highlight">⑤ 提前与 Academic Dean 规划</span> — 大一就开始排课表，在第五或第六学期末提交 Change of Graduation Date Form。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="item" onclick="toggle(this)">
+      <button class="trigger">
+        <span class="trigger-num">IV</span>
+        <span class="trigger-text">
+          <span class="trigger-title">Pratt 多还是 Trinity 多？</span>
+          <span class="trigger-subtitle">两院对比</span>
+        </span>
+        <span class="trigger-icon">
+          <svg viewBox="0 0 12 12"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+        </span>
+      </button>
+      <div class="body">
+        <div class="body-inner">
+          <p><span class="tag tag-trinity">Trinity 文理学院</span> 三年毕业的比率<span class="highlight">明显更高</span>。<span class="tag tag-pratt">Pratt 工程学院</span> 反而鲜有人三年毕业。</p>
+          <div class="divider-sm"></div>
+          <p><strong style="color:#fff">Trinity 更容易提前毕业，原因：</strong></p>
+          <p>Trinity 的毕业要求是 34 学分，且接受最多 8 个课前学分（大量 AP 可以抵扣）。文理专业的必修序列较短，灵活性高，AP 英语、历史、社科、外语都能有效抵课，压缩在校学时。</p>
+          <div class="divider-sm"></div>
+          <p><strong style="color:#fff">Pratt 难以提前毕业，原因：</strong></p>
+          <p>Pratt 要求至少 <span class="highlight">34 学分 + 13 学分工程专业课</span>，理工序列课程高度线性，前序课未修不能跳级。AP 微积分、物理可以跳过入门课，但 EGR/ECE/BME 的核心序列不可绕过。更关键的是，Pratt 的主流选择是 <span class="highlight">4+1 项目</span>——用五年拿本科+工程硕士，而非压缩到三年。所以工程生的方向是"向上延伸"而非"提前离场"。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="item" onclick="toggle(this)">
+      <button class="trigger">
+        <span class="trigger-num">V</span>
+        <span class="trigger-text">
+          <span class="trigger-title">三年毕业值得吗？</span>
+          <span class="trigger-subtitle">利弊权衡</span>
+        </span>
+        <span class="trigger-icon">
+          <svg viewBox="0 0 12 12"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+        </span>
+      </button>
+      <div class="body">
+        <div class="body-inner">
+          <p><strong style="color:rgba(122,179,245,0.9)">支持提前的理由</strong></p>
+          <p>节省一年学费（2025年 Duke 年花费约 $89,000）；尽早进入研究生项目或职场；对目标明确、已做好规划的学生来说时间不会被浪费。</p>
+          <div class="divider-sm"></div>
+          <p><strong style="color:rgba(245,192,122,0.9)">需要权衡的代价</strong></p>
+          <p>少一年参与科研、实习、社团和人脉积累；申研时少一年成绩和推荐信；部分用人单位或研究生项目会在意"为何提前毕业"；Duke 的本科体验本身被认为是宝贵资源，不少人觉得留足四年是值得的。</p>
+          <div class="divider-sm"></div>
+          <p><span class="tag tag-note">父母视角</span> 与孩子提前沟通：是否有足够的 AP 积累、选什么专业、毕业后的计划是什么——三年毕业更适合目标清晰、已有研究生/就业规划的学生，而不是为省钱仓促决定。</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end accordion -->
+
+  <div class="footer">
+    <div class="footer-deco"><div class="diamond" style="width:4px;height:4px;"></div></div>
+    <div class="footer-text">dukeparents.org · 扯谈站</div>
+  </div>
+
+</div>
+
+<script>
+  function toggle(item) {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+</body>
+</html>
