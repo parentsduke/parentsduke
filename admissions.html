@@ -1352,13 +1352,6 @@
       openModal();
       return;
     }
-    } catch(e) {
-      setStatus('⚠️', 'AI识别失败，请手动添加', '#C84B31');
-      card.style.pointerEvents = '';
-      // 识别失败仍然打开空表单
-      openModal();
-      return;
-    }
 
     card.style.pointerEvents = '';
     const name = parsed.student_name_cn || parsed.student_name_en || '';
