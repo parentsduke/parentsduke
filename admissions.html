@@ -836,7 +836,8 @@
 <script>
   const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
-  const ADMIN_EMAILS = ['weihong_j@yahoo.com', 'sws122003@yahoo.com'];
+  // 仅限录取分享库管理员，与 admin.html 完全独立
+  const ADMIN_EMAILS = ['sws122003@yahoo.com', 'lixiaobing@gmail.com'];
   const BUCKET = 'admission-letters';
 
   const { createClient } = supabase;
