@@ -833,7 +833,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
   const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
@@ -1134,13 +1133,24 @@
     }
   }
 
-  // ── OCR 识别图片中的录取信息（Tesseract.js，无需API Key）──
+  // ── OCR 识别图片中的录取信息（Tesseract.js 懒加载）──
   async function aiParseImage(file) {
     const statusEl = document.getElementById('aiStatus');
     statusEl.style.display = 'block';
     statusEl.style.background = '#eef2fa';
     statusEl.style.color = '#003087';
-    statusEl.innerHTML = '🔍 OCR 识别中，请稍候…';
+    statusEl.innerHTML = '🔍 加载识别引擎…';
+
+    // 懒加载 Tesseract.js
+    if (typeof Tesseract === 'undefined') {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
 
     try {
       const imgUrl = URL.createObjectURL(file);
@@ -1314,6 +1324,16 @@
 
     let parsed = null;
     try {
+      // 懒加载 Tesseract.js
+      if (typeof Tesseract === 'undefined') {
+        await new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+          s.onload = resolve;
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
       const imgUrl = URL.createObjectURL(file);
       setStatus('🔍', 'OCR 识别中…', '#003087');
       const { data: { text } } = await Tesseract.recognize(imgUrl, 'chi_sim+eng', {
