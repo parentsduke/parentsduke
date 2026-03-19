@@ -231,6 +231,65 @@
       margin-bottom: 16px;
       display: none;
     }
+
+    /* 视频弹窗 */
+    .video-btn {
+      padding: 8px 16px;
+      background: #003366;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .video-btn:hover { background: #004b99; }
+
+    #videoModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.75);
+      align-items: center;
+      justify-content: center;
+    }
+    #videoModal.active { display: flex; }
+
+    .video-modal-box {
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      width: 90%;
+      max-width: 860px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .video-modal-close {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      line-height: 32px;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .video-modal-close:hover { background: rgba(255,255,255,0.3); }
+
+    .video-modal-box video {
+      width: 100%;
+      display: block;
+      max-height: 80vh;
+    }
   </style>
 </head>
 <body>
@@ -240,6 +299,7 @@
   <div class="header-right">
     <span id="lastUpdated">正在加载...</span>
     <span id="adminEmail" style="font-size:13px;color:#4f8ef7;"></span>
+    <button class="video-btn" onclick="openVideoModal()">▶ 播放视频</button>
     <button class="logout-btn" onclick="adminLogout()">退出登录</button>
   </div>
 </header>
@@ -290,6 +350,17 @@
     </table>
   </div>
 
+</div>
+
+<!-- 视频弹窗 -->
+<div id="videoModal" onclick="handleModalClick(event)">
+  <div class="video-modal-box">
+    <button class="video-modal-close" onclick="closeVideoModal()">✕</button>
+    <video id="videoPlayer" controls>
+      <source src="rd1.mp4" type="video/mp4">
+      您的浏览器不支持视频播放。
+    </video>
+  </div>
 </div>
 
 <!-- Supabase JS SDK -->
@@ -474,6 +545,32 @@
     );
     renderTable(filtered);
   }
+
+  // ===== 视频弹窗 =====
+  function openVideoModal() {
+    document.getElementById('videoModal').classList.add('active');
+    document.getElementById('videoPlayer').play();
+  }
+
+  function closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    const player = document.getElementById('videoPlayer');
+    modal.classList.remove('active');
+    player.pause();
+    player.currentTime = 0;
+  }
+
+  function handleModalClick(e) {
+    // 点击遮罩背景关闭弹窗
+    if (e.target === document.getElementById('videoModal')) {
+      closeVideoModal();
+    }
+  }
+
+  // ESC键关闭弹窗
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeVideoModal();
+  });
 </script>
 
 </body>
