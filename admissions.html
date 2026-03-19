@@ -83,7 +83,7 @@
 
     /* ── 登录页 ── */
     #loginScreen {
-      display: none;
+      display: flex;
       min-height: 100vh;
       align-items: center;
       justify-content: center;
@@ -849,22 +849,28 @@
 
   // ── 初始化 ──
   (async () => {
-    const { data: { session } } = await db.auth.getSession();
-    if (!session) { showLogin(); return; }
-    if (!ADMIN_EMAILS.includes(session.user.email)) {
-      document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;flex-direction:column;gap:12px;">
-        <div style="font-size:40px">🚫</div><h2 style="color:#C84B31">无访问权限</h2>
-        <button onclick="db.auth.signOut().then(()=>location.reload())"
-          style="padding:10px 24px;background:#003087;color:#fff;border:none;border-radius:8px;cursor:pointer;">退出</button>
-      </div>`;
-      return;
+    try {
+      const { data: { session } } = await db.auth.getSession();
+      if (!session) { showLogin(); return; }
+      if (!ADMIN_EMAILS.includes(session.user.email)) {
+        document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;flex-direction:column;gap:12px;">
+          <div style="font-size:40px">🚫</div><h2 style="color:#C84B31">无访问权限</h2>
+          <button onclick="db.auth.signOut().then(()=>location.reload())"
+            style="padding:10px 24px;background:#003087;color:#fff;border:none;border-radius:8px;cursor:pointer;">退出</button>
+        </div>`;
+        return;
+      }
+      showMain(session.user.email);
+      loadRecords();
+    } catch(e) {
+      console.error('初始化失败', e);
+      showLogin();
     }
-    showMain(session.user.email);
-    loadRecords();
   })();
 
   function showLogin() {
     document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('mainContent').style.display = 'none';
   }
 
   function showMain(email) {
