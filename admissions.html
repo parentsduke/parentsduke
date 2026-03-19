@@ -666,13 +666,13 @@
         <div class="num" id="statED">—</div>
         <div class="lbl">ED 录取</div>
       </div>
-      <div class="stat-card ea">
-        <div class="num" id="statEA">—</div>
-        <div class="lbl">EA 录取</div>
-      </div>
       <div class="stat-card rd">
         <div class="num" id="statRD">—</div>
         <div class="lbl">RD 录取</div>
+      </div>
+      <div class="stat-card" style="border-left:3px solid #1a6b3c;">
+        <div class="num" id="statCommitted" style="color:#1a6b3c;">—</div>
+        <div class="lbl">RD 已Committed</div>
       </div>
       <div class="stat-card">
         <div class="num" id="statSchools">—</div>
@@ -723,6 +723,7 @@
             <th>录取类型</th>
             <th>届次</th>
             <th>专业</th>
+            <th>Committed</th>
             <th>提供者</th>
             <th>通知书</th>
             <th>备注</th>
@@ -790,6 +791,14 @@
         <div class="form-group full">
           <label>备注</label>
           <textarea id="fNotes" placeholder="其他说明…"></textarea>
+        </div>
+        <div class="form-group full" id="committedGroup" style="display:none;">
+          <label>是否Committed（仅RD适用）</label>
+          <select id="fCommitted">
+            <option value="">请选择</option>
+            <option value="true">✅ 是</option>
+            <option value="false">❌ 否</option>
+          </select>
         </div>
         <div class="form-group full">
           <label>录取通知书 / 聊天截图</label>
@@ -921,11 +930,11 @@
   }
 
   function updateStats() {
-    document.getElementById('statTotal').textContent   = allRecords.length;
-    document.getElementById('statED').textContent      = allRecords.filter(r => r.admission_type === 'ED').length;
-    document.getElementById('statEA').textContent      = allRecords.filter(r => r.admission_type === 'EA').length;
-    document.getElementById('statRD').textContent      = allRecords.filter(r => r.admission_type === 'RD').length;
-    document.getElementById('statSchools').textContent = new Set(allRecords.map(r => r.high_school).filter(Boolean)).size;
+    document.getElementById('statTotal').textContent     = allRecords.length;
+    document.getElementById('statED').textContent        = allRecords.filter(r => r.admission_type === 'ED').length;
+    document.getElementById('statRD').textContent        = allRecords.filter(r => r.admission_type === 'RD').length;
+    document.getElementById('statCommitted').textContent = allRecords.filter(r => r.admission_type === 'RD' && r.committed === true).length;
+    document.getElementById('statSchools').textContent   = new Set(allRecords.map(r => r.high_school).filter(Boolean)).size;
   }
 
   function applyFilter() {
@@ -965,6 +974,11 @@
         <td><span class="tag tag-${r.admission_type || '其他'}">${r.admission_type || '—'}</span></td>
         <td><span class="class-badge">${r.class_year ? "'" + String(r.class_year).slice(2) : '—'}</span></td>
         <td>${r.major || '—'}</td>
+        <td>${r.admission_type === 'RD'
+          ? (r.committed === true
+              ? '<span style="color:#1a6b3c;font-weight:600;">✅ 是</span>'
+              : '<span style="color:#c84b31;font-weight:600;">❌ 否</span>')
+          : '<span style="color:#ccc;font-size:12px;">—</span>'}</td>
         <td><span class="submitted-chip">👤 ${r.submitted_by || '—'}</span></td>
         <td>${letterBtn}</td>
         <td style="max-width:140px;font-size:13px;color:var(--muted)">${r.notes || ''}</td>
@@ -992,6 +1006,8 @@
     document.getElementById('fMajor').value       = record?.major || '';
     document.getElementById('fSubmittedBy').value = record?.submitted_by || '';
     document.getElementById('fNotes').value       = record?.notes || '';
+    document.getElementById('fCommitted').value   = record?.committed === true ? 'true' : record?.committed === false ? 'false' : '';
+    toggleCommitted(record?.admission_type || '');
     document.getElementById('formError').style.display = 'none';
     // 重置上传区
     clearFile();
@@ -1020,6 +1036,17 @@
   function handleOverlayClick(e) {
     if (e.target === document.getElementById('modalOverlay')) closeModal();
   }
+
+  function toggleCommitted(type) {
+    const group = document.getElementById('committedGroup');
+    group.style.display = type === 'RD' ? 'flex' : 'none';
+    if (type !== 'RD') document.getElementById('fCommitted').value = '';
+  }
+
+  // 录取类型切换时联动显示Committed字段
+  document.getElementById('fType').addEventListener('change', function() {
+    toggleCommitted(this.value);
+  });
 
   async function saveRecord() {
     const type = document.getElementById('fType').value;
@@ -1071,6 +1098,7 @@
       major:           document.getElementById('fMajor').value.trim() || null,
       submitted_by:    document.getElementById('fSubmittedBy').value.trim() || null,
       notes:           document.getElementById('fNotes').value.trim() || null,
+      committed:       type === 'RD' ? (document.getElementById('fCommitted').value === 'true' ? true : document.getElementById('fCommitted').value === 'false' ? false : null) : null,
       letter_path,
     };
 
