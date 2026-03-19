@@ -623,6 +623,27 @@
       font-family: 'Noto Serif SC', serif;
     }
     .letter-modal-close:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── 移动端响应式 ── */
+    @media (max-width: 640px) {
+      .page-wrap { padding: 16px 12px; }
+      .stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+      .stat-card { padding: 12px 8px; }
+      .stat-card .num { font-size: 22px; }
+      .stat-card .lbl { font-size: 11px; }
+      .quick-upload-card { padding: 14px 16px; gap: 12px; align-items: flex-start; }
+      .quick-upload-icon { font-size: 28px; margin-top: 2px; }
+      .quick-upload-text h3 { font-size: 13px; white-space: normal; }
+      .quick-upload-text p { font-size: 11px; white-space: normal; word-break: keep-all; }
+      .quick-upload-status { display: none; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .toolbar-left { flex-direction: column; }
+      .search-input { width: 100%; }
+      .filter-select { width: 100%; }
+      .btn-add { width: 100%; text-align: center; }
+      .table-card { overflow-x: auto; }
+      table { min-width: 700px; }
+    }
   </style>
 </head>
 <body>
@@ -984,8 +1005,8 @@
         <td style="max-width:140px;font-size:13px;color:var(--muted)">${r.notes || ''}</td>
         <td>
           <div class="action-btns">
-            <button class="btn-edit" onclick="openEdit(${r.id})">编辑</button>
-            <button class="btn-del"  onclick="deleteRecord(${r.id})">删除</button>
+            <button class="btn-edit" data-id="${r.id}" onclick="openEdit(this.dataset.id)">编辑</button>
+            <button class="btn-del"  data-id="${r.id}" onclick="deleteRecord(this.dataset.id)">删除</button>
           </div>
         </td>
       </tr>`;
