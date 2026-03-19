@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Duke 录取分享库</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --duke-blue: #003087;
+      --duke-navy: #001a4d;
+      --accent: #C84B31;
+      --gold: #B8963E;
+      --bg: #f5f3ef;
+      --card: #ffffff;
+      --border: #e2ddd6;
+      --text: #1a1a1a;
+      --muted: #888070;
+      --tag-ed: #003087;
+      --tag-ea: #1a6b3c;
+      --tag-rd: #7a4000;
+      --tag-ed2: #5a1a6b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Noto Serif SC', serif;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── 顶栏 ── */
+    header {
+      background: var(--duke-navy);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      border-bottom: 3px solid var(--gold);
+    }
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-title .duke-d {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: -1px;
+    }
+    .header-title h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+    #headerActions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #adminEmailLabel {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      font-family: 'DM Mono', monospace;
+    }
+    .btn-ghost {
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.8);
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: 'Noto Serif SC', serif;
+      transition: all 0.15s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.15); }
+
+    /* ── 登录页 ── */
+    #loginScreen {
+      display: none;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      background: var(--duke-navy);
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 48px 44px;
+      width: 380px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      text-align: center;
+    }
+    .login-emblem {
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--duke-blue);
+      letter-spacing: -2px;
+      margin-bottom: 4px;
+    }
+    .login-sub {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .login-card input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+      font-family: 'Noto Serif SC', serif;
+      transition: border-color 0.2s;
+    }
+    .login-card input:focus { border-color: var(--duke-blue); }
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      background: var(--duke-blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      font-family: 'Noto Serif SC', serif;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--duke-navy); }
+    #loginErr {
+      color: var(--accent);
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* ── 主体 ── */
+    #mainContent { display: none; }
+
+    .page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* 统计栏 */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      text-align: center;
+    }
+    .stat-card .num {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--duke-blue);
+    }
+    .stat-card .lbl {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .stat-card.ed .num { color: var(--tag-ed); }
+    .stat-card.ea .num { color: var(--tag-ea); }
+    .stat-card.rd .num { color: var(--tag-rd); }
+
+    /* 工具栏 */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .toolbar-left {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      padding: 9px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      font-family: 'Noto Serif SC', serif;
+      width: 220px;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+    .search-input:focus { border-color: var(--duke-blue); }
+    .filter-select {
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      font-family: 'Noto Serif SC', serif;
+      background: #fff;
+      cursor: pointer;
+      color: var(--text);
+    }
+    .btn-add {
+      padding: 9px 20px;
+      background: var(--duke-blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Noto Serif SC', serif;
+      font-weight: 600;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-add:hover { background: var(--duke-navy); }
+
+    /* 表格 */
+    .table-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: #f0ece4; }
+    th {
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      text-align: left;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid #f0ece4;
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #faf8f4; }
+
+    .name-block { line-height: 1.4; }
+    .name-cn { font-weight: 600; font-size: 15px; }
+    .name-en { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.3px;
+    }
+    .tag-ED  { background: #e8edf5; color: var(--tag-ed); }
+    .tag-EA  { background: #e6f4ec; color: var(--tag-ea); }
+    .tag-RD  { background: #fdf0e6; color: var(--tag-rd); }
+    .tag-ED2 { background: #f3eaf7; color: var(--tag-ed2); }
+    .tag-其他 { background: #f0f0f0; color: #555; }
+
+    .class-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--duke-blue);
+      font-weight: 500;
+    }
+
+    .submitted-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #f5f3ef;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .action-btns { display: flex; gap: 6px; }
+    .btn-edit {
+      padding: 5px 12px;
+      background: #eef2fa;
+      color: var(--duke-blue);
+      border: 1px solid #c8d4ee;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-edit:hover { background: #d8e4f5; }
+    .btn-del {
+      padding: 5px 12px;
+      background: #fdf0ee;
+      color: var(--accent);
+      border: 1px solid #f0cdc8;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-del:hover { background: #f8dcd8; }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
+
+    /* ── 弹窗 ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,24,60,0.55);
+      z-index: 900;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 16px;
+      width: 520px;
+      max-width: 96vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      padding: 24px 28px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-header h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--duke-navy);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--muted);
+      line-height: 1;
+      padding: 2px 6px;
+    }
+    .modal-body { padding: 24px 28px; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      font-family: 'Noto Serif SC', serif;
+      transition: border-color 0.2s;
+      background: #fff;
+      color: var(--text);
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--duke-blue); }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .modal-footer {
+      padding: 16px 28px 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .btn-cancel {
+      padding: 10px 20px;
+      background: #f0ece4;
+      color: var(--muted);
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: 'Noto Serif SC', serif;
+    }
+    .btn-save {
+      padding: 10px 24px;
+      background: var(--duke-blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: 'Noto Serif SC', serif;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn-save:hover { background: var(--duke-navy); }
+
+    #formError {
+      color: var(--accent);
+      font-size: 13px;
+      margin-bottom: 8px;
+      display: none;
+    }
+
+    /* ── 通知书上传区 ── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      background: #faf8f4;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--duke-blue);
+      background: #f0f4fb;
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      border: none;
+      padding: 0;
+    }
+    .upload-icon { font-size: 28px; margin-bottom: 6px; }
+    .upload-hint { font-size: 12px; color: var(--muted); }
+    .upload-hint strong { color: var(--duke-blue); }
+
+    .upload-preview {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: #eef2fa;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 8px;
+    }
+    .upload-preview.show { display: flex; }
+    .upload-preview img {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .upload-preview .file-name {
+      font-size: 13px;
+      color: var(--duke-blue);
+      font-family: 'DM Mono', monospace;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .upload-preview .remove-file {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0 4px;
+    }
+    .upload-progress {
+      display: none;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--duke-blue);
+    }
+    .upload-progress.show { display: block; }
+    .progress-bar {
+      height: 4px;
+      background: #dde6f5;
+      border-radius: 2px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--duke-blue);
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+
+    /* ── 表格中的通知书按钮 ── */
+    .btn-letter {
+      padding: 5px 10px;
+      background: #f5f0e8;
+      color: var(--gold);
+      border: 1px solid #e8d8b0;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-letter:hover { background: #ede0c4; }
+
+    /* ── 通知书查看弹窗 ── */
+    #letterModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+    }
+    #letterModal.active { display: flex; }
+    #letterModal img {
+      max-width: 88vw;
+      max-height: 82vh;
+      border-radius: 8px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      object-fit: contain;
+    }
+    #letterModal iframe {
+      width: 80vw;
+      height: 80vh;
+      border: none;
+      border-radius: 8px;
+    }
+    .letter-modal-close {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      font-size: 15px;
+      padding: 8px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'Noto Serif SC', serif;
+    }
+    .letter-modal-close:hover { background: rgba(255,255,255,0.25); }
+  </style>
+</head>
+<body>
+
+<!-- 顶栏 -->
+<header>
+  <div class="header-title">
+    <div class="duke-d">D</div>
+    <h1>Duke 录取分享库</h1>
+  </div>
+  <div id="headerActions" style="display:none;">
+    <span id="adminEmailLabel"></span>
+    <button class="btn-ghost" onclick="doLogout()">退出登录</button>
+  </div>
+</header>
+
+<!-- 登录页 -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-emblem">Duke</div>
+    <div class="login-sub">录取分享管理系统</div>
+    <input type="email" id="loginEmail" placeholder="管理员邮箱"/>
+    <input type="password" id="loginPwd" placeholder="密码"
+           onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="btn-primary" onclick="doLogin()">登 录</button>
+    <p id="loginErr"></p>
+  </div>
+</div>
+
+<!-- 主内容 -->
+<div id="mainContent">
+  <div class="page-wrap">
+
+    <!-- 统计 -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="num" id="statTotal">—</div>
+        <div class="lbl">总录取条数</div>
+      </div>
+      <div class="stat-card ed">
+        <div class="num" id="statED">—</div>
+        <div class="lbl">ED 录取</div>
+      </div>
+      <div class="stat-card ea">
+        <div class="num" id="statEA">—</div>
+        <div class="lbl">EA 录取</div>
+      </div>
+      <div class="stat-card rd">
+        <div class="num" id="statRD">—</div>
+        <div class="lbl">RD 录取</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statSchools">—</div>
+        <div class="lbl">来源高中数</div>
+      </div>
+    </div>
+
+    <!-- 工具栏 -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <input class="search-input" id="searchInput"
+               placeholder="搜索姓名、学校、地区…" oninput="applyFilter()"/>
+        <select class="filter-select" id="filterType" onchange="applyFilter()">
+          <option value="">全部类型</option>
+          <option value="ED">ED</option>
+          <option value="EA">EA</option>
+          <option value="RD">RD</option>
+          <option value="ED2">ED2</option>
+          <option value="其他">其他</option>
+        </select>
+        <select class="filter-select" id="filterYear" onchange="applyFilter()">
+          <option value="">全部届次</option>
+        </select>
+      </div>
+      <button class="btn-add" onclick="openModal()">＋ 新增录取</button>
+    </div>
+
+    <!-- 表格 -->
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>姓名</th>
+            <th>高中</th>
+            <th>地区</th>
+            <th>录取类型</th>
+            <th>届次</th>
+            <th>专业</th>
+            <th>提供者</th>
+            <th>通知书</th>
+            <th>备注</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="9" class="empty-state"><div class="icon">⏳</div>加载中…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- 新增/编辑弹窗 -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">新增录取记录</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="formError"></p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>中文姓名</label>
+          <input type="text" id="fNameCn" placeholder="林钱宁"/>
+        </div>
+        <div class="form-group">
+          <label>英文姓名</label>
+          <input type="text" id="fNameEn" placeholder="Caitlin"/>
+        </div>
+        <div class="form-group">
+          <label>高中学校</label>
+          <input type="text" id="fSchool" placeholder="世青国际学校"/>
+        </div>
+        <div class="form-group">
+          <label>所在地区</label>
+          <input type="text" id="fLocation" placeholder="国内北京"/>
+        </div>
+        <div class="form-group">
+          <label>录取类型 *</label>
+          <select id="fType">
+            <option value="">请选择</option>
+            <option value="ED">ED（早申一）</option>
+            <option value="EA">EA（早申非限制）</option>
+            <option value="RD">RD（常规）</option>
+            <option value="ED2">ED2（早申二）</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>入学届次 *</label>
+          <input type="number" id="fYear" placeholder="2030" min="2020" max="2040"/>
+        </div>
+        <div class="form-group">
+          <label>专业/学院</label>
+          <input type="text" id="fMajor" placeholder="计算机科学（可选）"/>
+        </div>
+        <div class="form-group">
+          <label>提供者</label>
+          <input type="text" id="fSubmittedBy" placeholder="McDonald"/>
+        </div>
+        <div class="form-group full">
+          <label>备注</label>
+          <textarea id="fNotes" placeholder="其他说明…"></textarea>
+        </div>
+        <div class="form-group full">
+          <label>录取通知书 / 聊天截图</label>
+          <div class="upload-zone" id="uploadZone"
+               ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <input type="file" id="fLetterFile" accept="image/*,.pdf" onchange="handleFileSelect(event)"/>
+            <div class="upload-icon">🤖</div>
+            <div class="upload-hint">上传截图或通知书，<strong>AI 自动识别并填入信息</strong></div>
+          </div>
+          <!-- AI识别状态 -->
+          <div id="aiStatus" style="display:none;margin-top:10px;padding:12px 16px;border-radius:8px;font-size:13px;"></div>
+          <div class="upload-preview" id="uploadPreview">
+            <img id="previewThumb" src="" alt=""/>
+            <span class="file-name" id="previewName"></span>
+            <button class="remove-file" onclick="clearFile()" title="移除">✕</button>
+          </div>
+          <div class="upload-progress" id="uploadProgress">
+            <span id="progressLabel">上传中…</span>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+          </div>
+          <div id="existingLetter" style="display:none;margin-top:8px;">
+            <span style="font-size:12px;color:var(--muted)">当前通知书：</span>
+            <a id="existingLetterLink" href="#" target="_blank"
+               style="font-size:12px;color:var(--duke-blue);font-family:'DM Mono',monospace;">查看原文件</a>
+            <span style="font-size:12px;color:var(--muted)">（上传新文件将替换）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-save" onclick="saveRecord()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 通知书查看弹窗 -->
+<div id="letterModal" onclick="closeLetterModal()">
+  <div id="letterContent"></div>
+  <button class="letter-modal-close" onclick="closeLetterModal()">✕ 关闭</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  const ADMIN_EMAILS = ['weihong_j@yahoo.com', 'sws122003@yahoo.com'];
+  const BUCKET = 'admission-letters';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let allRecords = [];
+  let editingId = null;
+  let selectedFile = null;
+
+  // ── 初始化 ──
+  (async () => {
+    const { data: { session } } = await db.auth.getSession();
+    if (!session) { showLogin(); return; }
+    if (!ADMIN_EMAILS.includes(session.user.email)) {
+      document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;flex-direction:column;gap:12px;">
+        <div style="font-size:40px">🚫</div><h2 style="color:#C84B31">无访问权限</h2>
+        <button onclick="db.auth.signOut().then(()=>location.reload())"
+          style="padding:10px 24px;background:#003087;color:#fff;border:none;border-radius:8px;cursor:pointer;">退出</button>
+      </div>`;
+      return;
+    }
+    showMain(session.user.email);
+    loadRecords();
+  })();
+
+  function showLogin() {
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+
+  function showMain(email) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    document.getElementById('headerActions').style.display = 'flex';
+    document.getElementById('adminEmailLabel').textContent = email;
+  }
+
+  async function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pwd   = document.getElementById('loginPwd').value;
+    const err   = document.getElementById('loginErr');
+    err.style.display = 'none';
+    if (!ADMIN_EMAILS.includes(email)) {
+      err.textContent = '❌ 该账号无管理员权限';
+      err.style.display = 'block'; return;
+    }
+    const { error } = await db.auth.signInWithPassword({ email, password: pwd });
+    if (error) { err.textContent = '❌ ' + error.message; err.style.display = 'block'; return; }
+    location.reload();
+  }
+
+  async function doLogout() {
+    await db.auth.signOut();
+    location.reload();
+  }
+
+  // ── 读取数据 ──
+  async function loadRecords() {
+    const { data, error } = await db
+      .from('admissions_sharing')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error(error); return; }
+    allRecords = data || [];
+    populateYearFilter();
+    applyFilter();
+    updateStats();
+  }
+
+  function populateYearFilter() {
+    const sel = document.getElementById('filterYear');
+    const years = [...new Set(allRecords.map(r => r.class_year).filter(Boolean))].sort();
+    sel.innerHTML = '<option value="">全部届次</option>';
+    years.forEach(y => { sel.innerHTML += `<option value="${y}">${y}</option>`; });
+  }
+
+  function updateStats() {
+    document.getElementById('statTotal').textContent   = allRecords.length;
+    document.getElementById('statED').textContent      = allRecords.filter(r => r.admission_type === 'ED').length;
+    document.getElementById('statEA').textContent      = allRecords.filter(r => r.admission_type === 'EA').length;
+    document.getElementById('statRD').textContent      = allRecords.filter(r => r.admission_type === 'RD').length;
+    document.getElementById('statSchools').textContent = new Set(allRecords.map(r => r.high_school).filter(Boolean)).size;
+  }
+
+  function applyFilter() {
+    const kw   = document.getElementById('searchInput').value.trim().toLowerCase();
+    const type = document.getElementById('filterType').value;
+    const year = document.getElementById('filterYear').value;
+    const filtered = allRecords.filter(r => {
+      const matchKw = !kw || [r.student_name_cn, r.student_name_en, r.high_school, r.location]
+        .some(v => (v || '').toLowerCase().includes(kw));
+      const matchType = !type || r.admission_type === type;
+      const matchYear = !year || String(r.class_year) === year;
+      return matchKw && matchType && matchYear;
+    });
+    renderTable(filtered);
+  }
+
+  function renderTable(records) {
+    const tbody = document.getElementById('tableBody');
+    if (!records.length) {
+      tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="icon">🎓</div>暂无录取记录</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = records.map(r => {
+      const letterBtn = r.letter_path
+        ? `<button class="btn-letter" onclick="viewLetter('${r.letter_path}')">📄 查看</button>`
+        : `<span style="font-size:12px;color:#ccc">—</span>`;
+      return `
+      <tr>
+        <td>
+          <div class="name-block">
+            <div class="name-cn">${r.student_name_cn || '—'}</div>
+            <div class="name-en">${r.student_name_en || ''}</div>
+          </div>
+        </td>
+        <td>${r.high_school || '—'}</td>
+        <td>${r.location || '—'}</td>
+        <td><span class="tag tag-${r.admission_type || '其他'}">${r.admission_type || '—'}</span></td>
+        <td><span class="class-badge">${r.class_year ? "'" + String(r.class_year).slice(2) : '—'}</span></td>
+        <td>${r.major || '—'}</td>
+        <td><span class="submitted-chip">👤 ${r.submitted_by || '—'}</span></td>
+        <td>${letterBtn}</td>
+        <td style="max-width:140px;font-size:13px;color:var(--muted)">${r.notes || ''}</td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-edit" onclick="openEdit(${r.id})">编辑</button>
+            <button class="btn-del"  onclick="deleteRecord(${r.id})">删除</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── 弹窗 ──
+  function openModal(record = null) {
+    editingId = record ? record.id : null;
+    selectedFile = null;
+    document.getElementById('modalTitle').textContent = record ? '编辑录取记录' : '新增录取记录';
+    document.getElementById('fNameCn').value      = record?.student_name_cn || '';
+    document.getElementById('fNameEn').value      = record?.student_name_en || '';
+    document.getElementById('fSchool').value      = record?.high_school || '';
+    document.getElementById('fLocation').value    = record?.location || '';
+    document.getElementById('fType').value        = record?.admission_type || '';
+    document.getElementById('fYear').value        = record?.class_year || '';
+    document.getElementById('fMajor').value       = record?.major || '';
+    document.getElementById('fSubmittedBy').value = record?.submitted_by || '';
+    document.getElementById('fNotes').value       = record?.notes || '';
+    document.getElementById('formError').style.display = 'none';
+    // 重置上传区
+    clearFile();
+    document.getElementById('aiStatus').style.display = 'none';
+    const existingDiv = document.getElementById('existingLetter');
+    if (record?.letter_path) {
+      const url = getPublicUrl(record.letter_path);
+      document.getElementById('existingLetterLink').href = url;
+      existingDiv.style.display = 'block';
+    } else {
+      existingDiv.style.display = 'none';
+    }
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+
+  function openEdit(id) {
+    const rec = allRecords.find(r => r.id === id);
+    if (rec) openModal(rec);
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    editingId = null;
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  async function saveRecord() {
+    const type = document.getElementById('fType').value;
+    const year = document.getElementById('fYear').value;
+    const err  = document.getElementById('formError');
+    if (!type || !year) {
+      err.textContent = '请填写录取类型和入学届次';
+      err.style.display = 'block'; return;
+    }
+    err.style.display = 'none';
+
+    // 上传文件（如有）
+    let letter_path = editingId
+      ? (allRecords.find(r => r.id === editingId)?.letter_path || null)
+      : null;
+
+    if (selectedFile) {
+      const prog = document.getElementById('uploadProgress');
+      const fill = document.getElementById('progressFill');
+      const lbl  = document.getElementById('progressLabel');
+      prog.classList.add('show');
+      fill.style.width = '30%';
+      lbl.textContent = '上传中…';
+
+      const ext  = selectedFile.name.split('.').pop();
+      const path = `letters/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await db.storage
+        .from(BUCKET)
+        .upload(path, selectedFile, { upsert: false });
+
+      if (upErr) {
+        prog.classList.remove('show');
+        err.textContent = '❌ 文件上传失败：' + upErr.message;
+        err.style.display = 'block'; return;
+      }
+      fill.style.width = '100%';
+      lbl.textContent = '上传成功';
+      letter_path = path;
+      setTimeout(() => prog.classList.remove('show'), 800);
+    }
+
+    const payload = {
+      student_name_cn: document.getElementById('fNameCn').value.trim() || null,
+      student_name_en: document.getElementById('fNameEn').value.trim() || null,
+      high_school:     document.getElementById('fSchool').value.trim() || null,
+      location:        document.getElementById('fLocation').value.trim() || null,
+      admission_type:  type,
+      class_year:      parseInt(year),
+      major:           document.getElementById('fMajor').value.trim() || null,
+      submitted_by:    document.getElementById('fSubmittedBy').value.trim() || null,
+      notes:           document.getElementById('fNotes').value.trim() || null,
+      letter_path,
+    };
+
+    let error;
+    if (editingId) {
+      ({ error } = await db.from('admissions_sharing').update(payload).eq('id', editingId));
+    } else {
+      ({ error } = await db.from('admissions_sharing').insert(payload));
+    }
+
+    if (error) { err.textContent = '❌ 保存失败：' + error.message; err.style.display = 'block'; return; }
+    closeModal();
+    loadRecords();
+  }
+
+  async function deleteRecord(id) {
+    const rec = allRecords.find(r => r.id === id);
+    const name = rec ? (rec.student_name_cn || rec.student_name_en || 'this record') : '';
+    if (!confirm(`确认删除 ${name} 的录取记录？此操作不可撤销。`)) return;
+    // 同时删除 Storage 中的通知书文件
+    if (rec?.letter_path) {
+      await db.storage.from(BUCKET).remove([rec.letter_path]);
+    }
+    const { error } = await db.from('admissions_sharing').delete().eq('id', id);
+    if (error) { alert('❌ 删除失败：' + error.message); return; }
+    loadRecords();
+  }
+
+  // ── 文件上传辅助 ──
+  function handleFileSelect(e) {
+    const file = e.target.files?.[0];
+    if (file) setSelectedFile(file);
+  }
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.add('drag-over');
+  }
+  function handleDragLeave() {
+    document.getElementById('uploadZone').classList.remove('drag-over');
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.remove('drag-over');
+    const file = e.dataTransfer.files?.[0];
+    if (file) setSelectedFile(file);
+  }
+
+  async function setSelectedFile(file) {
+    selectedFile = file;
+    document.getElementById('previewName').textContent = file.name;
+    const preview = document.getElementById('uploadPreview');
+    preview.classList.add('show');
+    const thumb = document.getElementById('previewThumb');
+    if (file.type.startsWith('image/')) {
+      thumb.src = URL.createObjectURL(file);
+      thumb.style.display = 'block';
+      // 只有图片才进行AI识别
+      await aiParseImage(file);
+    } else {
+      thumb.style.display = 'none';
+    }
+  }
+
+  // ── AI 识别图片中的录取信息 ──
+  async function aiParseImage(file) {
+    const statusEl = document.getElementById('aiStatus');
+    statusEl.style.display = 'block';
+    statusEl.style.background = '#eef2fa';
+    statusEl.style.color = '#003087';
+    statusEl.innerHTML = '🤖 AI 正在识别图片信息…';
+
+    // 转 base64
+    const base64 = await new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = () => res(reader.result.split(',')[1]);
+      reader.onerror = rej;
+      reader.readAsDataURL(file);
+    });
+
+    const mediaType = file.type || 'image/jpeg';
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{
+            role: 'user',
+            content: [
+              {
+                type: 'image',
+                source: { type: 'base64', media_type: mediaType, data: base64 }
+              },
+              {
+                type: 'text',
+                text: `请仔细分析这张图片（可能是微信聊天截图、录取通知书截图或其他录取相关图片），提取其中的Duke大学录取信息。
+
+请只返回JSON，不要任何其他文字：
+{
+  "student_name_cn": "中文姓名（如有）",
+  "student_name_en": "英文姓名（如有）",
+  "high_school": "高中学校名（如有）",
+  "location": "所在地区，如：国内北京（如有）",
+  "admission_type": "录取类型：ED、EA、RD、ED2或其他（如有，从通知书正文判断）",
+  "class_year": 入学年份数字如2030（如有，从Class of XXXX判断）,
+  "major": "专业或学院（如有）",
+  "submitted_by": "信息提供者，如微信昵称（如有）",
+  "notes": "其他备注信息（如有）",
+  "has_letter": true或false（图中是否包含录取通知书）
+}
+
+没有的字段填null。`
+              }
+            ]
+          }]
+        })
+      });
+
+      const data = await response.json();
+      const text = data.content?.find(c => c.type === 'text')?.text || '';
+
+      // 清理并解析JSON
+      const clean = text.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(clean);
+
+      // 填入表单（只填空字段，不覆盖已有内容）
+      const fillField = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val && !el.value) el.value = val;
+      };
+      const fillForce = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val) el.value = val;
+      };
+
+      // 新建时强制填入；编辑时只填空字段
+      const force = !editingId;
+      if (force) {
+        fillForce('fNameCn',      parsed.student_name_cn);
+        fillForce('fNameEn',      parsed.student_name_en);
+        fillForce('fSchool',      parsed.high_school);
+        fillForce('fLocation',    parsed.location);
+        fillForce('fMajor',       parsed.major);
+        fillForce('fSubmittedBy', parsed.submitted_by);
+        fillForce('fNotes',       parsed.notes);
+        if (parsed.admission_type) document.getElementById('fType').value = parsed.admission_type;
+        if (parsed.class_year)     document.getElementById('fYear').value = parsed.class_year;
+      } else {
+        fillField('fNameCn',      parsed.student_name_cn);
+        fillField('fNameEn',      parsed.student_name_en);
+        fillField('fSchool',      parsed.high_school);
+        fillField('fLocation',    parsed.location);
+        fillField('fMajor',       parsed.major);
+        fillField('fSubmittedBy', parsed.submitted_by);
+        fillField('fNotes',       parsed.notes);
+        if (parsed.admission_type && !document.getElementById('fType').value)
+          document.getElementById('fType').value = parsed.admission_type;
+        if (parsed.class_year && !document.getElementById('fYear').value)
+          document.getElementById('fYear').value = parsed.class_year;
+      }
+
+      // 统计填了多少字段
+      const filled = [parsed.student_name_cn, parsed.student_name_en, parsed.high_school,
+        parsed.location, parsed.admission_type, parsed.class_year].filter(Boolean).length;
+
+      statusEl.style.background = '#e6f4ec';
+      statusEl.style.color = '#1a6b3c';
+      statusEl.innerHTML = `✅ AI 已识别 ${filled} 个字段，请核对后保存`;
+
+    } catch (e) {
+      console.error('AI识别失败', e);
+      statusEl.style.background = '#fdf0ee';
+      statusEl.style.color = '#C84B31';
+      statusEl.innerHTML = '⚠️ AI 识别失败，请手动填写信息';
+    }
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    document.getElementById('fLetterFile').value = '';
+    document.getElementById('uploadPreview').classList.remove('show');
+    document.getElementById('previewThumb').src = '';
+    document.getElementById('previewName').textContent = '';
+    document.getElementById('uploadProgress').classList.remove('show');
+    document.getElementById('aiStatus').style.display = 'none';
+  }
+
+  // ── 获取公开URL ──
+  function getPublicUrl(path) {
+    const { data } = db.storage.from(BUCKET).getPublicUrl(path);
+    return data.publicUrl;
+  }
+
+  // ── 查看通知书 ──
+  function viewLetter(path) {
+    const url = getPublicUrl(path);
+    const content = document.getElementById('letterContent');
+    const isPdf = path.toLowerCase().endsWith('.pdf');
+    if (isPdf) {
+      content.innerHTML = `<iframe src="${url}"></iframe>`;
+    } else {
+      content.innerHTML = `<img src="${url}" alt="录取通知书"/>`;
+    }
+    document.getElementById('letterModal').classList.add('active');
+  }
+  function closeLetterModal() {
+    document.getElementById('letterModal').classList.remove('active');
+    document.getElementById('letterContent').innerHTML = '';
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeModal(); closeLetterModal(); }
+  });
+</script>
+</body>
+</html>
