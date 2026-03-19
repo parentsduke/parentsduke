@@ -1216,7 +1216,12 @@
 
       const parsed = parseOcrText(text);
 
-      // 填入表单
+      // 先清空所有字段，再填入识别结果
+      ['fNameCn','fNameEn','fSchool','fLocation','fMajor','fSubmittedBy','fNotes'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+      });
+      document.getElementById('fType').value = '';
+      document.getElementById('fYear').value = '';
       const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
       set('fNameCn',      parsed.student_name_cn);
       set('fNameEn',      parsed.student_name_en);
