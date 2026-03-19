@@ -686,8 +686,8 @@
       <input type="file" id="quickUploadFile" accept="image/*" onchange="quickUpload(event)"/>
       <div class="quick-upload-icon">🤖</div>
       <div class="quick-upload-text">
-        <h3>拖入截图，AI 自动识别并入库</h3>
-        <p>支持微信聊天截图 / 录取通知书截图，识别后自动保存，无需手动填表</p>
+        <h3>拖入截图，OCR 自动识别并填入</h3>
+        <p>支持微信聊天截图 / 录取通知书截图，本地识别无需网络，无需任何 Key</p>
       </div>
       <div class="quick-upload-status" id="quickStatus"></div>
     </div>
@@ -833,6 +833,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
   const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
@@ -1127,120 +1128,112 @@
     }
   }
 
-  // ── AI 识别图片中的录取信息 ──
+  // ── OCR 识别图片中的录取信息（Tesseract.js，无需API Key）──
   async function aiParseImage(file) {
     const statusEl = document.getElementById('aiStatus');
     statusEl.style.display = 'block';
     statusEl.style.background = '#eef2fa';
     statusEl.style.color = '#003087';
-    statusEl.innerHTML = '🤖 AI 正在识别图片信息…';
-
-    // 转 base64
-    const base64 = await new Promise((res, rej) => {
-      const reader = new FileReader();
-      reader.onload = () => res(reader.result.split(',')[1]);
-      reader.onerror = rej;
-      reader.readAsDataURL(file);
-    });
-
-    const mediaType = file.type || 'image/jpeg';
+    statusEl.innerHTML = '🔍 OCR 识别中，请稍候…';
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{
-            role: 'user',
-            content: [
-              {
-                type: 'image',
-                source: { type: 'base64', media_type: mediaType, data: base64 }
-              },
-              {
-                type: 'text',
-                text: `请仔细分析这张图片（可能是微信聊天截图、录取通知书截图或其他录取相关图片），提取其中的Duke大学录取信息。
-
-请只返回JSON，不要任何其他文字：
-{
-  "student_name_cn": "中文姓名（如有）",
-  "student_name_en": "英文姓名（如有）",
-  "high_school": "高中学校名（如有）",
-  "location": "所在地区，如：国内北京（如有）",
-  "admission_type": "录取类型：ED、EA、RD、ED2或其他（如有，从通知书正文判断）",
-  "class_year": 入学年份数字如2030（如有，从Class of XXXX判断）,
-  "major": "专业或学院（如有）",
-  "submitted_by": "信息提供者，如微信昵称（如有）",
-  "notes": "其他备注信息（如有）",
-  "has_letter": true或false（图中是否包含录取通知书）
-}
-
-没有的字段填null。`
-              }
-            ]
-          }]
-        })
+      const imgUrl = URL.createObjectURL(file);
+      const { data: { text } } = await Tesseract.recognize(imgUrl, 'chi_sim+eng', {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            const pct = Math.round((m.progress || 0) * 100);
+            statusEl.innerHTML = `🔍 OCR 识别中… ${pct}%`;
+          }
+        }
       });
+      URL.revokeObjectURL(imgUrl);
 
-      const data = await response.json();
-      const text = data.content?.find(c => c.type === 'text')?.text || '';
+      const parsed = parseOcrText(text);
 
-      // 清理并解析JSON
-      const clean = text.replace(/```json|```/g, '').trim();
-      const parsed = JSON.parse(clean);
+      // 填入表单
+      const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
+      set('fNameCn',      parsed.student_name_cn);
+      set('fNameEn',      parsed.student_name_en);
+      set('fSchool',      parsed.high_school);
+      set('fLocation',    parsed.location);
+      set('fMajor',       parsed.major);
+      set('fSubmittedBy', parsed.submitted_by);
+      set('fNotes',       parsed.notes);
+      if (parsed.admission_type) document.getElementById('fType').value = parsed.admission_type;
+      if (parsed.class_year)     document.getElementById('fYear').value = parsed.class_year;
 
-      // 填入表单（只填空字段，不覆盖已有内容）
-      const fillField = (id, val) => {
-        const el = document.getElementById(id);
-        if (el && val && !el.value) el.value = val;
-      };
-      const fillForce = (id, val) => {
-        const el = document.getElementById(id);
-        if (el && val) el.value = val;
-      };
-
-      // 新建时强制填入；编辑时只填空字段
-      const force = !editingId;
-      if (force) {
-        fillForce('fNameCn',      parsed.student_name_cn);
-        fillForce('fNameEn',      parsed.student_name_en);
-        fillForce('fSchool',      parsed.high_school);
-        fillForce('fLocation',    parsed.location);
-        fillForce('fMajor',       parsed.major);
-        fillForce('fSubmittedBy', parsed.submitted_by);
-        fillForce('fNotes',       parsed.notes);
-        if (parsed.admission_type) document.getElementById('fType').value = parsed.admission_type;
-        if (parsed.class_year)     document.getElementById('fYear').value = parsed.class_year;
-      } else {
-        fillField('fNameCn',      parsed.student_name_cn);
-        fillField('fNameEn',      parsed.student_name_en);
-        fillField('fSchool',      parsed.high_school);
-        fillField('fLocation',    parsed.location);
-        fillField('fMajor',       parsed.major);
-        fillField('fSubmittedBy', parsed.submitted_by);
-        fillField('fNotes',       parsed.notes);
-        if (parsed.admission_type && !document.getElementById('fType').value)
-          document.getElementById('fType').value = parsed.admission_type;
-        if (parsed.class_year && !document.getElementById('fYear').value)
-          document.getElementById('fYear').value = parsed.class_year;
-      }
-
-      // 统计填了多少字段
       const filled = [parsed.student_name_cn, parsed.student_name_en, parsed.high_school,
         parsed.location, parsed.admission_type, parsed.class_year].filter(Boolean).length;
 
-      statusEl.style.background = '#e6f4ec';
-      statusEl.style.color = '#1a6b3c';
-      statusEl.innerHTML = `✅ AI 已识别 ${filled} 个字段，请核对后保存`;
+      statusEl.style.background = filled > 0 ? '#e6f4ec' : '#fff8e6';
+      statusEl.style.color      = filled > 0 ? '#1a6b3c' : '#7a4000';
+      statusEl.innerHTML = filled > 0
+        ? `✅ 识别到 ${filled} 个字段，请核对后保存`
+        : '⚠️ 未能自动识别，请手动填写';
 
     } catch (e) {
-      console.error('AI识别失败', e);
+      console.error('OCR失败', e);
       statusEl.style.background = '#fdf0ee';
       statusEl.style.color = '#C84B31';
-      statusEl.innerHTML = '⚠️ AI 识别失败，请手动填写信息';
+      statusEl.innerHTML = '⚠️ 识别失败，请手动填写信息';
     }
+  }
+
+  // ── 从OCR文本中解析各字段 ──
+  function parseOcrText(raw) {
+    const t = raw.replace(/\n+/g, ' ').replace(/\s+/g, ' ');
+    const result = {
+      student_name_cn: null, student_name_en: null,
+      high_school: null,     location: null,
+      admission_type: null,  class_year: null,
+      major: null,           submitted_by: null,
+      notes: null,
+    };
+
+    // 英文姓名：Congratulations, Name! 或 Dear Name,
+    const enName = t.match(/Congratulations[,，]\s*([A-Za-z][a-z]+(?:\s+[A-Za-z][a-z]+)*)[!！,，]/);
+    if (enName) result.student_name_en = enName[1].trim();
+
+    // 从中文文字中找：中文名 + 英文名（如"林钱宁 Caitlin"）
+    const cnEnPair = t.match(/([\u4e00-\u9fa5]{2,5})\s+([A-Z][a-z]+)/);
+    if (cnEnPair) {
+      result.student_name_cn = cnEnPair[1];
+      if (!result.student_name_en) result.student_name_en = cnEnPair[2];
+    }
+
+    // 纯中文姓名（3-4字，后跟逗号或空格）
+    if (!result.student_name_cn) {
+      const cnOnly = t.match(/([\u4e00-\u9fa5]{2,4})(?=[，,\s])/);
+      if (cnOnly) result.student_name_cn = cnOnly[1];
+    }
+
+    // 届次：Class of XXXX
+    const classOf = t.match(/[Cc]lass\s+of\s+(\d{4})/);
+    if (classOf) result.class_year = parseInt(classOf[1]);
+
+    // 录取类型：从正文判断
+    if (/Early\s+Decision/i.test(t))      result.admission_type = 'ED';
+    else if (/Early\s+Action/i.test(t))   result.admission_type = 'EA';
+    else if (/Regular\s+Decision/i.test(t)) result.admission_type = 'RD';
+    else if (/ED\s*2|Early\s+Decision\s*II/i.test(t)) result.admission_type = 'ED2';
+
+    // 高中（世青、BISS、北京德威 等常见国际校关键词）
+    const schoolKw = t.match(/(世青|BISS|德威|鼎石|协和|北京国际|上海美国|惠灵顿|领科|平和|包玉刚|诺德安达|新加坡|北京外国语|[A-Z][A-Za-z\s]{3,20}(?:School|Academy|College|High))/);
+    if (schoolKw) result.high_school = schoolKw[1].trim();
+
+    // 地区
+    const locKw = t.match(/(国内|海外|北京|上海|广州|深圳|成都|杭州|南京|美国|加拿大|英国|新加坡|香港|台湾)/);
+    if (locKw) {
+      // 尝试拼上后面的城市
+      const locFull = t.match(new RegExp('(国内' + locKw[1].replace('国内', '') + '[^\s，,]{0,4}|' + locKw[1] + '[^\s，,]{0,4})'));
+      result.location = locFull ? locFull[1].trim() : locKw[1];
+    }
+
+    // 提供者：微信昵称通常在消息发送者位置（全英文或中文名，行首）
+    const sender = raw.match(/^([A-Za-z\u4e00-\u9fa5]{2,20})\n/m);
+    if (sender && sender[1] !== result.student_name_cn) result.submitted_by = sender[1].trim();
+
+    return result;
   }
 
   function clearFile() {
@@ -1310,49 +1303,29 @@
       statusEl.innerHTML = `<span style="color:${color}">${emoji} ${msg}</span>`;
     };
 
-    setStatus('🤖', 'AI 识别中…', '#003087');
+    setStatus('🔍', 'OCR 识别中…', '#003087');
     card.style.pointerEvents = 'none';
-
-    // 转 base64
-    const base64 = await new Promise((res, rej) => {
-      const reader = new FileReader();
-      reader.onload = () => res(reader.result.split(',')[1]);
-      reader.onerror = rej;
-      reader.readAsDataURL(file);
-    });
 
     let parsed = null;
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: file.type || 'image/jpeg', data: base64 } },
-              { type: 'text', text: `分析这张图片（微信聊天截图或录取通知书），提取Duke大学录取信息。
-只返回JSON，不要其他任何文字：
-{
-  "student_name_cn": "中文姓名或null",
-  "student_name_en": "英文姓名或null",
-  "high_school": "高中学校名或null",
-  "location": "所在地区如国内北京或null",
-  "admission_type": "ED/EA/RD/ED2/其他/null",
-  "class_year": 年份数字如2030或null,
-  "major": "专业学院或null",
-  "submitted_by": "信息提供者如微信昵称或null",
-  "notes": "其他备注或null"
-}` }
-            ]
-          }]
-        })
+      const imgUrl = URL.createObjectURL(file);
+      setStatus('🔍', 'OCR 识别中…', '#003087');
+      const { data: { text } } = await Tesseract.recognize(imgUrl, 'chi_sim+eng', {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            const pct = Math.round((m.progress || 0) * 100);
+            setStatus('🔍', `OCR 识别中… ${pct}%`, '#003087');
+          }
+        }
       });
-      const data = await response.json();
-      const text = data.content?.find(c => c.type === 'text')?.text || '';
-      parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+      URL.revokeObjectURL(imgUrl);
+      parsed = parseOcrText(text);
+    } catch(e) {
+      setStatus('⚠️', 'OCR识别失败，请手动填写', '#C84B31');
+      card.style.pointerEvents = '';
+      openModal();
+      return;
+    }
     } catch(e) {
       setStatus('⚠️', 'AI识别失败，请手动添加', '#C84B31');
       card.style.pointerEvents = '';
