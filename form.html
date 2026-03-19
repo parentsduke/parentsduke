@@ -367,7 +367,7 @@
       <div class="section-title"><span>01</span> 学生基本信息</div>
       <div class="form-grid">
         <div class="form-group">
-          <label>中文姓名</label>
+          <label>中文姓名 <span class="req">*</span></label>
           <input type="text" autocomplete="off" id="fNameCn" placeholder="请输入中文姓名"/>
         </div>
         <div class="form-group">
@@ -375,11 +375,11 @@
           <input type="text" autocomplete="off" id="fNameEn" placeholder="请输入英文姓名"/>
         </div>
         <div class="form-group">
-          <label>高中学校</label>
+          <label>高中学校 <span class="req">*</span></label>
           <input type="text" autocomplete="off" id="fSchool" placeholder="请输入高中学校名称"/>
         </div>
         <div class="form-group">
-          <label>所在地区</label>
+          <label>所在地区 <span class="req">*</span></label>
           <input type="text" autocomplete="off" id="fLocation" placeholder="如：国内北京、美国、新加坡"/>
         </div>
       </div>
@@ -405,11 +405,15 @@
           <input type="number" autocomplete="off" id="fYear" placeholder="2030" min="2020" max="2040"/>
         </div>
         <div class="form-group">
-          <label>专业/学院</label>
-          <input type="text" autocomplete="off" id="fMajor" placeholder="如：计算机科学（可选）"/>
+          <label>学院 <span class="req">*</span></label>
+          <input type="text" autocomplete="off" id="fCollege" placeholder="如：Trinity College of Arts & Sciences"/>
+        </div>
+        <div class="form-group">
+          <label>专业（可选）</label>
+          <input type="text" autocomplete="off" id="fMajor" placeholder="如：Computer Science"/>
         </div>
         <div class="form-group full" id="committedGroup">
-          <label>是否已 Committed（仅 RD 适用）</label>
+          <label>是否已 Committed（仅 RD 适用）<span class="req">*</span></label>
           <select id="fCommitted">
             <option value="">请选择</option>
             <option value="true">✅ 是</option>
@@ -417,15 +421,15 @@
           </select>
         </div>
         <div class="form-group full">
-          <label>备注</label>
-          <textarea id="fNotes" placeholder="其他说明（可选）…"></textarea>
+          <label>备注 <span class="req">*</span></label>
+          <textarea id="fNotes" placeholder="请填写其他说明…"></textarea>
         </div>
       </div>
     </div>
 
     <!-- 文件上传 -->
     <div class="form-card">
-      <div class="section-title"><span>03</span> 文件上传（可选）</div>
+      <div class="section-title"><span>03</span> 文件上传</div>
       <div class="form-grid">
         <div class="form-group full">
           <label>录取通知书（Admission Letter）</label>
@@ -442,15 +446,15 @@
             <button class="rm" onclick="removeFile('letter')">✕</button>
           </div>
         </div>
-        <div class="form-group full">
-          <label>Committed Letter（可选）</label>
+        <div class="form-group full" id="committedLetterGroup">
+          <label id="committedLetterLabel">Committed Letter</label>
           <div class="upload-zone" id="committedZone"
                ondragover="handleDrag(event,'committedZone')"
                ondragleave="handleDragLeave('committedZone')"
                ondrop="handleDrop(event,'committed')">
             <input type="file" id="fCommittedLetter" accept="image/*,.pdf" onchange="handleFile(event,'committed')"/>
             <div class="upload-icon">✉️</div>
-            <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+            <div class="upload-hint" id="committedLetterHint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
           </div>
           <div class="file-preview" id="committedPreview">
             <span class="fname" id="committedLetterName"></span>
@@ -499,9 +503,24 @@
 
   // ── RD Committed 联动 ──
   function toggleCommitted(type) {
-    const g = document.getElementById('committedGroup');
-    g.classList.toggle('show', type === 'RD');
+    const rdGroup  = document.getElementById('committedGroup');
+    const clLabel  = document.getElementById('committedLetterLabel');
+    const clHint   = document.getElementById('committedLetterHint');
+
+    // RD：显示 Committed/Uncommitted 选项
+    rdGroup.classList.toggle('show', type === 'RD');
     if (type !== 'RD') document.getElementById('fCommitted').value = '';
+
+    // ED：Committed Letter 必填
+    if (type === 'ED') {
+      clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（ED必须上传）';
+      clHint.innerHTML  = '⚠️ ED录取必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
+      document.getElementById('committedZone').style.borderColor = '#C84B31';
+    } else {
+      clLabel.innerHTML = 'Committed Letter（可选）';
+      clHint.innerHTML  = '拖入或点击上传，支持 <strong>图片 / PDF</strong>';
+      document.getElementById('committedZone').style.borderColor = '';
+    }
   }
 
   // ── 文件处理 ──
@@ -568,13 +587,26 @@
     const errEl = document.getElementById('formError');
     errEl.className = 'msg';
 
-    const nameEn = document.getElementById('fNameEn').value.trim();
-    const type   = document.getElementById('fType').value;
-    const year   = document.getElementById('fYear').value;
+    const nameCn  = document.getElementById('fNameCn').value.trim();
+    const nameEn  = document.getElementById('fNameEn').value.trim();
+    const school  = document.getElementById('fSchool').value.trim();
+    const location = document.getElementById('fLocation').value.trim();
+    const type    = document.getElementById('fType').value;
+    const year    = document.getElementById('fYear').value;
+    const college = document.getElementById('fCollege').value.trim();
+    const notes   = document.getElementById('fNotes').value.trim();
+    const rdCommitted = document.getElementById('fCommitted').value;
 
-    if (!nameEn) { showError('请填写英文姓名'); return; }
-    if (!type)   { showError('请选择录取类型'); return; }
-    if (!year)   { showError('请填写入学届次'); return; }
+    if (!nameCn)   { showError('请填写中文姓名'); return; }
+    if (!nameEn)   { showError('请填写英文姓名'); return; }
+    if (!school)   { showError('请填写高中学校'); return; }
+    if (!location) { showError('请填写所在地区'); return; }
+    if (!type)     { showError('请选择录取类型'); return; }
+    if (!year)     { showError('请填写入学届次'); return; }
+    if (!college)  { showError('请填写学院'); return; }
+    if (!notes)    { showError('请填写备注'); return; }
+    if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
+    if (type === 'ED' && !committedFile) { showError('ED录取必须上传 Committed Letter'); return; }
 
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
@@ -590,20 +622,20 @@
       document.getElementById('uploadProgress').classList.remove('show');
 
       const committed_val = type === 'RD'
-        ? (document.getElementById('fCommitted').value === 'true' ? true
-          : document.getElementById('fCommitted').value === 'false' ? false : null)
+        ? (rdCommitted === 'true' ? true : rdCommitted === 'false' ? false : null)
         : null;
 
       const payload = {
-        student_name_cn:       document.getElementById('fNameCn').value.trim() || null,
+        student_name_cn:       nameCn || null,
         student_name_en:       nameEn,
-        high_school:           document.getElementById('fSchool').value.trim() || null,
-        location:              document.getElementById('fLocation').value.trim() || null,
+        high_school:           school || null,
+        location:              location || null,
         admission_type:        type,
         class_year:            parseInt(year),
+        college:               college || null,
         major:                 document.getElementById('fMajor').value.trim() || null,
         committed:             committed_val,
-        notes:                 document.getElementById('fNotes').value.trim() || null,
+        notes:                 notes || null,
         letter_path,
         committed_letter_path,
         submitter_name:        document.getElementById('fSubmitterName').value.trim() || null,
@@ -636,7 +668,7 @@
 
   // ── 重置表单 ──
   function resetForm() {
-    ['fNameCn','fNameEn','fSchool','fLocation','fMajor','fNotes','fSubmitterName','fSubmitterContact']
+    ['fNameCn','fNameEn','fSchool','fLocation','fCollege','fMajor','fNotes','fSubmitterName','fSubmitterContact']
       .forEach(id => { document.getElementById(id).value = ''; });
     document.getElementById('fType').value = '';
     document.getElementById('fYear').value = '';
