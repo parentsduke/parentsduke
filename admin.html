@@ -285,9 +285,9 @@
     }
     .video-modal-close:hover { background: rgba(255,255,255,0.3); }
 
-    .video-modal-box video {
+    .video-modal-box iframe {
       width: 100%;
-      display: block;
+      height: 70vh; display: block; border: none; border-radius: 8px;
       max-height: 80vh;
     }
   </style>
@@ -356,10 +356,11 @@
 <div id="videoModal" onclick="handleModalClick(event)">
   <div class="video-modal-box">
     <button class="video-modal-close" onclick="closeVideoModal()">✕</button>
-    <video id="videoPlayer" controls>
-      <source src="rd1.mp4" type="video/mp4">
-      您的浏览器不支持视频播放。
-    </video>
+    <iframe id="videoPlayer"
+      src=""
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
   </div>
 </div>
 
@@ -547,27 +548,34 @@
   }
 
   // ===== 视频弹窗 =====
-  function openVideoModal() {
+  const YT_EMBED = 'https://www.youtube.com/embed/VpeycZqQMMY?autoplay=1&rel=0';
+  const BILI_EMBED = 'https://player.bilibili.com/player.html?bvid=BV1dtAVzHEFk&autoplay=1';
+
+  async function openVideoModal() {
     document.getElementById('videoModal').classList.add('active');
-    document.getElementById('videoPlayer').play();
+    // 检测是否能访问YouTube，不能则用B站
+    let canYT = false;
+    try {
+      await Promise.race([
+        fetch('https://www.youtube.com/favicon.ico', { mode: 'no-cors' }),
+        new Promise((_, reject) => setTimeout(() => reject(), 3000))
+      ]);
+      canYT = true;
+    } catch(e) { canYT = false; }
+    document.getElementById('videoPlayer').src = canYT ? YT_EMBED : BILI_EMBED;
   }
 
   function closeVideoModal() {
-    const modal = document.getElementById('videoModal');
-    const player = document.getElementById('videoPlayer');
-    modal.classList.remove('active');
-    player.pause();
-    player.currentTime = 0;
+    document.getElementById('videoModal').classList.remove('active');
+    document.getElementById('videoPlayer').src = '';
   }
 
   function handleModalClick(e) {
-    // 点击遮罩背景关闭弹窗
     if (e.target === document.getElementById('videoModal')) {
       closeVideoModal();
     }
   }
 
-  // ESC键关闭弹窗
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeVideoModal();
   });
