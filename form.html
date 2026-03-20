@@ -71,7 +71,7 @@
       position: relative;
     }
     .hero h1 {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: #fff;
       line-height: 1.5;
@@ -445,7 +445,11 @@
         </div>
         <div class="form-group">
           <label>学院 <span class="req">*</span></label>
-          <input type="text" autocomplete="off" id="fCollege" placeholder="如：Trinity College of Arts & Sciences"/>
+          <select id="fCollege">
+            <option value="">请选择</option>
+            <option value="Trinity College of Arts & Sciences">Trinity College of Arts & Sciences</option>
+            <option value="Pratt School of Engineering">Pratt School of Engineering</option>
+          </select>
         </div>
         <div class="form-group">
           <label>专业（可选）</label>
