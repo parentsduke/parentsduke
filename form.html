@@ -393,16 +393,21 @@
           <label>录取类型 <span class="req">*</span></label>
           <select id="fType" onchange="toggleCommitted(this.value)">
             <option value="">请选择</option>
-            <option value="ED">ED（早申一）</option>
-            <option value="EA">EA（早申非限制）</option>
+            <option value="ED">ED（早申）</option>
             <option value="RD">RD（常规）</option>
-            <option value="ED2">ED2（早申二）</option>
-            <option value="其他">其他</option>
           </select>
         </div>
         <div class="form-group">
           <label>入学届次 <span class="req">*</span></label>
           <input type="number" autocomplete="off" id="fYear" placeholder="2030" min="2020" max="2040"/>
+        </div>
+        <div class="form-group full" id="committedGroup">
+          <label>是否已 Committed（仅 RD 适用）<span class="req">*</span></label>
+          <select id="fCommitted" onchange="onCommittedChange(this.value)">
+            <option value="">请选择</option>
+            <option value="true">✅ 是</option>
+            <option value="false">❌ 否</option>
+          </select>
         </div>
         <div class="form-group">
           <label>学院 <span class="req">*</span></label>
@@ -412,27 +417,19 @@
           <label>专业（可选）</label>
           <input type="text" autocomplete="off" id="fMajor" placeholder="如：Computer Science"/>
         </div>
-        <div class="form-group full" id="committedGroup">
-          <label>是否已 Committed（仅 RD 适用）<span class="req">*</span></label>
-          <select id="fCommitted">
-            <option value="">请选择</option>
-            <option value="true">✅ 是</option>
-            <option value="false">❌ 否</option>
-          </select>
-        </div>
         <div class="form-group full">
-          <label>备注 <span class="req">*</span></label>
-          <textarea id="fNotes" placeholder="请填写其他说明…"></textarea>
+          <label>备注（可选）</label>
+          <textarea id="fNotes" placeholder="其他说明…"></textarea>
         </div>
       </div>
     </div>
 
     <!-- 文件上传 -->
     <div class="form-card">
-      <div class="section-title"><span>03</span> 文件上传</div>
+      <div class="section-title"><span>03</span> 文件上传 <span style="color:#C84B31;font-size:11px;">*</span></div>
       <div class="form-grid">
-        <div class="form-group full">
-          <label>录取通知书（Admission Letter）</label>
+        <div class="form-group full" id="letterGroup">
+          <label>录取通知书 <span class="req">*</span></label>
           <div class="upload-zone" id="letterZone"
                ondragover="handleDrag(event,'letterZone')"
                ondragleave="handleDragLeave('letterZone')"
@@ -470,15 +467,15 @@
 
     <!-- 提交者信息 -->
     <div class="form-card">
-      <div class="section-title"><span>04</span> 提交者信息（可选）</div>
+      <div class="section-title"><span>04</span> 提交者信息</div>
       <div class="form-grid">
         <div class="form-group">
-          <label>你的姓名 / 微信昵称</label>
-          <input type="text" autocomplete="off" id="fSubmitterName" placeholder="请输入姓名或微信昵称"/>
+          <label>你的姓名 <span class="req">*</span></label>
+          <input type="text" autocomplete="off" id="fSubmitterName" placeholder="请输入姓名"/>
         </div>
         <div class="form-group">
-          <label>联系方式（微信 / 手机）</label>
-          <input type="tel" autocomplete="off" id="fSubmitterContact" placeholder="可选"/>
+          <label>联系方式（微信 / 手机）<span class="req">*</span></label>
+          <input type="tel" autocomplete="off" id="fSubmitterContact" placeholder="请输入微信号或手机号"/>
         </div>
       </div>
     </div>
@@ -501,25 +498,57 @@
   let letterFile = null;
   let committedFile = null;
 
-  // ── RD Committed 联动 ──
+  // ── 录取类型 & Committed 联动 ──
   function toggleCommitted(type) {
-    const rdGroup  = document.getElementById('committedGroup');
-    const clLabel  = document.getElementById('committedLetterLabel');
-    const clHint   = document.getElementById('committedLetterHint');
-
-    // RD：显示 Committed/Uncommitted 选项
+    const rdGroup = document.getElementById('committedGroup');
     rdGroup.classList.toggle('show', type === 'RD');
     if (type !== 'RD') document.getElementById('fCommitted').value = '';
+    updateUploadZones(type, document.getElementById('fCommitted').value);
+  }
 
-    // ED：Committed Letter 必填
+  function onCommittedChange(val) {
+    const type = document.getElementById('fType').value;
+    updateUploadZones(type, val);
+  }
+
+  function updateUploadZones(type, committed) {
+    const letterGroup    = document.getElementById('letterGroup');
+    const clLabel        = document.getElementById('committedLetterLabel');
+    const clHint         = document.getElementById('committedLetterHint');
+    const clGroup        = document.getElementById('committedLetterGroup');
+    const committedZone  = document.getElementById('committedZone');
+
+    // ED：隐藏录取通知书，显示 Committed Letter（必填）
     if (type === 'ED') {
-      clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（ED必须上传）';
+      letterGroup.style.display = 'none';
+      clGroup.style.display = 'block';
+      clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（ED 必须上传）';
       clHint.innerHTML  = '⚠️ ED录取必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
-      document.getElementById('committedZone').style.borderColor = '#C84B31';
+      committedZone.style.borderColor = '#C84B31';
+      removeFile('letter');
+
+    // RD + Committed = 是：隐藏录取通知书，显示 Committed Letter（必填）
+    } else if (type === 'RD' && committed === 'true') {
+      letterGroup.style.display = 'none';
+      clGroup.style.display = 'block';
+      clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（已Committed必须上传）';
+      clHint.innerHTML  = '⚠️ 已Committed必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
+      committedZone.style.borderColor = '#C84B31';
+      removeFile('letter');
+
+    // RD + Committed = 否：显示录取通知书，隐藏 Committed Letter
+    } else if (type === 'RD' && committed === 'false') {
+      letterGroup.style.display = 'block';
+      clGroup.style.display = 'none';
+      committedZone.style.borderColor = '';
+      removeFile('committed');
+
+    // 其他（EA、ED2、其他）：显示录取通知书，隐藏 Committed Letter
     } else {
-      clLabel.innerHTML = 'Committed Letter（可选）';
-      clHint.innerHTML  = '拖入或点击上传，支持 <strong>图片 / PDF</strong>';
-      document.getElementById('committedZone').style.borderColor = '';
+      letterGroup.style.display = type ? 'block' : 'block';
+      clGroup.style.display = 'none';
+      committedZone.style.borderColor = '';
+      removeFile('committed');
     }
   }
 
@@ -604,9 +633,12 @@
     if (!type)     { showError('请选择录取类型'); return; }
     if (!year)     { showError('请填写入学届次'); return; }
     if (!college)  { showError('请填写学院'); return; }
-    if (!notes)    { showError('请填写备注'); return; }
     if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
     if (type === 'ED' && !committedFile) { showError('ED录取必须上传 Committed Letter'); return; }
+    if (type === 'RD' && rdCommitted === 'true' && !committedFile) { showError('已Committed必须上传 Committed Letter'); return; }
+    if (type === 'RD' && rdCommitted === 'false' && !letterFile) { showError('请上传录取通知书'); return; }
+    if (!document.getElementById('fSubmitterName').value.trim()) { showError('请填写你的姓名或微信昵称'); return; }
+    if (!document.getElementById('fSubmitterContact').value.trim()) { showError('请填写联系方式'); return; }
 
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
