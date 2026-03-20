@@ -11616,7 +11616,7 @@ async function submitInviteRequest(btn) {
     if (supabase) {
       await supabase.from('pending_uploads').insert({
         file_path:   emailVal,
-        file_name:   nicknameVal,
+        file_name:   wxgroupVal + ' - ' + nicknameVal,
         title:       classVal + '届 - ' + wxgroupVal + ' - ' + nicknameVal,
         uploaded_by: classVal,
         status:      'pending',
