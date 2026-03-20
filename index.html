@@ -11611,6 +11611,21 @@ async function submitInviteRequest(btn) {
   btn.disabled = true; btn.textContent = '提交中...';
 
   try {
+    // 1. 写入 pending_uploads 数据库
+    var supabase = window._supabaseClient;
+    if (supabase) {
+      await supabase.from('pending_uploads').insert({
+        file_path:   emailVal,
+        file_name:   nicknameVal,
+        title:       classVal + '届 - ' + wxgroupVal + ' - ' + nicknameVal,
+        uploaded_by: classVal,
+        status:      'pending',
+        file_type:   'invite_request',
+        metadata:    JSON.stringify({ wxgroup: wxgroupVal, nickname: nicknameVal, email: emailVal, class: classVal })
+      });
+    }
+
+    // 2. 发邮件通知管理员
     var resp = await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/send-notification', {
       method: 'POST',
       headers: {
