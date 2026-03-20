@@ -661,7 +661,7 @@
     const location = document.getElementById('fLocation').value.trim();
     const type    = document.getElementById('fType').value;
     const year    = document.getElementById('fYear').value;
-    const college = document.getElementById('fCollege').value.trim();
+    const college = (document.getElementById('fCollege').value || '').trim();
     const notes   = document.getElementById('fNotes').value.trim();
     const rdCommitted = document.getElementById('fCommitted').value;
 
