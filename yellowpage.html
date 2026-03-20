@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Duke Parents Yellow Page · Durham 实用指南</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:   #001a4d;
+      --blue:   #003087;
+      --gold:   #B8963E;
+      --gold-lt:#fdf6e3;
+      --bg:     #f5f3ef;
+      --card:   #ffffff;
+      --border: #e2ddd6;
+      --text:   #1a1a1a;
+      --muted:  #7a7060;
+      --tag-bg: #eef2fa;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Noto Serif SC', serif;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hd { font-size: 24px; font-weight: 700; color: var(--gold); letter-spacing: -1px; }
+    .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #003a8c 100%);
+      padding: 44px 32px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 50% 110%, rgba(184,150,62,0.2) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-label {
+      display: inline-block;
+      background: rgba(184,150,62,0.15);
+      border: 1px solid rgba(184,150,62,0.35);
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      font-family: 'DM Mono', monospace;
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Search ── */
+    .search-wrap {
+      max-width: 560px;
+      margin: 28px auto 0;
+      position: relative;
+      z-index: 1;
+    }
+    .search-wrap input {
+      width: 100%;
+      padding: 13px 20px 13px 46px;
+      border-radius: 50px;
+      border: none;
+      font-size: 14px;
+      font-family: 'Noto Serif SC', serif;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      outline: none;
+      transition: background 0.2s;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .search-wrap input::placeholder { color: rgba(255,255,255,0.4); }
+    .search-wrap input:focus { background: rgba(255,255,255,0.2); }
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.5);
+      font-size: 16px;
+    }
+
+    /* ── Main ── */
+    .page-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    /* ── Category tabs ── */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .tab {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .tab:hover { border-color: var(--blue); color: var(--blue); }
+    .tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+    /* ── Accordion ── */
+    .section {
+      margin-bottom: 12px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: box-shadow 0.2s;
+    }
+    .section:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .section.open { box-shadow: 0 4px 20px rgba(0,48,135,0.1); border-color: rgba(0,48,135,0.2); }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 22px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .section-header:hover { background: #faf8f4; }
+    .section.open .section-header { background: #f0f4fb; }
+
+    .section-emoji { font-size: 24px; flex-shrink: 0; }
+    .section-info { flex: 1; }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+    .section-sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      margin-top: 2px;
+    }
+    .section-count {
+      background: var(--tag-bg);
+      color: var(--blue);
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      padding: 3px 10px;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .section-arrow {
+      color: var(--muted);
+      font-size: 18px;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+    .section.open .section-arrow { transform: rotate(180deg); }
+
+    /* ── Section body ── */
+    .section-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .section.open .section-body { max-height: 2000px; }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 4px 22px 22px;
+    }
+
+    .item-card {
+      background: #faf8f5;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .item-card:hover { border-color: var(--blue); transform: translateY(-1px); }
+    .item-card.highlight {
+      background: var(--gold-lt);
+      border-color: rgba(184,150,62,0.35);
+    }
+
+    .item-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .item-name a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+    .item-name a:hover { text-decoration: underline; }
+
+    .item-meta {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      line-height: 1.7;
+    }
+    .item-meta .tag {
+      display: inline-block;
+      background: var(--tag-bg);
+      color: var(--blue);
+      padding: 1px 8px;
+      border-radius: 8px;
+      font-size: 10px;
+      margin-right: 4px;
+      margin-bottom: 2px;
+    }
+    .item-meta .tag.gold {
+      background: var(--gold-lt);
+      color: #7a5010;
+    }
+    .item-phone, .item-addr {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      margin-top: 4px;
+    }
+    .item-phone a { color: var(--blue); text-decoration: none; }
+    .item-phone a:hover { text-decoration: underline; }
+
+    /* ── No results ── */
+    .no-results {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--muted);
+      font-size: 14px;
+      display: none;
+    }
+    .no-results .icon { font-size: 36px; margin-bottom: 12px; }
+
+    /* ── Mobile ── */
+    @media (max-width: 580px) {
+      .items-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 20px; }
+      .hero { padding: 28px 16px 24px; }
+      header { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hd">D</div>
+  <div class="ht">Duke Parents · Durham 实用指南</div>
+</header>
+
+<div class="hero">
+  <div class="hero-label">Yellow Page · Durham NC</div>
+  <h1>🗺 Duke 周边生活指南</h1>
+  <p>餐厅 · 理发 · 交通 · 住宿 · 蛋糕预定 · 校园资源</p>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="搜索餐厅、理发店、交通…" oninput="handleSearch()"/>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <div class="tabs" id="tabBar">
+    <div class="tab active" onclick="filterCat('all', this)">全部</div>
+    <div class="tab" onclick="filterCat('dining', this)">🍽 餐饮</div>
+    <div class="tab" onclick="filterCat('hair', this)">✂️ 理发</div>
+    <div class="tab" onclick="filterCat('transport', this)">🚗 交通</div>
+    <div class="tab" onclick="filterCat('hotel', this)">🏨 住宿</div>
+    <div class="tab" onclick="filterCat('cake', this)">🎂 蛋糕</div>
+    <div class="tab" onclick="filterCat('campus', this)">🎓 校园</div>
+  </div>
+
+  <div id="noResults" class="no-results">
+    <div class="icon">🔍</div>
+    没有找到相关结果
+  </div>
+
+  <!-- ── 餐饮 ── -->
+  <div class="section open" data-cat="dining" id="sec-dining">
+    <div class="section-header" onclick="toggleSection('sec-dining')">
+      <div class="section-emoji">🍽</div>
+      <div class="section-info">
+        <div class="section-title">餐饮推荐</div>
+        <div class="section-sub">Duke 周边口碑好餐厅，覆盖中餐、日料、美式等</div>
+      </div>
+      <div class="section-count">12家</div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="items-grid">
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="https://gocciolinadurham.com" target="_blank">Gocciolina</a></div>
+          <div class="item-meta">
+            <span class="tag gold">推荐</span><span class="tag">意大利</span>
+            <div>手工意面，本地食材，每日更换黑板菜单。距 Fuqua 约10分钟车程。</div>
+            <div class="item-addr">📍 1996 Perry St, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.nanasteakdurham.com" target="_blank">NanaSteak</a></div>
+          <div class="item-meta">
+            <span class="tag">牛排</span><span class="tag">高档</span>
+            <div>Durham 最佳牛排餐厅，适合庆祝场合，需提前订位。</div>
+            <div class="item-addr">📍 2 E Main St, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.msushidurham.com" target="_blank">M Sushi</a></div>
+          <div class="item-meta">
+            <span class="tag">日料</span><span class="tag">Omakase</span>
+            <div>Triangle 地区顶级寿司，米其林推荐，主厨 Michael Lee 出品。</div>
+            <div class="item-addr">📍 Durham Downtown</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.nikosdurham.com" target="_blank">Nikos</a></div>
+          <div class="item-meta">
+            <span class="tag">希腊</span><span class="tag">米其林推荐 2025</span>
+            <div>正宗希腊菜，2025年米其林推荐，口碑极佳。</div>
+            <div class="item-addr">📍 Downtown Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Elmo's Diner</div>
+          <div class="item-meta">
+            <span class="tag">美式</span><span class="tag">早午餐</span>
+            <div>本地老牌餐厅，价格实惠，法式吐司出名，周末等位。</div>
+            <div class="item-addr">📍 776 9th St, Durham</div>
+            <div class="item-phone">📞 <a href="tel:9192869707">(919) 286-9707</a></div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Cocoa Cinnamon</div>
+          <div class="item-meta">
+            <span class="tag">咖啡</span><span class="tag">特色饮品</span>
+            <div>获奖咖啡馆，创意季节饮品，East Campus 旁，露台环境好。</div>
+            <div class="item-addr">📍 420 W Geer St, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.littlerestaurant.com" target="_blank">Littler</a></div>
+          <div class="item-meta">
+            <span class="tag">创意美式</span><span class="tag">当季食材</span>
+            <div>小而精，当季食材，本地牡蛎和牛肉颊值得一试。</div>
+            <div class="item-addr">📍 Downtown Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">The Common Market</div>
+          <div class="item-meta">
+            <span class="tag">三明治</span><span class="tag">沙拉</span>
+            <div>East Campus 附近最受欢迎的午餐地，环境轻松，沙拉和三明治好吃。</div>
+            <div class="item-addr">📍 1010 9th St, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Fairview Dining Room</div>
+          <div class="item-meta">
+            <span class="tag gold">校内</span><span class="tag">AAA四钻</span>
+            <div>华盛顿杜克酒店内，AAA四钻，适合家庭正式聚餐。</div>
+            <div class="item-addr">📍 Washington Duke Inn</div>
+            <div class="item-phone">📞 <a href="tel:9194900999">(919) 490-0999</a></div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Sushi Love</div>
+          <div class="item-meta">
+            <span class="tag">日料</span><span class="tag">寿司</span>
+            <div>West Campus 附近，新鲜实惠，适合日常用餐。</div>
+            <div class="item-addr">📍 Duke University West Campus area</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Plum Southern Kitchen</div>
+          <div class="item-meta">
+            <span class="tag">南方菜</span><span class="tag">晚餐</span>
+            <div>温馨南方菜，服务热情，周二晚上不忙，适合家庭聚餐。</div>
+            <div class="item-addr">📍 Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Nasher Café</div>
+          <div class="item-meta">
+            <span class="tag gold">校内</span><span class="tag">午餐</span>
+            <div>Nasher 艺术博物馆内，午餐佳选，地中海风味，环境优雅。</div>
+            <div class="item-addr">📍 Duke University Campus</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 理发 ── -->
+  <div class="section" data-cat="hair" id="sec-hair">
+    <div class="section-header" onclick="toggleSection('sec-hair')">
+      <div class="section-emoji">✂️</div>
+      <div class="section-info">
+        <div class="section-title">理发 & 美容</div>
+        <div class="section-sub">Duke 附近理发店，含中文友好及亚裔发型师</div>
+      </div>
+      <div class="section-count">5家</div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="items-grid">
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="http://www.hairbyteruko.com" target="_blank">Hair by Teruko</a></div>
+          <div class="item-meta">
+            <span class="tag gold">亚裔发型师</span><span class="tag">男女均可</span>
+            <div>亚裔发质专家，擅长东亚直发处理，Raleigh/Durham 均有服务。</div>
+            <div class="item-phone">📞 需提前预约</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://rumorshairstudiodurham.com" target="_blank">Rumors Hair Studio</a></div>
+          <div class="item-meta">
+            <span class="tag">全服务</span><span class="tag">30年历史</span>
+            <div>9th Street 附近，Duke 旁，男女通用，30年经验，可预约早晚时段。</div>
+            <div class="item-addr">📍 Ninth Street, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Rock's Bar and Hair Shop</div>
+          <div class="item-meta">
+            <span class="tag">男士理发</span><span class="tag">Downtown</span>
+            <div>Downtown Durham 两家门店，男士精致理发 + 精酿啤酒，体验独特。</div>
+            <div class="item-addr">📍 Downtown Durham（2家）</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Sport Clips — Ninth Street</div>
+          <div class="item-meta">
+            <span class="tag">男士</span><span class="tag">快捷</span>
+            <div>West Campus 附近，专注男士理发，体育主题，无需预约。</div>
+            <div class="item-addr">📍 Ninth Street, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://h2ohairsalonandspa.com" target="_blank">H2O Hair Salon & Spa</a></div>
+          <div class="item-meta">
+            <span class="tag">全服务</span><span class="tag">双语</span>
+            <div>Downtown Durham，双语服务（英语/西班牙语），男女皆宜，可在线预约。</div>
+            <div class="item-addr">📍 Downtown Durham</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 交通 ── -->
+  <div class="section" data-cat="transport" id="sec-transport">
+    <div class="section-header" onclick="toggleSection('sec-transport')">
+      <div class="section-emoji">🚗</div>
+      <div class="section-info">
+        <div class="section-title">交通出行</div>
+        <div class="section-sub">机场接送、校内巴士、打车、公共交通全攻略</div>
+      </div>
+      <div class="section-count">6项</div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="items-grid">
+
+        <div class="item-card highlight">
+          <div class="item-name">RDU → Duke（Uber/Lyft）</div>
+          <div class="item-meta">
+            <span class="tag gold">最快</span>
+            <div>约 24 分钟，费用约 $26–$55，推荐 Uber/Lyft，比出租车便宜。在 App 内选 Terminal 1 或 2。</div>
+            <div class="item-phone">📱 下载 <a href="https://uber.com" target="_blank">Uber</a> 或 <a href="https://lyft.com" target="_blank">Lyft</a> App</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">RDU → Duke（公共交通）</div>
+          <div class="item-meta">
+            <span class="tag">省钱</span>
+            <div>Terminal 2 乘 GoTriangle 700路 → Regional Transit Center → Durham Station → GoDurham 6路到 Duke Gardens。全程约 1h40m，票价 $1–$4。</div>
+            <div class="item-phone">🌐 <a href="https://gotriangle.org" target="_blank">gotriangle.org</a></div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Duke Transit 校内巴士</div>
+          <div class="item-meta">
+            <span class="tag gold">免费</span><span class="tag">学生专用</span>
+            <div>C1路连接 East/West Campus，免费乘坐。可用 TransLoc App 实时追踪班车位置。</div>
+            <div class="item-phone">🌐 <a href="https://parking.duke.edu/buses-vans" target="_blank">parking.duke.edu</a></div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">GoDurham 城市公交</div>
+          <div class="item-meta">
+            <span class="tag gold">2026年前免费</span>
+            <div>Durham 市内公交，2026年前全程免费。6路和11路最靠近 Duke。可到达超市、Downtown。</div>
+            <div class="item-phone">🌐 <a href="https://godurhamtransit.org" target="_blank">godurhamtransit.org</a></div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Duke Vans 夜间接送</div>
+          <div class="item-meta">
+            <span class="tag gold">免费</span><span class="tag">学生专用</span>
+            <div>晚 6:30pm–凌晨 2am，周一至周六，校内1.5英里范围内免费按需接送。</div>
+            <div class="item-addr">📍 Duke campus 1.5 mile 范围</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">GoPass 免费公交卡</div>
+          <div class="item-meta">
+            <span class="tag gold">Duke学生免费</span>
+            <div>Duke 在校生可申请免费 GoPass，无限次乘坐 GoTriangle 和 GoRaleigh。下载 Umo App 激活。</div>
+            <div class="item-phone">🌐 <a href="https://parking.duke.edu/alternative-transportation/gopass" target="_blank">申请 GoPass</a></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 住宿 ── -->
+  <div class="section" data-cat="hotel" id="sec-hotel">
+    <div class="section-header" onclick="toggleSection('sec-hotel')">
+      <div class="section-emoji">🏨</div>
+      <div class="section-info">
+        <div class="section-title">附近住宿</div>
+        <div class="section-sub">家长周末 / 毕业典礼 / 探亲首选酒店，建议提前预订</div>
+      </div>
+      <div class="section-count">8家</div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="items-grid">
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="https://www.washingtondukeinn.com" target="_blank">Washington Duke Inn & Golf Club</a></div>
+          <div class="item-meta">
+            <span class="tag gold">校内</span><span class="tag">⭐⭐⭐⭐</span>
+            <div>Duke 校园内，步行即到 West Campus，设施豪华，含高尔夫球场。<strong>毕业典礼必须提前数月订</strong>。</div>
+            <div class="item-phone">📞 <a href="tel:9194900999">(919) 490-0999</a></div>
+            <div class="item-addr">📍 3001 Cameron Blvd, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="https://www.jbdukehotel.com" target="_blank">JB Duke Hotel</a></div>
+          <div class="item-meta">
+            <span class="tag gold">校内</span><span class="tag">⭐⭐⭐⭐</span>
+            <div>Duke 校内，位于 Science Drive，有免费穿梭巴士，商务和家庭皆宜。</div>
+            <div class="item-phone">📞 <a href="tel:9196606400">(919) 660-6400</a></div>
+            <div class="item-addr">📍 230 Science Dr, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">The Lodge at Duke Medical Center</div>
+          <div class="item-meta">
+            <span class="tag">近校</span><span class="tag">0.7英里</span>
+            <div>距校区仅 0.7 英里，有免费往返 Duke 穿梭车，价格合理。</div>
+            <div class="item-phone">📞 <a href="tel:9193132165">(919) 313-2165</a></div>
+            <div class="item-addr">📍 2306 Elba St, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Hilton Garden Inn Durham</div>
+          <div class="item-meta">
+            <span class="tag">近校</span><span class="tag">2英里</span>
+            <div>距校区约 2 英里，设施完善，有免费穿梭服务（询问 Duke University 优惠价）。</div>
+            <div class="item-phone">📞 <a href="tel:9192860074">(919) 286-0074</a></div>
+            <div class="item-addr">📍 2102 W Main St, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Millennium Hotel Durham</div>
+          <div class="item-meta">
+            <span class="tag">近校</span><span class="tag">1.3英里</span>
+            <div>距校区 1.3 英里，316间客房含大量双人床套房，适合带孩子的家庭。</div>
+            <div class="item-phone">📞 <a href="tel:9193838575">(919) 383-8575</a></div>
+            <div class="item-addr">📍 2800 Middleton Dr, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">University Inn Duke</div>
+          <div class="item-meta">
+            <span class="tag">最近</span><span class="tag">0.7英里</span>
+            <div>距校区最近之一，仅 0.7 英里，价格经济实惠，含免费区域接送。</div>
+            <div class="item-phone">📞 <a href="tel:9192864421">(919) 286-4421</a></div>
+            <div class="item-addr">📍 502 Elf St, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">21c Museum Hotel Durham</div>
+          <div class="item-meta">
+            <span class="tag">文艺</span><span class="tag">Downtown 1英里</span>
+            <div>集酒店与当代艺术博物馆于一体，Downtown 精品住宿，适合有品味的家长。</div>
+            <div class="item-phone">📞 <a href="tel:9199566700">(919) 956-6700</a></div>
+            <div class="item-addr">📍 111 N Corcoran St, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Residence Inn Marriott</div>
+          <div class="item-meta">
+            <span class="tag">长住</span><span class="tag">East Campus 100米</span>
+            <div>距 East Campus 仅 100 米，带厨房，适合探亲长住或帮孩子搬宿舍。</div>
+            <div class="item-phone">📞 <a href="tel:9196804440">(919) 680-4440</a></div>
+            <div class="item-addr">📍 1108 W Main St, Durham</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 蛋糕预定 ── -->
+  <div class="section" data-cat="cake" id="sec-cake">
+    <div class="section-header" onclick="toggleSection('sec-cake')">
+      <div class="section-emoji">🎂</div>
+      <div class="section-info">
+        <div class="section-title">蛋糕 & 甜点预定</div>
+        <div class="section-sub">生日蛋糕、毕业蛋糕、定制蛋糕，Durham 本地推荐</div>
+      </div>
+      <div class="section-count">6家</div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="items-grid">
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="https://www.capitalcakesnc.com" target="_blank">Capital Cakes NC</a></div>
+          <div class="item-meta">
+            <span class="tag gold">定制首选</span>
+            <div>Durham 知名定制蛋糕，2017年开业，主厨 Katelyn Johnson 从业20年，千余款作品。</div>
+            <div class="item-addr">📍 Durham, NC</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.bullcitybakes.com" target="_blank">Bull City Bake Shop</a></div>
+          <div class="item-meta">
+            <span class="tag">现烤</span><span class="tag">肉桂卷出名</span>
+            <div>每日现烤，肉桂卷和巧克力曲奇闻名，可预订定制蛋糕，现场可观看烘焙。</div>
+            <div class="item-addr">📍 3604 Witherspoon Blvd #109, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://rocakesstudio.com" target="_blank">Ro Cake Studio</a></div>
+          <div class="item-meta">
+            <span class="tag">当日可取</span><span class="tag">无麸质可选</span>
+            <div>当日下单可取，支持无麸质/无糖，定制蛋糕 + 巧克力覆草莓等，可送货。</div>
+            <div class="item-phone">📧 rocakestudio@gmail.com</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.nothingbundtcakes.com" target="_blank">Nothing Bundt Cakes</a></div>
+          <div class="item-meta">
+            <span class="tag">连锁</span><span class="tag">可网订</span>
+            <div>Duke Gardens 附近，每日新鲜出炉，可网上预订，Uber Eats/DoorDash 均可送。</div>
+            <div class="item-addr">📍 1125 W NC HWY 54, Suite 501, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://littlebarbsbakery.com" target="_blank">Little Barb's Bakery</a></div>
+          <div class="item-meta">
+            <span class="tag">定制</span><span class="tag">Durham Food Hall</span>
+            <div>Durham Food Hall 内，可定制蛋糕，通过表单提前沟通需求。</div>
+            <div class="item-addr">📍 530 Foster St Suite 1, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://olliesgreatbakery.com" target="_blank">Ollie's Great Bakery</a></div>
+          <div class="item-meta">
+            <span class="tag gold">Duke 配送</span>
+            <div>专为大学生服务，可免费配送到 Duke 校园，手工饼干/蛋糕/杯子蛋糕，适合给孩子送惊喜。</div>
+            <div class="item-phone">🌐 <a href="https://olliesgreatbakery.com/pages/durham" target="_blank">olliesgreatbakery.com</a></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 校园资源 ── -->
+  <div class="section" data-cat="campus" id="sec-campus">
+    <div class="section-header" onclick="toggleSection('sec-campus')">
+      <div class="section-emoji">🎓</div>
+      <div class="section-info">
+        <div class="section-title">校园实用资源</div>
+        <div class="section-sub">Duke 官方联系方式、家长常用链接、重要部门</div>
+      </div>
+      <div class="section-count">8项</div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="items-grid">
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="https://studentaffairs.duke.edu/parents" target="_blank">Duke Parents & Families</a></div>
+          <div class="item-meta">
+            <span class="tag gold">官方</span>
+            <div>Duke 家长官方页面，含住宿、探访、活动等全部资源汇总。</div>
+            <div class="item-phone">🌐 studentaffairs.duke.edu/parents</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">招生办公室</div>
+          <div class="item-meta">
+            <span class="tag">Admissions</span>
+            <div>录取相关事务，含 ED/RD 录取确认、奖学金、入学手续。</div>
+            <div class="item-phone">📞 <a href="tel:9196843214">(919) 684-3214</a></div>
+            <div class="item-addr">📍 2138 Campus Drive, Durham NC 27708</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">财务援助办公室</div>
+          <div class="item-meta">
+            <span class="tag">Financial Aid</span>
+            <div>学费、奖学金、助学金、贷款等财务相关事务。</div>
+            <div class="item-phone">📞 <a href="tel:9196816600">(919) 681-6600</a></div>
+            <div class="item-phone">🌐 <a href="https://financialaid.duke.edu" target="_blank">financialaid.duke.edu</a></div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">住宿办公室</div>
+          <div class="item-meta">
+            <span class="tag">Housing</span>
+            <div>宿舍分配、申请、宿舍规则，新生住宿相关事务。</div>
+            <div class="item-phone">📞 <a href="tel:9196843525">(919) 684-3525</a></div>
+            <div class="item-phone">🌐 <a href="https://housing.duke.edu" target="_blank">housing.duke.edu</a></div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">学生健康中心</div>
+          <div class="item-meta">
+            <span class="tag">Student Health</span>
+            <div>校内医疗、心理咨询、健康保险等服务。</div>
+            <div class="item-phone">📞 <a href="tel:9196843136">(919) 684-3136</a></div>
+            <div class="item-phone">🌐 <a href="https://studentaffairs.duke.edu/studenthealth" target="_blank">studenthealth.duke.edu</a></div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">停车 & 交通</div>
+          <div class="item-meta">
+            <span class="tag">Parking</span>
+            <div>家长访校停车证、校内停车规则、GoPass 公交卡申请。</div>
+            <div class="item-phone">📞 <a href="tel:9196847275">(919) 684-PARK</a></div>
+            <div class="item-phone">🌐 <a href="https://parking.duke.edu" target="_blank">parking.duke.edu</a></div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Duke 毕业典礼信息</div>
+          <div class="item-meta">
+            <span class="tag">Commencement</span>
+            <div>毕业典礼时间、住宿推荐、停车安排等家长实用信息。</div>
+            <div class="item-phone">🌐 <a href="https://commencement.duke.edu" target="_blank">commencement.duke.edu</a></div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Duke 急救 & 安全</div>
+          <div class="item-meta">
+            <span class="tag">紧急</span>
+            <div>校园紧急情况联系方式。</div>
+            <div class="item-phone">📞 紧急: <a href="tel:911">911</a></div>
+            <div class="item-phone">📞 校园警察: <a href="tel:9196842444">(919) 684-2444</a></div>
+            <div class="item-phone">📞 Duke 医院: <a href="tel:9196843456">(919) 684-3456</a></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── Toggle accordion ──
+  function toggleSection(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+  }
+
+  // ── Filter by category ──
+  function filterCat(cat, tabEl) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+
+    document.querySelectorAll('.section').forEach(sec => {
+      if (cat === 'all' || sec.dataset.cat === cat) {
+        sec.style.display = '';
+      } else {
+        sec.style.display = 'none';
+      }
+    });
+
+    document.getElementById('searchInput').value = '';
+    document.getElementById('noResults').style.display = 'none';
+  }
+
+  // ── Search ──
+  function handleSearch() {
+    const kw = document.getElementById('searchInput').value.trim().toLowerCase();
+
+    // 重置分类
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.tab').classList.add('active');
+
+    if (!kw) {
+      document.querySelectorAll('.section').forEach(s => { s.style.display = ''; });
+      document.getElementById('noResults').style.display = 'none';
+      return;
+    }
+
+    let anyVisible = false;
+    document.querySelectorAll('.section').forEach(sec => {
+      const text = sec.textContent.toLowerCase();
+      if (text.includes(kw)) {
+        sec.style.display = '';
+        sec.classList.add('open');
+        anyVisible = true;
+      } else {
+        sec.style.display = 'none';
+      }
+    });
+
+    document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
+  }
+</script>
+</body>
+</html>
