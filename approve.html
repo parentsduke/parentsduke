@@ -236,6 +236,7 @@
 <script>
   // ========== 等待 Supabase 加载 ==========
   let db = null;
+  let currentSession = null;
 
   // 等待 Supabase 库加载
   window.addEventListener('load', async () => {
@@ -250,7 +251,6 @@
     const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
     const ADMIN_EMAILS = ['weihong_j@yahoo.com', 'sws122003@yahoo.com', 'lixiaobing@gmail.com'];
-    const SEND_NOTIFICATION_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/send-notification';
 
     const { createClient } = supabase;
     db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -272,6 +272,7 @@
         showLogin();
         return;
       }
+      currentSession = session;
       if (!adminEmails.includes(session.user.email)) {
         showAccessDenied();
         return;
@@ -458,9 +459,16 @@
     if (rejectBtn) rejectBtn.disabled = true;
 
     try {
+      // 获取当前会话的访问令牌
+      const { data: { session } } = await db.auth.getSession();
+      const token = session?.access_token || '';
+
       const res = await fetch(SEND_NOTIFICATION_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({
           action: 'invite',
           email: email,
@@ -470,14 +478,40 @@
       });
 
       const data = await res.json();
-      console.log('响应:', data);
+      console.log('响应:', data, '状态码:', res.status);
 
       if (!res.ok) {
-        alert('❌ 邀请失败：' + (data.error || res.status));
-        btn.disabled = false;
-        btn.textContent = '✅ 批准并邀请';
-        if (rejectBtn) rejectBtn.disabled = false;
-        return;
+        // 如果是 401 错误，尝试不带 token 的方式
+        if (res.status === 401) {
+          console.log('尝试不带 Authorization header 的方式...');
+          const retryRes = await fetch(SEND_NOTIFICATION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'invite',
+              email: email,
+              name: name,
+              record_id: id
+            })
+          });
+          
+          const retryData = await retryRes.json();
+          console.log('重试响应:', retryData);
+          
+          if (!retryRes.ok) {
+            alert('❌ 邀请失败：' + (retryData.error || retryRes.status));
+            btn.disabled = false;
+            btn.textContent = '✅ 批准并邀请';
+            if (rejectBtn) rejectBtn.disabled = false;
+            return;
+          }
+        } else {
+          alert('❌ 邀请失败：' + (data.error || res.status));
+          btn.disabled = false;
+          btn.textContent = '✅ 批准并邀请';
+          if (rejectBtn) rejectBtn.disabled = false;
+          return;
+        }
       }
 
       const idx = allRequests.findIndex(r => r.id == id);
