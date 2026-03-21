@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Duke 录取信息提交 · DukeParents</title>
+  <title>分享录取喜讯 · DukeParents</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -39,7 +39,7 @@
       align-items: center;
       gap: 14px;
     }
-    .hd { font-size: 24px; font-weight: 700; color: var(--gold); letter-spacing: -1px; }
+    .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; text-stroke: 1.5px #ffffff; }
     .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; }
 
     /* ── Hero ── */
@@ -71,11 +71,11 @@
       position: relative;
     }
     .hero h1 {
-      font-size: 26px;
+      font-size: 18px;
       font-weight: 700;
       color: #fff;
-      line-height: 1.3;
-      margin-bottom: 10px;
+      line-height: 1.5;
+      margin-bottom: 4px;
       position: relative;
     }
     .hero p {
@@ -307,6 +307,15 @@
     }
     .btn-again:hover { background: var(--navy); }
 
+
+    /* ── 二维码区 ── */
+    #qrSection {
+      display: none;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+      padding-bottom: 40px;
+    }
+    #qrSection.show { display: block; }
     /* ── 注意事项 ── */
     .notice {
       background: var(--gold-lt);
@@ -339,25 +348,70 @@
 
 <div class="hero">
   <div class="hero-badge">DukeParents · Class of 2030</div>
-  <h1>分享你的录取喜讯 🎓</h1>
-  <p>提交信息由管理员审核，不对其他家长公开</p>
+  <h1>分享录取喜讯</h1>
+  <h1>扯谈 Duke 群社区欢迎您</h1>
 </div>
 
 <div class="page-wrap">
 
-  <!-- 成功屏 -->
-  <div id="successScreen">
+
+
+  <!-- 二维码区（提交后显示） -->
+  <div id="qrSection">
     <div class="success-icon">🎉</div>
-    <div class="success-title">提交成功！</div>
-    <div class="success-sub">感谢你的分享！你提交的录取信息已收到，将由管理员核对后收录。</div>
-    <button class="btn-again" onclick="resetForm()">再提交一条</button>
+    <div class="success-title">提交成功！感谢分享</div>
+    <div class="success-sub">你提交的录取信息已收到，将由管理员核对后收录。</div>
+
+    <div class="form-card" style="text-align:center;max-width:480px;margin:0 auto;">
+      <div class="section-title" style="justify-content:center;">扫码加入 Duke 家长微信群</div>
+      <div style="margin-top:16px;">
+        <img src="qr.png"
+             alt="Duke 家长微信群二维码"
+             style="width:220px;height:auto;border-radius:12px;border:1px solid #e2ddd6;box-shadow:0 4px 16px rgba(0,0,0,0.08);"/>
+        <div style="margin-top:12px;font-size:14px;font-weight:600;color:#003087;">Duke 家长入群驿站-A</div>
+        <div style="margin-top:8px;font-size:13px;color:#1a1a1a;line-height:1.8;">
+          本二维码用于申请加入以下两个微信群：<br/>
+          <span style="color:#003087;font-weight:600;">Duke 2030 本科生家长群</span><br/>
+          <span style="color:#003087;font-weight:600;">扯谈 Duke 群 2.0</span>
+        </div>
+        <div style="margin-top:6px;font-size:11px;color:#B8963E;font-family:'DM Mono',monospace;">二维码将持续更新</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:24px;">
+      <button class="btn-again" onclick="resetForm()">再提交一条</button>
+    </div>
   </div>
 
   <!-- 表单区 -->
   <div id="formArea">
 
+
+
+    <div class="form-card" style="text-align:center;">
+      <div class="section-title" style="justify-content:center;">Duke 家长微信群</div>
+      <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <img src="2.png"
+               alt="扯谈Duke群截图"
+               style="width:140px;height:auto;border-radius:10px;border:1px solid #e2ddd6;box-shadow:0 2px 8px rgba(0,0,0,0.08);"/>
+          <div style="margin-top:6px;font-size:11px;color:#888070;">扯谈 Duke 群 2.0（246人）</div>
+        </div>
+        <div style="text-align:center;">
+          <img src="30.png"
+               alt="Duke2030家长群截图"
+               style="width:140px;height:auto;border-radius:10px;border:1px solid #e2ddd6;box-shadow:0 2px 8px rgba(0,0,0,0.08);"/>
+          <div style="margin-top:6px;font-size:11px;color:#888070;">Duke 2030 本科生家长群（107人）</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin:0 auto 20px;max-width:540px;background:linear-gradient(135deg,#001a4d,#003087);border-radius:12px;padding:18px 24px;font-size:15px;font-weight:600;color:#ffffff;line-height:1.8;letter-spacing:0.03em;box-shadow:0 4px 16px rgba(0,30,80,0.18);">
+      填完表格提交后，将显示微信二维码<br/>扫码后由管理员核对信息并分配入群
+    </div>
+
     <div class="notice">
-      <strong>📋 填写说明：</strong>带 <span style="color:#C84B31">*</span> 为必填项。录取通知书和 Committed Letter 为可选上传，支持图片或 PDF。提交后仅管理员可查看，其他家长不可见。
+      <strong>填写说明：</strong>带 <span style="color:#C84B31">*</span> 为必填项。录取通知书或 Committed Letter 为必须上传（根据录取类型决定），支持图片或 PDF。提交后仅管理员可查看，其他家长不可见。
     </div>
 
     <div id="formError" class="msg"></div>
@@ -411,7 +465,11 @@
         </div>
         <div class="form-group">
           <label>学院 <span class="req">*</span></label>
-          <input type="text" autocomplete="off" id="fCollege" placeholder="如：Trinity College of Arts & Sciences"/>
+          <select id="fCollege">
+            <option value="">请选择</option>
+            <option value="Trinity College of Arts & Sciences">Trinity College of Arts & Sciences</option>
+            <option value="Pratt School of Engineering">Pratt School of Engineering</option>
+          </select>
         </div>
         <div class="form-group">
           <label>专业（可选）</label>
@@ -428,7 +486,7 @@
     <div class="form-card">
       <div class="section-title"><span>03</span> 文件上传 <span style="color:#C84B31;font-size:11px;">*</span></div>
       <div class="form-grid">
-        <div class="form-group full" id="letterGroup">
+        <div class="form-group full" id="letterGroup" style="display:none;">
           <label>录取通知书 <span class="req">*</span></label>
           <div class="upload-zone" id="letterZone"
                ondragover="handleDrag(event,'letterZone')"
@@ -443,7 +501,7 @@
             <button class="rm" onclick="removeFile('letter')">✕</button>
           </div>
         </div>
-        <div class="form-group full" id="committedLetterGroup">
+        <div class="form-group full" id="committedLetterGroup" style="display:none;">
           <label id="committedLetterLabel">Committed Letter</label>
           <div class="upload-zone" id="committedZone"
                ondragover="handleDrag(event,'committedZone')"
@@ -474,11 +532,12 @@
           <input type="text" autocomplete="off" id="fSubmitterName" placeholder="请输入姓名"/>
         </div>
         <div class="form-group">
-          <label>联系方式（微信 / 手机）<span class="req">*</span></label>
-          <input type="tel" autocomplete="off" id="fSubmitterContact" placeholder="请输入微信号或手机号"/>
+          <label>联系方式（微信号）<span class="req">*</span></label>
+          <input type="text" autocomplete="off" id="fSubmitterContact" placeholder="请输入微信号"/>
         </div>
       </div>
     </div>
+
 
     <button class="btn-submit" id="submitBtn" onclick="submitForm()">提 交</button>
 
@@ -543,12 +602,11 @@
       committedZone.style.borderColor = '';
       removeFile('committed');
 
-    // 其他（EA、ED2、其他）：显示录取通知书，隐藏 Committed Letter
+    // 未选择或RD未选committed：隐藏两者
     } else {
-      letterGroup.style.display = type ? 'block' : 'block';
+      letterGroup.style.display = 'none';
       clGroup.style.display = 'none';
       committedZone.style.borderColor = '';
-      removeFile('committed');
     }
   }
 
@@ -622,7 +680,7 @@
     const location = document.getElementById('fLocation').value.trim();
     const type    = document.getElementById('fType').value;
     const year    = document.getElementById('fYear').value;
-    const college = document.getElementById('fCollege').value.trim();
+    const college = (document.getElementById('fCollege').value || '').trim();
     const notes   = document.getElementById('fNotes').value.trim();
     const rdCommitted = document.getElementById('fCommitted').value;
 
@@ -679,10 +737,11 @@
 
       // 成功
       document.getElementById('formArea').style.display = 'none';
-      const s = document.getElementById('successScreen');
-      s.classList.add('show');
-      s.style.opacity = '0';
-      setTimeout(() => { s.style.animation = 'fadeUp 0.6s ease forwards'; }, 10);
+      const qr = document.getElementById('qrSection');
+      qr.classList.add('show');
+      qr.style.opacity = '0';
+      setTimeout(() => { qr.style.animation = 'fadeUp 0.6s ease forwards'; }, 10);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch(e) {
       showError('❌ ' + e.message);
@@ -711,7 +770,7 @@
     document.getElementById('formError').className = 'msg';
     document.getElementById('submitBtn').disabled = false;
     document.getElementById('submitBtn').textContent = '提 交';
-    document.getElementById('successScreen').classList.remove('show');
+    document.getElementById('qrSection').classList.remove('show');
     document.getElementById('formArea').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
