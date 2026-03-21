@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Duke Marine Lab 暑期项目 · DukeParents</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:   #012169;
+      --blue:   #003087;
+      --gold:   #c9a84c;
+      --gold-lt:#f5ecd4;
+      --sea:    #1a6b8a;
+      --sea-lt: #e6f4f8;
+      --bg:     #f5f3ef;
+      --card:   #ffffff;
+      --border: #e2ddd6;
+      --text:   #1a1a1a;
+      --muted:  #888070;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); min-height: 100vh; }
+
+    header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; }
+    .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; }
+    .back-link { margin-left: auto; font-size: 13px; color: rgba(255,255,255,0.7); text-decoration: none; }
+    .back-link:hover { color: var(--gold); }
+
+    .hero {
+      position: relative;
+      height: 380px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(1,33,105,0.92) 0%, rgba(1,33,105,0.4) 55%, rgba(0,0,0,0.05) 100%);
+    }
+    .hero-content { position: relative; z-index: 1; padding: 40px 32px; width: 100%; }
+    .hero-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border: 1px solid rgba(201,168,76,0.6);
+      border-radius: 20px;
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      margin-bottom: 14px;
+      font-family: 'DM Mono', monospace;
+    }
+    .hero h1 { font-size: clamp(22px, 4vw, 32px); font-weight: 700; color: #fff; line-height: 1.3; margin-bottom: 10px; }
+    .hero h1 em { font-style: italic; color: var(--gold); font-family: 'Lora', serif; }
+    .hero-sub { font-size: 14px; color: rgba(255,255,255,0.82); max-width: 520px; line-height: 1.7; margin-bottom: 16px; }
+    .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .hero-tag { padding: 5px 12px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; font-size: 11px; color: rgba(255,255,255,0.9); }
+
+    .photo-strip { display: grid; grid-template-columns: 1fr 1fr 1fr; height: 160px; gap: 3px; }
+    .photo-strip img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-strip .photo-placeholder { background: var(--sea); }
+
+    .page-wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 60px; }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-lt); display: flex; align-items: center; gap: 10px; }
+    .card-title-bar { width: 4px; height: 20px; background: var(--gold); border-radius: 2px; flex-shrink: 0; }
+
+    .info-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f0ede8; align-items: flex-start; font-size: 14px; line-height: 1.7; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { min-width: 110px; font-weight: 600; color: var(--muted); font-size: 12px; padding-top: 2px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+    .info-val { color: var(--text); flex: 1; }
+
+    .highlight { background: var(--gold-lt); border-left: 3px solid var(--gold); border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 14px 0; font-size: 13px; line-height: 1.8; color: #5a4a2a; }
+    .sea-box { background: var(--sea-lt); border-left: 3px solid var(--sea); border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 14px 0; font-size: 13px; line-height: 1.8; color: #0a3a4a; }
+
+    .course-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+    @media (max-width: 580px) { .course-grid { grid-template-columns: 1fr; } }
+    .course-item { background: #faf9f7; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+    .course-name { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+    .course-code { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+    .pack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 580px) { .pack-grid { grid-template-columns: 1fr; } }
+    .pack-category { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+    .pack-items { list-style: none; padding: 0; }
+    .pack-items li { font-size: 13px; padding: 4px 0; color: var(--text); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+    .pack-items li::before { content: '—'; color: var(--sea); font-weight: 700; flex-shrink: 0; }
+    .pack-warn li::before { content: '×'; color: #c84b31; font-weight: 700; }
+
+    .dorm-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 10px; margin-top: 4px; }
+    .dorm-feat { background: #faf9f7; border: 1px solid var(--border); border-radius: 8px; padding: 14px 12px; }
+    .dorm-feat-label { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .dorm-feat-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+    .section-photo { width: 100%; border-radius: 10px; margin: 16px 0; object-fit: cover; max-height: 220px; display: block; }
+    .photo-caption { font-size: 11px; color: var(--muted); text-align: center; margin-top: -10px; margin-bottom: 14px; font-family: 'DM Mono', monospace; }
+
+    .cost-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0ede8; font-size: 14px; }
+    .cost-row:last-child { border-bottom: none; }
+    .cost-amt { font-weight: 700; color: var(--navy); font-family: 'DM Mono', monospace; }
+
+    .links-wrap { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+    .link-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background: var(--navy); color: #fff; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; }
+    .link-btn:hover { background: #002060; }
+    .link-btn.outline { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); }
+    .link-btn.outline:hover { background: var(--navy); color: #fff; }
+
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace; }
+    .tag-s1 { background: #e3f2fd; color: #0d47a1; }
+    .tag-s2 { background: #e8f5e9; color: #1b5e20; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="hd">D</span>
+  <span class="ht">Duke Marine Lab 暑期项目</span>
+  <a href="index.html" class="back-link">← 返回主页</a>
+</header>
+
+<div class="hero">
+  <img class="hero-img"
+       src="https://nicholas.duke.edu/sites/default/files/styles/panopoly_image_full/public/general/duml-aerial.jpg"
+       onerror="this.onerror=null;this.src='https://nicholas.duke.edu/sites/default/files/2020-06/Marine-lab-drone.jpg';"
+       alt="Duke Marine Lab aerial view Beaufort NC"/>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">DUKE UNIVERSITY MARINE LABORATORY · BEAUFORT, NC</div>
+    <h1>在海边读大学<br><em>Duke Marine Lab 暑期体验</em></h1>
+    <p class="hero-sub">位于北卡罗来纳州Beaufort的海岛校区，每年夏季开放两个六周制学期，小班授课，沉浸式海洋科学体验。</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Session I & II</span>
+      <span class="hero-tag">全Duke本科生可选</span>
+      <span class="hero-tag">含住宿餐饮</span>
+      <span class="hero-tag">可累计学分</span>
+      <span class="hero-tag">奖学金可申请</span>
+    </div>
+  </div>
+</div>
+
+<div class="photo-strip">
+  <img src="https://nicholas.duke.edu/sites/default/files/styles/panopoly_image_full/public/general/shearwater-catamaran.jpg"
+       onerror="this.onerror=null;this.style.background='#1a6b8a';"
+       alt="Research vessel Shearwater"/>
+  <img src="https://nicholas.duke.edu/sites/default/files/styles/panopoly_image_full/public/general/duml-students-dock.jpg"
+       onerror="this.onerror=null;this.style.background='#012169';"
+       alt="Students at Marine Lab dock"/>
+  <img src="https://nicholas.duke.edu/sites/default/files/styles/panopoly_image_full/public/general/beaufort-nc-waterfront.jpg"
+       onerror="this.onerror=null;this.style.background='#0a4a6e';"
+       alt="Beaufort NC waterfront"/>
+</div>
+
+<div class="page-wrap">
+
+  <div class="card">
+    <div class="card-title">
+      <div class="card-title-bar"></div>
+      项目概览
+    </div>
+    <div class="highlight">
+      Duke Marine Lab(DUML)位于Beaufort小岛，是Nicholas School of the Environment旗下的海洋科研校区，拥有超过70年历史。每年暑期开设两个六周学期，所有Duke本科生均可注册，课程学分完全计入Duke成绩单。
+    </div>
+    <div class="info-row">
+      <div class="info-label">地点</div>
+      <div class="info-val">Pivers Island，Beaufort，北卡罗来纳州 (距Durham约3小时车程)</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Session I</div>
+      <div class="info-val">约5月中旬—6月底，为期六周 <span class="tag tag-s1">Summer 1</span></div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Session II</div>
+      <div class="info-val">约7月初—8月初，为期六周 <span class="tag tag-s2">Summer 2</span></div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">授课规模</div>
+      <div class="info-val">小班教学，学生与教授互动密切，强调实地田野调查与出海作业</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">适合学生</div>
+      <div class="info-val">对海洋科学、环境科学、生物、生态感兴趣的本科生；也有有机化学等非海洋类课程可选</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">注册方式</div>
+      <div class="info-val">Duke学生通过DukeHub正常注册，操作与Durham校区课程完全相同；校外学生联系 gwendy.womble@duke.edu</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">研究船</div>
+      <div class="info-val">校区配有77英尺双体科考船Shearwater，出海田野课程可登船作业</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <div class="card-title-bar"></div>
+      暑期课程 (Session I 为例)
+    </div>
+    <div class="sea-box">
+      课程涵盖海洋科学类与非海洋科学类。注册后住宿餐饮自动配套，无需单独申请。每周课程一般分T/F与M/W/Th两个时段，可同时选修两门课。
+    </div>
+    <div class="course-grid">
+      <div class="course-item">
+        <div class="course-name">海龟生物学与保护</div>
+        <div class="course-code">MARSCI/BIOLOGY/ENVIRON 375A</div>
+      </div>
+      <div class="course-item">
+        <div class="course-name">保育生物学与政策</div>
+        <div class="course-code">ENVIRON 376A</div>
+      </div>
+      <div class="course-item">
+        <div class="course-name">海洋哺乳动物保育</div>
+        <div class="course-code">BIOLOGY/ENVIRON 377A</div>
+      </div>
+      <div class="course-item">
+        <div class="course-name">无人机在生物与生态中的应用</div>
+        <div class="course-code">MARSCI 378A</div>
+      </div>
+      <div class="course-item">
+        <div class="course-name">有机化学I (在Beaufort授课)</div>
+        <div class="course-code">CHEM 201</div>
+      </div>
+      <div class="course-item">
+        <div class="course-name">计算机科学导论</div>
+        <div class="course-code">COMPSCI 101</div>
+      </div>
+      <div class="course-item">
+        <div class="course-name">海洋生态学</div>
+        <div class="course-code">ENVIRON 773LA</div>
+      </div>
+      <div class="course-item">
+        <div class="course-name">独立科研项目 (Independent Study)</div>
+        <div class="course-code">联系 gwendy.womble@duke.edu</div>
+      </div>
+    </div>
+    <div class="highlight" style="margin-top:16px;">
+      学术问题联系：katie.wood@duke.edu (课程内容与选课建议)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <div class="card-title-bar"></div>
+      费用与奖学金
+    </div>
+    <div class="cost-row">
+      <div>普通课程 (每学分)</div>
+      <div class="cost-amt">$3,145</div>
+    </div>
+    <div class="cost-row">
+      <div>含实验室课程 (每学分)</div>
+      <div class="cost-amt">$4,025</div>
+    </div>
+    <div class="cost-row">
+      <div>住宿+餐饮</div>
+      <div class="cost-amt">随课程自动配套，另计</div>
+    </div>
+    <div class="cost-row">
+      <div>University综合费用</div>
+      <div class="cost-amt">另计</div>
+    </div>
+    <div class="sea-box" style="margin-top:16px;">
+      <strong>奖学金与RA职位</strong><br/>
+      暑期奖学金可申请。学生也可申请Residential Advisor(RA)职位，入选后100%住宿餐饮全免。详情见 nicholas.duke.edu/marinelab/academics/undergraduate/scholarships-financial-aid
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <div class="card-title-bar"></div>
+      宿舍与生活
+    </div>
+    <div class="highlight">
+      所有注册学生均住在Marine Lab海岛校区，宿舍风格类似小木屋(cottage-style)，多人间、双层床，有公共卫浴。环境远离城市，海风习习，是很多Duke学生难忘的夏天。
+    </div>
+    <div class="dorm-features">
+      <div class="dorm-feat">
+        <div class="dorm-feat-label">宿舍类型</div>
+        <div class="dorm-feat-desc">小木屋式多人宿舍，家具齐全，床上用品可借($13/人)，建议自带</div>
+      </div>
+      <div class="dorm-feat">
+        <div class="dorm-feat-label">卫浴</div>
+        <div class="dorm-feat-desc">公共卫浴，按性别分区</div>
+      </div>
+      <div class="dorm-feat">
+        <div class="dorm-feat-label">餐饮</div>
+        <div class="dorm-feat-desc">食堂一日三餐，每周七天，随住宿自动配套</div>
+      </div>
+      <div class="dorm-feat">
+        <div class="dorm-feat-label">洗衣</div>
+        <div class="dorm-feat-desc">校内洗衣机约$3.50/次，洗衣液免费提供</div>
+      </div>
+      <div class="dorm-feat">
+        <div class="dorm-feat-label">周边环境</div>
+        <div class="dorm-feat-desc">Beaufort历史小镇，海鲜餐厅、小店步行可达；有游泳码头(swim dock)</div>
+      </div>
+      <div class="dorm-feat">
+        <div class="dorm-feat-label">科研设施</div>
+        <div class="dorm-feat-desc">分子实验室、无人机实验室(MaRRS)、湿实验室、Rachel Carson Reserve田野点</div>
+      </div>
+    </div>
+    <div class="sea-box" style="margin-top:16px;">
+      住宿和餐饮在注册课程后<strong>自动配套</strong>，无需单独申请。注册后Marine Lab会发邮件告知入住安排，并提供从Durham前往Beaufort的交通协助信息。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <div class="card-title-bar"></div>
+      建议携带物品
+    </div>
+    <div class="pack-grid">
+      <div>
+        <div class="pack-category">衣物与户外装备</div>
+        <ul class="pack-items">
+          <li>轻便速干衣 (多套，田野作业易脏)</li>
+          <li>长裤、长袖 (实验室要求)</li>
+          <li>封闭式运动鞋 (实验室必须)</li>
+          <li>水上凉鞋/沙滩拖鞋</li>
+          <li>防晒衣/宽檐帽</li>
+          <li>轻薄雨衣或防风外套</li>
+          <li>泳衣 (海边户外活动)</li>
+        </ul>
+      </div>
+      <div>
+        <div class="pack-category">日常用品</div>
+        <ul class="pack-items">
+          <li>床单/枕套 (床上用品可借，建议自带)</li>
+          <li>毛巾 (至少2条)</li>
+          <li>防晒霜SPF 50+ (大量备用，极重要)</li>
+          <li>防蚊喷雾</li>
+          <li>常备药品/处方药</li>
+          <li>保温水壶 (沿海天气炎热)</li>
+          <li>背包 (田野课用)</li>
+        </ul>
+      </div>
+      <div>
+        <div class="pack-category">学习用品</div>
+        <ul class="pack-items">
+          <li>笔记本电脑</li>
+          <li>防水野外记录本</li>
+          <li>计算器 (有机化学课需要)</li>
+          <li>充电宝</li>
+          <li>防水手机套 (出海田野用)</li>
+        </ul>
+      </div>
+      <div>
+        <div class="pack-category">零花钱参考</div>
+        <ul class="pack-items">
+          <li>建议备约$50/周零花</li>
+          <li>ATM卡或现金均可</li>
+          <li>Beaufort镇内有餐厅、咖啡店</li>
+          <li>洗衣费约$3.50/次 (备零钱)</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:20px;">
+      <div class="pack-category" style="color:#c84b31;border-color:#f5c6c0;">注意事项</div>
+      <ul class="pack-items pack-warn" style="margin-top:8px;">
+        <li>实验室内禁止穿开趾鞋 (凉鞋、拖鞋)</li>
+        <li>海边气候潮湿炎热，防晒和补水极为重要</li>
+        <li>行李不宜过多，小岛宿舍储物空间有限</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <div class="card-title-bar"></div>
+      官方资源
+    </div>
+    <div class="links-wrap">
+      <a class="link-btn" href="https://nicholas.duke.edu/marinelab/academics/undergraduate" target="_blank">DUML本科生项目官网</a>
+      <a class="link-btn outline" href="https://nicholas.duke.edu/marinelab/academics/courses/summer-1-courses" target="_blank">Session I 课程列表</a>
+      <a class="link-btn outline" href="https://nicholas.duke.edu/marinelab/academics/courses/summer-2-courses" target="_blank">Session II 课程列表</a>
+      <a class="link-btn outline" href="https://nicholas.duke.edu/marinelab/academics/undergraduate/scholarships-financial-aid" target="_blank">奖学金申请</a>
+      <a class="link-btn outline" href="https://nicholas.duke.edu/multimedia/duke-marine-lab-360-tour" target="_blank">360度虚拟校园参观</a>
+    </div>
+    <div class="highlight" style="margin-top:16px;">
+      学术问题：katie.wood@duke.edu (课程内容)<br/>
+      注册/住宿问题：gwendy.womble@duke.edu
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
