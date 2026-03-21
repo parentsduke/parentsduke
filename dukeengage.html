@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DukeEngage 暑期公益项目 · DukeParents</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --navy:#012169;--blue:#003087;--gold:#c9a84c;--gold-lt:#f5ecd4;--green:#1a6b3c;--green-lt:#e8f5ee;--bg:#f5f3ef;--card:#ffffff;--border:#e2ddd6;--text:#1a1a1a;--muted:#888070; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);font-family:'Noto Serif SC',serif;color:var(--text);min-height:100vh;}
+    header{background:var(--navy);border-bottom:3px solid var(--gold);padding:0 32px;height:60px;display:flex;align-items:center;gap:14px;}
+    .hd{font-size:28px;font-weight:900;color:var(--navy);letter-spacing:-1px;-webkit-text-stroke:1.5px #ffffff;}
+    .ht{font-size:14px;color:rgba(255,255,255,0.7);font-weight:600;}
+    .back-link{margin-left:auto;font-size:13px;color:rgba(255,255,255,0.7);text-decoration:none;}
+    .back-link:hover{color:var(--gold);}
+    .hero{position:relative;height:360px;overflow:hidden;display:flex;align-items:flex-end;background:linear-gradient(135deg,#012169 0%,#1a4a2a 100%);}
+    .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(1,33,105,0.92) 0%,rgba(1,33,105,0.4) 55%,rgba(0,0,0,0.05) 100%);}
+    .hero-content{position:relative;z-index:1;padding:40px 32px;width:100%;}
+    .hero-badge{display:inline-block;padding:4px 14px;border:1px solid rgba(201,168,76,0.6);border-radius:20px;font-size:10px;color:var(--gold);letter-spacing:0.15em;margin-bottom:14px;font-family:'DM Mono',monospace;}
+    .hero h1{font-size:clamp(22px,4vw,32px);font-weight:700;color:#fff;line-height:1.3;margin-bottom:10px;}
+    .hero h1 em{font-style:italic;color:var(--gold);font-family:'Lora',serif;}
+    .hero-sub{font-size:14px;color:rgba(255,255,255,0.82);max-width:520px;line-height:1.7;margin-bottom:16px;}
+    .hero-tags{display:flex;gap:8px;flex-wrap:wrap;}
+    .hero-tag{padding:5px 12px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;font-size:11px;color:rgba(255,255,255,0.9);}
+    .page-wrap{max-width:860px;margin:0 auto;padding:40px 20px 60px;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .card-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid var(--gold-lt);display:flex;align-items:center;gap:10px;}
+    .card-title-bar{width:4px;height:20px;background:var(--gold);border-radius:2px;flex-shrink:0;}
+    .info-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f0ede8;align-items:flex-start;font-size:14px;line-height:1.7;}
+    .info-row:last-child{border-bottom:none;}
+    .info-label{min-width:110px;font-weight:600;color:var(--muted);font-size:12px;padding-top:2px;font-family:'DM Mono',monospace;flex-shrink:0;}
+    .info-val{color:var(--text);flex:1;}
+    .highlight{background:var(--gold-lt);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:12px 16px;margin:14px 0;font-size:13px;line-height:1.8;color:#5a4a2a;}
+    .green-box{background:var(--green-lt);border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:12px 16px;margin:14px 0;font-size:13px;line-height:1.8;color:#0a3a1a;}
+    .warn-box{background:#fdecea;border-left:3px solid #c84b31;border-radius:0 6px 6px 0;padding:12px 16px;margin:14px 0;font-size:13px;line-height:1.8;color:#5a1a1a;}
+    .program-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+    @media(max-width:580px){.program-grid{grid-template-columns:1fr;}}
+    .program-item{background:#faf9f7;border:1px solid var(--border);border-radius:8px;padding:14px;}
+    .program-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+    .program-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+    .tl-item{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid #f0ede8;font-size:13px;line-height:1.6;}
+    .tl-item:last-child{border-bottom:none;}
+    .tl-date{min-width:100px;font-weight:700;color:var(--navy);font-family:'DM Mono',monospace;font-size:12px;flex-shrink:0;}
+    .links-wrap{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;}
+    .link-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;background:var(--navy);color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;}
+    .link-btn:hover{background:#002060;}
+    .link-btn.outline{background:transparent;color:var(--navy);border:1.5px solid var(--navy);}
+    .link-btn.outline:hover{background:var(--navy);color:#fff;}
+  </style>
+</head>
+<body>
+<header>
+  <span class="hd">D</span>
+  <span class="ht">DukeEngage 暑期公益项目</span>
+  <a href="index.html" class="back-link">← 返回主页</a>
+</header>
+<div class="hero">
+  <img class="hero-img" src="dukeengage-hero.jpg" onerror="this.style.display='none'" alt="DukeEngage"/>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">DUKEENGAGE · DUKE UNIVERSITY · SINCE 2007</div>
+    <h1>走出校园，改变世界<br><em>DukeEngage 暑期公益项目</em></h1>
+    <p class="hero-sub">每年资助约400名Duke本科生，赴全球或美国各地开展8周全职社区服务，全额资助生活费与差旅费，无需自费。</p>
+    <div class="hero-tags">
+      <span class="hero-tag">8周全职服务</span>
+      <span class="hero-tag">全额资助</span>
+      <span class="hero-tag">大一至大三可申请</span>
+      <span class="hero-tag">国内外均有项目</span>
+      <span class="hero-tag">录取率低于50%</span>
+    </div>
+  </div>
+</div>
+<div class="page-wrap">
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>项目概览</div>
+    <div class="highlight">DukeEngage创立于2007年，是Duke旗舰级本科公益项目。每年约400名学生参与，与社区组织合作解决教育、健康、环保、社会正义等领域的现实问题，项目期间全额覆盖生活费和差旅费，学生无需自付任何费用。</div>
+    <div class="info-row"><div class="info-label">项目时长</div><div class="info-val">8周，在暑假期间进行</div></div>
+    <div class="info-row"><div class="info-label">申请资格</div><div class="info-val">大一至大三在读本科生(即rising sophomore至rising senior)，学籍正常、无纪律/学业问题</div></div>
+    <div class="info-row"><div class="info-label">录取竞争</div><div class="info-val">录取率低于50%；大约25%为大二生、50%为大三生、25%为大四生，无年级配额</div></div>
+    <div class="info-row"><div class="info-label">费用</div><div class="info-val">全程免费，包含住宿、餐饮、往返交通、生活津贴，不可叠加其他Duke资助项目</div></div>
+    <div class="info-row"><div class="info-label">项目地点</div><div class="info-val">遍及美国本地(如Durham、DC等)、国际(非洲、亚洲、拉丁美洲等)，每年超过20个项目可选</div></div>
+    <div class="info-row"><div class="info-label">是否获学分</div><div class="info-val">一般不直接授课学分，部分项目通过Independent Study可获1—2学分，需提前与教授确认</div></div>
+    <div class="info-row"><div class="info-label">重要限制</div><div class="info-val">参与期间不可同时修课或参加其他Duke暑期资助项目(Data+、Bass Connections、实习资助等)</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>项目方向</div>
+    <div class="program-grid">
+      <div class="program-item"><div class="program-name">教育</div><div class="program-desc">在Durham、DC或海外与K-12学校、社区教育机构合作，提供教学辅导与课程开发</div></div>
+      <div class="program-item"><div class="program-name">全球公共卫生</div><div class="program-desc">在非洲、亚洲、拉美等地与医疗NGO合作，参与医疗服务、疾病预防与社区健康推广</div></div>
+      <div class="program-item"><div class="program-name">环境与气候</div><div class="program-desc">参与环境保护、能源可持续、气候正义等领域的一线社区工作</div></div>
+      <div class="program-item"><div class="program-name">社会正义与人权</div><div class="program-desc">与倡导组织合作，从事移民权利、种族平等、司法改革等议题的政策研究与社区外展</div></div>
+      <div class="program-item"><div class="program-name">科技政策(DC)</div><div class="program-desc">在华盛顿DC政府机构或智库实习，参与科学政策分析与立法追踪(如NIH、AAAS等)</div></div>
+      <div class="program-item"><div class="program-name">Gateway项目(新生专属)</div><div class="program-desc">入学前在家乡开展至少100小时社区服务，获$1,500津贴，开学后在Duke进行4天汇报</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>申请时间线(以Summer 2026为例)</div>
+    <div class="tl-item"><div class="tl-date">9月初</div><div>全体Info Sessions，建议新生和大二生参加了解项目</div></div>
+    <div class="tl-item"><div class="tl-date">10月上中旬</div><div>DukeEngage Days：各项目单独说明会，直接听项目负责人介绍</div></div>
+    <div class="tl-item"><div class="tl-date">10—11月</div><div>正式申请开放，各项目有各自截止日期，需提前确认</div></div>
+    <div class="tl-item"><div class="tl-date">11月下旬</div><div>录取结果公布(2025年11月25日发邮件通知)</div></div>
+    <div class="tl-item"><div class="tl-date">次年春季</div><div>被录取学生参加春季线下准备活动，与项目组沟通行前事宜</div></div>
+    <div class="tl-item"><div class="tl-date">5—8月</div><div>正式开始8周项目，全程有Duke教职人员及当地合作机构支持</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>申请建议</div>
+    <div class="warn-box">DukeEngage不可与其他Duke暑期资助项目同时参加，包括Data+、Bass Connections、Career Center实习资助等。若已接受其他资助，需放弃DukeEngage资格。</div>
+    <div class="highlight">申请建议：尽早参加Info Sessions和DukeEngage Days；认真研究每个项目的社区合作方向，在申请文书中展示对该社区议题的真实了解，而非泛泛而谈"公益热情"。可同时申请多个项目，但只能参加一个。</div>
+    <div class="info-row"><div class="info-label">联系方式</div><div class="info-val">DukeEngage@duke.edu</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>官方资源</div>
+    <div class="links-wrap">
+      <a class="link-btn" href="https://dukeengage.duke.edu/" target="_blank">DukeEngage官网</a>
+      <a class="link-btn outline" href="https://dukeengage.duke.edu/learn-more/" target="_blank">项目详情与FAQ</a>
+      <a class="link-btn outline" href="https://dukeengage.duke.edu/programs/" target="_blank">全部项目列表</a>
+      <a class="link-btn outline" href="https://experiences.duke.edu/opportunities/dukeengage/" target="_blank">Duke Summer Experiences介绍</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

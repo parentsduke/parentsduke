@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BSURF / SURF 暑期科研项目 · DukeParents</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--navy:#012169;--blue:#003087;--gold:#c9a84c;--gold-lt:#f5ecd4;--purple:#4a1a8a;--purple-lt:#f0eaff;--bg:#f5f3ef;--card:#ffffff;--border:#e2ddd6;--text:#1a1a1a;--muted:#888070;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);font-family:'Noto Serif SC',serif;color:var(--text);min-height:100vh;}
+    header{background:var(--navy);border-bottom:3px solid var(--gold);padding:0 32px;height:60px;display:flex;align-items:center;gap:14px;}
+    .hd{font-size:28px;font-weight:900;color:var(--navy);letter-spacing:-1px;-webkit-text-stroke:1.5px #ffffff;}
+    .ht{font-size:14px;color:rgba(255,255,255,0.7);font-weight:600;}
+    .back-link{margin-left:auto;font-size:13px;color:rgba(255,255,255,0.7);text-decoration:none;}
+    .back-link:hover{color:var(--gold);}
+    .hero{position:relative;height:360px;overflow:hidden;display:flex;align-items:flex-end;background:linear-gradient(135deg,#012169 0%,#2a1a5a 100%);}
+    .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(1,33,105,0.92) 0%,rgba(1,33,105,0.4) 55%,rgba(0,0,0,0.05) 100%);}
+    .hero-content{position:relative;z-index:1;padding:40px 32px;width:100%;}
+    .hero-badge{display:inline-block;padding:4px 14px;border:1px solid rgba(201,168,76,0.6);border-radius:20px;font-size:10px;color:var(--gold);letter-spacing:0.15em;margin-bottom:14px;font-family:'DM Mono',monospace;}
+    .hero h1{font-size:clamp(22px,4vw,32px);font-weight:700;color:#fff;line-height:1.3;margin-bottom:10px;}
+    .hero h1 em{font-style:italic;color:var(--gold);font-family:'Lora',serif;}
+    .hero-sub{font-size:14px;color:rgba(255,255,255,0.82);max-width:520px;line-height:1.7;margin-bottom:16px;}
+    .hero-tags{display:flex;gap:8px;flex-wrap:wrap;}
+    .hero-tag{padding:5px 12px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;font-size:11px;color:rgba(255,255,255,0.9);}
+    .page-wrap{max-width:860px;margin:0 auto;padding:40px 20px 60px;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .card-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid var(--gold-lt);display:flex;align-items:center;gap:10px;}
+    .card-title-bar{width:4px;height:20px;background:var(--gold);border-radius:2px;flex-shrink:0;}
+    .info-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f0ede8;align-items:flex-start;font-size:14px;line-height:1.7;}
+    .info-row:last-child{border-bottom:none;}
+    .info-label{min-width:110px;font-weight:600;color:var(--muted);font-size:12px;padding-top:2px;font-family:'DM Mono',monospace;flex-shrink:0;}
+    .info-val{color:var(--text);flex:1;}
+    .highlight{background:var(--gold-lt);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:12px 16px;margin:14px 0;font-size:13px;line-height:1.8;color:#5a4a2a;}
+    .purple-box{background:var(--purple-lt);border-left:3px solid var(--purple);border-radius:0 6px 6px 0;padding:12px 16px;margin:14px 0;font-size:13px;line-height:1.8;color:#2a1a5a;}
+    .warn-box{background:#fdecea;border-left:3px solid #c84b31;border-radius:0 6px 6px 0;padding:12px 16px;margin:14px 0;font-size:13px;line-height:1.8;color:#5a1a1a;}
+    .program-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+    @media(max-width:580px){.program-grid{grid-template-columns:1fr;}}
+    .program-item{background:#faf9f7;border:1px solid var(--border);border-radius:8px;padding:14px;}
+    .program-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+    .program-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+    .tl-item{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid #f0ede8;font-size:13px;line-height:1.6;}
+    .tl-item:last-child{border-bottom:none;}
+    .tl-date{min-width:100px;font-weight:700;color:var(--navy);font-family:'DM Mono',monospace;font-size:12px;flex-shrink:0;}
+    .links-wrap{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;}
+    .link-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;background:var(--navy);color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;}
+    .link-btn:hover{background:#002060;}
+    .link-btn.outline{background:transparent;color:var(--navy);border:1.5px solid var(--navy);}
+    .link-btn.outline:hover{background:var(--navy);color:#fff;}
+    .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace;}
+    .tag-old{background:#fff3e0;color:#7a4000;}
+    .tag-new{background:#e8f5e9;color:#1b5e20;}
+  </style>
+</head>
+<body>
+<header>
+  <span class="hd">D</span>
+  <span class="ht">BSURF / SURF 暑期科研项目</span>
+  <a href="index.html" class="back-link">← 返回主页</a>
+</header>
+<div class="hero">
+  <img class="hero-img" src="bsurf-hero.jpg" onerror="this.style.display='none'" alt="BSURF research lab"/>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">UNDERGRADUATE RESEARCH · DUKE UNIVERSITY</div>
+    <h1>在实验室里度过夏天<br><em>BSURF / SURF 暑期科研项目</em></h1>
+    <p class="hero-sub">专为大一升大二学生设计的8周付薪暑期科研项目，在Duke顶级实验室跟随导师进行真实科研，含$4,000津贴和住宿。</p>
+    <div class="hero-tags">
+      <span class="hero-tag">8周科研</span>
+      <span class="hero-tag">$4,000津贴</span>
+      <span class="hero-tag">含住宿</span>
+      <span class="hero-tag">仅限rising sophomore</span>
+      <span class="hero-tag">无需科研经验</span>
+    </div>
+  </div>
+</div>
+<div class="page-wrap">
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>BSURF与SURF的关系</div>
+    <div class="highlight">BSURF(Biological Sciences Undergraduate Research Fellowship)是Duke专为大一生设计的暑期科研项目，已运行多年。从2026年起，URS(本科科研支持办公室)在BSURF基础上推出了更广泛的SURF项目，涵盖生物、脑科学等多个领域。注意：生物与脑科学方向的SURF在Summer 2026暂不开放，建议关注官网最新公告。</div>
+    <div class="info-row"><div class="info-label">项目名称</div><div class="info-val">SURF(Summer Undergraduate Research Fellowship) <span class="tag tag-new">现行</span>，前身为BSURF <span class="tag tag-old">旧称</span></div></div>
+    <div class="info-row"><div class="info-label">适合学生</div><div class="info-val">仅限rising sophomore(大一升大二)，即大一在读、当年暑假后升入大二的学生</div></div>
+    <div class="info-row"><div class="info-label">项目时长</div><div class="info-val">8周，暑假期间在Duke Durham校区进行</div></div>
+    <div class="info-row"><div class="info-label">津贴</div><div class="info-val">$4,000奖学金(stipend)，属应税收入</div></div>
+    <div class="info-row"><div class="info-label">住宿</div><div class="info-val">提供Duke校园住宿(双人间)；有经济需求的学生可申请交通补助</div></div>
+    <div class="info-row"><div class="info-label">是否需要经验</div><div class="info-val">不需要！项目特别欢迎从未做过科研但对科研有热情的同学申请</div></div>
+    <div class="info-row"><div class="info-label">项目限制</div><div class="info-val">参与期间不可修课或兼职其他工作，须全身心投入科研</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>项目内容</div>
+    <div class="purple-box">学生被分配到Duke生物或生物医学科学实验室，在教授(PI)和研究生导师的指导下开展真实科研项目，并通过系列工作坊学习科研方法、学术写作与成果汇报技能。</div>
+    <div class="program-grid">
+      <div class="program-item"><div class="program-name">实验室科研</div><div class="program-desc">全职在实验室工作，学习实验技术、数据采集、问题排查等真实科研流程</div></div>
+      <div class="program-item"><div class="program-name">教授研讨会</div><div class="program-desc">参加Duke各领域教授主持的学术讲座，拓展跨领域视野</div></div>
+      <div class="program-item"><div class="program-name">专业技能工作坊</div><div class="program-desc">学习如何向专业和非专业受众有效传达科研成果，包括科学写作和演讲</div></div>
+      <div class="program-item"><div class="program-name">结业汇报</div><div class="program-desc">在项目结束时进行海报展示或口头汇报，展示整个夏天的科研成果</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>申请流程</div>
+    <div class="tl-item"><div class="tl-date">大一秋季</div><div>建议尽早与感兴趣领域的教授联系，通过邮件或office hours了解实验室研究方向，争取支持信(Letter of Support)</div></div>
+    <div class="tl-item"><div class="tl-date">11月下旬</div><div>申请系统开放(以过往为例约在11月底)，通过Duke Experiences申请平台提交</div></div>
+    <div class="tl-item"><div class="tl-date">2月中旬</div><div>申请截止(以过往为例约2月12日)，需提交：个人陈述、成绩单、一封Duke教授或讲师的支持信</div></div>
+    <div class="tl-item"><div class="tl-date">3—4月</div><div>录取结果公布，通知实验室匹配情况</div></div>
+    <div class="tl-item"><div class="tl-date">5—8月</div><div>正式开始8周项目</div></div>
+    <div class="highlight" style="margin-top:14px;">支持信只需要一封(填写在Academic Recommender栏位)，来自Duke教授或讲师即可，研究生助教的信也被接受。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>其他相关暑期科研项目</div>
+    <div class="program-grid">
+      <div class="program-item">
+        <div class="program-name">MGM SURE</div>
+        <div class="program-desc">Duke分子遗传学与微生物学系暑期科研，面向有兴趣从事生物医学研究的本科生</div>
+      </div>
+      <div class="program-item">
+        <div class="program-name">Duke SROP</div>
+        <div class="program-desc">9周生物医学研究项目，面向有意读PhD的学生，含住宿、餐补和竞争性津贴；欢迎少数族裔学生申请</div>
+      </div>
+      <div class="program-item">
+        <div class="program-name">ECE REU</div>
+        <div class="program-desc">电子与计算机工程系暑期研究经历项目，面向全美本科生，含$5,400津贴</div>
+      </div>
+      <div class="program-item">
+        <div class="program-name">自主联系教授</div>
+        <div class="program-desc">大一即可直接发邮件给感兴趣的教授，询问暑期是否可以加入实验室做志愿或付薪RA，是最灵活的方式</div>
+      </div>
+    </div>
+    <div class="warn-box" style="margin-top:16px;">注意：生物与脑科学方向的SURF在Summer 2026不开放，请关注URS官网最新公告。其他方向的SURF是否开放需单独确认。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-bar"></div>官方资源</div>
+    <div class="links-wrap">
+      <a class="link-btn" href="https://undergraduateresearch.duke.edu/SURF" target="_blank">SURF官方页面</a>
+      <a class="link-btn outline" href="https://undergraduateresearch.duke.edu/opportunities" target="_blank">全部本科科研机会</a>
+      <a class="link-btn outline" href="https://undergraduateresearch.duke.edu/urs-funding-opportunities" target="_blank">URS资助项目汇总</a>
+      <a class="link-btn outline" href="https://experiences.duke.edu/" target="_blank">Duke Summer Experiences</a>
+    </div>
+    <div class="highlight" style="margin-top:16px;">
+      联系方式：URS办公室 undergraduateresearch.duke.edu<br/>
+      建议大一秋季学期即开始联系教授，不要等到申请截止前才行动。
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
