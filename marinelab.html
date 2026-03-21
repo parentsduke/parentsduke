@@ -128,6 +128,16 @@
     .tag-s1 { background: #e3f2fd; color: #0d47a1; }
     .tag-s2 { background: #e8f5e9; color: #1b5e20; }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  (async function() {
+    const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const { data: { session } } = await db.auth.getSession();
+    if (!session) { window.location.href = 'index.html'; }
+  })();
+</script>
 </head>
 <body>
 
