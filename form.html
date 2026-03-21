@@ -762,38 +762,6 @@
       const { error } = await db.from('admissions_submissions').insert(payload);
       if (error) throw new Error(error.message);
 
-      // 发送邮件通知（失败不影响提交结果）
-      try {
-        const emailBody = [
-          `姓名：${payload.student_name_cn}（${payload.student_name_en}）`,
-          `高中：${payload.high_school}　地区：${payload.location}`,
-          `录取类型：${payload.admission_type}　届次：${payload.class_year}`,
-          `学院：${payload.college || '—'}　专业：${payload.major || '—'}`,
-          payload.committed !== null ? `已Committed：${payload.committed ? '是' : '否'}` : '',
-          `备注：${payload.notes || '—'}`,
-          ``,
-          `提交者：${payload.submitter_name}　微信：${payload.submitter_contact}`,
-          payload.letter_path ? `录取通知书：${payload.letter_path}` : '',
-          payload.committed_letter_path ? `Committed Letter：${payload.committed_letter_path}` : '',
-        ].filter(Boolean).join('\n');
-
-        await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer re_fNGSGoVA_L79xBdocfhNuGpMKNks5oS3U',
-          },
-          body: JSON.stringify({
-            from: 'noreply@dukeparents.org',
-            to: ['weihong_j@yahoo.com', 'lixiaobing@gmail.com'],
-            subject: `【新录取提交】${payload.student_name_cn} · Duke ${payload.class_year}`,
-            text: emailBody,
-          }),
-        });
-      } catch(emailErr) {
-        console.warn('邮件通知发送失败：', emailErr);
-      }
-
       // 成功
       document.getElementById('formArea').style.display = 'none';
       const qr = document.getElementById('qrSection');
