@@ -493,7 +493,7 @@
                ondragleave="handleDragLeave('letterZone')"
                ondrop="handleDrop(event,'letter')">
             <input type="file" id="fLetter" accept="image/*,.pdf" onchange="handleFile(event,'letter')"/>
-            <div class="upload-icon">📄</div>
+            
             <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
           </div>
           <div class="file-preview" id="letterPreview">
@@ -508,7 +508,7 @@
                ondragleave="handleDragLeave('committedZone')"
                ondrop="handleDrop(event,'committed')">
             <input type="file" id="fCommittedLetter" accept="image/*,.pdf" onchange="handleFile(event,'committed')"/>
-            <div class="upload-icon">✉️</div>
+            
             <div class="upload-hint" id="committedLetterHint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
           </div>
           <div class="file-preview" id="committedPreview">
@@ -582,7 +582,7 @@
       letterGroup.style.display = 'none';
       clGroup.style.display = 'block';
       clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（ED 必须上传）';
-      clHint.innerHTML  = '⚠️ ED录取必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
+      clHint.innerHTML  = 'ED录取必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
       committedZone.style.borderColor = '#C84B31';
       removeFile('letter');
 
@@ -591,7 +591,7 @@
       letterGroup.style.display = 'none';
       clGroup.style.display = 'block';
       clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（已Committed必须上传）';
-      clHint.innerHTML  = '⚠️ 已Committed必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
+      clHint.innerHTML  = '已Committed必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
       committedZone.style.borderColor = '#C84B31';
       removeFile('letter');
 
