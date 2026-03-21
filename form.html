@@ -337,6 +337,25 @@
       .hero { padding: 28px 20px 24px; }
       .hero h1 { font-size: 20px; }
     }
+
+    /* ── Lightbox ── */
+    .lightbox-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    .lightbox-overlay.show { display: flex; }
+    .lightbox-overlay img {
+      max-width: 92vw;
+      max-height: 88vh;
+      border-radius: 10px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
   </style>
 </head>
 <body>
@@ -394,13 +413,15 @@
         <div style="text-align:center;">
           <img src="2.png"
                alt="扯谈Duke群截图"
-               style="width:140px;height:auto;border-radius:10px;border:1px solid #e2ddd6;box-shadow:0 2px 8px rgba(0,0,0,0.08);"/>
+               onclick="openLightbox(this)"
+               style="width:140px;height:auto;border-radius:10px;border:1px solid #e2ddd6;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:zoom-in;"/>
           <div style="margin-top:6px;font-size:11px;color:#888070;">扯谈 Duke 群 2.0（246人）</div>
         </div>
         <div style="text-align:center;">
           <img src="30.png"
                alt="Duke2030家长群截图"
-               style="width:140px;height:auto;border-radius:10px;border:1px solid #e2ddd6;box-shadow:0 2px 8px rgba(0,0,0,0.08);"/>
+               onclick="openLightbox(this)"
+               style="width:140px;height:auto;border-radius:10px;border:1px solid #e2ddd6;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:zoom-in;"/>
           <div style="margin-top:6px;font-size:11px;color:#888070;">Duke 2030 本科生家长群（107人）</div>
         </div>
       </div>
@@ -542,7 +563,16 @@
 
 </div><!-- /page-wrap -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  function openLightbox(img) {
+    document.getElementById('lightboxImg').src = img.src;
+    document.getElementById('lightboxOverlay').classList.add('show');
+  }
+  function closeLightbox() {
+    document.getElementById('lightboxOverlay').classList.remove('show');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
 <script>
   const SUPABASE_URL  = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
@@ -771,6 +801,21 @@
     document.getElementById('formArea').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  function openLightbox(img) {
+    document.getElementById('lightboxImg').src = img.src;
+    document.getElementById('lightboxOverlay').classList.add('show');
+  }
+  function closeLightbox() {
+    document.getElementById('lightboxOverlay').classList.remove('show');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 </script>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt=""/>
+</div>
+
 </body>
 </html>
