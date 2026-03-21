@@ -291,6 +291,18 @@
       header { padding: 0 16px; }
     }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  (async function() {
+    const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const { data: { session } } = await db.auth.getSession();
+    if (!session) {
+      window.location.href = 'index.html';
+    }
+  })();
+</script>
 </head>
 <body>
 
@@ -313,13 +325,15 @@
 
   <div class="tabs" id="tabBar">
     <div class="tab active" onclick="filterCat('all', this)">全部</div>
-    <div class="tab" onclick="filterCat('dining', this)">🍽 食</div>
-    <div class="tab" onclick="filterCat('grocery', this)">🛒 超市</div>
-    <div class="tab" onclick="filterCat('hotel', this)">🏨 住</div>
-    <div class="tab" onclick="filterCat('transport', this)">🚗 行</div>
-    <div class="tab" onclick="filterCat('service', this)">💇 生活服务</div>
-    <div class="tab" onclick="filterCat('cake', this)">🎂 蛋糕甜点</div>
-    <div class="tab" onclick="filterCat('campus', this)">🎓 校园</div>
+    <div class="tab" onclick="filterCat('dining', this)">餐饮</div>
+    <div class="tab" onclick="filterCat('grocery', this)">超市</div>
+    <div class="tab" onclick="filterCat('hotel', this)">住宿</div>
+    <div class="tab" onclick="filterCat('transport', this)">交通</div>
+    <div class="tab" onclick="filterCat('service', this)">生活服务</div>
+    <div class="tab" onclick="filterCat('cake', this)">蛋糕甜点</div>
+    <div class="tab" onclick="filterCat('medical', this)">医疗药房</div>
+    <div class="tab" onclick="filterCat('shipping', this)">快递邮寄</div>
+    <div class="tab" onclick="filterCat('campus', this)">校园</div>
   </div>
 
   <div id="noResults" class="no-results">
@@ -335,7 +349,7 @@
         <div class="section-title">餐饮推荐</div>
         <div class="section-sub">Duke 周边口碑好餐厅，覆盖中餐、日料、美式等</div>
       </div>
-      <div class="section-count">14家</div>
+      <div class="section-count">19家</div>
       <div class="section-arrow">▼</div>
     </div>
     <div class="section-body">
@@ -474,6 +488,52 @@
       </div>
     </div>
   </div>
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.shanghaidurham.com" target="_blank">Shanghai Durham</a></div>
+          <div class="item-meta">
+            <span class="tag">正宗中餐</span><span class="tag">近校</span>
+            <div>Durham口碑最佳正宗中餐之一，3433 Hillsborough Rd，紧邻Duke，菜单丰富，适合家长带孩子来吃家乡味。</div>
+            <div class="item-addr">📍 3433 Hillsborough Rd, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.yelp.com/biz/sister-lius-kitchen-durham" target="_blank">Sister Liu's Kitchen</a></div>
+          <div class="item-meta">
+            <span class="tag">中餐</span><span class="tag">家常菜</span>
+            <div>Durham华人圈口碑好的家常中餐馆，价格实惠，适合平日就餐，台湾风味兼顾。</div>
+            <div class="item-addr">📍 Durham, NC</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://namu-durham.com" target="_blank">Namu</a></div>
+          <div class="item-meta">
+            <span class="tag">韩餐</span><span class="tag">人气高</span>
+            <div>Durham最受好评的韩国料理，Bulgogi Dolsot Bibimbap等经典韩料，晚市常需等位，建议早到。</div>
+            <div class="item-addr">📍 Durham, NC</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://msushidurham.com" target="_blank">M Sushi</a></div>
+          <div class="item-meta">
+            <span class="tag">日料</span><span class="tag">Omakase</span>
+            <div>Triangle地区首选高端寿司餐厅，Chef Michael Lee主理，提供Omakase，是特殊场合佳选。</div>
+            <div class="item-addr">📍 Downtown Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.jujuasiantapas.com" target="_blank">JuJu Asian Tapas + Bar</a></div>
+          <div class="item-meta">
+            <span class="tag">亚洲融合</span><span class="tag">9th Street</span>
+            <div>9th Street商圈人气亚洲融合餐厅，小食分量精致，环境热闹，适合家长带孩子聚餐。</div>
+            <div class="item-addr">📍 737 9th St #210, Durham</div>
+          </div>
+        </div>
+
+
 
   <!-- ── 理发 ── -->
   <div class="section" data-cat="service" id="sec-hair">
@@ -483,7 +543,7 @@
         <div class="section-title">理发 & 美容</div>
         <div class="section-sub">Duke 附近理发店，含中文友好及亚裔发型师</div>
       </div>
-      <div class="section-count">5家</div>
+      <div class="section-count">7家</div>
       <div class="section-arrow">▼</div>
     </div>
     <div class="section-body">
@@ -537,6 +597,25 @@
       </div>
     </div>
   </div>
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.vagaro.com/urbanedge" target="_blank">Urban Edge Salon</a></div>
+          <div class="item-meta">
+            <span class="tag">亚裔发型师</span><span class="tag">Chapel Hill Rd附近</span>
+            <div>亚裔发型师，熟悉亚洲发质，剪发体验好，网上预约方便，价格合理。</div>
+            <div class="item-addr">📍 Durham, NC</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Supercuts Durham</div>
+          <div class="item-meta">
+            <span class="tag">连锁</span><span class="tag">无需预约</span>
+            <div>连锁理发店，无需预约walk-in，价格实惠，适合应急理发，多个Durham门店。</div>
+            <div class="item-addr">📍 多处门店，靠近Duke的在Erwin Rd附近</div>
+          </div>
+        </div>
+
+
 
   <!-- ── 交通 ── -->
   <div class="section" data-cat="transport" id="sec-transport">
@@ -627,7 +706,7 @@
         <div class="section-title">附近住宿</div>
         <div class="section-sub">家长周末 / 毕业典礼 / 探亲首选酒店，建议提前预订</div>
       </div>
-      <div class="section-count">8家</div>
+      <div class="section-count">12家</div>
       <div class="section-arrow">▼</div>
     </div>
     <div class="section-body">
@@ -716,6 +795,44 @@
       </div>
     </div>
   </div>
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.hilton.com/en/hotels/rdudhhf-hilton-durham-near-duke-university/" target="_blank">Hilton Durham Near Duke University</a></div>
+          <div class="item-meta">
+            <span class="tag">免费班车</span><span class="tag">近校2.8英里</span>
+            <div>距Duke约2.8英里，提供免费班车至Duke医院及周边，含室外泳池、健身房，Bluestone Grille餐厅营业。停车$5/天。</div>
+            <div class="item-phone">📞 (919) 383-8575</div>
+            <div class="item-addr">📍 3800 Hillsborough Rd, Durham｜均价约$160+/晚</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.hilton.com/en/hotels/rdumcgi-hilton-garden-inn-durham-university-medical-center/" target="_blank">Hilton Garden Inn Durham/University Medical Center</a></div>
+          <div class="item-meta">
+            <span class="tag">距校不足1英里</span><span class="tag">免费班车</span>
+            <div>距Duke不足1英里，提供免费5英里范围班车(周一至五7am-3pm)，含餐厅及24小时便利店。</div>
+            <div class="item-addr">📍 1801 Front St, Durham｜均价约$140+/晚</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.marriott.com/hotels/travel/rduac-ac-hotel-durham/" target="_blank">AC Hotel Durham</a></div>
+          <div class="item-meta">
+            <span class="tag">新开</span><span class="tag">紧邻Duke</span>
+            <div>2023年新开，紧邻Duke校区，现代风格，142间客房，含餐吧、健身房，停车方便。</div>
+            <div class="item-addr">📍 Duke University区域｜均价约$150+/晚</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.hilton.com/en/hotels/rdudmhx-home2-suites-durham-university-medical-center/" target="_blank">Home2 Suites by Hilton Durham University Medical Center</a></div>
+          <div class="item-meta">
+            <span class="tag">2023新开</span><span class="tag">含厨房</span><span class="tag">免费早餐</span>
+            <div>2023年11月新开，距Duke约2.5英里，套房含厨房，免费热早餐，含室内泳池、健身房、免费停车，宠物友好。</div>
+            <div class="item-addr">📍 Durham, NC｜均价约$130+/晚</div>
+          </div>
+        </div>
+
+
 
   <!-- ── 蛋糕预定 ── -->
   <div class="section" data-cat="cake" id="sec-cake">
@@ -754,7 +871,7 @@
           <div class="item-meta">
             <span class="tag">当日可取</span><span class="tag">无麸质可选</span>
             <div>当日下单可取，支持无麸质/无糖，定制蛋糕 + 巧克力覆草莓等，可送货。</div>
-            <div class="item-phone">📧 rocakestudio@gmail.com</div>
+            <div class="item-phone">📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="93e1fcf0f2f8f6e0e7e6f7fafcd3f4fef2faffbdf0fcfe">[email&#160;protected]</a></div>
           </div>
         </div>
 
@@ -797,7 +914,7 @@
         <div class="section-title">超市购物</div>
         <div class="section-sub">Duke 周边超市，含华人超市、有机超市、大型仓储超市</div>
       </div>
-      <div class="section-count">4家</div>
+      <div class="section-count">6家</div>
       <div class="section-arrow">▼</div>
     </div>
     <div class="section-body">
@@ -845,6 +962,209 @@
       </div>
     </div>
   </div>
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.kroger.com" target="_blank">Kroger Durham</a></div>
+          <div class="item-meta">
+            <span class="tag">综合超市</span><span class="tag">含药房</span>
+            <div>大型综合超市，生鲜、熟食、药房一应俱全，含Kroger Pharmacy，自助结账快捷。</div>
+            <div class="item-addr">📍 Duke附近多处门店</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.target.com" target="_blank">Target Durham</a></div>
+          <div class="item-meta">
+            <span class="tag">综合零售</span><span class="tag">生活百货</span>
+            <div>Target一站购齐生活用品、食品、服装、电子产品，适合家长来探望时采购生活必需品给孩子。</div>
+            <div class="item-addr">📍 2500 E NC-54, Durham (Southpoint附近)</div>
+          </div>
+        </div>
+
+
+  <!-- ── 医疗药房 ── -->
+  <div class="section" data-cat="medical" id="sec-medical">
+    <div class="section-header" onclick="toggleSection('sec-medical')">
+      <div class="section-emoji">🏥</div>
+      <div class="section-info">
+        <div class="section-title">医疗、药房与急诊</div>
+        <div class="section-sub">Duke学生健康、急诊、周边药房及急救诊所</div>
+      </div>
+      <div class="section-count">8项</div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="items-grid">
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="https://students.duke.edu/wellness/studenthealth/" target="_blank">Duke Student Health Center</a></div>
+          <div class="item-meta">
+            <span class="tag gold">学生首选</span><span class="tag">需预约</span>
+            <div>Duke学生官方健康中心，提供普通门诊、心理咨询、疫苗、旅行医疗等服务，大多数服务由学生健康费覆盖。需通过Duke MyHealth平台预约。</div>
+            <div class="item-phone">📞 (919) 684-3136</div>
+            <div class="item-addr">📍 305 Towerview Dr, Durham｜周一至五 8am-4:30pm (周四9am起)，周末休</div>
+          </div>
+        </div>
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="https://www.dukehealth.org/locations/duke-urgent-care-croasdaile" target="_blank">Duke Urgent Care Croasdaile</a></div>
+          <div class="item-meta">
+            <span class="tag gold">最近Duke</span><span class="tag">无需预约</span>
+            <div>距Duke最近的急诊诊所，无需预约walk-in，处理轻伤、发烧、轻微感染等非紧急病情，7天开放。</div>
+            <div class="item-phone">📞 (919) 220-6894</div>
+            <div class="item-addr">📍 1821 Hillandale Rd, Durham｜每日 8am-8pm</div>
+          </div>
+        </div>
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="https://www.dukehealth.org/hospitals/duke-university-hospital" target="_blank">Duke University Hospital Emergency Room</a></div>
+          <div class="item-meta">
+            <span class="tag gold">24小时急救</span>
+            <div>Duke大学附属医院急诊室，24小时开放，处理严重紧急情况。如遇生命危险请直接拨911。</div>
+            <div class="item-phone">📞 (919) 684-3456</div>
+            <div class="item-addr">📍 2301 Erwin Rd, Durham｜24小时</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.dukehealth.org/locations/duke-outpatient-pharmacy" target="_blank">Duke Outpatient Pharmacy</a></div>
+          <div class="item-meta">
+            <span class="tag">处方药</span><span class="tag">Duke员工/学生可用</span>
+            <div>Duke Clinic内，接受大多数医保，可转入处方，提供药物咨询和特殊订药服务。</div>
+            <div class="item-phone">📞 (919) 684-2908</div>
+            <div class="item-addr">📍 40 Duke Medicine Cir, Room 1822, Durham｜周一至五 8:30am-6pm</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">Campus Center Pharmacy (Student Wellness Center)</div>
+          <div class="item-meta">
+            <span class="tag">校内药房</span><span class="tag">学生方便</span>
+            <div>Duke学生健康中心内的校内药房，方便学生配药，接受大多数处方。</div>
+            <div class="item-phone">📞 (919) 385-3784</div>
+            <div class="item-addr">📍 305 Towerview Rd, Durham｜周一至五 9am-5:30pm (午休12:30-1pm)</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.walgreens.com" target="_blank">Walgreens Durham (Hillandale Rd)</a></div>
+          <div class="item-meta">
+            <span class="tag">连锁药房</span><span class="tag">24小时</span>
+            <div>距Duke最近的连锁药房之一，含处方药房，非处方药、日用品、急救用品，24小时营业(部分服务)。</div>
+            <div class="item-addr">📍 1813 Hillandale Rd, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://www.cvs.com" target="_blank">CVS Pharmacy (Durham-Chapel Hill Blvd)</a></div>
+          <div class="item-meta">
+            <span class="tag">连锁药房</span><span class="tag">含诊所</span>
+            <div>CVS部分门店内设MinuteClinic，可无预约处理轻微病症，同时提供处方药配药服务。</div>
+            <div class="item-addr">📍 4037 Durham Chapel Hill Blvd, Durham｜药房 9am-9pm</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">紧急求助号码</div>
+          <div class="item-meta">
+            <span class="tag">紧急</span>
+            <div>紧急情况请拨911。非紧急医疗咨询可拨Duke Student Health护士热线(下班后)。</div>
+            <div class="item-phone">📞 紧急: 911</div>
+            <div class="item-phone">📞 Duke护士热线(下班后): (919) 681-9355 选2</div>
+            <div class="item-phone">📞 Duke警察(非紧急): (919) 684-2444</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 快递邮寄 ── -->
+  <div class="section" data-cat="shipping" id="sec-shipping">
+    <div class="section-header" onclick="toggleSection('sec-shipping')">
+      <div class="section-emoji">📦</div>
+      <div class="section-info">
+        <div class="section-title">快递、邮寄与包裹收发</div>
+        <div class="section-sub">UPS、FedEx、USPS、校内邮件服务全攻略</div>
+      </div>
+      <div class="section-count">7项</div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="items-grid">
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="https://postoffice.duke.edu" target="_blank">Duke Campus Mail Services (校内邮件中心)</a></div>
+          <div class="item-meta">
+            <span class="tag gold">寄包裹首选</span><span class="tag">校内收发</span>
+            <div>所有寄往Duke学生的包裹统一由此处理，FedEx/UPS/DHL等私人快递统一路由至Duke Postal Operations，处理需24-48小时。USPS包裹在West Durham Post Office中转后每日两次取回。给孩子寄东西需写宿舍楼正式街道地址(非PO Box)。</div>
+            <div class="item-addr">📍 Duke University, Durham｜包裹到达后邮件通知学生</div>
+          </div>
+        </div>
+
+        <div class="item-card highlight">
+          <div class="item-name"><a href="https://locations.theupsstore.com/nc/durham/1821-hillandale-rd.html" target="_blank">The UPS Store (Hillandale Rd)</a></div>
+          <div class="item-meta">
+            <span class="tag gold">最近Duke</span><span class="tag">全服务</span>
+            <div>距Duke最近的UPS Store全服务门店，提供打包、寄送、打印、碎纸等，周一至六均开放，紧邻Duke Urgent Care。</div>
+            <div class="item-phone">📞 (919) 382-3030</div>
+            <div class="item-addr">📍 1821 Hillandale Rd, Durham (I-85 Exit 174旁)｜周一至五 8am-6:30pm，周六10am-4pm，周日10am-3pm</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://locations.theupsstore.com/nc/durham/2608-erwin-rd.html" target="_blank">The UPS Store (Erwin Rd)</a></div>
+          <div class="item-meta">
+            <span class="tag">全服务</span><span class="tag">近Duke Medical</span>
+            <div>Erwin Rd门店，靠近Duke医学区，提供全服务发货、打印、邮政信箱租用。</div>
+            <div class="item-addr">📍 2608 Erwin Rd, Suite 148, Durham</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">FedEx Drop Box (Hock Plaza)</div>
+          <div class="item-meta">
+            <span class="tag">FedEx</span><span class="tag">24小时投递</span>
+            <div>Hock Plaza内24小时FedEx投递箱，贴好标签的包裹可随时投入，方便快捷。</div>
+            <div class="item-addr">📍 2424 Erwin Rd, Durham｜24小时</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">USPS Contract Unit (Duke校内)</div>
+          <div class="item-meta">
+            <span class="tag">USPS</span><span class="tag">校内</span>
+            <div>Duke校内USPS合同邮政点，提供邮票购买、普通邮件寄送服务，学生和教职工均可使用。</div>
+            <div class="item-addr">📍 125 Science Dr, Durham｜工作日开放</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name"><a href="https://tools.usps.com/find-location.htm" target="_blank">USPS West Durham Post Office</a></div>
+          <div class="item-meta">
+            <span class="tag">USPS</span><span class="tag">Duke包裹中转站</span>
+            <div>Duke校内USPS包裹的官方中转站，Campus Mail每日10:30am和2:30pm来取包裹，10:30后到达的包裹次日才能送达学生。</div>
+            <div class="item-addr">📍 West Durham, NC</div>
+          </div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-name">给孩子寄包裹注意事项</div>
+          <div class="item-meta">
+            <span class="tag gold">重要提示</span>
+            <div>
+              收件地址须写宿舍楼<strong>正式街道地址</strong>，不能写PO Box。<br/>
+              FedEx/UPS/DHL等快递统一路由至Duke Postal Operations，处理需24-48小时后通知取件。<br/>
+              USPS包裹通过West Durham Post Office中转，10:30am后到的次日送达。<br/>
+              急件请选FedEx/UPS Next Day并告知孩子留意邮件通知。
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
 
   <!-- ── 校园资源 ── -->
   <div class="section" data-cat="campus" id="sec-campus">
@@ -955,7 +1275,7 @@
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // ── Toggle accordion ──
   function toggleSection(id) {
     const el = document.getElementById(id);
@@ -998,15 +1318,4 @@
       const text = sec.textContent.toLowerCase();
       if (text.includes(kw)) {
         sec.style.display = '';
-        sec.classList.add('open');
-        anyVisible = true;
-      } else {
-        sec.style.display = 'none';
-      }
-    });
-
-    document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
-  }
-</script>
-</body>
-</html>
+        sec.cla
