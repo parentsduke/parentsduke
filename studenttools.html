@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Duke 学生常用平台与资源 · DukeParents</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (async function() {
+      const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+      const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const { data: { session } } = await db.auth.getSession();
+      if (!session) { window.location.href = 'index.html'; }
+    })();
+  </script>
+  <style>
+    :root {
+      --navy:#012169; --blue:#003087; --gold:#c9a84c; --gold-lt:#f5ecd4;
+      --bg:#f5f3ef; --card:#ffffff; --border:#e2ddd6; --text:#1a1a1a; --muted:#888070;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--bg); font-family:'Noto Serif SC',serif; color:var(--text); min-height:100vh; }
+
+    header { background:var(--navy); border-bottom:3px solid var(--gold); padding:0 32px; height:60px; display:flex; align-items:center; gap:14px; }
+    .hd { font-size:28px; font-weight:900; color:var(--navy); letter-spacing:-1px; -webkit-text-stroke:1.5px #ffffff; }
+    .ht { font-size:14px; color:rgba(255,255,255,0.7); font-weight:600; }
+    .back-link { margin-left:auto; font-size:13px; color:rgba(255,255,255,0.7); text-decoration:none; }
+    .back-link:hover { color:var(--gold); }
+
+    .hero { background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%); padding:48px 32px 40px; text-align:center; }
+    .hero-badge { display:inline-block; padding:4px 14px; border:1px solid rgba(201,168,76,0.6); border-radius:20px; font-size:10px; color:var(--gold); letter-spacing:0.15em; margin-bottom:16px; font-family:'DM Mono',monospace; }
+    .hero h1 { font-size:clamp(20px,4vw,28px); font-weight:700; color:#fff; margin-bottom:10px; line-height:1.3; }
+    .hero-sub { font-size:14px; color:rgba(255,255,255,0.75); max-width:520px; margin:0 auto; line-height:1.7; }
+
+    .page-wrap { max-width:900px; margin:0 auto; padding:36px 20px 60px; }
+
+    /* Section */
+    .section { background:var(--card); border:1px solid var(--border); border-radius:14px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04); overflow:hidden; }
+    .section-header { display:flex; align-items:center; gap:12px; padding:18px 24px; cursor:pointer; user-select:none; }
+    .section-header:hover { background:#faf8f4; }
+    .section.open .section-header { background:#f0f4fb; }
+    .section-title { font-size:15px; font-weight:700; color:var(--navy); flex:1; }
+    .section-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+    .section-arrow { color:var(--muted); font-size:13px; transition:transform 0.2s; }
+    .section.open .section-arrow { transform:rotate(180deg); }
+    .section-body { display:none; padding:0 24px 24px; }
+    .section.open .section-body { display:block; }
+
+    /* Tool cards */
+    .tools-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:600px) { .tools-grid { grid-template-columns:1fr; } }
+    .tool-card { background:#faf9f7; border:1px solid var(--border); border-radius:10px; padding:16px; }
+    .tool-card.highlight { border-color:rgba(1,33,105,0.2); background:#f0f4fb; }
+    .tool-name { font-size:14px; font-weight:700; color:var(--navy); margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+    .tool-name a { color:var(--navy); text-decoration:none; }
+    .tool-name a:hover { text-decoration:underline; }
+    .tool-url { font-size:11px; color:var(--gold); font-family:'DM Mono',monospace; margin-bottom:8px; }
+    .tool-desc { font-size:13px; color:var(--text); line-height:1.6; }
+    .tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; margin-right:4px; margin-bottom:6px; font-family:'DM Mono',monospace; }
+    .tag-core { background:#e3f2fd; color:#0d47a1; }
+    .tag-career { background:#e8f5e9; color:#1b5e20; }
+    .tag-study { background:#fff3e0; color:#7a4000; }
+    .tag-it { background:#f3e5f5; color:#4a148c; }
+    .tag-money { background:#fce4ec; color:#880e4f; }
+
+    /* Info rows */
+    .info-row { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid #f0ede8; font-size:14px; line-height:1.7; }
+    .info-row:last-child { border-bottom:none; }
+    .info-label { min-width:120px; font-weight:600; color:var(--muted); font-size:12px; font-family:'DM Mono',monospace; flex-shrink:0; padding-top:2px; }
+    .highlight-box { background:var(--gold-lt); border-left:3px solid var(--gold); border-radius:0 6px 6px 0; padding:12px 16px; margin:0 0 16px; font-size:13px; line-height:1.8; color:#5a4a2a; }
+    .blue-box { background:#e8f0fe; border-left:3px solid var(--blue); border-radius:0 6px 6px 0; padding:12px 16px; margin:14px 0; font-size:13px; line-height:1.8; color:#0d2a6b; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="hd">D</span>
+  <span class="ht">Duke 学生常用平台与资源</span>
+  <a href="index.html" class="back-link">← 返回主页</a>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">DUKE UNIVERSITY · STUDENT DIGITAL TOOLS</div>
+  <h1>Duke 学生常用平台与资源</h1>
+  <p class="hero-sub">从选课注册到求职实习，从邮件系统到校内兼职，Duke学生需要用到的数字平台和资源一站汇总，家长也可以了解。</p>
+</div>
+
+<div class="page-wrap">
+
+  <!-- NetID & 账号基础 -->
+  <div class="section open" id="sec-netid">
+    <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+      <div>
+        <div class="section-title">NetID — 一切的起点</div>
+        <div class="section-sub">Duke所有系统的统一登录凭证</div>
+      </div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="highlight-box">
+        NetID是学生进入Duke所有数字系统的唯一钥匙。入学前OIT会发邮件告知NetID和设置密码的步骤，这是新生到校前最重要的准备工作之一。NetID格式通常为姓名缩写+数字，如abc12。
+      </div>
+      <div class="tools-grid">
+        <div class="tool-card highlight">
+          <div class="tool-name">NetID激活</div>
+          <div class="tool-url">idms.oit.duke.edu</div>
+          <div class="tool-desc">入学前通过OIT发送的邮件链接激活，设置密码后即可登录所有Duke系统。建议用强密码并开启MFA(多因素认证)。</div>
+        </div>
+        <div class="tool-card highlight">
+          <div class="tool-name">MFA多因素认证</div>
+          <div class="tool-url">oit.duke.edu/help/mfa</div>
+          <div class="tool-desc">Duke要求大多数系统使用MFA。激活NetID后立即注册MFA设备(手机App或短信)，否则很多系统无法登录。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Duke邮件</div>
+          <div class="tool-url">mail.duke.edu (Microsoft 365)</div>
+          <div class="tool-desc">Duke官方邮箱，格式为netid@duke.edu。所有Duke官方通知、教授邮件、系统通知均发至此处，必须养成每日查看的习惯。支持Outlook客户端和手机App。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">DukeMobile App</div>
+          <div class="tool-url">App Store / Google Play搜索DukeMobile</div>
+          <div class="tool-desc">Duke官方手机App，可查看地图、餐厅营业时间、活动信息，登录后可访问DukeHub、DukeCard余额、ePrint等服务。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 学业系统 -->
+  <div class="section" id="sec-academic">
+    <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+      <div>
+        <div class="section-title">学业系统 — 选课、成绩与课程</div>
+        <div class="section-sub">DukeHub、Sakai、成绩单、Proxy Access</div>
+      </div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="tools-grid">
+        <div class="tool-card highlight">
+          <div class="tool-name"><a href="https://dukehub.duke.edu" target="_blank">DukeHub</a></div>
+          <span class="tag tag-core">核心系统</span>
+          <div class="tool-url">dukehub.duke.edu</div>
+          <div class="tool-desc">Duke最核心的学生信息系统，用于选课注册、查看成绩、查看学费账单、申请成绩单、查看个人学籍信息、管理财务援助等。家长可通过Proxy Access获得查看权限(学生授权)。</div>
+        </div>
+        <div class="tool-card highlight">
+          <div class="tool-name"><a href="https://sakai.duke.edu" target="_blank">Sakai</a></div>
+          <span class="tag tag-study">课程平台</span>
+          <div class="tool-url">sakai.duke.edu</div>
+          <div class="tool-desc">Duke主要课程管理系统，教授发布课程大纲、作业、阅读材料、成绩反馈均在此处。部分课程使用Canvas，以教授通知为准。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Proxy Access(家长代理权限)</div>
+          <div class="tool-url">通过DukeHub → Profile → Relationships设置</div>
+          <div class="tool-desc">学生可在DukeHub中授权家长查看特定信息(成绩、账单、财务援助等)。家长获得独立登录链接，只能查看被授权部分，不能代替学生操作。需要学生主动开通，不会自动授权。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name"><a href="https://my.duke.edu" target="_blank">MyDuke</a></div>
+          <div class="tool-url">my.duke.edu</div>
+          <div class="tool-desc">Duke学生门户，可查看Food/Flex余额、图书馆账户、各项Duke账户信息。登录后显示常用服务快捷入口。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Duke Box云存储</div>
+          <div class="tool-url">duke.box.com</div>
+          <div class="tool-desc">Duke提供的Box企业版云存储，容量无限，用NetID登录，适合存储学习资料和项目文件，支持与教授/同学协作共享。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Microsoft Office 365</div>
+          <div class="tool-url">通过Duke邮件账号激活</div>
+          <div class="tool-desc">Duke学生免费使用完整版Office 365套件，包括Word、Excel、PowerPoint、Teams等，在校期间均可免费使用。通过mail.duke.edu登录微软账号后激活。</div>
+        </div>
+      </div>
+      <div class="blue-box">
+        Proxy Access提醒：学生进入大学后，根据FERPA法律，家长无权自动查看子女成绩——需要学生主动在DukeHub中授权。建议新生入学后与孩子沟通是否开通。
+      </div>
+    </div>
+  </div>
+
+  <!-- 求职平台 -->
+  <div class="section" id="sec-career">
+    <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+      <div>
+        <div class="section-title">求职与实习平台</div>
+        <div class="section-sub">Handshake、JobX、Duke Career Center</div>
+      </div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="tools-grid">
+        <div class="tool-card highlight">
+          <div class="tool-name"><a href="https://duke.joinhandshake.com" target="_blank">Handshake</a></div>
+          <span class="tag tag-career">全国性平台</span>
+          <div class="tool-url">duke.joinhandshake.com</div>
+          <div class="tool-desc">Duke学生求职核心平台，全美1,500+高校共用，65万+雇主发布职位。用于浏览实习/全职岗位、注册Career Fair、预约Career Advising、参与校园面试(OCR)。建议大一入学后即完善个人主页并上传简历。</div>
+        </div>
+        <div class="tool-card highlight">
+          <div class="tool-name"><a href="https://duke.studentemployment.ngwebsolutions.com" target="_blank">JobX — 校内兼职</a></div>
+          <span class="tag tag-career">校内工作</span>
+          <div class="tool-url">duke.studentemployment.ngwebsolutions.com</div>
+          <div class="tool-desc">Duke校内兼职职位平台，用NetID登录。学期内本科生每周最多工作19.9小时。薪资约$15-24/小时(视职位类型)。新生注意：收到NetID后需等2-3个工作日才能登录。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name"><a href="https://studentaffairs.duke.edu/career" target="_blank">Duke Career Center</a></div>
+          <div class="tool-url">studentaffairs.duke.edu/career</div>
+          <div class="tool-desc">Duke职业发展中心，提供简历修改、模拟面试、职业规划咨询，所有服务通过Handshake预约。大一大二可参加探索性咨询，建议尽早预约。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Work-Study (联邦/Duke助学工作)</div>
+          <div class="tool-url">通过财务援助信查看资格</div>
+          <div class="tool-desc">申请了财务援助的学生通常会获得Work-Study资格，联邦Work-Study补贴75%工资，Duke Work-Study补贴50%工资，典型award约$2,200。通过JobX找到工作后方可使用。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">实习资助项目(IFP)</div>
+          <div class="tool-url">通过Handshake申请</div>
+          <div class="tool-desc">Duke Career Center提供实习资助，帮助承担无薪或低薪实习期间的生活费。通过Handshake的Funding页面申请，各轮截止日期不同，建议提前关注。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">LinkedIn</div>
+          <div class="tool-url">linkedin.com</div>
+          <div class="tool-desc">建议大一入学即建立LinkedIn个人主页，与校友、实习导师、同学连接。Duke有超强的校友网络，通过LinkedIn可以直接联系Duke校友做informational interview。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IT工具 -->
+  <div class="section" id="sec-it">
+    <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+      <div>
+        <div class="section-title">IT工具与软件</div>
+        <div class="section-sub">免费软件、打印、VPN、IT支持</div>
+      </div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-name">Adobe Creative Cloud</div>
+          <span class="tag tag-it">免费</span>
+          <div class="tool-desc">Duke学生免费使用完整版Adobe Creative Cloud，包括Photoshop、Illustrator、Premiere Pro等，通过OIT申请激活。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">ePrint校园打印</div>
+          <div class="tool-url">通过DukeMobile或ePrint App</div>
+          <div class="tool-desc">Duke全校数十个打印站，黑白免费、彩色低价，发送打印任务后刷DukeCard取件。每学年有免费打印额度。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Duke VPN</div>
+          <div class="tool-url">通过OIT下载Cisco AnyConnect</div>
+          <div class="tool-desc">访问部分Duke内部系统(如图书馆数据库、部分服务器)需要连接Duke VPN，通过OIT下载Cisco AnyConnect，用NetID登录。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">OIT服务台</div>
+          <div class="tool-url">oit.duke.edu | (919) 684-2200</div>
+          <div class="tool-desc">Duke IT支持中心，解决NetID、邮件、软件、网络等技术问题，7×24小时在线。邮件：help&#64;oit.duke.edu</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Innovation Co-Lab</div>
+          <div class="tool-url">colab.duke.edu</div>
+          <div class="tool-desc">Duke创新实验室，提供3D打印、激光切割、VR设备等，开放给所有Duke学生，部分需要培训后方可使用。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Zoom</div>
+          <div class="tool-url">duke.zoom.us</div>
+          <div class="tool-desc">Duke提供Zoom Pro账号，用NetID登录，无时长限制，用于线上课程、组会、远程办公。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 财务相关 -->
+  <div class="section" id="sec-finance">
+    <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+      <div>
+        <div class="section-title">财务与缴费相关</div>
+        <div class="section-sub">学费账单、DukeCard、Food/Flex</div>
+      </div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="tools-grid">
+        <div class="tool-card highlight">
+          <div class="tool-name"><a href="https://studentaccounts.duke.edu" target="_blank">学生账务中心</a></div>
+          <span class="tag tag-money">缴费</span>
+          <div class="tool-url">studentaccounts.duke.edu</div>
+          <div class="tool-desc">查看学费账单、缴费、设置支付方式、查看账户余额。家长缴费需学生通过DukeHub授权后登录Authorized Payer Portal。支持银行转账(ACH)和信用卡(信用卡有手续费)。</div>
+        </div>
+        <div class="tool-card highlight">
+          <div class="tool-name">DukeCard</div>
+          <div class="tool-url">dukecard.duke.edu</div>
+          <div class="tool-desc">Duke学生证，兼具校园门禁、图书馆借阅、打印、餐厅就餐(Flex Points)等功能。入学后在DukeCard办公室领取。可在dukecard.duke.edu充值Flex和Cash。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Dining Points / Flex</div>
+          <div class="tool-url">通过DukeCard或MyDuke查询余额</div>
+          <div class="tool-desc">Dining Plan包含餐厅次数和Flex Points，Flex可在校园多处消费。余额可通过MyDuke或DukeMobile App查看。Flex余额学年末清零，建议及时用完。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name"><a href="https://financialaid.duke.edu" target="_blank">财务援助办公室</a></div>
+          <div class="tool-url">financialaid.duke.edu | (919) 681-6600</div>
+          <div class="tool-desc">奖学金、助学金、贷款、Work-Study相关事务。每年需在DukeHub完成FAFSA验证和财务援助确认流程。如有疑问直接联系财务援助顾问。</div>
+        </div>
+      </div>
+      <div class="blue-box">
+        家长缴费提醒：学费账单发送至学生Duke邮箱，家长需学生授权后方可作为Authorized Payer登录缴费。建议开学前和孩子确认授权事宜。
+      </div>
+    </div>
+  </div>
+
+  <!-- 健康与安全 -->
+  <div class="section" id="sec-health">
+    <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+      <div>
+        <div class="section-title">健康与心理支持</div>
+        <div class="section-sub">学生健康中心、CAPS心理咨询、紧急联系</div>
+      </div>
+      <div class="section-arrow">▼</div>
+    </div>
+    <div class="section-body">
+      <div class="tools-grid">
+        <div class="tool-card highlight">
+          <div class="tool-name"><a href="https://studentaffairs.duke.edu/studenthealth" target="_blank">Duke Student Health</div>
+          <div class="tool-url">studentaffairs.duke.edu/studenthealth | (919) 684-3136</div>
+          <div class="tool-desc">Duke学生健康中心，通过Duke MyHealth平台(mychart)预约，提供门诊、疫苗、旅行医疗、营养咨询等，大多数服务由学生健康费覆盖。</div>
+        </div>
+        <div class="tool-card highlight">
+          <div class="tool-name"><a href="https://studentaffairs.duke.edu/caps" target="_blank">CAPS心理咨询</a></div>
+          <div class="tool-url">studentaffairs.duke.edu/caps | (919) 660-1000</div>
+          <div class="tool-desc">Duke心理与咨询服务中心，提供个人咨询、小组治疗、危机干预，完全免费且保密。24小时危机热线：(919) 660-1000。建议有需要时主动预约，不要拖延。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Duke MyHealth(就医预约)</div>
+          <div class="tool-url">dukehealth.org/mydukehealth</div>
+          <div class="tool-desc">Duke健康系统官方预约平台，可在线预约Student Health、查看检查结果、与医护人员通讯。用Duke NetID登录。</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">紧急联系</div>
+          <div class="tool-url">紧急: 911 | 校警: (919) 684-2444</div>
+          <div class="tool-desc">紧急情况拨911。校园安全(非紧急)：(919) 684-2444。CAPS 24小时危机热线：(919) 660-1000。Duke医院急诊：(919) 684-3456。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Keep sections open/close working (already handled by inline onclick)
+</script>
+</body>
+</html>
