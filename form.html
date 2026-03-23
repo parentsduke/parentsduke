@@ -484,7 +484,16 @@
         </div>
         <div class="form-group">
           <label>入学届次 <span class="req">*</span></label>
-          <input type="number" autocomplete="off" id="fYear" placeholder="2030" min="2020" max="2040"/>
+          <select id="fYear" onchange="onYearChange(this.value)">
+            <option value="">请选择</option>
+            <option value="2030">2030</option>
+            <option value="2029">2029</option>
+            <option value="2028">2028</option>
+            <option value="2027">2027</option>
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+          </select>
         </div>
         <div class="form-group full" id="committedGroup">
           <label>是否已 Committed（仅 RD 适用）<span class="req">*</span></label>
@@ -547,8 +556,20 @@
             <button class="rm" onclick="removeFile('committed')">✕</button>
           </div>
         </div>
-      </div>
-      <div class="upload-progress" id="uploadProgress">
+        <div class="form-group full" id="dormPhotoGroup" style="display:none;">
+          <label>宿舍照片（可选，2029届及以上）</label>
+          <div class="upload-zone" id="dormZone"
+               ondragover="handleDrag(event,'dormZone')"
+               ondragleave="handleDragLeave('dormZone')"
+               ondrop="handleDrop(event,'dorm')">
+            <input type="file" id="fDormPhoto" accept="image/*" onchange="handleFile(event,'dorm')"/>
+            <div class="upload-hint">拖入或点击上传宿舍照片，支持 <strong>图片</strong></div>
+          </div>
+          <div class="file-preview" id="dormPreview">
+            <span class="fname" id="dormPhotoName"></span>
+            <button class="rm" onclick="removeFile('dorm')">✕</button>
+          </div>
+        </div>
         <span id="progressLabel">上传中…</span>
         <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       </div>
@@ -597,6 +618,19 @@
 
   let letterFile = null;
   let committedFile = null;
+  let dormFile = null;
+
+  // ── 届次联动 ──
+  function onYearChange(val) {
+    const dormGroup = document.getElementById('dormPhotoGroup');
+    const year = parseInt(val);
+    if (year >= 2029) {
+      dormGroup.style.display = 'block';
+    } else {
+      dormGroup.style.display = 'none';
+      removeFile('dorm');
+    }
+  }
 
   // ── 录取类型 & Committed 联动 ──
   function toggleCommitted(type) {
@@ -665,7 +699,7 @@
   }
   function handleDrop(e, type) {
     e.preventDefault();
-    const zoneId = type === 'letter' ? 'letterZone' : 'committedZone';
+    const zoneId = type === 'letter' ? 'letterZone' : type === 'committed' ? 'committedZone' : 'dormZone';
     document.getElementById(zoneId).classList.remove('drag-over');
     const file = e.dataTransfer.files?.[0];
     if (file) setFile(type, file);
@@ -675,10 +709,14 @@
       letterFile = file;
       document.getElementById('letterName').textContent = file.name;
       document.getElementById('letterPreview').classList.add('show');
-    } else {
+    } else if (type === 'committed') {
       committedFile = file;
       document.getElementById('committedLetterName').textContent = file.name;
       document.getElementById('committedPreview').classList.add('show');
+    } else {
+      dormFile = file;
+      document.getElementById('dormPhotoName').textContent = file.name;
+      document.getElementById('dormPreview').classList.add('show');
     }
   }
   function removeFile(type) {
@@ -686,10 +724,14 @@
       letterFile = null;
       document.getElementById('fLetter').value = '';
       document.getElementById('letterPreview').classList.remove('show');
-    } else {
+    } else if (type === 'committed') {
       committedFile = null;
       document.getElementById('fCommittedLetter').value = '';
       document.getElementById('committedPreview').classList.remove('show');
+    } else {
+      dormFile = null;
+      document.getElementById('fDormPhoto').value = '';
+      document.getElementById('dormPreview').classList.remove('show');
     }
   }
 
@@ -746,9 +788,11 @@
     try {
       let letter_path = null;
       let committed_letter_path = null;
+      let dorm_photo_path = null;
 
       if (letterFile)    letter_path            = await uploadFile(letterFile, '录取通知书');
       if (committedFile) committed_letter_path  = await uploadFile(committedFile, 'Committed Letter');
+      if (dormFile)      dorm_photo_path        = await uploadFile(dormFile, '宿舍照片');
 
       document.getElementById('uploadProgress').classList.remove('show');
 
@@ -769,6 +813,7 @@
         notes:                 notes || null,
         letter_path,
         committed_letter_path,
+        dorm_photo_path,
         submitter_name:        document.getElementById('fSubmitterName').value.trim() || null,
         submitter_contact:     document.getElementById('fSubmitterContact').value.trim() || null,
       };
