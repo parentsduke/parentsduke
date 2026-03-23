@@ -568,17 +568,55 @@
           </div>
         </div>
         <div class="form-group full" id="dormPhotoGroup" style="display:none;">
-          <label>宿舍照片（可选）</label>
-          <div class="upload-zone" id="dormZone"
-               ondragover="handleDrag(event,'dormZone')"
-               ondragleave="handleDragLeave('dormZone')"
-               ondrop="handleDrop(event,'dorm')">
-            <input type="file" id="fDormPhoto" accept="image/*" onchange="handleFile(event,'dorm')"/>
-            <div class="upload-hint">拖入或点击上传宿舍照片，支持 <strong>图片</strong></div>
+          <label>文件上传（至少上传一项）</label>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;">宿舍照片 / Committed Letter / 录取通知书，三项均可选，至少上传其中一项</div>
+
+          <!-- 宿舍照片 -->
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;">宿舍照片（可选）</div>
+            <div class="upload-zone" id="dormZone"
+                 ondragover="handleDrag(event,'dormZone')"
+                 ondragleave="handleDragLeave('dormZone')"
+                 ondrop="handleDrop(event,'dorm')">
+              <input type="file" id="fDormPhoto" accept="image/*" onchange="handleFile(event,'dorm')"/>
+              <div class="upload-hint">拖入或点击上传，支持 <strong>图片</strong></div>
+            </div>
+            <div class="file-preview" id="dormPreview">
+              <span class="fname" id="dormPhotoName"></span>
+              <button class="rm" onclick="removeFile('dorm')">✕</button>
+            </div>
           </div>
-          <div class="file-preview" id="dormPreview">
-            <span class="fname" id="dormPhotoName"></span>
-            <button class="rm" onclick="removeFile('dorm')">✕</button>
+
+          <!-- Committed Letter -->
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;">Committed Letter（可选）</div>
+            <div class="upload-zone" id="oldCommittedZone"
+                 ondragover="handleDrag(event,'oldCommittedZone')"
+                 ondragleave="handleDragLeave('oldCommittedZone')"
+                 ondrop="handleDrop(event,'oldCommitted')">
+              <input type="file" id="fOldCommitted" accept="image/*,.pdf" onchange="handleFile(event,'oldCommitted')"/>
+              <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+            </div>
+            <div class="file-preview" id="oldCommittedPreview">
+              <span class="fname" id="oldCommittedName"></span>
+              <button class="rm" onclick="removeFile('oldCommitted')">✕</button>
+            </div>
+          </div>
+
+          <!-- 录取通知书 -->
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;">录取通知书（可选）</div>
+            <div class="upload-zone" id="oldLetterZone"
+                 ondragover="handleDrag(event,'oldLetterZone')"
+                 ondragleave="handleDragLeave('oldLetterZone')"
+                 ondrop="handleDrop(event,'oldLetter')">
+              <input type="file" id="fOldLetter" accept="image/*,.pdf" onchange="handleFile(event,'oldLetter')"/>
+              <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+            </div>
+            <div class="file-preview" id="oldLetterPreview">
+              <span class="fname" id="oldLetterName"></span>
+              <button class="rm" onclick="removeFile('oldLetter')">✕</button>
+            </div>
           </div>
         </div>
         <!-- 研究生录取通知书（仅研究生届次显示） -->
@@ -646,6 +684,8 @@
   let committedFile = null;
   let dormFile = null;
   let gradLetterFile = null;
+  let oldCommittedFile = null;
+  let oldLetterFile = null;
 
   // ── 届次联动 ──
   function onYearChange(val) {
@@ -744,7 +784,7 @@
   }
   function handleDrop(e, type) {
     e.preventDefault();
-    const zoneMap = { letter: 'letterZone', committed: 'committedZone', dorm: 'dormZone', gradLetter: 'gradLetterZone' };
+    const zoneMap = { letter: 'letterZone', committed: 'committedZone', dorm: 'dormZone', gradLetter: 'gradLetterZone', oldCommitted: 'oldCommittedZone', oldLetter: 'oldLetterZone' };
     document.getElementById(zoneMap[type]).classList.remove('drag-over');
     const file = e.dataTransfer.files?.[0];
     if (file) setFile(type, file);
@@ -762,6 +802,14 @@
       gradLetterFile = file;
       document.getElementById('gradLetterName').textContent = file.name;
       document.getElementById('gradLetterPreview').classList.add('show');
+    } else if (type === 'oldCommitted') {
+      oldCommittedFile = file;
+      document.getElementById('oldCommittedName').textContent = file.name;
+      document.getElementById('oldCommittedPreview').classList.add('show');
+    } else if (type === 'oldLetter') {
+      oldLetterFile = file;
+      document.getElementById('oldLetterName').textContent = file.name;
+      document.getElementById('oldLetterPreview').classList.add('show');
     } else {
       dormFile = file;
       document.getElementById('dormPhotoName').textContent = file.name;
@@ -781,6 +829,14 @@
       gradLetterFile = null;
       document.getElementById('fGradLetter').value = '';
       document.getElementById('gradLetterPreview').classList.remove('show');
+    } else if (type === 'oldCommitted') {
+      oldCommittedFile = null;
+      document.getElementById('fOldCommitted').value = '';
+      document.getElementById('oldCommittedPreview').classList.remove('show');
+    } else if (type === 'oldLetter') {
+      oldLetterFile = null;
+      document.getElementById('fOldLetter').value = '';
+      document.getElementById('oldLetterPreview').classList.remove('show');
     } else {
       dormFile = null;
       document.getElementById('fDormPhoto').value = '';
@@ -828,8 +884,12 @@
     if (!year)     { showError('请选择入学届次'); return; }
     if (!college)  { showError('请选择学院'); return; }
 
+    const isOldYear = !isGrad && !isNaN(parseInt(year)) && parseInt(year) >= 2024 && parseInt(year) <= 2029;
+
     if (isGrad) {
       if (!gradLetterFile) { showError('请上传研究生录取通知书'); return; }
+    } else if (isOldYear) {
+      if (!dormFile && !oldCommittedFile && !oldLetterFile) { showError('请至少上传一项：宿舍照片、Committed Letter 或录取通知书'); return; }
     } else {
       if (!type)  { showError('请选择录取类型'); return; }
       if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
@@ -850,10 +910,12 @@
       let dorm_photo_path       = null;
       let grad_letter_path      = null;
 
-      if (letterFile)     letter_path           = await uploadFile(letterFile,     '录取通知书');
-      if (committedFile)  committed_letter_path  = await uploadFile(committedFile,  'Committed Letter');
-      if (dormFile)       dorm_photo_path        = await uploadFile(dormFile,       '宿舍照片');
-      if (gradLetterFile) grad_letter_path       = await uploadFile(gradLetterFile, '研究生录取通知书');
+      if (letterFile)        letter_path           = await uploadFile(letterFile,        '录取通知书');
+      if (committedFile)     committed_letter_path  = await uploadFile(committedFile,     'Committed Letter');
+      if (dormFile)          dorm_photo_path        = await uploadFile(dormFile,          '宿舍照片');
+      if (gradLetterFile)    grad_letter_path       = await uploadFile(gradLetterFile,    '研究生录取通知书');
+      if (oldCommittedFile)  committed_letter_path  = await uploadFile(oldCommittedFile,  'Committed Letter');
+      if (oldLetterFile)     letter_path            = await uploadFile(oldLetterFile,     '录取通知书');
 
       document.getElementById('uploadProgress').classList.remove('show');
 
@@ -926,7 +988,7 @@
     });
     // 恢复录取类型显示
     document.getElementById('fType').closest('.form-group').style.display = '';
-    removeFile('letter'); removeFile('committed'); removeFile('dorm'); removeFile('gradLetter');
+    removeFile('letter'); removeFile('committed'); removeFile('dorm'); removeFile('gradLetter'); removeFile('oldCommitted'); removeFile('oldLetter');
     document.getElementById('formError').className = 'msg';
     document.getElementById('submitBtn').disabled = false;
     document.getElementById('submitBtn').textContent = '提 交';
