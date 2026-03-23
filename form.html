@@ -384,11 +384,11 @@
     <div class="form-card" style="text-align:center;max-width:480px;margin:0 auto;">
       <div class="section-title" style="justify-content:center;">扫码加入 Duke 家长微信群</div>
       <div style="margin-top:16px;">
-        <img src="qr.png"
+        <img id="dynamicQR" src="qr.png"
              alt="Duke 家长微信群二维码"
              onclick="openLightbox(this)"
              style="width:220px;height:auto;border-radius:12px;border:1px solid #e2ddd6;box-shadow:0 4px 16px rgba(0,0,0,0.08);cursor:zoom-in;"/>
-        <div style="margin-top:12px;font-size:14px;font-weight:600;color:#003087;">Duke 家长入群驿站-A</div>
+        <div id="dynamicQRLabel" style="margin-top:12px;font-size:14px;font-weight:600;color:#003087;">Duke 家长入群驿站</div>
         <div style="margin-top:8px;font-size:13px;color:#1a1a1a;line-height:1.8;">
           本二维码用于申请加入以下两个微信群：<br/>
           <span style="color:#003087;font-weight:600;">Duke 2030 本科生家长群</span><br/>
@@ -948,6 +948,10 @@
       if (error) throw new Error(error.message);
 
       document.getElementById('formArea').style.display = 'none';
+
+      // Fetch current QR code and rotate to next
+      await fetchAndRotateQR();
+
       const qr = document.getElementById('qrSection');
       qr.classList.add('show');
       qr.style.opacity = '0';
@@ -958,6 +962,57 @@
       showError('❌ ' + e.message);
       btn.disabled = false;
       btn.textContent = '提 交';
+    }
+  }
+
+  // ── QR Code rotation ──
+  async function fetchAndRotateQR() {
+    try {
+      // Get current active QR code
+      const { data, error } = await db
+        .from('qr_codes')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+        .limit(1)
+        .single();
+
+      if (error || !data) {
+        console.warn('No active QR found, using default');
+        return;
+      }
+
+      // Show current QR
+      const imgEl   = document.getElementById('dynamicQR');
+      const labelEl = document.getElementById('dynamicQRLabel');
+      if (imgEl)   imgEl.src         = data.image_url;
+      if (labelEl) labelEl.textContent = data.label || 'Duke 家长入群驿站';
+
+      // Rotate: mark current as used, activate next one
+      // Mark current as inactive
+      await db.from('qr_codes')
+        .update({ is_active: false, used_at: new Date().toISOString() })
+        .eq('id', data.id);
+
+      // Activate the next QR (lowest sort_order that is not yet used)
+      const { data: nextQR } = await db
+        .from('qr_codes')
+        .select('id')
+        .eq('is_active', false)
+        .is('used_at', null)
+        .order('sort_order', { ascending: true })
+        .limit(1)
+        .single();
+
+      if (nextQR) {
+        await db.from('qr_codes')
+          .update({ is_active: true })
+          .eq('id', nextQR.id);
+      }
+      // If no next QR, last one stays shown (is_active=false but already displayed)
+
+    } catch(e) {
+      console.warn('QR rotation error:', e.message);
     }
   }
 
