@@ -179,7 +179,7 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
-      min-width: 1100px;
+      min-width: 1260px;
     }
     thead th {
       background: var(--navy);
@@ -238,6 +238,24 @@
       color: rgba(255,255,255,0.6);
       font-family: 'DM Mono', monospace;
     }
+
+    /* ── 人员标记列 ── */
+    .person-select {
+      appearance: none;
+      -webkit-appearance: none;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      text-align: center;
+      width: 36px;
+    }
+    .person-select:hover { background: rgba(0,0,0,0.06); }
+    .person-select:focus { outline: 1px solid var(--blue); border-radius: 4px; }
+    td.person-cell { text-align: center; padding: 8px 6px; }
+    th.person-th { text-align: center; min-width: 48px; }
   </style>
 </head>
 <body>
@@ -314,6 +332,9 @@
     <table id="dataTable" style="display:none;">
       <thead>
         <tr>
+          <th class="person-th">笑</th>
+          <th class="person-th">金</th>
+          <th class="person-th">伟</th>
           <th onclick="sortBy('created_at')">提交时间</th>
           <th onclick="sortBy('student_name_cn')">中文姓名</th>
           <th onclick="sortBy('student_name_en')">英文姓名</th>
@@ -502,6 +523,32 @@
     return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
   }
 
+  // ── 人员标记（同步到 Supabase，三人共享） ──
+  const personCol = { '笑': 'mark_xiao', '金': 'mark_jin', '伟': 'mark_wei' };
+
+  async function saveMark(recordId, person, val) {
+    const col = personCol[person];
+    if (!col) return;
+    const update = {};
+    update[col] = val || null;
+    await db.from('admissions_submissions').update(update).eq('id', recordId);
+    const rec = allRecords.find(r => r.id === recordId);
+    if (rec) rec[col] = val || null;
+  }
+
+  function personCell(recordId, person, records) {
+    const col = personCol[person];
+    const rec = records.find(r => r.id === recordId);
+    const val = (rec && rec[col]) || '';
+    return `<td class="person-cell">
+      <select class="person-select" onchange="saveMark('${recordId}','${person}',this.value)" title="${person}">
+        <option value="" ${val===''?'selected':''}>—</option>
+        <option value="💙" ${val==='💙'?'selected':''}>💙</option>
+        <option value="⛔" ${val==='⛔'?'selected':''}>⛔</option>
+      </select>
+    </td>`;
+  }
+
   function renderTable(records) {
     const tbody = document.getElementById('tableBody');
     const empty = document.getElementById('tableEmpty');
@@ -536,6 +583,9 @@
         : `<span class="no-file">—</span>`;
 
       return `<tr>
+        ${personCell(r.id, '笑', allRecords)}
+        ${personCell(r.id, '金', allRecords)}
+        ${personCell(r.id, '伟', allRecords)}
         <td style="white-space:nowrap;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${date}</td>
         <td style="font-weight:600;">${r.student_name_cn || '—'}</td>
         <td>${r.student_name_en || '—'}</td>
