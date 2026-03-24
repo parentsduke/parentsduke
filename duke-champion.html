@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duke Champion!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Georgia', serif;
+    overflow: hidden;
+  }
+
+  .scene {
+    position: relative;
+    width: 500px;
+    height: 500px;
+  }
+
+  /* Bracket lines for atmosphere */
+  .bracket-lines {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+  }
+  .bracket-lines::before,
+  .bracket-lines::after {
+    content: '';
+    position: absolute;
+    background: #c9a84c;
+  }
+  .bracket-lines::before {
+    width: 2px;
+    height: 140px;
+    top: 180px;
+    left: 60px;
+  }
+  .bracket-lines::after {
+    width: 2px;
+    height: 140px;
+    top: 180px;
+    right: 60px;
+  }
+
+  .h-line-left {
+    position: absolute;
+    width: 90px;
+    height: 2px;
+    background: #c9a84c;
+    opacity: 0.15;
+    top: 249px;
+    left: 60px;
+  }
+  .h-line-right {
+    position: absolute;
+    width: 90px;
+    height: 2px;
+    background: #c9a84c;
+    opacity: 0.15;
+    top: 249px;
+    right: 60px;
+  }
+
+  /* Champion circle */
+  .champion-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #003380, #001845);
+    border: 4px solid #c9a84c;
+    box-shadow:
+      0 0 0 2px #012169,
+      0 0 30px rgba(201,168,76,0.4),
+      0 0 60px rgba(1,33,105,0.6),
+      inset 0 0 30px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+  }
+
+  .champion-circle .static-d {
+    font-size: 80px;
+    font-weight: 900;
+    color: white;
+    font-family: 'Times New Roman', serif;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: none;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+  }
+
+  .champion-circle .static-d.show {
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes popIn {
+    0% { opacity: 0; transform: scale(0.3) rotate(-20deg); }
+    60% { opacity: 1; transform: scale(1.15) rotate(5deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  /* The flying D */
+  .flying-d-wrapper {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    animation: flyAndFlip 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+  }
+
+  .flying-d {
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle at 35% 35%, #003380, #001845);
+    border-radius: 50%;
+    border: 3px solid #c9a84c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.5), 0 0 40px rgba(1,33,105,0.8);
+    animation: selfSpin 2.2s linear forwards;
+    animation-delay: 0.5s;
+  }
+
+  .flying-d span {
+    font-size: 42px;
+    font-weight: 900;
+    color: white;
+    font-family: 'Times New Roman', serif;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+    line-height: 1;
+  }
+
+  @keyframes flyAndFlip {
+    0% {
+      opacity: 1;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%) scale(1);
+    }
+    20% {
+      top: -20px;
+      left: 30%;
+      transform: translateX(-50%) scale(1.1);
+    }
+    50% {
+      top: 80px;
+      left: 15%;
+      transform: translateX(-50%) scale(0.9);
+    }
+    75% {
+      top: 160px;
+      left: 30%;
+      transform: translateX(-50%) scale(1);
+    }
+    90% {
+      top: 210px;
+      left: 50%;
+      transform: translateX(-50%) scale(1.15);
+      opacity: 1;
+    }
+    100% {
+      top: 210px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes selfSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(1080deg); }
+  }
+
+  /* Trail effect */
+  .trail {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(201, 168, 76, 0.6);
+    animation: trailFade 1s ease-out forwards;
+    pointer-events: none;
+    z-index: 8;
+  }
+
+  @keyframes trailFade {
+    0% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.1); }
+  }
+
+  /* Burst particles on landing */
+  .burst {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  .particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    opacity: 0;
+  }
+
+  .particle:nth-child(odd) { background: #c9a84c; }
+  .particle:nth-child(even) { background: white; }
+
+  .particle.active {
+    animation: burst 0.8s ease-out forwards;
+  }
+
+  @keyframes burst {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--tx), var(--ty)) scale(0);
+    }
+  }
+
+  /* Glow pulse on landing */
+  .glow-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 3px solid #c9a84c;
+    opacity: 0;
+    z-index: 3;
+  }
+
+  .glow-ring.pulse {
+    animation: glowPulse 0.6s ease-out forwards;
+  }
+
+  @keyframes glowPulse {
+    0% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+  }
+
+  /* Champion text */
+  .champion-text {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  .champion-text.show {
+    animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .champion-text h2 {
+    font-size: 28px;
+    font-weight: 900;
+    color: #c9a84c;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(201,168,76,0.6);
+  }
+
+  .champion-text p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  /* Stars */
+  .stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+  }
+
+  /* Replay button */
+  .replay-btn {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 28px;
+    background: transparent;
+    border: 2px solid #c9a84c;
+    color: #c9a84c;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-family: Georgia, serif;
+  }
+
+  .replay-btn:hover {
+    background: #c9a84c;
+    color: #0a0a0f;
+  }
+</style>
+</head>
+<body>
+
+<div class="scene" id="scene">
+  <!-- Bracket atmosphere -->
+  <div class="bracket-lines"></div>
+  <div class="h-line-left"></div>
+  <div class="h-line-right"></div>
+
+  <!-- Stars background -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Glow ring -->
+  <div class="glow-ring" id="glowRing"></div>
+
+  <!-- Champion circle -->
+  <div class="champion-circle">
+    <div class="static-d" id="staticD">D</div>
+  </div>
+
+  <!-- The flying D -->
+  <div class="flying-d-wrapper" id="flyingD">
+    <div class="flying-d">
+      <span>D</span>
+    </div>
+  </div>
+
+  <!-- Burst particles -->
+  <div class="burst" id="burst"></div>
+
+  <!-- Champion text -->
+  <div class="champion-text" id="champText">
+    <h2>🏆 Champions!</h2>
+    <p>Duke Blue Devils</p>
+  </div>
+
+  <button class="replay-btn" onclick="replay()">↺ 再看一次</button>
+</div>
+
+<script>
+  // Create stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 40; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 3 + 1;
+    star.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      top: ${Math.random() * 100}%;
+      left: ${Math.random() * 100}%;
+      animation: twinkle ${2 + Math.random() * 3}s ${Math.random() * 2}s infinite alternate;
+    `;
+    starsEl.appendChild(star);
+  }
+
+  // Add twinkle keyframes
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes twinkle {
+      0% { opacity: 0.1; }
+      100% { opacity: 0.6; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Create burst particles
+  function createBurst() {
+    const burstEl = document.getElementById('burst');
+    burstEl.innerHTML = '';
+    const count = 16;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const angle = (i / count) * 360;
+      const dist = 60 + Math.random() * 40;
+      const tx = Math.cos(angle * Math.PI / 180) * dist + 'px';
+      const ty = Math.sin(angle * Math.PI / 180) * dist + 'px';
+      p.style.setProperty('--tx', tx);
+      p.style.setProperty('--ty', ty);
+      p.style.left = '50%';
+      p.style.top = '50%';
+      p.style.transform = 'translate(-50%, -50%)';
+      burstEl.appendChild(p);
+
+      setTimeout(() => {
+        p.classList.add('active');
+      }, 10);
+    }
+  }
+
+  // Main sequence
+  function runAnimation() {
+    const flyingD = document.getElementById('flyingD');
+    const staticD = document.getElementById('staticD');
+    const glowRing = document.getElementById('glowRing');
+    const champText = document.getElementById('champText');
+
+    // Reset
+    flyingD.style.opacity = '1';
+    staticD.classList.remove('show');
+    glowRing.classList.remove('pulse');
+    champText.classList.remove('show');
+
+    // Landing: at 2.2s + 0.5s delay = 2.7s
+    setTimeout(() => {
+      createBurst();
+      glowRing.classList.add('pulse');
+      staticD.classList.add('show');
+    }, 2700);
+
+    // Champion text
+    setTimeout(() => {
+      champText.classList.add('show');
+    }, 3100);
+  }
+
+  function replay() {
+    const flyingD = document.getElementById('flyingD');
+    const staticD = document.getElementById('staticD');
+    const glowRing = document.getElementById('glowRing');
+    const champText = document.getElementById('champText');
+
+    // Reset animations
+    flyingD.style.animation = 'none';
+    flyingD.querySelector('.flying-d').style.animation = 'none';
+    staticD.classList.remove('show');
+    glowRing.classList.remove('pulse');
+    champText.classList.remove('show');
+    champText.style.opacity = '0';
+    document.getElementById('burst').innerHTML = '';
+
+    void flyingD.offsetWidth; // reflow
+
+    flyingD.style.animation = 'flyAndFlip 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+    flyingD.style.animationDelay = '0.5s';
+    flyingD.style.opacity = '0';
+    flyingD.querySelector('.flying-d').style.animation = 'selfSpin 2.2s linear forwards';
+    flyingD.querySelector('.flying-d').style.animationDelay = '0.5s';
+
+    setTimeout(runAnimation, 50);
+  }
+
+  // Start on load
+  setTimeout(runAnimation, 100);
+</script>
+</body>
+</html>
