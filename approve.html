@@ -274,6 +274,21 @@
   const ADMIN_EMAILS = ['weihong_j@yahoo.com', 'sws122003@yahoo.com', 'lixiaobing@gmail.com'];
   const SEND_NOTIFICATION_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/send-notification';
 
+  // ========== 方糖微信通知 ==========
+  const FANGTANG_KEY = 'SCT328495TQduzKAaqqK7Y3xDqfyUWdViD';
+
+  async function sendWxNotify(title, content) {
+    try {
+      await fetch(`https://sctapi.ftqq.com/${FANGTANG_KEY}.send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ title, desp: content })
+      });
+    } catch (e) {
+      console.warn('方糖通知失败:', e);
+    }
+  }
+
   // ========== 初始化应用 ==========
   async function initializeApp(adminEmails) {
     try {
@@ -389,6 +404,19 @@
       allRequests = data || [];
       updateStats();
       renderRequests(currentFilter);
+
+      // 方糖：有待处理申请时通知
+      const pendingList = allRequests.filter(r => r.status === 'pending');
+      if (pendingList.length > 0) {
+        const names = pendingList.slice(0, 3).map(r => {
+          const parts = (r.file_name || '').split(' - ');
+          return `${r.uploaded_by || '?'}届 ${parts[1] || '?'}`;
+        }).join('、');
+        sendWxNotify(
+          `📩 DukeParents 有 ${pendingList.length} 条待审批申请`,
+          `**待处理申请：** ${pendingList.length} 条\n\n最新：${names}\n\n请登录 dukeparents.org/approve.html 处理`
+        );
+      }
     } catch (error) {
       console.error('加载错误:', error);
       showError('加载请求失败：' + error.message);
@@ -529,6 +557,10 @@
       updateStats();
       renderRequests(currentFilter);
       showToast(`✅ 已发送邀请邮件至 ${email}`);
+      sendWxNotify(
+        `✅ 已批准：${name}`,
+        `**操作：** 批准并发送邀请\n**姓名：** ${name}\n**邮箱：** ${email}`
+      );
 
     } catch (e) {
       console.error('错误详情:', e);
@@ -569,6 +601,12 @@
       if (idx >= 0) allRequests[idx].status = 'rejected';
       updateStats();
       renderRequests(currentFilter);
+
+      // 方糖：拒绝通知
+      sendWxNotify(
+        `❌ 已拒绝申请 #${id}`,
+        `申请 ID ${id} 已被拒绝`
+      );
 
     } catch (e) {
       alert('❌ 操作失败：' + e.message);
