@@ -1320,4 +1320,15 @@
       const text = sec.textContent.toLowerCase();
       if (text.includes(kw)) {
         sec.style.display = '';
-        sec.cla
+        sec.classList.add('open');
+        anyVisible = true;
+      } else {
+        sec.style.display = 'none';
+      }
+    });
+
+    document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
+  }
+</script>
+</body>
+</html>
