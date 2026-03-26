@@ -578,13 +578,21 @@
     if (approveBtn) approveBtn.disabled = true;
 
     try {
-      const { error } = await db
-        .from('pending_uploads')
-        .update({ status: 'rejected' })
-        .eq('id', id);
+      const { data: { session } } = await db.auth.getSession();
+      const token = session?.access_token || '';
 
-      if (error) {
-        alert('❌ 操作失败：' + error.message);
+      const res = await fetch(SEND_NOTIFICATION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ action: 'reject', record_id: id })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert('❌ 操作失败：' + (data.error || res.status));
         btn.disabled = false;
         if (approveBtn) approveBtn.disabled = false;
         return;
@@ -594,8 +602,7 @@
       if (idx >= 0) allRequests[idx].status = 'rejected';
       updateStats();
       renderRequests(currentFilter);
-
-      // 方糖：拒绝通知
+      showToast(`❌ 已拒绝申请 #${id}`);
       sendWxNotify(
         `❌ 已拒绝申请 #${id}`,
         `申请 ID ${id} 已被拒绝
