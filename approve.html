@@ -274,23 +274,6 @@
   const ADMIN_EMAILS = ['weihong_j@yahoo.com', 'sws122003@yahoo.com', 'lixiaobing@gmail.com'];
   const SEND_NOTIFICATION_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/send-notification';
 
-  // ========== 方糖微信通知（key 存于后台环境变量，前端不持有）==========
-  async function sendWxNotify(title, content) {
-    try {
-      const { data: { session } } = await db.auth.getSession();
-      const token = session?.access_token || '';
-      await fetch(SEND_NOTIFICATION_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ action: 'wx_notify', title, desp: content })
-      });
-    } catch (e) {
-      console.warn('方糖通知失败:', e);
-    }
-  }
 
   // ========== 初始化应用 ==========
   async function initializeApp(adminEmails) {
@@ -548,12 +531,6 @@
       updateStats();
       renderRequests(currentFilter);
       showToast(`✅ 已发送邀请邮件至 ${email}`);
-      sendWxNotify(
-        `✅ 已批准：${name}`,
-        `**操作：** 批准并发送邀请\n**姓名：** ${name}\n**邮箱：** ${email}
-
-[👉 点击进入审批页面](https://dukeparents.org/approve.html)`
-      );
 
     } catch (e) {
       console.error('错误详情:', e);
@@ -603,12 +580,6 @@
       updateStats();
       renderRequests(currentFilter);
       showToast(`❌ 已拒绝申请 #${id}`);
-      sendWxNotify(
-        `❌ 已拒绝申请 #${id}`,
-        `申请 ID ${id} 已被拒绝
-
-[👉 点击进入审批页面](https://dukeparents.org/approve.html)`
-      );
 
     } catch (e) {
       alert('❌ 操作失败：' + e.message);
