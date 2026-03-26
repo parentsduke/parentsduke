@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Duke 学费历年变化 · DukeParents</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:   #001a4d;
+      --blue:   #003087;
+      --gold:   #B8963E;
+      --gold-lt:#f5ecd4;
+      --bg:     #f5f3ef;
+      --card:   #ffffff;
+      --border: #e2ddd6;
+      --text:   #1a1a1a;
+      --muted:  #888070;
+      --red:    #C84B31;
+      --green:  #1a6b3c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Noto Serif SC', serif;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; }
+    .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+      padding: 40px 32px 36px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 120%, rgba(184,150,62,0.15) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(184,150,62,0.15);
+      border: 1px solid rgba(184,150,62,0.4);
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      font-family: 'DM Mono', monospace;
+      position: relative;
+    }
+    .hero h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.5;
+      margin-bottom: 4px;
+      position: relative;
+    }
+    .hero p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      position: relative;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Main ── */
+    .page-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    /* ── Summary cards ── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 14px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .stat-val {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .stat-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title span { color: var(--blue); }
+
+    /* ── Accordion ── */
+    .acc-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.4s ease forwards;
+    }
+    .acc-item:nth-child(1) { animation-delay: 0.05s; }
+    .acc-item:nth-child(2) { animation-delay: 0.10s; }
+    .acc-item:nth-child(3) { animation-delay: 0.15s; }
+    .acc-item:nth-child(4) { animation-delay: 0.20s; }
+    .acc-item:nth-child(5) { animation-delay: 0.25s; }
+    .acc-item:nth-child(6) { animation-delay: 0.30s; }
+    .acc-item:nth-child(7) { animation-delay: 0.35s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .acc-header {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      cursor: pointer;
+      gap: 14px;
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .acc-header:hover { background: #faf8f4; }
+
+    .acc-year {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      min-width: 68px;
+    }
+    .acc-tuition {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      flex: 1;
+    }
+    .acc-badge {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .badge-flat { background: #f0ede6; color: var(--muted); }
+    .badge-up   { background: #fdecea; color: var(--red); }
+    .badge-big  { background: var(--gold-lt); color: #7a5a10; }
+
+    .acc-arrow {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 11px;
+      transition: transform 0.25s;
+      flex-shrink: 0;
+    }
+    .acc-arrow.open { transform: rotate(180deg); }
+
+    .acc-body {
+      display: none;
+      padding: 0 20px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .acc-body.open { display: block; }
+
+    /* rows inside body */
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .detail-row:last-of-type { border-bottom: none; }
+    .detail-label { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; }
+    .detail-val   { font-weight: 700; color: var(--navy); }
+
+    /* bar */
+    .bar-section { margin-top: 14px; }
+    .bar-label-txt {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .bar-bg {
+      background: #edeae4;
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    .bar-blue   { background: var(--blue); }
+    .bar-amber  { background: var(--gold); }
+    .bar-red    { background: var(--red); }
+
+    /* note */
+    .acc-note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-family: 'DM Mono', monospace;
+      background: #faf8f4;
+      border-left: 3px solid var(--gold);
+      border-radius: 0 6px 6px 0;
+      padding: 10px 14px;
+    }
+
+    /* ── Footer note ── */
+    .foot-note {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 28px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 600px) {
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .summary-grid .stat-card:last-child { grid-column: 1 / -1; }
+      .acc-tuition { font-size: 16px; }
+      .acc-badge { display: none; }
+      .hero h1 { font-size: 18px; }
+    }
+      #tuitionChart { max-height: 260px; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="hd">D</div>
+  <div class="ht">Duke 学费历年变化</div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">DukeParents · Tuition Trends</div>
+  <h1>Duke 大学学费变化</h1>
+  <h1>2020 年至今</h1>
+  <p style="margin-top:8px;">本科学费 · 总出勤费用 (COA) · 逐年涨幅</p>
+</div>
+
+<div class="page-wrap">
+
+  <!-- 摘要卡片 -->
+  <div class="summary-grid">
+    <div class="stat-card">
+      <div class="stat-label">2020–21 学费</div>
+      <div class="stat-val">$57,633</div>
+      <div class="stat-sub">本科学费+杂费</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">2026–27 学费</div>
+      <div class="stat-val">$73,740</div>
+      <div class="stat-sub">本科学费+杂费</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">7 年总涨幅</div>
+      <div class="stat-val" style="color:var(--red);">+28%</div>
+      <div class="stat-sub">约涨 $16,107</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">2026–27 COA</div>
+      <div class="stat-val">$96,597</div>
+      <div class="stat-sub">总出勤费用</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">四年总费用</div>
+      <div class="stat-val">~$370K</div>
+      <div class="stat-sub">Class of 2030 估算</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">破 $100K 预计</div>
+      <div class="stat-val">2027–28</div>
+      <div class="stat-sub">按现有涨幅推算</div>
+    </div>
+  </div>
+
+  <!-- 曲线图 -->
+  <div class="section-title"><span>◆</span> 趋势曲线图</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px 20px 16px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+
+    <!-- 图例 + 切换 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+      <div style="display:flex;gap:18px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);">
+          <div style="width:28px;height:3px;background:var(--blue);border-radius:2px;"></div>学费+杂费
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);">
+          <div style="width:28px;height:3px;background:var(--gold);border-radius:2px;border-top:2px dashed var(--gold);background:none;"></div>总出勤费用 (COA)
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button onclick="setMode('amount')" id="btnAmt" style="font-size:11px;font-family:'DM Mono',monospace;padding:4px 12px;border-radius:20px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer;">金额</button>
+        <button onclick="setMode('change')" id="btnChg" style="font-size:11px;font-family:'DM Mono',monospace;padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;">年涨幅 %</button>
+      </div>
+    </div>
+
+    <canvas id="tuitionChart" style="width:100%;height:260px;display:block;"></canvas>
+  </div>
+
+  <!-- 手风琴 -->
+  <div class="section-title"><span>◆</span> 逐年详情（点击展开）</div>
+
+  <div id="accordion"></div>
+
+  <div class="foot-note">
+    数据来源：Duke Finance Office · CollegeTuitionCompare · Duke Chronicle<br/>
+    COA = Cost of Attendance，包含学费、住宿、餐饮及其他杂费<br/>
+    2026–27 为董事会已批准数字
+  </div>
+
+</div>
+
+<script>
+  var data = [
+    {
+      year: "2020–21",
+      tuition: 57633,
+      coa: 77069,
+      change: 0,
+      badge: "badge-flat",
+      badgeText: "0%  未涨",
+      barColor: "bar-blue",
+      rows: [
+        { label: "本科学费 + 杂费", val: "$57,633" },
+        { label: "住宿 + 餐饮 + 其他", val: "$18,002" },
+        { label: "总出勤费用 (COA)", val: "$77,069" },
+        { label: "较上年变化", val: "0%（COVID 免涨）" },
+      ],
+      note: "因 COVID-19 疫情，董事会撤回原定 3.9% 涨幅，学费与 2019–20 完全持平。这是近 20 年来唯一一次零涨幅。"
+    },
+    {
+      year: "2021–22",
+      tuition: 60244,
+      coa: 79860,
+      change: 4.53,
+      badge: "badge-up",
+      badgeText: "+4.5%",
+      barColor: "bar-blue",
+      rows: [
+        { label: "本科学费 + 杂费", val: "$60,244" },
+        { label: "住宿 + 餐饮 + 其他", val: "$18,182" },
+        { label: "总出勤费用 (COA)", val: "$79,860" },
+        { label: "较上年涨幅", val: "+4.53%" },
+      ],
+      note: "疫情后恢复正常涨幅节奏，学费从 $57,633 一步回升至 $60,244，增加 $2,611。"
+    },
+    {
+      year: "2022–23",
+      tuition: 62688,
+      coa: 82749,
+      change: 4.06,
+      badge: "badge-up",
+      badgeText: "+4.1%",
+      barColor: "bar-blue",
+      rows: [
+        { label: "本科学费 + 杂费", val: "$62,688" },
+        { label: "住宿 + 餐饮 + 其他", val: "$18,627" },
+        { label: "总出勤费用 (COA)", val: "$82,749" },
+        { label: "较上年涨幅", val: "+4.06%" },
+      ],
+      note: "稳定增长年份，COA 首次突破 $82,000。通货膨胀高企，但涨幅略低于上年。"
+    },
+    {
+      year: "2023–24",
+      tuition: 65805,
+      coa: 87072,
+      change: 4.97,
+      badge: "badge-up",
+      badgeText: "+5.0%",
+      barColor: "bar-amber",
+      rows: [
+        { label: "本科学费 + 杂费", val: "$65,805" },
+        { label: "住宿 + 餐饮 + 其他", val: "$19,665" },
+        { label: "总出勤费用 (COA)", val: "$87,072" },
+        { label: "较上年涨幅", val: "+4.97%" },
+      ],
+      note: "涨幅加速至 5%，为近年高点。COA 跨越 $87,000，住宿餐饮费用同步上涨。"
+    },
+    {
+      year: "2024–25",
+      tuition: 68758,
+      coa: 90696,
+      change: 4.49,
+      badge: "badge-up",
+      badgeText: "+4.5%",
+      barColor: "bar-amber",
+      rows: [
+        { label: "本科学费 + 杂费", val: "$68,758" },
+        { label: "住宿 + 餐饮 + 其他", val: "$21,402" },
+        { label: "总出勤费用 (COA)", val: "$90,696" },
+        { label: "较上年涨幅", val: "+4.49%" },
+      ],
+      note: "COA 首次突破 $90,000，达 $90,696。住宿餐饮较前年大涨 $1,737，为生活成本单年最大增幅之一。"
+    },
+    {
+      year: "2025–26",
+      tuition: 70265,
+      coa: 92042,
+      change: 5.93,
+      badge: "badge-big",
+      badgeText: "+5.9%  近 20 年最高",
+      barColor: "bar-red",
+      rows: [
+        { label: "本科学费 + 杂费", val: "$70,265" },
+        { label: "住宿 + 餐饮 + 其他", val: "$21,777" },
+        { label: "总出勤费用 (COA)", val: "$92,042" },
+        { label: "较上年涨幅", val: "+5.93%" },
+      ],
+      note: "单年涨幅 5.93%，为近 20 年来最高。学费首破 $70,000，COA 达 $92,042。引发学生及家长广泛讨论。"
+    },
+    {
+      year: "2026–27",
+      tuition: 73740,
+      coa: 96597,
+      change: 4.95,
+      badge: "badge-up",
+      badgeText: "+4.95%",
+      barColor: "bar-amber",
+      rows: [
+        { label: "本科学费 + 杂费", val: "$73,740" },
+        { label: "住宿 + 餐饮 + 其他", val: "$22,857" },
+        { label: "总出勤费用 (COA)", val: "$96,597" },
+        { label: "较上年涨幅", val: "+4.95%" },
+      ],
+      note: "董事会已正式批准。COA $96,597，距 $100,000 仅差 $3,403。按现有约 5% 年增速，2027–28 预计将正式破关。"
+    },
+  ];
+
+  var maxCOA = Math.max.apply(null, data.map(function(d){ return d.coa; }));
+
+  var html = '';
+  data.forEach(function(d, i) {
+    var pct = Math.round(d.coa / maxCOA * 100);
+    html += '<div class="acc-item">';
+
+    // header
+    html += '<div class="acc-header" onclick="toggle(' + i + ')">';
+    html += '<span class="acc-year">' + d.year + '</span>';
+    html += '<span class="acc-tuition">$' + d.tuition.toLocaleString() + '</span>';
+    html += '<span class="acc-badge ' + d.badge + '">' + d.badgeText + '</span>';
+    html += '<span class="acc-arrow" id="arr' + i + '">▼</span>';
+    html += '</div>';
+
+    // body
+    html += '<div class="acc-body" id="body' + i + '">';
+    d.rows.forEach(function(r) {
+      html += '<div class="detail-row">';
+      html += '<span class="detail-label">' + r.label + '</span>';
+      html += '<span class="detail-val">' + r.val + '</span>';
+      html += '</div>';
+    });
+    html += '<div class="bar-section">';
+    html += '<div class="bar-label-txt">COA 水位（相对 2026–27）</div>';
+    html += '<div class="bar-bg"><div class="bar-fill ' + d.barColor + '" style="width:' + pct + '%"></div></div>';
+    html += '</div>';
+    html += '<div class="acc-note">' + d.note + '</div>';
+    html += '</div>';
+
+    html += '</div>';
+  });
+
+  document.getElementById('accordion').innerHTML = html;
+
+  // ── 图表数据 ──
+  var years    = data.map(function(d){ return d.year; });
+  var tuitions = data.map(function(d){ return d.tuition; });
+  var coas     = data.map(function(d){ return d.coa; });
+  var changes  = data.map(function(d){ return d.change; });
+  var navy = '#001a4d', blue = '#003087', gold = '#B8963E', red = '#C84B31';
+  var chartMode = 'amount';
+  var myChart = null;
+
+  function buildChart() {
+    var ctx = document.getElementById('tuitionChart').getContext('2d');
+    if (myChart) myChart.destroy();
+    var isAmount = (chartMode === 'amount');
+    var datasets = isAmount ? [
+      {
+        label: '学费+杂费',
+        data: tuitions,
+        borderColor: blue,
+        backgroundColor: 'rgba(0,48,135,0.08)',
+        borderWidth: 2.5,
+        pointBackgroundColor: blue,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        fill: true,
+        tension: 0.35,
+      },
+      {
+        label: '总出勤费用 COA',
+        data: coas,
+        borderColor: gold,
+        backgroundColor: 'rgba(184,150,62,0.06)',
+        borderWidth: 2.5,
+        borderDash: [6,4],
+        pointBackgroundColor: gold,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        fill: true,
+        tension: 0.35,
+      }
+    ] : [
+      {
+        label: '年涨幅 %',
+        data: changes,
+        backgroundColor: changes.map(function(c){
+          return c >= 5 ? 'rgba(200,75,49,0.75)' : c === 0 ? 'rgba(136,128,112,0.5)' : 'rgba(0,48,135,0.55)';
+        }),
+        borderWidth: 0,
+        borderRadius: 5,
+      }
+    ];
+    myChart = new Chart(ctx, {
+      type: isAmount ? 'line' : 'bar',
+      data: { labels: years, datasets: datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: navy,
+            titleFont: { family: "'DM Mono', monospace", size: 12 },
+            bodyFont:  { family: "'DM Mono', monospace", size: 12 },
+            padding: 12,
+            callbacks: {
+              label: function(c) {
+                return isAmount
+                  ? c.dataset.label + ': $' + c.parsed.y.toLocaleString()
+                  : '年涨幅: ' + c.parsed.y.toFixed(2) + '%';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            ticks: { font: { family: "'DM Mono', monospace", size: 11 }, color: '#888070' }
+          },
+          y: {
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            ticks: {
+              font: { family: "'DM Mono', monospace", size: 11 },
+              color: '#888070',
+              callback: function(v) {
+                return isAmount ? '$' + (v/1000).toFixed(0) + 'K' : v.toFixed(1) + '%';
+              }
+            },
+            suggestedMin: isAmount ? 50000 : 0,
+          }
+        }
+      }
+    });
+  }
+
+  function setMode(mode) {
+    chartMode = mode;
+    var btnAmt = document.getElementById('btnAmt');
+    var btnChg = document.getElementById('btnChg');
+    btnAmt.style.background  = mode === 'amount' ? blue : 'transparent';
+    btnAmt.style.color       = mode === 'amount' ? '#fff' : '#888070';
+    btnAmt.style.borderColor = mode === 'amount' ? blue : '#e2ddd6';
+    btnChg.style.background  = mode === 'change' ? blue : 'transparent';
+    btnChg.style.color       = mode === 'change' ? '#fff' : '#888070';
+    btnChg.style.borderColor = mode === 'change' ? blue : '#e2ddd6';
+    buildChart();
+  }
+
+  buildChart();
+
+  var openIndex = null;
+  function toggle(i) {
+    var body = document.getElementById('body' + i);
+    var arr  = document.getElementById('arr' + i);
+    var isOpen = body.classList.contains('open');
+
+    // 关闭已打开的
+    if (openIndex !== null && openIndex !== i) {
+      document.getElementById('body' + openIndex).classList.remove('open');
+      document.getElementById('arr'  + openIndex).classList.remove('open');
+    }
+
+    body.classList.toggle('open', !isOpen);
+    arr.classList.toggle('open', !isOpen);
+    openIndex = isOpen ? null : i;
+
+    if (!isOpen) {
+      setTimeout(function() {
+        body.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
+    }
+  }
+</script>
+
+</body>
+</html>
