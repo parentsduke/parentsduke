@@ -371,6 +371,252 @@
   <h1>扯谈 Duke 群社区欢迎您</h1>
 </div>
 
+<!-- ══════════════════════════════════════════
+     视频页（默认显示，选择后隐藏）
+════════════════════════════════════════════ -->
+<div id="videoPage" style="
+  max-width:720px;
+  margin:0 auto;
+  padding:32px 20px 60px;
+">
+
+  <!-- 提示文字 -->
+  <div style="
+    background:linear-gradient(135deg,#001a4d,#003087);
+    border-radius:14px;
+    padding:20px 24px;
+    text-align:center;
+    margin-bottom:24px;
+    box-shadow:0 4px 20px rgba(0,26,77,0.2);
+  ">
+    <div style="font-size:20px;margin-bottom:8px;">🎬</div>
+    <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.6;margin-bottom:6px;">
+      填写表格前，建议先观看介绍视频
+    </div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7;">
+      了解扯谈 Duke 群社区，以及如何填写本表格<br/>
+      <span style="color:#c9a84c;">表格将在视频结束后出现</span>
+    </div>
+  </div>
+
+  <!-- 视频选择按钮 -->
+  <div style="display:flex;gap:12px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;">
+    <button onclick="switchVideo('youtube')" id="btnYT" style="
+      padding:10px 22px;
+      border-radius:8px;
+      border:2px solid #FF0000;
+      background:#fff;
+      color:#CC0000;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;align-items:center;gap:8px;
+      font-family:'Noto Serif SC',serif;
+      transition:all 0.2s;
+    ">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><polygon points="8,3 15,7 8,11" fill="white"/></svg>
+      YouTube
+    </button>
+    <button onclick="switchVideo('bilibili')" id="btnBB" style="
+      padding:10px 22px;
+      border-radius:8px;
+      border:2px solid #00AEEC;
+      background:#fff;
+      color:#00AEEC;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;align-items:center;gap:8px;
+      font-family:'Noto Serif SC',serif;
+      transition:all 0.2s;
+    ">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#00AEEC"/><text x="3" y="11" font-size="9" fill="white" font-family="Arial" font-weight="bold">bili</text></svg>
+      Bilibili
+    </button>
+  </div>
+
+  <!-- 视频容器 -->
+  <div style="
+    position:relative;
+    width:100%;
+    padding-top:56.25%;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 6px 30px rgba(0,0,0,0.18);
+    background:#000;
+    margin-bottom:24px;
+  ">
+    <!-- YouTube iframe -->
+    <iframe id="ytFrame"
+      src="https://www.youtube.com/embed/QrlF55nKkFI?enablejsapi=1&rel=0&modestbranding=1"
+      style="position:absolute;inset:0;width:100%;height:100%;border:none;"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+    <!-- Bilibili iframe -->
+    <iframe id="bbFrame"
+      src="https://player.bilibili.com/player.html?bvid=BV11KX4BmEQZ&page=1&high_quality=1&danmaku=0"
+      style="position:absolute;inset:0;width:100%;height:100%;border:none;display:none;"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- 视频结束后的进入按钮（默认隐藏） -->
+  <div id="videoEndPrompt" style="display:none;text-align:center;margin-bottom:24px;animation:fadeUp 0.5s ease forwards;">
+    <div style="
+      background:#f0f7f0;
+      border:1px solid #1a6b3c;
+      border-radius:12px;
+      padding:20px 24px;
+      display:inline-block;
+      max-width:420px;
+    ">
+      <div style="font-size:24px;margin-bottom:8px;">✅</div>
+      <div style="font-size:15px;font-weight:700;color:#1a6b3c;margin-bottom:12px;">视频已看完，请点击下方按钮填写表格</div>
+      <button onclick="enterForm()" style="
+        padding:14px 36px;
+        background:#003087;
+        color:#fff;
+        border:none;
+        border-radius:10px;
+        font-size:16px;
+        font-weight:700;
+        font-family:'Noto Serif SC',serif;
+        cursor:pointer;
+        letter-spacing:1px;
+        box-shadow:0 4px 14px rgba(0,48,135,0.3);
+        transition:background 0.2s;
+      " onmouseover="this.style.background='#001a4d'" onmouseout="this.style.background='#003087'">
+        📝 点击此处进入表格填表
+      </button>
+    </div>
+  </div>
+
+  <!-- 两个主按钮 -->
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+    <button onclick="watchVideo()" style="
+      padding:14px 32px;
+      background:#003087;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      font-size:15px;
+      font-weight:700;
+      font-family:'Noto Serif SC',serif;
+      cursor:pointer;
+      letter-spacing:0.5px;
+      box-shadow:0 4px 14px rgba(0,48,135,0.25);
+      transition:background 0.2s;
+      display:flex;align-items:center;gap:8px;
+    " onmouseover="this.style.background='#001a4d'" onmouseout="this.style.background='#003087'">
+      🎬 观看视频再填表
+    </button>
+    <button onclick="enterForm()" style="
+      padding:14px 32px;
+      background:#fff;
+      color:#003087;
+      border:2px solid #003087;
+      border-radius:10px;
+      font-size:15px;
+      font-weight:700;
+      font-family:'Noto Serif SC',serif;
+      cursor:pointer;
+      letter-spacing:0.5px;
+      transition:all 0.2s;
+      display:flex;align-items:center;gap:8px;
+    " onmouseover="this.style.background='#f0f4fb'" onmouseout="this.style.background='#fff'">
+      ⏭ 跳过视频直接填表
+    </button>
+  </div>
+
+</div>
+
+<script>
+  // ── 当前视频平台 ──
+  var currentPlatform = 'youtube';
+  var ytPlayerReady = false;
+  var ytPlayer = null;
+
+  // ── 切换视频平台 ──
+  function switchVideo(platform) {
+    currentPlatform = platform;
+    var ytFrame = document.getElementById('ytFrame');
+    var bbFrame = document.getElementById('bbFrame');
+    var btnYT   = document.getElementById('btnYT');
+    var btnBB   = document.getElementById('btnBB');
+
+    if (platform === 'youtube') {
+      ytFrame.style.display = '';
+      bbFrame.style.display = 'none';
+      btnYT.style.background = '#FF0000';
+      btnYT.style.color = '#fff';
+      btnBB.style.background = '#fff';
+      btnBB.style.color = '#00AEEC';
+    } else {
+      ytFrame.style.display = 'none';
+      bbFrame.style.display = '';
+      btnYT.style.background = '#fff';
+      btnYT.style.color = '#CC0000';
+      btnBB.style.background = '#00AEEC';
+      btnBB.style.color = '#fff';
+    }
+  }
+
+  // ── 点击「观看视频再填表」──
+  function watchVideo() {
+    // 滚动到视频顶部
+    document.getElementById('videoPage').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // 如果是 YouTube，尝试用 API 播放
+    if (currentPlatform === 'youtube' && ytPlayer && ytPlayerReady) {
+      ytPlayer.playVideo();
+    }
+    // Bilibili 无法用 JS 控制，用户自行点击播放
+  }
+
+  // ── 点击「跳过视频 / 进入表格」──
+  function enterForm() {
+    document.getElementById('videoPage').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── YouTube IFrame API ──
+  // 动态加载 YouTube IFrame Player API
+  var tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+
+  function onYouTubeIframeAPIReady() {
+    // 重建 ytFrame 为 API 可控的播放器
+    ytPlayer = new YT.Player('ytFrame', {
+      events: {
+        onReady: function() { ytPlayerReady = true; },
+        onStateChange: function(e) {
+          // YT.PlayerState.ENDED === 0
+          if (e.data === 0) {
+            document.getElementById('videoEndPrompt').style.display = 'block';
+            document.getElementById('videoEndPrompt').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      }
+    });
+  }
+
+  // ── Bilibili 结束检测（postMessage）──
+  window.addEventListener('message', function(e) {
+    // Bilibili player 会发送 ended 事件
+    try {
+      var data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+      if (data && (data.event === 'ended' || data.type === 'ended')) {
+        document.getElementById('videoEndPrompt').style.display = 'block';
+        document.getElementById('videoEndPrompt').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    } catch(err) {}
+  });
+</script>
+
+<!-- 表单主体用此 div 包裹，默认隐藏 -->
+<div id="mainContent" style="display:none;">
 <div class="page-wrap">
 
 
@@ -662,6 +908,7 @@
   </div><!-- /formArea -->
 
 </div><!-- /page-wrap -->
+</div><!-- /mainContent -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
   function openLightbox(img) {
