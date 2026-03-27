@@ -1268,13 +1268,20 @@
         .limit(1)
         .single();
 
-      if (nextQR) {
-        await db.from('qr_codes')
-          .update({ is_active: true })
-          .eq('id', nextQR.id);
-      }
-      // If no next QR, last one stays shown (is_active=false but already displayed)
-
+if (nextQR) {
+  await db.from('qr_codes')
+    .update({ is_active: true })
+    .eq('id', nextQR.id);
+} else {
+  // 所有二维码都用完了，重置循环，从第一条重新开始
+  await db.from('qr_codes')
+    .update({ is_active: false, used_at: null })
+    .neq('id', 0); // 清空所有
+  await db.from('qr_codes')
+    .update({ is_active: true })
+    .eq('sort_order', 1); // 激活 q1
+}
+     
     } catch(e) {
       console.warn('QR rotation error:', e.message);
     }
