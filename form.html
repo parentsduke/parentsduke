@@ -1098,15 +1098,15 @@
     const prog = document.getElementById('uploadProgress');
     const fill = document.getElementById('progressFill');
     const lbl  = document.getElementById('progressLabel');
-    if (prog) prog.classList.add('show');
-    if (fill) fill.style.width = '20%';
-    if (lbl)  lbl.textContent = `上传${label}中…`;
+    prog.classList.add('show');
+    fill.style.width = '20%';
+    lbl.textContent = `上传${label}中…`;
 
     const ext  = file.name.split('.').pop();
     const path = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
     const { error } = await db.storage.from(BUCKET).upload(path, file, { upsert: false });
     if (error) throw new Error(`${label}上传失败：` + error.message);
-    if (fill) fill.style.width = '100%';
+    fill.style.width = '100%';
     return path;
   }
 
@@ -1166,8 +1166,7 @@
       if (oldCommittedFile)  committed_letter_path  = await uploadFile(oldCommittedFile,  'Committed Letter');
       if (oldLetterFile)     letter_path            = await uploadFile(oldLetterFile,     '录取通知书');
 
-      const upProg = document.getElementById('uploadProgress');
-      if (upProg) upProg.classList.remove('show');
+      document.getElementById('uploadProgress').classList.remove('show');
 
       const committed_val = (!isGrad && type === 'RD')
         ? (rdCommitted === 'true' ? true : rdCommitted === 'false' ? false : null)
@@ -1196,6 +1195,20 @@
 
       const { error } = await db.from('admissions_submissions').insert(payload);
       if (error) throw new Error(error.message);
+
+      // ── 触发 notify-admin（邮件 + 方糖推送）──
+      try {
+        await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ record: payload }),
+        });
+      } catch(e) {
+        console.warn('通知发送失败:', e);
+      }
 
       document.getElementById('formArea').style.display = 'none';
 
