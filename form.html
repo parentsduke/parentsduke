@@ -1166,7 +1166,8 @@
       if (oldCommittedFile)  committed_letter_path  = await uploadFile(oldCommittedFile,  'Committed Letter');
       if (oldLetterFile)     letter_path            = await uploadFile(oldLetterFile,     '录取通知书');
 
-      document.getElementById('uploadProgress').classList.remove('show');
+      const upProg = document.getElementById('uploadProgress');
+      if (upProg) upProg.classList.remove('show');
 
       const committed_val = (!isGrad && type === 'RD')
         ? (rdCommitted === 'true' ? true : rdCommitted === 'false' ? false : null)
