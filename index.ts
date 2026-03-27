@@ -25,11 +25,6 @@ serve(async (req) => {
       return await handleReject(body.record_id);
     }
 
-    // ========== 方糖微信推送 ==========
-    if (action === "wx_notify") {
-      return await handleWxNotify(body);
-    }
-
     // ========== 处理提交失败通知 ==========
     if (type === "invite_request_failed") {
       return await handleInviteRequestFailed(body);
