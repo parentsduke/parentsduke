@@ -547,6 +547,12 @@
     if (rec) { rec.committed = update.committed; rec.committed_at = update.committed_at; }
   }
 
+  async function saveNickname(recordId, val) {
+    await db.from('admissions_submissions').update({ wx_nickname: val || null }).eq('id', recordId);
+    const rec = allRecords.find(r => r.id === recordId);
+    if (rec) rec.wx_nickname = val || null;
+  }
+
   function personCell(recordId, person, records) {
     const col = personCol[person];
     const rec = records.find(r => r.id === recordId);
@@ -598,7 +604,16 @@
         ${personCell(r.id, '笑', allRecords)}
         ${personCell(r.id, '金', allRecords)}
         ${personCell(r.id, '伟', allRecords)}
-        <td style="font-size:13px;">${r.wx_nickname || '—'}</td>
+        <td><input
+          type="text"
+          value="${r.wx_nickname || ''}"
+          placeholder="输入昵称"
+          onblur="saveNickname('${r.id}', this.value)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          style="width:100px;font-size:13px;border:1px solid #ddd;border-radius:4px;
+                 padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
+          onfocus="this.style.borderColor='#0736a4'"
+        /></td>
         <td>${committedTag}</td>
         <td style="white-space:nowrap;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${date}</td>
         <td style="font-weight:600;">${r.student_name_cn || '—'}</td>
