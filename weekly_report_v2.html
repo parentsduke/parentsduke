@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Oswald:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+
+:root {
+  --navy: #00255a;
+  --blue: #0736a4;
+  --gold: #c9a030;
+  --red: #c0392b;
+  --green: #1a7a3a;
+  --light: #f5f7fc;
+  --border: #dde3f0;
+  --text: #1a1a2e;
+  --muted: #6b7280;
+  --white: #ffffff;
+}
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: #eef2fb;
+  color: var(--text);
+  width: 900px;
+  margin: 0 auto;
+  padding: 0 0 40px;
+}
+
+/* ── TOP HEADER BAR ── */
+.top-bar {
+  background: var(--navy);
+  color: rgba(255,255,255,.7);
+  font-size: 11px;
+  letter-spacing: .15em;
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 28px;
+  font-family: 'Oswald', sans-serif;
+}
+
+/* ── MASTHEAD ── */
+.masthead {
+  background: var(--white);
+  border-bottom: 3px solid var(--navy);
+  padding: 18px 28px 14px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.masthead-left {}
+.masthead-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 52px;
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: .18em;
+  line-height: 1;
+}
+.masthead-sub {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .12em;
+  margin-top: 5px;
+}
+.masthead-d {
+  font-family: 'Oswald', sans-serif;
+  font-size: 90px;
+  font-weight: 700;
+  color: rgba(7,54,164,.08);
+  line-height: 1;
+}
+
+/* ── BANNER IMAGE ── */
+.banner-wrap {
+  position: relative;
+  background: var(--navy);
+  height: 220px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* SVG cartoon: basketball hoop falling */
+.banner-wrap svg { width: 100%; height: 220px; }
+
+/* ── TICKER ── */
+.ticker {
+  background: var(--gold);
+  padding: 8px 28px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: .04em;
+}
+.ticker strong { color: var(--white); font-weight: 700; }
+
+/* ── MAIN BODY ── */
+.body-wrap { padding: 20px 28px 0; display: flex; flex-direction: column; gap: 20px; }
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.section-num {
+  background: var(--navy);
+  color: var(--white);
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 3px;
+  letter-spacing: .1em;
+}
+.section-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: .12em;
+}
+.section-line { flex: 1; height: 1px; background: var(--border); }
+
+/* ── NEWS CARD ── */
+.card {
+  background: var(--white);
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  border-left: 4px solid var(--blue);
+  box-shadow: 0 1px 6px rgba(0,0,0,.05);
+}
+.card:last-child { margin-bottom: 0; }
+.card.gold-border { border-left-color: var(--gold); }
+.card.green-border { border-left-color: var(--green); }
+.card.red-border { border-left-color: var(--red); }
+
+.card-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: 2px 9px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+.tag-blue { background: rgba(7,54,164,.1); color: var(--blue); }
+.tag-gold { background: rgba(201,160,48,.12); color: #8a6800; }
+.tag-green { background: rgba(26,122,58,.1); color: var(--green); }
+.tag-red { background: rgba(192,57,43,.1); color: var(--red); }
+.tag-purple { background: rgba(120,60,160,.1); color: #783ca0; }
+
+.card-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.card-body {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.75;
+}
+.card-body strong { color: var(--navy); font-weight: 600; }
+
+/* ── RD ADMISSION BOX ── */
+.admit-box {
+  background: linear-gradient(135deg, var(--navy) 0%, #1a3a8a 100%);
+  border-radius: 10px;
+  padding: 22px 24px;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 10px;
+}
+.admit-icon { font-size: 48px; flex-shrink: 0; }
+.admit-content {}
+.admit-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.admit-body { font-size: 13px; color: rgba(255,255,255,.8); line-height: 1.7; }
+.admit-body strong { color: #f0c040; }
+
+/* ── BDD DATES ── */
+.bdd-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+.bdd-date {
+  flex: 1;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 8px;
+  text-align: center;
+  padding: 12px 8px;
+}
+.bdd-m { font-size: 10px; letter-spacing: .15em; color: rgba(255,255,255,.6); }
+.bdd-d { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 700; color: #f0c040; line-height: 1; }
+.bdd-w { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+/* ── CALENDAR TABLE ── */
+.cal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,.05);
+}
+.cal-table thead th {
+  background: var(--navy);
+  color: rgba(255,255,255,.85);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  text-align: left;
+}
+.cal-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.cal-table tr:last-child td { border-bottom: none; }
+.cal-table tr:nth-child(even) td { background: var(--light); }
+.cal-table td:first-child { font-weight: 600; color: var(--blue); white-space: nowrap; }
+.audience-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: .06em;
+}
+.aud-ug { background: rgba(7,54,164,.1); color: var(--blue); }
+.aud-grad { background: rgba(120,60,160,.1); color: #783ca0; }
+.aud-all { background: rgba(26,122,58,.1); color: var(--green); }
+.aud-grad2 { background: rgba(201,160,48,.12); color: #8a6800; }
+
+/* ── NEXT WEEK ── */
+.next-item {
+  background: var(--white);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  box-shadow: 0 1px 6px rgba(0,0,0,.05);
+}
+.next-item:last-child { margin-bottom: 0; }
+.next-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.next-content {}
+.next-date { font-size: 12px; font-weight: 700; color: var(--blue); letter-spacing: .06em; margin-bottom: 3px; }
+.next-title { font-family: 'Noto Serif SC', serif; font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+.next-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* ── ALERT BOX ── */
+.alert-box {
+  background: #fff8e0;
+  border: 1px solid #f0c040;
+  border-left: 4px solid var(--gold);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #5a4200;
+  margin-bottom: 10px;
+  line-height: 1.65;
+}
+.alert-box strong { color: #3a2a00; }
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--navy);
+  padding: 16px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+}
+.footer-left { font-size: 11px; color: rgba(255,255,255,.4); letter-spacing: .08em; }
+.footer-url {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #f0c040;
+  letter-spacing: .1em;
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <span>DUKE PARENTS GROUP &nbsp;|&nbsp; 编辑：2327293770</span>
+  <span>Vol. XXIII &nbsp;|&nbsp; 2026年3月31日周刊</span>
+</div>
+
+<!-- Masthead -->
+<div class="masthead">
+  <div class="masthead-left">
+    <div class="masthead-title">扯 谈 周 报</div>
+    <div class="masthead-sub">Duke 家长群 &nbsp;·&nbsp; SINCE EST. 2023</div>
+  </div>
+  <div class="masthead-d">D</div>
+</div>
+
+<!-- Banner: cartoon basketball hoop collapsing, no text -->
+<div class="banner-wrap">
+<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="900" height="220" fill="#00255a"/>
+  <!-- Court floor -->
+  <rect x="0" y="170" width="900" height="50" fill="#1a3a6a"/>
+  <!-- Center circle suggestion -->
+  <ellipse cx="450" cy="170" rx="80" ry="12" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+
+  <!-- Falling pole: tilted ~30deg, pivot bottom-right, falling left -->
+  <g transform="rotate(-35, 680, 168)">
+    <!-- pole -->
+    <rect x="670" y="30" width="18" height="140" rx="4" fill="#8a9ab0"/>
+    <!-- backboard -->
+    <rect x="630" y="28" width="76" height="50" rx="4" fill="white" opacity="0.9"/>
+    <rect x="638" y="36" width="60" height="34" rx="2" fill="none" stroke="#c0392b" stroke-width="3"/>
+    <!-- hoop -->
+    <ellipse cx="668" cy="83" rx="24" ry="7" fill="none" stroke="#f0c040" stroke-width="5"/>
+    <!-- net (wavy lines) -->
+    <path d="M645,83 Q648,100 668,108 Q688,100 691,83" fill="none" stroke="white" stroke-width="1.5" opacity="0.7"/>
+    <line x1="655" y1="85" x2="652" y2="105" stroke="white" stroke-width="1" opacity="0.6"/>
+    <line x1="663" y1="88" x2="661" y2="108" stroke="white" stroke-width="1" opacity="0.6"/>
+    <line x1="672" y1="88" x2="673" y2="108" stroke="white" stroke-width="1" opacity="0.6"/>
+    <line x1="681" y1="85" x2="683" y2="105" stroke="white" stroke-width="1" opacity="0.6"/>
+  </g>
+
+  <!-- Dust cloud at base -->
+  <ellipse cx="560" cy="168" rx="60" ry="14" fill="rgba(200,200,200,0.15)"/>
+  <ellipse cx="540" cy="162" rx="30" ry="10" fill="rgba(200,200,200,0.1)"/>
+
+  <!-- Cracks on floor -->
+  <path d="M500,172 L530,168 L560,175 L580,170" stroke="rgba(255,255,255,0.2)" stroke-width="2" fill="none"/>
+  <path d="M520,174 L510,185" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
+  <path d="M545,171 L555,182" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
+
+  <!-- Stars / impact marks -->
+  <text x="430" y="100" font-size="28" fill="#f0c040" opacity="0.8">✦</text>
+  <text x="590" y="80" font-size="18" fill="#f0c040" opacity="0.6">✦</text>
+  <text x="380" y="140" font-size="14" fill="white" opacity="0.4">✦</text>
+
+  <!-- Small floating pieces -->
+  <rect x="410" y="60" width="12" height="8" rx="2" fill="#8a9ab0" opacity="0.7" transform="rotate(-20,416,64)"/>
+  <rect x="600" y="110" width="8" height="5" rx="1" fill="white" opacity="0.5" transform="rotate(15,604,112)"/>
+  <circle cx="460" cy="130" r="4" fill="#f0c040" opacity="0.5"/>
+  <circle cx="620" cy="90" r="3" fill="white" opacity="0.4"/>
+
+  <!-- Season over text suggestion: just a subtle arc, no words -->
+  <path d="M200,120 Q250,80 320,100" stroke="rgba(255,255,255,0.07)" stroke-width="40" fill="none" stroke-linecap="round"/>
+</svg>
+</div>
+
+<!-- Ticker -->
+<div class="ticker">
+  本周关键词：🎓 2030届RD放榜今晚（3/31）！&nbsp;|&nbsp; 💙 BDD三场：4/16（周四）· 4/17（周五）· 4/20（周一）&nbsp;|&nbsp; 🔫 校园安全培训上线 &nbsp;|&nbsp; 💰 助学金规模翻倍！&nbsp;|&nbsp; 🧾 美国报税截止：4/15！
+</div>
+
+<!-- BODY -->
+<div class="body-wrap">
+
+  <!-- 01 本周头条 -->
+  <div>
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title">本 周 头 条</div>
+      <div class="section-line"></div>
+    </div>
+
+    <!-- RD放榜 -->
+    <div class="admit-box">
+      <div class="admit-icon">🎓</div>
+      <div class="admit-content">
+        <div class="admit-title">🔔 2030届本科生 RD 放榜 — 今晚！</div>
+        <div class="admit-body">
+          根据历年惯例，Duke 2030届（Class of 2030）Regular Decision 录取通知今晚发出。<strong>录取率约4-5%</strong>，往年多于东部时间晚7点开放查询。已收到ED录取的847名同学将于8月入读。<br>
+          <strong>小贴士：</strong>入读页面 admissions.duke.edu/admit 已开放，Blue Devil Days 注册即将开放！
+        </div>
+        <div class="bdd-row">
+          <div class="bdd-date" style="flex:1.2;background:rgba(255,100,80,.18);border-color:rgba(255,120,100,.5);">
+            <div class="bdd-m">RD 放榜</div>
+            <div class="bdd-d" style="color:#ff9070;">31</div>
+            <div class="bdd-w">今晚 7PM ET</div>
+          </div>
+          <div style="display:flex;flex-direction:column;justify-content:center;color:rgba(255,255,255,.3);font-size:18px;padding:0 4px;">▶</div>
+          <div class="bdd-date"><div class="bdd-m">BDD · APR</div><div class="bdd-d">16</div><div class="bdd-w">周四</div></div>
+          <div class="bdd-date"><div class="bdd-m">BDD · APR</div><div class="bdd-d">17</div><div class="bdd-w">周五</div></div>
+          <div class="bdd-date"><div class="bdd-m">BDD · APR</div><div class="bdd-d">20</div><div class="bdd-w">周一</div></div>
+          <div class="bdd-date" style="flex:1.5;background:rgba(240,192,64,.15);border-color:rgba(240,192,64,.4);">
+            <div class="bdd-m">BLUE DEVIL DAYS</div>
+            <div style="font-size:12px;color:#f0c040;font-weight:700;margin-top:4px;">三场任选一场</div>
+            <div class="bdd-w"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="690b051c0c0d0c1f00050d08101a290d1c020c470c0d1c">[email&#160;protected]</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 校园安全 -->
+    <div class="card red-border">
+      <div class="card-tag tag-red">🔴 校园安全</div>
+      <div class="card-title">Duke 上线新版主动射手应急培训模块</div>
+      <div class="card-body">
+        Duke 本周在 Canvas 平台推出一项<strong>15分钟在线培训模块</strong>，面向全体学生，内容涵盖校园主动枪击事件的应对程序（跑/躲/反击）。校方援引全国校园枪击案上升趋势为推出原因。国际生可特别注意相关程序，因此类突发事件在其他国家并不常见。
+      </div>
+    </div>
+
+    <!-- 助学金 -->
+    <div class="card gold-border">
+      <div class="card-tag tag-gold">💰 财务资助</div>
+      <div class="card-title">Duke 助学金规模近十年翻倍，但受益比例基本不变</div>
+      <div class="card-body">
+        Chronicle 最新分析：Duke 机构助学金平均额度在过去十年几乎翻倍，但获助学生比例从49%降至43%。目前Duke将<strong>42.2%的潜在学费收入</strong>用于学生资助，卡罗来纳倡议为家庭年收入低于<strong>$65,000</strong>的学生提供全额覆盖（含住宿餐饮）。2026-27学年录取的Class of 2030可于<strong>4月1日前</strong>收到助学金通知。
+      </div>
+    </div>
+
+    <!-- 春季足球 -->
+    <div class="card">
+      <div class="card-tag tag-blue">🏈 校园动态</div>
+      <div class="card-title">传奇教练 David Cutcliffe 正式退休 · 足球队春训火热进行</div>
+      <div class="card-body">
+        三届年度最佳教练、执教40年的 David Cutcliffe 于<strong>3月31日</strong>正式退休。与此同时，Duke 足球队春训正酣，<strong>4月18日（周六）下午2点</strong>将举行春季公开赛（Spring Game）。NFL选秀日前，32支NFL球队上周已齐聚Duke校园参加 Pro Day。
+      </div>
+    </div>
+
+    <!-- 高尔夫 -->
+    <div class="card green-border">
+      <div class="card-tag tag-green">⛳ 体育</div>
+      <div class="card-title">第26位 Duke 男子高尔夫征战 Seahawk Intercollegiate</div>
+      <div class="card-body">
+        全国排名第26的 Duke 男子高尔夫队本周赴 UNC Wilmington 参加 Seahawk Intercollegiate（3/30–3/31），由个人排名全国第6的 <strong>Bryan Kim</strong> 领队出战，共15支球队角逐。
+      </div>
+    </div>
+
+    <!-- 联邦助学金政策 -->
+    <div class="card">
+      <div class="card-tag tag-purple">📋 政策提醒</div>
+      <div class="card-title">联邦研究生贷款将于 2026年7月1日 起重大调整</div>
+      <div class="card-body">
+        关注研究生子女的家长注意：<strong>Graduate PLUS 贷款将于2026年7月1日对新借款人取消</strong>。在读研究生如在2026年6月30日前已借款，可延续最多3年。Duke 已整理私人贷款资源供研究生参考，详见 gradschool.duke.edu。
+      </div>
+    </div>
+
+    <!-- Bricks to Stone -->
+    <div class="card" style="border-left-color:#6b3fa0;">
+      <div class="card-tag tag-purple">🏛️ 校园传统</div>
+      <div class="card-title">Bricks to Stone — 2029届一年级生从East Campus迈向West Campus</div>
+      <div class="card-body">
+        每年春季，Duke 大一新生都会参加全校性庆典 <strong>Bricks to Stone</strong>——从East Campus（红砖宿舍）游行至West Campus（哥特石楼），象征正式融入Duke大家庭。<strong>时间通常为4月中旬下午3-5点</strong>，包括Karsh Alumni Center派对 → 游行经Chapel Drive → Duke Chapel前Class Pinning仪式（校长主持）→ 各宿舍院落派对（免费食物+纪念T恤）。<strong>全体Duke社区成员和家长均受邀于下午4点在Chapel Drive两侧夹道欢送</strong>，2026年具体日期待校方公告。
+      </div>
+    </div>
+
+    <!-- 28届 Halfway There -->
+    <div class="card green-border">
+      <div class="card-tag tag-green">🎉 2028届里程碑</div>
+      <div class="card-title">Class of 2028「Halfway There」大学过半庆典 — 4月8日（周三）</div>
+      <div class="card-body">
+        <strong>4月8日（周三）下午4-6点</strong>，Duke 2028届（大二）同学将在 <strong>Penn Pavilion</strong> 庆祝大学生涯过半里程碑！「Halfway There」是一年一度的传统活动，汇聚来自Trinity、Pratt等各院的大二学生，共同回顾两年成长、展望后半程。如果您的孩子是2028届，鼓励他们参加这个特别时刻。
+      </div>
+    </div>
+
+    <!-- 报税提醒 -->
+    <div class="card red-border">
+      <div class="card-tag tag-red">🧾 财务提醒</div>
+      <div class="card-title">美国联邦报税截止日：4月15日（周三）— 距今仅15天！</div>
+      <div class="card-body">
+        提醒在美家长：<strong>2025年度联邦个税申报截止日为2026年4月15日（周三）</strong>，目前距截止仅约两周。今年适用新税法（One Big Beautiful Bill），含"无需缴税的小费收入"等新规。如需延期申报，请在4/15前提交Form 4868获得6个月延期，<strong>但应纳税额仍须于4/15前缴清</strong>，否则将产生罚息。北卡州税申报截止日期相同。
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 02 学期关键日程 -->
+  <div>
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title">学 期 关 键 日 程</div>
+      <div class="section-line"></div>
+    </div>
+
+    <table class="cal-table">
+      <thead>
+        <tr>
+          <th>日期</th>
+          <th>事项</th>
+          <th>适用对象</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>4月1日（周三）</td>
+          <td>助学金通知发放（录取学生）</td>
+          <td><span class="audience-tag aud-ug">新生</span></td>
+        </tr>
+        <tr>
+          <td>4月7日（周二）</td>
+          <td>本科生选课系统正式开放</td>
+          <td><span class="audience-tag aud-ug">本科生</span></td>
+        </tr>
+        <tr>
+          <td>4月8日（周三）</td>
+          <td>Spring 2026 退课W截止（本科生）</td>
+          <td><span class="audience-tag aud-ug">本科生</span></td>
+        </tr>
+        <tr>
+          <td>4月8日（周三）</td>
+          <td>🎉 2028届「Halfway There」庆典 4-6PM Penn Pavilion</td>
+          <td><span class="audience-tag aud-ug">2028届</span></td>
+        </tr>
+        <tr>
+          <td>4月15日（周三）</td>
+          <td>研究生学期结束</td>
+          <td><span class="audience-tag aud-grad">研究生</span></td>
+        </tr>
+        <tr style="background:#fff3f0;">
+          <td style="color:#c0392b;font-weight:700;">4月15日（周三）</td>
+          <td>🧾 <strong>美国联邦+北卡州报税截止日（Tax Day）</strong></td>
+          <td><span class="audience-tag" style="background:rgba(192,57,43,.1);color:#c0392b;">在美家长</span></td>
+        </tr>
+        <tr>
+          <td>4月16日（周四）</td>
+          <td>💙 Blue Devil Days — 场次① （录取新生开放日）</td>
+          <td><span class="audience-tag aud-ug">2030届新生</span></td>
+        </tr>
+        <tr>
+          <td>4月17日（周五）</td>
+          <td>💙 Blue Devil Days — 场次②</td>
+          <td><span class="audience-tag aud-ug">2030届新生</span></td>
+        </tr>
+        <tr>
+          <td>4月20日（周一）</td>
+          <td>💙 Blue Devil Days — 场次③</td>
+          <td><span class="audience-tag aud-ug">2030届新生</span></td>
+        </tr>
+        <tr>
+          <td>4月18日（周六）</td>
+          <td>足球春季公开赛 2:00 PM</td>
+          <td><span class="audience-tag aud-all">全体</span></td>
+        </tr>
+        <tr>
+          <td>4月20日（周四）</td>
+          <td>Nicholas School 在读生助学金申请截止</td>
+          <td><span class="audience-tag aud-grad">研究生</span></td>
+        </tr>
+        <tr>
+          <td>4月22–25日</td>
+          <td>Reading Period（本科生+研究生备考期）</td>
+          <td><span class="audience-tag aud-all">全体</span></td>
+        </tr>
+        <tr>
+          <td>4月27日（周一）</td>
+          <td>Final Examinations 开始</td>
+          <td><span class="audience-tag aud-all">全体</span></td>
+        </tr>
+        <tr>
+          <td>5月1日（周五）</td>
+          <td>🔔 录取确认截止 — 新生必须回复！</td>
+          <td><span class="audience-tag aud-ug">2030届</span></td>
+        </tr>
+        <tr>
+          <td>5月2日（周六）</td>
+          <td>Final Examinations 结束（晚10PM）</td>
+          <td><span class="audience-tag aud-all">全体</span></td>
+        </tr>
+        <tr>
+          <td>5月10日（周日）</td>
+          <td>Commencement 毕业典礼</td>
+          <td><span class="audience-tag aud-grad2">毕业生家长</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert-box" style="margin-top:12px;">
+      ⚠️ <strong>重要提醒：</strong>5月1日（周五）是新生录取确认最终截止日，毕业典礼票务申请窗口已关闭，已申请者请提前将票下载至手机。&nbsp;&nbsp;🧾 <strong>报税截止：</strong>4月15日（周三）是美国联邦+北卡州个税申报截止日，如需延期请在此日前提交Form 4868，但税款仍须按时缴纳。
+    </div>
+  </div>
+
+  <!-- 03 下周预告 -->
+  <div>
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title">下 周 预 告</div>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="next-item">
+      <div class="next-icon">🎓</div>
+      <div class="next-content">
+        <div class="next-date">4月1日（周三）</div>
+        <div class="next-title">录取学生助学金通知发放</div>
+        <div class="next-body">所有完成申请材料的RD录取学生将于4月1日前收到2026-27年度助学金方案，含卡罗来纳倡议资助。</div>
+      </div>
+    </div>
+
+    <div class="next-item">
+      <div class="next-icon">📚</div>
+      <div class="next-content">
+        <div class="next-date">4月7日（周二）</div>
+        <div class="next-title">本科生选课系统开放</div>
+        <div class="next-body">建议提前与孩子沟通下学期选课意向，了解各院系限额规则，及时规划学业路径。</div>
+      </div>
+    </div>
+
+    <div class="next-item" style="border-left:3px solid var(--green);">
+      <div class="next-icon">🎉</div>
+      <div class="next-content">
+        <div class="next-date">4月8日（周三）下午4-6点</div>
+        <div class="next-title">2028届「Halfway There」大学过半庆典</div>
+        <div class="next-body">2028届大二同学将在 Penn Pavilion 举行传统庆典，庆祝大学生涯过半。如果您的孩子是2028届，欢迎鼓励他们参与这个特别时刻，感受Duke社区的温暖。</div>
+      </div>
+    </div>
+
+    <div class="next-item">
+      <div class="next-icon">📅</div>
+      <div class="next-content">
+        <div class="next-date">4月8日（周三）</div>
+        <div class="next-title">Spring 2026 退课W截止</div>
+        <div class="next-body">今天是本科生退课不影响GPA的最后机会，之后退课将在成绩单显示F。请孩子尽快评估，家长可适时关心。</div>
+      </div>
+    </div>
+
+    <div class="next-item" style="border-left:3px solid var(--red);">
+      <div class="next-icon">🧾</div>
+      <div class="next-content">
+        <div class="next-date">4月15日（周三）— 距今仅15天！</div>
+        <div class="next-title">美国联邦+北卡州个税申报截止（Tax Day）</div>
+        <div class="next-body">在美家长请注意：<strong>4月15日</strong>是2025年度联邦个税申报截止日。如需延期请提前提交Form 4868，但<strong>税款仍须于4/15前缴清</strong>，否则产生罚息。北卡州税截止日期相同。今年新税法含小费、加班费免税等新规，建议核查。</div>
+      </div>
+    </div>
+
+    <div class="next-item">
+      <div class="next-icon">🏈</div>
+      <div class="next-content">
+        <div class="next-date">4月18日（周六）下午2点</div>
+        <div class="next-title">Duke 足球春季公开赛</div>
+        <div class="next-body">免费向公众开放，欢迎在Durham的家长前往Wallace Wade Stadium观赛，感受新赛季阵容。</div>
+      </div>
+    </div>
+
+    <div class="next-item">
+      <div class="next-icon">🎨</div>
+      <div class="next-content">
+        <div class="next-date">4月10日（周四）</div>
+        <div class="next-title">第3届帕金森病艺术展览开幕</div>
+        <div class="next-body">Duke 医学院及社区联合举办，Morehead Planetarium 展出帕金森患者艺术作品，欢迎家长参观。</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-left">扯谈 Duke 群 &nb
