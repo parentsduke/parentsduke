@@ -481,10 +481,7 @@
             <button class="btn-hold" data-id="${r.id}" onclick="holdRequest(this)">🔖 搁置</button>
             <button class="btn-reject" data-id="${r.id}" onclick="rejectRequest(this)">❌ 拒绝</button>
           ` : status === 'hold' ? `
-            <button class="btn-approve" data-id="${r.id}" data-email="${email}" data-name="${nickname}"
-              onclick="approveRequest(this)">✅ 批准并邀请</button>
             <button class="btn-unhold" data-id="${r.id}" onclick="unholdRequest(this)">↩️ 取消搁置</button>
-            <button class="btn-reject" data-id="${r.id}" onclick="rejectRequest(this)">❌ 拒绝</button>
           ` : ''}
         </div>
       </div>`;
