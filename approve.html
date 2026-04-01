@@ -628,14 +628,21 @@
     btn.disabled = true;
     try {
       const { error } = await db.from('pending_uploads').update({ status: 'hold' }).eq('id', id);
-      if (error) throw error;
+      if (error) throw new Error('数据库错误：' + error.message);
+
+      // 验证是否真的写入成功
+      const { data: verify, error: verifyErr } = await db
+        .from('pending_uploads').select('status').eq('id', id).single();
+      if (verifyErr) throw new Error('验证失败：' + verifyErr.message);
+      if (verify.status !== 'hold') throw new Error('写入被数据库拦截（可能是RLS策略），实际状态：' + verify.status);
+
       const idx = allRequests.findIndex(r => r.id == id);
       if (idx >= 0) allRequests[idx].status = 'hold';
       updateStats();
       renderRequests(currentFilter);
       showToast('🔖 已搁置');
     } catch (e) {
-      alert('❌ 操作失败：' + e.message);
+      alert('❌ 搁置失败：' + e.message);
       btn.disabled = false;
     }
   }
