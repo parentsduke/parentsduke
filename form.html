@@ -759,14 +759,14 @@
             <option value="">请选择</option>
             <option class="ug-only" value="Trinity College of Arts & Sciences">Trinity College of Arts &amp; Sciences</option>
             <option class="ug-only" value="Pratt School of Engineering">Pratt School of Engineering</option>
-            <option class="grad-only" style="display:none" value="Graduate School (Master's)">Graduate School · 硕士</option>
-            <option class="grad-only" style="display:none" value="Graduate School (PhD)">Graduate School · 博士</option>
-            <option class="grad-only" style="display:none" value="Fuqua School of Business">Fuqua School of Business</option>
-            <option class="grad-only" style="display:none" value="School of Medicine">School of Medicine</option>
-            <option class="grad-only" style="display:none" value="School of Law">School of Law</option>
-            <option class="grad-only" style="display:none" value="Nicholas School of the Environment">Nicholas School of the Environment</option>
-            <option class="grad-only" style="display:none" value="Sanford School of Public Policy">Sanford School of Public Policy</option>
-            <option class="grad-only" style="display:none" value="School of Nursing">School of Nursing</option>
+            <option class="grad-only" disabled hidden value="Graduate School (Master's)">Graduate School · 硕士</option>
+            <option class="grad-only" disabled hidden value="Graduate School (PhD)">Graduate School · 博士</option>
+            <option class="grad-only" disabled hidden value="Fuqua School of Business">Fuqua School of Business</option>
+            <option class="grad-only" disabled hidden value="School of Medicine">School of Medicine</option>
+            <option class="grad-only" disabled hidden value="School of Law">School of Law</option>
+            <option class="grad-only" disabled hidden value="Nicholas School of the Environment">Nicholas School of the Environment</option>
+            <option class="grad-only" disabled hidden value="Sanford School of Public Policy">Sanford School of Public Policy</option>
+            <option class="grad-only" disabled hidden value="School of Nursing">School of Nursing</option>
           </select>
         </div>
         <div class="form-group">
@@ -968,8 +968,8 @@
     const sel = document.getElementById('fCollege');
     sel.value = '';
     Array.from(sel.options).forEach(opt => {
-      if (opt.classList.contains('grad-only')) opt.style.display = isGrad ? '' : 'none';
-      if (opt.classList.contains('ug-only'))   opt.style.display = isGrad ? 'none' : '';
+      if (opt.classList.contains('grad-only')) { opt.disabled = !isGrad; opt.hidden = !isGrad; }
+      if (opt.classList.contains('ug-only'))   { opt.disabled = isGrad;  opt.hidden = isGrad;  }
     });
   }
 
@@ -1309,8 +1309,8 @@ if (nextQR) {
     // 恢复学院选项
     const sel = document.getElementById('fCollege');
     Array.from(sel.options).forEach(opt => {
-      if (opt.classList.contains('grad-only')) opt.style.display = 'none';
-      if (opt.classList.contains('ug-only'))   opt.style.display = '';
+      if (opt.classList.contains('grad-only')) { opt.disabled = true;  opt.hidden = true;  }
+      if (opt.classList.contains('ug-only'))   { opt.disabled = false; opt.hidden = false; }
     });
     // 恢复录取类型显示
     document.getElementById('fType').closest('.form-group').style.display = '';
