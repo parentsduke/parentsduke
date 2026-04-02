@@ -634,7 +634,12 @@
         <td>${clCell}</td>
         <td style="white-space:nowrap;">
           ${r.approved_at
-            ? `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`
+            ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
+                style="padding:6px 14px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
+                       font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
+                重新发送
+              </button>`
             : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
                 style="padding:6px 14px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
                        font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
@@ -748,6 +753,56 @@
       applyFilters();
 
       alert(`✅ 已发送入群链接到 ${email}`);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+  // ── 重新发送入群链接 ──
+  async function resendApproval(recordId, email, studentName) {
+    if (!email) { alert('该记录没有邮箱，无法发送链接'); return; }
+    if (!confirm(`重新发送入群链接给 ${studentName}？\n将发送到：${email}`)) return;
+
+    try {
+      // 作废旧的未使用 token（同一邮箱）
+      await db.from('private_qr_links')
+        .update({ used: true, used_at: new Date().toISOString() })
+        .eq('reserved_for', email)
+        .eq('used', false);
+
+      // 创建新 token
+      const { data: qrRow, error: qrErr } = await db
+        .from('private_qr_links')
+        .insert({
+          image_url:    QR_IMAGE_URL,
+          label:        'Duke 2030 家长群',
+          reserved_for: email,
+          reserved_at:  new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (qrErr || !qrRow) {
+        throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
+      }
+
+      const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+
+      alert(`✅ 已重新发送入群链接到 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
     }
