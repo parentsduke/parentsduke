@@ -726,7 +726,7 @@
           </select>
         </div>
         <div class="form-group" id="fLocationSecondGroup" style="display:none">
-          <label id="fLocationSecondLabel">省份 / 州</label>
+          <label id="fLocationSecondLabel">省份 / 州 <span class="req">*</span></label>
           <select id="fLocationSecond">
             <option value="">请选择</option>
           </select>
@@ -1151,6 +1151,14 @@
     if (!nameEn)   { showError('请填写英文姓名'); return; }
     if (!school)   { showError('请填写高中学校'); return; }
     if (!location) { showError('请选择所在地区'); return; }
+    // 第二级必填（中美加澳需选省/州）
+    const locCountry = document.getElementById('fLocationCountry').value;
+    if (['CN','US','CA','AU'].includes(locCountry) && !document.getElementById('fLocationSecond').value) {
+      showError('请选择具体省份/州'); return;
+    }
+    if (locCountry === 'OTHER' && !document.getElementById('fLocationOther').value.trim()) {
+      showError('请填写所在国家或城市'); return;
+    }
     if (!year)     { showError('请选择入学届次'); return; }
     if (!college)  { showError('请选择学院'); return; }
 
