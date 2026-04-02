@@ -179,51 +179,47 @@
 </div>
 
 <script>
-  const SUPABASE_URL     = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_URL      = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3NzI5ODYsImV4cCI6MjA1ODM0ODk4Nn0.5ys2PFB3DKSuBHWDFsAFLBiGEwvSWAKQWwTGEPEEYiQ';
 
   async function init() {
     const params = new URLSearchParams(window.location.search);
     const token  = params.get('token');
 
-    if (!token) {
-      show('stateInvalid'); return;
-    }
+    if (!token) { show('stateInvalid'); return; }
 
     try {
-      // 查询 token
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/private_qr_links?token=eq.${encodeURIComponent(token)}&select=*`,
-        { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
-      );
-      const data = await res.json();
-
-      if (!data || data.length === 0) {
-        show('stateExpired'); return;
-      }
-
-      const row = data[0];
-
-      if (row.used) {
-        show('stateExpired'); return;
-      }
-
-      // 标记为已用
-      await fetch(
-        `${SUPABASE_URL}/rest/v1/private_qr_links?token=eq.${encodeURIComponent(token)}`,
+      // ── 原子操作：只更新 used=false 的行，同时返回该行数据 ──
+      // 若 RLS 拦截或 token 不存在，返回空数组；若已被使用，条件不满足也返回空数组。
+      const patchRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/private_qr_links?token=eq.${encodeURIComponent(token)}&used=eq.false`,
         {
           method: 'PATCH',
           headers: {
             'apikey': SUPABASE_ANON_KEY,
             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
             'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
+            'Prefer': 'return=representation'   // 返回更新后的行
           },
           body: JSON.stringify({ used: true, used_at: new Date().toISOString() })
         }
       );
 
-      // 显示二维码
+      const updated = await patchRes.json();
+
+      // 如果没有行被更新，说明 token 不存在或已被使用
+      if (!updated || updated.length === 0) {
+        // 再查一次，区分"从未存在"和"已使用"
+        const getRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/private_qr_links?token=eq.${encodeURIComponent(token)}&select=used`,
+          { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
+        );
+        const rows = await getRes.json();
+        show(rows && rows.length > 0 ? 'stateExpired' : 'stateInvalid');
+        return;
+      }
+
+      const row = updated[0];
       document.getElementById('qrImage').src = row.image_url;
       if (row.label) document.getElementById('qrLabel').textContent = row.label;
       show('stateQR');
