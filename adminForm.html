@@ -633,19 +633,29 @@
         <td>${letterCell}</td>
         <td>${clCell}</td>
         <td style="white-space:nowrap;">
-          ${r.approved_at
+          ${r.rejected_at
+            ? `<span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>`
+            : r.approved_at
             ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
                 style="padding:6px 14px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
                        font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                 onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
                 重新发送
               </button>`
-            : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
-                style="padding:6px 14px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
-                       font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">
-                批准入群
-              </button>`
+            : `<div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
+                  style="padding:6px 14px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
+                         font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">
+                  批准入群
+                </button>
+                <button onclick="rejectRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
+                  style="padding:6px 14px;background:#C84B31;color:#fff;border:none;border-radius:6px;
+                         font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#a03020'" onmouseout="this.style.background='#C84B31'">
+                  拒绝
+                </button>
+              </div>`
           }
         </td>
       </tr>`;
@@ -707,7 +717,20 @@
   const QR_IMAGE_URL = 'https://dukeparents.org/q30d.png';
 
   async function approveRecord(recordId, email, studentName) {
-    if (!email) { alert('该记录没有邮箱，无法发送链接'); return; }
+    if (!email) {
+      // 没有邮箱，直接标记已批准不发邮件
+      if (!confirm(`${studentName} 没有邮箱，直接标记为已批准（不发送链接）？`)) return;
+      try {
+        await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+        const rec = allRecords.find(r => r.id === recordId);
+        if (rec) rec.approved_at = new Date().toISOString();
+        applyFilters();
+        alert('✅ 已标记为批准');
+      } catch(e) {
+        alert('❌ 操作失败：' + e.message);
+      }
+      return;
+    }
     if (!confirm(`确认批准 ${studentName} 入群？\n将发送链接到：${email}`)) return;
 
     try {
@@ -755,6 +778,21 @@
       alert(`✅ 已发送入群链接到 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+  // ── 拒绝 ──
+  async function rejectRecord(recordId, studentName) {
+    if (!confirm(`确认拒绝 ${studentName} 入群？`)) return;
+    try {
+      await db.from('admissions_submissions')
+        .update({ rejected_at: new Date().toISOString() })
+        .eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.rejected_at = new Date().toISOString();
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
     }
   }
 
