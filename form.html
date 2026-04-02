@@ -1343,10 +1343,10 @@ if (nextQR) {
     secondSel.innerHTML = '<option value="">请选择</option>';
 
     let list = null;
-    if (val === 'CN') { list = CN_PROVINCES; secondLabel.textContent = '省份 / 直辖市'; }
-    if (val === 'US') { list = US_STATES;    secondLabel.textContent = '州 (State)'; }
-    if (val === 'CA') { list = CA_PROVINCES; secondLabel.textContent = '省份 (Province)'; }
-    if (val === 'AU') { list = AU_STATES;    secondLabel.textContent = '州 (State)'; }
+    if (val === 'CN') { list = CN_PROVINCES; secondLabel.innerHTML = '省份 / 直辖市 <span class="req">*</span>'; }
+    if (val === 'US') { list = US_STATES;    secondLabel.innerHTML = '州 (State) <span class="req">*</span>'; }
+    if (val === 'CA') { list = CA_PROVINCES; secondLabel.innerHTML = '省份 (Province) <span class="req">*</span>'; }
+    if (val === 'AU') { list = AU_STATES;    secondLabel.innerHTML = '州 (State) <span class="req">*</span>'; }
     if (val === 'OTHER') { otherGroup.style.display = 'flex'; return; }
 
     if (list) {
