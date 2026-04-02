@@ -332,6 +332,7 @@
     <table id="dataTable" style="display:none;">
       <thead>
         <tr>
+          <th style="min-width:80px;">批准</th>
           <th class="person-th">笑</th>
           <th class="person-th">金</th>
           <th class="person-th">伟</th>
@@ -603,6 +604,22 @@
         : `<span class="no-file">—</span>`;
 
       return `<tr>
+        <td style="text-align:center;padding:8px 6px;">
+          ${r.rejected_at ? '' : r.approved_at
+            ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
+                style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
+                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
+                重新发送
+              </button>`
+            : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
+                style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
+                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">
+                批准入群
+              </button>`
+          }
+        </td>
         ${personCell(r.id, '笑', allRecords)}
         ${personCell(r.id, '金', allRecords)}
         ${personCell(r.id, '伟', allRecords)}
@@ -632,30 +649,17 @@
         <td style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_email || '—'}</td>
         <td>${letterCell}</td>
         <td>${clCell}</td>
-        <td style="white-space:nowrap;">
+        <td style="white-space:nowrap;text-align:center;">
           ${r.rejected_at
             ? `<span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>`
             : r.approved_at
-            ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
-                style="padding:6px 14px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
+            ? `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`
+            : `<button onclick="rejectRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
+                style="padding:6px 14px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:6px;
                        font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
-                重新发送
+                onmouseover="this.style.background='#fdecea'" onmouseout="this.style.background='#fff'">
+                拒绝
               </button>`
-            : `<div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:6px 14px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
-                         font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">
-                  批准入群
-                </button>
-                <button onclick="rejectRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:6px 14px;background:#C84B31;color:#fff;border:none;border-radius:6px;
-                         font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#a03020'" onmouseout="this.style.background='#C84B31'">
-                  拒绝
-                </button>
-              </div>`
           }
         </td>
       </tr>`;
