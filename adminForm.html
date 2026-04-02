@@ -698,26 +698,31 @@
   }
 
   // ── 批准入群 ──
+  // ── 二维码图片地址（只需改这里）──
+  const QR_IMAGE_URL = 'https://dukeparents.org/images/q30.png';
+
   async function approveRecord(recordId, email, studentName) {
     if (!email) { alert('该记录没有邮箱，无法发送链接'); return; }
     if (!confirm(`确认批准 ${studentName} 入群？\n将发送链接到：${email}`)) return;
 
     try {
-      // 从 private_qr_links 取一条未用的记录
-      const { data: qrRows, error: qrErr } = await db
+      // 自动创建一条新的 private_qr_links 记录
+      const { data: qrRow, error: qrErr } = await db
         .from('private_qr_links')
-        .select('*')
-        .eq('used', false)
-        .order('created_at', { ascending: true })
-        .limit(1);
+        .insert({
+          image_url:    QR_IMAGE_URL,
+          label:        'Duke 2030 家长群',
+          reserved_for: email,
+          reserved_at:  new Date().toISOString(),
+        })
+        .select()
+        .single();
 
-      if (qrErr || !qrRows || qrRows.length === 0) {
-        alert('❌ 没有可用的二维码链接，请先在 private_qr_links 表中添加记录');
-        return;
+      if (qrErr || !qrRow) {
+        throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
       }
 
-      const qr = qrRows[0];
-      const link = `https://dukeparents.org/qr.html?token=${qr.token}`;
+      const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
 
       // 调用发邮件 Edge Function
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
@@ -726,16 +731,13 @@
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         },
-        body: JSON.stringify({ email, studentName, link, recordId, qrId: qr.id }),
+        body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id }),
       });
 
       if (!res.ok) {
         const err = await res.text();
         throw new Error(err);
       }
-
-      // 标记 QR 已预留（used=true 由 qr.html 访问时设置，这里先标记 reserved）
-      await db.from('private_qr_links').update({ reserved_for: email, reserved_at: new Date().toISOString() }).eq('id', qr.id);
 
       // 标记记录已批准
       await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
