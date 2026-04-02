@@ -620,7 +620,7 @@
 
       return `<tr>
         <td style="text-align:center;padding:8px 6px;">
-          ${r.rejected_at ? '' : r.approved_at
+          ${r.rejected_at || r.shelved_at ? '' : r.approved_at
             ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
                 style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
                        font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
