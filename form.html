@@ -711,8 +711,29 @@
           <input type="text" autocomplete="off" id="fSchool" placeholder="请输入高中学校名称"/>
         </div>
         <div class="form-group">
-          <label>所在地区 <span class="req">*</span></label>
-          <input type="text" autocomplete="off" id="fLocation" placeholder="如：国内北京、美国、新加坡"/>
+          <label>所在国家/地区 <span class="req">*</span></label>
+          <select id="fLocationCountry" onchange="onLocationCountryChange(this.value)">
+            <option value="">请选择</option>
+            <option value="CN">🇨🇳 中国大陆</option>
+            <option value="US">🇺🇸 美国</option>
+            <option value="HK">🇭🇰 香港</option>
+            <option value="TW">🇹🇼 台湾</option>
+            <option value="SG">🇸🇬 新加坡</option>
+            <option value="CA">🇨🇦 加拿大</option>
+            <option value="UK">🇬🇧 英国</option>
+            <option value="AU">🇦🇺 澳大利亚</option>
+            <option value="OTHER">其他</option>
+          </select>
+        </div>
+        <div class="form-group" id="fLocationSecondGroup" style="display:none">
+          <label id="fLocationSecondLabel">省份 / 州 <span class="req">*</span></label>
+          <select id="fLocationSecond">
+            <option value="">请选择</option>
+          </select>
+        </div>
+        <div class="form-group" id="fLocationOtherGroup" style="display:none">
+          <label>具体地区</label>
+          <input type="text" autocomplete="off" id="fLocationOther" placeholder="请输入所在国家或城市"/>
         </div>
       </div>
     </div>
@@ -1118,7 +1139,7 @@
     const nameCn   = document.getElementById('fNameCn').value.trim();
     const nameEn   = document.getElementById('fNameEn').value.trim();
     const school   = document.getElementById('fSchool').value.trim();
-    const location = document.getElementById('fLocation').value.trim();
+    const location = getLocationValue();
     const year     = document.getElementById('fYear').value;
     const college  = (document.getElementById('fCollege').value || '').trim();
     const notes    = document.getElementById('fNotes').value.trim();
@@ -1127,9 +1148,20 @@
     const rdCommitted = isGrad ? null : document.getElementById('fCommitted').value;
 
     if (!nameCn)   { showError('请填写中文姓名'); return; }
+    if (!/^[\u4e00-\u9fa5]{2,10}$/.test(nameCn)) { showError('中文姓名请填写2-10个汉字'); return; }
     if (!nameEn)   { showError('请填写英文姓名'); return; }
+    if (!/^[a-zA-Z\s]{2,50}$/.test(nameEn)) { showError('英文姓名只能含字母和空格，至少2个字符'); return; }
     if (!school)   { showError('请填写高中学校'); return; }
-    if (!location) { showError('请填写所在地区'); return; }
+    if (!/^(?=.*[\u4e00-\u9fa5a-zA-Z])[^\n]{2,100}$/.test(school)) { showError('学校名称请至少填写2个字符，且包含中文或英文'); return; }
+    if (!location) { showError('请选择所在地区'); return; }
+    // 第二级必填（中美加澳需选省/州）
+    const locCountry = document.getElementById('fLocationCountry').value;
+    if (['CN','US','CA','AU'].includes(locCountry) && !document.getElementById('fLocationSecond').value) {
+      showError('请选择具体省份/州'); return;
+    }
+    if (locCountry === 'OTHER' && !document.getElementById('fLocationOther').value.trim()) {
+      showError('请填写所在国家或城市'); return;
+    }
     if (!year)     { showError('请选择入学届次'); return; }
     if (!college)  { showError('请选择学院'); return; }
 
@@ -1294,10 +1326,59 @@ if (nextQR) {
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+  // ── 所在地区联动 ──
+  const CN_PROVINCES = ['北京','上海','天津','重庆','广东','江苏','浙江','四川','湖北','湖南','山东','河南','河北','福建','安徽','辽宁','黑龙江','吉林','陕西','云南','贵州','广西','江西','山西','内蒙古','新疆','西藏','甘肃','海南','宁夏','青海','香港','澳门'];
+  const US_STATES = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+  const CA_PROVINCES = ['Alberta','British Columbia','Manitoba','New Brunswick','Newfoundland','Nova Scotia','Ontario','Prince Edward Island','Quebec','Saskatchewan'];
+  const AU_STATES = ['New South Wales','Victoria','Queensland','South Australia','Western Australia','Tasmania','ACT','Northern Territory'];
+
+  function onLocationCountryChange(val) {
+    const secondGroup = document.getElementById('fLocationSecondGroup');
+    const secondLabel = document.getElementById('fLocationSecondLabel');
+    const secondSel   = document.getElementById('fLocationSecond');
+    const otherGroup  = document.getElementById('fLocationOtherGroup');
+
+    secondGroup.style.display = 'none';
+    otherGroup.style.display  = 'none';
+    secondSel.innerHTML = '<option value="">请选择</option>';
+
+    let list = null;
+    if (val === 'CN') { list = CN_PROVINCES; secondLabel.textContent = '省份 / 直辖市'; }
+    if (val === 'US') { list = US_STATES;    secondLabel.textContent = '州 (State)'; }
+    if (val === 'CA') { list = CA_PROVINCES; secondLabel.textContent = '省份 (Province)'; }
+    if (val === 'AU') { list = AU_STATES;    secondLabel.textContent = '州 (State)'; }
+    if (val === 'OTHER') { otherGroup.style.display = 'flex'; return; }
+
+    if (list) {
+      list.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item; opt.textContent = item;
+        secondSel.appendChild(opt);
+      });
+      secondGroup.style.display = 'flex';
+    }
+  }
+
+  function getLocationValue() {
+    const country = document.getElementById('fLocationCountry').value;
+    if (!country) return '';
+    const countryNames = { CN:'中国大陆', US:'美国', HK:'香港', TW:'台湾', SG:'新加坡', CA:'加拿大', UK:'英国', AU:'澳大利亚' };
+    if (country === 'OTHER') {
+      return document.getElementById('fLocationOther').value.trim();
+    }
+    const second = document.getElementById('fLocationSecond') ? document.getElementById('fLocationSecond').value : '';
+    const name = countryNames[country] || country;
+    return second ? `${name}·${second}` : name;
+  }
+
   // ── 重置表单 ──
   function resetForm() {
-    ['fNameCn','fNameEn','fSchool','fLocation','fCollege','fMajor','fNotes','fSubmitterName','fSubmitterContact']
-      .forEach(id => { document.getElementById(id).value = ''; });
+    ['fNameCn','fNameEn','fSchool','fLocationOther','fCollege','fMajor','fNotes','fSubmitterName','fSubmitterContact']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('fLocationCountry').value = '';
+    document.getElementById('fLocationSecond').innerHTML = '<option value="">请选择</option>';
+    document.getElementById('fLocationSecondGroup').style.display = 'none';
+    document.getElementById('fLocationOtherGroup').style.display  = 'none';
     document.getElementById('fType').value = '';
     document.getElementById('fYear').value = '';
     document.getElementById('fCommitted').value = '';
