@@ -224,7 +224,7 @@
       );
 
       // 显示二维码
-      document.getElementById('qrImage').src = row.image_url;
+      document.getElementById('qrImage').src = row.image_url + '?t=' + Date.now();
       if (row.label) document.getElementById('qrLabel').textContent = row.label;
       show('stateQR');
 
