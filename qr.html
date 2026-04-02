@@ -203,12 +203,24 @@
       }
 
       const row = data[0];
+      const EXPIRE_MINUTES = 15;
 
-      if (row.used) {
-        show('stateExpired'); return;
+      if (row.opened_at) {
+        // 已打开过，检查是否在15分钟内
+        const openedAt = new Date(row.opened_at);
+        const now = new Date();
+        const diffMinutes = (now - openedAt) / 1000 / 60;
+        if (diffMinutes > EXPIRE_MINUTES) {
+          show('stateExpired'); return;
+        }
+        // 15分钟内，直接显示
+        document.getElementById('qrImage').src = row.image_url;
+        if (row.label) document.getElementById('qrLabel').textContent = row.label;
+        show('stateQR');
+        return;
       }
 
-      // 标记为已用
+      // 第一次打开，记录 opened_at
       await fetch(
         `${SUPABASE_URL}/rest/v1/private_qr_links?token=eq.${encodeURIComponent(token)}`,
         {
@@ -219,7 +231,7 @@
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal'
           },
-          body: JSON.stringify({ used: true, used_at: new Date().toISOString() })
+          body: JSON.stringify({ opened_at: new Date().toISOString() })
         }
       );
 
