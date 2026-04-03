@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>分享录取喜讯 · DukeParents</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:   #001a4d;
+      --blue:   #003087;
+      --gold:   #B8963E;
+      --gold-lt:#f5ecd4;
+      --bg:     #f5f3ef;
+      --card:   #ffffff;
+      --border: #e2ddd6;
+      --text:   #1a1a1a;
+      --muted:  #888070;
+      --red:    #C84B31;
+      --green:  #1a6b3c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Noto Serif SC', serif;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; text-stroke: 1.5px #ffffff; }
+    .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+      padding: 40px 32px 36px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 120%, rgba(184,150,62,0.15) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(184,150,62,0.15);
+      border: 1px solid rgba(184,150,62,0.4);
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      font-family: 'DM Mono', monospace;
+      position: relative;
+    }
+    .hero h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.5;
+      margin-bottom: 4px;
+      position: relative;
+    }
+    .hero p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      position: relative;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Main ── */
+    .page-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title span { color: var(--blue); }
+
+    /* ── Card ── */
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+    .form-card:nth-child(1) { animation-delay: 0.05s; }
+    .form-card:nth-child(2) { animation-delay: 0.15s; }
+    .form-card:nth-child(3) { animation-delay: 0.25s; }
+    .form-card:nth-child(4) { animation-delay: 0.35s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Form grid ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      font-family: 'DM Mono', monospace;
+    }
+    label .req { color: var(--red); margin-left: 2px; }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="tel"],
+    select,
+    textarea {
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Noto Serif SC', serif;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(0,48,135,0.08);
+    }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* committed 联动 */
+    #committedGroup { display: none; }
+    #committedGroup.show { display: flex; }
+
+    /* ── 上传区 ── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 24px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      background: #faf8f4;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--blue);
+      background: #f0f4fb;
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      border: none;
+      padding: 0;
+    }
+    .upload-icon { font-size: 28px; margin-bottom: 6px; }
+    .upload-hint { font-size: 12px; color: var(--muted); }
+    .upload-hint strong { color: var(--blue); }
+
+    .file-preview {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: #eef2fa;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 8px;
+    }
+    .file-preview.show { display: flex; }
+    .file-preview .fname {
+      font-size: 12px;
+      color: var(--blue);
+      font-family: 'DM Mono', monospace;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-preview .rm {
+      background: none; border: none;
+      color: var(--red); cursor: pointer;
+      font-size: 16px; padding: 0 4px;
+    }
+
+    /* ── Submit button ── */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: 1px;
+      position: relative;
+    }
+    .btn-submit:hover { background: var(--navy); }
+    .btn-submit:active { transform: scale(0.99); }
+    .btn-submit:disabled { background: #aab4cc; cursor: not-allowed; }
+
+    /* 进度条 */
+    .upload-progress {
+      display: none;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--blue);
+      font-family: 'DM Mono', monospace;
+    }
+    .upload-progress.show { display: block; }
+    .progress-bar { height: 4px; background: #dde6f5; border-radius: 2px; margin-top: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--blue); border-radius: 2px; transition: width 0.3s; }
+
+    /* ── 错误/成功提示 ── */
+    .msg {
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .msg.error { background: #fdecea; color: var(--red); display: block; }
+    .msg.success { display: none; }
+
+    /* ── 成功屏 ── */
+    #successScreen {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+    #successScreen.show { display: block; }
+    .success-icon { font-size: 56px; margin-bottom: 20px; }
+    .success-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+    .success-sub {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 380px;
+      margin: 0 auto 28px;
+    }
+    .btn-again {
+      padding: 12px 28px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-again:hover { background: var(--navy); }
+
+
+    /* ── 二维码区 ── */
+    #qrSection {
+      display: none;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+      padding-bottom: 40px;
+    }
+    #qrSection.show { display: block; opacity: 1; }
+    /* ── 注意事项 ── */
+    .notice {
+      background: var(--gold-lt);
+      border: 1px solid rgba(184,150,62,0.3);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 12px;
+      color: #7a5a10;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      font-family: 'DM Mono', monospace;
+    }
+    .notice strong { color: var(--blue); }
+
+    /* ── Mobile ── */
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-card { padding: 20px 16px; }
+      .hero { padding: 28px 20px 24px; }
+      .hero h1 { font-size: 20px; }
+    }
+
+    /* ── Lightbox ── */
+    .lightbox-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    .lightbox-overlay.show { display: flex; }
+    .lightbox-overlay img {
+      max-width: 92vw;
+      max-height: 88vh;
+      border-radius: 10px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hd">D</div>
+  <div class="ht">Duke 录取信息提交</div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">DukeParents · Class of 2030</div>
+  <h1>分享录取喜讯</h1>
+  <h1>扯谈 Duke 群社区欢迎您</h1>
+</div>
+
+<!-- ══════════════════════════════════════════
+     视频页（默认显示，选择后隐藏）
+════════════════════════════════════════════ -->
+<div id="videoPage" style="
+  max-width:720px;
+  margin:0 auto;
+  padding:32px 20px 60px;
+">
+
+  <!-- 提示文字 -->
+  <div style="
+    background:linear-gradient(135deg,#001a4d,#003087);
+    border-radius:14px;
+    padding:20px 24px;
+    text-align:center;
+    margin-bottom:24px;
+    box-shadow:0 4px 20px rgba(0,26,77,0.2);
+  ">
+    <div style="font-size:20px;margin-bottom:8px;">🎬</div>
+    <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.6;margin-bottom:6px;">
+      填写表格前，建议先观看介绍视频
+    </div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7;">
+      了解扯谈 Duke 群社区，以及如何填写本表格<br/>
+      <span style="color:#c9a84c;">表格将在视频结束后出现</span>
+    </div>
+  </div>
+
+  <!-- 视频选择按钮 -->
+  <div style="display:flex;gap:12px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;">
+    <button onclick="switchVideo('youtube')" id="btnYT" style="
+      padding:10px 22px;
+      border-radius:8px;
+      border:2px solid #FF0000;
+      background:#fff;
+      color:#CC0000;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;align-items:center;gap:8px;
+      font-family:'Noto Serif SC',serif;
+      transition:all 0.2s;
+    ">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><polygon points="8,3 15,7 8,11" fill="white"/></svg>
+      YouTube
+    </button>
+    <button onclick="switchVideo('bilibili')" id="btnBB" style="
+      padding:10px 22px;
+      border-radius:8px;
+      border:2px solid #00AEEC;
+      background:#fff;
+      color:#00AEEC;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;align-items:center;gap:8px;
+      font-family:'Noto Serif SC',serif;
+      transition:all 0.2s;
+    ">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#00AEEC"/><text x="3" y="11" font-size="9" fill="white" font-family="Arial" font-weight="bold">bili</text></svg>
+      Bilibili
+    </button>
+  </div>
+
+  <!-- 视频容器 -->
+  <div style="
+    position:relative;
+    width:100%;
+    padding-top:56.25%;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 6px 30px rgba(0,0,0,0.18);
+    background:#000;
+    margin-bottom:24px;
+  ">
+    <!-- YouTube iframe -->
+    <iframe id="ytFrame"
+      src="https://www.youtube.com/embed/QrlF55nKkFI?enablejsapi=1&rel=0&modestbranding=1"
+      style="position:absolute;inset:0;width:100%;height:100%;border:none;"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+    <!-- Bilibili iframe -->
+    <iframe id="bbFrame"
+      src="https://player.bilibili.com/player.html?bvid=BV11KX4BmEQZ&page=1&high_quality=1&danmaku=0"
+      style="position:absolute;inset:0;width:100%;height:100%;border:none;display:none;"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- 视频结束后自动跳转提示（默认隐藏） -->
+  <div id="videoEndPrompt" style="display:none;text-align:center;margin-bottom:24px;">
+    <div style="background:#f0f7f0;border:1px solid #1a6b3c;border-radius:12px;padding:20px 24px;display:inline-block;max-width:420px;">
+      <div style="font-size:28px;margin-bottom:8px;">✅</div>
+      <div style="font-size:15px;font-weight:700;color:#1a6b3c;margin-bottom:6px;">视频已看完！</div>
+      <div style="font-size:14px;color:#555;margin-bottom:14px;"><span id="countdownText">3</span> 秒后自动跳转到表格…</div>
+      <button onclick="enterForm()" style="padding:12px 30px;background:#003087;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;font-family:'Noto Serif SC',serif;cursor:pointer;letter-spacing:1px;box-shadow:0 4px 14px rgba(0,48,135,0.3);">
+        📝 立即进入填表
+      </button>
+    </div>
+  </div>
+
+  <!-- 两个主按钮 -->
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+    <button onclick="watchVideo()" style="
+      padding:14px 32px;
+      background:#003087;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      font-size:15px;
+      font-weight:700;
+      font-family:'Noto Serif SC',serif;
+      cursor:pointer;
+      letter-spacing:0.5px;
+      box-shadow:0 4px 14px rgba(0,48,135,0.25);
+      transition:background 0.2s;
+      display:flex;align-items:center;gap:8px;
+    " onmouseover="this.style.background='#001a4d'" onmouseout="this.style.background='#003087'">
+      🎬 观看视频再填表
+    </button>
+    <button onclick="enterForm()" style="
+      padding:14px 32px;
+      background:#fff;
+      color:#003087;
+      border:2px solid #003087;
+      border-radius:10px;
+      font-size:15px;
+      font-weight:700;
+      font-family:'Noto Serif SC',serif;
+      cursor:pointer;
+      letter-spacing:0.5px;
+      transition:all 0.2s;
+      display:flex;align-items:center;gap:8px;
+    " onmouseover="this.style.background='#f0f4fb'" onmouseout="this.style.background='#fff'">
+      ⏭ 跳过视频直接填表
+    </button>
+  </div>
+
+</div>
+
+<script>
+  // ── 当前视频平台 ──
+  var currentPlatform = 'youtube';
+  var ytPlayerReady = false;
+  var ytPlayer = null;
+
+  // ── 切换视频平台 ──
+  function switchVideo(platform) {
+    currentPlatform = platform;
+    var ytFrame = document.getElementById('ytFrame');
+    var bbFrame = document.getElementById('bbFrame');
+    var btnYT   = document.getElementById('btnYT');
+    var btnBB   = document.getElementById('btnBB');
+
+    if (platform === 'youtube') {
+      ytFrame.style.display = '';
+      bbFrame.style.display = 'none';
+      btnYT.style.background = '#FF0000';
+      btnYT.style.color = '#fff';
+      btnBB.style.background = '#fff';
+      btnBB.style.color = '#00AEEC';
+    } else {
+      ytFrame.style.display = 'none';
+      bbFrame.style.display = '';
+      btnYT.style.background = '#fff';
+      btnYT.style.color = '#CC0000';
+      btnBB.style.background = '#00AEEC';
+      btnBB.style.color = '#fff';
+    }
+  }
+
+  // ── 点击「观看视频再填表」──
+  function watchVideo() {
+    // 滚动到视频顶部
+    document.getElementById('videoPage').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // 如果是 YouTube，尝试用 API 播放
+    if (currentPlatform === 'youtube' && ytPlayer && ytPlayerReady) {
+      ytPlayer.playVideo();
+    }
+    // Bilibili 无法用 JS 控制，用户自行点击播放
+  }
+
+  // ── 点击「跳过视频 / 进入表格」──
+  function enterForm() {
+    document.getElementById('videoPage').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── YouTube IFrame API ──
+  // 动态加载 YouTube IFrame Player API
+  var tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+
+  function onYouTubeIframeAPIReady() {
+    // 重建 ytFrame 为 API 可控的播放器
+    ytPlayer = new YT.Player('ytFrame', {
+      events: {
+        onReady: function() { ytPlayerReady = true; },
+        onStateChange: function(e) {
+          // YT.PlayerState.ENDED === 0
+          if (e.data === 0) {
+            showEndPromptAndAutoRedirect();
+          }
+        }
+      }
+    });
+  }
+
+  // ── Bilibili 结束检测（postMessage + 轮询）──
+  window.addEventListener('message', function(e) {
+    try {
+      var data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+      if (data && (data.event === 'ended' || data.type === 'ended' || data.event === 'end')) {
+        showEndPromptAndAutoRedirect();
+      }
+    } catch(err) {}
+  });
+
+  // ── 视频结束 → 显示提示 + 3秒自动跳转 ──
+  var autoRedirectTimer = null;
+  function showEndPromptAndAutoRedirect() {
+    if (autoRedirectTimer) return; // 防止重复触发
+    var prompt = document.getElementById('videoEndPrompt');
+    prompt.style.display = 'block';
+    prompt.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    var count = 3;
+    var el = document.getElementById('countdownText');
+    el.textContent = count;
+
+    autoRedirectTimer = setInterval(function() {
+      count--;
+      el.textContent = count;
+      if (count <= 0) {
+        clearInterval(autoRedirectTimer);
+        enterForm();
+      }
+    }, 1000);
+  }
+</script>
+
+<!-- 表单主体用此 div 包裹，默认隐藏 -->
+<div id="mainContent" style="display:none;">
+<div class="page-wrap">
+
+
+
+  <!-- 等待审核屏（提交后显示） -->
+  <div id="pendingScreen" style="display:none;text-align:center;padding:60px 20px;">
+    <div style="font-size:56px;margin-bottom:20px;">📬</div>
+    <div style="font-size:22px;font-weight:700;color:#1a6b3c;margin-bottom:12px;">提交成功！</div>
+    <div style="font-size:14px;color:#888070;line-height:1.9;max-width:360px;margin:0 auto 28px;">
+      你的录取信息已收到，管理员审核通过后<br/>
+      将自动发送入群链接到你的邮箱<br/>
+      <span style="color:#003087;font-weight:600;">请注意查收，勿忘检查垃圾邮件</span>
+    </div>
+    <button class="btn-again" onclick="resetForm()">再提交一条</button>
+  </div>
+
+  <!-- 二维码区 -->
+  <div id="qrSection">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">提交成功！感谢分享</div>
+    <div class="success-sub">你提交的录取信息已收到，将由管理员核对后收录。</div>
+
+    <div class="form-card" style="text-align:center;max-width:480px;margin:0 auto;">
+      <div class="section-title" style="justify-content:center;">扫码加入 Duke 家长微信群</div>
+      <div style="margin-top:16px;">
+        <img id="dynamicQR" src="https://dukeparents.org/images/q1.png"
+             alt="Duke 家长微信群二维码"
+             onclick="openLightbox(this)"
+             style="width:min(320px,100%);height:auto;border-radius:12px;border:1px solid #e2ddd6;box-shadow:0 4px 16px rgba(0,0,0,0.08);cursor:zoom-in;"/>
+        <div style="margin-top:6px;font-size:11px;color:#888070;font-family:'DM Mono',monospace;">点击图片可放大扫码</div>
+        <div id="dynamicQRLabel" style="margin-top:12px;font-size:14px;font-weight:600;color:#003087;">Duke 家长入群驿站</div>
+        <div style="margin-top:8px;font-size:13px;color:#1a1a1a;line-height:1.8;">
+          本二维码用于申请加入以下两个微信群：<br/>
+          <span style="color:#003087;font-weight:600;">Duke 2030 本科生家长群</span><br/>
+          <span style="color:#003087;font-weight:600;">扯谈 Duke 群 2.0</span>
+        </div>
+        <div style="margin-top:6px;font-size:11px;color:#B8963E;font-family:'DM Mono',monospace;">二维码将持续更新</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:24px;">
+      <button class="btn-again" onclick="resetForm()">再提交一条</button>
+    </div>
+  </div>
+
+  <!-- 表单区 -->
+  <div id="formArea">
+
+
+
+    <div class="form-card" style="text-align:center;">
+      <div class="section-title" style="justify-content:center;">Duke 家长微信群</div>
+      <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <img src="1.png"
+               alt="扯谈Duke群1.0截图"
+               onclick="openLightbox(this)"
+               style="width:140px;height:auto;border-radius:10px;border:1px solid #e2ddd6;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:zoom-in;"/>
+          <div style="margin-top:6px;font-size:11px;color:#888070;">扯谈 Duke 群 1.0</div>
+        </div>
+        <div style="text-align:center;">
+          <img src="2.png"
+               alt="扯谈Duke群截图"
+               onclick="openLightbox(this)"
+               style="width:140px;height:auto;border-radius:10px;border:1px solid #e2ddd6;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:zoom-in;"/>
+          <div style="margin-top:6px;font-size:11px;color:#888070;">扯谈 Duke 群 2.0（246人）</div>
+        </div>
+        <div style="text-align:center;">
+          <img src="29.png"
+               alt="Duke2029家长群截图"
+               onclick="openLightbox(this)"
+               style="width:140px;height:auto;border-radius:10px;border:1px solid #e2ddd6;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:zoom-in;"/>
+          <div style="margin-top:6px;font-size:11px;color:#888070;">Duke 2029 本科生家长群</div>
+        </div>
+        <div style="text-align:center;">
+          <img src="30.png"
+               alt="Duke2030家长群截图"
+               onclick="openLightbox(this)"
+               style="width:140px;height:auto;border-radius:10px;border:1px solid #e2ddd6;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:zoom-in;"/>
+          <div style="margin-top:6px;font-size:11px;color:#888070;">Duke 2030 本科生家长群（107人）</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin:0 auto 20px;max-width:540px;background:linear-gradient(135deg,#001a4d,#003087);border-radius:12px;padding:18px 24px;font-size:15px;font-weight:600;color:#ffffff;line-height:1.8;letter-spacing:0.03em;box-shadow:0 4px 16px rgba(0,30,80,0.18);">
+      填完表格提交后，将显示微信二维码<br/>扫码后由管理员核对信息并邀请入群
+    </div>
+
+
+    <!-- 学生信息 -->
+    <div class="form-card">
+      <div class="section-title"><span>01</span> 学生基本信息</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>中文姓名 <span class="req">*</span></label>
+          <input type="text" autocomplete="off" id="fNameCn" placeholder="请输入中文姓名"/>
+        </div>
+        <div class="form-group">
+          <label>英文姓名 <span class="req">*</span></label>
+          <input type="text" autocomplete="off" id="fNameEn" placeholder="请输入英文姓名"/>
+        </div>
+        <div class="form-group">
+          <label>高中学校 <span class="req">*</span></label>
+          <input type="text" autocomplete="off" id="fSchool" placeholder="请输入高中学校名称"/>
+        </div>
+        <div class="form-group">
+          <label>所在国家/地区 <span class="req">*</span></label>
+          <select id="fLocationCountry" onchange="onLocationCountryChange(this.value)">
+            <option value="">请选择</option>
+            <option value="CN">🇨🇳 中国大陆</option>
+            <option value="US">🇺🇸 美国</option>
+            <option value="HK">🇭🇰 香港</option>
+            <option value="TW">🇹🇼 台湾</option>
+            <option value="SG">🇸🇬 新加坡</option>
+            <option value="CA">🇨🇦 加拿大</option>
+            <option value="UK">🇬🇧 英国</option>
+            <option value="AU">🇦🇺 澳大利亚</option>
+            <option value="OTHER">其他</option>
+          </select>
+        </div>
+        <div class="form-group" id="fLocationSecondGroup" style="display:none">
+          <label id="fLocationSecondLabel">省份 / 州 <span class="req">*</span></label>
+          <select id="fLocationSecond">
+            <option value="">请选择</option>
+          </select>
+        </div>
+        <div class="form-group" id="fLocationOtherGroup" style="display:none">
+          <label>具体地区</label>
+          <input type="text" autocomplete="off" id="fLocationOther" placeholder="请输入所在国家或城市"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- 录取信息 -->
+    <div class="form-card">
+      <div class="section-title"><span>02</span> 录取详情</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>录取类型 <span class="req">*</span></label>
+          <select id="fType" onchange="toggleCommitted(this.value)">
+            <option value="">请选择</option>
+            <option value="ED">ED（早申）</option>
+            <option value="RD">RD（常规）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>入学届次 <span class="req">*</span></label>
+          <select id="fYear" onchange="onYearChange(this.value)">
+            <option value="">请选择</option>
+            <option value="2030">2030</option>
+            <option value="2029">2029</option>
+            <option value="2028">2028</option>
+            <option value="2027">2027</option>
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option disabled style="color:#ccc;">──────────</option>
+            <option value="grad_masters">研究生 · 硕士 Master's</option>
+            <option value="grad_phd">研究生 · 博士 PhD</option>
+          </select>
+        </div>
+        <div class="form-group full" id="committedGroup">
+          <label>是否已 Committed（仅 RD 适用）<span class="req">*</span></label>
+          <select id="fCommitted" onchange="onCommittedChange(this.value)">
+            <option value="">请选择</option>
+            <option value="true">✅ 是</option>
+            <option value="false">❌ 否</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>学院 <span class="req">*</span></label>
+          <select id="fCollege">
+            <option value="">请选择</option>
+            <option class="ug-only" value="Trinity College of Arts & Sciences">Trinity College of Arts &amp; Sciences</option>
+            <option class="ug-only" value="Pratt School of Engineering">Pratt School of Engineering</option>
+            <option class="grad-only" disabled hidden value="Graduate School (Master's)">Graduate School · 硕士</option>
+            <option class="grad-only" disabled hidden value="Graduate School (PhD)">Graduate School · 博士</option>
+            <option class="grad-only" disabled hidden value="Fuqua School of Business">Fuqua School of Business</option>
+            <option class="grad-only" disabled hidden value="School of Medicine">School of Medicine</option>
+            <option class="grad-only" disabled hidden value="School of Law">School of Law</option>
+            <option class="grad-only" disabled hidden value="Nicholas School of the Environment">Nicholas School of the Environment</option>
+            <option class="grad-only" disabled hidden value="Sanford School of Public Policy">Sanford School of Public Policy</option>
+            <option class="grad-only" disabled hidden value="School of Nursing">School of Nursing</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>专业（可选）</label>
+          <input type="text" autocomplete="off" id="fMajor" placeholder="如：Computer Science"/>
+        </div>
+        <div class="form-group full">
+          <label>备注（可选）</label>
+          <textarea id="fNotes" placeholder="其他说明…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 文件上传 -->
+    <div class="form-card">
+      <div class="section-title"><span>03</span> 文件上传 <span style="color:#C84B31;font-size:11px;">*</span></div>
+      <div class="form-grid">
+        <div class="form-group full" id="letterGroup" style="display:none;">
+          <label>录取通知书 <span class="req">*</span></label>
+          <div class="upload-zone" id="letterZone"
+               ondragover="handleDrag(event,'letterZone')"
+               ondragleave="handleDragLeave('letterZone')"
+               ondrop="handleDrop(event,'letter')">
+            <input type="file" id="fLetter" accept="image/*,.pdf" onchange="handleFile(event,'letter')"/>
+            
+            <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+          </div>
+          <div class="file-preview" id="letterPreview">
+            <span class="fname" id="letterName"></span>
+            <button class="rm" onclick="removeFile('letter')">✕</button>
+          </div>
+        </div>
+        <div class="form-group full" id="committedLetterGroup" style="display:none;">
+          <label id="committedLetterLabel">Committed Letter</label>
+          <div class="upload-zone" id="committedZone"
+               ondragover="handleDrag(event,'committedZone')"
+               ondragleave="handleDragLeave('committedZone')"
+               ondrop="handleDrop(event,'committed')">
+            <input type="file" id="fCommittedLetter" accept="image/*,.pdf" onchange="handleFile(event,'committed')"/>
+            
+            <div class="upload-hint" id="committedLetterHint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+          </div>
+          <div class="file-preview" id="committedPreview">
+            <span class="fname" id="committedLetterName"></span>
+            <button class="rm" onclick="removeFile('committed')">✕</button>
+          </div>
+        </div>
+        <div class="form-group full" id="dormPhotoGroup" style="display:none;">
+          <label>文件上传（至少上传一项）</label>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;">宿舍照片 / Committed Letter / 录取通知书，三项均可选，至少上传其中一项</div>
+
+          <!-- 宿舍照片 -->
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;">宿舍照片（可选）</div>
+            <div class="upload-zone" id="dormZone"
+                 ondragover="handleDrag(event,'dormZone')"
+                 ondragleave="handleDragLeave('dormZone')"
+                 ondrop="handleDrop(event,'dorm')">
+              <input type="file" id="fDormPhoto" accept="image/*" onchange="handleFile(event,'dorm')"/>
+              <div class="upload-hint">拖入或点击上传，支持 <strong>图片</strong></div>
+            </div>
+            <div class="file-preview" id="dormPreview">
+              <span class="fname" id="dormPhotoName"></span>
+              <button class="rm" onclick="removeFile('dorm')">✕</button>
+            </div>
+          </div>
+
+          <!-- Committed Letter -->
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;">Committed Letter（可选）</div>
+            <div class="upload-zone" id="oldCommittedZone"
+                 ondragover="handleDrag(event,'oldCommittedZone')"
+                 ondragleave="handleDragLeave('oldCommittedZone')"
+                 ondrop="handleDrop(event,'oldCommitted')">
+              <input type="file" id="fOldCommitted" accept="image/*,.pdf" onchange="handleFile(event,'oldCommitted')"/>
+              <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+            </div>
+            <div class="file-preview" id="oldCommittedPreview">
+              <span class="fname" id="oldCommittedName"></span>
+              <button class="rm" onclick="removeFile('oldCommitted')">✕</button>
+            </div>
+          </div>
+
+          <!-- 录取通知书 -->
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;">录取通知书（可选）</div>
+            <div class="upload-zone" id="oldLetterZone"
+                 ondragover="handleDrag(event,'oldLetterZone')"
+                 ondragleave="handleDragLeave('oldLetterZone')"
+                 ondrop="handleDrop(event,'oldLetter')">
+              <input type="file" id="fOldLetter" accept="image/*,.pdf" onchange="handleFile(event,'oldLetter')"/>
+              <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+            </div>
+            <div class="file-preview" id="oldLetterPreview">
+              <span class="fname" id="oldLetterName"></span>
+              <button class="rm" onclick="removeFile('oldLetter')">✕</button>
+            </div>
+          </div>
+        </div>
+        <!-- 研究生录取通知书（仅研究生届次显示） -->
+        <div class="form-group full" id="gradLetterGroup" style="display:none;">
+          <label>录取通知书 <span class="req">*</span></label>
+          <div class="upload-zone" id="gradLetterZone"
+               ondragover="handleDrag(event,'gradLetterZone')"
+               ondragleave="handleDragLeave('gradLetterZone')"
+               ondrop="handleDrop(event,'gradLetter')">
+            <input type="file" id="fGradLetter" accept="image/*,.pdf" onchange="handleFile(event,'gradLetter')"/>
+            <div class="upload-hint">拖入或点击上传录取通知书，支持 <strong>图片 / PDF</strong></div>
+          </div>
+          <div class="file-preview" id="gradLetterPreview">
+            <span class="fname" id="gradLetterName"></span>
+            <button class="rm" onclick="removeFile('gradLetter')">✕</button>
+          </div>
+        </div>
+        <span id="progressLabel" style="display:none;">上传中…</span>
+        <div class="progress-bar" style="display:none;"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- 提交者信息 -->
+    <div class="form-card">
+      <div class="section-title"><span>04</span> 提交者信息</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>你的姓名 <span class="req">*</span></label>
+          <input type="text" autocomplete="off" id="fSubmitterName" placeholder="请输入姓名"/>
+        </div>
+        <div class="form-group">
+          <label>联系方式（微信号）<span class="req">*</span></label>
+          <input type="text" autocomplete="off" id="fSubmitterContact" placeholder="请输入微信号"/>
+        </div>
+        <div class="form-group full">
+          <label>邮箱 <span class="req">*</span></label>
+          <input type="email" autocomplete="off" id="fSubmitterEmail" placeholder="请输入常用邮箱"/>
+          <div style="margin-top:6px;padding:10px 14px;background:#fff8e6;border:1px solid rgba(184,150,62,0.4);border-radius:7px;font-size:12px;color:#7a5a10;line-height:1.8;font-family:'DM Mono',monospace;">
+            ⚠️ <strong>请务必填写准确</strong>，审核通过后入群二维码链接将发送至此邮箱<br/>填错将无法收到链接，需重新联系管理员
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="formError" class="msg"></div>
+    <button class="btn-submit" id="submitBtn" onclick="submitForm()">提 交</button>
+
+  </div><!-- /formArea -->
+
+</div><!-- /page-wrap -->
+</div><!-- /mainContent -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  function openLightbox(img) {
+    document.getElementById('lightboxImg').src = img.src;
+    document.getElementById('lightboxOverlay').classList.add('show');
+  }
+  function closeLightbox() {
+    document.getElementById('lightboxOverlay').classList.remove('show');
+    window.location.href = 'https://dukeparents.org/index.html';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+<script>
+  const SUPABASE_URL  = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+
+  // ── GitHub 文件上传配置 ──
+  const GH_OWNER  = 'parentsduke';
+  const GH_REPO   = 'parentsduke';
+  const GH_BRANCH = 'main';
+  const GH_TOKEN  = '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';
+  const GH_FOLDER = 'submissions';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let letterFile = null;
+  let committedFile = null;
+  let dormFile = null;
+  let gradLetterFile = null;
+  let oldCommittedFile = null;
+  let oldLetterFile = null;
+
+  // 预上传路径（文件选好后立即上传，存路径备用）
+  let preUploadPaths = {
+    letter: null, committed: null, dorm: null,
+    gradLetter: null, oldCommitted: null, oldLetter: null
+  };
+  let preUploadStatus = {
+    letter: null, committed: null, dorm: null,
+    gradLetter: null, oldCommitted: null, oldLetter: null
+  }; // null | 'uploading' | 'done' | 'error'
+
+  // ── 届次联动 ──
+  function onYearChange(val) {
+    const isGrad    = (val === 'grad_masters' || val === 'grad_phd');
+    const year      = parseInt(val);
+    // 2024–2029：显示宿舍照片；2030及研究生：不显示
+    const showDorm  = !isGrad && !isNaN(year) && year >= 2024 && year <= 2029;
+
+    document.getElementById('dormPhotoGroup').style.display     = showDorm ? 'block' : 'none';
+    document.getElementById('gradLetterGroup').style.display    = isGrad  ? 'block' : 'none';
+
+    // 研究生：隐藏录取类型 & Committed 区域
+    const typeRow = document.getElementById('fType').closest('.form-group');
+    typeRow.style.display = isGrad ? 'none' : '';
+    if (isGrad) {
+      document.getElementById('committedGroup').classList.remove('show');
+      document.getElementById('fType').value      = '';
+      document.getElementById('fCommitted').value = '';
+      document.getElementById('letterGroup').style.display          = 'none';
+      document.getElementById('committedLetterGroup').style.display = 'none';
+      removeFile('letter'); removeFile('committed');
+    } else {
+      // 重新触发上传区联动
+      updateUploadZones(document.getElementById('fType').value, document.getElementById('fCommitted').value);
+    }
+
+    if (!showDorm) removeFile('dorm');
+    if (!isGrad)   removeFile('gradLetter');
+
+    // 切换学院选项
+    const sel = document.getElementById('fCollege');
+    sel.value = '';
+    Array.from(sel.options).forEach(opt => {
+      if (opt.classList.contains('grad-only')) { opt.disabled = !isGrad; opt.hidden = !isGrad; }
+      if (opt.classList.contains('ug-only'))   { opt.disabled = isGrad;  opt.hidden = isGrad;  }
+    });
+  }
+
+  // ── 录取类型 & Committed 联动 ──
+  function toggleCommitted(type) {
+    const rdGroup = document.getElementById('committedGroup');
+    rdGroup.classList.toggle('show', type === 'RD');
+    if (type !== 'RD') document.getElementById('fCommitted').value = '';
+    updateUploadZones(type, document.getElementById('fCommitted').value);
+  }
+
+  function onCommittedChange(val) {
+    const type = document.getElementById('fType').value;
+    updateUploadZones(type, val);
+  }
+
+  function updateUploadZones(type, committed) {
+    const letterGroup    = document.getElementById('letterGroup');
+    const clLabel        = document.getElementById('committedLetterLabel');
+    const clHint         = document.getElementById('committedLetterHint');
+    const clGroup        = document.getElementById('committedLetterGroup');
+    const committedZone  = document.getElementById('committedZone');
+
+    if (type === 'ED') {
+      letterGroup.style.display = 'none';
+      clGroup.style.display = 'block';
+      clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（ED 必须上传）';
+      clHint.innerHTML  = 'ED录取必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
+      committedZone.style.borderColor = '#C84B31';
+      removeFile('letter');
+    } else if (type === 'RD' && committed === 'true') {
+      letterGroup.style.display = 'none';
+      clGroup.style.display = 'block';
+      clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（已Committed必须上传）';
+      clHint.innerHTML  = '已Committed必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
+      committedZone.style.borderColor = '#C84B31';
+      removeFile('letter');
+    } else if (type === 'RD' && committed === 'false') {
+      letterGroup.style.display = 'block';
+      clGroup.style.display = 'none';
+      committedZone.style.borderColor = '';
+      removeFile('committed');
+    } else {
+      letterGroup.style.display = 'none';
+      clGroup.style.display = 'none';
+      committedZone.style.borderColor = '';
+    }
+  }
+
+  // ── 文件处理 ──
+  function handleFile(e, type) {
+    const file = e.target.files?.[0];
+    if (file) setFile(type, file);
+  }
+  function handleDrag(e, zoneId) {
+    e.preventDefault();
+    document.getElementById(zoneId).classList.add('drag-over');
+  }
+  function handleDragLeave(zoneId) {
+    document.getElementById(zoneId).classList.remove('drag-over');
+  }
+  function handleDrop(e, type) {
+    e.preventDefault();
+    const zoneMap = { letter: 'letterZone', committed: 'committedZone', dorm: 'dormZone', gradLetter: 'gradLetterZone', oldCommitted: 'oldCommittedZone', oldLetter: 'oldLetterZone' };
+    document.getElementById(zoneMap[type]).classList.remove('drag-over');
+    const file = e.dataTransfer.files?.[0];
+    if (file) setFile(type, file);
+  }
+  function setFile(type, file) {
+    // 重置该类型的预上传状态
+    preUploadPaths[type] = null;
+    preUploadStatus[type] = null;
+
+    const nameMap = {
+      letter: 'letterName', committed: 'committedLetterName', gradLetter: 'gradLetterName',
+      oldCommitted: 'oldCommittedName', oldLetter: 'oldLetterName', dorm: 'dormPhotoName'
+    };
+    const previewMap = {
+      letter: 'letterPreview', committed: 'committedPreview', gradLetter: 'gradLetterPreview',
+      oldCommitted: 'oldCommittedPreview', oldLetter: 'oldLetterPreview', dorm: 'dormPreview'
+    };
+
+    if (type === 'letter')       letterFile = file;
+    else if (type === 'committed')    committedFile = file;
+    else if (type === 'gradLetter')   gradLetterFile = file;
+    else if (type === 'oldCommitted') oldCommittedFile = file;
+    else if (type === 'oldLetter')    oldLetterFile = file;
+    else                              dormFile = file;
+
+    const nameEl    = document.getElementById(nameMap[type]);
+    const previewEl = document.getElementById(previewMap[type]);
+    if (nameEl)    nameEl.textContent = file.name;
+    if (previewEl) previewEl.classList.add('show');
+
+    // 立即开始后台上传
+    preUploadStatus[type] = 'uploading';
+    updatePreUploadUI(type);
+
+    uploadFile(file, type).then(url => {
+      preUploadStatus[type] = 'done';
+      preUploadPaths[type]  = url;
+      updatePreUploadUI(type);
+    }).catch(() => {
+      preUploadStatus[type] = 'error';
+      preUploadPaths[type]  = null;
+      updatePreUploadUI(type);
+    });
+  }
+
+  function updatePreUploadUI(type) {
+    const nameMap = {
+      letter: 'letterName', committed: 'committedLetterName', gradLetter: 'gradLetterName',
+      oldCommitted: 'oldCommittedName', oldLetter: 'oldLetterName', dorm: 'dormPhotoName'
+    };
+    const el = document.getElementById(nameMap[type]);
+    if (!el) return;
+    const fileObj = { letter: letterFile, committed: committedFile, gradLetter: gradLetterFile,
+                      oldCommitted: oldCommittedFile, oldLetter: oldLetterFile, dorm: dormFile }[type];
+    const name = fileObj ? fileObj.name : '';
+    const status = preUploadStatus[type];
+    if (status === 'uploading') {
+      el.innerHTML = `${name} <span style="color:#b45309;font-size:11px;font-family:'DM Mono',monospace;">⏳ 上传中…</span>`;
+    } else if (status === 'done') {
+      el.innerHTML = `${name} <span style="color:#1a6b3c;font-size:11px;font-family:'DM Mono',monospace;">✅ 已上传</span>`;
+    } else if (status === 'error') {
+      el.innerHTML = `${name} <span style="color:#C84B31;font-size:11px;font-family:'DM Mono',monospace;">❌ 上传失败，提交时重试</span>`;
+    }
+  }
+  function removeFile(type) {
+    preUploadPaths[type]  = null;
+    preUploadStatus[type] = null;
+    if (type === 'letter') {
+      letterFile = null;
+      document.getElementById('fLetter').value = '';
+      document.getElementById('letterPreview').classList.remove('show');
+    } else if (type === 'committed') {
+      committedFile = null;
+      document.getElementById('fCommittedLetter').value = '';
+      document.getElementById('committedPreview').classList.remove('show');
+    } else if (type === 'gradLetter') {
+      gradLetterFile = null;
+      document.getElementById('fGradLetter').value = '';
+      document.getElementById('gradLetterPreview').classList.remove('show');
+    } else if (type === 'oldCommitted') {
+      oldCommittedFile = null;
+      document.getElementById('fOldCommitted').value = '';
+      document.getElementById('oldCommittedPreview').classList.remove('show');
+    } else if (type === 'oldLetter') {
+      oldLetterFile = null;
+      document.getElementById('fOldLetter').value = '';
+      document.getElementById('oldLetterPreview').classList.remove('show');
+    } else {
+      dormFile = null;
+      document.getElementById('fDormPhoto').value = '';
+      document.getElementById('dormPreview').classList.remove('show');
+    }
+  }
+
+  // ── 上传单个文件 ──
+  async function uploadFile(file, label) {
+    const ext  = file.name.split('.').pop();
+    const filename = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const path = `${GH_FOLDER}/${filename}`;
+
+    // 读取文件为 base64
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+    const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GH_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: `Upload ${label}`,
+        content: base64,
+        branch: GH_BRANCH,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(`${label}上传失败：` + (err.message || res.status));
+    }
+
+    // 返回 raw 访问链接
+    return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/${path}`;
+  }
+
+  // ── 提交 ──
+  async function submitForm() {
+    const errEl = document.getElementById('formError');
+    errEl.className = 'msg';
+
+    const nameCn   = document.getElementById('fNameCn').value.trim();
+    const nameEn   = document.getElementById('fNameEn').value.trim();
+    const school   = document.getElementById('fSchool').value.trim();
+    const location = getLocationValue();
+    const year     = document.getElementById('fYear').value;
+    const college  = (document.getElementById('fCollege').value || '').trim();
+    const notes    = document.getElementById('fNotes').value.trim();
+    const isGrad   = (year === 'grad_masters' || year === 'grad_phd');
+    const type     = isGrad ? null : document.getElementById('fType').value;
+    const rdCommitted = isGrad ? null : document.getElementById('fCommitted').value;
+
+    if (!nameCn)   { showError('请填写中文姓名'); return; }
+    if (!/^[\u4e00-\u9fa5]{2,10}$/.test(nameCn)) { showError('中文姓名请填写2-10个汉字'); return; }
+    if (!nameEn)   { showError('请填写英文姓名'); return; }
+    if (!/^[a-zA-Z\s]{2,50}$/.test(nameEn)) { showError('英文姓名只能含字母和空格，至少2个字符'); return; }
+    if (!school)   { showError('请填写高中学校'); return; }
+    if (!/^(?=.*[\u4e00-\u9fa5a-zA-Z])[^\n]{2,100}$/.test(school)) { showError('学校名称请至少填写2个字符，且包含中文或英文'); return; }
+    if (!location) { showError('请选择所在地区'); return; }
+    // 第二级必填（中美加澳需选省/州）
+    const locCountry = document.getElementById('fLocationCountry').value;
+    if (['CN','US','CA','AU'].includes(locCountry) && !document.getElementById('fLocationSecond').value) {
+      showError('请选择具体省份/州'); return;
+    }
+    if (locCountry === 'OTHER' && !document.getElementById('fLocationOther').value.trim()) {
+      showError('请填写所在国家或城市'); return;
+    }
+    if (!year)     { showError('请选择入学届次'); return; }
+    if (!college)  { showError('请选择学院'); return; }
+
+    const isOldYear = !isGrad && !isNaN(parseInt(year)) && parseInt(year) >= 2024 && parseInt(year) <= 2029;
+
+    if (isGrad) {
+      if (!gradLetterFile) { showError('请上传研究生录取通知书'); return; }
+    } else if (isOldYear) {
+      if (!dormFile && !oldCommittedFile && !oldLetterFile) { showError('请至少上传一项：宿舍照片、Committed Letter 或录取通知书'); return; }
+    } else {
+      if (!type)  { showError('请选择录取类型'); return; }
+      if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
+      if (type === 'ED' && !committedFile) { showError('ED录取必须上传 Committed Letter'); return; }
+      if (type === 'RD' && rdCommitted === 'true' && !committedFile) { showError('已Committed必须上传 Committed Letter'); return; }
+      if (type === 'RD' && rdCommitted === 'false' && !letterFile) { showError('请上传录取通知书'); return; }
+    }
+    if (!document.getElementById('fSubmitterName').value.trim())    { showError('请填写你的姓名或微信昵称'); return; }
+    if (!document.getElementById('fSubmitterContact').value.trim()) { showError('请填写联系方式'); return; }
+    const submitterEmail = document.getElementById('fSubmitterEmail').value.trim();
+    if (!submitterEmail) { showError('请填写邮箱'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submitterEmail)) { showError('邮箱格式不正确'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '提交中…';
+
+    try {
+      // 等待所有仍在上传中的文件完成（最多30秒）
+      const waitForUpload = (type) => new Promise((resolve) => {
+        if (preUploadStatus[type] !== 'uploading') { resolve(); return; }
+        const t = setInterval(() => {
+          if (preUploadStatus[type] !== 'uploading') { clearInterval(t); resolve(); }
+        }, 300);
+        setTimeout(() => { clearInterval(t); resolve(); }, 30000);
+      });
+
+      const activeTypes = [];
+      if (letterFile)       activeTypes.push('letter');
+      if (committedFile)    activeTypes.push('committed');
+      if (dormFile)         activeTypes.push('dorm');
+      if (gradLetterFile)   activeTypes.push('gradLetter');
+      if (oldCommittedFile) activeTypes.push('oldCommitted');
+      if (oldLetterFile)    activeTypes.push('oldLetter');
+
+      // 如有仍在上传的，提示等待
+      if (activeTypes.some(t => preUploadStatus[t] === 'uploading')) {
+        btn.textContent = '等待文件上传…';
+        await Promise.all(activeTypes.map(waitForUpload));
+        btn.textContent = '提交中…';
+      }
+
+      // 对上传失败的重试一次
+      let letter_path           = null;
+      let committed_letter_path = null;
+      let dorm_photo_path       = null;
+      let grad_letter_path      = null;
+
+      if (letterFile)       letter_path           = preUploadPaths['letter']       || await uploadFile(letterFile,       '录取通知书');
+      if (committedFile)    committed_letter_path  = preUploadPaths['committed']    || await uploadFile(committedFile,    'Committed Letter');
+      if (dormFile)         dorm_photo_path        = preUploadPaths['dorm']         || await uploadFile(dormFile,         '宿舍照片');
+      if (gradLetterFile)   grad_letter_path       = preUploadPaths['gradLetter']   || await uploadFile(gradLetterFile,   '研究生录取通知书');
+      if (oldCommittedFile) committed_letter_path  = preUploadPaths['oldCommitted'] || await uploadFile(oldCommittedFile, 'Committed Letter');
+      if (oldLetterFile)    letter_path            = preUploadPaths['oldLetter']    || await uploadFile(oldLetterFile,    '录取通知书');
+
+      const upProg = document.getElementById('uploadProgress');
+      if (upProg) upProg.classList.remove('show');
+
+      const committed_val = (!isGrad && type === 'RD')
+        ? (rdCommitted === 'true' ? true : rdCommitted === 'false' ? false : null)
+        : null;
+
+      const classYearVal = isGrad ? null : parseInt(year);
+
+      const payload = {
+        student_name_cn:       nameCn || null,
+        student_name_en:       nameEn,
+        high_school:           school || null,
+        location:              location || null,
+        admission_type:        isGrad ? year : type,
+        class_year:            classYearVal,
+        college:               college || null,
+        major:                 document.getElementById('fMajor').value.trim() || null,
+        committed:             committed_val,
+        notes:                 notes || null,
+        letter_path,
+        committed_letter_path,
+        dorm_photo_path,
+        grad_letter_path,
+        submitter_name:        document.getElementById('fSubmitterName').value.trim() || null,
+        submitter_contact:     document.getElementById('fSubmitterContact').value.trim() || null,
+        submitter_email:       submitterEmail || null,
+      };
+
+      const { data: insertedData, error } = await db.from('admissions_submissions').insert(payload).select('id').single();
+      if (error) throw new Error(error.message);
+      const insertedId = insertedData?.id;
+
+      // ── 触发 notify-admin（邮件 + 方糖推送）──
+      try {
+        await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ record: payload }),
+        });
+      } catch(e) {
+        console.warn('通知发送失败:', e);
+      }
+
+      document.getElementById('formArea').style.display = 'none';
+      document.getElementById('pendingScreen').style.display = 'block';
+      document.getElementById('qrSection').classList.add('show');
+      const qrNo = await fetchAndRotateQR();
+      if (qrNo) {
+        await db.from('admissions_submissions')
+          .update({ qr_code_no: qrNo })
+          .eq('id', insertedId);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch(e) {
+      showError('❌ ' + e.message);
+      btn.disabled = false;
+      btn.textContent = '提 交';
+    }
+  }
+
+  // ── QR Code rotation ──
+  async function fetchAndRotateQR() {
+    try {
+      // Get current active QR code
+      const { data, error } = await db
+        .from('qr_codes')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+        .limit(1)
+        .single();
+
+      if (error || !data) {
+        console.warn('No active QR found, using default');
+        return null;
+      }
+
+      // Show current QR
+      const imgEl   = document.getElementById('dynamicQR');
+      const labelEl = document.getElementById('dynamicQRLabel');
+      if (imgEl)   imgEl.src         = data.image_url;
+      if (labelEl) labelEl.textContent = data.label || 'Duke 家长入群驿站';
+
+      // Rotate: mark current as used, activate next one
+      await db.from('qr_codes')
+        .update({ is_active: false, used_at: new Date().toISOString() })
+        .eq('id', data.id);
+
+      // Activate the next QR (lowest sort_order that is not yet used)
+      const { data: nextQR } = await db
+        .from('qr_codes')
+        .select('id')
+        .eq('is_active', false)
+        .is('used_at', null)
+        .order('sort_order', { ascending: true })
+        .limit(1)
+        .single();
+
+      if (nextQR) {
+        await db.from('qr_codes')
+          .update({ is_active: true })
+          .eq('id', nextQR.id);
+      } else {
+        // 所有二维码都用完了，重置循环，从第一条重新开始
+        await db.from('qr_codes')
+          .update({ is_active: false, used_at: null })
+          .neq('id', 0);
+        await db.from('qr_codes')
+          .update({ is_active: true })
+          .eq('sort_order', 1);
+      }
+
+      return data.sort_order; // 返回本次使用的编号
+
+    } catch(e) {
+      console.warn('QR rotation error:', e.message);
+      return null;
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('formError');
+    el.textContent = msg;
+    el.className = 'msg error';
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ── 所在地区联动 ──
+  const CN_PROVINCES = ['北京','上海','天津','重庆','广东','江苏','浙江','四川','湖北','湖南','山东','河南','河北','福建','安徽','辽宁','黑龙江','吉林','陕西','云南','贵州','广西','江西','山西','内蒙古','新疆','西藏','甘肃','海南','宁夏','青海','香港','澳门'];
+  const US_STATES = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+  const CA_PROVINCES = ['Alberta','British Columbia','Manitoba','New Brunswick','Newfoundland','Nova Scotia','Ontario','Prince Edward Island','Quebec','Saskatchewan'];
+  const AU_STATES = ['New South Wales','Victoria','Queensland','South Australia','Western Australia','Tasmania','ACT','Northern Territory'];
+
+  function onLocationCountryChange(val) {
+    const secondGroup = document.getElementById('fLocationSecondGroup');
+    const secondLabel = document.getElementById('fLocationSecondLabel');
+    const secondSel   = document.getElementById('fLocationSecond');
+    const otherGroup  = document.getElementById('fLocationOtherGroup');
+
+    secondGroup.style.display = 'none';
+    otherGroup.style.display  = 'none';
+    secondSel.innerHTML = '<option value="">请选择</option>';
+
+    let list = null;
+    if (val === 'CN') { list = CN_PROVINCES; secondLabel.innerHTML = '省份 / 直辖市 <span class="req">*</span>'; }
+    if (val === 'US') { list = US_STATES;    secondLabel.innerHTML = '州 (State) <span class="req">*</span>'; }
+    if (val === 'CA') { list = CA_PROVINCES; secondLabel.innerHTML = '省份 (Province) <span class="req">*</span>'; }
+    if (val === 'AU') { list = AU_STATES;    secondLabel.innerHTML = '州 (State) <span class="req">*</span>'; }
+    if (val === 'OTHER') { otherGroup.style.display = 'flex'; return; }
+
+    if (list) {
+      list.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item; opt.textContent = item;
+        secondSel.appendChild(opt);
+      });
+      secondGroup.style.display = 'flex';
+    }
+  }
+
+  function getLocationValue() {
+    const country = document.getElementById('fLocationCountry').value;
+    if (!country) return '';
+    const countryNames = { CN:'中国大陆', US:'美国', HK:'香港', TW:'台湾', SG:'新加坡', CA:'加拿大', UK:'英国', AU:'澳大利亚' };
+    if (country === 'OTHER') {
+      return document.getElementById('fLocationOther').value.trim();
+    }
+    const second = document.getElementById('fLocationSecond') ? document.getElementById('fLocationSecond').value : '';
+    const name = countryNames[country] || country;
+    return second ? `${name}·${second}` : name;
+  }
+
+  // ── 重置表单 ──
+  function resetForm() {
+    ['fNameCn','fNameEn','fSchool','fLocationOther','fCollege','fMajor','fNotes','fSubmitterName','fSubmitterContact','fSubmitterEmail']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('fLocationCountry').value = '';
+    document.getElementById('fLocationSecond').innerHTML = '<option value="">请选择</option>';
+    document.getElementById('fLocationSecondGroup').style.display = 'none';
+    document.getElementById('fLocationOtherGroup').style.display  = 'none';
+    document.getElementById('fType').value = '';
+    document.getElementById('fYear').value = '';
+    document.getElementById('fCommitted').value = '';
+    document.getElementById('committedGroup').classList.remove('show');
+    document.getElementById('dormPhotoGroup').style.display     = 'none';
+    document.getElementById('gradLetterGroup').style.display    = 'none';
+    document.getElementById('letterGroup').style.display        = 'none';
+    document.getElementById('committedLetterGroup').style.display = 'none';
+    // 恢复学院选项
+    const sel = document.getElementById('fCollege');
+    Array.from(sel.options).forEach(opt => {
+      if (opt.classList.contains('grad-only')) { opt.disabled = true;  opt.hidden = true;  }
+      if (opt.classList.contains('ug-only'))   { opt.disabled = false; opt.hidden = false; }
+    });
+    // 恢复录取类型显示
+    document.getElementById('fType').closest('.form-group').style.display = '';
+    removeFile('letter'); removeFile('committed'); removeFile('dorm'); removeFile('gradLetter'); removeFile('oldCommitted'); removeFile('oldLetter');
+    document.getElementById('formError').className = 'msg';
+    document.getElementById('submitBtn').disabled = false;
+    document.getElementById('submitBtn').textContent = '提 交';
+    document.getElementById('qrSection').classList.remove('show');
+    document.getElementById('pendingScreen').style.display = 'none';
+    document.getElementById('formArea').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openLightbox(img) {
+    document.getElementById('lightboxImg').src = img.src;
+    document.getElementById('lightboxOverlay').classList.add('show');
+  }
+  function closeLightbox() {
+    document.getElementById('lightboxOverlay').classList.remove('show');
+    window.location.href = 'https://dukeparents.org/index.html';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt=""/>
+</div>
+
+</body>
+</html>
