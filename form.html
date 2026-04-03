@@ -914,8 +914,8 @@
             <button class="rm" onclick="removeFile('gradLetter')">✕</button>
           </div>
         </div>
-        <span id="progressLabel">上传中…</span>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <span id="progressLabel" style="display:none;">上传中…</span>
+        <div class="progress-bar" style="display:none;"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       </div>
     </div>
 
@@ -975,6 +975,16 @@
   let gradLetterFile = null;
   let oldCommittedFile = null;
   let oldLetterFile = null;
+
+  // 预上传路径（文件选好后立即上传，存路径备用）
+  let preUploadPaths = {
+    letter: null, committed: null, dorm: null,
+    gradLetter: null, oldCommitted: null, oldLetter: null
+  };
+  let preUploadStatus = {
+    letter: null, committed: null, dorm: null,
+    gradLetter: null, oldCommitted: null, oldLetter: null
+  }; // null | 'uploading' | 'done' | 'error'
 
   // ── 届次联动 ──
   function onYearChange(val) {
@@ -1079,33 +1089,72 @@
     if (file) setFile(type, file);
   }
   function setFile(type, file) {
-    if (type === 'letter') {
-      letterFile = file;
-      document.getElementById('letterName').textContent = file.name;
-      document.getElementById('letterPreview').classList.add('show');
-    } else if (type === 'committed') {
-      committedFile = file;
-      document.getElementById('committedLetterName').textContent = file.name;
-      document.getElementById('committedPreview').classList.add('show');
-    } else if (type === 'gradLetter') {
-      gradLetterFile = file;
-      document.getElementById('gradLetterName').textContent = file.name;
-      document.getElementById('gradLetterPreview').classList.add('show');
-    } else if (type === 'oldCommitted') {
-      oldCommittedFile = file;
-      document.getElementById('oldCommittedName').textContent = file.name;
-      document.getElementById('oldCommittedPreview').classList.add('show');
-    } else if (type === 'oldLetter') {
-      oldLetterFile = file;
-      document.getElementById('oldLetterName').textContent = file.name;
-      document.getElementById('oldLetterPreview').classList.add('show');
-    } else {
-      dormFile = file;
-      document.getElementById('dormPhotoName').textContent = file.name;
-      document.getElementById('dormPreview').classList.add('show');
+    // 重置该类型的预上传状态
+    preUploadPaths[type] = null;
+    preUploadStatus[type] = null;
+
+    const nameMap = {
+      letter: 'letterName', committed: 'committedLetterName', gradLetter: 'gradLetterName',
+      oldCommitted: 'oldCommittedName', oldLetter: 'oldLetterName', dorm: 'dormPhotoName'
+    };
+    const previewMap = {
+      letter: 'letterPreview', committed: 'committedPreview', gradLetter: 'gradLetterPreview',
+      oldCommitted: 'oldCommittedPreview', oldLetter: 'oldLetterPreview', dorm: 'dormPreview'
+    };
+
+    if (type === 'letter')       letterFile = file;
+    else if (type === 'committed')    committedFile = file;
+    else if (type === 'gradLetter')   gradLetterFile = file;
+    else if (type === 'oldCommitted') oldCommittedFile = file;
+    else if (type === 'oldLetter')    oldLetterFile = file;
+    else                              dormFile = file;
+
+    const nameEl    = document.getElementById(nameMap[type]);
+    const previewEl = document.getElementById(previewMap[type]);
+    if (nameEl)    nameEl.textContent = file.name;
+    if (previewEl) previewEl.classList.add('show');
+
+    // 立即开始后台上传
+    preUploadStatus[type] = 'uploading';
+    updatePreUploadUI(type);
+
+    const ext  = file.name.split('.').pop();
+    const path = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+    db.storage.from(BUCKET).upload(path, file, { upsert: false }).then(({ error }) => {
+      if (error) {
+        preUploadStatus[type] = 'error';
+        preUploadPaths[type]  = null;
+      } else {
+        preUploadStatus[type] = 'done';
+        preUploadPaths[type]  = path;
+      }
+      updatePreUploadUI(type);
+    });
+  }
+
+  function updatePreUploadUI(type) {
+    const nameMap = {
+      letter: 'letterName', committed: 'committedLetterName', gradLetter: 'gradLetterName',
+      oldCommitted: 'oldCommittedName', oldLetter: 'oldLetterName', dorm: 'dormPhotoName'
+    };
+    const el = document.getElementById(nameMap[type]);
+    if (!el) return;
+    const fileObj = { letter: letterFile, committed: committedFile, gradLetter: gradLetterFile,
+                      oldCommitted: oldCommittedFile, oldLetter: oldLetterFile, dorm: dormFile }[type];
+    const name = fileObj ? fileObj.name : '';
+    const status = preUploadStatus[type];
+    if (status === 'uploading') {
+      el.innerHTML = `${name} <span style="color:#b45309;font-size:11px;font-family:'DM Mono',monospace;">⏳ 上传中…</span>`;
+    } else if (status === 'done') {
+      el.innerHTML = `${name} <span style="color:#1a6b3c;font-size:11px;font-family:'DM Mono',monospace;">✅ 已上传</span>`;
+    } else if (status === 'error') {
+      el.innerHTML = `${name} <span style="color:#C84B31;font-size:11px;font-family:'DM Mono',monospace;">❌ 上传失败，提交时重试</span>`;
     }
   }
   function removeFile(type) {
+    preUploadPaths[type]  = null;
+    preUploadStatus[type] = null;
     if (type === 'letter') {
       letterFile = null;
       document.getElementById('fLetter').value = '';
@@ -1208,17 +1257,42 @@
     btn.textContent = '提交中…';
 
     try {
+      // 等待所有仍在上传中的文件完成（最多30秒）
+      const waitForUpload = (type) => new Promise((resolve) => {
+        if (preUploadStatus[type] !== 'uploading') { resolve(); return; }
+        const t = setInterval(() => {
+          if (preUploadStatus[type] !== 'uploading') { clearInterval(t); resolve(); }
+        }, 300);
+        setTimeout(() => { clearInterval(t); resolve(); }, 30000);
+      });
+
+      const activeTypes = [];
+      if (letterFile)       activeTypes.push('letter');
+      if (committedFile)    activeTypes.push('committed');
+      if (dormFile)         activeTypes.push('dorm');
+      if (gradLetterFile)   activeTypes.push('gradLetter');
+      if (oldCommittedFile) activeTypes.push('oldCommitted');
+      if (oldLetterFile)    activeTypes.push('oldLetter');
+
+      // 如有仍在上传的，提示等待
+      if (activeTypes.some(t => preUploadStatus[t] === 'uploading')) {
+        btn.textContent = '等待文件上传…';
+        await Promise.all(activeTypes.map(waitForUpload));
+        btn.textContent = '提交中…';
+      }
+
+      // 对上传失败的重试一次
       let letter_path           = null;
       let committed_letter_path = null;
       let dorm_photo_path       = null;
       let grad_letter_path      = null;
 
-      if (letterFile)        letter_path           = await uploadFile(letterFile,        '录取通知书');
-      if (committedFile)     committed_letter_path  = await uploadFile(committedFile,     'Committed Letter');
-      if (dormFile)          dorm_photo_path        = await uploadFile(dormFile,          '宿舍照片');
-      if (gradLetterFile)    grad_letter_path       = await uploadFile(gradLetterFile,    '研究生录取通知书');
-      if (oldCommittedFile)  committed_letter_path  = await uploadFile(oldCommittedFile,  'Committed Letter');
-      if (oldLetterFile)     letter_path            = await uploadFile(oldLetterFile,     '录取通知书');
+      if (letterFile)       letter_path           = preUploadPaths['letter']       || await uploadFile(letterFile,       '录取通知书');
+      if (committedFile)    committed_letter_path  = preUploadPaths['committed']    || await uploadFile(committedFile,    'Committed Letter');
+      if (dormFile)         dorm_photo_path        = preUploadPaths['dorm']         || await uploadFile(dormFile,         '宿舍照片');
+      if (gradLetterFile)   grad_letter_path       = preUploadPaths['gradLetter']   || await uploadFile(gradLetterFile,   '研究生录取通知书');
+      if (oldCommittedFile) committed_letter_path  = preUploadPaths['oldCommitted'] || await uploadFile(oldCommittedFile, 'Committed Letter');
+      if (oldLetterFile)    letter_path            = preUploadPaths['oldLetter']    || await uploadFile(oldLetterFile,    '录取通知书');
 
       const upProg = document.getElementById('uploadProgress');
       if (upProg) upProg.classList.remove('show');
