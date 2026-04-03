@@ -722,6 +722,7 @@
     });
 
     const rows = filtered.map(r => [
+      r.wx_nickname || '',
       r.created_at ? new Date(r.created_at).toLocaleString('zh-CN') : '',
       r.student_name_cn || '',
       r.student_name_en || '',
