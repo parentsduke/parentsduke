@@ -701,7 +701,7 @@
 
   // ── Export CSV ──
   function exportCSV() {
-    const headers = ['微信昵称','提交时间','中文姓名','英文姓名','高中学校','地区','录取类型','届次','学院','专业','Committed','备注','提交者','微信号','录取通知书链接','Committed Letter链接'];
+    const headers = ['微信昵称','提交时间','中文姓名','英文姓名','高中学校','地区','录取类型','届次','学院','专业','Committed','备注','提交者','微信号','邮箱','录取通知书链接','Committed Letter链接','处理状态'];
     const type = document.getElementById('filterType').value;
     const year = document.getElementById('filterYear').value;
     const committed = document.getElementById('filterCommitted').value;
@@ -736,8 +736,10 @@
       r.notes || '',
       r.submitter_name || '',
       r.submitter_contact || '',
+      r.submitter_email || '',
       getFileUrl(r.letter_path) || '',
       getFileUrl(r.committed_letter_path) || '',
+      r.rejected_at ? '已拒绝' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '待处理',
     ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
 
     const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
