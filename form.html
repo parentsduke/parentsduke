@@ -969,7 +969,6 @@
   const GH_OWNER  = 'parentsduke';
   const GH_REPO   = 'parentsduke';
   const GH_BRANCH = 'main';
-  const GH_TOKEN  = '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';
   const GH_FOLDER = 'submissions';
 
   const { createClient } = supabase;
@@ -1198,26 +1197,25 @@
       reader.readAsDataURL(file);
     });
 
-    const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
-      method: 'PUT',
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/upload-to-github`, {
+      method: 'POST',
       headers: {
-        'Authorization': `token ${GH_TOKEN}`,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: `Upload ${label}`,
+        path,
         content: base64,
-        branch: GH_BRANCH,
+        message: `Upload ${label}`,
       }),
     });
 
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(`${label}上传失败：` + (err.message || res.status));
+    const result = await res.json();
+    if (!res.ok || result.error) {
+      throw new Error(`${label}上传失败：` + (result.error || res.status));
     }
 
-    // 返回 raw 访问链接
-    return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/${path}`;
+    return result.url;
   }
 
   // ── 提交 ──
