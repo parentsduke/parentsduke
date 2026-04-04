@@ -540,10 +540,6 @@
 
   function getFileUrl(path) {
     if (!path) return null;
-    // 新文件在 GitHub，旧文件在 Supabase Storage
-    if (path.startsWith('submissions/')) {
-      return `https://raw.githubusercontent.com/parentsduke/parentsduke/main/${path}`;
-    }
     return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
   }
 
