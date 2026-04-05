@@ -307,7 +307,10 @@
       <div class="panel-title">录取提交记录</div>
       <div class="panel-meta" id="recordCount">加载中…</div>
     </div>
-    <button class="btn-export" onclick="exportCSV()">导出 CSV</button>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn-export" onclick="exportCSV()">导出 CSV</button>
+      <button class="btn-export" onclick="sendCommittedEmails()" style="background:#1a6b3c;">📧 群发Committed邮件</button>
+    </div>
   </div>
 
   <div class="filters">
@@ -883,6 +886,97 @@
   }
 
   // ── 重新发送入群链接 ──
+  async function sendCommittedEmails() {
+    if (!confirm('将向2030届所有已Committed且有邮箱的家长群发入群邮件（含微信二维码链接）。\n\n确认发送？')) return;
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = '发送中…';
+
+    // 查出2030届所有Committed=true且有邮箱的记录
+    const { data: records, error } = await db
+      .from('admissions_submissions')
+      .select('id, submitter_email, student_name_cn, student_name_en, committed')
+      .eq('class_year', 2030)
+      .eq('committed', true)
+      .not('submitter_email', 'is', null);
+
+    if (error) {
+      alert('查询失败：' + error.message);
+      btn.disabled = false; btn.textContent = '📧 群发Committed邮件'; return;
+    }
+
+    if (!records || !records.length) {
+      alert('没有找到符合条件的记录（2030届已Committed且有邮箱）');
+      btn.disabled = false; btn.textContent = '📧 群发Committed邮件'; return;
+    }
+
+    if (!confirm(`共找到 ${records.length} 条记录，确认逐一发送？`)) {
+      btn.disabled = false; btn.textContent = '📧 群发Committed邮件'; return;
+    }
+
+    let ok = 0, fail = 0, failList = [];
+
+    for (let i = 0; i < records.length; i++) {
+      const r = records[i];
+      const email = r.submitter_email;
+      const studentName = r.student_name_cn || r.student_name_en || '同学';
+      btn.textContent = `发送中 ${i+1}/${records.length}…`;
+
+      try {
+        // 作废旧token
+        await db.from('private_qr_links')
+          .update({ used: true, used_at: new Date().toISOString() })
+          .eq('reserved_for', email)
+          .eq('used', false);
+
+        // 创建新token（使用get2qr.jpg）
+        const { data: qrRow, error: qrErr } = await db
+          .from('private_qr_links')
+          .insert({
+            image_url:    'https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg',
+            label:        '扯谈Duke群2.0',
+            reserved_for: email,
+            reserved_at:  new Date().toISOString(),
+          })
+          .select()
+          .single();
+
+        if (qrErr || !qrRow) throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知'));
+
+        const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            email, studentName, link,
+            recordId: r.id, qrId: qrRow.id,
+            subject: '扯谈Duke群2.0入群二维码',
+            replyTo: 'parentsduke@gmail.com',
+          }),
+        });
+
+        if (!res.ok) throw new Error(await res.text());
+        ok++;
+      } catch(e) {
+        fail++;
+        failList.push(email + '：' + e.message);
+        console.error('[群发失败]', email, e.message);
+      }
+    }
+
+    btn.disabled = false;
+    btn.textContent = '📧 群发Committed邮件';
+
+    let msg = `✅ 发送完成！成功 ${ok} 封`;
+    if (fail) msg += `，失败 ${fail} 封\n\n失败列表：\n` + failList.join('\n');
+    alert(msg);
+  }
+
   async function resendApproval(recordId, email, studentName) {
     if (!email) { alert('该记录没有邮箱，无法发送链接'); return; }
     if (!confirm(`重新发送入群链接给 ${studentName}？\n将发送到：${email}`)) return;
