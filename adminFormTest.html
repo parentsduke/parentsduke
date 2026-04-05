@@ -637,20 +637,12 @@
       return `<tr>
         <td style="text-align:center;padding:8px 6px;">
           ${r.rejected_at || r.shelved_at ? '' : r.approved_at
-            ? `<div style="display:flex;flex-direction:column;gap:4px;">
-                <button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
-                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
-                  重新发送
-                </button>
-                <button onclick="resendQr20('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:6px 10px;background:#c07000;color:#fff;border:none;border-radius:6px;
-                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#a05800'" onmouseout="this.style.background='#c07000'">
-                  🧪 重发2.0链接（测试）
-                </button>
-              </div>`
+            ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
+                style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
+                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
+                重新发送
+              </button>`
             : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
                 style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
                        font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
@@ -695,7 +687,15 @@
           ${r.rejected_at
             ? `<span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>`
             : r.approved_at
-            ? `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`
+            ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>
+                <button onclick="resendQr20('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
+                  style="padding:6px 10px;background:#c07000;color:#fff;border:none;border-radius:6px;
+                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#a05800'" onmouseout="this.style.background='#c07000'">
+                  🧪 重发2.0链接（测试）
+                </button>
+               </div>`
             : r.shelved_at
             ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
                 <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
