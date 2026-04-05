@@ -637,12 +637,20 @@
       return `<tr>
         <td style="text-align:center;padding:8px 6px;">
           ${r.rejected_at || r.shelved_at ? '' : r.approved_at
-            ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
-                style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
-                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
-                重新发送
-              </button>`
+            ? `<div style="display:flex;flex-direction:column;gap:4px;">
+                <button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
+                  style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
+                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
+                  重新发送
+                </button>
+                <button onclick="resendQr20('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
+                  style="padding:6px 10px;background:#c07000;color:#fff;border:none;border-radius:6px;
+                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#a05800'" onmouseout="this.style.background='#c07000'">
+                  🧪 重发2.0链接（测试）
+                </button>
+              </div>`
             : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
                 style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
                        font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
@@ -894,7 +902,7 @@
     btn.textContent = '发送中…';
 
     // 查出2030届所有Committed=true且有邮箱的记录
-    // ⚠️ 测试模式：只取1条记录，且强制发到 parentsduke@gmail.com
+    // ⚠️ 测试模式：只取1条，强制发到 parentsduke@gmail.com
     const { data: records, error } = await db
       .from('admissions_submissions')
       .select('id, submitter_email, student_name_cn, student_name_en, committed')
@@ -959,6 +967,8 @@
             recordId: r.id, qrId: qrRow.id,
             subject: '扯谈Duke群2.0入群二维码',
             replyTo: 'parentsduke@gmail.com',
+            bodyLine1: '你的入学承诺 Commitment Letter 信息已经收到。',
+            bodyLine2: '请点击下方按钮扫码加入扯谈Duke家长微信群：',
           }),
         });
 
@@ -977,6 +987,58 @@
     let msg = `✅ 发送完成！成功 ${ok} 封`;
     if (fail) msg += `，失败 ${fail} 封\n\n失败列表：\n` + failList.join('\n');
     alert(msg);
+  }
+
+
+  async function resendQr20(recordId, email, studentName) {
+    if (!email) { alert('该记录没有邮箱，无法发送'); return; }
+    if (!confirm(`重新发送扯谈Duke群2.0入群链接给 ${studentName}？\n将发送到：parentsduke@gmail.com（测试模式）`)) return;
+    email = 'parentsduke@gmail.com'; // ⚠️ 测试模式
+
+    try {
+      // 作废旧token
+      await db.from('private_qr_links')
+        .update({ used: true, used_at: new Date().toISOString() })
+        .eq('reserved_for', email)
+        .eq('used', false);
+
+      // 创建新token（使用2.0群二维码）
+      const { data: qrRow, error: qrErr } = await db
+        .from('private_qr_links')
+        .insert({
+          image_url:    'https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg',
+          label:        '扯谈Duke群2.0',
+          reserved_for: email,
+          reserved_at:  new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (qrErr || !qrRow) throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知'));
+
+      const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          email, studentName, link,
+          recordId, qrId: qrRow.id,
+          subject: '扯谈Duke群2.0入群二维码',
+          replyTo: 'parentsduke@gmail.com',
+          bodyLine1: '你的入学承诺 Commitment Letter 信息已经收到。',
+          bodyLine2: '请点击下方按钮扫码加入扯谈Duke家长微信群：',
+        }),
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+      alert(`✅ 已重新发送扯谈Duke群2.0入群链接到 ${email}`);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
   }
 
   async function resendApproval(recordId, email, studentName) {
