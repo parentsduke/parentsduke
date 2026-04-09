@@ -1379,7 +1379,7 @@
       if (error) throw new Error(error.message);
       const insertedId = insertedData?.id;
 
-// ── 触发 notify-admin ──
+// ── 触发 notify-admin-multi ──
 try {
   const notifyRes = await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin-multi', {
     method: 'POST',
