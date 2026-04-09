@@ -1379,19 +1379,23 @@
       if (error) throw new Error(error.message);
       const insertedId = insertedData?.id;
 
-      // ── 触发 notify-admin ──
-      try {
-        await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin-multi', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({ record: payload }),
-        });
-      } catch(e) {
-        console.warn('通知发送失败:', e);
-      }
+// ── 触发 notify-admin ──
+try {
+  const notifyRes = await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin-multi', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+    body: JSON.stringify({ record: payload }),
+  });
+  const notifyBody = await notifyRes.text();
+  alert('notify状态:' + notifyRes.status + '\n' + notifyBody);
+} catch(e) {
+  alert('notify异常:' + e.message);
+}
+      
+
 
       document.getElementById('formArea').style.display = 'none';
       document.getElementById('pendingScreen').style.display = 'block';
