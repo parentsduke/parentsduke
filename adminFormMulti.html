@@ -452,7 +452,7 @@
   async function loadRecords() {
     // 只加载非2030届记录（含研究生）
     const { data, error } = await db
-      .from('admissions_submissions')
+      .from('admissions_submissionsMulti')
       .select('*')
       .or('class_year.neq.2030,class_year.is.null')
       .order('created_at', { ascending: false });
@@ -567,7 +567,7 @@
     if (!col) return;
     const update = {};
     update[col] = val || null;
-    await db.from('admissions_submissions').update(update).eq('id', recordId);
+    await db.from('admissions_submissionsMulti').update(update).eq('id', recordId);
     const rec = allRecords.find(r => r.id === recordId);
     if (rec) rec[col] = val || null;
   }
@@ -577,13 +577,13 @@
       committed: val === 'true' ? true : val === 'false' ? false : null,
       committed_at: val === 'true' ? new Date().toISOString() : null
     };
-    await db.from('admissions_submissions').update(update).eq('id', recordId);
+    await db.from('admissions_submissionsMulti').update(update).eq('id', recordId);
     const rec = allRecords.find(r => r.id === recordId);
     if (rec) { rec.committed = update.committed; rec.committed_at = update.committed_at; }
   }
 
   async function saveNickname(recordId, val) {
-    await db.from('admissions_submissions').update({ wx_nickname: val || null }).eq('id', recordId);
+    await db.from('admissions_submissionsMulti').update({ wx_nickname: val || null }).eq('id', recordId);
     const rec = allRecords.find(r => r.id === recordId);
     if (rec) rec.wx_nickname = val || null;
   }
@@ -791,7 +791,7 @@
       // 没有邮箱，直接标记已批准不发邮件
       if (!confirm(`${studentName} 没有邮箱，直接标记为已批准（不发送链接）？`)) return;
       try {
-        await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+        await db.from('admissions_submissionsMulti').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
         const rec = allRecords.find(r => r.id === recordId);
         if (rec) rec.approved_at = new Date().toISOString();
         applyFilters();
@@ -838,7 +838,7 @@
       }
 
       // 标记记录已批准
-      await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+      await db.from('admissions_submissionsMulti').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
 
       // 更新本地数据
       const rec = allRecords.find(r => r.id === recordId);
@@ -855,7 +855,7 @@
   async function shelveRecord(recordId, studentName) {
     if (!confirm(`搁置 ${studentName}？（已在群中，暂不处理）`)) return;
     try {
-      await db.from('admissions_submissions')
+      await db.from('admissions_submissionsMulti')
         .update({ shelved_at: new Date().toISOString() })
         .eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
@@ -870,7 +870,7 @@
   async function unshelveRecord(recordId, studentName) {
     if (!confirm(`取消搁置 ${studentName}，恢复为待处理？`)) return;
     try {
-      await db.from('admissions_submissions')
+      await db.from('admissions_submissionsMulti')
         .update({ shelved_at: null })
         .eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
@@ -885,7 +885,7 @@
   async function rejectRecord(recordId, studentName) {
     if (!confirm(`确认拒绝 ${studentName} 入群？`)) return;
     try {
-      await db.from('admissions_submissions')
+      await db.from('admissions_submissionsMulti')
         .update({ rejected_at: new Date().toISOString() })
         .eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
