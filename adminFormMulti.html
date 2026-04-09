@@ -450,11 +450,11 @@
 
   // ── Data ──
   async function loadRecords() {
-    // 只加载非2030届记录（含研究生）
+    // 显示所有非2030记录，以及2030中的Pre-med Track
     const { data, error } = await db
       .from('admissions_submissionsMulti')
       .select('*')
-      .or('class_year.neq.2030,class_year.is.null')
+      .or('class_year.neq.2030,class_year.is.null,and(class_year.eq.2030,admission_type.eq.Pre-med Track)')
       .order('created_at', { ascending: false });
 
     document.getElementById('tableLoading').style.display = 'none';
