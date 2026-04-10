@@ -967,7 +967,7 @@
 
 // ── 触发 notify-admin-multi ──
 try {
-  const notifyRes = await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin-multi', {
+  await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin-multi', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -975,10 +975,8 @@ try {
     },
     body: JSON.stringify({ record: payload }),
   });
-  const notifyBody = await notifyRes.text();
-  alert('notify状态:' + notifyRes.status + '\n' + notifyBody);
 } catch(e) {
-  alert('notify异常:' + e.message);
+  console.warn('notify异常:', e.message);
 }
       
 
