@@ -636,13 +636,13 @@
       return `<tr>
         <td style="text-align:center;padding:8px 6px;">
           ${r.rejected_at || r.shelved_at ? '' : r.approved_at
-            ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}')"
+            ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
                 style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
                        font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                 onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
                 重新发送
               </button>`
-            : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}')"
+            : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
                 style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
                        font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                 onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">
@@ -772,7 +772,7 @@
 
   // ── 批准入群 ──
   // ── 按届次自动选择二维码和群名 ──
-  function getQRInfo(classYear, admissionType) {
+  function getQRInfo(classYear, admissionType, college) {
     const base = 'https://dukeparents.org';
     const isGrad = (admissionType === 'grad_masters' || admissionType === 'grad_phd');
     if (isGrad) {
@@ -789,7 +789,7 @@
     };
   }
 
-  async function approveRecord(recordId, email, studentName, classYear, admissionType) {
+  async function approveRecord(recordId, email, studentName, classYear, admissionType, college) {
     if (!email) {
       // 没有邮箱，直接标记已批准不发邮件
       if (!confirm(`${studentName} 没有邮箱，直接标记为已批准（不发送链接）？`)) return;
@@ -811,7 +811,7 @@
       const { data: qrRow, error: qrErr } = await db
         .from('private_qr_links')
         .insert({
-          ...getQRInfo(classYear, admissionType),
+          ...getQRInfo(classYear, admissionType, college),
           reserved_for: email,
           reserved_at:  new Date().toISOString(),
         })
@@ -823,7 +823,7 @@
       }
 
       const link = `https://dukeparents.org/qrMulti.html?token=${qrRow.token}`;
-      const { groupName } = getQRInfo(classYear, admissionType);
+      const { groupName } = getQRInfo(classYear, admissionType, college);
 
       // 调用发邮件 Edge Function
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-multi`, {
@@ -900,7 +900,7 @@
   }
 
   // ── 重新发送入群链接 ──
-  async function resendApproval(recordId, email, studentName, classYear, admissionType) {
+  async function resendApproval(recordId, email, studentName, classYear, admissionType, college) {
     if (!email) { alert('该记录没有邮箱，无法发送链接'); return; }
     if (!confirm(`重新发送入群链接给 ${studentName}？\n将发送到：${email}`)) return;
 
@@ -915,7 +915,7 @@
       const { data: qrRow, error: qrErr } = await db
         .from('private_qr_links')
         .insert({
-          ...getQRInfo(classYear, admissionType),
+          ...getQRInfo(classYear, admissionType, college),
           reserved_for: email,
           reserved_at:  new Date().toISOString(),
         })
@@ -927,7 +927,7 @@
       }
 
       const link = `https://dukeparents.org/qrMulti.html?token=${qrRow.token}`;
-      const { groupName } = getQRInfo(classYear, admissionType);
+      const { groupName } = getQRInfo(classYear, admissionType, college);
 
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-multi`, {
         method: 'POST',
