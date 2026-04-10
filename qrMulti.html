@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Duke 家长群二维码 · Multi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy: #001a4d;
+      --blue: #003087;
+      --gold: #B8963E;
+      --gold-lt: #f5ecd4;
+      --bg:   #f5f3ef;
+      --border: #e2ddd6;
+      --red:  #C84B31;
+      --green: #1a6b3c;
+      --muted: #888070;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      font-family: 'Noto Serif SC', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+    }
+
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 12px;
+    }
+    .hd { font-size: 26px; font-weight: 900; color: var(--navy); -webkit-text-stroke: 1.5px #fff; }
+    .ht { font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 600; }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      margin-top: 56px;
+    }
+
+    /* 加载中 */
+    #stateLoading .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #stateLoading p { font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+    /* 成功显示二维码 */
+    #stateQR { display: none; }
+    .qr-badge {
+      display: inline-block;
+      background: rgba(184,150,62,0.12);
+      border: 1px solid rgba(184,150,62,0.4);
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      font-family: 'DM Mono', monospace;
+    }
+    #stateQR h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    #stateQR .sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      margin-bottom: 24px;
+    }
+    #qrCanvas {
+      width: min(280px, 100%);
+      height: auto;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      display: block;
+      margin: 0 auto;
+    }
+    #qrLabel {
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blue);
+    }
+    .notice {
+      margin-top: 20px;
+      background: var(--gold-lt);
+      border: 1px solid rgba(184,150,62,0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #7a5a10;
+      line-height: 1.8;
+      font-family: 'DM Mono', monospace;
+      text-align: left;
+    }
+
+    /* 倒计时警告条 */
+    #countdownBar {
+      display: none;
+      margin-top: 16px;
+      background: #C84B31;
+      color: #fff;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      line-height: 1.8;
+      text-align: center;
+    }
+    #countdownBar strong { font-size: 22px; display: block; margin: 4px 0; }
+    #countdownBar.warning { background: #b91c1c; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.75; } }
+
+    /* 失效 */
+    #stateExpired { display: none; }
+    #stateExpired .icon { font-size: 52px; margin-bottom: 16px; }
+    #stateExpired h2 { font-size: 20px; font-weight: 700; color: var(--red); margin-bottom: 10px; }
+    #stateExpired p { font-size: 13px; color: var(--muted); line-height: 1.8; }
+
+    /* 无token */
+    #stateInvalid { display: none; }
+    #stateInvalid .icon { font-size: 52px; margin-bottom: 16px; }
+    #stateInvalid h2 { font-size: 20px; font-weight: 700; color: var(--muted); margin-bottom: 10px; }
+    #stateInvalid p { font-size: 13px; color: var(--muted); line-height: 1.8; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hd">D</div>
+  <div class="ht">DukeParents · 私密链接</div>
+</header>
+
+<div class="card">
+
+  <!-- 加载中 -->
+  <div id="stateLoading">
+    <div class="spinner"></div>
+    <p>验证链接中…</p>
+  </div>
+
+  <!-- 显示二维码 -->
+  <div id="stateQR">
+    <div class="qr-badge">DukeParents</div>
+    <h2>扫码加入 Duke 家长群</h2>
+    <p class="sub">此链接仅供您本人使用</p>
+    <canvas id="qrCanvas"></canvas>
+    <div id="qrLabel">Duke 家长入群驿站</div>
+    <div class="notice">
+      ⚠️ 本链接为<strong>一次性链接</strong><br/>
+      请立即扫码，刷新后将无法再次查看<br/>
+      如需重新获取，请联系管理员
+    </div>
+    <div id="countdownBar">
+      🔴 请勿关闭此页面！关闭后链接永久失效<br/>
+      剩余可查看时间：<strong id="countdownText">15:00</strong>
+    </div>
+  </div>
+
+  <!-- 链接已失效 -->
+  <div id="stateExpired">
+    <div class="icon">🔒</div>
+    <h2>链接已失效</h2>
+    <p>此链接已被使用或已过期<br/>请联系管理员获取新链接</p>
+  </div>
+
+  <!-- 无效链接 -->
+  <div id="stateInvalid">
+    <div class="icon">❌</div>
+    <h2>无效链接</h2>
+    <p>未检测到有效的访问令牌<br/>请确认链接是否完整</p>
+  </div>
+
+</div>
+
+<script>
+  const SUPABASE_URL     = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  const EXPIRE_MINUTES = 15;
+
+  let countdownTimer = null;
+
+  async function init() {
+    const params = new URLSearchParams(window.location.search);
+    const token  = params.get('token');
+
+    if (!token) {
+      show('stateInvalid'); return;
+    }
+
+    // 检查 sessionStorage：本次会话是否已经打开过
+    const sessionKey = 'qr_opened_' + token;
+    if (sessionStorage.getItem(sessionKey)) {
+      // 已在本次会话打开过，但刷新了（session仍在）——视为失效
+      show('stateExpired'); return;
+    }
+
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/private_qr_links?token=eq.${encodeURIComponent(token)}&select=*`,
+        { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
+      );
+      const data = await res.json();
+
+      if (!data || data.length === 0) {
+        show('stateExpired'); return;
+      }
+
+      const row = data[0];
+
+      // 已被打开过（opened_at 有值）→ 失效
+      if (row.opened_at) {
+        show('stateExpired'); return;
+      }
+
+      // 第一次打开：记录 opened_at，标记 used
+      await fetch(
+        `${SUPABASE_URL}/rest/v1/private_qr_links?token=eq.${encodeURIComponent(token)}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ opened_at: new Date().toISOString(), used: true, used_at: new Date().toISOString() })
+        }
+      );
+
+      // 在 sessionStorage 里标记已打开（关闭后清除）
+      sessionStorage.setItem(sessionKey, '1');
+
+      // 显示二维码（带水印）
+      if (row.label) document.getElementById('qrLabel').textContent = row.label;
+      await drawQRWithWatermark(row.image_url, row.reserved_for || '');
+      show('stateQR');
+
+      // 启动倒计时
+      startCountdown(EXPIRE_MINUTES * 60);
+
+    } catch(e) {
+      show('stateExpired');
+      console.error(e);
+    }
+  }
+
+  // ── 水印绘制 ──
+  async function drawQRWithWatermark(imageUrl, email) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.getElementById('qrCanvas');
+        canvas.width  = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+
+        // 画原图
+        ctx.drawImage(img, 0, 0);
+
+        // 水印参数
+        const lines = [email, 'Only for you to use'].filter(Boolean);
+        const fontSize1 = Math.round(img.naturalWidth * 0.038);
+        const fontSize2 = Math.round(img.naturalWidth * 0.030);
+        const fonts = [
+          `bold ${fontSize1}px DejaVu Sans, Arial, sans-serif`,
+          `${fontSize2}px DejaVu Sans, Arial, sans-serif`
+        ];
+
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(-Math.PI / 6); // -30度
+
+        const stepX = img.naturalWidth  * 0.55;
+        const stepY = img.naturalHeight * 0.18;
+
+        for (let y = -img.naturalHeight; y < img.naturalHeight * 1.5; y += stepY) {
+          for (let x = -img.naturalWidth; x < img.naturalWidth * 1.5; x += stepX) {
+            lines.forEach((line, i) => {
+              ctx.font = fonts[i] || fonts[fonts.length - 1];
+              ctx.fillStyle = 'rgba(180, 0, 0, 0.18)';
+              ctx.fillText(line, x, y + i * (fontSize1 + 8));
+            });
+          }
+        }
+        ctx.restore();
+        resolve();
+      };
+      img.onerror = () => {
+        // 加载失败时降级显示原图链接
+        const canvas = document.getElementById('qrCanvas');
+        canvas.style.display = 'none';
+        const fallback = document.createElement('img');
+        fallback.src = imageUrl;
+        fallback.style = 'width:min(280px,100%);border-radius:14px;border:1px solid #e2ddd6;';
+        canvas.parentNode.insertBefore(fallback, canvas);
+        resolve();
+      };
+      img.src = imageUrl;
+    });
+  }
+
+  function startCountdown(totalSeconds) {
+    const bar = document.getElementById('countdownBar');
+    const txt = document.getElementById('countdownText');
+    bar.style.display = 'block';
+
+    let remaining = totalSeconds;
+
+    countdownTimer = setInterval(() => {
+      remaining--;
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      txt.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+      // 最后60秒变红闪烁
+      if (remaining <= 60) {
+        bar.classList.add('warning');
+      }
+
+      if (remaining <= 0) {
+        clearInterval(countdownTimer);
+        show('stateExpired');
+      }
+    }, 1000);
+  }
+
+  function show(id) {
+    document.getElementById('stateLoading').style.display  = 'none';
+    document.getElementById('stateQR').style.display       = id === 'stateQR'      ? 'block' : 'none';
+    document.getElementById('stateExpired').style.display  = id === 'stateExpired' ? 'block' : 'none';
+    document.getElementById('stateInvalid').style.display  = id === 'stateInvalid' ? 'block' : 'none';
+    if (id === 'stateExpired' && countdownTimer) {
+      clearInterval(countdownTimer);
+      document.getElementById('countdownBar').style.display = 'none';
+    }
+  }
+
+  init();
+</script>
+
+</body>
+</html>

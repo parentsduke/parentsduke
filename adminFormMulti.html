@@ -819,7 +819,7 @@
         throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
       }
 
-      const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+      const link = `https://dukeparents.org/qrMulti.html?token=${qrRow.token}`;
       const { groupName } = getQRInfo(classYear);
 
       // 调用发邮件 Edge Function
@@ -923,7 +923,7 @@
         throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
       }
 
-      const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+      const link = `https://dukeparents.org/qrMulti.html?token=${qrRow.token}`;
       const { groupName } = getQRInfo(classYear);
 
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-multi`, {
