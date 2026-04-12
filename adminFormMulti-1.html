@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>录取信息管理 · DukeParents</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:   #001a4d;
+      --blue:   #003087;
+      --gold:   #B8963E;
+      --gold-lt:#f5ecd4;
+      --bg:     #f5f3ef;
+      --card:   #ffffff;
+      --border: #e2ddd6;
+      --text:   #1a1a1a;
+      --muted:  #888070;
+      --red:    #C84B31;
+      --green:  #1a6b3c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); min-height: 100vh; }
+
+    /* ── Header ── */
+    header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; }
+    .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .btn-logout {
+      padding: 8px 16px;
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Noto Serif SC', serif;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── Login ── */
+    #loginScreen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 63px);
+      padding: 40px 20px;
+    }
+    .login-card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .login-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .login-sub {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Noto Serif SC', serif;
+      background: #faf9f7;
+      color: var(--text);
+      outline: none;
+    }
+    .form-group input:focus { border-color: var(--blue); background: #fff; }
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .btn-login:hover { background: var(--navy); }
+    .btn-login:disabled { background: #aab4cc; cursor: not-allowed; }
+    .login-error {
+      margin-top: 16px;
+      padding: 10px 14px;
+      background: #fdecea;
+      color: var(--red);
+      border-radius: 6px;
+      font-size: 13px;
+      display: none;
+    }
+    .login-error.show { display: block; }
+
+    /* ── Admin Panel ── */
+    #adminPanel { display: none; padding: 32px 24px; }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .panel-title { font-size: 20px; font-weight: 700; color: var(--navy); }
+    .panel-meta { font-size: 13px; color: var(--muted); }
+    .btn-export {
+      padding: 10px 20px;
+      background: var(--gold);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+    }
+    .btn-export:hover { background: #a07830; }
+
+    /* ── Filters ── */
+    .filters {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filters select, .filters input {
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'Noto Serif SC', serif;
+      background: #faf9f7;
+      color: var(--text);
+      outline: none;
+    }
+    .filters select:focus, .filters input:focus { border-color: var(--blue); }
+    .filter-label { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 1260px;
+    }
+    thead th {
+      background: var(--navy);
+      color: #fff;
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    thead th:hover { background: #002470; }
+    thead th.sort-asc::after { content: ' ▲'; font-size: 10px; }
+    thead th.sort-desc::after { content: ' ▼'; font-size: 10px; }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:hover { background: #faf9f7; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 11px 14px; vertical-align: top; }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'DM Mono', monospace;
+    }
+    .tag-ed { background: #e8f0fe; color: #1a3c8f; }
+    .tag-rd { background: #e8f5e9; color: #1a5c2a; }
+    .tag-yes { background: #e8f5e9; color: #1a5c2a; }
+    .tag-no  { background: #fdecea; color: #8b2a1a; }
+    .tag-shelved { background: #fff3e0; color: #b45309; }
+    .file-link {
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .file-link:hover { text-decoration: underline; }
+    .no-file { color: var(--muted); font-size: 12px; }
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .empty {
+      text-align: center;
+      padding: 60px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .user-email {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── 人员标记列 ── */
+    .person-select {
+      appearance: none;
+      -webkit-appearance: none;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      text-align: center;
+      width: 36px;
+    }
+    .person-select:hover { background: rgba(0,0,0,0.06); }
+    .person-select:focus { outline: 1px solid var(--blue); border-radius: 4px; }
+    td.person-cell { text-align: center; padding: 8px 6px; }
+    th.person-th { text-align: center; min-width: 48px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="hd">D</span>
+    <span class="ht">录取信息管理</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <span class="user-email" id="userEmail"></span>
+    <button class="btn-logout" id="btnLogout" onclick="logout()" style="display:none;">退出登录</button>
+  </div>
+</header>
+
+<!-- 登录屏 -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-title">管理员登录</div>
+    <div class="login-sub">Duke 录取信息管理后台</div>
+    <div class="form-group">
+      <label>邮箱</label>
+      <input type="email" id="loginEmail" placeholder="管理员邮箱" autocomplete="email"/>
+    </div>
+    <div class="form-group">
+      <label>密码</label>
+      <div style="position:relative;">
+        <input type="password" id="loginPassword" placeholder="密码" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter') doLogin()"
+               style="width:100%;padding:12px 44px 12px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'Noto Serif SC',serif;background:#faf9f7;color:var(--text);outline:none;box-sizing:border-box;"/>
+        <button type="button" onclick="togglePwd()" tabindex="-1"
+                style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;color:var(--muted);">
+          <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <button class="btn-login" id="btnLogin" onclick="doLogin()">登 录</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- 管理面板 -->
+<div id="adminPanel">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title">录取提交记录</div>
+      <div class="panel-meta" id="recordCount">加载中…</div>
+    </div>
+    <button class="btn-export" onclick="exportCSV()">导出 CSV</button>
+  </div>
+
+  <div class="filters">
+    <span class="filter-label">筛选：</span>
+    <select id="filterType" onchange="applyFilters()">
+      <option value="">全部录取类型</option>
+      <option value="ED">ED</option>
+      <option value="RD">RD</option>
+    </select>
+    <select id="filterYear" onchange="applyFilters()">
+      <option value="">全部届次</option>
+    </select>
+    <select id="filterCommitted" onchange="applyFilters()">
+      <option value="">全部Committed状态</option>
+      <option value="true">已Committed</option>
+      <option value="false">未Committed</option>
+    </select>
+    <select id="filterStatus" onchange="applyFilters()">
+      <option value="">全部处理状态</option>
+      <option value="pending">待处理</option>
+      <option value="approved">已批准</option>
+      <option value="rejected">已拒绝</option>
+      <option value="shelved">已搁置</option>
+    </select>
+    <input type="text" id="filterSearch" placeholder="搜索姓名、学校…" oninput="applyFilters()" style="min-width:180px;"/>
+  </div>
+
+  <div class="table-wrap">
+    <div class="loading" id="tableLoading">加载中…</div>
+    <table id="dataTable" style="display:none;">
+      <thead>
+        <tr>
+          <th style="min-width:80px;">批准</th>
+          <th class="person-th">笑</th>
+          <th class="person-th">金</th>
+          <th class="person-th">伟</th>
+          <th onclick="sortBy('qr_code_no')" style="min-width:60px;">入群码</th>
+          <th onclick="sortBy('wx_nickname')">微信昵称</th>
+          <th onclick="sortBy('committed')">Committed</th>
+          <th onclick="sortBy('created_at')">提交时间</th>
+          <th onclick="sortBy('student_name_cn')">中文姓名</th>
+          <th onclick="sortBy('student_name_en')">英文姓名</th>
+          <th onclick="sortBy('high_school')">高中学校</th>
+          <th onclick="sortBy('location')">地区</th>
+          <th onclick="sortBy('admission_type')">录取类型</th>
+          <th onclick="sortBy('class_year')">届次</th>
+          <th onclick="sortBy('college')">学院</th>
+          <th onclick="sortBy('major')">专业</th>
+          <th>备注</th>
+          <th onclick="sortBy('submitter_name')">提交者</th>
+          <th onclick="sortBy('submitter_contact')">微信号</th>
+          <th>邮箱</th>
+          <th>录取通知书</th>
+          <th>Committed Letter</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty" id="tableEmpty" style="display:none;">暂无记录</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  const BUCKET = 'admission-letters';
+  const ALLOWED_EMAILS = ['weihong_j@yahoo.com', 'lixiaobing@gmail.com', 'tianluosuri@gmail.com', 'sharonzhang92@gmail.com', 'vonnan@gmail.com', 'yyao28@gmail.com', 'jing.jane@gmail.com'];
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let allRecords = [];
+  let sortCol = 'created_at';
+  let sortDir = 'desc';
+
+  // ── Auth ──
+  async function init() {
+    const { data: { session } } = await db.auth.getSession();
+    if (session) {
+      const email = session.user.email;
+      if (!ALLOWED_EMAILS.includes(email)) {
+        await db.auth.signOut();
+        showLoginError('此账号无管理员权限');
+        return;
+      }
+      showPanel(email);
+    }
+  }
+
+  async function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const btn = document.getElementById('btnLogin');
+
+    if (!email || !password) { showLoginError('请填写邮箱和密码'); return; }
+    if (!ALLOWED_EMAILS.includes(email)) { showLoginError('此账号无管理员权限'); return; }
+
+    btn.disabled = true;
+    btn.textContent = '登录中…';
+    hideLoginError();
+
+    const { data, error } = await db.auth.signInWithPassword({ email, password });
+    if (error) {
+      showLoginError('登录失败：' + error.message);
+      btn.disabled = false;
+      btn.textContent = '登 录';
+      return;
+    }
+    showPanel(email);
+  }
+
+  async function logout() {
+    await db.auth.signOut();
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('btnLogout').style.display = 'none';
+    document.getElementById('userEmail').textContent = '';
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPassword').value = '';
+  }
+
+  function showLoginError(msg) {
+    const el = document.getElementById('loginError');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function hideLoginError() {
+    document.getElementById('loginError').classList.remove('show');
+  }
+
+  function showPanel(email) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    document.getElementById('btnLogout').style.display = 'inline-block';
+    document.getElementById('userEmail').textContent = email;
+    loadRecords();
+  }
+
+  // ── Data ──
+  async function loadRecords() {
+    // 显示所有非2030记录，以及2030中的Pre-med Track
+    const { data, error } = await db
+      .from('admissions_submissionsMulti')
+      .select('*')
+      .or('class_year.neq.2030,class_year.is.null,and(class_year.eq.2030,admission_type.eq.Pre-med Track)')
+      .order('created_at', { ascending: false });
+
+    document.getElementById('tableLoading').style.display = 'none';
+
+    if (error) {
+      document.getElementById('tableEmpty').textContent = '加载失败：' + error.message;
+      document.getElementById('tableEmpty').style.display = 'block';
+      return;
+    }
+
+    allRecords = data || [];
+    populateYearFilter();
+    applyFilters();
+    document.getElementById('dataTable').style.display = 'table';
+  }
+
+  function populateYearFilter() {
+    const years = [...new Set(allRecords.map(r => r.class_year).filter(Boolean))].sort();
+    const sel = document.getElementById('filterYear');
+    years.forEach(y => {
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = y + ' 届';
+      sel.appendChild(opt);
+    });
+  }
+
+  function applyFilters() {
+    const type = document.getElementById('filterType').value;
+    const year = document.getElementById('filterYear').value;
+    const committed = document.getElementById('filterCommitted').value;
+    const status = document.getElementById('filterStatus').value;
+    const search = document.getElementById('filterSearch').value.toLowerCase();
+
+    let filtered = allRecords.filter(r => {
+      if (type && r.admission_type !== type) return false;
+      if (year && String(r.class_year) !== year) return false;
+      if (committed !== '') {
+        if (committed === 'true' && r.committed !== true) return false;
+        if (committed === 'false' && r.committed !== false) return false;
+      }
+      if (status) {
+        if (status === 'approved' && !r.approved_at) return false;
+        if (status === 'rejected' && !r.rejected_at) return false;
+        if (status === 'shelved' && !r.shelved_at) return false;
+        if (status === 'pending' && (r.approved_at || r.rejected_at || r.shelved_at)) return false;
+      }
+      if (search) {
+        const haystack = [r.student_name_cn, r.student_name_en, r.high_school, r.location, r.submitter_name].join(' ').toLowerCase();
+        if (!haystack.includes(search)) return false;
+      }
+      return true;
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      let va = a[sortCol], vb = b[sortCol];
+      if (va === null || va === undefined) va = '';
+      if (vb === null || vb === undefined) vb = '';
+      if (typeof va === 'string') va = va.toLowerCase();
+      if (typeof vb === 'string') vb = vb.toLowerCase();
+      if (va < vb) return sortDir === 'asc' ? -1 : 1;
+      if (va > vb) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    renderTable(filtered);
+    document.getElementById('recordCount').textContent = `共 ${allRecords.length} 条记录，显示 ${filtered.length} 条`;
+  }
+
+  function sortBy(col) {
+    if (sortCol === col) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortCol = col;
+      sortDir = 'asc';
+    }
+    // Update header classes
+    document.querySelectorAll('thead th').forEach(th => {
+      th.classList.remove('sort-asc', 'sort-desc');
+    });
+    event.target.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    applyFilters();
+  }
+
+  const GITHUB_BASE = 'https://raw.githubusercontent.com/parentsduke/parentsduke/main';
+
+  // 智能打开文件：先试 Supabase，404 再试 GitHub
+  async function openFile(path) {
+    if (!path) return;
+    const supaUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+    const ghUrl   = `${GITHUB_BASE}/${path}`;
+    try {
+      const res = await fetch(supaUrl, { method: 'HEAD' });
+      if (res.ok) { window.open(supaUrl, '_blank'); return; }
+    } catch(e) {}
+    window.open(ghUrl, '_blank');
+  }
+
+  function getFileUrl(path) {
+    if (!path) return null;
+    return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+  }
+
+  // ── 人员标记（同步到 Supabase，三人共享） ──
+  const personCol = { '笑': 'mark_xiao', '金': 'mark_jin', '伟': 'mark_wei' };
+
+  async function saveMark(recordId, person, val) {
+    const col = personCol[person];
+    if (!col) return;
+    const update = {};
+    update[col] = val || null;
+    await db.from('admissions_submissionsMulti').update(update).eq('id', recordId);
+    const rec = allRecords.find(r => r.id === recordId);
+    if (rec) rec[col] = val || null;
+  }
+
+  async function saveCommitted(recordId, val) {
+    const update = {
+      committed: val === 'true' ? true : val === 'false' ? false : null,
+      committed_at: val === 'true' ? new Date().toISOString() : null
+    };
+    await db.from('admissions_submissionsMulti').update(update).eq('id', recordId);
+    const rec = allRecords.find(r => r.id === recordId);
+    if (rec) { rec.committed = update.committed; rec.committed_at = update.committed_at; }
+  }
+
+  async function saveNickname(recordId, val) {
+    await db.from('admissions_submissionsMulti').update({ wx_nickname: val || null }).eq('id', recordId);
+    const rec = allRecords.find(r => r.id === recordId);
+    if (rec) rec.wx_nickname = val || null;
+  }
+
+  function personCell(recordId, person, records) {
+    const col = personCol[person];
+    const rec = records.find(r => r.id === recordId);
+    const val = (rec && rec[col]) || '';
+    return `<td class="person-cell">
+      <select class="person-select" onchange="saveMark('${recordId}','${person}',this.value)" title="${person}">
+        <option value="" ${val===''?'selected':''}>—</option>
+        <option value="💙" ${val==='💙'?'selected':''}>💙</option>
+        <option value="⛔" ${val==='⛔'?'selected':''}>⛔</option>
+      </select>
+    </td>`;
+  }
+
+  function renderTable(records) {
+    const tbody = document.getElementById('tableBody');
+    const empty = document.getElementById('tableEmpty');
+
+    if (records.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = records.map(r => {
+      const date = r.created_at ? new Date(r.created_at).toLocaleString('zh-CN', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—';
+      const typeTag = r.admission_type === 'ED'
+        ? `<span class="tag tag-ed">ED</span>`
+        : r.admission_type === 'RD'
+        ? `<span class="tag tag-rd">RD</span>`
+        : r.admission_type || '—';
+      const committedVal = r.committed === true ? 'true' : r.committed === false ? 'false' : '';
+      const committedTag = `<select class="person-select" onchange="saveCommitted('${r.id}',this.value)" style="min-width:80px;">
+        <option value="" ${committedVal===''?'selected':''}>—</option>
+        <option value="true" ${committedVal==='true'?'selected':''}>✅ 已Committed</option>
+        <option value="false" ${committedVal==='false'?'selected':''}>❌ 未Committed</option>
+      </select>`;
+
+      const letterCell = r.letter_path
+        ? `<a class="file-link" href="#" onclick="openFile('${r.letter_path}');return false;">查看文件</a>`
+        : `<span class="no-file">—</span>`;
+      const clCell = r.committed_letter_path
+        ? `<a class="file-link" href="#" onclick="openFile('${r.committed_letter_path}');return false;">查看文件</a>`
+        : `<span class="no-file">—</span>`;
+
+      return `<tr>
+        <td style="text-align:center;padding:8px 6px;">
+          ${r.rejected_at || r.shelved_at ? '' : r.approved_at
+            ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
+                style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
+                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
+                重新发送
+              </button>`
+            : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
+                style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
+                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">
+                批准入群
+              </button>`
+          }
+        </td>
+        ${personCell(r.id, '笑', allRecords)}
+        ${personCell(r.id, '金', allRecords)}
+        ${personCell(r.id, '伟', allRecords)}
+        <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:${r.qr_code_no ? '#003087' : 'var(--muted)'};">
+          ${r.qr_code_no ? String.fromCharCode(65 + (Number(r.qr_code_no) - 1) % 10) : '—'}
+        </td>
+        <td><input
+          type="text"
+          value="${r.wx_nickname || ''}"
+          placeholder="输入昵称"
+          onblur="saveNickname('${r.id}', this.value)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          style="width:100px;font-size:13px;border:1px solid #ddd;border-radius:4px;
+                 padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
+          onfocus="this.style.borderColor='#0736a4'"
+        /></td>
+        <td>${committedTag}</td>
+        <td style="white-space:nowrap;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${date}</td>
+        <td style="font-weight:600;">${r.student_name_cn || '—'}</td>
+        <td>${r.student_name_en || '—'}</td>
+        <td>${r.high_school || '—'}</td>
+        <td>${r.location || '—'}</td>
+        <td>${typeTag}</td>
+        <td style="font-family:'DM Mono',monospace;">${r.class_year || '—'}</td>
+        <td style="font-size:12px;">${r.college || '—'}</td>
+        <td style="font-size:12px;">${r.major || '—'}</td>
+        <td style="font-size:12px;max-width:160px;">${r.notes || '—'}</td>
+        <td>${r.submitter_name || '—'}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_contact || '—'}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_email || '—'}</td>
+        <td>${letterCell}</td>
+        <td>${clCell}</td>
+        <td style="white-space:nowrap;text-align:center;">
+          ${r.rejected_at
+            ? `<span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>`
+            : r.approved_at
+            ? `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`
+            : r.shelved_at
+            ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
+                <button onclick="unshelveRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
+                  style="padding:4px 10px;background:#fff;color:#b45309;border:1.5px solid #b45309;border-radius:5px;
+                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#fff3e0'" onmouseout="this.style.background='#fff'">
+                  取消搁置
+                </button>
+               </div>`
+            : `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <button onclick="rejectRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
+                  style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;
+                         font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
+                  拒绝
+                </button>
+                <button onclick="shelveRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
+                  style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;
+                         font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">
+                  搁置
+                </button>
+               </div>`
+          }
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── Export CSV ──
+  function exportCSV() {
+    const headers = ['微信昵称','提交时间','中文姓名','英文姓名','高中学校','地区','录取类型','届次','学院','专业','Committed','备注','提交者','微信号','邮箱','录取通知书链接','Committed Letter链接','处理状态'];
+    const type = document.getElementById('filterType').value;
+    const year = document.getElementById('filterYear').value;
+    const committed = document.getElementById('filterCommitted').value;
+    const search = document.getElementById('filterSearch').value.toLowerCase();
+
+    let filtered = allRecords.filter(r => {
+      if (type && r.admission_type !== type) return false;
+      if (year && String(r.class_year) !== year) return false;
+      if (committed !== '') {
+        if (committed === 'true' && r.committed !== true) return false;
+        if (committed === 'false' && r.committed !== false) return false;
+      }
+      if (search) {
+        const haystack = [r.student_name_cn, r.student_name_en, r.high_school, r.location, r.submitter_name].join(' ').toLowerCase();
+        if (!haystack.includes(search)) return false;
+      }
+      return true;
+    });
+
+    const rows = filtered.map(r => [
+      r.wx_nickname || '',
+      r.created_at ? new Date(r.created_at).toLocaleString('zh-CN') : '',
+      r.student_name_cn || '',
+      r.student_name_en || '',
+      r.high_school || '',
+      r.location || '',
+      r.admission_type || '',
+      r.class_year || '',
+      r.college || '',
+      r.major || '',
+      r.committed === true ? '是' : r.committed === false ? '否' : '',
+      r.notes || '',
+      r.submitter_name || '',
+      r.submitter_contact || '',
+      r.submitter_email || '',
+      getFileUrl(r.letter_path) || '',
+      getFileUrl(r.committed_letter_path) || '',
+      r.rejected_at ? '已拒绝' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '待处理',
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+
+    const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Duke录取记录_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ── 批准入群 ──
+  // ── 按届次自动选择二维码和群名 ──
+  function getQRInfo(classYear, admissionType, college) {
+    const base = 'https://dukeparents.org';
+    const isGrad = (admissionType === 'grad_masters' || admissionType === 'grad_phd');
+    if (isGrad) {
+      return { image_url: `${base}/qgrad.png`, label: 'Duke 研究生家长群', groupName: 'Duke 研究生家长群' };
+    }
+    if (admissionType === 'Pre-med Track') {
+      return { image_url: `${base}/qpmt.png`, label: 'Duke Pre-med Track 家长群', groupName: 'Duke Pre-med Track 家长群' };
+    }
+    const yr = String(classYear || '2030').slice(-2);
+    return {
+      image_url: `${base}/q${yr}d.png`,
+      label:     `Duke ${classYear} 家长群`,
+      groupName: `Duke ${classYear} 届本科家长群`,
+    };
+  }
+
+  async function approveRecord(recordId, email, studentName, classYear, admissionType, college) {
+    if (!email) {
+      // 没有邮箱，直接标记已批准不发邮件
+      if (!confirm(`${studentName} 没有邮箱，直接标记为已批准（不发送链接）？`)) return;
+      try {
+        await db.from('admissions_submissionsMulti').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+        const rec = allRecords.find(r => r.id === recordId);
+        if (rec) rec.approved_at = new Date().toISOString();
+        applyFilters();
+        alert('✅ 已标记为批准');
+      } catch(e) {
+        alert('❌ 操作失败：' + e.message);
+      }
+      return;
+    }
+    if (!confirm(`确认批准 ${studentName} 入群？\n将发送链接到：${email}`)) return;
+
+    try {
+      // 自动创建一条新的 private_qr_links 记录
+      const { data: qrRow, error: qrErr } = await db
+        .from('private_qr_links')
+        .insert({
+          ...getQRInfo(classYear, admissionType, college),
+          reserved_for: email,
+          reserved_at:  new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (qrErr || !qrRow) {
+        throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
+      }
+
+      const link = `https://dukeparents.org/qrMulti.html?token=${qrRow.token}`;
+      const { groupName } = getQRInfo(classYear, admissionType, college);
+
+      // 调用发邮件 Edge Function
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-multi`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ email, studentName, link, groupName }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+
+      // 标记记录已批准
+      await db.from('admissions_submissionsMulti').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+
+      // 更新本地数据
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.approved_at = new Date().toISOString();
+      applyFilters();
+
+      setTimeout(() => alert(`✅ 已发送入群链接到 ${email}`), 50);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+  // ── 搁置 ──
+  async function shelveRecord(recordId, studentName) {
+    if (!confirm(`搁置 ${studentName}？（已在群中，暂不处理）`)) return;
+    try {
+      await db.from('admissions_submissionsMulti')
+        .update({ shelved_at: new Date().toISOString() })
+        .eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.shelved_at = new Date().toISOString();
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 取消搁置 ──
+  async function unshelveRecord(recordId, studentName) {
+    if (!confirm(`取消搁置 ${studentName}，恢复为待处理？`)) return;
+    try {
+      await db.from('admissions_submissionsMulti')
+        .update({ shelved_at: null })
+        .eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.shelved_at = null;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 拒绝 ──
+  async function rejectRecord(recordId, studentName) {
+    if (!confirm(`确认拒绝 ${studentName} 入群？`)) return;
+    try {
+      await db.from('admissions_submissionsMulti')
+        .update({ rejected_at: new Date().toISOString() })
+        .eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.rejected_at = new Date().toISOString();
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 重新发送入群链接 ──
+  async function resendApproval(recordId, email, studentName, classYear, admissionType, college) {
+    if (!email) { alert('该记录没有邮箱，无法发送链接'); return; }
+    if (!confirm(`重新发送入群链接给 ${studentName}？\n将发送到：${email}`)) return;
+
+    try {
+      // 作废旧的未使用 token（同一邮箱）
+      await db.from('private_qr_links')
+        .update({ used: true, used_at: new Date().toISOString() })
+        .eq('reserved_for', email)
+        .eq('used', false);
+
+      // 创建新 token
+      const { data: qrRow, error: qrErr } = await db
+        .from('private_qr_links')
+        .insert({
+          ...getQRInfo(classYear, admissionType, college),
+          reserved_for: email,
+          reserved_at:  new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (qrErr || !qrRow) {
+        throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
+      }
+
+      const link = `https://dukeparents.org/qrMulti.html?token=${qrRow.token}`;
+      const { groupName } = getQRInfo(classYear, admissionType, college);
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-multi`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ email, studentName, link, groupName }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+
+      alert(`✅ 已重新发送入群链接到 ${email}`);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+  function togglePwd() {
+    const input = document.getElementById('loginPassword');
+    const icon = document.getElementById('eyeIcon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+      input.type = 'password';
+      icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
