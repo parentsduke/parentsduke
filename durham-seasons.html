@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Durham 四季</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function () {
+  const SUPABASE_URL      = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  // 页面先隐藏，验证通过后再显示
+  document.addEventListener('DOMContentLoaded', function () {
+    document.body.style.visibility = 'hidden';
+  });
+  window.addEventListener('load', async function () {
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const { data: { user } } = await client.auth.getUser();
+    if (!user) {
+      // 未登录，跳回首页
+      window.location.replace('index.html');
+    } else {
+      document.body.style.visibility = 'visible';
+    }
+  });
+})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --spring: #5a8a5e;
+    --spring-light: #e8f5e3;
+    --spring-accent: #c8e6b0;
+    --summer: #c97a2a;
+    --summer-light: #fdf3e3;
+    --summer-accent: #f5d08a;
+    --autumn: #b03a2e;
+    --autumn-light: #fdf0ec;
+    --autumn-accent: #e8a87c;
+    --winter: #2c5f7a;
+    --winter-light: #e8f4f8;
+    --winter-accent: #a8d4e8;
+  }
+
+  body {
+    background: #f5f0eb;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    font-family: 'Noto Serif SC', serif;
+  }
+
+  .page-title {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .page-title h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 44px);
+    font-weight: 700;
+    color: #2a1f14;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+  .page-title p {
+    font-size: 13px;
+    color: #888;
+    margin-top: 6px;
+    letter-spacing: 0.1em;
+    font-weight: 300;
+  }
+
+  .accordion {
+    width: 100%;
+    max-width: 680px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.13);
+  }
+
+  .season {
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    overflow: hidden;
+    transition: background 0.4s ease;
+  }
+  .season:last-child { border-bottom: none; }
+
+  .season-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 28px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Season colors on header */
+  .season-spring .season-header { background: #fff; }
+  .season-summer .season-header { background: #fff; }
+  .season-autumn .season-header { background: #fff; }
+  .season-winter .season-header { background: #fff; }
+
+  .season-spring.open .season-header { background: var(--spring-light); }
+  .season-summer.open .season-header { background: var(--summer-light); }
+  .season-autumn.open .season-header { background: var(--autumn-light); }
+  .season-winter.open .season-header { background: var(--winter-light); }
+
+  .season-spring .season-header:hover { background: var(--spring-light); }
+  .season-summer .season-header:hover { background: var(--summer-light); }
+  .season-autumn .season-header:hover { background: var(--autumn-light); }
+  .season-winter .season-header:hover { background: var(--winter-light); }
+
+  .season-icon {
+    font-size: 28px;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .open .season-icon { transform: scale(1.15); }
+
+  .season-title-group {
+    flex: 1;
+  }
+  .season-name-en {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2a1f14;
+    line-height: 1.2;
+  }
+  .season-spring .season-name-en { color: var(--spring); }
+  .season-summer .season-name-en { color: var(--summer); }
+  .season-autumn .season-name-en { color: var(--autumn); }
+  .season-winter .season-name-en { color: var(--winter); }
+
+  .season-name-zh {
+    font-size: 12px;
+    color: #aaa;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    margin-top: 2px;
+  }
+
+  .season-months {
+    font-size: 12px;
+    color: #bbb;
+    margin-left: auto;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    flex-shrink: 0;
+  }
+
+  .chevron {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    color: #ccc;
+  }
+  .open .chevron { transform: rotate(180deg); }
+
+  /* Panel */
+  .season-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+  .open .season-panel { max-height: 800px; }
+
+  .season-body {
+    padding: 0 28px 26px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .season-spring .season-body { background: var(--spring-light); }
+  .season-summer .season-body { background: var(--summer-light); }
+  .season-autumn .season-body { background: var(--autumn-light); }
+  .season-winter .season-body { background: var(--winter-light); }
+
+  .info-card {
+    background: rgba(255,255,255,0.7);
+    border-radius: 10px;
+    padding: 14px 16px;
+    backdrop-filter: blur(4px);
+  }
+  .info-card.wide { grid-column: 1 / -1; }
+
+  .info-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    opacity: 0.6;
+  }
+  .season-spring .info-label { color: var(--spring); }
+  .season-summer .info-label { color: var(--summer); }
+  .season-autumn .info-label { color: var(--autumn); }
+  .season-winter .info-label { color: var(--winter); }
+
+  .info-value {
+    font-size: 13.5px;
+    color: #3a2e24;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+  .info-value strong {
+    font-weight: 600;
+    display: block;
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+
+  .temp-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .temp-range {
+    font-size: 20px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: #2a1f14;
+  }
+  .temp-unit { font-size: 12px; color: #aaa; }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 400;
+    color: #fff;
+  }
+  .season-spring .tag { background: var(--spring); }
+  .season-summer .tag { background: var(--summer); }
+  .season-autumn .tag { background: var(--autumn); }
+  .season-winter .tag { background: var(--winter); }
+
+  .divider-strip {
+    height: 3px;
+    width: 100%;
+  }
+  .season-spring .divider-strip { background: linear-gradient(90deg, var(--spring), var(--spring-accent)); }
+  .season-summer .divider-strip { background: linear-gradient(90deg, var(--summer), var(--summer-accent)); }
+  .season-autumn .divider-strip { background: linear-gradient(90deg, var(--autumn), var(--autumn-accent)); }
+  .season-winter .divider-strip { background: linear-gradient(90deg, var(--winter), var(--winter-accent)); }
+
+  @media (max-width: 500px) {
+    .season-body { grid-template-columns: 1fr; }
+    .info-card.wide { grid-column: 1; }
+    .season-header { padding: 16px 18px; gap: 12px; }
+    .season-body { padding: 0 18px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>Durham, NC</h1>
+  <p>春 · 夏 · 秋 · 冬 &nbsp;｜&nbsp; Four Seasons</p>
+</div>
+
+<div class="accordion">
+
+  <!-- 春 Spring -->
+  <div class="season season-spring" id="s-spring">
+    <div class="season-header" onclick="toggle('s-spring')">
+      <div class="season-icon">🌸</div>
+      <div class="season-title-group">
+        <div class="season-name-en">Spring</div>
+        <div class="season-name-zh">春&nbsp;&nbsp;季</div>
+      </div>
+      <div class="season-months">Mar – May</div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+    <div class="divider-strip"></div>
+    <div class="season-panel">
+      <div class="season-body">
+        <div class="info-card">
+          <div class="info-label">气温</div>
+          <div class="temp-bar">
+            <div class="temp-range">10°–22°</div>
+            <div class="temp-unit">℃</div>
+          </div>
+          <div class="info-value" style="margin-top:4px; font-size:12px; color:#888;">（50°–72°F）</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">天气特点</div>
+          <div class="info-value">温暖宜人，偶有阵雨<br>花粉季节（3–4月）</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">Durham 春日亮点</div>
+          <div class="info-value">Duke校园樱花与玉兰盛开，Sarah P. Duke Gardens一片姹紫嫣红；东海岸最美的春天之一。气温适合骑行与户外运动，但花粉过敏者需提前备药。</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">⚡ 历史极端天气</div>
+          <div class="info-value">
+            <strong>龙卷风（春季高发）</strong>北卡春季为龙卷风活跃季，1984年3月28日"卡罗来纳龙卷风爆发"造成大范围破坏；2020年4月龙卷风也影响Triangle地区，树木倒伏停电。<br><br>
+            <strong>暴雨内涝</strong>春季强对流频繁，局部暴雨可在1小时内引发城市内涝，Durham低洼路段积水风险较高，驾车需绕行留意。
+          </div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">👗 穿衣提示</div>
+          <div class="info-value">早晚温差大，建议<strong>洋葱式穿搭</strong>：薄外套或开衫必备。白天可穿T恤+轻薄牛仔裤，傍晚加一件针织外套。雨天备一件轻便防水外套。花粉季建议减少深V领口，避免花粉入侵。</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">家长提示</div>
+          <div class="tag-row">
+            <span class="tag">花粉高峰</span>
+            <span class="tag">春季期末</span>
+            <span class="tag">Family Weekend</span>
+            <span class="tag">毕业典礼季</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 夏 Summer -->
+  <div class="season season-summer" id="s-summer">
+    <div class="season-header" onclick="toggle('s-summer')">
+      <div class="season-icon">☀️</div>
+      <div class="season-title-group">
+        <div class="season-name-en">Summer</div>
+        <div class="season-name-zh">夏&nbsp;&nbsp;季</div>
+      </div>
+      <div class="season-months">Jun – Aug</div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+    <div class="divider-strip"></div>
+    <div class="season-panel">
+      <div class="season-body">
+        <div class="info-card">
+          <div class="info-label">气温</div>
+          <div class="temp-bar">
+            <div class="temp-range">22°–35°</div>
+            <div class="temp-unit">℃</div>
+          </div>
+          <div class="info-value" style="margin-top:4px; font-size:12px; color:#888;">（72°–95°F）</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">天气特点</div>
+          <div class="info-value">湿热，体感温度高<br>下午雷阵雨频繁</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">Durham 夏日亮点</div>
+          <div class="info-value">Durham Bulls 棒球赛季进行中，是家庭出游的热门选择。North Carolina海滩（如Wrightsville Beach）车程约2.5小时。校园相对安静，适合暑期实习与科研。</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">⚡ 历史极端天气</div>
+          <div class="info-value">
+            <strong>史上最高温：41°C（2024年7月5日）</strong>Durham有气象记录以来最高温，热浪期间户外活动须格外警惕中暑风险。<br><br>
+            <strong>飓风季（8–9月）</strong>2016年飓风Matthew带来超过16cm单日降雨，破历史记录；1999年飓风Floyd横扫北卡造成52人遇难、数千房屋损毁，是北卡20世纪最惨重的飓风灾难。Durham内陆虽风力较沿海小，洪涝威胁不可忽视。
+          </div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">👗 穿衣提示</div>
+          <div class="info-value">以<strong>轻薄透气</strong>为主：棉麻短袖、短裤、凉鞋。室内冷气强烈，进入建筑记得带一件薄外套或披肩，温差可达10°C以上。防晒必备：帽子、墨镜、防晒霜。户外活动尽量避开下午2–4点。</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">家长提示</div>
+          <div class="tag-row">
+            <span class="tag">暑期实习</span>
+            <span class="tag">Orientation（新生）</span>
+            <span class="tag">户外防暑</span>
+            <span class="tag">海滩出游</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 秋 Autumn -->
+  <div class="season season-autumn" id="s-autumn">
+    <div class="season-header" onclick="toggle('s-autumn')">
+      <div class="season-icon">🍂</div>
+      <div class="season-title-group">
+        <div class="season-name-en">Autumn</div>
+        <div class="season-name-zh">秋&nbsp;&nbsp;季</div>
+      </div>
+      <div class="season-months">Sep – Nov</div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+    <div class="divider-strip"></div>
+    <div class="season-panel">
+      <div class="season-body">
+        <div class="info-card">
+          <div class="info-label">气温</div>
+          <div class="temp-bar">
+            <div class="temp-range">8°–24°</div>
+            <div class="temp-unit">℃</div>
+          </div>
+          <div class="info-value" style="margin-top:4px; font-size:12px; color:#888;">（46°–75°F）</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">天气特点</div>
+          <div class="info-value">凉爽舒适，秋色绚烂<br>偶有飓风外围影响</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">Durham 秋日亮点</div>
+          <div class="info-value">Duke校园红枫金叶如画，是Durham最美的季节。NCAA赛季开启，Duke篮球热情高涨；Cameron Indoor Stadium的氛围无与伦比。周边Blue Ridge Parkway红叶约3小时车程。</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">⚡ 历史极端天气</div>
+          <div class="info-value">
+            <strong>飓风尾流洪涝</strong>秋季是大西洋飓风季高峰（9–10月）。2018年飓风Florence（4级）在北卡海岸登陆，内陆暴雨成灾；2024年飓风Helene在西卡登陆后暴雨冲击北卡山区，Buncombe County近百人遇难。Durham虽距海岸较远，但强降雨引发的溪流暴涨和道路封闭时有发生。<br><br>
+            <strong>早霜与骤降温</strong>10月末偶有突然降温至接近冰点，历史上最早降雪记录出现在10月底。
+          </div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">👗 穿衣提示</div>
+          <div class="info-value">秋季是Durham穿衣最舒适的季节。<strong>长袖T恤+休闲外套</strong>应对大部分天气；10月后早晚需薄羽绒或厚夹克。观看篮球赛时室内暖和，一件卫衣即可，Duke蓝色卫衣是标配！</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">家长提示</div>
+          <div class="tag-row">
+            <span class="tag">开学季</span>
+            <span class="tag">篮球赛季启动</span>
+            <span class="tag">Fall Break</span>
+            <span class="tag">红叶最佳</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 冬 Winter -->
+  <div class="season season-winter" id="s-winter">
+    <div class="season-header" onclick="toggle('s-winter')">
+      <div class="season-icon">❄️</div>
+      <div class="season-title-group">
+        <div class="season-name-en">Winter</div>
+        <div class="season-name-zh">冬&nbsp;&nbsp;季</div>
+      </div>
+      <div class="season-months">Dec – Feb</div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+    <div class="divider-strip"></div>
+    <div class="season-panel">
+      <div class="season-body">
+        <div class="info-card">
+          <div class="info-label">气温</div>
+          <div class="temp-bar">
+            <div class="temp-range">0°–12°</div>
+            <div class="temp-unit">℃</div>
+          </div>
+          <div class="info-value" style="margin-top:4px; font-size:12px; color:#888;">（32°–54°F）</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">天气特点</div>
+          <div class="info-value">温和，偶有冰雪<br>极寒天气少见</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">Durham 冬日亮点</div>
+          <div class="info-value">Durham的冬天比北方温和许多，但偶发的冰雪会让整座城市"瘫痪"——因为当地基础设施不习惯积雪。Duke篮球赛季高峰，Cameron Indoor是全美最狂热的主场之一。</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">⚡ 历史极端天气</div>
+          <div class="info-value">
+            <strong>史上最低温：-23°C（1985年1月21日）</strong>Durham有气象记录以来的最低温，远超正常冬季水平。<br><br>
+            <strong>2002年12月大冰暴</strong>北卡史上最严重冰暴之一，Durham至Charlotte一线路面积冰超过2厘米，57%的Duke Energy客户断电，部分地区停电超过一周。路面结冰比积雪更危险，车辆和行人几乎无法移动。<br><br>
+            <strong>积雪记录</strong>2000年Durham全年降雪量达71cm（史上最多）；2018年降雪44cm，1980年和1967年也分别记录过54cm和57cm的大雪年份。
+          </div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">👗 穿衣提示</div>
+          <div class="info-value">Durham冬天比东北部温和，但风大湿冷，体感较凉。<strong>中厚羽绒服或呢子大衣</strong>足够应对大部分天气；极寒天气（低于0°C）偶发，备一件抓绒内胆保险。雪天路滑，防滑底鞋必备，雪后路面可能结冰。</div>
+        </div>
+        <div class="info-card wide">
+          <div class="info-label">家长提示</div>
+          <div class="tag-row">
+            <span class="tag">寒假回国</span>
+            <span class="tag">篮球高峰</span>
+            <span class="tag">冰雪偶发</span>
+            <span class="tag">Spring Semester 开始</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggle(id) {
+  var el = document.getElementById(id);
+  var isOpen = el.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.season').forEach(function(s) {
+    s.classList.remove('open');
+  });
+  // Open clicked if it wasn't open
+  if (!isOpen) el.classList.add('open');
+}
+</script>
+</body>
+</html>
