@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Duke 校园 App · DukeParents</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Noto+Serif+SC:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #001a4d;
+    --blue: #003087;
+    --gold: #B8963E;
+    --gold-lt: #f5ecd4;
+    --bg: #f5f3ef;
+    --card: #ffffff;
+    --border: #e2ddd6;
+    --text: #1a1a1a;
+    --muted: #888070;
+  }
+
+  /* ── Auth loading overlay ── */
+  #auth-overlay {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999;
+    flex-direction: column;
+    gap: 14px;
+  }
+  #auth-overlay .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  #auth-overlay p {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #main-content { display: none; }
+
+  /* ── Page styles ── */
+  body {
+    background: var(--bg);
+    font-family: 'Noto Serif SC', serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 32px 16px 60px;
+  }
+  .page-title {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .page-title h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 5vw, 40px);
+    color: var(--navy);
+    line-height: 1.2;
+  }
+  .page-title p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+  .gold-line {
+    width: 48px; height: 3px;
+    background: var(--gold);
+    margin: 12px auto 0;
+    border-radius: 2px;
+  }
+  .intro {
+    max-width: 640px;
+    margin: 0 auto 24px;
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--muted);
+    text-align: center;
+  }
+  .accordion {
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .app-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.3s;
+  }
+  .app-card.open {
+    box-shadow: 0 6px 24px rgba(0,26,77,0.10);
+  }
+  .app-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s;
+  }
+  .app-card.open .app-header {
+    background: var(--gold-lt);
+    border-bottom: 1px solid var(--border);
+  }
+  .app-icon {
+    width: 44px; height: 44px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .app-title-group { flex: 1; }
+  .app-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .app-tagline {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    font-family: 'DM Mono', monospace;
+  }
+  .chevron {
+    width: 17px; height: 17px;
+    flex-shrink: 0;
+    color: var(--gold);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  .app-card.open .chevron { transform: rotate(180deg); }
+  .app-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .app-card.open .app-panel { max-height: 600px; }
+  .app-body { padding: 18px 20px 22px; }
+  .app-desc {
+    font-size: 13px;
+    line-height: 1.85;
+    color: #444;
+    margin-bottom: 14px;
+  }
+  .feature-list {
+    display: flex; flex-direction: column; gap: 7px;
+    margin-bottom: 18px;
+  }
+  .feature-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 13px; line-height: 1.65; color: #444;
+  }
+  .feature-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+  .download-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-store {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    color: var(--navy);
+    background: #fff;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .btn-store:hover { background: var(--gold-lt); border-color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- Auth loading overlay -->
+<div id="auth-overlay">
+  <div class="spinner"></div>
+  <p>验证登录状态…</p>
+</div>
+
+<!-- Main content (hidden until auth passes) -->
+<div id="main-content">
+
+<div class="page-title">
+  <h1>Duke 校园 App</h1>
+  <p>Mobile App Resources · dukeparents.org</p>
+  <div class="gold-line"></div>
+</div>
+
+<p class="intro">以下 App 均可在 Apple App Store 和 Google Play 免费下载，帮助孩子更好地出行、导航和保障安全。</p>
+
+<div class="accordion">
+
+  <!-- Duke Mobile -->
+  <div class="app-card" id="app-1">
+    <div class="app-header" onclick="toggle('app-1')">
+      <div class="app-icon" style="background:#e8eef8;">🎓</div>
+      <div class="app-title-group">
+        <div class="app-name">Duke Mobile</div>
+        <div class="app-tagline">校园综合服务</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="app-panel">
+      <div class="app-body">
+        <p class="app-desc">Duke 官方综合 App，整合多项校园服务于一身，是在校生必备的首选工具。</p>
+        <div class="feature-list">
+          <div class="feature-item"><div class="feature-dot"></div><span>Duke Vans Request — 预约校园班车接送</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>TransLoc — 校内公交实时追踪</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>Duke Campus Map — 交互式校园地图，快速找楼找教室</span></div>
+        </div>
+        <div class="download-row">
+          <a class="btn-store" href="https://apps.apple.com/us/app/duke-mobile/id537588719" target="_blank">🍎 App Store</a>
+          <a class="btn-store" href="https://play.google.com/store/apps/details?id=edu.duke.mobile" target="_blank">▶ Google Play</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TransLoc -->
+  <div class="app-card" id="app-2">
+    <div class="app-header" onclick="toggle('app-2')">
+      <div class="app-icon" style="background:#e8f5e9;">🚌</div>
+      <div class="app-title-group">
+        <div class="app-name">TransLoc</div>
+        <div class="app-tagline">公交实时追踪</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="app-panel">
+      <div class="app-body">
+        <p class="app-desc">实时追踪校内外公共交通，掌握每辆巴士的精确位置与到站时间，告别等车焦虑。</p>
+        <div class="feature-list">
+          <div class="feature-item"><div class="feature-dot"></div><span>Duke Transit — 校园内部巴士实时位置</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>GoDurham — Durham 市区公交追踪</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>GoTriangle — Triangle 地区区域公交，可达 Raleigh、Chapel Hill</span></div>
+        </div>
+        <div class="download-row">
+          <a class="btn-store" href="https://apps.apple.com/us/app/transloc/id648876306" target="_blank">🍎 App Store</a>
+          <a class="btn-store" href="https://play.google.com/store/apps/details?id=com.transloc.android.rider" target="_blank">▶ Google Play</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Maps -->
+  <div class="app-card" id="app-3">
+    <div class="app-header" onclick="toggle('app-3')">
+      <div class="app-icon" style="background:#fdecea;">🗺️</div>
+      <div class="app-title-group">
+        <div class="app-name">Google Maps</div>
+        <div class="app-tagline">全出行模式导航</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="app-panel">
+      <div class="app-body">
+        <p class="app-desc">覆盖所有出行方式的导航工具，从驾车到步行一站搞定，来访家长和学生出行必备。</p>
+        <div class="feature-list">
+          <div class="feature-item"><div class="feature-dot"></div><span>驾车导航 — 实时路况、最优路线</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>公交换乘 — 整合 GoDurham / GoTriangle 班次</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>步行 & 骑行 — 校园内部及周边路线规划</span></div>
+        </div>
+        <div class="download-row">
+          <a class="btn-store" href="https://apps.apple.com/us/app/google-maps/id585027354" target="_blank">🍎 App Store</a>
+          <a class="btn-store" href="https://play.google.com/store/apps/details?id=com.google.android.apps.maps" target="_blank">▶ Google Play</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LiveSafe -->
+  <div class="app-card" id="app-4">
+    <div class="app-header" onclick="toggle('app-4')">
+      <div class="app-icon" style="background:#fff3e0;">🛡️</div>
+      <div class="app-title-group">
+        <div class="app-name">LiveSafe</div>
+        <div class="app-tagline">校园安全保障</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="app-panel">
+      <div class="app-body">
+        <p class="app-desc">Duke 官方安全保障 App，夜间出行或遇紧急情况时，可实时与 Duke 警察局保持联系。</p>
+        <div class="feature-list">
+          <div class="feature-item"><div class="feature-dot"></div><span>Walk Monitoring（陪行监测）— 夜间独行时开启，实时共享位置给信任联系人</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>一键联系 Duke 警察局，无需记忆号码</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>匿名举报可疑活动或安全隐患</span></div>
+        </div>
+        <div class="download-row">
+          <a class="btn-store" href="https://apps.apple.com/us/app/livesafe/id653666211" target="_blank">🍎 App Store</a>
+          <a class="btn-store" href="https://play.google.com/store/apps/details?id=com.livesafe.activities" target="_blank">▶ Google Play</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /main-content -->
+
+<!-- Supabase auth guard -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(async () => {
+  const SUPABASE_URL  = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8'; // ← 替换为实际 anon key
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  const { data: { session } } = await sb.auth.getSession();
+
+  if (!session) {
+    // 未登录 → 跳回首页（保存来源路径以便登录后跳回）
+    const redirect = encodeURIComponent(window.location.pathname + window.location.search);
+    window.location.replace('index.html?redirect=' + redirect);
+    return;
+  }
+
+  // 已登录 → 显示内容
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.getElementById('main-content').style.display  = 'block';
+})();
+</script>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.app-card').forEach(c => c.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+</script>
+</body>
+</html>
