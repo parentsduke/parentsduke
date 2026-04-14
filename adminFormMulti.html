@@ -626,8 +626,10 @@
         <option value="false" ${committedVal==='false'?'selected':''}>❌ 未Committed</option>
       </select>`;
 
-      const letterCell = r.letter_path
-        ? `<a class="file-link" href="#" onclick="openFile('${r.letter_path}');return false;">查看文件</a>`
+      const isGradType = r.admission_type === 'grad_masters' || r.admission_type === 'grad_phd';
+      const letterPath = isGradType ? r.grad_letter_path : r.committed_letter_path;
+      const letterCell = letterPath
+        ? `<a class="file-link" href="#" onclick="openFile('${letterPath}');return false;">查看文件</a>`
         : `<span class="no-file">—</span>`;
       const clCell = r.committed_letter_path
         ? `<a class="file-link" href="#" onclick="openFile('${r.committed_letter_path}');return false;">查看文件</a>`
@@ -755,7 +757,7 @@
       r.submitter_name || '',
       r.submitter_contact || '',
       r.submitter_email || '',
-      getFileUrl(r.letter_path) || '',
+      getFileUrl((r.admission_type === 'grad_masters' || r.admission_type === 'grad_phd') ? r.grad_letter_path : r.committed_letter_path) || '',
       getFileUrl(r.committed_letter_path) || '',
       r.rejected_at ? '已拒绝' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '待处理',
     ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
