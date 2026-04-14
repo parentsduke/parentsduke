@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Durham 四季</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
 (function () {
   const SUPABASE_URL      = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
@@ -68,11 +68,11 @@
     line-height: 1.2;
   }
   .page-title p {
-    font-size: 13px;
-    color: #888;
+    font-size: 15px;
+    color: #555;
     margin-top: 6px;
     letter-spacing: 0.1em;
-    font-weight: 300;
+    font-weight: 400;
   }
 
   .accordion {
@@ -131,7 +131,7 @@
   }
   .season-name-en {
     font-family: 'Playfair Display', serif;
-    font-size: 18px;
+    font-size: 21px;
     font-weight: 700;
     color: #2a1f14;
     line-height: 1.2;
@@ -142,16 +142,16 @@
   .season-winter .season-name-en { color: var(--winter); }
 
   .season-name-zh {
-    font-size: 12px;
-    color: #aaa;
-    font-weight: 300;
+    font-size: 14px;
+    color: #666;
+    font-weight: 400;
     letter-spacing: 0.15em;
     margin-top: 2px;
   }
 
   .season-months {
-    font-size: 12px;
-    color: #bbb;
+    font-size: 14px;
+    color: #777;
     margin-left: auto;
     font-family: 'Playfair Display', serif;
     font-style: italic;
@@ -196,12 +196,12 @@
   .info-card.wide { grid-column: 1 / -1; }
 
   .info-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     margin-bottom: 6px;
-    opacity: 0.6;
+    opacity: 0.85;
   }
   .season-spring .info-label { color: var(--spring); }
   .season-summer .info-label { color: var(--summer); }
@@ -209,15 +209,15 @@
   .season-winter .info-label { color: var(--winter); }
 
   .info-value {
-    font-size: 13.5px;
-    color: #3a2e24;
-    line-height: 1.7;
-    font-weight: 300;
+    font-size: 15px;
+    color: #1e1a16;
+    line-height: 1.8;
+    font-weight: 400;
   }
   .info-value strong {
-    font-weight: 600;
+    font-weight: 700;
     display: block;
-    font-size: 15px;
+    font-size: 16px;
     margin-bottom: 2px;
   }
 
@@ -233,7 +233,7 @@
     font-weight: 700;
     color: #2a1f14;
   }
-  .temp-unit { font-size: 12px; color: #aaa; }
+  .temp-unit { font-size: 14px; color: #666; }
 
   .tag-row {
     display: flex;
@@ -243,10 +243,10 @@
   }
   .tag {
     display: inline-block;
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 20px;
-    font-size: 11px;
-    font-weight: 400;
+    font-size: 13px;
+    font-weight: 500;
     color: #fff;
   }
   .season-spring .tag { background: var(--spring); }
@@ -328,7 +328,6 @@
           <div class="tag-row">
             <span class="tag">花粉高峰</span>
             <span class="tag">春季期末</span>
-            <span class="tag">Family Weekend</span>
             <span class="tag">毕业典礼季</span>
           </div>
         </div>
@@ -439,6 +438,7 @@
           <div class="info-label">家长提示</div>
           <div class="tag-row">
             <span class="tag">开学季</span>
+            <span class="tag">Family Weekend</span>
             <span class="tag">篮球赛季启动</span>
             <span class="tag">Fall Break</span>
             <span class="tag">红叶最佳</span>
