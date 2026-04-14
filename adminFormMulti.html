@@ -342,8 +342,11 @@
         <tr>
           <th style="min-width:80px;">批准</th>
           <th class="person-th">笑</th>
-          <th class="person-th">金</th>
+          <th class="person-th">奕</th>
           <th class="person-th">伟</th>
+          <th class="person-th">VON</th>
+          <th class="person-th">静</th>
+          <th class="person-th">Sharon</th>
           <th onclick="sortBy('qr_code_no')" style="min-width:60px;">入群码</th>
           <th onclick="sortBy('wx_nickname')">微信昵称</th>
           <th onclick="sortBy('committed')">Committed</th>
@@ -560,7 +563,7 @@
   }
 
   // ── 人员标记（同步到 Supabase，三人共享） ──
-  const personCol = { '笑': 'mark_xiao', '金': 'mark_jin', '伟': 'mark_wei' };
+  const personCol = { '笑': 'mark_xiao', '奕': 'mark_yi', '伟': 'mark_wei', 'VON': 'mark_von', '静': 'mark_jing', 'Sharon': 'mark_sharon' };
 
   async function saveMark(recordId, person, val) {
     const col = personCol[person];
@@ -653,8 +656,11 @@
           }
         </td>
         ${personCell(r.id, '笑', allRecords)}
-        ${personCell(r.id, '金', allRecords)}
+        ${personCell(r.id, '奕', allRecords)}
         ${personCell(r.id, '伟', allRecords)}
+        ${personCell(r.id, 'VON', allRecords)}
+        ${personCell(r.id, '静', allRecords)}
+        ${personCell(r.id, 'Sharon', allRecords)}
         <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:${r.qr_code_no ? '#003087' : 'var(--muted)'};">
           ${r.qr_code_no ? String.fromCharCode(65 + (Number(r.qr_code_no) - 1) % 10) : '—'}
         </td>
