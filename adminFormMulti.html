@@ -914,10 +914,10 @@
   async function confirmApprove() {
     const adminName = document.getElementById('modalAdminSelect').value;
     if (!adminName) { alert('请先选择批准管理员'); return; }
-    closeApproveModal();
 
     const { recordId, email, studentName, classYear, admissionType, college } = _approveArgs || {};
     if (!recordId) return;
+    closeApproveModal();
 
     if (!email) {
       try {
@@ -1056,10 +1056,10 @@
   async function confirmResend() {
     const adminName = document.getElementById('resendAdminSelect').value;
     if (!adminName) { alert('请先选择操作管理员'); return; }
-    closeResendModal();
 
     const { recordId, email, studentName, classYear, admissionType, college } = _resendArgs || {};
     if (!recordId) return;
+    closeResendModal();
 
     try {
       // 作废旧的未使用 token（同一邮箱）
