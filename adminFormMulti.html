@@ -257,9 +257,81 @@
     .person-select:focus { outline: 1px solid var(--blue); border-radius: 4px; }
     td.person-cell { text-align: center; padding: 8px 6px; }
     th.person-th { text-align: center; min-width: 48px; }
+
+    /* ── Approve Modal ── */
+    #approveModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    #approveModal.show { display: flex; }
+    .modal-box {
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px 28px 24px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    }
+    .modal-title { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+    .modal-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    #modalAdminSelect {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Noto Serif SC', serif;
+      background: #faf9f7;
+      color: var(--text);
+      outline: none;
+      margin-bottom: 20px;
+    }
+    #modalAdminSelect:focus { border-color: var(--blue); }
+    .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+    .modal-btn-cancel {
+      padding: 10px 20px; background: #fff; color: var(--muted);
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 13px; font-family: 'Noto Serif SC', serif; cursor: pointer;
+    }
+    .modal-btn-cancel:hover { background: #f5f3ef; }
+    .modal-btn-confirm {
+      padding: 10px 20px; background: #1a6b3c; color: #fff;
+      border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
+      font-family: 'Noto Serif SC', serif; cursor: pointer;
+    }
+    .modal-btn-confirm:hover { background: #145230; }
+    .modal-btn-confirm:disabled { background: #aab4cc; cursor: not-allowed; }
   </style>
 </head>
 <body>
+
+<!-- 批准管理员选择 Modal -->
+<div id="approveModal">
+  <div class="modal-box">
+    <div class="modal-title">批准入群</div>
+    <div class="modal-sub" id="modalSubText"></div>
+    <div class="modal-label">批准管理员</div>
+    <select id="modalAdminSelect">
+      <option value="">— 请选择 —</option>
+      <option value="笑">笑</option>
+      <option value="奕">奕</option>
+      <option value="伟">伟</option>
+      <option value="VON">VON</option>
+      <option value="静">静</option>
+      <option value="Sharon">Sharon</option>
+    </select>
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" onclick="closeApproveModal()">取消</button>
+      <button class="modal-btn-confirm" id="modalConfirmBtn" onclick="confirmApprove()">确认批准</button>
+    </div>
+  </div>
+</div>
 
 <header>
   <div class="header-left">
@@ -641,18 +713,15 @@
       return `<tr id="row-${r.id}">
         <td id="cell-approve-${r.id}" style="text-align:center;padding:8px 6px;">
           ${r.rejected_at || r.shelved_at ? '' : r.approved_at
-            ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
-                style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
-                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
-                重新发送
-              </button>`
+            ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
+                  style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
+                ${r.approved_by ? `<span style="font-size:11px;color:#888070;font-family:'DM Mono',monospace;">${r.approved_by}</span>` : ''}
+              </div>`
             : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
-                style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
-                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">
-                批准入群
-              </button>`
+                style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">批准入群</button>`
           }
         </td>
         ${personCell(r.id, '笑', allRecords)}
@@ -797,14 +866,39 @@
     };
   }
 
-  async function approveRecord(recordId, email, studentName, classYear, admissionType, college) {
+  // ── 批准 Modal 状态 ──
+  let _approveArgs = null;
+
+  function approveRecord(recordId, email, studentName, classYear, admissionType, college) {
+    _approveArgs = { recordId, email, studentName, classYear, admissionType, college };
+    const sub = email
+      ? `学生：${studentName}\n将发送入群链接到：${email}`
+      : `学生：${studentName}\n（无邮箱，仅标记为已批准）`;
+    document.getElementById('modalSubText').innerText = sub;
+    document.getElementById('modalAdminSelect').value = '';
+    document.getElementById('approveModal').classList.add('show');
+  }
+
+  function closeApproveModal() {
+    document.getElementById('approveModal').classList.remove('show');
+    _approveArgs = null;
+  }
+
+  async function confirmApprove() {
+    const adminName = document.getElementById('modalAdminSelect').value;
+    if (!adminName) { alert('请先选择批准管理员'); return; }
+    closeApproveModal();
+
+    const { recordId, email, studentName, classYear, admissionType, college } = _approveArgs || {};
+    if (!recordId) return;
+
     if (!email) {
-      // 没有邮箱，直接标记已批准不发邮件
-      if (!confirm(`${studentName} 没有邮箱，直接标记为已批准（不发送链接）？`)) return;
       try {
-        await db.from('admissions_submissionsMulti').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+        await db.from('admissions_submissionsMulti')
+          .update({ approved_at: new Date().toISOString(), approved_by: adminName })
+          .eq('id', recordId);
         const rec = allRecords.find(r => r.id === recordId);
-        if (rec) rec.approved_at = new Date().toISOString();
+        if (rec) { rec.approved_at = new Date().toISOString(); rec.approved_by = adminName; }
         applyFilters();
         alert('✅ 已标记为批准');
       } catch(e) {
@@ -812,10 +906,8 @@
       }
       return;
     }
-    if (!confirm(`确认批准 ${studentName} 入群？\n将发送链接到：${email}`)) return;
 
     try {
-      // 自动创建一条新的 private_qr_links 记录
       const { data: qrRow, error: qrErr } = await db
         .from('private_qr_links')
         .insert({
@@ -826,44 +918,34 @@
         .select()
         .single();
 
-      if (qrErr || !qrRow) {
-        throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
-      }
+      if (qrErr || !qrRow) throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
 
       const link = `https://dukeparents.org/qrMulti.html?token=${qrRow.token}`;
       const { groupName } = getQRInfo(classYear, admissionType, college);
 
-      // 调用发邮件 Edge Function
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-multi`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
         body: JSON.stringify({ email, studentName, link, groupName }),
       });
 
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err);
-      }
+      if (!res.ok) { const err = await res.text(); throw new Error(err); }
 
-      // 标记记录已批准
-      await db.from('admissions_submissionsMulti').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+      await db.from('admissions_submissionsMulti')
+        .update({ approved_at: new Date().toISOString(), approved_by: adminName })
+        .eq('id', recordId);
 
-      // 更新本地数据
       const rec = allRecords.find(r => r.id === recordId);
-      if (rec) rec.approved_at = new Date().toISOString();
+      if (rec) { rec.approved_at = new Date().toISOString(); rec.approved_by = adminName; }
 
-      // 直接替换按钮，不依赖 applyFilters
       const cell = document.getElementById(`cell-approve-${recordId}`);
       if (cell) {
-        cell.innerHTML = `<button onclick="resendApproval('${recordId}','${email}','${studentName}','${classYear}','${admissionType}','${college.replace(/'/g,"\\'")}')"
-          style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
-                 font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-          onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
-          重新发送
-        </button>`;
+        cell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <button onclick="resendApproval('${recordId}','${email}','${studentName}','${classYear}','${admissionType}','${college.replace(/'/g,"\\'")}')"
+            style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
+          <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">${adminName}</span>
+        </div>`;
       }
 
       alert(`✅ 已发送入群链接到 ${email}`);
