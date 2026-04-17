@@ -259,6 +259,11 @@
     th.person-th { text-align: center; min-width: 48px; }
 
     /* ── Approve Modal ── */
+    #resendModal {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      align-items: center; justify-content: center; z-index: 1000;
+    }
+    #resendModal.show { display: flex; }
     #approveModal {
       display: none;
       position: fixed;
@@ -310,6 +315,28 @@
   </style>
 </head>
 <body>
+
+<!-- 重新发送管理员选择 Modal -->
+<div id="resendModal">
+  <div class="modal-box">
+    <div class="modal-title">重新发送入群链接</div>
+    <div class="modal-sub" id="resendModalSubText"></div>
+    <div class="modal-label">操作管理员</div>
+    <select id="resendAdminSelect">
+      <option value="">— 请选择 —</option>
+      <option value="笑">笑</option>
+      <option value="奕">奕</option>
+      <option value="伟">伟</option>
+      <option value="VON">VON</option>
+      <option value="静">静</option>
+      <option value="Sharon">Sharon</option>
+    </select>
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" onclick="closeResendModal()">取消</button>
+      <button class="modal-btn-confirm" onclick="confirmResend()">确认发送</button>
+    </div>
+  </div>
+</div>
 
 <!-- 批准管理员选择 Modal -->
 <div id="approveModal">
@@ -1010,10 +1037,29 @@
   }
 
   // ── 重新发送入群链接 ──
-  async function resendApproval(recordId, email, studentName, classYear, admissionType, college) {
+  // ── 重新发送 Modal 状态 ──
+  let _resendArgs = null;
+
+  function resendApproval(recordId, email, studentName, classYear, admissionType, college) {
     if (!email) { alert('该记录没有邮箱，无法发送链接'); return; }
-    const adminName = prompt(`重新发送入群链接给 ${studentName}？\n将发送到：${email}\n\n请输入操作管理员姓名：`);
-    if (!adminName) return;
+    _resendArgs = { recordId, email, studentName, classYear, admissionType, college };
+    document.getElementById('resendModalSubText').innerText = `学生：${studentName}\n将发送到：${email}`;
+    document.getElementById('resendAdminSelect').value = '';
+    document.getElementById('resendModal').classList.add('show');
+  }
+
+  function closeResendModal() {
+    document.getElementById('resendModal').classList.remove('show');
+    _resendArgs = null;
+  }
+
+  async function confirmResend() {
+    const adminName = document.getElementById('resendAdminSelect').value;
+    if (!adminName) { alert('请先选择操作管理员'); return; }
+    closeResendModal();
+
+    const { recordId, email, studentName, classYear, admissionType, college } = _resendArgs || {};
+    if (!recordId) return;
 
     try {
       // 作废旧的未使用 token（同一邮箱）
