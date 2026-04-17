@@ -894,11 +894,16 @@
 
     if (!email) {
       try {
+        const _now1 = new Date().toISOString();
         await db.from('admissions_submissionsMulti')
-          .update({ approved_at: new Date().toISOString(), approved_by: adminName })
+          .update({ approved_at: _now1, approved_by: adminName })
           .eq('id', recordId);
+        await db.rpc('append_approval_log', {
+          record_id: recordId,
+          entry: { action: 'approved', by: adminName, at: _now1 }
+        });
         const rec = allRecords.find(r => r.id === recordId);
-        if (rec) { rec.approved_at = new Date().toISOString(); rec.approved_by = adminName; }
+        if (rec) { rec.approved_at = _now1; rec.approved_by = adminName; }
         applyFilters();
         alert('✅ 已标记为批准');
       } catch(e) {
@@ -931,12 +936,17 @@
 
       if (!res.ok) { const err = await res.text(); throw new Error(err); }
 
+      const _now2 = new Date().toISOString();
       await db.from('admissions_submissionsMulti')
-        .update({ approved_at: new Date().toISOString(), approved_by: adminName })
+        .update({ approved_at: _now2, approved_by: adminName })
         .eq('id', recordId);
+      await db.rpc('append_approval_log', {
+        record_id: recordId,
+        entry: { action: 'approved', by: adminName, at: _now2 }
+      });
 
       const rec = allRecords.find(r => r.id === recordId);
-      if (rec) { rec.approved_at = new Date().toISOString(); rec.approved_by = adminName; }
+      if (rec) { rec.approved_at = _now2; rec.approved_by = adminName; }
 
       const cell = document.getElementById(`cell-approve-${recordId}`);
       if (cell) {
@@ -1002,7 +1012,8 @@
   // ── 重新发送入群链接 ──
   async function resendApproval(recordId, email, studentName, classYear, admissionType, college) {
     if (!email) { alert('该记录没有邮箱，无法发送链接'); return; }
-    if (!confirm(`重新发送入群链接给 ${studentName}？\n将发送到：${email}`)) return;
+    const adminName = prompt(`重新发送入群链接给 ${studentName}？\n将发送到：${email}\n\n请输入操作管理员姓名：`);
+    if (!adminName) return;
 
     try {
       // 作废旧的未使用 token（同一邮箱）
@@ -1043,6 +1054,10 @@
         throw new Error(err);
       }
 
+      await db.rpc('append_approval_log', {
+        record_id: recordId,
+        entry: { action: 'resent', by: adminName, at: new Date().toISOString() }
+      });
       alert(`✅ 已重新发送入群链接到 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
