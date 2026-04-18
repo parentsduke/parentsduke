@@ -190,6 +190,50 @@ document.addEventListener("keydown", function(e) {
     if (vo) vo.style.display = "none";
   }
 });
+
+// ===== 1.0/2.0 互斥询问框（提前定义防止页面其他JS报错干扰）=====
+function handleInviteNameChange(val) {
+  var box = document.getElementById('hub-question-box');
+  var marker = document.getElementById('hub-already-in');
+  var qtext = document.getElementById('hub-question-text');
+  var answerMsg = document.getElementById('hub-answer-msg');
+  if (!box || !marker || !qtext || !answerMsg) return;
+  marker.dataset.confirmed = '';
+  answerMsg.textContent = '';
+  var btnYes = document.getElementById('hub-btn-yes');
+  var btnNo = document.getElementById('hub-btn-no');
+  if (btnYes) btnYes.style.background = '#fff';
+  if (btnNo) btnNo.style.background = '#fff';
+  if (val === '扯谈Duke群1.0' || val === '扯谈Duke群2.0') {
+    var other = val === '扯谈Duke群1.0' ? '扯谈Duke群2.0' : '扯谈Duke群1.0';
+    qtext.textContent = '请问您目前是否已在' + other + '中？';
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+function handleHubAnswer(answer) {
+  var marker = document.getElementById('hub-already-in');
+  var answerMsg = document.getElementById('hub-answer-msg');
+  var wxgroupVal = document.getElementById('invite-name').value;
+  var other = wxgroupVal === '扯谈Duke群1.0' ? '扯谈Duke群2.0' : '扯谈Duke群1.0';
+  var btnYes = document.getElementById('hub-btn-yes');
+  var btnNo = document.getElementById('hub-btn-no');
+  if (btnYes) btnYes.style.background = '#fff';
+  if (btnNo) btnNo.style.background = '#fff';
+  if (answer === 'yes') {
+    marker.dataset.confirmed = 'yes';
+    if (btnYes) btnYes.style.background = '#ffe0b2';
+    answerMsg.style.color = '#c0392b';
+    answerMsg.textContent = '已在' + other + '中的家长不能再申请加入' + wxgroupVal + '，谢谢理解！';
+  } else {
+    marker.dataset.confirmed = 'no';
+    if (btnNo) btnNo.style.background = '#e8f5e9';
+    answerMsg.style.color = '#0a7c3e';
+    answerMsg.textContent = '确认。您可以继续填写并提交申请。';
+  }
+}
 </script>
 </head>
 <body>
@@ -13517,6 +13561,16 @@ function handleInviteNameChange(val) {
     box.style.display = 'none';
   }
 }
+
+// 用addEventListener绑定，兼容iOS Safari
+document.addEventListener('DOMContentLoaded', function() {
+  var inviteNameSel = document.getElementById('invite-name');
+  if (inviteNameSel) {
+    inviteNameSel.addEventListener('change', function() {
+      handleInviteNameChange(this.value);
+    });
+  }
+});
 
 function handleHubAnswer(answer) {
   var marker = document.getElementById('hub-already-in');
