@@ -744,7 +744,8 @@
                 <button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
                   style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                   onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
-                ${r.approved_by ? `<span style="font-size:11px;color:#888070;font-family:'DM Mono',monospace;">${r.approved_by}</span>` : ''}
+                ${r.approved_by ? `<span style="font-size:11px;color:#888070;font-family:'DM Mono',monospace;">批:${r.approved_by}</span>` : ''}
+                ${(() => { const last = (r.approval_log||[]).filter(e=>e.action==='resent').slice(-1)[0]; return last ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">发:${last.by}</span>` : ''; })()}
               </div>`
             : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
                 style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
@@ -1104,6 +1105,20 @@
         record_id: recordId,
         entry: { action: 'resent', by: adminName, at: new Date().toISOString() }
       });
+
+      const cell = document.getElementById(`cell-approve-${recordId}`);
+      if (cell) {
+        const rec = allRecords.find(r => r.id === recordId);
+        const approvedBy = rec?.approved_by || '';
+        cell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <button onclick="resendApproval('${recordId}','${email}','${studentName}','${classYear}','${admissionType}','${college.replace(/'/g,"\\'")}')"
+            style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
+          ${approvedBy ? `<span style="font-size:11px;color:#888070;font-family:'DM Mono',monospace;">批:${approvedBy}</span>` : ''}
+          <span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">发:${adminName}</span>
+        </div>`;
+      }
+
       alert(`✅ 已重新发送入群链接到 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
