@@ -13428,5 +13428,42 @@ window.showPV();
   </div>
 </div>
 
+<!-- ===== 申请加入微信家长群（页面底部，登录后隐藏） ===== -->
+<div id="wechat-group-section" style="max-width:480px; margin:16px auto 0; padding:0 16px 64px;">
+  <div style="background:#fff; border:1px solid #d0d8e8; border-radius:10px; padding:22px 24px; box-shadow:0 2px 10px rgba(1,33,105,0.07);">
+    <div style="font-size:15px; font-weight:700; color:#012169; margin-bottom:6px;">申请加入扯谈Duke群体系家长群</div>
+    <div style="font-size:12px; color:#888; margin-bottom:16px;">尚未加入扯谈Duke群体系？请选择您希望申请的家长群，点击后跳转至申请表单填写。</div>
+    <div style="margin-bottom:12px;">
+      <select id="wechat-group-select"
+        style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none; background:#fff; color:#333;">
+        <option value="">请选择家长群</option>
+        <option value="https://dukeparents.org/form.html">Duke 2030 本科家长群</option>
+        <option value="https://dukeparents.org/formMulti.html">Duke 2029 本科家长群</option>
+        <option value="https://dukeparents.org/formMulti.html">Duke 2028 本科家长群</option>
+        <option value="https://dukeparents.org/formMulti.html">Duke 2027 本科家长群</option>
+        <option value="https://dukeparents.org/formMulti.html">研究生家长群</option>
+        <option value="https://dukeparents.org/formMulti.html">Pre-med Track 群</option>
+      </select>
+    </div>
+    <button onclick="goToGroupForm()"
+      style="width:100%; padding:10px; background:#012169; color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
+      前往申请表单
+    </button>
+    <p id="wechat-group-msg" style="text-align:center; margin:10px 0 0; font-size:13px; min-height:18px; color:#c0392b;"></p>
+  </div>
+</div>
+
+<script>
+function goToGroupForm() {
+  var sel = document.getElementById('wechat-group-select');
+  var url = sel.value;
+  if (!url) {
+    document.getElementById('wechat-group-msg').textContent = '请先选择您希望申请的家长群。';
+    return;
+  }
+  window.location.href = url;
+}
+</script>
+
 </body>
 </html>
