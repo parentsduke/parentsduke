@@ -12049,6 +12049,18 @@ async function submitInviteRequest(btn) {
     msg.style.color = 'crimson'; msg.textContent = '请输入有效的电子邮件地址'; return;
   }
 
+  // 扯谈Duke群1.0/2.0 互斥检查
+  if (wxgroupVal === '扯谈Duke群1.0' || wxgroupVal === '扯谈Duke群2.0') {
+    var alreadyIn = document.getElementById('hub-already-in');
+    if (!alreadyIn || alreadyIn.dataset.confirmed !== 'no') {
+      msg.style.color = 'crimson';
+      msg.textContent = '请先回答上方问题后再提交。';
+      var hubQ = document.getElementById('hub-question-box');
+      if (hubQ) hubQ.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+  }
+
   btn.disabled = true; btn.textContent = '提交中...';
 
   try {
@@ -13393,7 +13405,7 @@ window.showPV();
       </select>
     </div>
     <div style="margin-bottom:12px;">
-      <select id="invite-name"
+      <select id="invite-name" onchange="handleInviteNameChange(this.value)"
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none; background:#fff; color:#333;">
         <option value="">请选择微信家长群名</option>
         <option value="Duke2030本科生家长群">Duke2030本科生家长群</option>
@@ -13408,6 +13420,24 @@ window.showPV();
         <option value="扯谈Duke群2.0">扯谈Duke群2.0</option>
         <option value="扯谈Duke群-研究生家长汇">扯谈Duke群-研究生家长汇</option>
       </select>
+    </div>
+
+    <!-- 1.0/2.0 互斥询问框 -->
+    <div id="hub-question-box" style="display:none; margin-bottom:12px; background:#fff8e1; border:1px solid #ffe082; border-radius:8px; padding:12px 14px; font-size:13px; color:#5a4000; line-height:1.7;">
+      <div id="hub-question-text" style="margin-bottom:10px; font-weight:600;"></div>
+      <div style="display:flex; gap:10px;">
+        <button type="button" id="hub-btn-yes" onclick="handleHubAnswer('yes')"
+          style="flex:1; padding:8px; border:1px solid #c9a84c; border-radius:6px; background:#fff; color:#5a4000; font-size:13px; cursor:pointer;">
+          是，我已在另一个群
+        </button>
+        <button type="button" id="hub-btn-no" onclick="handleHubAnswer('no')"
+          style="flex:1; padding:8px; border:1px solid #c9a84c; border-radius:6px; background:#fff; color:#5a4000; font-size:13px; cursor:pointer;">
+          否，我未在另一个群
+        </button>
+      </div>
+      <div id="hub-answer-msg" style="margin-top:8px; font-size:12px; min-height:16px;"></div>
+    </div>
+    <div id="hub-already-in" style="display:none;"></div>
     </div>
     <div style="margin-bottom:4px;">
       <input id="invite-nickname" type="text" placeholder="微信家长群昵称，如：Alex-杜爸-Grace-30T-NY" maxlength="30"
@@ -13467,6 +13497,47 @@ window.showPV();
 </div>
 
 <script>
+function handleInviteNameChange(val) {
+  var box = document.getElementById('hub-question-box');
+  var marker = document.getElementById('hub-already-in');
+  var qtext = document.getElementById('hub-question-text');
+  var answerMsg = document.getElementById('hub-answer-msg');
+  // 重置状态
+  marker.dataset.confirmed = '';
+  answerMsg.textContent = '';
+  document.getElementById('hub-btn-yes').style.background = '#fff';
+  document.getElementById('hub-btn-no').style.background = '#fff';
+  if (val === '扯谈Duke群1.0' || val === '扯谈Duke群2.0') {
+    var other = val === '扯谈Duke群1.0' ? '扯谈Duke群2.0' : '扯谈Duke群1.0';
+    qtext.textContent = '请问您目前是否已在' + other + '中？';
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+function handleHubAnswer(answer) {
+  var marker = document.getElementById('hub-already-in');
+  var answerMsg = document.getElementById('hub-answer-msg');
+  var wxgroupVal = document.getElementById('invite-name').value;
+  var other = wxgroupVal === '扯谈Duke群1.0' ? '扯谈Duke群2.0' : '扯谈Duke群1.0';
+  var btnYes = document.getElementById('hub-btn-yes');
+  var btnNo = document.getElementById('hub-btn-no');
+  btnYes.style.background = '#fff';
+  btnNo.style.background = '#fff';
+  if (answer === 'yes') {
+    marker.dataset.confirmed = 'yes';
+    btnYes.style.background = '#ffe0b2';
+    answerMsg.style.color = '#c0392b';
+    answerMsg.textContent = '已在' + other + '中的家长不能再申请加入' + wxgroupVal + '，谢谢理解！';
+  } else {
+    marker.dataset.confirmed = 'no';
+    btnNo.style.background = '#e8f5e9';
+    answerMsg.style.color = '#0a7c3e';
+    answerMsg.textContent = '确认。您可以继续填写并提交申请。';
+  }
+}
+
 function handleWechatGroupChange(val) {
   var notice = document.getElementById('wechat-full-notice');
   var hubNotice = document.getElementById('wechat-hub-notice');
