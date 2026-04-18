@@ -476,12 +476,24 @@
             <option value="premed">Pre-med Track 群</option>
             <option value="grad_masters">硕士</option>
             <option value="grad_phd">博士</option>
+            <option value="hub10">扯谈Duke群1.0</option>
+            <option value="hub20">扯谈Duke群2.0</option>
           </select>
         </div>
         <!-- 学校字段：本科生显示"高中学校"，研究生显示"本科学校" -->
         <div class="form-group full" id="premedYearGroup" style="display:none;">
           <label>Pre-med Track 来自哪一届 <span class="req">*</span></label>
           <select id="fPremedYear">
+            <option value="">请选择</option>
+            <option value="2030">2030 届</option>
+            <option value="2029">2029 届</option>
+            <option value="2028">2028 届</option>
+            <option value="2027">2027 届</option>
+          </select>
+        </div>
+        <div class="form-group full" id="hubYearGroup" style="display:none;">
+          <label>来自哪一个年级 <span class="req">*</span></label>
+          <select id="fHubYear">
             <option value="">请选择</option>
             <option value="2030">2030 届</option>
             <option value="2029">2029 届</option>
@@ -667,13 +679,30 @@
   function onYearChange(val) {
     const isPremed   = (val === 'premed');
     const isGrad     = (val === 'grad_masters' || val === 'grad_phd');
+    const isHub      = (val === 'hub10' || val === 'hub20');
     const year       = parseInt(val);
     // 2027–2029 是老届次，显示宿舍照片组
-    const isOldYear  = !isGrad && !isPremed && !isNaN(year) && year >= 2027 && year <= 2029;
+    const isOldYear  = !isGrad && !isPremed && !isHub && !isNaN(year) && year >= 2027 && year <= 2029;
     // 新本科届次（如2030等）本表不含
-    const isNewUG    = !isGrad && !isPremed && !isNaN(year) && year >= 2030;
+    const isNewUG    = !isGrad && !isPremed && !isHub && !isNaN(year) && year >= 2030;
+
+    // 扯谈Duke群1.0/2.0：隐藏所有上传区，显示年级选择
+    if (isHub) {
+      document.getElementById('premedYearGroup').style.display    = 'none';
+      document.getElementById('hubYearGroup').style.display       = 'flex';
+      document.getElementById('dormPhotoGroup').style.display     = 'none';
+      document.getElementById('gradLetterGroup').style.display    = 'none';
+      document.getElementById('uploadPlaceholder').style.display  = 'none';
+      document.getElementById('fPremedYear').value = '';
+      document.getElementById('fSchoolLabel').innerHTML = '学生所在学校 <span class="req">*</span>';
+      document.getElementById('fSchool').placeholder = '请输入孩子就读学校名称';
+      removeFile('dorm'); removeFile('gradLetter'); removeFile('oldCommitted'); removeFile('oldLetter');
+      return;
+    }
 
     // Pre-med Track：显示来源届次选择 + 强制显示学院，隐藏录取类型和上传区
+    document.getElementById('hubYearGroup').style.display = 'none';
+    document.getElementById('fHubYear').value = '';
     document.getElementById('premedYearGroup').style.display = isPremed ? 'flex' : 'none';
     if (!isPremed) document.getElementById('fPremedYear').value = '';
     if (isPremed) {
@@ -863,6 +892,7 @@
     const college     = (document.getElementById('fCollege').value || '').trim();
     const notes       = document.getElementById('fNotes').value.trim();
     const isGrad      = (year === 'grad_masters' || year === 'grad_phd');
+    const isHub       = (year === 'hub10' || year === 'hub20');
 
     if (!nameCnLast)  { showError('请填写中文姓'); return; }
     if (!nameCnFirst) { showError('请填写中文名'); return; }
@@ -884,15 +914,18 @@
     if (!year)    { showError('请选择入学届次'); return; }
     const isPremed = (year === 'premed');
     if (isPremed && !document.getElementById('fPremedYear').value) { showError('请选择 Pre-med Track 来自哪一届'); return; }
+    if (isHub && !document.getElementById('fHubYear').value) { showError('请选择来自哪一个年级'); return; }
     if (!college) { showError('请选择学院'); return; }
 
     const yearNum = parseInt(year);
-    const isOldYear = !isGrad && !isPremed && !isNaN(yearNum) && yearNum >= 2027 && yearNum <= 2029;
+    const isOldYear = !isGrad && !isPremed && !isHub && !isNaN(yearNum) && yearNum >= 2027 && yearNum <= 2029;
 
     if (isGrad) {
       if (!gradLetterFile) { showError('请上传研究生录取通知书'); return; }
     } else if (isPremed) {
       // Pre-med Track 无文件要求
+    } else if (isHub) {
+      // 扯谈Duke群1.0/2.0 无文件要求
     } else if (isOldYear) {
       if (!dormFile && !oldCommittedFile && !oldLetterFile) { showError('请至少上传一项：宿舍照片、Committed Letter 或录取通知书'); return; }
     }
@@ -941,14 +974,20 @@
       if (upProg) upProg.classList.remove('show');
 
       const premedYear = isPremed ? parseInt(document.getElementById('fPremedYear').value) : null;
-      const classYearVal = isGrad ? null : (isPremed ? premedYear : yearNum);
+      const hubYear    = isHub    ? parseInt(document.getElementById('fHubYear').value)    : null;
+      const classYearVal = isGrad ? null : (isPremed ? premedYear : (isHub ? hubYear : yearNum));
+      const admissionTypeVal = isGrad ? year
+        : isPremed ? 'Pre-med Track'
+        : year === 'hub10' ? '扯谈Duke群1.0'
+        : year === 'hub20' ? '扯谈Duke群2.0'
+        : null;
 
       const payload = {
         student_name_cn:       nameCn || null,
         student_name_en:       nameEn,
         high_school:           school || null,
         location:              location || null,
-        admission_type:        isGrad ? year : (isPremed ? 'Pre-med Track' : null),
+        admission_type:        admissionTypeVal,
         class_year:            classYearVal,
         college:               college || null,
         major:                 document.getElementById('fMajor').value.trim() || null,
