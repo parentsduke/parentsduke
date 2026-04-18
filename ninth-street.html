@@ -6,7 +6,7 @@
 <title>9th Street · DukeParents</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Noto+Serif+SC:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-weight: 700; }
 :root {
   --navy: #012169;
   --gold: #c9a84c;
@@ -14,8 +14,8 @@
   --bg: #f5f3ef;
   --card: #ffffff;
   --border: #e2ddd6;
-  --text: #1a1a1a;
-  --muted: #888070;
+  --text: #111111;
+  --muted: #3d3830;
   --tag-bg: #e8eef7;
   --tag-color: #012169;
 }
@@ -34,7 +34,7 @@
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
-#auth-overlay p { font-family: 'Noto Serif SC', serif; font-size: 13px; color: var(--muted); }
+#auth-overlay p { font-family: 'Noto Serif SC', serif; font-size: 15px; color: var(--muted); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Layout ── */
@@ -53,16 +53,16 @@ body {
 .page-title { text-align: center; margin-bottom: 8px; }
 .page-title h1 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(26px, 7vw, 42px);
+  font-size: clamp(30px, 8vw, 48px);
   color: var(--navy); line-height: 1.15;
 }
 .page-title .sub {
-  font-size: 12px; color: var(--muted); margin-top: 6px;
+  font-size: 13px; color: var(--muted); margin-top: 6px;
   font-family: 'DM Mono', monospace; letter-spacing: 0.5px;
 }
 .gold-line { width: 48px; height: 3px; background: var(--gold); margin: 10px auto 16px; border-radius: 2px; }
 .intro {
-  font-size: 13px; line-height: 1.9; color: var(--muted);
+  font-size: 15px; line-height: 1.9; color: var(--muted);
   text-align: center; margin-bottom: 20px;
 }
 
@@ -105,8 +105,8 @@ body {
   font-size: 20px; flex-shrink: 0;
 }
 .acc-title-group { flex: 1; min-width: 0; }
-.acc-name { font-size: 15px; font-weight: 600; color: var(--navy); }
-.acc-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+.acc-name { font-size: 17px; font-weight: 600; color: var(--navy); }
+.acc-sub { font-size: 12px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
 
 .chevron {
   width: 17px; height: 17px; flex-shrink: 0; color: var(--gold);
@@ -120,13 +120,13 @@ body {
 
 /* ── Content inside panels ── */
 .lead {
-  font-size: 13px; line-height: 1.85; color: #555;
+  font-size: 15px; line-height: 1.85; color: #222;
   margin-bottom: 16px; padding-bottom: 14px;
   border-bottom: 1px solid var(--border);
 }
 
 .section-label {
-  font-size: 11px; font-family: 'DM Mono', monospace;
+  font-size: 12px; font-family: 'DM Mono', monospace;
   color: var(--navy); font-weight: 600; letter-spacing: 1px;
   text-transform: uppercase; margin: 14px 0 8px;
 }
@@ -134,29 +134,29 @@ body {
 
 .place-row {
   display: flex; align-items: flex-start; gap: 10px;
-  padding: 9px 0; border-bottom: 1px solid #f0ece4;
-  font-size: 13px;
+  padding: 9px 0; border-bottom: 1px solid #e8e4dc;
+  font-size: 15px;
 }
 .place-row:last-child { border-bottom: none; padding-bottom: 0; }
 .place-dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: var(--gold); flex-shrink: 0; margin-top: 6px;
+  background: var(--gold); flex-shrink: 0; margin-top: 8px;
 }
 .place-info { flex: 1; }
-.place-name { font-weight: 600; color: var(--navy); }
-.place-desc { color: #666; margin-top: 2px; line-height: 1.65; font-size: 12px; }
+.place-name { font-weight: 600; color: var(--navy); font-size: 15px; }
+.place-desc { color: #333; margin-top: 3px; line-height: 1.7; font-size: 14px; }
 .place-tag {
   display: inline-block; margin-top: 4px;
   padding: 2px 7px; border-radius: 4px;
   background: var(--tag-bg); color: var(--tag-color);
-  font-size: 10px; font-family: 'DM Mono', monospace;
+  font-size: 11px; font-family: 'DM Mono', monospace;
 }
-.place-tag.gold { background: #fdf3d8; color: #7a5c00; }
+.place-tag.gold { background: #fdf3d8; color: #5a3e00; }
 
 .tip-box {
   background: var(--gold-lt); border-left: 3px solid var(--gold);
-  border-radius: 0 8px 8px 0; padding: 11px 14px;
-  font-size: 12px; line-height: 1.75; color: #5a4a00;
+  border-radius: 0 8px 8px 0; padding: 12px 14px;
+  font-size: 14px; line-height: 1.75; color: #3a2e00;
   margin-top: 14px;
 }
 .tip-box strong { color: var(--navy); }
@@ -164,20 +164,20 @@ body {
 /* ── Address bar ── */
 .addr-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 8px 0; border-bottom: 1px solid #f0ece4;
-  font-size: 12px;
+  padding: 8px 0; border-bottom: 1px solid #e8e4dc;
+  font-size: 14px;
 }
 .addr-row:last-child { border-bottom: none; }
 .addr-label { color: var(--navy); font-weight: 600; }
-.addr-val { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; }
+.addr-val { color: #333; font-family: 'DM Mono', monospace; font-size: 12px; }
 
 /* ── Hours table ── */
 .hours-grid {
   display: grid; grid-template-columns: auto 1fr;
-  gap: 5px 16px; font-size: 12px; margin-top: 6px;
+  gap: 5px 16px; font-size: 14px; margin-top: 6px;
 }
 .hours-day { color: var(--navy); font-weight: 600; white-space: nowrap; }
-.hours-time { color: #666; }
+.hours-time { color: #333; }
 </style>
 </head>
 <body>
