@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>9th Street · DukeParents</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Noto+Serif+SC:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #012169;
+  --gold: #c9a84c;
+  --gold-lt: #f9f3e3;
+  --bg: #f5f3ef;
+  --card: #ffffff;
+  --border: #e2ddd6;
+  --text: #1a1a1a;
+  --muted: #888070;
+  --tag-bg: #e8eef7;
+  --tag-color: #012169;
+}
+
+/* ── Auth overlay ── */
+#auth-overlay {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999; flex-direction: column; gap: 14px;
+}
+#auth-overlay .spinner {
+  width: 36px; height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+#auth-overlay p { font-family: 'Noto Serif SC', serif; font-size: 13px; color: var(--muted); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Layout ── */
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  font-family: 'Noto Serif SC', serif;
+  color: var(--text);
+  min-height: 100vh;
+  padding: 28px 14px 36px;
+  display: flex; flex-direction: column;
+}
+#main-content { flex: 1; display: none; flex-direction: column; }
+
+/* ── Header ── */
+.page-title { text-align: center; margin-bottom: 8px; }
+.page-title h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 7vw, 42px);
+  color: var(--navy); line-height: 1.15;
+}
+.page-title .sub {
+  font-size: 12px; color: var(--muted); margin-top: 6px;
+  font-family: 'DM Mono', monospace; letter-spacing: 0.5px;
+}
+.gold-line { width: 48px; height: 3px; background: var(--gold); margin: 10px auto 16px; border-radius: 2px; }
+.intro {
+  font-size: 13px; line-height: 1.9; color: var(--muted);
+  text-align: center; margin-bottom: 20px;
+}
+
+/* ── Map badge ── */
+.map-link {
+  display: block; text-align: center; margin-bottom: 22px;
+}
+.map-link a {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px; border-radius: 20px;
+  background: var(--navy); color: #fff;
+  font-size: 12px; font-family: 'DM Mono', monospace;
+  text-decoration: none; letter-spacing: 0.3px;
+}
+
+/* ── Accordion ── */
+.accordion-wrap { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+
+.acc {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: box-shadow 0.3s;
+}
+.acc.open { box-shadow: 0 6px 24px rgba(1,33,105,0.10); }
+
+.acc-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 15px 18px; cursor: pointer;
+  user-select: none; -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s;
+}
+.acc.open .acc-header { background: var(--gold-lt); border-bottom: 1px solid var(--border); }
+
+.acc-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.acc-title-group { flex: 1; min-width: 0; }
+.acc-name { font-size: 15px; font-weight: 600; color: var(--navy); }
+.acc-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+.chevron {
+  width: 17px; height: 17px; flex-shrink: 0; color: var(--gold);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.acc.open .chevron { transform: rotate(180deg); }
+
+.acc-panel { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+.acc.open .acc-panel { max-height: 2400px; }
+.acc-body { padding: 16px 18px 20px; }
+
+/* ── Content inside panels ── */
+.lead {
+  font-size: 13px; line-height: 1.85; color: #555;
+  margin-bottom: 16px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-label {
+  font-size: 11px; font-family: 'DM Mono', monospace;
+  color: var(--navy); font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; margin: 14px 0 8px;
+}
+.section-label:first-child { margin-top: 0; }
+
+.place-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid #f0ece4;
+  font-size: 13px;
+}
+.place-row:last-child { border-bottom: none; padding-bottom: 0; }
+.place-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--gold); flex-shrink: 0; margin-top: 6px;
+}
+.place-info { flex: 1; }
+.place-name { font-weight: 600; color: var(--navy); }
+.place-desc { color: #666; margin-top: 2px; line-height: 1.65; font-size: 12px; }
+.place-tag {
+  display: inline-block; margin-top: 4px;
+  padding: 2px 7px; border-radius: 4px;
+  background: var(--tag-bg); color: var(--tag-color);
+  font-size: 10px; font-family: 'DM Mono', monospace;
+}
+.place-tag.gold { background: #fdf3d8; color: #7a5c00; }
+
+.tip-box {
+  background: var(--gold-lt); border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0; padding: 11px 14px;
+  font-size: 12px; line-height: 1.75; color: #5a4a00;
+  margin-top: 14px;
+}
+.tip-box strong { color: var(--navy); }
+
+/* ── Address bar ── */
+.addr-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid #f0ece4;
+  font-size: 12px;
+}
+.addr-row:last-child { border-bottom: none; }
+.addr-label { color: var(--navy); font-weight: 600; }
+.addr-val { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; }
+
+/* ── Hours table ── */
+.hours-grid {
+  display: grid; grid-template-columns: auto 1fr;
+  gap: 5px 16px; font-size: 12px; margin-top: 6px;
+}
+.hours-day { color: var(--navy); font-weight: 600; white-space: nowrap; }
+.hours-time { color: #666; }
+</style>
+</head>
+<body>
+
+<div id="auth-overlay">
+  <div class="spinner"></div>
+  <p>验证登录状态…</p>
+</div>
+
+<div id="main-content">
+
+<div class="page-title">
+  <h1>9th Street<br>Durham</h1>
+  <div class="sub">Duke 周边生活指南 · dukeparents.org</div>
+</div>
+<div class="gold-line"></div>
+<p class="intro">Durham 最具人文气息的街区，紧邻 East Campus，汇聚独立餐厅、书店、咖啡馆与各类小店，是 Duke 学生日常消遣的首选去处，也是来访家长感受 Durham 风情的好地方。</p>
+
+<div class="map-link">
+  <a href="https://maps.google.com/?q=9th+Street+Durham+NC+27705" target="_blank">📍 在 Google Maps 中查看</a>
+</div>
+
+<div class="accordion-wrap">
+
+  <!-- ① 概览 -->
+  <div class="acc" id="s1">
+    <div class="acc-header" onclick="tog('s1')">
+      <div class="acc-icon" style="background:#e8eef7;">🏘️</div>
+      <div class="acc-title-group">
+        <div class="acc-name">街区概览</div>
+        <div class="acc-sub">Durham's Greenwich Village</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-panel"><div class="acc-body">
+      <p class="lead">9th Street 被《先驱太阳报》誉为"Durham 的格林威治村"，是一条有个性、有温度的独立商业街，从 600 号延伸至 1000 号，步行约 10 分钟可全程逛完。街道东侧即 Duke East Campus 大门，与 West Campus 乘公交或骑车约 10 分钟。</p>
+
+      <div class="section-label">核心地理</div>
+      <div class="addr-row"><span class="addr-label">街道地址</span><span class="addr-val">9th St, Durham NC 27705</span></div>
+      <div class="addr-row"><span class="addr-label">距 East Campus</span><span class="addr-val">步行 5 分钟</span></div>
+      <div class="addr-row"><span class="addr-label">距 West Campus</span><span class="addr-val">开车 / 公交约 10 分钟</span></div>
+      <div class="addr-row"><span class="addr-label">附近大型超市</span><span class="addr-val">Harris Teeter · Whole Foods（步行可达）</span></div>
+
+      <div class="section-label">街区性格</div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info"><div class="place-name">独立小店为主</div><div class="place-desc">无连锁购物中心气息，大多是经营多年的本地商家，店主本人往往就在店里。</div></div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info"><div class="place-name">学生与居民混居</div><div class="place-desc">Duke 学生、教职员工、Durham 老居民共同构成这里的日常氛围。</div></div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info"><div class="place-name">Shops at Erwin Mill</div><div class="place-desc">737 号的商业综合体，由百年老棉纺厂改建，内有 Juju、Pure Barre、Duck Shop 等品牌。</div></div></div>
+
+      <div class="tip-box"><strong>家长来访建议：</strong>周末早餐时段(8–10点)先去 Elmo's Diner 排队，饭后沿街散步，到 The Regulator 选书，下午可去 Common Market 点一杯精酿，整个下午在街区就能充实打发。</div>
+    </div></div>
+  </div>
+
+  <!-- ② 早午餐 -->
+  <div class="acc" id="s2">
+    <div class="acc-header" onclick="tog('s2')">
+      <div class="acc-icon" style="background:#fef9ec;">🍳</div>
+      <div class="acc-title-group">
+        <div class="acc-name">早餐 & 午餐</div>
+        <div class="acc-sub">学生和家长最爱的日间餐厅</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-panel"><div class="acc-body">
+
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Elmo's Diner <span class="place-tag gold">必去</span></div>
+        <div class="place-desc">776 9th St · 9th Street 的地标级餐厅，开业超过20年。菜单涵盖经典美式早午餐，蛋卷蓬松、虾仁芝士玉米粥令人难忘。墙上贴满顾客亲手涂色的"鸭子画"，氛围温暖有趣。不接受预约，周末有排队，但通常等待不超过15分钟。<br>营业时间：周一至五 7:00–15:00，周六日 7:00–15:30</div>
+        <span class="place-tag">家庭友好</span> <span class="place-tag">素食菜单</span>
+      </div></div>
+
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Monuts</div>
+        <div class="place-desc">1002 9th St · Durham 人气甜甜圈店，起源于 Durham Farmers Market 的街头推车，后来在9th Street开设实体店。手工甜甜圈口味创意十足，早餐贝果三明治同样受欢迎。</div>
+      </div></div>
+
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">9th Street Bakery</div>
+        <div class="place-desc">703 9th St 附近 · 以蔓越莓司康饼著称，本地评价极高。适合早餐外带或与咖啡搭配享用。</div>
+        <span class="place-tag">烘焙 / 外带</span>
+      </div></div>
+
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Mad Hatter Bakeshop & Cafe</div>
+        <div class="place-desc">1802 W. Main St · 略偏离9th主街，但深受 Duke 师生喜爱的轻食咖啡馆，三明治、汤品、自制糕点每日更换。</div>
+      </div></div>
+
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Happy + Hale</div>
+        <div class="place-desc">703 9th St · 健康轻食连锁，提供沙拉碗、烤鸡等，适合注重饮食健康的家长和学生。</div>
+        <span class="place-tag">健康轻食</span>
+      </div></div>
+
+      <div class="tip-box"><strong>提示：</strong>Elmo's 不接受预约，建议工作日前往或周末开门即到（7:00）可避开排队高峰。</div>
+    </div></div>
+  </div>
+
+  <!-- ③ 午晚餐 & 酒吧 -->
+  <div class="acc" id="s3">
+    <div class="acc-header" onclick="tog('s3')">
+      <div class="acc-icon" style="background:#fdecea;">🍜</div>
+      <div class="acc-title-group">
+        <div class="acc-name">午晚餐 & 酒吧</div>
+        <div class="acc-sub">多国风味一条街</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-panel"><div class="acc-body">
+
+      <div class="section-label">亚洲风味</div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Alpaca Peruvian Charcoal Chicken</div>
+        <div class="place-desc">703a 9th St · 秘鲁风味烤鸡，木炭烤制，皮脆肉嫩，附加绿酱辛辣开胃，在 Yelp 上口碑极佳。</div>
+        <span class="place-tag">秘鲁 / 拉丁</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Kiichi Ramen</div>
+        <div class="place-desc">9th St 附近 · 做工认真的拉面馆，汤底浓郁，深受 Duke 学生喜爱，晚餐时段容易排队。</div>
+        <span class="place-tag">日式</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">ZenFish Poké Bar</div>
+        <div class="place-desc">810 9th St · 夏威夷风格 Poké Bowl，食材新鲜，可自选基底与配料，健康且快速。</div>
+        <span class="place-tag">夏威夷</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Lime and Lemon Indian Grill & Bar</div>
+        <div class="place-desc">811 9th St · 印度菜，香料丰富，咖喱口感层次细腻，有素食选项，价格适中。</div>
+        <span class="place-tag">印度</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Juju</div>
+        <div class="place-desc">737 9th St, Shops at Erwin Mill #210 · 亚洲风味小食为主，环境有设计感，适合小聚。</div>
+        <span class="place-tag">亚洲融合</span>
+      </div></div>
+
+      <div class="section-label">美洲 & 欧洲风味</div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Cosmic Cantina</div>
+        <div class="place-desc">1920½ Perry St · 深夜营业的墨西哥卷饼店（到凌晨3点），Duke 学生宵夜首选，价格实惠。</div>
+        <span class="place-tag">墨西哥</span> <span class="place-tag">深夜营业</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Metro 8 Steakhouse</div>
+        <div class="place-desc">746 9th St · 本地牛排餐厅，适合家长来访的正式晚餐，建议提前订位。</div>
+        <span class="place-tag">牛排 / 正餐</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Vin Rouge French Café & Wine Bar</div>
+        <div class="place-desc">2010 Hillsborough Rd · 法式咖啡馆兼葡萄酒吧，环境优雅，适合家长与孩子轻松的晚餐。</div>
+        <span class="place-tag">法式</span>
+      </div></div>
+
+      <div class="section-label">酒吧 & 夜生活</div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Dain's Place <span class="place-tag gold">学生最爱</span></div>
+        <div class="place-desc">754 9th St · 2007年开业的社区酒吧，以 Durham 最好的汉堡和土豆条著称，冰啤酒+直播体育赛事，是学生和本地居民的聚集地。</div>
+        <span class="place-tag">酒吧</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Common Market Durham</div>
+        <div class="place-desc">9th St 核心地段 · 集熟食店、精酿啤酒屋、礼品店于一体的社区中心。内有 The Parlour Junior（创意冰淇淋）和 Mid Bloom Coffee（精品咖啡）。全天营业，氛围包容热闹。</div>
+        <span class="place-tag">熟食 / 精酿</span>
+      </div></div>
+
+      <div class="tip-box"><strong>家长来访正餐推荐：</strong>若想与孩子好好吃一顿，Metro 8 Steakhouse（牛排）或 Vin Rouge（法餐）都是合适选择，建议提前在 OpenTable 订位。预算有限可选 Alpaca 或 Kiichi Ramen，品质高且无需预约。</div>
+    </div></div>
+  </div>
+
+  <!-- ④ 咖啡 & 甜品 -->
+  <div class="acc" id="s4">
+    <div class="acc-header" onclick="tog('s4')">
+      <div class="acc-icon" style="background:#f0f7f0;">☕</div>
+      <div class="acc-title-group">
+        <div class="acc-name">咖啡 & 甜品</div>
+        <div class="acc-sub">学习、约见、发呆首选</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Mid Bloom Coffee</div>
+        <div class="place-desc">Common Market 内 · 精品咖啡馆，咖啡师出品稳定，座位充足，下午常见 Duke 学生在此自习。</div>
+        <span class="place-tag">精品咖啡</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Triangle Coffee House</div>
+        <div class="place-desc">714 9th St · 老牌街区咖啡馆，氛围轻松，适合和孩子聊天叙旧。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">The Parlour Junior</div>
+        <div class="place-desc">Common Market 内 · Durham 知名冰淇淋品牌的分店，口味天马行空（盐焦糖、薰衣草、黑芝麻等），强烈推荐。</div>
+        <span class="place-tag">冰淇淋</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Snow Factory</div>
+        <div class="place-desc">748 9th St · 韩式雪花冰，分量十足，夏日降温神器。</div>
+        <span class="place-tag">韩式甜品</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Bruegger's Bagel Bakery</div>
+        <div class="place-desc">626 9th St · 连锁贝果店，早餐三明治快速管饱，是学生最常光顾的平价早餐之一。</div>
+      </div></div>
+    </div></div>
+  </div>
+
+  <!-- ⑤ 书店 & 购物 -->
+  <div class="acc" id="s5">
+    <div class="acc-header" onclick="tog('s5')">
+      <div class="acc-icon" style="background:#f3eef8;">📚</div>
+      <div class="acc-title-group">
+        <div class="acc-name">书店 & 购物</div>
+        <div class="acc-sub">独立小店，淘货好去处</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-panel"><div class="acc-body">
+
+      <div class="section-label">书店</div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">The Regulator Bookshop <span class="place-tag gold">地标</span></div>
+        <div class="place-desc">720 9th St · 1976年开业，Durham 最具代表性的独立书店，选书质量高，定期举办作家读书会。强烈建议支持本地实体书店，在此购买教材或课外读物替代 Amazon。营业时间：每日 10:00–18:00</div>
+        <span class="place-tag">独立书店</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Books Do Furnish a Room</div>
+        <div class="place-desc">1809 W. Markham Ave · 二手书店，旧书淘宝，价格亲民。</div>
+      </div></div>
+
+      <div class="section-label">特色小店</div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Vaguely Reminiscent</div>
+        <div class="place-desc">728 9th St · 集服饰、玩具、创意礼品于一体的复古杂货铺，浓缩了9th Street的独特气质。适合寻找别致纪念品或为孩子挑选礼物。</div>
+        <span class="place-tag">复古杂货</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Bull City Fair Trade</div>
+        <div class="place-desc">811 9th St, Ste 100 · 公平贸易商品店，来自全球工匠的手工艺品，购物同时支持可持续发展。</div>
+        <span class="place-tag">公平贸易</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Native Threads</div>
+        <div class="place-desc">712 9th St · 本地服装品牌，Duke 和 Durham 元素设计，适合购买纪念品或日常穿搭。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Hunky Dory Eclectic Emporium</div>
+        <div class="place-desc">718 9th St · 家居摆件与设计品小店，风格折衷主义，适合寻找有个性的装饰品。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Zola Craft Gallery</div>
+        <div class="place-desc">626-B 9th St（Bruegger's楼上）· 手工艺品画廊，展售本地艺术家作品，适合购买独一无二的礼物。</div>
+        <span class="place-tag">艺术品</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Durham Cycles</div>
+        <div class="place-desc">756 9th St · 自行车店，提供维修与销售，学生购买或维护二手自行车的好去处。</div>
+        <span class="place-tag">自行车</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Ninth Street Flowers</div>
+        <div class="place-desc">700 9th St · 老牌花店，毕业典礼季或特殊节日鲜花首选，价格合理。</div>
+      </div></div>
+
+      <div class="tip-box"><strong>购物小贴士：</strong>多数独立小店周一可能休息，建议周二至周日前往。The Regulator 周末时常有签售或读书活动，可提前查看其官网日程。</div>
+    </div></div>
+  </div>
+
+  <!-- ⑥ 超市 & 日常采购 -->
+  <div class="acc" id="s6">
+    <div class="acc-header" onclick="tog('s6')">
+      <div class="acc-icon" style="background:#e8f5e9;">🛒</div>
+      <div class="acc-title-group">
+        <div class="acc-name">超市 & 日常采购</div>
+        <div class="acc-sub">生鲜、零食、日用品一站搞定</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Whole Foods Market <span class="place-tag gold">East Campus 步行可达</span></div>
+        <div class="place-desc">621 Broad St, Bull City Market · 距 East Campus 步行约5分钟，是最近的大型生鲜超市。有机食品、熟食区丰富，学生日常采购和家长送货常选此处。停车场免费。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Harris Teeter</div>
+        <div class="place-desc">737 9th St, Shops at Erwin Mill · 综合连锁超市，日用品、生鲜、即食食品齐全，价格相对 Whole Foods 更亲民，有免费停车场（仅限本店顾客）。</div>
+      </div></div>
+
+      <div class="tip-box"><strong>家长采购建议：</strong>来访时可在 Whole Foods 帮孩子补充零食、宿舍常备食品（麦片、坚果、速食汤包等），Harris Teeter 价格更实惠，采购量大时推荐。</div>
+    </div></div>
+  </div>
+
+  <!-- ⑦ 娱乐 & 活动 -->
+  <div class="acc" id="s7">
+    <div class="acc-header" onclick="tog('s7')">
+      <div class="acc-icon" style="background:#fff3e0;">🎭</div>
+      <div class="acc-title-group">
+        <div class="acc-name">娱乐 & 特色活动</div>
+        <div class="acc-sub">密室、舞蹈、现场音乐</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-panel"><div class="acc-body">
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Bull City Escape</div>
+        <div class="place-desc">711 Iredell St · Durham 本地密室逃脱，主题多样，适合家长来访时与孩子组队体验，建议提前在官网预约。</div>
+        <span class="place-tag">密室逃脱</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Ninth Street Dance</div>
+        <div class="place-desc">1920 Perry St（楼上）· 成人舞蹈课程，包括拉丁、爵士等多种风格，学生可按课次购买体验课。</div>
+        <span class="place-tag">舞蹈课</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Common Market 现场音乐</div>
+        <div class="place-desc">Common Market 不定期举办本地乐队现场演出，周末晚间氛围活跃，免费入场，消费一杯即可融入。</div>
+        <span class="place-tag">现场音乐</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">HappyMessART Studios</div>
+        <div class="place-desc">718 Iredell St · 艺术工作室兼课程与材料销售，适合有美术爱好的学生，也可购买画材。</div>
+        <span class="place-tag">艺术 / 课程</span>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">The Regulator 读书活动</div>
+        <div class="place-desc">书店定期举办作家签售、朗读会，是感受 Durham 文化氛围的好机会，可在官网查看近期日程。</div>
+        <span class="place-tag">文化活动</span>
+      </div></div>
+    </div></div>
+  </div>
+
+  <!-- ⑧ 停车 & 交通 -->
+  <div class="acc" id="s8">
+    <div class="acc-header" onclick="tog('s8')">
+      <div class="acc-icon" style="background:#e8eef7;">🚗</div>
+      <div class="acc-title-group">
+        <div class="acc-name">停车 & 交通</div>
+        <div class="acc-sub">来这里怎么停车最省心</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-panel"><div class="acc-body">
+
+      <div class="section-label">停车选项</div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Iredell St 免费路边停车 <span class="place-tag gold">推荐</span></div>
+        <div class="place-desc">9th St 背后的平行街道，路边停车位通常免费，步行至主街仅需1–2分钟。比正面街道更容易找到空位。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">9th St 路边计时停车</div>
+        <div class="place-desc">主街道路边有计时收费停车位，高峰时段（午餐、周末）较难找到空位，建议绕到 Iredell St。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Harris Teeter / Shops at Erwin Mill 停车场</div>
+        <div class="place-desc">737 9th St 综合体有免费停车场，但仅限在店消费者使用，停车后在 Harris Teeter 买点东西即可正当停放。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Whole Foods / Bull City Market 停车场</div>
+        <div class="place-desc">621 Broad St，免费，购物顾客可使用，从此步行至9th Street核心约5分钟。</div>
+      </div></div>
+
+      <div class="section-label">从 Duke 校园前往</div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">从 East Campus 步行</div>
+        <div class="place-desc">沿 Buchanan Blvd 向北步行约5分钟即到9th St 入口，是最方便的方式。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">从 West Campus 乘 Duke Bus</div>
+        <div class="place-desc">乘 C1 或 C4 线至 East Campus，再步行前往；或乘 GoDurham 公交（TransLoc App 查看实时班次）。全程约15–20分钟。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">Uber / Lyft</div>
+        <div class="place-desc">从 West Campus 约 5–8 分钟，费用通常 $6–10，周末夜间有溢价。</div>
+      </div></div>
+
+      <div class="tip-box"><strong>停车总结：</strong>Iredell St（9th St 背后）路边停车最省心，免费且容易找位。若开车来，建议在 Whole Foods 停车后步行进街区，一并完成采购。</div>
+    </div></div>
+  </div>
+
+  <!-- ⑨ 家长来访行程建议 -->
+  <div class="acc" id="s9">
+    <div class="acc-header" onclick="tog('s9')">
+      <div class="acc-icon" style="background:#fdf3d8;">🗓️</div>
+      <div class="acc-title-group">
+        <div class="acc-name">家长来访行程建议</div>
+        <div class="acc-sub">半天玩转 9th Street</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-panel"><div class="acc-body">
+
+      <div class="section-label">周末上午（约4小时）</div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">08:00 · Elmo's Diner</div>
+        <div class="place-desc">早开门即到，避开排队。点招牌蛋卷或虾仁玉米粥，顺便看看墙上的鸭子画廊。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">09:30 · 沿街散步</div>
+        <div class="place-desc">从 Elmo's 向南步行，途经 Dain's Place、Vaguely Reminiscent、Durham Cycles，感受街区气质。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">10:00 · The Regulator Bookshop</div>
+        <div class="place-desc">开门即进，各类书籍选品精良。可为孩子挑一本课外书，也可查看近期活动公告栏。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">10:45 · Bull City Fair Trade & Native Threads</div>
+        <div class="place-desc">浏览公平贸易工艺品和 Duke 本地设计服装，适合带些有意思的小礼物回去。</div>
+      </div></div>
+      <div class="place-row"><div class="place-dot"></div><div class="place-info">
+        <div class="place-name">11:30 · Common Market + The Parlour Junior</div>
+        <div class="place-desc">在 Common Market 点一杯精酿或咖啡，顺手来一球 Parlour 冰淇淋，结束半日游。</div>
+      </div></div>
+
+      <div class="tip-box"><strong>加分选项：</strong>如孩子有兴趣，可预约 Bull City Escape 密室（提前1–2天在官网订），非常适合亲子互动，约60–75分钟，记忆深刻。</div>
+    </div></div>
+  </div>
+
+</div><!-- /accordion-wrap -->
+</div><!-- /main-content -->
+
+<!-- Supabase auth guard -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(async () => {
+  const SUPABASE_URL  = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    const redirect = encodeURIComponent(window.location.pathname);
+    window.location.replace('index.html?redirect=' + redirect);
+    return;
+  }
+  document.getElementById('auth-overlay').style.display = 'none';
+  const mc = document.getElementById('main-content');
+  mc.style.display = 'flex';
+})();
+</script>
+
+<script>
+function tog(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.acc').forEach(c => c.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+</script>
+</body>
+</html>
