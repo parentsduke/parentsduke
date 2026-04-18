@@ -13445,14 +13445,18 @@ window.showPV();
         <option value="multi">研究生家长群</option>
         <option value="multi">Pre-med Track 群</option>
         <option value="full">扯谈Duke群</option>
-        <option value="multi">扯谈Duke群1.0</option>
-        <option value="multi">扯谈Duke群2.0</option>
+        <option value="hub">扯谈Duke群1.0</option>
+        <option value="hub">扯谈Duke群2.0</option>
         <option value="contact">联系我们</option>
       </select>
     </div>
     <!-- 扯谈Duke群满员提示 -->
     <div id="wechat-full-notice" style="display:none; background:#fff8e1; border:1px solid #ffe082; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:13px; color:#7a5800; line-height:1.7;">
       扯谈Duke群是扯谈Duke家长群体系中第一个不同年级家长在一起的综合群，目前已接近满员，不再接受申请加入，谢谢！
+    </div>
+    <!-- 扯谈Duke群1.0/2.0 提示 -->
+    <div id="wechat-hub-notice" style="display:none; background:#e8f0fb; border:1px solid #b0c4e8; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:13px; color:#012169; line-height:1.8;">
+      扯谈Duke群1.0和2.0是在校生家长综合群，<strong>不接受毕业生家长的申请</strong>。申请加入的家长须已经在自己孩子对应年级的家长群中。如符合条件，请点击下方按钮填写申请。
     </div>
     <button id="wechat-group-btn" onclick="goToGroupForm()"
       style="width:100%; padding:10px; background:#012169; color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
@@ -13465,15 +13469,18 @@ window.showPV();
 <script>
 function handleWechatGroupChange(val) {
   var notice = document.getElementById('wechat-full-notice');
+  var hubNotice = document.getElementById('wechat-hub-notice');
   var btn = document.getElementById('wechat-group-btn');
   var msg = document.getElementById('wechat-group-msg');
   msg.textContent = '';
+  notice.style.display = 'none';
+  hubNotice.style.display = 'none';
+  btn.style.display = 'block';
   if (val === 'full') {
     notice.style.display = 'block';
     btn.style.display = 'none';
-  } else {
-    notice.style.display = 'none';
-    btn.style.display = 'block';
+  } else if (val === 'hub') {
+    hubNotice.style.display = 'block';
   }
 }
 function goToGroupForm() {
@@ -13487,7 +13494,7 @@ function goToGroupForm() {
   msg.textContent = '';
   if (val === 'form') {
     window.location.href = 'https://dukeparents.org/form.html';
-  } else if (val === 'multi') {
+  } else if (val === 'multi' || val === 'hub') {
     window.location.href = 'https://dukeparents.org/formMulti.html';
   } else if (val === 'contact') {
     openOverlay('qhub.png', '联系我们');
