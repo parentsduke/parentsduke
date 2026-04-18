@@ -13572,6 +13572,19 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// 额外保险：延迟1秒再绑定一次，防止页面其他脚本干扰
+setTimeout(function() {
+  try {
+    var inviteNameSel = document.getElementById('invite-name');
+    if (inviteNameSel && !inviteNameSel._hubBound) {
+      inviteNameSel._hubBound = true;
+      inviteNameSel.addEventListener('change', function() {
+        handleInviteNameChange(this.value);
+      });
+    }
+  } catch(e) {}
+}, 1000);
+
 function handleHubAnswer(answer) {
   var marker = document.getElementById('hub-already-in');
   var answerMsg = document.getElementById('hub-answer-msg');
