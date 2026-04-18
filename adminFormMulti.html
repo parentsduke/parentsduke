@@ -745,7 +745,7 @@
                   style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                   onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
                 ${r.approved_by ? `<span style="font-size:11px;color:#888070;font-family:'DM Mono',monospace;">批:${r.approved_by}</span>` : ''}
-                ${(() => { const last = (r.approval_log||[]).filter(e=>e.action==='resent').slice(-1)[0]; return last ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">发:${last.by}</span>` : ''; })()}
+                ${(() => { const resents = (r.approval_log||[]).filter(e=>e.action==='resent'); return resents.length ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">发(${resents.length}):${resents.map(e=>e.by).join(' ')}</span>` : ''; })()}
               </div>`
             : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
                 style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
@@ -1115,7 +1115,7 @@
             style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
             onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
           ${approvedBy ? `<span style="font-size:11px;color:#888070;font-family:'DM Mono',monospace;">批:${approvedBy}</span>` : ''}
-          <span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">发:${adminName}</span>
+          ${(() => { const resents = (rec?.approval_log||[]).filter(e=>e.action==='resent'); const allBy = [...resents.map(e=>e.by), adminName]; return `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">发(${allBy.length}):${allBy.join(' ')}</span>`; })()}
         </div>`;
       }
 
