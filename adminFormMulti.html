@@ -415,6 +415,8 @@
       <option value="">全部录取类型</option>
       <option value="ED">ED</option>
       <option value="RD">RD</option>
+      <option value="扯谈Duke群1.0">扯谈Duke群1.0</option>
+      <option value="扯谈Duke群2.0">扯谈Duke群2.0</option>
     </select>
     <select id="filterYear" onchange="applyFilters()">
       <option value="">全部届次</option>
@@ -556,7 +558,7 @@
     const { data, error } = await db
       .from('admissions_submissionsMulti')
       .select('*')
-      .or('class_year.neq.2030,class_year.is.null,and(class_year.eq.2030,admission_type.eq.Pre-med Track)')
+      .or('class_year.neq.2030,class_year.is.null,and(class_year.eq.2030,admission_type.eq.Pre-med Track),admission_type.eq.扯谈Duke群1.0,admission_type.eq.扯谈Duke群2.0')
       .order('created_at', { ascending: false });
 
     document.getElementById('tableLoading').style.display = 'none';
@@ -885,6 +887,12 @@
     }
     if (admissionType === 'Pre-med Track') {
       return { image_url: `${base}/qpmt.png`, label: 'Duke Pre-med Track 家长群', groupName: 'Duke Pre-med Track 家长群' };
+    }
+    if (admissionType === '扯谈Duke群1.0') {
+      return { image_url: `${base}/qh10.png`, label: '扯谈Duke群1.0', groupName: '扯谈Duke群1.0' };
+    }
+    if (admissionType === '扯谈Duke群2.0') {
+      return { image_url: `${base}/qh20.png`, label: '扯谈Duke群2.0', groupName: '扯谈Duke群2.0' };
     }
     const yr = String(classYear || '2030').slice(-2);
     return {
