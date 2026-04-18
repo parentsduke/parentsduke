@@ -13438,7 +13438,6 @@ window.showPV();
       <div id="hub-answer-msg" style="margin-top:8px; font-size:12px; min-height:16px;"></div>
     </div>
     <div id="hub-already-in" style="display:none;"></div>
-    </div>
     <div style="margin-bottom:4px;">
       <input id="invite-nickname" type="text" placeholder="微信家长群昵称，如：Alex-杜爸-Grace-30T-NY" maxlength="30"
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
@@ -13502,11 +13501,14 @@ function handleInviteNameChange(val) {
   var marker = document.getElementById('hub-already-in');
   var qtext = document.getElementById('hub-question-text');
   var answerMsg = document.getElementById('hub-answer-msg');
+  if (!box || !marker || !qtext || !answerMsg) return;
   // 重置状态
   marker.dataset.confirmed = '';
   answerMsg.textContent = '';
-  document.getElementById('hub-btn-yes').style.background = '#fff';
-  document.getElementById('hub-btn-no').style.background = '#fff';
+  var btnYes = document.getElementById('hub-btn-yes');
+  var btnNo = document.getElementById('hub-btn-no');
+  if (btnYes) btnYes.style.background = '#fff';
+  if (btnNo) btnNo.style.background = '#fff';
   if (val === '扯谈Duke群1.0' || val === '扯谈Duke群2.0') {
     var other = val === '扯谈Duke群1.0' ? '扯谈Duke群2.0' : '扯谈Duke群1.0';
     qtext.textContent = '请问您目前是否已在' + other + '中？';
