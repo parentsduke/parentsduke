@@ -12094,16 +12094,16 @@ async function submitInviteRequest(btn) {
   }
 
   // 扯谈Duke群1.0/2.0 互斥检查
-  if (wxgroupVal === '扯谈Duke群1.0' || wxgroupVal === '扯谈Duke群2.0') {
-    var alreadyIn = document.getElementById('hub-already-in');
-    if (!alreadyIn || alreadyIn.dataset.confirmed !== 'no') {
-      msg.style.color = 'crimson';
-      msg.textContent = '请先回答上方问题后再提交。';
-      var hubQ = document.getElementById('hub-qbox');
-      if (hubQ) hubQ.scrollIntoView({behavior:'smooth', block:'center'});
-      return;
-    }
+
+if (wxgroupVal === '扯谈Duke群1.0' || wxgroupVal === '扯谈Duke群2.0') {
+  var other = wxgroupVal === '扯谈Duke群1.0' ? '扯谈Duke群2.0' : '扯谈Duke群1.0';
+  var already = confirm('您是否已经在' + other + '中？\n\n已在请点"确定"，未在请点"取消"');
+  if (already) {
+    msg.style.color = 'crimson';
+    msg.textContent = '已在' + other + '中的家长不能再申请加入' + wxgroupVal + '，谢谢！';
+    return;
   }
+}
 
   btn.disabled = true; btn.textContent = '提交中...';
 
