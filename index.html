@@ -13449,21 +13449,8 @@ window.showPV();
       </select>
     </div>
     <div style="margin-bottom:12px;">
-      <select id="invite-name" onchange="
-        var v=this.value;
-        var box=document.getElementById('hub-qbox');
-        var txt=document.getElementById('hub-question-text');
-        var marker=document.getElementById('hub-already-in');
-        if(v==='扯谈Duke群1.0'||v==='扯谈Duke群2.0'){
-          var other=v==='扯谈Duke群1.0'?'扯谈Duke群2.0':'扯谈Duke群1.0';
-          txt.textContent='test123';
-          box.style.display='block';
-          if(marker)marker.dataset.confirmed='';
-        }else{
-          box.style.display='none';
-        }
-        handleInviteNameChange(v);
-      "
+<select id="invite-name" onchange="var v=this.value;var box=document.getElementById('hub-qbox');var txt=document.getElementById('hub-question-text');var marker=document.getElementById('hub-already-in');if(v==='扯谈Duke群1.0'||v==='扯谈Duke群2.0'){var other=v==='扯谈Duke群1.0'?'扯谈Duke群2.0':'扯谈Duke群1.0';txt.textContent='请问您目前是否已在'+other+'中？';box.style.display='block';if(marker)marker.dataset.confirmed='';}else{box.style.display='none';}handleInviteNameChange(v);"
+
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none; background:#fff; color:#333;">
         <option value="">请选择微信家长群名</option>
         <option value="Duke2030本科生家长群">Duke2030本科生家长群</option>
