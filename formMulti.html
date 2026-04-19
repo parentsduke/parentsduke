@@ -501,6 +501,25 @@
             <option value="2027">2027 届</option>
           </select>
         </div>
+
+        <!-- 1.0/2.0 互斥询问框 -->
+        <div class="form-group full" id="hub-mutex-box" style="display:none;">
+          <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:14px 16px;">
+            <div id="hub-mutex-text" style="font-size:13px;font-weight:600;color:#5a4000;margin-bottom:10px;"></div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" id="hub-mutex-yes" onclick="handleMutexAnswer('yes')"
+                style="flex:1;padding:9px;border:1px solid #c9a84c;border-radius:6px;background:#fff;color:#5a4000;font-size:13px;cursor:pointer;">
+                是，我已在另一个群
+              </button>
+              <button type="button" id="hub-mutex-no" onclick="handleMutexAnswer('no')"
+                style="flex:1;padding:9px;border:1px solid #c9a84c;border-radius:6px;background:#fff;color:#5a4000;font-size:13px;cursor:pointer;">
+                否，我未在另一个群
+              </button>
+            </div>
+            <div id="hub-mutex-msg" style="margin-top:8px;font-size:12px;min-height:16px;"></div>
+          </div>
+        </div>
+        <div id="hub-mutex-marker" data-confirmed="" style="display:none;"></div>
         <!-- 学校字段：本科生显示"高中学校"，研究生显示"本科学校" -->
         <div class="form-group">
           <label id="fSchoolLabel">毕业学校 <span class="req">*</span></label>
@@ -676,6 +695,28 @@
   };
 
   // ── 届次联动 ──
+  function handleMutexAnswer(answer) {
+    var marker = document.getElementById('hub-mutex-marker');
+    var msg = document.getElementById('hub-mutex-msg');
+    var btnYes = document.getElementById('hub-mutex-yes');
+    var btnNo = document.getElementById('hub-mutex-no');
+    var year = document.getElementById('fYear').value;
+    var other = year === 'hub10' ? '扯谈Duke群2.0' : '扯谈Duke群1.0';
+    btnYes.style.background = '#fff';
+    btnNo.style.background = '#fff';
+    if (answer === 'yes') {
+      marker.dataset.confirmed = 'yes';
+      btnYes.style.background = '#ffe0b2';
+      msg.style.color = '#c0392b';
+      msg.textContent = '已在' + other + '中的家长不能再申请加入，谢谢理解！';
+    } else {
+      marker.dataset.confirmed = 'no';
+      btnNo.style.background = '#e8f5e9';
+      msg.style.color = '#1a6b3c';
+      msg.textContent = '确认。请继续填写并提交申请。';
+    }
+  }
+
   function onYearChange(val) {
     const isPremed   = (val === 'premed');
     const isGrad     = (val === 'grad_masters' || val === 'grad_phd');
@@ -697,8 +738,19 @@
       document.getElementById('fSchoolLabel').innerHTML = '学生所在学校 <span class="req">*</span>';
       document.getElementById('fSchool').placeholder = '请输入孩子就读学校名称';
       removeFile('dorm'); removeFile('gradLetter'); removeFile('oldCommitted'); removeFile('oldLetter');
+      // 显示互斥询问框
+      var other = val === 'hub10' ? '扯谈Duke群2.0' : '扯谈Duke群1.0';
+      document.getElementById('hub-mutex-text').textContent = '请问您目前是否已在' + other + '中？';
+      document.getElementById('hub-mutex-box').style.display = 'block';
+      var marker = document.getElementById('hub-mutex-marker');
+      if (marker) marker.dataset.confirmed = '';
+      document.getElementById('hub-mutex-msg').textContent = '';
+      document.getElementById('hub-mutex-yes').style.background = '#fff';
+      document.getElementById('hub-mutex-no').style.background = '#fff';
       return;
     }
+    // 切换到其他选项时隐藏互斥框
+    document.getElementById('hub-mutex-box').style.display = 'none';
 
     // Pre-med Track：显示来源届次选择 + 强制显示学院，隐藏录取类型和上传区
     document.getElementById('hubYearGroup').style.display = 'none';
@@ -915,6 +967,15 @@
     const isPremed = (year === 'premed');
     if (isPremed && !document.getElementById('fPremedYear').value) { showError('请选择 Pre-med Track 来自哪一届'); return; }
     if (isHub && !document.getElementById('fHubYear').value) { showError('请选择来自哪一个年级'); return; }
+    // 互斥检查：已在另一个群则拦截
+    if (isHub) {
+      var marker = document.getElementById('hub-mutex-marker');
+      if (!marker || marker.dataset.confirmed !== 'no') {
+        showError('请先回答上方关于是否已在另一个群的问题');
+        document.getElementById('hub-mutex-box').scrollIntoView({behavior:'smooth', block:'center'});
+        return;
+      }
+    }
     if (!college) { showError('请选择学院'); return; }
 
     const yearNum = parseInt(year);
