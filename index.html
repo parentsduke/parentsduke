@@ -13640,6 +13640,7 @@ function handleWechatGroupChange(val) {
   hubNotice.style.display = 'none';
   hubBox.style.display = 'none';
   btn.style.display = 'block';
+  btn.textContent = '前往申请表单';
   if (marker) marker.dataset.confirmed = '';
   if (answerMsg) answerMsg.textContent = '';
   if (btnYes) btnYes.style.background = '#fff';
@@ -13657,6 +13658,8 @@ function handleWechatGroupChange(val) {
     if (qtext) qtext.textContent = '请问您目前是否已在' + other + '中？';
     hubBox.style.display = 'block';
     btn.style.display = 'none';
+  } else if (val === 'contact') {
+    btn.textContent = '请扫描二维码';
   }
 }
 function goToGroupForm() {
