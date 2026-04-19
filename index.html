@@ -193,7 +193,7 @@ document.addEventListener("keydown", function(e) {
 
 // ===== 1.0/2.0 互斥询问框（提前定义防止页面其他JS报错干扰）=====
 function handleInviteNameChange(val) {
-  var box = document.getElementById('hub-question-box');
+  var box = document.getElementById('hub-qbox');
   var marker = document.getElementById('hub-already-in');
   var qtext = document.getElementById('hub-question-text');
   var answerMsg = document.getElementById('hub-answer-msg');
@@ -12099,7 +12099,7 @@ async function submitInviteRequest(btn) {
     if (!alreadyIn || alreadyIn.dataset.confirmed !== 'no') {
       msg.style.color = 'crimson';
       msg.textContent = '请先回答上方问题后再提交。';
-      var hubQ = document.getElementById('hub-question-box');
+      var hubQ = document.getElementById('hub-qbox');
       if (hubQ) hubQ.scrollIntoView({behavior:'smooth', block:'center'});
       return;
     }
@@ -13451,7 +13451,7 @@ window.showPV();
     <div style="margin-bottom:12px;">
       <select id="invite-name" onchange="
         var v=this.value;
-        var box=document.getElementById('hub-question-box');
+        var box=document.getElementById('hub-qbox');
         var txt=document.getElementById('hub-question-text');
         var marker=document.getElementById('hub-already-in');
         if(v==='扯谈Duke群1.0'||v==='扯谈Duke群2.0'){
@@ -13481,7 +13481,7 @@ window.showPV();
     </div>
 
     <!-- 1.0/2.0 互斥询问框 -->
-    <div id="hub-question-box" style="display:block; margin-bottom:12px; background:#fff8e1; border:1px solid #ffe082; border-radius:8px; padding:12px 14px; font-size:13px; color:#5a4000; line-height:1.7;">
+    <div id="hub-qbox" style="display:block; margin-bottom:12px; background:#fff8e1; border:1px solid #ffe082; border-radius:8px; padding:12px 14px; font-size:13px; color:#5a4000; line-height:1.7;">
       <div id="hub-question-text" style="margin-bottom:10px; font-weight:600;"></div>
       <div style="display:flex; gap:10px;">
         <button type="button" id="hub-btn-yes" onclick="handleHubAnswer('yes')"
@@ -13555,7 +13555,7 @@ window.showPV();
 
 <script>
 function handleInviteNameChange(val) {
-  var box = document.getElementById('hub-question-box');
+  var box = document.getElementById('hub-qbox');
   var marker = document.getElementById('hub-already-in');
   var qtext = document.getElementById('hub-question-text');
   var answerMsg = document.getElementById('hub-answer-msg');
