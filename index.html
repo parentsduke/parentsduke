@@ -13650,8 +13650,10 @@ setInterval(function(){
   var txt=document.getElementById('hub-question-text');
   if(!sel||!box||!txt)return;
   var v=sel.value;
-  if(v==='扯谈Duke群1.0'||v==='扯谈Duke群2.0'){
-    var other=v==='扯谈Duke群1.0'?'扯谈Duke群2.0':'扯谈Duke群1.0';
+
+if(v=='扯谈Duke群1.0'||v=='扯谈Duke群2.0'){
+var other=v=='扯谈Duke群1.0'?'扯谈Duke群2.0':'扯谈Duke群1.0';
+
     txt.textContent='请问您目前是否已在'+other+'中？';
     box.style.display='block';
   }else{
