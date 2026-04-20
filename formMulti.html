@@ -1037,10 +1037,11 @@
       const premedYear = isPremed ? parseInt(document.getElementById('fPremedYear').value) : null;
       const hubYear    = isHub    ? parseInt(document.getElementById('fHubYear').value)    : null;
       const classYearVal = isGrad ? null : (isPremed ? premedYear : (isHub ? hubYear : yearNum));
-      const admissionTypeVal = isGrad ? year
+      const admissionTypeVal = isGrad ? (year === 'grad_masters' ? '硕士' : '博士')
         : isPremed ? 'Pre-med Track'
         : year === 'hub10' ? '扯谈Duke群1.0'
         : year === 'hub20' ? '扯谈Duke群2.0'
+        : !isNaN(yearNum) ? String(yearNum) + '届本科'
         : null;
 
       const payload = {
