@@ -13550,28 +13550,7 @@ function handleInviteNameChange(val) {
   }
 }
 
-// 用addEventListener绑定，兼容iOS Safari
-document.addEventListener('DOMContentLoaded', function() {
-  var inviteNameSel = document.getElementById('invite-name');
-  if (inviteNameSel) {
-    inviteNameSel.addEventListener('change', function() {
-      handleInviteNameChange(this.value);
-    });
-  }
-});
-
-// 额外保险：延迟1秒再绑定一次，防止页面其他脚本干扰
-setTimeout(function() {
-  try {
-    var inviteNameSel = document.getElementById('invite-name');
-    if (inviteNameSel && !inviteNameSel._hubBound) {
-      inviteNameSel._hubBound = true;
-      inviteNameSel.addEventListener('change', function() {
-        handleInviteNameChange(this.value);
-      });
-    }
-  } catch(e) {}
-}, 1000);
+// invite-name 不触发互斥检查
 
 function handleHubAnswer(answer) {
   var marker = document.getElementById('hub-already-in');
