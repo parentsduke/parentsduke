@@ -12093,18 +12093,6 @@ async function submitInviteRequest(btn) {
     msg.style.color = 'crimson'; msg.textContent = '请输入有效的电子邮件地址'; return;
   }
 
-  // 扯谈Duke群1.0/2.0 互斥检查
-  if (wxgroupVal === '扯谈Duke群1.0' || wxgroupVal === '扯谈Duke群2.0') {
-    var alreadyIn = document.getElementById('hub-already-in');
-    if (!alreadyIn || alreadyIn.dataset.confirmed !== 'no') {
-      msg.style.color = 'crimson';
-      msg.textContent = '请先回答上方问题后再提交。';
-      var hubQ = document.getElementById('hub-qbox');
-      if (hubQ) hubQ.scrollIntoView({behavior:'smooth', block:'center'});
-      return;
-    }
-  }
-
   btn.disabled = true; btn.textContent = '提交中...';
 
   try {
