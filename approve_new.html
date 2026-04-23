@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>入站申请审批 · DukeParents</title>
+  <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: #f0f4f8;
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: #1a1a2e;
+    }
+
+    header {
+      background: #001a4d;
+      border-bottom: 3px solid #B8963E;
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .hd { font-size: 24px; font-weight: 900; color: #001a4d; -webkit-text-stroke: 1.5px #fff; }
+    .ht { font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 600; }
+    .logout-btn {
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.8);
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.2); }
+
+    #loginScreen {
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      background: #001a4d;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 44px 40px;
+      width: 360px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .login-logo { font-size: 36px; font-weight: 900; color: #001a4d; margin-bottom: 4px; }
+    .login-sub { font-size: 12px; color: #888; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 28px; }
+    .login-card input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid #ddd; border-radius: 8px;
+      font-size: 14px; margin-bottom: 12px; outline: none;
+    }
+    .login-card input:focus { border-color: #001a4d; }
+    .btn-login {
+      width: 100%; padding: 13px;
+      background: #001a4d; color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .btn-login:hover { background: #003087; }
+    #loginErr { color: #c0392b; font-size: 13px; margin-top: 10px; display: none; }
+
+    #mainContent { display: none; }
+    .container { max-width: 800px; margin: 32px auto; padding: 0 20px; }
+
+    .stats { display: flex; gap: 14px; margin-bottom: 24px; }
+    .stat-card {
+      background: #fff; border-radius: 12px;
+      padding: 18px 24px; flex: 1; text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .stat-card .num { font-size: 28px; font-weight: 700; color: #003087; }
+    .stat-card .lbl { font-size: 12px; color: #888; margin-top: 4px; }
+
+    .toolbar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .toolbar h2 { font-size: 16px; font-weight: 700; color: #001a4d; }
+    .btn-refresh {
+      padding: 8px 16px; background: #003087; color: #fff;
+      border: none; border-radius: 8px; font-size: 13px; cursor: pointer;
+    }
+    .btn-refresh:hover { background: #001a4d; }
+
+    .request-card {
+      background: #fff; border: 1px solid #e0e8f0;
+      border-radius: 12px; padding: 18px 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      display: flex; align-items: flex-start;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .request-card.approved {
+      opacity: 0.5; background: #f0f7f0;
+      border-color: #b0d8b0;
+    }
+    .request-info { flex: 1; min-width: 200px; }
+    .request-name { font-size: 15px; font-weight: 700; color: #001a4d; margin-bottom: 4px; }
+    .request-meta { font-size: 13px; color: #555; line-height: 1.8; }
+    .request-meta a { color: #003087; }
+    .request-time { font-size: 11px; color: #aaa; margin-top: 4px; font-family: monospace; }
+    .request-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+    .btn-approve {
+      padding: 8px 18px;
+      background: #0a7c3e; color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .btn-approve:hover { background: #085f30; }
+    .btn-approve:disabled { background: #aaa; cursor: not-allowed; }
+
+    .btn-reject {
+      padding: 8px 14px;
+      background: #fff0f0; color: #c0392b;
+      border: 1px solid #f0c0c0;
+      border-radius: 8px; font-size: 13px; cursor: pointer;
+    }
+    .btn-reject:hover { background: #fde0e0; }
+    .btn-reject:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-hold {
+      padding: 8px 14px;
+      background: #fffbe6; color: #b8860b;
+      border: 1px solid #f0d080;
+      border-radius: 8px; font-size: 13px; cursor: pointer;
+      touch-action: manipulation; user-select: none;
+    }
+    .btn-hold:hover { background: #fff3c0; }
+    .btn-hold:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-unhold {
+      padding: 8px 14px;
+      background: #f0f4ff; color: #003087;
+      border: 1px solid #b0c4f0;
+      border-radius: 8px; font-size: 13px; cursor: pointer;
+      touch-action: manipulation; user-select: none;
+    }
+    .btn-unhold:hover { background: #dde8ff; }
+    .btn-unhold:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .status-badge {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .status-pending { background: #fff8e0; color: #b8860b; }
+    .status-approved { background: #e0f7e0; color: #0a7c3e; }
+    .status-rejected { background: #fff0f0; color: #c0392b; }
+    .status-hold { background: #f0f0ff; color: #5b4fcf; }
+
+    .empty-state {
+      text-align: center; padding: 48px 20px;
+      color: #aaa; font-size: 14px;
+    }
+    .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
+
+    .error-msg {
+      background: #fdecea; color: #c62828;
+      padding: 12px 16px; border-radius: 8px;
+      font-size: 14px; margin-bottom: 16px; display: none;
+    }
+
+    .filter-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filter-tab {
+      padding: 7px 18px; border-radius: 6px;
+      font-size: 13px; cursor: pointer; font-weight: 500;
+      border: 1.5px solid #bbb; background: #f5f5f5; color: #444;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-tab:active { transform: scale(0.97); }
+    .filter-tab.active { background: #003087; color: #fff; border-color: #003087; box-shadow: 0 2px 6px rgba(0,48,135,0.3); }
+
+    @media (max-width: 600px) {
+      .stats { flex-direction: column; }
+      .request-card { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 登录页 -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">Duke</div>
+    <div class="login-sub">扯谈Duke群网站注册申请审批系统</div>
+    <input type="email" id="loginEmail" placeholder="管理员邮箱"/>
+    <div style="position:relative;margin-bottom:12px;">
+      <input type="password" id="loginPwd" placeholder="密码" onkeydown="if(event.key==='Enter')doLogin()" style="width:100%;padding:11px 40px 11px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:0;outline:none;"/>
+      <span onclick="togglePwd()" id="pwdEye" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#aaa;user-select:none;line-height:0;">
+        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        <svg id="eyeOffIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>
+        </svg>
+      </span>
+    </div>
+    <button class="btn-login" onclick="doLogin()">登 录</button>
+    <p id="loginErr"></p>
+  </div>
+</div>
+
+<!-- 主内容 -->
+<div id="mainContent">
+  <header>
+    <div class="header-left">
+      <div class="hd">D</div>
+      <div class="ht">扯谈Duke群网站注册申请审批</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span id="adminEmail" style="font-size:12px;color:rgba(255,255,255,0.5);"></span>
+      <button class="logout-btn" onclick="doLogout()">退出登录</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="error-msg" id="errorMsg"></div>
+
+    <!-- 统计 -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="num" id="statTotal">—</div>
+        <div class="lbl">总申请数</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statPending" style="color:#b8860b;">—</div>
+        <div class="lbl">待处理</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statHold" style="color:#5b4fcf;">—</div>
+        <div class="lbl">已搁置</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statApproved" style="color:#0a7c3e;">—</div>
+        <div class="lbl">已批准</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statRejected" style="color:#c0392b;">—</div>
+        <div class="lbl">已拒绝</div>
+      </div>
+    </div>
+
+    <!-- 工具栏 -->
+    <div class="toolbar">
+      <h2>📩 扯谈Duke群网站注册申请列表</h2>
+      <button class="btn-refresh" onclick="loadRequests()">🔄 刷新</button>
+    </div>
+
+    <!-- 筛选标签 -->
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterRequests('all', this)">全部</button>
+      <button class="filter-tab" onclick="filterRequests('pending', this)">待处理</button>
+      <button class="filter-tab" onclick="filterRequests('hold', this)">已搁置</button>
+      <button class="filter-tab" onclick="filterRequests('approved', this)">已批准</button>
+      <button class="filter-tab" onclick="filterRequests('rejected', this)">已拒绝</button>
+    </div>
+
+    <!-- 申请列表 -->
+    <div id="requestList"></div>
+  </div>
+</div>
+
+<script>
+  // ========== 等待 Supabase 加载 ==========
+  let db = null;
+  let currentSession = null;
+
+  // 等待 Supabase 库加载
+  window.addEventListener('load', async () => {
+    // 确保 supabase 已加载
+    if (typeof supabase === 'undefined') {
+      console.error('Supabase library failed to load');
+      showError('Supabase 库加载失败');
+      return;
+    }
+
+    // 初始化 Supabase 客户端
+    const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+    const ADMIN_EMAILS = ['weihong_j@yahoo.com', 'sws122003@yahoo.com', 'lixiaobing@gmail.com'];
+
+    const { createClient } = supabase;
+    db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 初始化完成，检查会话
+    await initializeApp(ADMIN_EMAILS);
+  });
+
+  let allRequests = [];
+  let currentFilter = 'all';
+  const ADMIN_EMAILS = ['weihong_j@yahoo.com', 'sws122003@yahoo.com', 'lixiaobing@gmail.com'];
+  const SEND_NOTIFICATION_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/send-notification';
+
+
+  // ========== 初始化应用 ==========
+  async function initializeApp(adminEmails) {
+    try {
+      const { data: { session } } = await db.auth.getSession();
+      if (!session) {
+        showLogin();
+        return;
+      }
+      currentSession = session;
+      if (!adminEmails.includes(session.user.email)) {
+        showAccessDenied();
+        return;
+      }
+      showMain(session.user.email);
+      loadRequests();
+    } catch (error) {
+      console.error('初始化错误:', error);
+      showError('初始化失败：' + error.message);
+    }
+  }
+
+  function showLogin() {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('mainContent').style.display = 'none';
+  }
+
+  function showMain(email) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    document.getElementById('adminEmail').textContent = email;
+  }
+
+  function showAccessDenied() {
+    document.body.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:12px;">
+        <div style="font-size:40px">🚫</div>
+        <h2 style="color:#c0392b;">无访问权限</h2>
+        <button onclick="db.auth.signOut().then(()=>location.reload())"
+          style="padding:10px 24px;background:#001a4d;color:#fff;border:none;border-radius:8px;cursor:pointer;">退出</button>
+      </div>
+    `;
+  }
+
+  function showError(msg) {
+    const errorEl = document.getElementById('errorMsg');
+    if (errorEl) {
+      errorEl.textContent = '❌ ' + msg;
+      errorEl.style.display = 'block';
+    }
+  }
+
+  async function doLogin() {
+    if (!db) {
+      alert('系统未初始化，请刷新页面');
+      return;
+    }
+
+    const email = document.getElementById('loginEmail').value.trim();
+    const pwd = document.getElementById('loginPwd').value;
+    const err = document.getElementById('loginErr');
+    err.style.display = 'none';
+
+    if (!ADMIN_EMAILS.includes(email)) {
+      err.textContent = '❌ 该账号无管理员权限';
+      err.style.display = 'block';
+      return;
+    }
+
+    try {
+      const { error } = await db.auth.signInWithPassword({ email, password: pwd });
+      if (error) {
+        err.textContent = '❌ ' + error.message;
+        err.style.display = 'block';
+        return;
+      }
+      location.reload();
+    } catch (e) {
+      err.textContent = '❌ 登录失败：' + e.message;
+      err.style.display = 'block';
+    }
+  }
+
+  async function doLogout() {
+    if (db) {
+      await db.auth.signOut();
+    }
+    location.reload();
+  }
+
+  // ========== 加载申请 ==========
+  async function loadRequests() {
+    if (!db) {
+      showError('系统未初始化');
+      return;
+    }
+
+    const container = document.getElementById('requestList');
+    container.innerHTML = '<div class="empty-state"><div class="icon">⏳</div>加载中…</div>';
+
+    try {
+      const { data, error } = await db
+        .from('approve_uploads')
+        .select('*')
+        .order('uploaded_at', { ascending: false });
+
+      if (error) {
+        showError('加载失败：' + error.message);
+        container.innerHTML = '';
+        return;
+      }
+
+      allRequests = data || [];
+      updateStats();
+      renderRequests(currentFilter);
+
+    } catch (error) {
+      console.error('加载错误:', error);
+      showError('加载请求失败：' + error.message);
+    }
+  }
+
+  function updateStats() {
+    document.getElementById('statTotal').textContent = allRequests.length;
+    document.getElementById('statPending').textContent = allRequests.filter(r => (r.status || 'pending') === 'pending').length;
+    document.getElementById('statHold').textContent = allRequests.filter(r => r.status === 'hold').length;
+    document.getElementById('statApproved').textContent = allRequests.filter(r => r.status === 'approved').length;
+    document.getElementById('statRejected').textContent = allRequests.filter(r => r.status === 'rejected').length;
+  }
+
+  function filterRequests(filter, tabEl) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+    renderRequests(filter);
+  }
+
+  function renderRequests(filter) {
+    const container = document.getElementById('requestList');
+    const filtered = filter === 'all' ? allRequests : allRequests.filter(r => (r.status || 'pending') === filter);
+
+    if (!filtered.length) {
+      container.innerHTML = '<div class="empty-state"><div class="icon">📭</div>暂无申请记录</div>';
+      return;
+    }
+
+    container.innerHTML = filtered.map(r => {
+      const parts = (r.file_name || '').split(' - ');
+      const wxgroup = parts[0] || '—';
+      const nickname = parts[1] || '—';
+      const email = r.file_path || '—';
+      const classVal = r.uploaded_by || '—';
+      const time = r.uploaded_at ? new Date(r.uploaded_at).toLocaleString('zh-CN') : '—';
+
+      const statusMap = { pending: '⏳ 待处理', approved: '✅ 已批准', rejected: '❌ 已拒绝', hold: '🔖 已搁置' };
+      const statusClass = { pending: 'status-pending', approved: 'status-approved', rejected: 'status-rejected', hold: 'status-hold' };
+      const status = r.status || 'pending';
+
+      const isDone = status === 'approved' || status === 'rejected';
+
+      return `
+      <div class="request-card ${status === 'approved' ? 'approved' : ''}" id="card-${r.id}">
+        <div class="request-info">
+          <div class="request-name">${classVal}届 &nbsp;|&nbsp; ${wxgroup} &nbsp;|&nbsp; ${nickname}</div>
+          <div class="request-meta">📧 <a href="mailto:${email}">${email}</a></div>
+          <div class="request-time">申请时间：${time}</div>
+        </div>
+        <div class="request-actions">
+          <span class="status-badge ${statusClass[status]}">${statusMap[status]}</span>
+          ${status === 'pending' ? `
+            <button class="btn-approve" data-id="${r.id}" data-email="${email}" data-name="${nickname}"
+              onclick="approveRequest(this)">✅ 批准并邀请</button>
+            <button class="btn-hold" data-id="${r.id}" onclick="holdRequest(this)">🔖 搁置</button>
+            <button class="btn-reject" data-id="${r.id}" onclick="rejectRequest(this)">❌ 拒绝</button>
+          ` : status === 'hold' ? `
+            <button class="btn-unhold" data-id="${r.id}" onclick="unholdRequest(this)">↩️ 取消搁置</button>
+          ` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  async function approveRequest(btn) {
+    if (!db) {
+      alert('系统未初始化');
+      return;
+    }
+
+    const id = btn.dataset.id;
+    const email = btn.dataset.email;
+    const name = btn.dataset.name;
+
+    if (!confirm(`确认批准并发送邀请邮件给：\n${email}？`)) return;
+
+    btn.disabled = true;
+    btn.textContent = '发送中…';
+    const rejectBtn = btn.nextElementSibling;
+    if (rejectBtn) rejectBtn.disabled = true;
+
+    try {
+      // 获取当前会话的访问令牌
+      const { data: { session } } = await db.auth.getSession();
+      const token = session?.access_token || '';
+
+      const res = await fetch(SEND_NOTIFICATION_URL, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          action: 'invite',
+          email: email,
+          name: name,
+          record_id: id
+        })
+      });
+
+      const data = await res.json();
+      console.log('响应:', data, '状态码:', res.status);
+
+      if (!res.ok) {
+        // 如果是 401 错误，尝试不带 token 的方式
+        if (res.status === 401) {
+          console.log('尝试不带 Authorization header 的方式...');
+          const retryRes = await fetch(SEND_NOTIFICATION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'invite',
+              email: email,
+              name: name,
+              record_id: id
+            })
+          });
+          
+          const retryData = await retryRes.json();
+          console.log('重试响应:', retryData);
+          
+          if (!retryRes.ok) {
+            alert('❌ 邀请失败：' + (retryData.error || retryRes.status));
+            btn.disabled = false;
+            btn.textContent = '✅ 批准并邀请';
+            if (rejectBtn) rejectBtn.disabled = false;
+            return;
+          }
+        } else {
+          alert('❌ 邀请失败：' + (data.error || res.status));
+          btn.disabled = false;
+          btn.textContent = '✅ 批准并邀请';
+          if (rejectBtn) rejectBtn.disabled = false;
+          return;
+        }
+      }
+
+      const idx = allRequests.findIndex(r => r.id == id);
+      if (idx >= 0) allRequests[idx].status = 'approved';
+      updateStats();
+      renderRequests(currentFilter);
+      showToast(`✅ 已发送邀请邮件至 ${email}`);
+
+    } catch (e) {
+      console.error('错误详情:', e);
+      alert('❌ 网络错误：' + e.message);
+      btn.disabled = false;
+      btn.textContent = '✅ 批准并邀请';
+      if (rejectBtn) rejectBtn.disabled = false;
+    }
+  }
+
+  async function rejectRequest(btn) {
+    if (!db) {
+      alert('系统未初始化');
+      return;
+    }
+
+    const id = btn.dataset.id;
+    if (!confirm('确认拒绝此申请？')) return;
+
+    btn.disabled = true;
+    const approveBtn = btn.previousElementSibling;
+    if (approveBtn) approveBtn.disabled = true;
+
+    try {
+      const { data: { session } } = await db.auth.getSession();
+      const token = session?.access_token || '';
+
+      const res = await fetch(SEND_NOTIFICATION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ action: 'reject', record_id: id })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert('❌ 操作失败：' + (data.error || res.status));
+        btn.disabled = false;
+        if (approveBtn) approveBtn.disabled = false;
+        return;
+      }
+
+      const idx = allRequests.findIndex(r => r.id == id);
+      if (idx >= 0) allRequests[idx].status = 'rejected';
+      updateStats();
+      renderRequests(currentFilter);
+      showToast(`❌ 已拒绝申请 #${id}`);
+
+    } catch (e) {
+      alert('❌ 操作失败：' + e.message);
+      btn.disabled = false;
+      if (approveBtn) approveBtn.disabled = false;
+    }
+  }
+
+  async function holdRequest(btn) {
+    const id = btn.dataset.id;
+    btn.disabled = true;
+    try {
+      const { error } = await db.from('approve_uploads').update({ status: 'hold' }).eq('id', id);
+      if (error) throw new Error('数据库错误：' + error.message);
+
+      // 验证是否真的写入成功
+      const { data: verify, error: verifyErr } = await db
+        .from('approve_uploads').select('status').eq('id', id).single();
+      if (verifyErr) throw new Error('验证失败：' + verifyErr.message);
+      if (verify.status !== 'hold') throw new Error('写入被数据库拦截（可能是RLS策略），实际状态：' + verify.status);
+
+      const idx = allRequests.findIndex(r => r.id == id);
+      if (idx >= 0) allRequests[idx].status = 'hold';
+      updateStats();
+      renderRequests(currentFilter);
+      showToast('🔖 已搁置');
+    } catch (e) {
+      alert('❌ 搁置失败：' + e.message);
+      btn.disabled = false;
+    }
+  }
+
+  async function unholdRequest(btn) {
+    const id = btn.dataset.id;
+    btn.disabled = true;
+    try {
+      const { error } = await db.from('approve_uploads').update({ status: 'pending' }).eq('id', id);
+      if (error) throw error;
+      const idx = allRequests.findIndex(r => r.id == id);
+      if (idx >= 0) allRequests[idx].status = 'pending';
+      updateStats();
+      renderRequests(currentFilter);
+      showToast('↩️ 已取消搁置，恢复待处理');
+    } catch (e) {
+      alert('❌ 操作失败：' + e.message);
+      btn.disabled = false;
+    }
+  }
+
+  function togglePwd() {
+    const input = document.getElementById('loginPwd');
+    const eyeIcon = document.getElementById('eyeIcon');
+    const eyeOffIcon = document.getElementById('eyeOffIcon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      eyeIcon.style.display = 'none';
+      eyeOffIcon.style.display = 'inline';
+    } else {
+      input.type = 'password';
+      eyeIcon.style.display = 'inline';
+      eyeOffIcon.style.display = 'none';
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = `position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+      background:#0a7c3e;color:#fff;padding:12px 24px;border-radius:50px;
+      font-size:14px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.2);
+      z-index:9999;`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  }
+</script>
+
+</body>
+</html>
