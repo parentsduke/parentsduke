@@ -84,11 +84,16 @@ def update_index(sections_html):
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
 
-    # 更新各板块内容
     for section_id, html in sections_html.items():
-        pattern = rf'(<div class="weekly-body" id="{section_id}">)(.*?)(</div>)'
+        # 匹配 id="section_id"> 到下一个 </div>
+        pattern = rf'(id="{section_id}">)(.*?)(</div>)'
         replacement = rf'\g<1>{html}\3'
-        content = re.sub(pattern, replacement, content, flags=re.DOTALL)
+        new_content = re.sub(pattern, replacement, content, flags=re.DOTALL, count=1)
+        if new_content != content:
+            content = new_content
+            print(f'✅ 已更新 {section_id}')
+        else:
+            print(f'⚠️ 未找到 {section_id}')
 
     # 更新日期
     week = get_week_number()
