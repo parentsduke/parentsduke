@@ -324,15 +324,15 @@ function toggleBannerMusic() {
   <div style="max-width:800px;margin:0 auto;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
       <h2 style="color:#B8963E;font-size:18px;font-weight:700;margin:0;">📰 每周Duke动态</h2>
-      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;">2026年第17周</span>
+      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;"></span>
     </div>
     <div id="weekly-sections">
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏫 学校新闻</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-school"><p style="color:rgba(255,255,255,0.4);font-size:13px;">本周暂无更新</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏀 篮球动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-basketball"><p style="color:rgba(255,255,255,0.4);font-size:13px;">本周暂无更新</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📋 招生信息</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-admissions"><p style="color:rgba(255,255,255,0.4);font-size:13px;">本周暂无更新</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📅 学期日历</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-calendar"><p style="color:rgba(255,255,255,0.4);font-size:13px;">获取内容失败：'candidates'</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎓 校园生活</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-campus"><p style="color:rgba(255,255,255,0.4);font-size:13px;">本周暂无更新</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📰 Chronicle学生报</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-chronicle"><p style="color:rgba(255,255,255,0.4);font-size:13px;">本周暂无更新</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏫 学校新闻</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-school"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏀 篮球动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-basketball"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📋 招生信息</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-admissions"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📅 学期日历</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-calendar"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎓 校园生活</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-campus"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📰 Chronicle学生报</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-chronicle"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
     </div>
   </div>
 </section>
@@ -352,7 +352,7 @@ function toggleBannerMusic() {
 <script>
 function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.classList.toggle("open");}
 (function(){var el=document.getElementById("weekly-date");if(el){var d=new Date();function getW(d){d=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));d.setUTCDate(d.getUTCDate()+4-(d.getUTCDay()||7));var y=new Date(Date.UTC(d.getUTCFullYear(),0,1));return Math.ceil((((d-y)/86400000)+1)/7);}el.textContent=d.getFullYear()+"年第"+getW(d)+"周";}})();
-<\/script>
+</script>
 
 <main id="protected-area"></main>
 
