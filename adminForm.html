@@ -792,7 +792,10 @@
         await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
         const rec = allRecords.find(r => r.id === recordId);
         if (rec) rec.approved_at = new Date().toISOString();
-        applyFilters();
+        const approveCell = document.getElementById(`cell-approve-${recordId}`);
+        if (approveCell) approveCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
+        const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
+        if (actionCell) actionCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
         alert('✅ 已标记为批准');
       } catch(e) {
         alert('❌ 操作失败：' + e.message);
@@ -841,7 +844,12 @@
       // 更新本地数据
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.approved_at = new Date().toISOString();
-      applyFilters();
+      const approveCell = document.getElementById(`cell-approve-${recordId}`);
+      if (approveCell) {
+        approveCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
+      }
+      const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
+      if (actionCell) actionCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
 
       alert(`✅ 已发送入群链接到 ${email}`);
     } catch(e) {
@@ -853,12 +861,26 @@
   async function shelveRecord(recordId, studentName) {
     if (!confirm(`搁置 ${studentName}？（已在群中，暂不处理）`)) return;
     try {
+      const now = new Date().toISOString();
       await db.from('admissions_submissions')
-        .update({ shelved_at: new Date().toISOString() })
+        .update({ shelved_at: now })
         .eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
-      if (rec) rec.shelved_at = new Date().toISOString();
-      applyFilters();
+      if (rec) rec.shelved_at = now;
+      const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
+      if (actionCell) {
+        actionCell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
+          <button onclick="unshelveRecord('${recordId}','${studentName}')"
+            style="padding:4px 10px;background:#fff;color:#b45309;border:1.5px solid #b45309;border-radius:5px;
+                   font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#fff3e0'" onmouseout="this.style.background='#fff'">
+            取消搁置
+          </button>
+        </div>`;
+      }
+      const approveCell = document.getElementById(`cell-approve-${recordId}`);
+      if (approveCell) approveCell.innerHTML = '';
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -873,7 +895,29 @@
         .eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = null;
-      applyFilters();
+      const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
+      if (actionCell) {
+        actionCell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <button onclick="rejectRecord('${recordId}','${studentName}')"
+            style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;
+                   font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
+            拒绝
+          </button>
+          <button onclick="shelveRecord('${recordId}','${studentName}')"
+            style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;
+                   font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">
+            搁置
+          </button>
+        </div>`;
+      }
+      const approveCell = document.getElementById(`cell-approve-${recordId}`);
+      if (approveCell && rec && !rec.approved_at) {
+        approveCell.innerHTML = `<button onclick="approveRecord('${recordId}','${rec.submitter_email||''}','${studentName}')"
+          style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+          onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">批准入群</button>`;
+      }
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -883,12 +927,18 @@
   async function rejectRecord(recordId, studentName) {
     if (!confirm(`确认拒绝 ${studentName} 入群？`)) return;
     try {
+      const now = new Date().toISOString();
       await db.from('admissions_submissions')
-        .update({ rejected_at: new Date().toISOString() })
+        .update({ rejected_at: now })
         .eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
-      if (rec) rec.rejected_at = new Date().toISOString();
-      applyFilters();
+      if (rec) rec.rejected_at = now;
+      const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
+      if (actionCell) {
+        actionCell.innerHTML = `<span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>`;
+      }
+      const approveCell = document.getElementById(`cell-approve-${recordId}`);
+      if (approveCell) approveCell.innerHTML = '';
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
