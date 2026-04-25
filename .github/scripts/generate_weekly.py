@@ -35,14 +35,18 @@ def fetch_calendar():
         return ''
 
 def gemini(prompt):
-    url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_KEY}'
+    url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_KEY}'
     body = {'contents': [{'parts': [{'text': prompt}]}]}
     r = requests.post(url, json=body, timeout=30)
     data = r.json()
-    try:
+    print(f'Gemini状态码: {r.status_code}')
+    if 'candidates' in data:
         return data['candidates'][0]['content']['parts'][0]['text']
-    except Exception as e:
-        print(f'Gemini解析失败: {e}')
+    elif 'error' in data:
+        print(f'Gemini错误: {data["error"]}')
+        return '<p style="color:rgba(255,255,255,0.4);font-size:13px;">内容生成失败</p>'
+    else:
+        print(f'Gemini未知响应: {json.dumps(data)[:200]}')
         return '<p style="color:rgba(255,255,255,0.4);font-size:13px;">内容生成失败</p>'
 
 def generate_section(section_name, items, extra=''):
@@ -64,10 +68,7 @@ def generate_section(section_name, items, extra=''):
 - 最多5条
 - 如果有链接请用<a href="链接" target="_blank">标题</a>格式
 - 只输出HTML，不要其他文字"""
-    try:
-        return gemini(prompt)
-    except Exception as e:
-        return f'<p style="color:rgba(255,255,255,0.4);font-size:13px;">获取内容失败：{str(e)}</p>'
+    return gemini(prompt)
 
 def get_week_number():
     return datetime.now().isocalendar()[1]
