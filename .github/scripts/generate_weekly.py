@@ -35,7 +35,7 @@ def fetch_calendar():
         return ''
 
 def gemini(prompt):
-    url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_KEY}'
+    url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={GEMINI_KEY}'
     body = {'contents': [{'parts': [{'text': prompt}]}]}
     r = requests.post(url, json=body, timeout=30)
     data = r.json()
@@ -77,9 +77,10 @@ def update_index(sections_html):
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
     for section_id, html in sections_html.items():
-        pattern = rf'(id="{section_id}">)(.*?)(</div>)'
+        # 匹配 id="section_id">内容</div></div> 只替换内层内容
+        old_pattern = rf'(<div[^>]*id="{section_id}"[^>]*>)(.*?)(</div>)'
         replacement = rf'\g<1>{html}\3'
-        new_content = re.sub(pattern, replacement, content, flags=re.DOTALL, count=1)
+        new_content = re.sub(old_pattern, replacement, content, flags=re.DOTALL, count=1)
         if new_content != content:
             content = new_content
             print(f'已更新 {section_id}')
