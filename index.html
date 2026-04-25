@@ -319,6 +319,41 @@ function toggleBannerMusic() {
     <h6>(如遇扫码错误，请使用网页底部的管理员二维码)</h6>
 </header>
 
+<!-- ===== 每周Duke动态 ===== -->
+<section id="duke-weekly" style="background:#001a4d;border-top:3px solid #B8963E;border-bottom:3px solid #B8963E;padding:24px 20px;margin:0;">
+  <div style="max-width:800px;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 style="color:#B8963E;font-size:18px;font-weight:700;margin:0;">📰 每周Duke动态</h2>
+      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;"></span>
+    </div>
+    <div id="weekly-sections">
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏫 学校新闻</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-school"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏀 篮球动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-basketball"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📋 招生信息</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-admissions"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📅 学期日历</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-calendar"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎓 校园生活</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-campus"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📰 Chronicle学生报</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-chronicle"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+    </div>
+  </div>
+</section>
+<style>
+.weekly-item{border-bottom:1px solid rgba(184,150,62,0.2);}
+.weekly-item:last-child{border-bottom:none;}
+.weekly-btn{width:100%;background:none;border:none;color:#fff;font-size:14px;font-family:"Noto Serif SC",serif;font-weight:600;padding:12px 4px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;text-align:left;}
+.weekly-btn:hover{color:#B8963E;}
+.weekly-arrow{font-size:10px;color:#B8963E;transition:transform 0.2s;}
+.weekly-btn.open .weekly-arrow{transform:rotate(90deg);}
+.weekly-body{display:none;padding:4px 0 16px 0;color:rgba(255,255,255,0.85);font-size:13px;line-height:1.7;}
+.weekly-body.open{display:block;}
+.weekly-body a{color:#B8963E;}
+.weekly-body ul{padding-left:18px;margin:6px 0;}
+.weekly-body li{margin-bottom:6px;}
+</style>
+<script>
+function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.classList.toggle("open");}
+(function(){var el=document.getElementById("weekly-date");if(el){var d=new Date();function getW(d){d=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));d.setUTCDate(d.getUTCDate()+4-(d.getUTCDay()||7));var y=new Date(Date.UTC(d.getUTCFullYear(),0,1));return Math.ceil((((d-y)/86400000)+1)/7);}el.textContent=d.getFullYear()+"年第"+getW(d)+"周";}})();
+<\/script>
+
 <main id="protected-area"></main>
 
 <!-- 🔐 Protected content template -->
@@ -12571,21 +12606,7 @@ window.showPV();
       </div>
     `;
 
-    // ===== 周报弹窗 =====
-    if (document.getElementById('weekly-modal')) return;
-    var modal = document.createElement('div');
-    modal.id = 'weekly-modal';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
-    modal.innerHTML = `
-      <div style="position:relative;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.5);">
-        <button onclick="document.getElementById('weekly-modal').remove()" style="position:sticky;top:8px;left:100%;float:right;margin:8px 8px 0 0;background:rgba(1,33,105,0.85);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;line-height:32px;text-align:center;z-index:10;">×</button>
-        <img src="https://dukeparents.org/weekly040726.png" style="width:100%;display:block;border-radius:8px;" alt="扯谈周报">
-      </div>
-    `;
-    modal.addEventListener('click', function(e) {
-      if (e.target === modal) modal.remove();
-    });
-    document.body.appendChild(modal);
+
   }
 
   function showContent(user) {
