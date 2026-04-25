@@ -322,7 +322,7 @@
     <div class="modal-title">重新发送入群链接</div>
     <div class="modal-sub" id="resendModalSubText"></div>
     <div class="modal-label">操作管理员</div>
-    <select id="resendAdminSelect">
+    <select id="resendAdminSelect" onchange="document.getElementById('resendConfirmBtn').disabled=!this.value">
       <option value="">— 请选择 —</option>
       <option value="笑">笑</option>
       <option value="奕">奕</option>
@@ -333,7 +333,7 @@
     </select>
     <div class="modal-btns">
       <button class="modal-btn-cancel" onclick="closeResendModal()">取消</button>
-      <button class="modal-btn-confirm" onclick="confirmResend()">确认发送</button>
+      <button class="modal-btn-confirm" id="resendConfirmBtn" onclick="confirmResend()" disabled>确认发送</button>
     </div>
   </div>
 </div>
@@ -344,7 +344,7 @@
     <div class="modal-title">批准入群</div>
     <div class="modal-sub" id="modalSubText"></div>
     <div class="modal-label">批准管理员</div>
-    <select id="modalAdminSelect">
+    <select id="modalAdminSelect" onchange="document.getElementById('modalConfirmBtn').disabled=!this.value">
       <option value="">— 请选择 —</option>
       <option value="笑">笑</option>
       <option value="奕">奕</option>
@@ -355,7 +355,7 @@
     </select>
     <div class="modal-btns">
       <button class="modal-btn-cancel" onclick="closeApproveModal()">取消</button>
-      <button class="modal-btn-confirm" id="modalConfirmBtn" onclick="confirmApprove()">确认批准</button>
+      <button class="modal-btn-confirm" id="modalConfirmBtn" onclick="confirmApprove()" disabled>确认批准</button>
     </div>
   </div>
 </div>
@@ -917,6 +917,8 @@
 
   function closeApproveModal() {
     document.getElementById('approveModal').classList.remove('show');
+    document.getElementById('modalAdminSelect').value = '';
+    document.getElementById('modalConfirmBtn').disabled = true;
     _approveArgs = null;
   }
 
@@ -1059,6 +1061,8 @@
 
   function closeResendModal() {
     document.getElementById('resendModal').classList.remove('show');
+    document.getElementById('resendAdminSelect').value = '';
+    document.getElementById('resendConfirmBtn').disabled = true;
     _resendArgs = null;
   }
 
