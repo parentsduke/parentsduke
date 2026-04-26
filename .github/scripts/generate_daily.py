@@ -20,6 +20,9 @@ RSS_FEEDS = {
     'admissions': 'https://today.duke.edu/tags/admissions/rss',
     'athletics':  'https://today.duke.edu/tags/athletics/rss',
     'campus':     'https://today.duke.edu/topics/campus-&-community/rss',
+    'dukeengage':  'https://dukeengage.duke.edu/news/rss.xml',
+    'undergrad':        'https://undergrad.duke.edu/news/rss.xml',
+    'interdisciplinary': 'https://today.duke.edu/tags/interdisciplinary-studies/rss',
     'visa':      'https://visaservices.duke.edu/news/feed',
     # GoDuke 官方体育 RSS
     'goduke_all':    'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200',
@@ -60,6 +63,14 @@ HTML_SOURCES = {
         'selectors': ['h2 a', 'h3 a', '.news a', 'article a', '.card a'],
         'label': '招生办',
     },
+    'focus': {
+        'urls': [
+            'https://focus.duke.edu/news/',
+            'https://focus.duke.edu/clusters-courses',
+        ],
+        'selectors': ['h2 a', 'h3 a', '.entry-title a', 'article a', '.views-row a'],
+        'label': 'FOCUS项目',
+    },
 }
 
 # ══════════════════════════════════════════════════════════════
@@ -86,13 +97,22 @@ DUKE_EVENTS_CALENDAR_URL = (
 )
 
 # ──────────────────────────────────────────────────────────────
-def fetch_rss(url, max_items=8):
+def fetch_rss(url, max_items=10):
     try:
         feed = feedparser.parse(url)
         items = []
         for e in feed.entries[:max_items]:
+            # 提取发布日期
+            pub = e.get('published_parsed') or e.get('updated_parsed')
+            date_str = ''
+            if pub:
+                dt = datetime(*pub[:6])
+                date_str = f"{dt.month}月{dt.day}日"
+            title = e.get('title', '').strip()
+            if date_str:
+                title = f"[{date_str}] {title}"
             items.append({
-                'title':   e.get('title', '').strip(),
+                'title':   title,
                 'link':    e.get('link', ''),
                 'summary': re.sub(r'<[^>]+>', '', e.get('summary', ''))[:300].strip(),
             })
@@ -225,6 +245,40 @@ def fetch_source(name, max_items=8):
             url, sels = fallbacks[name]
             items = fetch_html_items(url, sels, max_items)
         return items
+    if name == 'dukeengage':
+        items = fetch_rss(RSS_FEEDS['dukeengage'], max_items)
+        return items or fetch_html_items(
+            'https://dukeengage.duke.edu/news/',
+            ['h2 a', 'h3 a', '.entry-title a', 'article a'],
+            max_items
+        )
+    if name == 'undergrad':
+        items = fetch_rss(RSS_FEEDS['undergrad'], max_items)
+        return items or fetch_html_items(
+            'https://undergrad.duke.edu/news/',
+            ['h2 a', 'h3 a', '.entry-title a', 'article a', '.views-row a'],
+            max_items
+        )
+    if name == 'interdisciplinary':
+        # today.duke.edu 分类 RSS 优先
+        items = fetch_rss(RSS_FEEDS['interdisciplinary'], max_items)
+        if items:
+            return items
+        # 降级：抓 interdisciplinary.duke.edu 新闻页 + 机会页
+        items = fetch_html_items(
+            'https://interdisciplinary.duke.edu/news/',
+            ['h2 a', 'h3 a', '.views-row a', 'article a'],
+            max_items // 2
+        )
+        items += fetch_pages_text(
+            ['https://interdisciplinary.duke.edu/opportunities/current-opportunities/'],
+            max_chars=600
+        ) and fetch_html_items(
+            'https://interdisciplinary.duke.edu/opportunities/current-opportunities/',
+            ['h2 a', 'h3 a', '.views-row a'],
+            max_items // 2
+        ) or []
+        return items
     if name in HTML_SOURCES:
         return fetch_html_source(name, max_items)
     return []
@@ -292,22 +346,37 @@ def filter_political(items):
 # ══════════════════════════════════════════════════════════════
 def generate_section(section_name, items, extra=''):
     items = filter_political(items)
+    today = datetime.now()
+    date_hint = f"{today.year}年{today.month}月{today.day}日"
     if not items and not extra:
-        return '<p style="color:rgba(255,255,255,0.4);font-size:13px;">今日暂无更新</p>'
+        # 无内容时用 Gemini 生成该板块的背景介绍性内容
+        prompt = (
+            f"你是杜克大学家长社区的中文编辑。今天是{date_hint}。\n"
+            f"当前板块【{section_name}】今日没有抓取到新内容。\n"
+            f"请根据你对杜克大学的了解，为这个板块生成2-3条实用的背景信息或常识性内容，"
+            f"帮助中国家长了解杜克大学在此领域的情况。\n\n"
+            f"要求：\n"
+            f"- 用中文，内容实用、对家长有价值\n"
+            f"- 每条一个<li>，格式：<ul><li>...</li></ul>\n"
+            f"- 末尾加一条：<li>📡 今日暂无最新动态，以上为近期背景信息</li>\n"
+            f"- 只输出HTML，不要其他文字"
+        )
+        return gemini(prompt)
     news_text = '\n'.join(
         [f"- {i['title']}: {i['summary']} ({i['link']})" for i in items]
     )
     if extra:
         news_text += '\n\n' + extra
     prompt = (
-        f"你是杜克大学家长社区的中文编辑。请把以下英文新闻整理成简洁的中文摘要，供中国家长阅读。\n\n"
+        f"你是杜克大学家长社区的中文编辑。今天是{date_hint}。\n"
+        f"请把以下内容整理成简洁的中文摘要，供中国家长阅读。\n\n"
         f"板块：{section_name}\n"
         f"原始内容：\n{news_text}\n\n"
         f"要求：\n"
-        f"- 用中文写，简洁易懂\n"
+        f"- 用中文写，简洁易懂，每条标注日期（如已知）\n"
         f"- 每条新闻一个<li>，包含关键信息和原文链接\n"
         f"- 格式：<ul><li>...</li></ul>\n"
-        f"- 最多5条\n"
+        f"- 最多5条，优先最新内容\n"
         f"- 如果有链接请用<a href=\"链接\" target=\"_blank\">标题</a>格式\n"
         f"- 只输出HTML，不要其他文字\n"
         f"- 严格跳过任何涉及政治的内容，只保留学术、体育、校园生活相关内容"
@@ -371,13 +440,22 @@ def generate_calendar_section(items):
 #  签证板块（不过滤政治，照实呈现）
 # ══════════════════════════════════════════════════════════════
 def generate_visa_section(items):
+    today = datetime.now()
+    date_hint = f"{today.year}年{today.month}月{today.day}日"
     if not items:
-        return '<p style="color:rgba(255,255,255,0.4);font-size:13px;">今日暂无更新</p>'
+        prompt = (
+            f"你是杜克大学家长社区的中文编辑。今天是{date_hint}。\n"
+            "当前暂无 Duke Visa Services 最新公告。\n"
+            "请根据你对杜克大学F-1/J-1签证政策的了解，生成2-3条对持F-1/J-1签证的中国留学生家长"
+            "有价值的实用提醒或背景信息（如SEVIS维护、出行注意事项、OPT时间线等）。\n"
+            "要求：<ul><li>格式，最后加一条📡今日暂无最新公告提示，只输出HTML。"
+        )
+        return gemini(prompt)
     news_text = '\n'.join(
         [f"- {i['title']}: {i['summary']} ({i['link']})" for i in items]
     )
     prompt = (
-        "你是杜克大学家长社区的中文编辑。以下是 Duke Visa Services 发布的签证与国际生政策公告，"
+        f"你是杜克大学家长社区的中文编辑。今天是{date_hint}。以下是 Duke Visa Services 发布的签证与国际生政策公告，"
         "请整理成简洁中文摘要供中国家长阅读。\n\n"
         f"原始内容：\n{news_text}\n\n"
         "要求：\n"
@@ -439,8 +517,12 @@ def main():
     # 校园生活：campus RSS + DSG + 学生事务
     campus_items = (
         fetch_source('campus', 3) +
-        fetch_source('dsg', 4) +
-        fetch_source('students', 3)
+        fetch_source('dsg', 3) +
+        fetch_source('students', 3) +
+        fetch_source('dukeengage', 3) +
+        fetch_source('undergrad', 3) +
+        fetch_source('interdisciplinary', 3) +
+        fetch_source('focus', 3)
     )
 
     # Chronicle
