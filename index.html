@@ -324,16 +324,22 @@ function toggleBannerMusic() {
   <div style="max-width:800px;margin:0 auto;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
       <h2 style="color:#B8963E;font-size:18px;font-weight:700;margin:0;">📰 每日Duke动态</h2>
-      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;"></span>
+      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;">2026年4月26日</span>
     </div>
     <div id="weekly-sections">
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏫 学校新闻</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-school"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏀 篮球动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-basketball"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📋 招生信息</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-admissions"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📅 学期日历</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-calendar"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎓 校园生活</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-campus"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📰 Chronicle学生报</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-chronicle"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🔬 科研动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-research"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏫 学校新闻</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-school"><ul>
+    <li><a href="https://www.duke.edu/across-north-carolina/" target="_blank">杜克大学与北卡州立大学兽医学院的学术合作</a>：杜克大学与北卡罗来纳州立大学兽医学院长期紧密合作，共同进行疾病研究并共享诊断设备，是州内高校间成功合作的典范。</li>
+    <li><a href="https://www.duke.edu/across-north-carolina/" target="_blank">杜克大学对北卡州的经济贡献</a>：杜克大学每年为北卡罗来纳州的经济贡献超过135亿美元，并在全州范围内创造了逾7万个就业机会，彰显了其重要的社会影响力。</li>
+    <li><a href="https://www.duke.edu/across-north-carolina/" target="_blank">杜克在NC协作实验室的研究参与</a>：杜克大学是NC协作实验室（NC Collaboratory）的重要研究伙伴，与州内其他研究型大学一道，致力于解决北卡州面临的各项紧迫问题。</li>
+    <li><a href="https://www.duke.edu/across-north-carolina/" target="_blank">杜克大学的STEM教育预科项目</a>：杜克大学是NC数学与科学教育网络（NC-MSEN）大学预科项目的七个大学站点之一，积极鼓励来自少数族裔背景的学生投身科学、技术、工程和数学（STEM）领域。</li>
+    <li><a href="https://www.duke.edu/across-north-carolina/" target="_blank">杜克大学海洋实验室的科研成就</a>：杜克大学位于北卡罗来纳州博福特的海洋实验室，拥有90多年的历史，是海洋科学研究和教育的领导者，重点关注沿海生态、保护和海洋学。</li>
+</ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏀 篮球动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-basketball"><p style="color:rgba(255,255,255,0.4);font-size:13px;">今日暂无更新</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📋 招生信息</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-admissions"><p style="color:rgba(255,255,255,0.4);font-size:13px;">今日暂无更新</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📅 学期日历</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-calendar"><p style="color:rgba(255,255,255,0.4);font-size:13px;">今日暂无更新</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎓 校园生活</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-campus"><p style="color:rgba(255,255,255,0.4);font-size:13px;">今日暂无更新</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📰 Chronicle学生报</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-chronicle"><p style="color:rgba(255,255,255,0.4);font-size:13px;">今日暂无更新</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🔬 科研动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-research"><p style="color:rgba(255,255,255,0.4);font-size:13px;">今日暂无更新</p></div></div>
     </div>
   </div>
 </section>
