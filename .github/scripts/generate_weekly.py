@@ -35,7 +35,7 @@ def fetch_calendar():
         return ''
 
 def gemini(prompt):
-    url = f'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={GEMINI_KEY}'
+    url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_KEY}'
     body = {'contents': [{'parts': [{'text': prompt}]}]}
     r = requests.post(url, json=body, timeout=30)
     data = r.json()
