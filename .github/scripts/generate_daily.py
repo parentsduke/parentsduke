@@ -335,7 +335,7 @@ def generate_calendar_section(items):
     prompt = (
         f"你是杜克大学家长社区的中文编辑。今天是{today.year}年{today.month}月{today.day}日。\n"
         f"以下是Duke Registrar学术日历：\n\n{news_text}\n\n"
-        "请整理出今天起60天内的重要事项：\n"
+        "请整理出今天起7天内的重要事项，没有则显示最近3条即将到来的事项：\n"
         "- 格式：<ul><li>📅 X月X日 — 事项</li></ul>，最多8条，按日期排序\n"
         "- 包含：选课、退课截止、假期、考试、毕业典礼等\n"
         "- 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
