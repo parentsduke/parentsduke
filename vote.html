@@ -162,7 +162,7 @@
   /* checkbox */
   .opt-check {
     width: 20px; height: 20px;
-    border-radius: 6px;
+    border-radius: 50%;
     border: 2px solid #D0CBBf;
     flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
@@ -170,11 +170,18 @@
     background: #fff;
   }
   .option.selected .opt-check {
-    background: var(--duke-gold);
+    background: #fff;
     border-color: var(--duke-gold);
+    border-width: 2px;
   }
+  .opt-check-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--duke-gold);
+    display: none;
+  }
+  .option.selected .opt-check-dot { display: block; }
   .opt-check svg { display: none; }
-  .option.selected .opt-check svg { display: block; }
 
   .opt-label {
     flex: 1;
@@ -326,7 +333,7 @@
   <div class="header">
     <div class="header-label">扯谈 Duke 家长群 · 投票</div>
     <div class="header-title">你最爱 Duke 的哪些？</div>
-    <div class="header-sub">可多选 · 不记名 · Have Fun 😊</div>
+    <div class="header-sub">单选 · 不记名 · Have Fun 😊</div>
   </div>
 
   <div class="meta-bar">
@@ -342,7 +349,7 @@
   </div>
 
   <div class="poll-body">
-    <div class="question">以下哪些是你最喜欢的？</div>
+    <div class="question">以下哪个是你最喜欢的？</div>
     <div id="optionsList"></div>
     <div class="total-row">
       <span id="totalVotesLabel" style="opacity:0">共 <strong id="totalVotesNum">0</strong> 票</span>
@@ -351,7 +358,7 @@
   </div>
 
   <div class="submit-wrap">
-    <button id="submitBtn" disabled>请选择至少一项</button>
+    <button id="submitBtn" disabled>请选择一项</button>
   </div>
 
   <div class="status-msg" id="statusMsg"></div>
@@ -474,11 +481,7 @@ function renderOptions() {
     div.innerHTML = `
       <div class="option-bar" style="width:${pct}%"></div>
       <div class="option-inner">
-        <div class="opt-check">
-          <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
-            <path d="M1 4L4 7.5L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+        <div class="opt-check"><div class="opt-check-dot"></div></div>
         <div class="opt-label">${opt.label}</div>
         <div class="opt-stats ${(hasVoted || isClosed) ? 'visible' : ''}">
           <div class="opt-pct">${pct}%</div>
@@ -505,8 +508,12 @@ function renderOptions() {
 // ════════════════════════════════════════════════════
 function toggleOption(id) {
   if (isClosed || hasVoted) return;
-  if (selected.has(id)) selected.delete(id);
-  else selected.add(id);
+  if (selected.has(id)) {
+    selected.delete(id);  // 点同一个：取消
+  } else {
+    selected.clear();     // 单选：先清空
+    selected.add(id);
+  }
   updateSubmitBtn();
   renderOptions();
 }
@@ -515,10 +522,10 @@ function updateSubmitBtn() {
   const btn = document.getElementById('submitBtn');
   if (selected.size === 0) {
     btn.disabled = true;
-    btn.textContent = '请选择至少一项';
+    btn.textContent = '请选择一项';
   } else {
     btn.disabled = false;
-    btn.textContent = `提交选择（${selected.size}项）`;
+    btn.textContent = '提交';
   }
 }
 
@@ -565,7 +572,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
   } catch(e) {
     showStatus('error', '提交出错：' + e.message);
     btn.disabled = false;
-    btn.textContent = `提交选择（${selected.size}项）`;
+    btn.textContent = '提交';
   }
 });
 
