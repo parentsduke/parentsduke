@@ -324,66 +324,19 @@ function toggleBannerMusic() {
   <div style="max-width:800px;margin:0 auto;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
       <h2 style="color:#B8963E;font-size:18px;font-weight:700;margin:0;">📰 每日Duke动态</h2>
-      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;">2026年4月27日</span>
+      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;"></span>
     </div>
     <div id="weekly-sections">
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏫 学校新闻</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-school"><ul>
-<li>杜克大学是位于美国北卡罗来纳州达勒姆的一所著名私立研究型大学。作为一所世界顶级大学，杜克大学在学术研究、创新和教育方面享有盛誉，吸引来自全球各地的优秀学生和学者。</li>
-<li>杜克大学提供丰富多样的学术课程，包括文科、理科、工程学、医学院、法学院等各个领域的本科和研究生教育。大学强调跨学科研究和合作，鼓励学生探索不同领域的知识和技能。</li>
-<li>在支持国际学生方面，杜克大学有完善的服务体系，包括语言支持、文化适应指导、职业发展服务等，帮助来自不同文化背景的学生快速融入大学生活并成功完成学业。</li>
-<li>📡 今日暂无最新动态，以上为近期背景信息</li>
-</ul></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏀 篮球动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-basketball"><ul>
-    <li>【4月20日】<a href="https://today.duke.edu/2026/04/fencing-environmental-science" target="_blank">击剑与环境科学的碰撞：一位杜克学生的独特视角</a></li>
-    <li>【3月30日】<a href="https://today.duke.edu/2026/03/thank-you-duke-basketball" target="_blank">杜克男篮女篮赛季回顾：双双荣获ACC冠军并闯入NCAA精英八强</a></li>
-    <li>【3月18日】<a href="https://today.duke.edu/2026/03/utility-work-start-march-24-near-krzyzewskiville" target="_blank">校园施工通知：Krzyzewskiville附近将进行市政工程，对行人影响极小</a></li>
-</ul></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📋 招生信息</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-admissions"><ul>
-<li>2026年4月27日：暂无相关招生信息</li>
-<li>2026年3月：暂无相关招生信息</li>
-<li>2026年2月：暂无相关招生信息</li>
-<li>2026年1月：暂无相关招生信息</li>
-<li>2026年：暂无相关招生信息</li>
-</ul></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📅 学期日历</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-calendar"><ul>
-<li>📅 4月27日 — 【今日】Final examinations begin（期末考试开始）</li>
-<li>📅 5月2日 — Final examinations end（期末考试结束）</li>
-<li>📅 5月8日 — Commencement begins（毕业典礼开始）</li>
-</ul></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📝 选课 &amp; 宿舍</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-registration"><ul>
-<li>📌 4月27日 — 了解选课信息 <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
-<li>📌 6月1日 — Перв年学生购物车开放 <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
-<li>📌 6月 — 住宿申请重新开放 <a href="https://students.duke.edu/living/housing/housing-assignments/fall26-housing/" target="_blank">查看详情</a></li>
-<li>📌 7月29日 — 新生注册开始 <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
-<li>📌 7月30日 — 新生选课开始 <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
-<li>📌 2026-2027学年 — 研究生和专业学生住宿信息 <a href="https://students.duke.edu/living/housing/graduate-professional-housing/" target="_blank">查看详情</a></li>
-<li>📌 当日 — understanding宿舍信息 <a href="https://students.duke.edu/living/housing/annual-housing-calendar/" target="_blank">查看详情</a></li>
-<li>📌 随时 — 提交维护请求 <a href="https://students.duke.edu/living/housing/graduate-professional-housing/" target="_blank">查看详情</a></li>
-</ul></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎓 校园生活</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-campus"><ul>
-<li>4月24日：杜克大学三年级学生Ari Cook获得特鲁曼奖学金，是培养孩子的照顾者中领导者<a href="https://today.duke.edu/2026/04/duke-junior-wins-truman-scholarship" target="_blank">杜克大学获得特鲁曼奖学金</a></li>
-<li>4月23日：杜拉姆学生早期致力于杜克大学的医疗保健事业，提供免费的大学学历和直接加入职场的通道<a href="https://today.duke.edu/2026/04/durham-students-commit-early-health-care-careers-duke" target="_blank">杜拉姆学生早期致力于医疗保健事业</a></li>
-<li>4月23日：杜克创新和创业举办2026年创业展示<a href="https://today.duke.edu/2026/04/concept-center-stage" target="_blank">从概念到舞台中心</a></li>
-<li>4月20日：《从未被捕》被选为2026年杜克大学共同体验<a href="https://undergrad.duke.edu/news/never-caught-be-2026-duke-common-experience" target="_blank">2026年杜克大学共同体验</a></li>
-<li>4月17日：杜克大学校友获得索罗斯基金会研究生奖学金<a href="https://today.duke.edu/2026/04/alumnus-wins-soros-fellowship-graduate-study" target="_blank">索罗斯基金会研究生奖学金</a></li>
-</ul></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📰 Chronicle学生报</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-chronicle"><ul>
-<li>杜克大学是位于美国北卡罗来纳州的一所私立研究型大学，拥有全球顶尖的学术声誉。它在商业、工程、医学院等领域尤其享有盛誉，吸引了来自世界各地的优秀学生和学者。</li>
-<li>杜克大学在中国拥有大量的校友和学术合作伙伴，这为中国学生提供了广阔的交流和学习机会。同时，杜克大学也高度重视国际学生的多样性和融入，为来自中国的学生提供了全面支持和帮助。</li>
-<li>考虑到中国家长可能更加关心的学术和职业发展，杜克大学在提供学术资源和职业发展支持方面具有独特优势。无论是通过校内的职业咨询服务，还是通过杜克大学庞大的校友网络，学生都能获得最优质的指导和机会。</li>
-📡 今日暂无最新动态，以上为近期背景信息</li></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🔬 科研动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-research"><ul>
-<li>4月23日：杜克大学心理学教授分享了减轻压力的方法，包括正念、运动、休息和寻求支持等健康方式。<a href="https://today.duke.edu/2026/04/finals-are-coming-psychology-professor-offers-ways-deal-stress" target="_blank">杜克大学教授谈减压</a></li>
-<li>4月21日：杜克大学工程学教授Jungsang Kim因其在量子计算领域的开创性工作而获得韩国的最高荣誉——昌조勋章。<a href="https://today.duke.edu/2026/04/jungsang-kim-receives-changjo-medal-top-honor-south-korea" target="_blank">杜克大学教授获奖</a></li>
-<li>4月20日：杜克大学Trinity学院将在秋季推出19门新课程，覆盖艺术、人文、社会科学和自然科学等领域，无需先修课程即可选修。<a href="https://today.duke.edu/2026/04/nineteen-new-courses-launch-fall-trinity" target="_blank">杜克大学新课程</a></li>
-<li>4月14日：杜克大学晋升了100多名教师到教授职位，涉及多个学校和学院，包括Divinity、Fuqua、Law、Medicine等。<a href="https://today.duke.edu/2026/04/duke-promotes-faculty-rank-full-professor" target="_blank">杜克大学教师晋升</a></li>
-<li>4月8日：杜克大学将在北卡罗来纳州科学节期间举办三场公共活动，提供互动体验，展示学校的研究成果。<a href="https://today.duke.edu/2026/04/duke-research-nc-science-festival" target="_blank">杜克大学科学节活动</a></li>
-</ul></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🛂 签证与国际生动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-visa"><ul>
-<li>杜克大学作为美国顶尖私立大学之一，其国际学生数量逐年增加，近年来，杜克大学在中国招生办公室不断努力拓展招生渠道，为更多中国学生提供学习机会。</li>
-<li>杜克大学在STEM领域（科学、技术、工程和数学）具有卓越的成绩，并且在经济、社科、语言等领域也拥有深厚的学术基础，这使得该大学成为了许多中国学生的首选目标之一。</li>
-<li>值得注意的是，杜克大学对国际学生（包括中国学生）提供了一系列的奖学金和经济援助项目，帮助更多的学生能够负担得起在杜克大学学习的费用，这对经济条件有限的家庭来说是一个福音。</li>
-📡 今日暂无最新动态，以上为近期背景信息</li></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏫 学校新闻</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-school"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏀 篮球动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-basketball"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📋 招生信息</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-admissions"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📅 学期日历</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-calendar"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📝 选课 &amp; 宿舍</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-registration"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎒 开学前安排</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-prematric"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎓 校园生活</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-campus"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📰 Chronicle学生报</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-chronicle"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🔬 科研动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-research"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🛂 签证与国际生动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-visa"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容更新中…</p></div></div>
     </div>
   </div>
 </section>
