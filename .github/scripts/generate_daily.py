@@ -54,6 +54,67 @@ ACADEMIC_CALENDAR_URL = 'https://registrar.duke.edu/2025-2026-academic-calendar/
 DUKE_EVENTS_CALENDAR_URL = ('https://calendar.duke.edu/index?cf[]=Academic+Calendar+Dates'
                              '&future=1&feed=rss')
 
+# 学术日历硬编码（来源：registrar.duke.edu 官方日历）
+ACADEMIC_CALENDAR_HARDCODED = """
+=== Spring 2026 春季学期 ===
+Jan 7 (Wed): Classes begin (8:30 AM); Drop/Add continues
+Jan 19 (Mon): Martin Luther King Jr. Day holiday. No classes
+Jan 21 (Wed): Drop/Add ends (11:59 PM)
+Feb 9 (Mon): Shopping Carts open for Summer 2026
+Feb 16 (Mon): Registration begins for Summer 2026
+Mar 6 (Fri): Spring recess begins (7:00 PM)
+Mar 16 (Mon): Classes resume (8:30 AM)
+Mar 23 (Mon): Shopping Carts open for Fall 2026
+Mar 25 (Wed): Last day to withdraw with W from Spring 2026 (undergraduates only)
+Apr 1 (Wed): Registration begins for Fall 2026; Summer registration continues
+Apr 8 (Wed): Drop/Add begins for Fall 2026
+Apr 11 (Sat): Optional make-up day (for February 2 classes)
+Apr 15 (Wed): Graduate classes end
+Apr 16-26 (Thu-Sun): Graduate reading period
+Apr 22 (Wed): Undergraduate classes end
+Apr 23-26 (Thu-Sun): Undergraduate reading period
+Apr 27 (Mon): Final examinations begin
+May 2 (Sat): Final examinations end (10:00 PM)
+May 8 (Fri): Commencement begins
+May 10 (Sun): Graduation exercises; Conferring of degrees
+
+=== Summer 2026 暑期学期 ===
+May 13 (Wed): Summer Term 1 classes begin
+May 15 (Fri): Drop/Add for Term 1 ends (11:59 PM)
+May 25 (Mon): Memorial Day holiday. No classes
+Jun 10 (Wed): Last day to withdraw with W from Term 1 (undergraduates only)
+Jun 19 (Fri): Juneteenth holiday. No classes
+Jun 22 (Mon): Term 1 classes end
+Jun 23 (Tue): Reading period (until 7:00 PM); Term 1 final examinations begin (7:00 PM)
+Jun 25 (Thu): Term 1 final examinations end
+Jun 29 (Mon): Summer Term 2 classes begin
+Jul 1 (Wed): Drop/Add for Term 2 ends (11:59 PM)
+Jul 3 (Fri): Independence Day holiday (observed). No classes
+Aug 7 (Fri): Last day to withdraw with W from Term 2 (undergraduates only)
+Aug 13 (Thu): Term 2 classes end
+Aug 14-15 (Fri-Sat): Term 2 reading period and final examinations
+
+=== Fall 2026 秋季学期 ===
+Aug 15 (Sat): New undergraduate student move-in
+Aug 16-21 (Sun-Fri): New student orientation
+Aug 24 (Mon): Fall semester classes begin; Drop/Add continues
+Sep 7 (Mon): Labor Day holiday. No classes
+Sep 4 (Fri): Drop/Add ends (11:59 PM)
+Sep 24-27 (Thu-Sun): Founders Weekend
+Oct 9 (Fri): Fall break begins (7:00 PM)
+Oct 14 (Wed): Classes resume (8:30 AM)
+Oct 19 (Mon): Shopping Carts open for Spring 2027
+Oct 28 (Wed): Registration begins for Spring 2027
+Nov 6 (Fri): Last day to withdraw with W from Fall 2026 (undergraduates only)
+Nov 10 (Tue): Drop/Add begins for Spring 2027
+Nov 24 (Tue): Thanksgiving recess begins (10:30 PM)
+Nov 30 (Mon): Undergraduate classes resume (8:30 AM)
+Dec 4 (Fri): Undergraduate classes end
+Dec 5-8 (Sat-Tue): Undergraduate reading period
+Dec 9 (Wed): Final examinations begin (9:00 AM)
+Dec 14 (Mon): Final examinations end (10:00 PM)
+"""
+
 # ══════════════════════════════════════════════════════════════
 #  抓取工具
 # ══════════════════════════════════════════════════════════════
@@ -329,17 +390,35 @@ def generate_section(section_name, items, extra='', allow_political=False):
 
 def generate_calendar_section(items):
     today = datetime.now()
-    if not items:
-        return '<p style="color:rgba(255,255,255,0.4);font-size:13px;">今日暂无日历更新</p>'
-    news_text = '\n'.join([f"- {i['title']}: {i['summary']} ({i['link']})" for i in items])
+
+    # 优先用硬编码日历（最可靠），同时尝试抓取最新页面
+    page_text = ''
+    try:
+        r = requests.get(ACADEMIC_CALENDAR_URL, headers=HEADERS, timeout=10)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        for tag in soup.select('nav,footer,header,script,style'):
+            tag.decompose()
+        main = soup.select_one('main,#main,.main-content,article,.field-items,table')
+        page_text = (main or soup).get_text(separator=' ', strip=True)[:2000]
+        print(f'  Registrar页面抓取OK: {len(page_text)} chars')
+    except Exception as ex:
+        print(f'  Registrar页面抓取失败({ex})，使用硬编码日历')
+
+    # 硬编码 + 页面内容合并（硬编码优先）
+    combined = ACADEMIC_CALENDAR_HARDCODED
+    if page_text:
+        combined += '\n\n[官网最新内容]\n' + page_text
+
     prompt = (
         f"你是杜克大学家长社区的中文编辑。今天是{today.year}年{today.month}月{today.day}日。\n"
-        f"以下是Duke Registrar学术日历：\n\n{news_text}\n\n"
-        "请整理出今天起7天内的重要事项，没有则显示最近3条即将到来的事项：\n"
-        "- 格式：<ul><li>📅 X月X日 — 事项</li></ul>，最多8条，按日期排序\n"
-        "- 包含：选课、退课截止、假期、考试、毕业典礼等\n"
-        "- 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
-        "- 只输出HTML"
+        f"以下是 Duke Registrar 2025-2026学术日历：\n\n{combined}\n\n"
+        "请严格按照以下规则输出：\n"
+        "1. 只列出【今天及今天起7天内】日历中明确记载的事项\n"
+        "2. 今天的事项必须列出并标注'【今日】'\n"
+        "3. 如果7天内没有任何事项，列出日历中最近3条即将到来的事项\n"
+        "4. 绝对不要写'没有重要事项'或列出空日期\n"
+        "5. 格式：<ul><li>📅 X月X日 — 具体事项（中文翻译）</li></ul>\n"
+        "6. 只输出HTML，不要其他文字"
     )
     return gemini(prompt) or FALLBACK_HTML
 
