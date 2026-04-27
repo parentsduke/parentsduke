@@ -77,40 +77,142 @@ PREMATRIC_PAGES = [
     'https://students.duke.edu/living/housing/housing-assignments/fall26-housing/',
 ]
 
-# ── 开学前安排：硬编码关键信息（来源：students.duke.edu 官方页面）──
-PREMATRIC_HARDCODED = """
-=== Fall 2026 新生开学前关键节点（Class of 2030）===
-（来源：Duke Student Affairs 官方页面，实时抓取补充）
+# ── 开学前安排：硬编码关键信息（结构化，按日期过滤）──────────────
+# expire_date: 该条目在此日期（含）之后才从 prompt 中移除
+# 格式 (year, month, day)；None 表示永不过期（联系方式等）
+PREMATRIC_HARDCODED = [
+    # ── 录取确认 / 入学准备 ──
+    {
+        'expire': (2026, 5, 1),
+        'category': '录取确认',
+        'text': 'May 1: National Decision Day — 全国确认入学截止日',
+    },
+    {
+        'expire': (2026, 6, 15),
+        'category': '入学准备',
+        'text': 'June 15: 官方标准化考试成绩截止（如选择提交 SAT/ACT）',
+    },
+    {
+        'expire': (2026, 7, 31),
+        'category': '入学准备',
+        'text': '成绩单（Final School Report）截止：2026年7月或高中毕业时',
+    },
+    # ── 住房安排 ──
+    {
+        'expire': (2026, 6, 1),
+        'category': '住房安排',
+        'text': 'June 1: 高年级生住房申请开放（Housing Portal）',
+    },
+    {
+        'expire': (2026, 6, 10),
+        'category': '住房安排',
+        'text': 'June 10: Class of 2030 住房分配结果发布（Housing Portal）',
+    },
+    {
+        'expire': (2026, 6, 16),
+        'category': '住房安排',
+        'text': 'June 16: 高年级生重新分配申请截止（noon）',
+    },
+    {
+        'expire': (2026, 8, 15),
+        'category': '住房安排',
+        'text': 'August 15 (Sat): 新生搬入日（First-Year Move-In Day）— 按宿舍分配时间窗口入住',
+    },
+    {
+        'expire': (2026, 8, 18),
+        'category': '住房安排',
+        'text': 'August 17 (Mon) or 18 (Tue): 转学生搬入日（Transfer Move-In Day）',
+    },
+    # ── 体验式迎新周 ──
+    {
+        'expire': (2026, 5, 31),
+        'category': '体验式迎新周',
+        'text': '5月中旬: Orientation Matching Questionnaire 发送至 Duke 邮箱（需完成，据此分配迎新项目）',
+    },
+    {
+        'expire': (2026, 7, 15),
+        'category': '体验式迎新周',
+        'text': '7月初: 项目匹配结果通知',
+    },
+    {
+        'expire': (2026, 8, 15),
+        'category': '体验式迎新周',
+        'text': 'August 15 (Sat): 新生入住 East Campus',
+    },
+    {
+        'expire': (2026, 8, 21),
+        'category': '体验式迎新周',
+        'text': 'August 16 (Sun) – August 21 (Fri): Experiential Orientation Week（体验式迎新周，全程覆盖食宿）',
+    },
+    {
+        'expire': (2026, 8, 24),
+        'category': '体验式迎新周',
+        'text': 'August 24 (Mon): 正式开学',
+    },
+    # ── 国际生专项 ──
+    {
+        'expire': (2026, 6, 11),
+        'category': '国际生专项',
+        'text': '国际生网络迎新 Zoom Session 1: 6月11日 8:30–10:00 AM EST（必须参加其中一场）',
+    },
+    {
+        'expire': (2026, 6, 23),
+        'category': '国际生专项',
+        'text': '国际生网络迎新 Zoom Session 2: 6月23日 8:30–10:00 AM EST',
+    },
+    {
+        'expire': (2026, 7, 2),
+        'category': '国际生专项',
+        'text': '国际生网络迎新 Zoom Session 3: 7月2日 8:30–10:00 AM EST',
+    },
+    {
+        'expire': (2026, 8, 24),
+        'category': '国际生专项',
+        'text': '需提前完成 ISSS 相关报到手续（开学前）',
+    },
+    # ── 联系方式（永不过期）──
+    {
+        'expire': None,
+        'category': '联系方式',
+        'text': '迎新办公室: studentorientation@duke.edu / 919-684-3511',
+    },
+    {
+        'expire': None,
+        'category': '联系方式',
+        'text': '招生办公室: undergrad-admissions@duke.edu / 919-684-3214',
+    },
+    {
+        'expire': None,
+        'category': '联系方式',
+        'text': '住房办公室: housing@duke.edu',
+    },
+]
 
-【录取确认 / 入学准备】
-- May 1: National Decision Day — 全国确认入学截止日
-- June 15: 官方标准化考试成绩截止（如选择提交 SAT/ACT）
-- 成绩单（Final School Report）截止：2026年7月或高中毕业时
+def build_prematric_text(today=None):
+    """把结构化硬编码按日期过滤，输出文本块供 AI 使用。
+    过了 expire_date 当天结束后才移除（即当天仍保留）。"""
+    if today is None:
+        today = datetime.now().date()
+    active = [e for e in PREMATRIC_HARDCODED
+              if e['expire'] is None or datetime(*e['expire']).date() >= today]
 
-【住房安排】
-- June 1: 高年级生住房申请开放（Housing Portal）
-- June 10: Class of 2030 住房分配结果发布（Housing Portal）
-- June 16: 高年级生重新分配申请截止（noon）
-- August 15 (Sat): 新生搬入日（First-Year Move-In Day）— 按宿舍分配时间窗口入住
-- August 17 (Mon) or 18 (Tue): 转学生搬入日（Transfer Move-In Day）
+    # 按 category 分组输出
+    from collections import OrderedDict
+    groups = OrderedDict()
+    for e in active:
+        groups.setdefault(e['category'], []).append(e['text'])
 
-【体验式迎新周 Experiential Orientation】
-- 5月中旬: Orientation Matching Questionnaire 发送至 Duke 邮箱（需完成，据此分配迎新项目）
-- 7月初: 项目匹配结果通知
-- August 15 (Sat): 新生入住 East Campus
-- August 16 (Sun) – August 21 (Fri): Experiential Orientation Week（体验式迎新周，全程覆盖食宿）
-- August 24 (Mon): 正式开学
-
-【国际生专项】
-- 开学前网络迎新（Zoom，必须参加其中一场）：
-  6月11日 / 6月23日 / 7月2日（8:30–10:00 AM EST）
-- 需提前完成 ISSS 相关报到手续
-
-【联系方式】
-- 迎新办公室: studentorientation@duke.edu / 919-684-3511
-- 招生办公室: undergrad-admissions@duke.edu / 919-684-3214
-- 住房办公室: housing@duke.edu
-"""
+    lines = ['=== Fall 2026 新生开学前关键节点（Class of 2030）===',
+             '（来源：Duke Student Affairs 官方页面，实时抓取补充）', '']
+    for cat, entries in groups.items():
+        lines.append(f'【{cat}】')
+        for t in entries:
+            lines.append(f'- {t}')
+        lines.append('')
+    removed = len(PREMATRIC_HARDCODED) - len(active)
+    if removed:
+        print(f'  开学前节点：{len(active)} 条有效，{removed} 条已过期移除')
+    return '\n'.join(lines)
 
 ACADEMIC_CALENDAR_URL = 'https://registrar.duke.edu/2025-2026-academic-calendar/'
 DUKE_EVENTS_CALENDAR_URL = ('https://calendar.duke.edu/index?cf[]=Academic+Calendar+Dates'
@@ -519,7 +621,7 @@ def generate_registration_section(registration_text, housing_text):
 def generate_prematric_section(page_text):
     """开学前安排：专项板块，面向 Class of 2030 家长"""
     today = datetime.now()
-    combined = PREMATRIC_HARDCODED
+    combined = build_prematric_text(today.date())
     if page_text:
         combined += '\n\n[官网实时内容]\n' + page_text
 
