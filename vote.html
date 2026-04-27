@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你最爱Duke的哪些？— 扯谈Duke家长群</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=DM+Serif+Display:ital@0;1&family=Noto+Sans+SC:wght@300;400;500&display=swap');
+
+  :root {
+    --duke-navy: #001A57;
+    --duke-royal: #003087;
+    --duke-gold: #C8972B;
+    --duke-gold-light: #F5D68A;
+    --bg: #F7F4EE;
+    --card: #FFFFFF;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --bar-fill: #001A57;
+    --bar-bg: #E8E4DA;
+    --voted: #C8972B;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    color: var(--text);
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* subtle texture */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,26,87,0.08) 0%, transparent 70%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23001A57' fill-opacity='0.025'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 0 0 60px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--duke-navy);
+    padding: 36px 28px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--duke-gold) 0%, var(--duke-gold-light) 50%, var(--duke-gold) 100%);
+  }
+  .header-label {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--duke-gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .header-title {
+    font-family: 'DM Serif Display', 'Noto Serif SC', serif;
+    font-size: 28px;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* ── META BAR ── */
+  .meta-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .meta-bar .dot { color: #ccc; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #FFF8E6;
+    border: 1px solid var(--duke-gold-light);
+    color: #8a6a00;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  /* ── POLL BODY ── */
+  .poll-body {
+    padding: 20px 20px 0;
+  }
+
+  .question {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--duke-navy);
+    padding: 0 4px 16px;
+  }
+
+  /* ── OPTION ── */
+  .option {
+    position: relative;
+    background: var(--card);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 1.5px solid #E8E4DA;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .option:hover { border-color: #b8b0a0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .option.selected { border-color: var(--duke-gold); }
+  .option.disabled { cursor: default; }
+
+  /* progress bar behind */
+  .option-bar {
+    position: absolute;
+    inset: 0;
+    width: 0%;
+    background: linear-gradient(90deg, #FFF8E6, #FFF3D0);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+  .option.selected .option-bar { background: linear-gradient(90deg, #FFF3D0, #FFE8A0); }
+
+  .option-inner {
+    position: relative; z-index: 1;
+    display: flex;
+    align-items: center;
+    padding: 13px 14px;
+    gap: 12px;
+  }
+
+  /* checkbox */
+  .opt-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid #D0CBBf;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    background: #fff;
+  }
+  .option.selected .opt-check {
+    background: #fff;
+    border-color: var(--duke-gold);
+    border-width: 2px;
+  }
+  .opt-check-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--duke-gold);
+    display: none;
+  }
+  .option.selected .opt-check-dot { display: block; }
+  .opt-check svg { display: none; }
+
+  .opt-label {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .opt-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    min-width: 50px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .opt-stats.visible { opacity: 1; }
+  .opt-pct {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--duke-navy);
+  }
+  .option.selected .opt-pct { color: #8a6a00; }
+  .opt-count {
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* ── TOTAL ── */
+  .total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 4px 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .total-votes { font-weight: 500; }
+
+  /* ── SUBMIT ── */
+  .submit-wrap {
+    padding: 20px 20px 0;
+  }
+  #submitBtn {
+    width: 100%;
+    padding: 15px;
+    background: var(--duke-navy);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+  #submitBtn::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--duke-gold);
+  }
+  #submitBtn:hover:not(:disabled) { background: var(--duke-royal); }
+  #submitBtn:active:not(:disabled) { transform: scale(0.98); }
+  #submitBtn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+  }
+  #submitBtn:disabled::after { background: #d1d5db; }
+
+  /* ── STATUS MSG ── */
+  .status-msg {
+    margin: 14px 20px 0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: none;
+  }
+  .status-msg.error { background: #FEE2E2; color: #991b1b; display: block; }
+  .status-msg.success { background: #DCFCE7; color: #166534; display: block; }
+  .status-msg.info { background: #EFF6FF; color: #1e40af; display: block; }
+
+  /* ── CLOSED BANNER ── */
+  .closed-banner {
+    margin: 0 20px 16px;
+    padding: 14px 16px;
+    background: var(--duke-navy);
+    color: rgba(255,255,255,0.85);
+    border-radius: 10px;
+    font-size: 13px;
+    border-left: 4px solid var(--duke-gold);
+    display: none;
+  }
+  .closed-banner.visible { display: block; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 28px 20px 0;
+    font-size: 11px;
+    color: #aaa;
+  }
+  .footer a { color: var(--duke-gold); text-decoration: none; }
+
+  /* ── LOADING ── */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    transition: opacity 0.4s;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #e5e7eb;
+    border-top-color: var(--duke-navy);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── CONFETTI ── */
+  .confetti-piece {
+    position: fixed;
+    width: 8px; height: 8px;
+    top: -10px;
+    animation: confettiFall linear forwards;
+    z-index: 200;
+    pointer-events: none;
+  }
+  @keyframes confettiFall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<div class="container">
+  <div class="header">
+    <div class="header-label">扯谈 Duke 家长群 · 投票</div>
+    <div class="header-title">你最爱 Duke 的哪些？</div>
+    <div class="header-sub">单选 · 不记名 · Have Fun 😊</div>
+  </div>
+
+  <div class="meta-bar">
+    <span class="badge">📊 实时结果</span>
+    <span class="dot">·</span>
+    <span id="deadlineText">截止 2026年4月30日</span>
+    <span class="dot">·</span>
+    <span id="totalVotersText">加载中…</span>
+  </div>
+
+  <div class="closed-banner" id="closedBanner">
+    🔒 投票已于 <span id="closedDateText"></span> 结束，感谢所有参与者！以下为最终结果。
+  </div>
+
+  <div class="poll-body">
+    <div class="question">以下哪个是你最喜欢的？</div>
+    <div id="optionsList"></div>
+    <div class="total-row">
+      <span id="totalVotesLabel" style="opacity:0">共 <strong id="totalVotesNum">0</strong> 票</span>
+      <span id="voteHint" style="font-size:11px;color:#bbb"></span>
+    </div>
+  </div>
+
+  <div class="submit-wrap">
+    <button id="submitBtn" disabled>请选择一项</button>
+  </div>
+
+  <div class="status-msg" id="statusMsg"></div>
+
+  <div class="footer">
+    <a href="https://dukeparents.org" target="_blank">dukeparents.org</a> · 扯谈Duke家长群
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════════════
+const SUPABASE_URL  = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+const VOTE_EDGE     = `${SUPABASE_URL}/functions/v1/duke-vote`;
+const DEADLINE      = new Date('2026-04-30T23:59:59+08:00'); // 北京时间4月30日午夜
+
+const OPTIONS = [
+  { id: 'campus',    label: '校园' },
+  { id: 'weather',   label: '天气' },
+  { id: 'dining',    label: '食堂' },
+  { id: 'profs',     label: '教授' },
+  { id: 'friends',   label: '同学' },
+  { id: 'garden',    label: '杜克花园' },
+  { id: 'lemur',     label: 'Lemur Center' },
+  { id: 'dorm',      label: '宿舍' },
+  { id: 'clubs',     label: 'Clubs' },
+  { id: 'group',     label: '扯谈 Duke 家长群 😎' },
+  { id: 'basketball',label: '篮球 篮球 篮球 🏀🏀🏀' },
+];
+
+// ════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════
+let selected = new Set();
+let hasVoted = false;
+let isClosed = false;
+let counts   = {};  // { optionId: totalVotes }
+let totalVoters = 0;
+
+// ════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════
+async function init() {
+  isClosed = Date.now() > DEADLINE.getTime();
+
+  if (isClosed) {
+    document.getElementById('closedBanner').classList.add('visible');
+    document.getElementById('closedDateText').textContent = '2026年5月31日';
+    document.getElementById('deadlineText').textContent = '已结束';
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('submitBtn').textContent = '投票已结束';
+  }
+
+  await loadResults();
+  renderOptions();
+  hideLoading();
+}
+
+// ════════════════════════════════════════════════════
+//  LOAD RESULTS from Supabase table
+// ════════════════════════════════════════════════════
+async function loadResults() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/duke_votes?select=option_id`, {
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': `Bearer ${SUPABASE_ANON}`,
+      }
+    });
+    if (!res.ok) return;
+    const rows = await res.json();
+    // count per option
+    counts = {};
+    OPTIONS.forEach(o => counts[o.id] = 0);
+    rows.forEach(r => {
+      if (counts[r.option_id] !== undefined) counts[r.option_id]++;
+    });
+    // unique voters via voter_hash (distinct rows per voter per option — need total unique voters)
+    // We'll count rows as total votes cast (each row = one option selected by one voter)
+    const totalVotes = rows.length;
+
+    // get unique voter count
+    const res2 = await fetch(`${SUPABASE_URL}/rest/v1/duke_votes?select=voter_hash`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+    });
+    if (res2.ok) {
+      const rows2 = await res2.json();
+      const unique = new Set(rows2.map(r => r.voter_hash));
+      totalVoters = unique.size;
+    } else {
+      totalVoters = totalVotes;
+    }
+
+    document.getElementById('totalVotersText').textContent = `${totalVoters} 人参与`;
+  } catch(e) {
+    console.warn('loadResults error', e);
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  RENDER OPTIONS
+// ════════════════════════════════════════════════════
+function renderOptions() {
+  const list = document.getElementById('optionsList');
+  list.innerHTML = '';
+
+  const totalVotes = OPTIONS.reduce((s, o) => s + (counts[o.id] || 0), 0);
+
+  OPTIONS.forEach(opt => {
+    const votes = counts[opt.id] || 0;
+    const pct   = totalVotes ? Math.round(votes / totalVotes * 100) : 0;
+    const isSel = selected.has(opt.id);
+
+    const div = document.createElement('div');
+    div.className = 'option' + (isSel ? ' selected' : '') + (isClosed || hasVoted ? ' disabled' : '');
+    div.dataset.id = opt.id;
+
+    div.innerHTML = `
+      <div class="option-bar" style="width:${pct}%"></div>
+      <div class="option-inner">
+        <div class="opt-check"><div class="opt-check-dot"></div></div>
+        <div class="opt-label">${opt.label}</div>
+        <div class="opt-stats ${(hasVoted || isClosed) ? 'visible' : ''}">
+          <div class="opt-pct">${pct}%</div>
+          <div class="opt-count">${votes}票</div>
+        </div>
+      </div>`;
+
+    if (!isClosed && !hasVoted) {
+      div.addEventListener('click', () => toggleOption(opt.id));
+    }
+
+    list.appendChild(div);
+  });
+
+  // totals label
+  const totalLabel = document.getElementById('totalVotesLabel');
+  totalLabel.style.opacity = (hasVoted || isClosed) ? '1' : '0';
+  document.getElementById('totalVotesNum').textContent = totalVotes;
+  document.getElementById('totalVotersText').textContent = `${totalVoters} 人参与`;
+}
+
+// ════════════════════════════════════════════════════
+//  TOGGLE
+// ════════════════════════════════════════════════════
+function toggleOption(id) {
+  if (isClosed || hasVoted) return;
+  if (selected.has(id)) {
+    selected.delete(id);  // 点同一个：取消
+  } else {
+    selected.clear();     // 单选：先清空
+    selected.add(id);
+  }
+  updateSubmitBtn();
+  renderOptions();
+}
+
+function updateSubmitBtn() {
+  const btn = document.getElementById('submitBtn');
+  if (selected.size === 0) {
+    btn.disabled = true;
+    btn.textContent = '请选择一项';
+  } else {
+    btn.disabled = false;
+    btn.textContent = '提交';
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  SUBMIT → Edge Function
+// ════════════════════════════════════════════════════
+document.getElementById('submitBtn').addEventListener('click', async () => {
+  if (isClosed || hasVoted || selected.size === 0) return;
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '提交中…';
+
+  try {
+    const optionId = [...selected][0];
+
+    // 本地去重
+    const lsKey = 'duke_voted_2026';
+    if (localStorage.getItem(lsKey)) {
+      showStatus('info', '您已经参与过本次投票了 😊');
+      hasVoted = true;
+      await loadResults();
+      renderOptions();
+      btn.textContent = '已投票';
+      return;
+    }
+
+    // 直接写 Supabase REST
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/duke_votes`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': `Bearer ${SUPABASE_ANON}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({ voter_hash: 'local_' + Date.now(), option_id: optionId }),
+    });
+
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(txt || '提交失败');
+    }
+
+    localStorage.setItem(lsKey, '1');
+    hasVoted = true;
+    showStatus('success', '✅ 投票成功！感谢参与～');
+    btn.textContent = '已投票 ✓';
+    await loadResults();
+    renderOptions();
+    launchConfetti();
+
+  } catch(e) {
+    showStatus('error', '提交出错：' + e.message);
+    btn.disabled = false;
+    btn.textContent = '提交';
+  }
+});
+
+// ════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════
+function showStatus(type, msg) {
+  const el = document.getElementById('statusMsg');
+  el.className = 'status-msg ' + type;
+  el.textContent = msg;
+}
+
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.add('hidden');
+  setTimeout(() => document.getElementById('loadingOverlay').remove(), 500);
+}
+
+function launchConfetti() {
+  const colors = ['#C8972B','#001A57','#F5D68A','#4A90D9','#fff'];
+  for (let i = 0; i < 40; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    el.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+    el.style.animationDelay = (Math.random() * 0.5) + 's';
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  START
+// ════════════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
