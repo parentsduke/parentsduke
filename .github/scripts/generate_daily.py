@@ -12,22 +12,22 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (compatible; DukeParentsBot/1.0)'}
 #  RSS 源
 # ══════════════════════════════════════════════════════════════
 RSS_FEEDS = {
-    'chronicle':       'https://www.dukechronicle.com/feeds/rss.xml',
-    'today':           'https://today.duke.edu/rss.xml',
-    'news':            'https://news.duke.edu/feed/',
-    'research':        'https://research.duke.edu/feed/',
-    'pratt':           'https://today.duke.edu/tags/pratt-school-of-engineering/rss',
-    'trinity':         'https://today.duke.edu/tags/trinity-college-of-arts-&-sciences/rss',
-    'admissions':      'https://today.duke.edu/tags/admissions/rss',
-    'athletics':       'https://today.duke.edu/tags/athletics/rss',
-    'campus':          'https://today.duke.edu/topics/campus-&-community/rss',
-    'dukeengage':      'https://dukeengage.duke.edu/news/rss.xml',
-    'undergrad':       'https://undergrad.duke.edu/news/rss.xml',
+    'chronicle':        'https://www.dukechronicle.com/feeds/rss.xml',
+    'today':            'https://today.duke.edu/rss.xml',
+    'news':             'https://news.duke.edu/feed/',
+    'research':         'https://research.duke.edu/feed/',
+    'pratt':            'https://today.duke.edu/tags/pratt-school-of-engineering/rss',
+    'trinity':          'https://today.duke.edu/tags/trinity-college-of-arts-&-sciences/rss',
+    'admissions':       'https://today.duke.edu/tags/admissions/rss',
+    'athletics':        'https://today.duke.edu/tags/athletics/rss',
+    'campus':           'https://today.duke.edu/topics/campus-&-community/rss',
+    'dukeengage':       'https://dukeengage.duke.edu/news/rss.xml',
+    'undergrad':        'https://undergrad.duke.edu/news/rss.xml',
     'interdisciplinary':'https://today.duke.edu/tags/interdisciplinary-studies/rss',
-    'visa':            'https://visaservices.duke.edu/news/feed',
-    'goduke_mbb':      'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=MBB',
-    'goduke_wbb':      'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=WBB',
-    'goduke_all':      'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200',
+    'visa':             'https://visaservices.duke.edu/news/feed',
+    'goduke_mbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=MBB',
+    'goduke_wbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=WBB',
+    'goduke_all':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200',
 }
 
 HTML_SOURCES = {
@@ -38,8 +38,15 @@ HTML_SOURCES = {
                        'selectors': ['h2 a','h3 a','.card-title a','article a']},
     'library':        {'urls': ['https://library.duke.edu/about/news'],
                        'selectors': ['h2 a','h3 a','article a','.views-row a']},
-    'admissions_site':{'urls': ['https://admissions.duke.edu/'],
-                       'selectors': ['h2 a','h3 a','article a','.card a']},
+    'admissions_site':{'urls': [
+                           'https://admissions.duke.edu/',
+                           'https://admissions.duke.edu/blog/',
+                           'https://admissions.duke.edu/apply/',
+                           'https://admissions.duke.edu/admit/',
+                           'https://admissions.duke.edu/visit/',
+                       ],
+                       'selectors': ['h2 a','h3 a','article a','.card a',
+                                     '.post-title a','.entry-title a','p a']},
     'focus':          {'urls': ['https://focus.duke.edu/news/'],
                        'selectors': ['h2 a','h3 a','.entry-title a','article a']},
 }
@@ -50,6 +57,61 @@ HOUSING_PAGES = [
     'https://students.duke.edu/living/housing/housing-assignments/fall26-housing/',
     'https://students.duke.edu/living/housing/graduate-professional-housing/',
 ]
+
+# ── 招生页面：深度文本抓取 ──────────────────────────────────
+ADMISSIONS_PAGES = [
+    'https://admissions.duke.edu/',
+    'https://admissions.duke.edu/admit/',       # 已录取学生待办（最重要）
+    'https://admissions.duke.edu/blog/',
+    'https://admissions.duke.edu/apply/',
+    'https://admissions.duke.edu/visit/',
+    'https://admissions.duke.edu/financial-support/',
+]
+
+# ── 开学前安排：专项页面（新板块）──────────────────────────
+PREMATRIC_PAGES = [
+    'https://students.duke.edu/info-for/students/incoming-students/',
+    'https://students.duke.edu/info-for/students/incoming-students/move-in-day/',
+    'https://students.duke.edu/info-for/students/incoming-students/experiential-orientation/first-year-students/',
+    'https://students.duke.edu/living/housing/annual-housing-calendar/',
+    'https://students.duke.edu/living/housing/housing-assignments/fall26-housing/',
+]
+
+# ── 开学前安排：硬编码关键信息（来源：students.duke.edu 官方页面）──
+PREMATRIC_HARDCODED = """
+=== Fall 2026 新生开学前关键节点（Class of 2030）===
+（来源：Duke Student Affairs 官方页面，实时抓取补充）
+
+【录取确认 / 入学准备】
+- May 1: National Decision Day — 全国确认入学截止日
+- June 15: 官方标准化考试成绩截止（如选择提交 SAT/ACT）
+- 成绩单（Final School Report）截止：2026年7月或高中毕业时
+
+【住房安排】
+- June 1: 高年级生住房申请开放（Housing Portal）
+- June 10: Class of 2030 住房分配结果发布（Housing Portal）
+- June 16: 高年级生重新分配申请截止（noon）
+- August 15 (Sat): 新生搬入日（First-Year Move-In Day）— 按宿舍分配时间窗口入住
+- August 17 (Mon) or 18 (Tue): 转学生搬入日（Transfer Move-In Day）
+
+【体验式迎新周 Experiential Orientation】
+- 5月中旬: Orientation Matching Questionnaire 发送至 Duke 邮箱（需完成，据此分配迎新项目）
+- 7月初: 项目匹配结果通知
+- August 15 (Sat): 新生入住 East Campus
+- August 16 (Sun) – August 21 (Fri): Experiential Orientation Week（体验式迎新周，全程覆盖食宿）
+- August 24 (Mon): 正式开学
+
+【国际生专项】
+- 开学前网络迎新（Zoom，必须参加其中一场）：
+  6月11日 / 6月23日 / 7月2日（8:30–10:00 AM EST）
+- 需提前完成 ISSS 相关报到手续
+
+【联系方式】
+- 迎新办公室: studentorientation@duke.edu / 919-684-3511
+- 招生办公室: undergrad-admissions@duke.edu / 919-684-3214
+- 住房办公室: housing@duke.edu
+"""
+
 ACADEMIC_CALENDAR_URL = 'https://registrar.duke.edu/2025-2026-academic-calendar/'
 DUKE_EVENTS_CALENDAR_URL = ('https://calendar.duke.edu/index?cf[]=Academic+Calendar+Dates'
                              '&future=1&feed=rss')
@@ -326,7 +388,6 @@ def call_openrouter(prompt):
     headers = {'Authorization': f'Bearer {OPENROUTER_KEY}',
                'Content-Type': 'application/json',
                'HTTP-Referer': 'https://dukeparents.org'}
-    # 多个免费模型轮询
     models = [
         'meta-llama/llama-3.3-70b-instruct:free',
         'mistralai/mistral-7b-instruct:free',
@@ -363,13 +424,12 @@ def gemini(prompt):
 FALLBACK_HTML = '<p style="color:rgba(255,255,255,0.4);font-size:13px;">内容生成失败，请稍后刷新</p>'
 
 # ══════════════════════════════════════════════════════════════
-#  生成板块 — 过滤+生成 合并为1次调用
+#  生成板块
 # ══════════════════════════════════════════════════════════════
 def generate_section(section_name, items, extra='', allow_political=False):
     today = datetime.now()
     date_hint = f"{today.year}年{today.month}月{today.day}日"
 
-    # 无内容时用背景知识填充（1次调用）
     if not items and not extra:
         prompt = (
             f"你是杜克大学家长社区的中文编辑。今天是{date_hint}。\n"
@@ -388,10 +448,12 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "- 严格过滤政治内容（政治人物、党派、抗议、移民政策、联邦拨款争议等），只保留学术/体育/校园相关\n"
     )
 
-    # 过滤+生成 合并为1次调用
     year_rule = ''
     if '招生' in section_name:
-        year_rule = f'- 只保留{datetime.now().year}年及以后的招生信息，严格过滤{datetime.now().year - 1}年以前的旧内容\n'
+        year_rule = (
+            f'- 只保留{today.year}年及以后的招生信息，严格过滤{today.year - 1}年以前的旧内容\n'
+            '- 重点提取：入学确认截止日、住房申请、奖学金、成绩单提交、Blue Devil Days、财务援助等信息\n'
+        )
 
     prompt = (
         f"你是杜克大学家长社区的中文编辑。今天是{date_hint}。\n"
@@ -400,7 +462,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "要求：\n"
         "- 用中文，简洁易懂，每条标注日期（如已知）\n"
         "- 每条一个<li>，格式：<ul><li>...</li></ul>\n"
-        "- 最多5条，优先最新内容\n"
+        "- 最多5条，优先最新/最紧迫内容\n"
         "- 链接用<a href=\"链接\" target=\"_blank\">标题</a>格式\n"
         f"{political_rule}"
         f"{year_rule}"
@@ -411,7 +473,6 @@ def generate_section(section_name, items, extra='', allow_political=False):
 def generate_calendar_section(items):
     today = datetime.now()
 
-    # 优先用硬编码日历（最可靠），同时尝试抓取最新页面
     page_text = ''
     try:
         r = requests.get(ACADEMIC_CALENDAR_URL, headers=HEADERS, timeout=10)
@@ -424,7 +485,6 @@ def generate_calendar_section(items):
     except Exception as ex:
         print(f'  Registrar页面抓取失败({ex})，使用硬编码日历')
 
-    # 硬编码 + 页面内容合并（硬编码优先）
     combined = ACADEMIC_CALENDAR_HARDCODED
     if page_text:
         combined += '\n\n[官网最新内容]\n' + page_text
@@ -453,6 +513,27 @@ def generate_registration_section(registration_text, housing_text):
         "- 格式：<ul><li>📌 X月X日 — 事项</li></ul>，最多8条，按紧迫程度排序\n"
         "- 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
         "- 只输出HTML"
+    )
+    return gemini(prompt) or FALLBACK_HTML
+
+def generate_prematric_section(page_text):
+    """开学前安排：专项板块，面向 Class of 2030 家长"""
+    today = datetime.now()
+    combined = PREMATRIC_HARDCODED
+    if page_text:
+        combined += '\n\n[官网实时内容]\n' + page_text
+
+    prompt = (
+        f"你是杜克大学家长社区的中文编辑，面向 Class of 2030（2026年秋季入学）的中国家长。\n"
+        f"今天是{today.year}年{today.month}月{today.day}日。\n\n"
+        f"以下是杜克大学开学前安排的官方信息：\n\n{combined}\n\n"
+        "请按紧迫程度整理成中文清单，规则：\n"
+        "1. 优先列出【今天起90天内】的待办事项和截止日期\n"
+        "2. 每条标注具体日期，用📌表示截止/重要节点，用📅表示一般节点\n"
+        "3. 格式：<ul><li>📌/📅 X月X日 — 事项说明</li></ul>，最多8条\n"
+        "4. 涉及住房分配、迎新周、搬入日、国际生网络迎新等务必包含\n"
+        "5. 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
+        "6. 只输出HTML，不要其他文字"
     )
     return gemini(prompt) or FALLBACK_HTML
 
@@ -488,7 +569,7 @@ def main():
     basketball_items = (fetch_source('goduke_mbb', 5) + fetch_source('goduke_wbb', 3) +
                         fetch_source('goduke_all', 3) + fetch_source('athletics', 3) +
                         fetch_source('chronicle', 3))
-    admissions_items = fetch_source('admissions', 5) + fetch_source('admissions_site', 4)
+    admissions_items = fetch_source('admissions', 5) + fetch_source('admissions_site', 6)
     campus_items     = (fetch_source('campus', 3) + fetch_source('dsg', 3) +
                         fetch_source('students', 3) + fetch_source('dukeengage', 3) +
                         fetch_source('undergrad', 3) + fetch_source('interdisciplinary', 3) +
@@ -498,24 +579,28 @@ def main():
                         fetch_source('trinity', 3))
     visa_items       = fetch_source('visa', 8)
 
-    print('── 抓取日历/选课/宿舍 ──')
-    calendar_items      = fetch_calendar()
-    registration_text   = fetch_pages_text(REGISTRATION_PAGES)
-    housing_text        = fetch_pages_text(HOUSING_PAGES)
+    print('── 抓取日历/选课/宿舍/招生/开学前安排 ──')
+    calendar_items       = fetch_calendar()
+    registration_text    = fetch_pages_text(REGISTRATION_PAGES)
+    housing_text         = fetch_pages_text(HOUSING_PAGES)
+    admissions_page_text = fetch_pages_text(ADMISSIONS_PAGES, max_chars=1500)
+    prematric_page_text  = fetch_pages_text(PREMATRIC_PAGES, max_chars=1200)
 
     print(f'学校:{len(school_items)} 体育:{len(basketball_items)} '
           f'招生:{len(admissions_items)} 校园:{len(campus_items)} '
           f'Chronicle:{len(chronicle_items)} 科研:{len(research_items)} '
           f'签证:{len(visa_items)}')
 
-    # ── Gemini 调用（每板块1次，共9次）──────────────────────────
-    print('── 调用 Gemini（9次）──')
+    # ── Gemini 调用（每板块1次，共10次）─────────────────────────
+    print('── 调用 Gemini（10次）──')
     sections = {
         'weekly-school':       generate_section('学校新闻', school_items),
         'weekly-basketball':   generate_section('篮球/体育动态', basketball_items),
-        'weekly-admissions':   generate_section('招生信息', admissions_items),
+        'weekly-admissions':   generate_section('招生信息', admissions_items,
+                                                extra=admissions_page_text),
         'weekly-calendar':     generate_calendar_section(calendar_items),
         'weekly-registration': generate_registration_section(registration_text, housing_text),
+        'weekly-prematric':    generate_prematric_section(prematric_page_text),
         'weekly-campus':       generate_section('校园生活', campus_items),
         'weekly-chronicle':    generate_section('Chronicle学生报', chronicle_items),
         'weekly-research':     generate_section('科研动态', research_items),
