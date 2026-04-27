@@ -289,7 +289,7 @@ def call_gemini(prompt):
         return None
 
 def call_groq(prompt):
-    """Groq Llama-3.3-70b：14,400 RPD 免费"""
+    """Groq Llama-3.3-70b：14,400 RPD，30 RPM 免费"""
     if not GROQ_KEY:
         return None
     url = 'https://api.groq.com/openai/v1/chat/completions'
@@ -298,40 +298,55 @@ def call_groq(prompt):
     body = {'model': 'llama-3.3-70b-versatile',
             'messages': [{'role': 'user', 'content': prompt}],
             'max_tokens': 1500}
-    try:
-        r = requests.post(url, json=body, headers=headers, timeout=60)
-        data = r.json()
-        if 'choices' in data:
-            return data['choices'][0]['message']['content']
-        if r.status_code == 429:
-            print('  Groq超限(429)，降级到OpenRouter')
+    for attempt in range(3):
+        try:
+            r = requests.post(url, json=body, headers=headers, timeout=60)
+            data = r.json()
+            if 'choices' in data:
+                time.sleep(3)  # Groq RPM保护
+                return data['choices'][0]['message']['content']
+            if r.status_code == 429:
+                wait = 20 * (attempt + 1)
+                print(f'  Groq超限(429)，等待{wait}秒重试...')
+                time.sleep(wait)
+                continue
+            print(f'  Groq错误: {r.status_code} {str(data)[:100]}')
             return None
-        print(f'  Groq错误: {r.status_code} {str(data)[:100]}')
-        return None
-    except Exception as ex:
-        print(f'  Groq异常: {ex}')
-        return None
+        except Exception as ex:
+            print(f'  Groq异常: {ex}')
+            time.sleep(10)
+    print('  Groq重试耗尽，降级到OpenRouter')
+    return None
 
 def call_openrouter(prompt):
-    """OpenRouter Llama-3.3-70b：免费额度备用"""
+    """OpenRouter 多模型轮询备用"""
     if not OPENROUTER_KEY:
         return None
     url = 'https://openrouter.ai/api/v1/chat/completions'
     headers = {'Authorization': f'Bearer {OPENROUTER_KEY}',
-               'Content-Type': 'application/json'}
-    body = {'model': 'meta-llama/llama-3.3-70b-instruct:free',
-            'messages': [{'role': 'user', 'content': prompt}],
-            'max_tokens': 1500}
-    try:
-        r = requests.post(url, json=body, headers=headers, timeout=60)
-        data = r.json()
-        if 'choices' in data:
-            return data['choices'][0]['message']['content']
-        print(f'  OpenRouter错误: {r.status_code} {str(data)[:100]}')
-        return None
-    except Exception as ex:
-        print(f'  OpenRouter异常: {ex}')
-        return None
+               'Content-Type': 'application/json',
+               'HTTP-Referer': 'https://dukeparents.org'}
+    # 多个免费模型轮询
+    models = [
+        'meta-llama/llama-3.3-70b-instruct:free',
+        'mistralai/mistral-7b-instruct:free',
+        'google/gemma-3-12b-it:free',
+    ]
+    for model in models:
+        try:
+            body = {'model': model,
+                    'messages': [{'role': 'user', 'content': prompt}],
+                    'max_tokens': 1500}
+            r = requests.post(url, json=body, headers=headers, timeout=60)
+            data = r.json()
+            if 'choices' in data:
+                print(f'  OpenRouter({model})成功')
+                return data['choices'][0]['message']['content']
+            print(f'  OpenRouter({model})失败: {r.status_code} {str(data)[:80]}')
+            time.sleep(5)
+        except Exception as ex:
+            print(f'  OpenRouter({model})异常: {ex}')
+    return None
 
 def gemini(prompt):
     """自动降级链：Gemini → Groq → OpenRouter"""
@@ -374,6 +389,10 @@ def generate_section(section_name, items, extra='', allow_political=False):
     )
 
     # 过滤+生成 合并为1次调用
+    year_rule = ''
+    if '招生' in section_name:
+        year_rule = f'- 只保留{datetime.now().year}年及以后的招生信息，严格过滤{datetime.now().year - 1}年以前的旧内容\n'
+
     prompt = (
         f"你是杜克大学家长社区的中文编辑。今天是{date_hint}。\n"
         f"请把以下【{section_name}】的英文内容整理成简洁中文摘要，供中国家长阅读。\n\n"
@@ -384,6 +403,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "- 最多5条，优先最新内容\n"
         "- 链接用<a href=\"链接\" target=\"_blank\">标题</a>格式\n"
         f"{political_rule}"
+        f"{year_rule}"
         "- 只输出HTML，不要其他文字"
     )
     return gemini(prompt) or FALLBACK_HTML
