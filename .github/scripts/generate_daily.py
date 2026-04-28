@@ -527,7 +527,9 @@ def gemini(prompt):
         result = fn(prompt)
         if result:
             print(f'  ✓ {name} 返回成功')
-            return result
+            result = re.sub(r'^```html\s*', '', result.strip(), flags=re.IGNORECASE)
+            result = re.sub(r'\s*```$', '', result.strip())
+            return result.strip()
         print(f'  ✗ {name} 失败，尝试下一个...')
     return None
 
