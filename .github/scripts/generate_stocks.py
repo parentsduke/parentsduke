@@ -305,6 +305,21 @@ def generate_html(data, commentary, news_html):
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>全球市场行情 — 扯谈Duke群</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {{
+  const ADMIN = 'weihong_j@yahoo.com';
+  const client = window.supabase.createClient(
+    'https://ritglkwqpwlcjwemhfqd.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8'
+  );
+  client.auth.getSession().then(function({{ data }}) {{
+    if (!data.session || data.session.user.email !== ADMIN) {{
+      window.location.href = 'index.html';
+    }}
+  }});
+}})();
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=JetBrains+Mono:wght@400;600&display=swap');
 :root {{
