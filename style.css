@@ -634,3 +634,14 @@ footer .WJ {
     font-size: 12px;
   }
 }
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.4em;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  header {
+    padding: 12px 8px;
+  }
+}
