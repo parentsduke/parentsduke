@@ -41,9 +41,12 @@ TICKERS = {
         ('USDJPY=X', 'USD/JPY'),
     ],
     'commodities': [
-        ('GC=F', '黄金'),
-        ('CL=F', '原油'),
-        ('SI=F', '白银'),
+        ('GC=F',    '黄金'),
+        ('CL=F',    '原油'),
+        ('SI=F',    '白银'),
+    ],
+    'crypto': [
+        ('BTC-USD', 'Bitcoin'),
     ],
     'bonds': [
         ('^TNX',  '10年期美债收益率'),
@@ -71,10 +74,27 @@ TICKERS = {
 #  新闻 RSS 源
 # ══════════════════════════════════════════════════════════════
 NEWS_FEEDS = [
-    ('Reuters',     'https://feeds.reuters.com/reuters/businessNews'),
-    ('MarketWatch', 'https://feeds.marketwatch.com/marketwatch/topstories/'),
-    ('Yahoo金融',   'https://finance.yahoo.com/news/rssindex'),
-    ('Investing',   'https://www.investing.com/rss/news_25.rss'),
+    # 美国
+    ('Reuters',      'https://feeds.reuters.com/reuters/businessNews'),
+    ('MarketWatch',  'https://feeds.marketwatch.com/marketwatch/topstories/'),
+    ('Yahoo金融',    'https://finance.yahoo.com/news/rssindex'),
+    ('Bloomberg',    'https://feeds.bloomberg.com/markets/news.rss'),
+    # 欧洲
+    ('FT',           'https://www.ft.com/rss/home/uk'),
+    ('Reuters欧洲',  'https://feeds.reuters.com/reuters/EuropeanBusiness'),
+    # 亚洲
+    ('Reuters亚洲',  'https://feeds.reuters.com/reuters/AsianBusinessNews'),
+    ('日经英文',     'https://asia.nikkei.com/rss/feed/nar'),
+    ('南华早报',     'https://www.scmp.com/rss/92/feed'),
+    # 中国经济
+    ('新华财经',     'http://www.xinhuanet.com/fortune/news_fortune.xml'),
+    # 国际时事
+    ('BBC',          'http://feeds.bbci.co.uk/news/world/rss.xml'),
+    ('CNN',          'http://rss.cnn.com/rss/edition_world.rss'),
+    ('AP',           'https://feeds.apnews.com/rss/apf-topnews'),
+    # 科技
+    ('TechCrunch',   'https://techcrunch.com/feed/'),
+    ('The Verge',    'https://www.theverge.com/rss/index.xml'),
 ]
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (compatible; StocksBot/1.0)'}
@@ -247,11 +267,12 @@ def generate_news_html(news_items):
 
     prompt = (
         f"你是杜克大学家长社区的金融编辑。今天是{date_hint}。\n"
-        f"以下是来自英文财经媒体的最新新闻：\n\n{text}\n\n"
-        "请整理成5-8条中文摘要，供关注美国市场的中国家长阅读。要求：\n"
-        "- 过滤与金融/经济/市场无关的内容\n"
+        f"以下是来自全球财经媒体（美国/欧洲/亚洲）的最新新闻：\n\n{text}\n\n"
+        "请整理成12-16条中文摘要，供关注国际动态的中国家长阅读。要求：\n"
+        "- 按4个板块分组：📈 财经市场、🌍 国际时事、💻 科技动态、🌏 亚洲动态，每组至少2条\n"
         "- 每条用一个<li>，格式：<ul><li>[来源] 中文标题摘要 <a href=\"链接\" target=\"_blank\">原文</a></li></ul>\n"
         "- 简洁，每条不超过50字\n"
+        "- 板块标题用<b>📈 财经市场</b>等加粗标签单独一行\n"
         "- 只输出HTML，不要其他文字"
     )
     return ai(prompt) or '<p class="no-data">新闻生成失败</p>'
@@ -314,6 +335,7 @@ def generate_html(data, commentary, news_html):
         ('🇨🇳 A股',       'china',       False),
         ('💱 外汇',       'fx',          False),
         ('🛢 大宗商品',   'commodities', False),
+        ('₿ 加密货币',   'crypto',       False),
         ('📊 美债/指数',  'bonds',        False),
         ('💼 共同基金',   'mutual_funds', False),
     ]:
