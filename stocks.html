@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球市场行情 — 扯谈Duke群</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root {
+  --bg:#0d1117; --card:#161b22; --border:#30363d;
+  --gold:#d4a843; --green:#3fb950; --red:#f85149; --flat:#8b949e;
+  --text:#e6edf3; --muted:#8b949e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;min-height:100vh;padding-bottom:60px}
+.top-bar{background:linear-gradient(135deg,#0d1117 0%,#012169 100%);border-bottom:1px solid var(--gold);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:99}
+.top-bar h1{font-size:17px;font-weight:700;color:#fff;letter-spacing:0.08em}
+.top-bar .meta{text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.6}
+.market-state{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--gold);margin-bottom:2px}
+.container{max-width:960px;margin:0 auto;padding:20px 16px}
+.commentary{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:6px;padding:14px 18px;margin-bottom:24px;font-size:14px;line-height:1.8;color:#cdd9e5}
+.commentary-label{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--gold);margin-bottom:8px;letter-spacing:0.1em}
+.section-title{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--gold);letter-spacing:0.15em;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #21262d}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:4px}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 14px;transition:border-color 0.15s}
+.q-card:hover{border-color:var(--gold)}
+.up-border{border-top:2px solid var(--green)}
+.down-border{border-top:2px solid var(--red)}
+.flat-border{border-top:2px solid var(--flat)}
+.q-label{font-size:12px;color:var(--muted);margin-bottom:2px}
+.q-symbol{font-size:10px;font-family:'JetBrains Mono',monospace;color:#444d56;margin-bottom:6px}
+.q-price{font-family:'JetBrains Mono',monospace;font-weight:600;color:#fff;margin-bottom:4px}
+.q-change{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--flat)}
+.news-wrap{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-top:4px}
+.news-wrap ul{list-style:none;padding:0}
+.news-wrap li{padding:9px 0;border-bottom:1px solid #21262d;font-size:13px;line-height:1.6;color:#cdd9e5}
+.news-wrap li:last-child{border-bottom:none}
+.news-wrap a{color:var(--gold);text-decoration:none;font-size:11px;margin-left:6px}
+.news-wrap a:hover{text-decoration:underline}
+.no-data{color:var(--muted);font-size:13px;padding:8px 0}
+footer{text-align:center;padding:24px 16px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);border-top:1px solid #21262d;margin-top:32px}
+footer a{color:var(--gold);text-decoration:none}
+@media(max-width:480px){.card-grid{grid-template-columns:repeat(2,1fr)}.top-bar h1{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div>
+    <div class="market-state">⚪ 已收盘</div>
+    <h1>📈 全球市场行情</h1>
+  </div>
+  <div class="meta">2026-04-28 03:30 ET<br>15:30 北京时间</div>
+</div>
+<div class="container">
+  <div class="commentary">
+    <div class="commentary-label">▸ AI 市场点评</div>
+    各位杜克家长，早上好。截至2026年4月28日美东时间凌晨，美国股市今日多数上涨，纳斯达克指数尤其表现强劲，上涨1.84%。科技股表现活跃，英伟达（NVIDIA）大涨8.50%成为今日最大亮点，可能反映了市场对人工智能等新兴技术前景的持续乐观；相比之下，苹果（AAPL）则下跌2.13%。亚洲市场则普遍承压，恒生指数和深证成指跌幅均超1%。值得关注的是，人民币兑美元汇率今日小幅升值0.04%，目前为6.833，这对于需要向美国汇款支付子女留学费用的家庭来说，跨境汇款的成本略有降低。
+  </div>
+  <div class="section-title">🇺🇸 美股指数</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">S&P 500</div><div class="q-symbol">^GSPC</div><div class="q-price" style="font-size:26px">7,173.91</div><div class="q-change up">+65.51 (+0.92%)</div></div><div class="q-card up-border"><div class="q-label">纳斯达克</div><div class="q-symbol">^IXIC</div><div class="q-price" style="font-size:26px">24,887.10</div><div class="q-change up">+448.60 (+1.84%)</div></div><div class="q-card down-border"><div class="q-label">道琼斯</div><div class="q-symbol">^DJI</div><div class="q-price" style="font-size:26px">49,167.79</div><div class="q-change down">-142.53 (-0.29%)</div></div><div class="q-card up-border"><div class="q-label">罗素2000</div><div class="q-symbol">^RUT</div><div class="q-price" style="font-size:26px">2,788.19</div><div class="q-change up">+13.09 (+0.47%)</div></div><div class="q-card flat-border"><div class="q-label">VIX恐慌指数</div><div class="q-symbol">^VIX</div><div class="q-price" style="font-size:26px">18.02</div><div class="q-change flat">+0.00 (+0.00%)</div></div></div><div class="section-title">📱 美股科技</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">Apple</div><div class="q-symbol">AAPL</div><div class="q-price" style="font-size:20px">267.6</div><div class="q-change down">-5.82 (-2.13%)</div></div><div class="q-card up-border"><div class="q-label">NVIDIA</div><div class="q-symbol">NVDA</div><div class="q-price" style="font-size:20px">216.6</div><div class="q-change up">+16.97 (+8.50%)</div></div><div class="q-card up-border"><div class="q-label">Tesla</div><div class="q-symbol">TSLA</div><div class="q-price" style="font-size:20px">378.7</div><div class="q-change up">+4.95 (+1.32%)</div></div><div class="q-card up-border"><div class="q-label">Microsoft</div><div class="q-symbol">MSFT</div><div class="q-price" style="font-size:20px">424.8</div><div class="q-change up">+9.07 (+2.18%)</div></div><div class="q-card up-border"><div class="q-label">Google</div><div class="q-symbol">GOOGL</div><div class="q-price" style="font-size:20px">350.3</div><div class="q-change up">+11.45 (+3.38%)</div></div><div class="q-card up-border"><div class="q-label">Amazon</div><div class="q-symbol">AMZN</div><div class="q-price" style="font-size:20px">261.1</div><div class="q-change up">+6.04 (+2.37%)</div></div><div class="q-card up-border"><div class="q-label">Meta</div><div class="q-symbol">META</div><div class="q-price" style="font-size:20px">678.6</div><div class="q-change up">+19.47 (+2.95%)</div></div></div><div class="section-title">🇭🇰 港股</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">恒生指数</div><div class="q-symbol">^HSI</div><div class="q-price" style="font-size:20px">25,704.41</div><div class="q-change down">-273.66 (-1.05%)</div></div></div><div class="section-title">🇨🇳 A股</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">上证综指</div><div class="q-symbol">000001.SS</div><div class="q-price" style="font-size:20px">4,078.64</div><div class="q-change down">-7.71 (-0.19%)</div></div><div class="q-card down-border"><div class="q-label">深证成指</div><div class="q-symbol">399001.SZ</div><div class="q-price" style="font-size:20px">14,830.45</div><div class="q-change down">-165.30 (-1.10%)</div></div><div class="q-card down-border"><div class="q-label">沪深300</div><div class="q-symbol">000300.SS</div><div class="q-price" style="font-size:20px">4,758.21</div><div class="q-change down">-12.74 (-0.27%)</div></div></div><div class="section-title">💱 外汇</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">USD/CNY</div><div class="q-symbol">USDCNY=X</div><div class="q-price" style="font-size:20px">6.833</div><div class="q-change down">-0.00 (-0.04%)</div></div><div class="q-card up-border"><div class="q-label">USD/HKD</div><div class="q-symbol">USDHKD=X</div><div class="q-price" style="font-size:20px">7.835</div><div class="q-change up">+0.00 (+0.01%)</div></div><div class="q-card down-border"><div class="q-label">EUR/USD</div><div class="q-symbol">EURUSD=X</div><div class="q-price" style="font-size:20px">1.17</div><div class="q-change down">-0.00 (-0.06%)</div></div><div class="q-card down-border"><div class="q-label">USD/JPY</div><div class="q-symbol">USDJPY=X</div><div class="q-price" style="font-size:20px">159.4</div><div class="q-change down">-0.19 (-0.12%)</div></div></div><div class="section-title">🛢 大宗商品</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">黄金</div><div class="q-symbol">GC=F</div><div class="q-price" style="font-size:20px">4,645.40</div><div class="q-change down">-30.00 (-0.64%)</div></div><div class="q-card up-border"><div class="q-label">原油</div><div class="q-symbol">CL=F</div><div class="q-price" style="font-size:20px">98.84</div><div class="q-change up">+2.47 (+2.56%)</div></div><div class="q-card down-border"><div class="q-label">白银</div><div class="q-symbol">SI=F</div><div class="q-price" style="font-size:20px">73.36</div><div class="q-change down">-1.64 (-2.18%)</div></div></div>
+  <div class="section-title">📰 财经新闻摘要</div>
+  <div class="news-wrap"><ul>
+<li>MarketWatch 加州靠近美国首个亿万富翁财富税 <a href="https://www.marketwatch.com/story/california-is-one-step-closer-to-americas-first-billionaire-wealth-tax-and-the-divide-between-red-and-blue-state-taxes-is-getting-deeper-18ef3232?mod=mw_rss_topstories" target="_blank">原文</a></li>
+<li>MarketWatch 美联储预计通胀上升 <a href="https://www.marketwatch.com/story/higher-inflation-is-on-the-way-the-fed-needs-to-make-this-clearer-before-it-raises-rates-142c6884?mod=mw_rss_topstories" target="_blank">原文</a></li>
+<li>Yahoo 财经 马斯特卡是一只低风险高增长股 <a href="https://finance.yahoo.com/markets/stocks/articles/mastercard-ma-one-best-low-202055953.html" target="_blank">原文</a></li>
+<li>Investing 欧洲股市下跌 <a href="https://www.investing.com/news/stock-market-news/european-shares-edge-lower-as-usiran-talks-stall-corporate-earnings-on-tap-4640384" target="_blank">原文</a></li>
+<li>Investing 日本股市收盘下跌 <a href="https://www.investing.com/news/stock-market-news/japan-stocks-lower-at-close-of-trade-nikkei-225-down-105-4640371" target="_blank">原文</a></li>
+</ul></div>
+</div>
+<footer>
+  数据来源：Yahoo Finance · Reuters · MarketWatch · Yahoo金融<br>
+  仅供参考，不构成投资建议 · 每日自动更新5次<br><br>
+  <a href="index.html">← 返回扯谈Duke群主页</a>
+</footer>
+</body>
+</html>
