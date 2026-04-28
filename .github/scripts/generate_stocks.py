@@ -45,6 +45,26 @@ TICKERS = {
         ('CL=F', '原油'),
         ('SI=F', '白银'),
     ],
+    'bonds': [
+        ('^TNX',  '10年期美债收益率'),
+        ('^TYX',  '30年期美债收益率'),
+        ('^SP600','S&P 600小盘股'),
+    ],
+    'mutual_funds': [
+        ('VIEIX', 'Vanguard 扩展市场'),
+        ('VPMAX', 'Vanguard 优质股票'),
+        ('VFTNX', 'Vanguard 联邦货币'),
+        ('VINIX', 'Vanguard 机构指数'),
+        ('VGELX', 'Vanguard 能源基金'),
+        ('BTSMX', 'BTC 全市场'),
+        ('VTSNX', 'Vanguard 全球股票'),
+        ('PTTRX', 'PIMCO 债券基金'),
+        ('DHLYX', 'DoubleLine 贷款'),
+        ('PIRMX', 'PIMCO 房产基金'),
+        ('VWENX', 'Vanguard 惠灵顿'),
+        ('VSVNX', 'Vanguard 2065目标'),
+        ('VGHAX', 'Vanguard 医疗基金'),
+    ],
 }
 
 # ══════════════════════════════════════════════════════════════
@@ -294,6 +314,8 @@ def generate_html(data, commentary, news_html):
         ('🇨🇳 A股',       'china',       False),
         ('💱 外汇',       'fx',          False),
         ('🛢 大宗商品',   'commodities', False),
+        ('📊 美债/指数',  'bonds',        False),
+        ('💼 共同基金',   'mutual_funds', False),
     ]:
         items = data.get(key, [])
         if items:
