@@ -576,6 +576,8 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "- 链接用<a href=\"链接\" target=\"_blank\">标题</a>格式\n"
         f"{political_rule}"
         f"{year_rule}"
+        "- 统一用'大一新生'替代'首年学生'或'First-Year students'
+"
         "- 只输出HTML，不要其他文字"
     )
     return gemini(prompt) or FALLBACK_HTML
