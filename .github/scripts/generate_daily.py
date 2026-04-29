@@ -12,19 +12,19 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (compatible; DukeParentsBot/1.0)'}
 #  RSS 源
 # ══════════════════════════════════════════════════════════════
 RSS_FEEDS = {
-    'chronicle':        'https://www.dukechronicle.com/feeds/rss.xml',
-    'today':            'https://today.duke.edu/rss.xml',
-    'news':             'https://news.duke.edu/feed/',
-    'research':         'https://research.duke.edu/feed/',
+    'chronicle':        'https://news.google.com/rss/search?q=Duke+Chronicle+site:dukechronicle.com&hl=en-US&gl=US&ceid=US:en',
+    'today':            'https://news.google.com/rss/search?q=Duke+University+site:today.duke.edu&hl=en-US&gl=US&ceid=US:en',
+    'news':             'https://news.google.com/rss/search?q=Duke+University+news+site:news.duke.edu&hl=en-US&gl=US&ceid=US:en',
+    'research':         'https://news.google.com/rss/search?q=Duke+University+research+site:research.duke.edu&hl=en-US&gl=US&ceid=US:en',
     'pratt':            'https://today.duke.edu/tags/pratt-school-of-engineering/rss',
     'trinity':          'https://today.duke.edu/tags/trinity-college-of-arts-&-sciences/rss',
     'admissions':       'https://today.duke.edu/tags/admissions/rss',
     'athletics':        'https://today.duke.edu/tags/athletics/rss',
     'campus':           'https://today.duke.edu/topics/campus-&-community/rss',
-    'dukeengage':       'https://dukeengage.duke.edu/news/rss.xml',
-    'undergrad':        'https://undergrad.duke.edu/news/rss.xml',
+    'dukeengage':       'https://news.google.com/rss/search?q=DukeEngage+site:dukeengage.duke.edu&hl=en-US&gl=US&ceid=US:en',
+    'undergrad':        'https://news.google.com/rss/search?q=Duke+undergraduate+site:undergrad.duke.edu&hl=en-US&gl=US&ceid=US:en',
     'interdisciplinary':'https://today.duke.edu/tags/interdisciplinary-studies/rss',
-    'visa':             'https://visaservices.duke.edu/news/feed',
+    'visa':             'https://news.google.com/rss/search?q=Duke+visa+immigration+site:visaservices.duke.edu&hl=en-US&gl=US&ceid=US:en',
     'goduke_mbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=MBB',
     'goduke_wbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=WBB',
     'goduke_all':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200',
@@ -527,9 +527,7 @@ def gemini(prompt):
         result = fn(prompt)
         if result:
             print(f'  ✓ {name} 返回成功')
-            result = re.sub(r'^```html\s*', '', result.strip(), flags=re.IGNORECASE)
-            result = re.sub(r'\s*```$', '', result.strip())
-            return result.strip()
+            return result
         print(f'  ✗ {name} 失败，尝试下一个...')
     return None
 
@@ -607,11 +605,10 @@ def generate_calendar_section(items):
         "请严格按照以下规则输出：\n"
         "1. 只列出【今天及今天起7天内】日历中明确记载的事项\n"
         "2. 今天的事项必须列出并标注'【今日】'\n"
-        "3. 如果今天处于某个持续性时间段内（如期末考试、迎新周、开学典礼周等），必须标注该事项（例如：📅 期末考试进行中），绝对不能写'无具体事项'\n"
-        "4. 如果7天内没有任何事项，列出日历中最近3条即将到来的事项\n"
-        "5. 绝对不要写'没有重要事项'或'无具体事项'或列出空日期\n"
-        "6. 格式：<ul><li>📅 X月X日 — 具体事项（中文翻译）</li></ul>\n"
-        "7. 只输出HTML，不要其他文字"
+        "3. 如果7天内没有任何事项，列出日历中最近3条即将到来的事项\n"
+        "4. 绝对不要写'没有重要事项'或列出空日期\n"
+        "5. 格式：<ul><li>📅 X月X日 — 具体事项（中文翻译）</li></ul>\n"
+        "6. 只输出HTML，不要其他文字"
     )
     return gemini(prompt) or FALLBACK_HTML
 
