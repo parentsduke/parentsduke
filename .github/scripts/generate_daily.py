@@ -51,7 +51,8 @@ HTML_SOURCES = {
                        'selectors': ['h2 a','h3 a','.entry-title a','article a']},
     'alumni_sendoff': {'urls': ['https://alumni.duke.edu/tags/send-party',
                                 'https://alumni.duke.edu/events-programs',
-                                'https://alumni.duke.edu/tags/new-student-send-party'],
+                                'https://alumni.duke.edu/tags/new-student-send-party',
+                                'https://www.cvent.com/api/email/dispatch/v1/email/view/p2-x5djmm9vp9cj56-v65vry5w-avv-fl4q?view=html'],
                        'selectors': ['h2 a','h3 a','.event-title a','.views-field-title a',
                                      'article a','.card-title a','.field-content a',
                                      '.views-row a','.item-list a']},
@@ -178,7 +179,43 @@ PREMATRIC_HARDCODED = [
         'category': '国际生专项',
         'text': '需提前完成 ISSS 相关报到手续（开学前）',
     },
-    # ── 联系方式（永不过期）──
+    # ── Send-Off Party（亚洲/全球）──
+    {
+        'expire': (2026, 5, 16),
+        'category': 'Send-Off Party',
+        'text': '🎉 5月16日(周六) 3:30-5:30 PM — Mumbai Send-Off Party，Mahalakshmi, Mumbai（主办：Hemal & Dr. Sonali Shah P'27）',
+    },
+    {
+        'expire': (2026, 5, 17),
+        'category': 'Send-Off Party',
+        'text': '🎉 5月17日(周日) 2:00-4:00 PM — 北京 Send-Off Party，Changping District（主办：Patrick Cai MBA'05 P'30）',
+    },
+    {
+        'expire': (2026, 5, 19),
+        'category': 'Send-Off Party',
+        'text': '🎉 5月19日(周二) 7:00-9:30 PM — Bengaluru Send-Off Party，Jayamahal Extension（主办：Phyllis & Eric Savage '92 P'27）',
+    },
+    {
+        'expire': (2026, 5, 23),
+        'category': 'Send-Off Party',
+        'text': '🎉 5月23日(周六) 6:00-8:00 PM — Delhi Send-Off Party（主办：Kapuria家庭 P'27/P'29）',
+    },
+    {
+        'expire': (2026, 6, 27),
+        'category': 'Send-Off Party',
+        'text': '🎉 6月27日(周六) 2:00-5:00 PM — 上海 Send-Off Party，Duke Kunshan University（主办：Joseph Zhang B.S.'20）',
+    },
+    {
+        'expire': (2026, 7, 25),
+        'category': 'Send-Off Party',
+        'text': '🎉 7月25日(周六) 3:00-5:00 PM — 台北 Send-Off Party，Xinyi District（主办：Owen Chung & Ying Qi B.S.'17）',
+    },
+    {
+        'expire': (2026, 9, 1),
+        'category': 'Send-Off Party',
+        'text': '🎉 香港 / 首尔 / 东京 Send-Off Party — 日期待定(TBA)，注册开放后请留意邮件通知',
+    },
+        # ── 联系方式（永不过期）──
     {
         'expire': None,
         'category': '联系方式',
