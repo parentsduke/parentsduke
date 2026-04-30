@@ -377,6 +377,42 @@ def fetch_html_items(base_url, selectors, max_items=6):
         print(f'  HTML 失败 {base_url}: {ex}')
         return []
 
+
+def fetch_jina(url, max_items=6):
+    """用 Jina AI Reader 抓取页面，绕过403/JS渲染，免费无需key"""
+    jina_url = f'https://r.jina.ai/{url}'
+    try:
+        r = requests.get(jina_url, headers={**HEADERS, 'Accept': 'text/plain'}, timeout=20)
+        text = r.text[:4000]
+        # 从 Jina 返回的 Markdown 里提取标题和链接
+        items = []
+        import re as _re
+        # 匹配 Markdown 链接格式 [title](url)
+        for m in _re.finditer(r'\[([^\]]{10,120})\]\((https?://[^)]+)\)', text):
+            title, link = m.group(1).strip(), m.group(2).strip()
+            if any(x['link'] == link for x in items):
+                continue
+            items.append({'title': title, 'link': link, 'summary': ''})
+            if len(items) >= max_items:
+                break
+        print(f'  Jina {url}: {len(items)} 条')
+        return items
+    except Exception as ex:
+        print(f'  Jina 失败 {url}: {ex}')
+        return []
+
+def fetch_jina_text(url, max_chars=1500):
+    """用 Jina AI Reader 抓取页面全文"""
+    jina_url = f'https://r.jina.ai/{url}'
+    try:
+        r = requests.get(jina_url, headers={**HEADERS, 'Accept': 'text/plain'}, timeout=20)
+        text = r.text[:max_chars]
+        print(f'  Jina文本 {url}: {len(text)} chars')
+        return text
+    except Exception as ex:
+        print(f'  Jina文本失败 {url}: {ex}')
+        return ''
+
 def fetch_html_source(name, max_items=6):
     cfg = HTML_SOURCES[name]
     items = []
@@ -396,28 +432,48 @@ def fetch_pages_text(urls, max_chars=1200):
     for url in urls:
         try:
             r = requests.get(url, headers=HEADERS, timeout=15)
-            soup = BeautifulSoup(r.text, 'html.parser')
-            for tag in soup.select('nav,footer,header,script,style'):
-                tag.decompose()
-            main = soup.select_one('main,#main,.main-content,article,.field-items')
-            text = (main or soup).get_text(separator=' ', strip=True)
-            texts.append(f'[{url}]\n{text[:max_chars]}')
-            print(f'  抓取OK: {url}')
+            if r.status_code in (403, 401, 429):
+                # 被拒绝，改用 Jina
+                text = fetch_jina_text(url, max_chars)
+            else:
+                soup = BeautifulSoup(r.text, 'html.parser')
+                for tag in soup.select('nav,footer,header,script,style'):
+                    tag.decompose()
+                main = soup.select_one('main,#main,.main-content,article,.field-items')
+                text = (main or soup).get_text(separator=' ', strip=True)[:max_chars]
+                print(f'  抓取OK: {url}')
+            if text:
+                texts.append(f'[{url}]\n{text}')
         except Exception as ex:
-            print(f'  抓取失败 {url}: {ex}')
+            # 抓取失败，尝试 Jina
+            text = fetch_jina_text(url, max_chars)
+            if text:
+                texts.append(f'[{url}]\n{text}')
+            else:
+                print(f'  抓取失败 {url}: {ex}')
     return '\n\n'.join(texts)
 
 def fetch_source(name, max_items=8):
     if name in RSS_FEEDS:
         items = fetch_rss(RSS_FEEDS[name], max_items)
-        fallbacks = {
+        # Jina fallback for known 403/JS sites
+        jina_sites = {
+            'chronicle': 'https://www.dukechronicle.com/section/news',
+            'pratt':     'https://pratt.duke.edu/news/',
+            'trinity':   'https://trinity.duke.edu/news',
+            'today':     'https://today.duke.edu/',
+            'news':      'https://news.duke.edu/',
+        }
+        html_fallbacks = {
             'chronicle': ('https://www.dukechronicle.com/section/news',
                           ['h2 a','h3 a','.article-title a']),
             'pratt':     ('https://pratt.duke.edu/news/',['h2 a','h3 a']),
             'trinity':   ('https://trinity.duke.edu/news',['h2 a','h3 a','.views-row a']),
         }
-        if not items and name in fallbacks:
-            url, sels = fallbacks[name]
+        if not items and name in jina_sites:
+            items = fetch_jina(jina_sites[name], max_items)
+        if not items and name in html_fallbacks:
+            url, sels = html_fallbacks[name]
             items = fetch_html_items(url, sels, max_items)
         return items
     if name in HTML_SOURCES:
