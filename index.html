@@ -318,92 +318,78 @@ function toggleBannerMusic() {
   <div style="max-width:800px;margin:0 auto;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
       <h2 style="color:#B8963E;font-size:18px;font-weight:700;margin:0;">📰 每日Duke动态</h2>
-      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;">2026年4月29日</span>
+      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;">2026年4月30日</span>
     </div>
     <div id="weekly-sections">
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏫 学校新闻</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-school"><ul>
-    <li>[4月28日] <a href="https://news.google.com/rss/articles/CBMihwFBVV95cUxQUlRQQ1JQZ3JmZXB5QnAxcFFTQ2lBZ3NlWURucmFxNWpHZ3FBM3NDSEd3QUNhMFh0NzZ6X21MUHNMNEVvWmQ2a1NmODJVbGd6Nmg1SFc5bGZwa0hUTkNKa0dCZFdVZk5uWEpWX2FZbFRZWWJnZ3ZIWXYycNRLdDFsNEF2M0FtQTZJMDdEMExWZmNSRndlOW1kZGRRQXJBWlV6SExHdW1Nblc3QVk5MFhB?oc=5" target="_blank">《Never Caught》被选为2026年杜克共同体验书目</a>：杜克大学选定《Never Caught》一书作为2026年“杜克共同体验”阅读书目。</li>
-    <li>[4月27日] <a href="https://news.google.com/rss/articles/CBMihgFBVV95cUxQTnN4Zk81WVNKVEV5SVdiZnR0czZrNVJQVFVoalpHOG1xaGhpdVNmeTZ5Sk91WUltdFpZeXUzWXhoeXRVakdRVXpfVlVGZHpVUzdDalR0ZmdDelZ0bDR3MVc2TVNrY0RhSmVGVDAtYm9Bc05KTGhqTWwwS3FXM01qYlBSQlR6Zw?oc=5" target="_blank">杜克体育部开展社区回馈周活动</a>：杜克大学体育部举办了一周的社区回馈活动。</li>
-    <li>[4月27日] <a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxOYm9Nall4eXRaRkJfSGZUdU95akdGWERwQWhEaGlQWU5CaDJUb2t3d1QtYkFDa0VPNWFDY296c1ViNFJVb2o4cEtzYzVyaGZ2V2RXWW9jWGtqOW9zanpYM3NBRDAwemVlQXBkVEhYRjVmY3RQZC1FNVNJOUdrS0p0SjI0ZltrTnU2UUFZOTZZV1hBdw?oc=5" target="_blank">《Working@Duke》20周年：专访领导力楷模Ron Evans</a>：《Working@Duke》杂志庆祝创刊20周年，并回顾了领导力典范Ron Evans的职业生涯。</li>
-    <li>[4月23日] <a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTE1jeTdBNmlqZzlrMEpEa1cxc055ajZfRFAwaUZNaElNV2F1SU9CR01EdDZYbnRpX25PeWgwU3l0eWJQbm1seWpDeVcwNEdYWHByeEpmRTdMVnRzaWZmZkh2YmZn?oc=5" target="_blank">学期结束日（LDOC）精彩瞬间回顾</a>：杜克大学记录了学期结束日（Last Day of Classes）的精彩瞬间。</li>
+<li>4月28日：杜克大学宣布2026年的<a href="https://news.google.com/rss/articles/CBMihwFBVV95cUxQUlRQQ1JQZ3JmZXB5QnAxcFFTQ2lBZ3NlWURucmFxNWpHZ3FBM3NDSEd3QUNhMFh0NzZ6X21MUHNMNEVvWmQ2a1NmODJVbGd6Nmg1SFc5bGZwa0hUTkNKa0dCZFdVZk5uWEpWX2FZbFRZWWJnZ3ZIWXYycjNSTDZSaDRFNGEtWmM" target="_blank">杜克大学共同体验</a>为《Never Caught》。</li>
+<li>4月27日：杜克大学工作人员罗恩·埃文斯（Ron Evans）在<a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxOYm9Nall4eXRaRkJfSGZUdU95akdGWERwQWhEaGlQWU5CaDJUb2t3d1QtYkFDa0VPNWFDY296c1ViNFJVb2o4cEtzYzVyaGZ2V2RXWW9jWGtqOW9zanpYM3NBRDAwemVlQXBkVEhYRjVmY3RQZC1FNVNJOUdrS0p0SjI0ZktrTnU2UUFZOTZZV1hBdw" target="_blank">Working@Duke的20周年</a>中展示了他的领导才能。</li>
+<li>4月24日：一名大一新生获得了杜克大学的<a href="https://news.google.com/rss/articles/CBMidEFVX3lxTE9qRng5aXdNb1VJX1NqTmpzYkZzb05GTDg4dGs3c3pQQmotMnVkUHhyNmFvM0Rzd3BGclZwVHd4Mk9TOW04VjQwZS1TSHJ5aXZFRkgzSGNuRDZEanJNRFoxRXdJdjAzZnN6cGxYajMtS3FBTWo2" target="_blank">杜克大学杜鲁门奖学金</a>。</li>
+<li>4月23日：杜克大学的<a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTE1jeTdBNmlqZzlrMEpEa1cxc055ajZfRFAwaUZNaElNV2F1SU9CR01EdDZYbnRpX25PeWgwU3l0eWJQbm1seWpDeVcwNEdYWHByeEpmRTdMVnRzaWZmZkh2YmZn" target="_blank">LDOC时刻</a>被拍摄下来。</li>
+<li>4月23日：杜克大学专家名单<a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTE5zLVFYSFEyajh1SXBUTlNncVotX0UzY0tESmFWQkxUVXp1YXk1V1pjRGcyZ01ZOW1OZDJRS0tMSlY0S3hrN2MzTE5GVmZXalA5Rk5TU1dYRjlQRl9MTkpoeUNR" target="_blank">杜克大学专家列表</a>可供查阅。</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏀 篮球动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-basketball"><ul>
-<li>4月27日：杜克大学举办了为期一周的社区服务活动，111名志愿者参与了包括辅导、食品分发和锻炼等活动，<a href="https://today.duke.edu/2026/04/duke-athletics-enjoys-week-giving-back-community" target="_blank">杜克大学社区服务</a>。</li>
-<li>4月20日：一名杜克大学击剑运动员将击剑和环境科学结合起来，<a href="https://today.duke.edu/2026/04/fencing-environmental-science" target="_blank">击剑与环境科学</a>。</li>
-<li>3月30日：杜克大学男子和女子篮球队在本季取得了优异的成绩，包括ACC锦标赛和常规赛冠军，以及NCAA锦标赛八强，<a href="https://today.duke.edu/2026/03/thank-you-duke-basketball" target="_blank">感谢杜克篮球队</a>。</li>
-<li>4月20日：杜克大学一名学生在《杜克纪事报》中分享了自己寻找归属感的经历，<a href="https://news.google.com/rss/articles/CBMidkFVX3lxTFBnNVhkdUE2cDZDRFV3eUtuVHdOUE5vcG40TXAydGtxRU9weUVRbENfUmVuc05TQlExMmR3SHVab1JvTGNHRElxeUpQS1BMX0x0M1h3SmxKLVNDd09ZSmJfT0V5d1Y3V3c0eURZOFNjb0xselgyd0E?oc=5" target="_blank">寻找归属感</a>。</li>
-<li>4月22日：杜克大学的一名学生在《杜克纪事报》中分享了自己对周一的看法，<a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxNY2RMV1RReEYxWkNWbGtzTW5QRC1zZUp4Zml2R0RNZXRxWGJRbmU4dllPNDZ0Vmd1ZURHT3lCUEN3OU5ncC04amVPTFVDQkZZTlJJWnY5Qlpka1hTaTJXSk9NOVpGSk9CNXZrNjNfT0d2RnNTU0l4eVdKRmZEMXR4aTlBcVRCb1ZZUmpMUV9DTkNwMHc?oc=5" target="_blank">周一观察</a>。</li>
+<li>4月27日：杜克大学体育部组织了为期一周的返馈社区活动，111名志愿者参与了包括辅导、食物分发和锻炼等活动，详情见<a href="https://today.duke.edu/2026/04/duke-athletics-enjoys-week-giving-back-community" target="_blank">杜克大学新闻</a>。</li>
+<li>4月20日：杜克大学的一名击剑运动员，同时也热衷于环境科学，这两个领域在她看来是密切相关的，详情见<a href="https://today.duke.edu/2026/04/fencing-environmental-science" target="_blank">相关报道</a>。</li>
+<li>3月30日：杜克大学男子和女子篮球队取得了令人惊喜的成绩，赢得了ACC锦标赛和常规赛冠军，并进入NCAA锦标赛八强，详情见<a href="https://today.duke.edu/2026/03/thank-you-duke-basketball" target="_blank">杜克大学新闻</a>。</li>
+<li>4月25日：学生组织对黑人学生联盟邀请赛的取消表示深度失望，详情见<a href="https://news.google.com/rss/articles/CBMimwJBVV95cUxNZkxSUE5KTnZBRWhjTFFZcFZMWUxzbzZLbnpnOEZyanB3YUpwM1VvRkFoQWFUM2Y3VHdGTlpyNUVvRklXLUtZZVQ2bnJlVjREaDdrWDR6Ry0tMzVLaW43RllpRUI1V21HMUNZeGtRSXZCRTFxLTFmMmhNMFoyQ0ZCNHc5N1NPMmRxN2N2V29CX1J3TXJTYXQxZklYQ1ZOak5TUC1kLXNkNHBtTlhLMTkzVC1VTk91SlJ0YUZLMnVoSlhJMTJyN2MzZXNleDg0b3doazZ2d2Z2Rjh1WFRZQlA4OXMxVjlVbnZGc0Jnd2JKX25UZi1ad2duUFZsUm5qd3hFU3ZlQTd4X2l1QmQyUE5UVzFyNXF5TFh0LXFz" target="_blank">黑人学生联盟邀请赛</a>。</li>
+<li>4月22日：一名杜克大学学生分享了她找到归属感的过程，详情见<a href="https://news.google.com/rss/articles/CBMidkFVX3lxTFBnNVhkdUE2cDZDRFV3eUtuVHdOUE5vcG40TXAydGtxRU9weUVRbENfUmVuc05TQlExMmR3SHVab1JvTGNHRElxeUpQS1BMX0x0M1h3SmxKLVNDd09ZSmJfT0V5d1Y3V3c0eURZOFNjb0xselgyd0E" target="_blank">相关报道</a>。</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📋 招生信息</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-admissions"><ul>
-    <li>
-        <strong>[2026年4月29日 紧急] 2030届新生入学确认：</strong>
-        被录取的2030届新生请立即登录您的杜克大学申请门户，确认入学意向（入学确认截止日期通常为5月1日）。这是成为杜克“蓝魔”的最后一步，请勿错过！<a href="https://admissions.duke.edu/admit/" target="_blank">前往新生门户</a>
-    </li>
-    <li>
-        <strong>[2026年4月] 2030届新生开放日（Blue Devil Days）：</strong>
-        杜克大学每年4月为被录取新生及其家庭举办Blue Devil Days活动，提供校园探索、专业了解和师生交流机会。2026年的活动虽已结束，但欢迎未来被录取的学生关注并计划参加。<a href="https://admissions.duke.edu/admit/" target="_blank">了解活动详情</a>
-    </li>
-    <li>
-        <strong>[2026年11月3日] 2027年秋季入学申请及财政援助（早决定批次）：</strong>
-        计划申请杜克大学2027年秋季入学早决定（Early Decision）批次的家庭请注意，申请截止日期为2026年11月3日。同时，早期决定批次的财政援助（CSS Profile和FAFSA）申请也在此日截止。<a href="https://admissions.duke.edu/apply/" target="_blank">申请信息</a> | <a href="https://admissions.duke.edu/financial-support/" target="_blank">财政援助</a>
-    </li>
-    <li>
-        <strong>[2027年1月5日/2月1日] 2027年秋季入学申请及财政援助（常规决定批次）：</strong>
-        常规决定（Regular Decision）批次的申请截止日期为2027年1月5日。相应的财政援助（CSS Profile和FAFSA）申请截止日期为2027年2月1日。<a href="https://admissions.duke.edu/apply/" target="_blank">申请信息</a> | <a href="https://admissions.duke.edu/financial-support/" target="_blank">财政援助</a>
-    </li>
-    <li>
-        <strong>[2027年3月15日] 2027年秋季转学申请：</strong>
-        杜克大学2027年秋季转学申请的截止日期为2027年3月15日。杜克鼓励学生通过Common Application、QuestBridge Application、Coalition Application或杜克转学申请系统提交入学申请。<a href="https://admiss.ugrad.duke.edu/apply/" target="_blank">转学申请详情</a>
-    </li>
+<li>4月30日：杜克大学<a href="https://admissions.duke.edu/" target="_blank">招生信息</a>页面更新，提供大一新生入学流程、财务援助申请等信息。</li>
+<li>4月16日、17日或20日：大一新生可参加<a href="https://admissions.duke.edu/admit/" target="_blank">Blue Devil Days</a>，体验杜克大学生活，探索校园，结识现任学生。</li>
+<li>11月3日：大一新生早期决定入学申请截止日，申请者需提交相关材料，包括成绩单、推荐信等。</li>
+<li>1月5日：大一新生常规入学申请截止日，申请者需提交相关材料，包括成绩单、推荐信等。</li>
+<li>3月15日：转学生入学申请截止日，申请者需提交相关材料，包括成绩单、推荐信等，通过<a href="https://admiss.ugrad.duke.edu/apply/" target="_blank">Duke Transfer Application</a>或<a href="http://www.coalitionforcollegeaccess.org/" target="_blank">Coalition</a>进行申请。</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📅 学期日历</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-calendar"><ul>
-<li>📅 4月29日 — 【今日】期末考试进行中</li>
-<li>📅 5月2日 — 期末考试结束 (晚上10点)</li>
+<li>📅 5月2日 — 结束期末考试 (晚上10:00)</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📝 选课 &amp; 宿舍</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-registration"><ul>
-<li>📌 4月29日 — 当前日期，无截止日期</li>
-<li>📌 6月1日 — 首年学生购物车开放，<a href="https://students.duke.edu/living/housing/annual-housing-calendar/" target="_blank">查看详情</a></li>
-<li>📌 6月 — 住房申请重开，<a href="https://students.duke.edu/living/housing/housing-assignments/fall26-housing/" target="_blank">查看详情</a></li>
-<li>📌 7月29日 — 首年学生注册开始，<a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
-<li>📌 7月30日 — 首年学生选课更改开始，<a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+<li>📌 4月30日 — 选课信息查看截止日期，请查看<a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+<li>📌 7月29日 — First-Years Registration 开始，查看<a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+<li>📌 6月1日 — First-Years Shopping Carts开放，查看<a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+<li>📌 4月8日 — Drop/Add 开始，查看<a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+<li>📌 6月 — 2026-2027 Housing Application 重新开放，查看<a href="https://students.duke.edu/living/housing/housing-assignments/fall26-housing/" target="_blank">查看详情</a></li>
+<li>📌 现在 — Graduate & Professional Student Housing 报名，查看<a href="https://students.duke.edu/living/housing/graduate-professional-housing/" target="_blank">查看详情</a></li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎒 开学前安排</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-prematric"><ul>
-<li>📌 5月1日 — 全国确认入学截止日，须在此日前确认入学决定</li>
-<li>📅 5月中旬 — Orientation Matching Questionnaire 发送至 Duke 邮箱，需完成以分配迎新项目 <a href="https://students.duke.edu/info-for/students/incoming-students/experiential-orientation/first-year-students/" target="_blank">查看详情</a></li>
+<li>📌 5月1日 — 全国确认入学截止日</li>
+<li>📅 5月中旬 — Orientation Matching Questionnaire 发送至 Duke 邮箱 <a href="https://students.duke.edu/info-for/students/incoming-students/" target="_blank">查看详情</a></li>
+<li>📅 5月16日 — Mumbai Send-Off Party</li>
+<li>📅 5月17日 — 北京 Send-Off Party</li>
 <li>📌 6月1日 — 高年级生住房申请开放（Housing Portal）</li>
-<li>📌 6月10日 — Class of 2030 住房分配结果发布（Housing Portal）</li>
+<li>📅 6月10日 — Class of 2030 住房分配结果发布（Housing Portal）</li>
 <li>📌 6月11日 — 国际生网络迎新 Zoom Session 1</li>
-<li>📌 6月15日 — 官方标准化考试成绩截止（如选择提交 SAT/ACT）</li>
-<li>📅 6月23日 — 国际生网络迎新 Zoom Session 2</li>
-<li>📌 7月初 — 项目匹配结果通知，体验式迎新周准备 <a href="https://students.duke.edu/info-for/students/incoming-students/experiential-orientation/first-year-students/" target="_blank">查看详情</a></li>
+<li>📅 8月15日 — 新生搬入日（First-Year Move-In Day）及体验式迎新周开始 <a href="https://students.duke.edu/info-for/students/incoming-students/experiential-orientation/first-year-students/" target="_blank">查看详情</a></li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎓 校园生活</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-campus"><ul>
-<li>4月28日，杜克大学宣布将《永不被捕》（Never Caught）作为2026年的共同体验项目，这是大学的《我们，人民》（We the People）计划的一部分，可以在<a href="https://today.duke.edu/2026/04/never-caught-selected-2026-duke-common-experience" target="_blank">此网站</a>了解更多信息。</li>
-<li>4月28日，弗里曼犹太生命中心举办了一个关于职业发展的校友网络讨论会，更多细节可以在<a href="https://today.duke.edu/2026/04/spark-connections-freeman-center-jewish-life" target="_blank">这里</a>找到。</li>
-<li>4月27日，杜克大学体育部门组织了一周的服务社区活动，有111名志愿者参与，包括辅导、食物分发和体育锻炼等活动，详见<a href="https://today.duke.edu/2026/04/duke-athletics-enjoys-week-giving-back-community" target="_blank">此网站</a>。</li>
-<li>4月24日，杜克大学宣布了2026年的贝斯椅教授名单，共有九位教职员工获得此殊荣，更多信息可以在<a href="https://today.duke.edu/2026/04/nine-faculty-named-2026-bass-chairs" target="_blank">这里</a>找到。</li>
-<li>4月20日，杜克大学发布了关于《永不被捕》成为2026年共同体验项目的详细信息，更多内容可以在<a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxQUXlKN2N0Qkl1a2dqRFBEWFpIXzd0YUdPNnV0dWJ0cl9heXhNZmYzM0JqZU5RTkt2U1JoRlh6VThLZ0JZVXJnTEFnUkswWXFhMkVEaThDVlo2enNSVHZIUVYwX3FCSXB2eFBiclhOT09WZURCWWFqdzFqZlNWcDRZblNR" target="_blank">此网站</a>了解。</li>
+    <li>[4月29日] 杜克大学通过“Duke HomeGrown”项目，邀请当地学生深入了解杜克校园，体验媒体与设计领域的创意职业。<a href="https://today.duke.edu/2026/04/durham-students-go-behind-scenes-duke-and-discover-creative-careers" target="_blank">阅读详情</a></li>
+    <li>[4月28日] 2026年杜克大学“全校共读（Duke Common Experience）”项目选定书籍《Never Caught》，该选择与大学的“我们人民”倡议相呼应。<a href="https://today.duke.edu/2026/04/never-caught-selected-2026-duke-common-experience" target="_blank">阅读详情</a></li>
+    <li>[4月24日] 杜克大学九位教授获评2026年Bass讲席教授，以表彰其在教学领域的卓越成就。<a href="https://today.duke.edu/2026/04/nine-faculty-named-2026-bass-chairs" target="_blank">阅读详情</a></li>
+    <li>[4月20日] 杜克大学学者群体深入探讨了决定成功人生的关键因素。<a href="https://today.duke.edu/2026/04/what-factors-determine-successful-life" target="_blank">阅读详情</a></li>
+    <li>通过大一新生体验项目，杜克大学致力于帮助大一新生快速融入大学生活，建立紧密的人际联系。<a href="https://focus.duke.edu/news/building-connections-through-first-year-experience" target="_blank">了解更多</a></li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📰 Chronicle学生报</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-chronicle"><ul>
-<li>4月28日：杜克大学的4名前蓝魔队女篮球员在WNBA季前赛中对决<a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxQaFBOLW9uTjNSSDlRX1pwV2FCejh3aTJtSkRRY3BZS2tEUE9lelBYVHg2N2QzeDl0dzE3M21FOVZtbEpYTlVKcmNBR09lQWkzeWtvNU5TaUk2MnE2OGt1eTN0VVd6Mm1oSW5kZU5YQW5fNzZLUUtucXowSFpUc2swTGFYa05RQm5SZE56bnRrY0VWNjA1NTliY2JiZGNleVZZQmJBbUZBTHdDcEdJZkZMNg" target="_blank">杜克大学在WNBA</a>。</li>
-<li>4月27日：蓝魔队球员在NBA季后赛第一轮中表现出色<a href="https://news.google.com/rss/articles/CBMiuwFBVV95cUxQM2ZfOEdURG8xbHVra09XTUxYc1lCd0hpSjZSenJCV1NrT3RKWEpvbW1lbi1PWjB2SEJsTnVWMWxYcnpKMGxWNWE2T3I5LUx2SkcyaHpQM2RxYWZnTmFlVHN1V0c1bkpFd0RJRG9JZEVEU0Vud3paa0hoYnZvTTdPYWZidUdyUE9iWGVuSFpQU0l4a211UTBtNFJwQlZRU0dOUzNoTUR6WDVFTGdFamVOYVJINDJ3LWNwZUxF" target="_blank">杜克大学在职业联赛</a>。</li>
-<li>4月22日：一位学生分享了自己在杜克大学找回家的感觉<a href="https://news.google.com/rss/articles/CBMidkFVX3lxTFBnNVhkdUE2cDZDRFV3eUtuVHdOUE5vcG40TXAydGtxRU9weUVRbENfUmVuc05TQlExMmR3SHVab1JvTGNHRElxeUpQS1BMX0x0M1h3SmxKLVNDd09ZSmJfT0V5d1Y3V3c0eURZOFNjb0xselgyd0E" target="_blank">在杜克大学找到回家的路</a>。</li>
-<li>4月20日：杜克大学的“星期一”被粉丝们所喜爱<a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxNY2RMV1RReEYxWkNWbGtzTW5QRC1zZUp4Zml2R0RNZXRxWGJRbmU4dllPNDZ0Vmd1ZURHT3lCUEN3OU5ncC04amVPTFVDQkZZTlJJWnY5Qlpka1hTaTJXSk9NOVpGSk9CNXZrNjNfT0d2RnNTU0l4eVdKRmZEMXR4aTlBcVRCb1ZZUmpMUV9DTkNwMHc" target="_blank">星期一的故事</a>。</li>
-<li>4月15日：学生事务办公室冻结了杜克大学SJP分会的资金并撤销了其认可地位<a href="https://news.google.com/rss/articles/CBMi6wFBVV95cUxPV2xCLWZWRmhpYUQtVlFleFlYZXlhcVhSOExPdXlta09QQzEzNkhRa29CMWg5V05FdS1uMllCTjVCT3pCbHpReTFiVndvTUw4VDdZLUxUVFkyOGVGcHdsRmwwY2ZybUctOERnalQ3MWs2SFVySk94U1ZGWkprU2NYRGhOVEVOUXJYZl9tV081clV1Y1FGUVhPdkRRcTRpRlMwZVVDYm55WFRyaDlFSkFwQ3R5dHlxdGp2OVZMeXh0UTlqaS1yNU1SRUFHM1FVbl9hNXQxWGFDQXVQRjd0V1BvQXRFcXhYODJfdE5j" target="_blank">杜克大学学生事务</a>。</li>
+<li>4月27日：<a href="https://news.google.com/rss/articles/CBMiuwFBVV95cUxQM2ZfOEdURG8xbHVra09XTUxYc1lCd0hpSjZSenJCV1NrT3RKWEpvbW1lbi1PWjB2SEJsTnVWMWxYcnpKMGxWNWE2T3I5LUx2SkcyaHpQM2RxYWZnTmFlVHN1V0c1bkpFd0RJRG9JZEVEU0Vud3paa0hoYnZvTTdPYWZidUdyUE9iWGVuSFpQU0l4a211UTBtNFJwQlZRU0dOUzNoTUR6WDVFTGdFamVOYVJINDJ3LWNwZUxF" target="_blank">蓝魔鬼队在NBA季后赛第一轮中表现出色，超出了预期</a>。</li>
+<li>4月26日：<a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE5lZ09xTFFnTEtVaHdpZlVhTmZ2Z1BmelNTM2oydlRKeTRZQTBoQXRDazJwY3NBLXhCUUFQaVhFVTBmM3BHd0pwcnM3c0hxS24tMm9mVGhOMmlUdnNSaDJQNXZEclNydmtIUU5ONmppcGlva0F3MzZobUx0TS1laG8" target="_blank">桑福德学院的一篇反思文章，讲述个人成长和自我发现</a>。</li>
+<li>4月25日：<a href="https://news.google.com/rss/articles/CBMimwJBVV95cUxNZkxSUE5KTnZBRWhjTFFZcFZMWUxzbzZLbnpnOEZyanB3YUpwM1VvRkFoQWFUM2Y3VHdGTlpyNUVvRklXLUtZZVQ2bnJlVjREaDdrWDR6Ry0tMzVLaW43RllpRUI1V21HMUNZeGtRSXZCRTFxLTFmMmhNMFoyQ0ZCNHc5N1NPMmRxN2N2V29CX1J3TXJTYXQxZklYQ1ZOak5TUC1kLXNkNHBtTlhLMTkzVC1VTk91SlJ0YUZLMnVoSlhJMTJyN2MzZXNleDg0b3doazZ2d2Z2Rjh1WFRZQlA4OXMxVjlVbnZGc0Jnd2JKX25UZi1ad2duUFZsUm5qd3hFU3ZlQTd4X2l1QmQyUE5UVzFyNXF5TFh0LXFz" target="_blank">学生组织表示对黑人学生联盟邀请赛取消的决定感到“极度失望”</a>。</li>
+<li>4月22日：<a href="https://news.google.com/rss/articles/CBMidkFVX3lxTFBnNVhkdUE2cDZDRFV3eUtuVHdOUE5vcG40TXAydGtxRU9weUVRbENfUmVuc05TQlExMmR3SHVab1JvTGNHRElxeUpQS1BMX0x0M1h3SmxKLVNDd09ZSmJfT0V5d1Y3V3c0eURZOFNjb0xselgyd0E" target="_blank">一位大一新生分享了自己在大学中寻找归属感的经历</a>。</li>
+<li>4月22日：<a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTE1IZmVvT3lnZGN1MDVGSXljZmhGY2l0d3FVNG9EODBrNHRRemQxSTRsQkU2bUdzUktDOTFnZ25ULWFWY3oycHRjRnFvc3NPaVUyN0xKZXZnVmVSeUx1S0dyMlhibEotSXMw" target="_blank">一位学生解释了为什么他决定留在杜克大学</a>。</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🔬 科研动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-research"><ul>
-<li>4月28日：杜克大学工程师使用超声波和靶向气泡技术，将大分子的抗癌药物直接输送到肿瘤细胞内，可能解锁更多抗癌药物的潜力：<a href="https://today.duke.edu/2026/04/bursting-microbubbles-could-unlock-power-more-cancer-drugs" target="_blank">破裂的微气泡可能解锁更多抗癌药物的潜力</a></li>
-<li>4月27日：杜克大学哲学家大卫·翁（David Wong）因其对道德的研究而被选为美国艺术与科学院成员：<a href="https://today.duke.edu/2026/04/duke-philosopher-elected-american-academy-arts-sciences" target="_blank">杜克大学哲学家当选美国艺术与科学院成员</a></li>
-<li>4月21日：杜克大学工程教授金正尚（Jungsang Kim）因其在量子计算领域的开创性工作而获得韩国最高荣誉——昌โจ勋章：<a href="https://today.duke.edu/2026/04/jungsang-kim-receives-changjo-medal-top-honor-south-korea" target="_blank">金正尚教授获得昌โจ勋章</a></li>
-<li>4月21日：杜克大学心理学教授为学生提供了应对压力的方法，包括正念、锻炼、休息和寻求帮助：<a href="https://today.duke.edu/2026/04/finals-are-coming-psychology-professor-offers-ways-deal-stress" target="_blank">杜克大学心理学教授提供应对压力的方法</a></li>
-<li>4月14日：杜克大学晋升100多位教师至正教授职位，涉及多个学院，包括迪瓦尼蒂、富卡、法学院、医学院等：<a href="https://today.duke.edu/2026/04/duke-promotes-faculty-rank-full-professor" target="_blank">杜克大学晋升教师至正教授职位</a></li>
+<li>4月28日：杜克大学工程师使用超声波和靶向气泡将大分子抗癌药物直接送入肿瘤细胞，从而可能解锁更多癌症治疗药物的作用。<a href="https://today.duke.edu/2026/04/bursting-microbubbles-could-unlock-power-more-cancer-drugs" target="_blank">气泡爆破可能解锁更多抗癌药物的力量</a></li>
+<li>4月27日：杜克大学哲学家David Wong因对道德的研究而被选入美国艺术与科学学院，这是美国最古老的学术机构之一。<a href="https://today.duke.edu/2026/04/duke-philosopher-elected-american-academy-arts-sciences" target="_blank">杜克大学哲学家当选美国艺术与科学学院院士</a></li>
+<li>4月23日：心理学教授提醒，大一新生在期末考试来临之际，可以通过正念、锻炼、休息和倾听等方式来管理压力。<a href="https://today.duke.edu/2026/04/finals-are-coming-psychology-professor-offers-ways-deal-stress" target="_blank">期末考试即将来临，心理学教授教你如何应对压力</a></li>
+<li>4月21日：杜克大学工程学教授Jungsang Kim因在量子计算领域的开创性工作而获得韩国最高荣誉——昌조奖章。<a href="https://today.duke.edu/2026/04/jungsang-kim-receives-changjo-medal-top-honor-south-korea" target="_blank">杜克大学教授Jungsang Kim获韩国最高荣誉</a></li>
+<li>4月14日：杜克大学宣布提升100多名教师到正教授职位，这些教师来自包括神学院、福库阿商学院、法学院、医学院、尼古拉斯学校、护理学院、普拉特工程学院、桑福德公政学院和三一学院在内的各个院系。<a href="https://today.duke.edu/2026/04/duke-promotes-faculty-rank-full-professor" target="_blank">杜克大学晋升教师职位</a></li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🛂 签证与国际生动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-visa"><ul>
-<li>4月20日：杜克大学签证服务提醒：<a href="https://news.google.com/rss/articles/CBMie0FVX3lxTE80bVUwY05OZWpCV3FXVWhXYkN6TmdQbTNwbVlxQU9MdzFSOXRobktrdVZJTUVLNEpZVkFoMmxUZjhNQ1pvdHotSVdOWVFHZzIxUTZFVFJQR1hfc0oxbE45WWxGWFlTUjJKUWVGQnRNSW9UNmMxd1J2ZXBETQ?oc=5" target="_blank">地址变更要求</a>。</li>
-<li>9月27日：杜克大学签证服务提醒：<a href="https://news.google.com/rss/articles/CBMia0FVX3lxTFBRVXFPZWNwTkdxX1dpQm80ZmFKUXk4TENBUWpJNE1VcnJidjY5YS1IRWFFUXhZMkxfSWZyNkZSUG5EMFhuV2lYMVFVSXdXU0F3cE51UmhUUXBRWTlsSnFubEtFenEycGlGZmMw?oc=5" target="_blank">30天离美要求</a>。</li>
-<li>1月28日：杜克大学签证服务提醒：<a href="https://news.google.com/rss/articles/CBMidEFVX3lxTE9xZjBFQS1kUW80Q3AxaFJuRTJyYjBWSm5NMl84b2lMcnNPTU5iVHlKZERrQmh1Z1p5TEl1Uk9JMV8wNnNoSUs2SF9wRENtNHF0R0QzOFdFekpIb21NeWNVTDA0ZUJWTVdEUHVtNkE4NGk1UzJ1?oc=5" target="_blank">学生入学签证指南</a>。</li>
-<li>9月29日：杜克大学签证服务发布新闻：<a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTFBhaDI2Z20yR3lXeE1pbWx5LXJOeGxXU3F5UEFaaGc5OUpDRFBubmdnX0dBck8tY0xUM3dSdVlVeF9CWFpKTVJuckhrcw?oc=5" target="_blank">新闻</a>。</li>
-<li>9月27日：杜克大学签证服务提醒：<a href="https://news.google.com/rss/articles/CBMiY0FVX3lxTE9URGVlOGN2UzFQbmtuWDFlLVpVZHpIRlZQSFJNS3o0X3dKUnhIWTVDdVZ4LUd0dVdFb2w1WWlxYkFMelU0c3JwVDJ5eEl3Tkd6UnNNSFFUUGV4cDRfUEJkbTl6WQ?oc=5" target="_blank">J-2签证持有人的工作许可</a>。</li>
+    <li>【4月20日】提醒：国际学生地址变更要求。请确保您的美国居住地址始终保持最新，并及时向杜克签证服务办公室更新。详情请查看：<a href="https://news.google.com/rss/articles/CBMie0FVX3lxTE80bVUwY05OZWpCV3FXVWhXYkN6TmdQbTNwbVlxQU9MdzFSOXRobktrdVZJTUVLNEpZVkFoMmxUZjhNQ1pvdHotSVdOWVFHZzIxUTZFVFJQR1hfc0oxbE45WWxGWFlTUjJKUWVGQnRNSW9UNmMxd1J2ZXBETQ?oc=5" target="_blank">地址变更要求</a></li>
+    <li>【1月28日】杜克大学新生入学签证指南。为新入学的国际大一新生提供关于签证申请和入学流程的重要信息。详情请查看：<a href="https://news.google.com/rss/articles/CBMidAFVX3lxTE9xZjBFQS1kUW80Q3AxaFJuRTJyYjBWSm5NMl84b2lMcnNPTU5iVHlKZERrQmh1Z1p5TEl1Uk9JMV8wNnNoSUs2SF9wRENtNHF0R0QzOFdFekpIb21NeWNVTDA0ZUJWTVdEUHVtNkE4NGk1UzJ1?oc=5" target="_blank">新生入学签证信息</a></li>
+    <li>【11月18日】J-1签证持有者“两年回国居住要求”（INA 212e）。持有J-1签证的学生及访问学者需了解美国移民法中关于“两年回国居住要求”的规定及其豁免条件。详情请查看：<a href="https://news.google.com/rss/articles/CBMilAFBVV95cUxQUFJUOXNqU1YxcDJmTDI4aUJQWEFPcW9RTTQxdEZ6Ukd1WXprLXFRLTY2cWIxZmJtN21jWlFJOTc0ZVVieU1jRTNabTV6dmRWcGFPa3JMYmp0Y0p4a1BMcDBMRFNIdW9QRTNOcTRucE9qcWVmVTJ2UEpaVVBwMDVLUHlKUHd2bGo0NDBQZDdmVE9hTE9L?oc=5" target="_blank">J-1签证回国居住要求</a></li>
+    <li>【10月18日】B-2旅游签证与免签（WT）须知。为计划来美旅游或探亲的家长及访客提供B-2签证和免签计划（Visa Waiver for Tourism, WT）的相关信息。详情请查看：<a href="https://news.google.com/rss/articles/CBMifkFVX3lxTE5mREQ4dkNfcC1uVjA4aktmNFFjN0RsTml2QzBweWhTNWJ6RGFYaUx1cEdkYy05MTNfY0F3cWs3OUk0TGFyajNmZ0hWRTg4SzBtRmpkYVNwZkJ5c0UyRFJVUnpLNG5TWU5SUnJpUnZYRDNmUFp1T3pUbXlYc1Z3QQ?oc=5" target="_blank">旅游签证与免签</a></li>
+    <li>【9月27日】国际学生离美超过30天注意事项。持有F或J签证的学生如果计划离美超过30天，请务必了解相关规定和可能对签证状态产生的影响。详情请查看：<a href="https://news.google.com/rss/articles/CBMia0FVX3lxTFBRVXFPZWNwTkdxX1dpQm80ZmFKUXk4TENBUWpJNE1VcnJidjY5YS1IRWFFUXhZMkxfSWZyNkZSUG5EMFhuV2lYMVFVSXdXU0F3cE51UmhUUXBRWTlsSnFubEtFenQycGlGZmMw?oc=5" target="_blank">离美超过30天规定</a></li>
 </ul></div></div>
     </div>
   </div>
