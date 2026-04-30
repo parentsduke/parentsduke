@@ -183,32 +183,32 @@ PREMATRIC_HARDCODED = [
     {
         'expire': (2026, 5, 16),
         'category': 'Send-Off Party',
-        'text': '🎉 5月16日(周六) 3:30-5:30 PM — Mumbai Send-Off Party，Mahalakshmi, Mumbai（主办：Hemal & Dr. Sonali Shah P'27）',
+        'text': '🎉 5月16日(周六) 3:30-5:30 PM — Mumbai Send-Off Party，Mahalakshmi, Mumbai（主办：Hemal & Dr. Sonali Shah P27）',
     },
     {
         'expire': (2026, 5, 17),
         'category': 'Send-Off Party',
-        'text': '🎉 5月17日(周日) 2:00-4:00 PM — 北京 Send-Off Party，Changping District（主办：Patrick Cai MBA'05 P'30）',
+        'text': '🎉 5月17日(周日) 2:00-4:00 PM — 北京 Send-Off Party，Changping District（主办：Patrick Cai MBA05 P30）',
     },
     {
         'expire': (2026, 5, 19),
         'category': 'Send-Off Party',
-        'text': '🎉 5月19日(周二) 7:00-9:30 PM — Bengaluru Send-Off Party，Jayamahal Extension（主办：Phyllis & Eric Savage '92 P'27）',
+        'text': '🎉 5月19日(周二) 7:00-9:30 PM — Bengaluru Send-Off Party，Jayamahal Extension（主办：Phyllis & Eric Savage 92 P27）',
     },
     {
         'expire': (2026, 5, 23),
         'category': 'Send-Off Party',
-        'text': '🎉 5月23日(周六) 6:00-8:00 PM — Delhi Send-Off Party（主办：Kapuria家庭 P'27/P'29）',
+        'text': '🎉 5月23日(周六) 6:00-8:00 PM — Delhi Send-Off Party（主办：Kapuria家庭 P27/P29）',
     },
     {
         'expire': (2026, 6, 27),
         'category': 'Send-Off Party',
-        'text': '🎉 6月27日(周六) 2:00-5:00 PM — 上海 Send-Off Party，Duke Kunshan University（主办：Joseph Zhang B.S.'20）',
+        'text': '🎉 6月27日(周六) 2:00-5:00 PM — 上海 Send-Off Party，Duke Kunshan University（主办：Joseph Zhang B.S.20）',
     },
     {
         'expire': (2026, 7, 25),
         'category': 'Send-Off Party',
-        'text': '🎉 7月25日(周六) 3:00-5:00 PM — 台北 Send-Off Party，Xinyi District（主办：Owen Chung & Ying Qi B.S.'17）',
+        'text': '🎉 7月25日(周六) 3:00-5:00 PM — 台北 Send-Off Party，Xinyi District（主办：Owen Chung & Ying Qi B.S.17）',
     },
     {
         'expire': (2026, 9, 1),
@@ -613,8 +613,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "- 链接用<a href=\"链接\" target=\"_blank\">标题</a>格式\n"
         f"{political_rule}"
         f"{year_rule}"
-        "- 统一用'大一新生'替代'首年学生'或'First-Year students'
-"
+        "- 统一用'大一新生'替代'首年学生'或'First-Year students'\n"
         "- 只输出HTML，不要其他文字"
     )
     return gemini(prompt) or FALLBACK_HTML
