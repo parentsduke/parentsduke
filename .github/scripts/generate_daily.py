@@ -556,11 +556,56 @@ def call_openrouter(prompt):
             print(f'  OpenRouter({model})异常: {ex}')
     return None
 
+
+def call_cerebras(prompt):
+    """Cerebras：免费层，速度极快"""
+    if not CEREBRAS_KEY:
+        return None
+    try:
+        r = requests.post('https://api.cerebras.ai/v1/chat/completions',
+                          headers={'Authorization': f'Bearer {CEREBRAS_KEY}',
+                                   'Content-Type': 'application/json'},
+                          json={'model': 'llama-3.3-70b',
+                                'messages': [{'role': 'user', 'content': prompt}],
+                                'max_tokens': 1500},
+                          timeout=30)
+        data = r.json()
+        if 'choices' in data:
+            return data['choices'][0]['message']['content']
+        print(f'  Cerebras错误: {r.status_code} {str(data)[:100]}')
+        return None
+    except Exception as ex:
+        print(f'  Cerebras异常: {ex}')
+        return None
+
+def call_mistral(prompt):
+    """Mistral AI：免费层"""
+    if not MISTRAL_KEY:
+        return None
+    try:
+        r = requests.post('https://api.mistral.ai/v1/chat/completions',
+                          headers={'Authorization': f'Bearer {MISTRAL_KEY}',
+                                   'Content-Type': 'application/json'},
+                          json={'model': 'mistral-small-latest',
+                                'messages': [{'role': 'user', 'content': prompt}],
+                                'max_tokens': 1500},
+                          timeout=30)
+        data = r.json()
+        if 'choices' in data:
+            return data['choices'][0]['message']['content']
+        print(f'  Mistral错误: {r.status_code} {str(data)[:100]}')
+        return None
+    except Exception as ex:
+        print(f'  Mistral异常: {ex}')
+        return None
+
 def gemini(prompt):
-    """自动降级链：Gemini → Groq → OpenRouter"""
+    """自动降级链：Gemini → Groq → OpenRouter → Cerebras → Mistral"""
     for name, fn in [('Gemini', call_gemini),
                      ('Groq',   call_groq),
-                     ('OpenRouter', call_openrouter)]:
+                     ('OpenRouter', call_openrouter),
+                     ('Cerebras', call_cerebras),
+                     ('Mistral', call_mistral)]:
         result = fn(prompt)
         if result:
             print(f'  ✓ {name} 返回成功')
@@ -678,10 +723,12 @@ def generate_prematric_section(page_text):
         "请按紧迫程度整理成中文清单，规则：\n"
         "1. 优先列出【今天起90天内】的待办事项和截止日期\n"
         "2. 每条标注具体日期，用📌表示截止/重要节点，用📅表示一般节点\n"
-        "3. 格式：<ul><li>📌/📅 X月X日 — 事项说明</li></ul>，最多8条\n"
-        "4. 涉及住房分配、迎新周、搬入日、国际生网络迎新、各地Send-Off Party等务必包含\n"
-        "6. 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
-        "7. 只输出HTML，不要其他文字"
+        "3. 格式：<ul><li>📌/📅 X月X日 — 事项说明</li></ul>，最多10条\n"
+        "4. 【强制要求】所有 Send-Off Party 条目必须全部列出，不论日期远近，一条都不能省略\n"
+        "5. 其他事项优先列出今天起90天内的\n"
+        "6. 涉及住房分配、迎新周、搬入日、国际生网络迎新务必包含\n"
+        "7. 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
+        "8. 只输出HTML，不要其他文字"
     )
     return gemini(prompt) or FALLBACK_HTML
 
@@ -712,50 +759,95 @@ def update_index(sections_html):
 #  主流程
 # ══════════════════════════════════════════════════════════════
 def main():
-    print('── 抓取新闻 ──')
-    school_items     = fetch_source('today', 4) + fetch_source('news', 4)
-    basketball_items = (fetch_source('goduke_mbb', 5) + fetch_source('goduke_wbb', 3) +
-                        fetch_source('goduke_all', 3) + fetch_source('athletics', 3) +
-                        fetch_source('chronicle', 3))
-    admissions_items = fetch_source('admissions', 5) + fetch_source('admissions_site', 6)
-    campus_items     = (fetch_source('campus', 3) + fetch_source('dsg', 3) +
-                        fetch_source('students', 3) + fetch_source('dukeengage', 3) +
-                        fetch_source('undergrad', 3) + fetch_source('interdisciplinary', 3) +
-                        fetch_source('focus', 3) + fetch_source('library', 3) +
-                        fetch_source('alumni_sendoff', 4))
-    chronicle_items  = fetch_source('chronicle', 8)
-    research_items   = (fetch_source('research', 3) + fetch_source('pratt', 3) +
-                        fetch_source('trinity', 3))
-    visa_items       = fetch_source('visa', 8)
+    from concurrent.futures import ThreadPoolExecutor, as_completed
 
-    print('── 抓取日历/选课/宿舍/招生/开学前安排 ──')
-    calendar_items       = fetch_calendar()
-    registration_text    = fetch_pages_text(REGISTRATION_PAGES)
-    housing_text         = fetch_pages_text(HOUSING_PAGES)
-    admissions_page_text = fetch_pages_text(ADMISSIONS_PAGES, max_chars=1500)
-    prematric_page_text  = fetch_pages_text(PREMATRIC_PAGES, max_chars=1200)
+    # ── 并发抓取所有新闻源 ──────────────────────────────────────
+    print('── 并发抓取新闻 ──')
+    def fetch_all():
+        with ThreadPoolExecutor(max_workers=12) as ex:
+            futs = {
+                'today':           ex.submit(fetch_source, 'today', 4),
+                'news':            ex.submit(fetch_source, 'news', 4),
+                'goduke_mbb':      ex.submit(fetch_source, 'goduke_mbb', 5),
+                'goduke_wbb':      ex.submit(fetch_source, 'goduke_wbb', 3),
+                'goduke_all':      ex.submit(fetch_source, 'goduke_all', 3),
+                'athletics':       ex.submit(fetch_source, 'athletics', 3),
+                'admissions':      ex.submit(fetch_source, 'admissions', 5),
+                'admissions_site': ex.submit(fetch_source, 'admissions_site', 6),
+                'campus':          ex.submit(fetch_source, 'campus', 3),
+                'dsg':             ex.submit(fetch_source, 'dsg', 3),
+                'students':        ex.submit(fetch_source, 'students', 3),
+                'dukeengage':      ex.submit(fetch_source, 'dukeengage', 3),
+                'undergrad':       ex.submit(fetch_source, 'undergrad', 3),
+                'interdisciplinary': ex.submit(fetch_source, 'interdisciplinary', 3),
+                'focus':           ex.submit(fetch_source, 'focus', 3),
+                'library':         ex.submit(fetch_source, 'library', 3),
+                'alumni_sendoff':  ex.submit(fetch_source, 'alumni_sendoff', 4),
+                'chronicle':       ex.submit(fetch_source, 'chronicle', 8),
+                'research':        ex.submit(fetch_source, 'research', 3),
+                'pratt':           ex.submit(fetch_source, 'pratt', 3),
+                'trinity':         ex.submit(fetch_source, 'trinity', 3),
+                'visa':            ex.submit(fetch_source, 'visa', 8),
+                'calendar':        ex.submit(fetch_calendar),
+                'reg_text':        ex.submit(fetch_pages_text, REGISTRATION_PAGES),
+                'housing_text':    ex.submit(fetch_pages_text, HOUSING_PAGES),
+                'admissions_text': ex.submit(fetch_pages_text, ADMISSIONS_PAGES, 1500),
+                'prematric_text':  ex.submit(fetch_pages_text, PREMATRIC_PAGES, 1200),
+            }
+            return {k: v.result() for k, v in futs.items()}
+
+    r = fetch_all()
+
+    school_items     = r['today'] + r['news']
+    basketball_items = r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_all'] + r['athletics']
+    admissions_items = r['admissions'] + r['admissions_site']
+    campus_items     = (r['campus'] + r['dsg'] + r['students'] + r['dukeengage'] +
+                        r['undergrad'] + r['interdisciplinary'] + r['focus'] +
+                        r['library'] + r['alumni_sendoff'])
+    chronicle_items  = r['chronicle']
+    research_items   = r['research'] + r['pratt'] + r['trinity']
+    visa_items       = r['visa']
+    calendar_items   = r['calendar']
 
     print(f'学校:{len(school_items)} 体育:{len(basketball_items)} '
           f'招生:{len(admissions_items)} 校园:{len(campus_items)} '
           f'Chronicle:{len(chronicle_items)} 科研:{len(research_items)} '
           f'签证:{len(visa_items)}')
 
-    # ── Gemini 调用（每板块1次，共10次）─────────────────────────
-    print('── 调用 Gemini（10次）──')
-    sections = {
-        'weekly-school':       generate_section('学校新闻', school_items),
-        'weekly-basketball':   generate_section('篮球/体育动态', basketball_items),
-        'weekly-admissions':   generate_section('招生信息', admissions_items,
-                                                extra=admissions_page_text),
-        'weekly-calendar':     generate_calendar_section(calendar_items),
-        'weekly-registration': generate_registration_section(registration_text, housing_text),
-        'weekly-prematric':    generate_prematric_section(prematric_page_text),
-        'weekly-campus':       generate_section('校园生活', campus_items),
-        'weekly-chronicle':    generate_section('Chronicle学生报', chronicle_items),
-        'weekly-research':     generate_section('科研动态', research_items),
-        'weekly-visa':         generate_section('签证与国际生动态', visa_items,
-                                                allow_political=True),
+    # ── 并发调用 AI 生成各板块 ──────────────────────────────────
+    print('── 并发调用 AI 生成各板块 ──')
+    BASKETBALL_EXTRA = """
+【重要赛程】Duke与Amazon Prime Video达成独家转播合作（大学篮球史上首次）：
+- 2026年11月25日：vs. UConn，拉斯维加斯（Amazon Prime Video独家）
+- 2026年12月21日：vs. Michigan，麦迪逊广场花园MSG（Amazon Prime Video独家）
+- 2027年2月20日：vs. Gonzaga，底特律（Amazon Prime Video独家）
+以上三场比赛仅在Amazon Prime Video播出，需订阅才能观看。
+"""
+
+    tasks = {
+        'weekly-school':       lambda: generate_section('学校新闻', school_items),
+        'weekly-basketball':   lambda: generate_section('篮球/体育动态', basketball_items, extra=BASKETBALL_EXTRA),
+        'weekly-admissions':   lambda: generate_section('招生信息', admissions_items, extra=r['admissions_text']),
+        'weekly-calendar':     lambda: generate_calendar_section(calendar_items),
+        'weekly-registration': lambda: generate_registration_section(r['reg_text'], r['housing_text']),
+        'weekly-prematric':    lambda: generate_prematric_section(r['prematric_text']),
+        'weekly-campus':       lambda: generate_section('校园生活', campus_items),
+        'weekly-chronicle':    lambda: generate_section('Chronicle学生报', chronicle_items),
+        'weekly-research':     lambda: generate_section('科研动态', research_items),
+        'weekly-visa':         lambda: generate_section('签证与国际生动态', visa_items, allow_political=True),
     }
+
+    sections = {}
+    with ThreadPoolExecutor(max_workers=5) as ex:
+        futs = {ex.submit(fn): key for key, fn in tasks.items()}
+        for fut in as_completed(futs):
+            key = futs[fut]
+            try:
+                sections[key] = fut.result()
+                print(f'  ✓ {key}')
+            except Exception as e:
+                print(f'  ✗ {key}: {e}')
+                sections[key] = FALLBACK_HTML
 
     print('── 更新 index.html ──')
     update_index(sections)
