@@ -680,8 +680,8 @@ def generate_prematric_section(page_text):
         "2. 每条标注具体日期，用📌表示截止/重要节点，用📅表示一般节点\n"
         "3. 格式：<ul><li>📌/📅 X月X日 — 事项说明</li></ul>，最多8条\n"
         "4. 涉及住房分配、迎新周、搬入日、国际生网络迎新、各地Send-Off Party等务必包含\n"
-        "5. 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
-        "6. 只输出HTML，不要其他文字"
+        "6. 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
+        "7. 只输出HTML，不要其他文字"
     )
     return gemini(prompt) or FALLBACK_HTML
 
