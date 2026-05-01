@@ -548,9 +548,7 @@ function renderOptions() {
   // hint text
   const hint = document.getElementById('voteHint');
   if (!hasVoted && !isClosed) {
-    if (!firstPick) {
-      hint.textContent = '选择排名可再选一项';
-    } else if (firstPick === 'ranking' && !secondPick) {
+    if (firstPick === 'ranking' && !secondPick) {
       hint.textContent = '还可再选一项 ✦';
     } else {
       hint.textContent = '';
