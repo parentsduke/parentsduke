@@ -427,13 +427,15 @@ const OPTIONS = [
   { id: 'clubs',     label: 'Clubs' },
   { id: 'group',     label: '扯谈 Duke 家长群 😎' },
   { id: 'basketball',label: '篮球 篮球 篮球 🏀🏀🏀' },
+  { id: 'ranking',   label: '杜克大学排名 🏆' },
   { id: 'other',     label: '其他 Other' },
 ];
 
 // ════════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════════
-let selected = new Set();
+let firstPick  = null;   // 第一选
+let secondPick = null;   // 第二选（仅当第一选是 ranking 时有效）
 let hasVoted = false;
 let isClosed = false;
 let counts   = {};  // { optionId: totalVotes }
@@ -463,7 +465,7 @@ async function init() {
 // ════════════════════════════════════════════════════
 async function loadResults() {
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/duke_votes?select=option_id`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/duke_votes?select=option_id,second_option_id,voter_hash`, {
       headers: {
         'apikey': SUPABASE_ANON,
         'Authorization': `Bearer ${SUPABASE_ANON}`,
@@ -471,27 +473,18 @@ async function loadResults() {
     });
     if (!res.ok) return;
     const rows = await res.json();
-    // count per option
+
+    // count per option（第一选 + 第二选都计入）
     counts = {};
     OPTIONS.forEach(o => counts[o.id] = 0);
     rows.forEach(r => {
-      if (counts[r.option_id] !== undefined) counts[r.option_id]++;
+      if (r.option_id && counts[r.option_id] !== undefined) counts[r.option_id]++;
+      if (r.second_option_id && counts[r.second_option_id] !== undefined) counts[r.second_option_id]++;
     });
-    // unique voters via voter_hash (distinct rows per voter per option — need total unique voters)
-    // We'll count rows as total votes cast (each row = one option selected by one voter)
-    const totalVotes = rows.length;
 
-    // get unique voter count
-    const res2 = await fetch(`${SUPABASE_URL}/rest/v1/duke_votes?select=voter_hash`, {
-      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
-    });
-    if (res2.ok) {
-      const rows2 = await res2.json();
-      const unique = new Set(rows2.map(r => r.voter_hash));
-      totalVoters = unique.size;
-    } else {
-      totalVoters = totalVotes;
-    }
+    // unique voters
+    const unique = new Set(rows.map(r => r.voter_hash));
+    totalVoters = unique.size;
 
     document.getElementById('totalVotersText').textContent = (hasVoted || isClosed) ? `${totalVoters} 人参与` : '';
   } catch(e) {
@@ -507,33 +500,62 @@ function renderOptions() {
   list.innerHTML = '';
 
   const totalVotes = OPTIONS.reduce((s, o) => s + (counts[o.id] || 0), 0);
+  const canPickSecond = firstPick === 'ranking' && !secondPick;
+  const canPickFirst  = !firstPick;
 
   OPTIONS.forEach(opt => {
     const votes = counts[opt.id] || 0;
     const pct   = totalVotes ? Math.round(votes / totalVotes * 100) : 0;
-    const isSel = selected.has(opt.id);
+    const isFirst  = opt.id === firstPick;
+    const isSecond = opt.id === secondPick;
+    const isSel = isFirst || isSecond;
+
+    // greyed out: already used as first pick (can't also be second), or no more picks allowed
+    const isGrey = !isClosed && !hasVoted && (
+      (canPickSecond && opt.id === firstPick) ||  // first pick can't be second
+      (!canPickFirst && !canPickSecond && !isSel)  // no picks left and not selected
+    );
 
     const div = document.createElement('div');
-    div.className = 'option' + (isSel ? ' selected' : '') + (isClosed || hasVoted ? ' disabled' : '');
+    div.className = 'option'
+      + (isSel ? ' selected' : '')
+      + (isClosed || hasVoted || isGrey ? ' disabled' : '');
     div.dataset.id = opt.id;
+
+    // rank badge: ① or ②
+    let badge = '';
+    if (isFirst)  badge = `<span style="font-size:11px;color:#8a6a00;margin-right:4px;font-weight:600;">①</span>`;
+    if (isSecond) badge = `<span style="font-size:11px;color:#8a6a00;margin-right:4px;font-weight:600;">②</span>`;
 
     div.innerHTML = `
       <div class="option-bar" style="width:${pct}%;display:${(hasVoted || isClosed) ? 'block' : 'none'}"></div>
       <div class="option-inner">
         <div class="opt-check"><div class="opt-check-dot"></div></div>
-        <div class="opt-label">${opt.label}</div>
+        <div class="opt-label">${badge}${opt.label}</div>
         <div class="opt-stats ${(hasVoted || isClosed) ? 'visible' : ''}">
           <div class="opt-pct">${pct}%</div>
           <div class="opt-count">${votes}票</div>
         </div>
       </div>`;
 
-    if (!isClosed && !hasVoted) {
+    if (!isClosed && !hasVoted && !isGrey) {
       div.addEventListener('click', () => toggleOption(opt.id));
     }
 
     list.appendChild(div);
   });
+
+  // hint text
+  const hint = document.getElementById('voteHint');
+  if (!hasVoted && !isClosed) {
+    if (!firstPick) {
+      hint.textContent = '选择排名可再选一项';
+    } else if (firstPick === 'ranking' && !secondPick) {
+      hint.textContent = '还可再选一项 ✦';
+    } else {
+      hint.textContent = '';
+    }
+  }
 
   // totals label
   const totalLabel = document.getElementById('totalVotesLabel');
@@ -547,15 +569,31 @@ function renderOptions() {
 // ════════════════════════════════════════════════════
 function toggleOption(id) {
   if (isClosed || hasVoted) return;
-  if (selected.has(id)) {
-    selected.delete(id);  // 点同一个：取消
+
+  if (id === firstPick) {
+    // 取消第一选 → 清空全部
+    firstPick  = null;
+    secondPick = null;
+  } else if (id === secondPick) {
+    // 取消第二选
+    secondPick = null;
+  } else if (!firstPick) {
+    // 设置第一选
+    firstPick = id;
+    secondPick = null;
+  } else if (firstPick === 'ranking' && !secondPick) {
+    // 第一选是排名，设置第二选
+    secondPick = id;
   } else {
-    selected.clear();     // 单选：先清空
-    selected.add(id);
+    // 普通单选：替换第一选
+    firstPick  = id;
+    secondPick = null;
   }
+
   // show/hide "other" textarea
   const wrap = document.getElementById('otherInputWrap');
-  if (selected.has('other')) {
+  const otherActive = (firstPick === 'other') || (secondPick === 'other');
+  if (otherActive) {
     wrap.classList.add('visible');
     document.getElementById('otherText').focus();
   } else {
@@ -563,21 +601,23 @@ function toggleOption(id) {
     document.getElementById('otherText').value = '';
     document.getElementById('otherCharHint').textContent = '0 / 100';
   }
+
   updateSubmitBtn();
   renderOptions();
 }
 
 function updateSubmitBtn() {
   const btn = document.getElementById('submitBtn');
-  if (selected.size === 0) {
+  const otherActive = (firstPick === 'other') || (secondPick === 'other');
+  if (!firstPick) {
     btn.disabled = true;
     btn.textContent = '请选择一项';
-  } else if (selected.has('other') && !document.getElementById('otherText').value.trim()) {
+  } else if (otherActive && !document.getElementById('otherText').value.trim()) {
     btn.disabled = true;
     btn.textContent = '请写明具体内容';
   } else {
     btn.disabled = false;
-    btn.textContent = '提交';
+    btn.textContent = secondPick ? '提交（2项）' : '提交';
   }
 }
 
@@ -594,14 +634,14 @@ document.getElementById('otherText').addEventListener('input', () => {
 //  SUBMIT → Edge Function
 // ════════════════════════════════════════════════════
 document.getElementById('submitBtn').addEventListener('click', async () => {
-  if (isClosed || hasVoted || selected.size === 0) return;
+  if (isClosed || hasVoted || !firstPick) return;
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.textContent = '提交中…';
 
   try {
-    const optionId = [...selected][0];
-    const otherText = optionId === 'other' ? document.getElementById('otherText').value.trim() : null;
+    const otherText = (firstPick === 'other' || secondPick === 'other')
+      ? document.getElementById('otherText').value.trim() : null;
 
     // 本地去重
     const lsKey = 'duke_voted_2026';
@@ -614,7 +654,9 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
       return;
     }
 
-    // 直接写 Supabase REST
+    const voterHash = 'local_' + Date.now();
+
+    // 直接写 Supabase REST（单行，second_option_id 存第二选）
     const res = await fetch(`${SUPABASE_URL}/rest/v1/duke_votes`, {
       method: 'POST',
       headers: {
@@ -623,7 +665,12 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         'Content-Type': 'application/json',
         'Prefer': 'return=minimal',
       },
-      body: JSON.stringify({ voter_hash: 'local_' + Date.now(), option_id: optionId, other_text: otherText }),
+      body: JSON.stringify({
+        voter_hash: voterHash,
+        option_id: firstPick,
+        second_option_id: secondPick || null,
+        other_text: otherText || null,
+      }),
     });
 
     if (!res.ok) {
@@ -642,7 +689,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
   } catch(e) {
     showStatus('error', '提交出错：' + e.message);
     btn.disabled = false;
-    btn.textContent = '提交';
+    btn.textContent = secondPick ? '提交（2项）' : '提交';
   }
 });
 
