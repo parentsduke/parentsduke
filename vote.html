@@ -222,6 +222,39 @@
   }
   .total-votes { font-weight: 500; }
 
+  /* ── OTHER INPUT ── */
+  .other-input-wrap {
+    margin: 6px 20px 0;
+    display: none;
+  }
+  .other-input-wrap.visible { display: block; }
+  .other-input-wrap textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--duke-gold);
+    border-radius: 10px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: #FFFDF5;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.5;
+  }
+  .other-input-wrap textarea:focus {
+    border-color: var(--duke-gold);
+    box-shadow: 0 0 0 3px rgba(200,151,43,0.15);
+  }
+  .other-input-wrap textarea::placeholder { color: #bbb; }
+  .other-char-hint {
+    text-align: right;
+    font-size: 11px;
+    color: #bbb;
+    margin-top: 4px;
+  }
+  .other-char-hint.warn { color: #ef4444; }
+
   /* ── SUBMIT ── */
   .submit-wrap {
     padding: 20px 20px 0;
@@ -355,6 +388,11 @@
       <span id="totalVotesLabel" style="opacity:0">共 <strong id="totalVotesNum">0</strong> 票</span>
       <span id="voteHint" style="font-size:11px;color:#bbb"></span>
     </div>
+  </div>
+
+  <div class="other-input-wrap" id="otherInputWrap">
+    <textarea id="otherText" rows="2" maxlength="100" placeholder="请写明具体内容（必填）…"></textarea>
+    <div class="other-char-hint" id="otherCharHint">0 / 100</div>
   </div>
 
   <div class="submit-wrap">
@@ -515,6 +553,16 @@ function toggleOption(id) {
     selected.clear();     // 单选：先清空
     selected.add(id);
   }
+  // show/hide "other" textarea
+  const wrap = document.getElementById('otherInputWrap');
+  if (selected.has('other')) {
+    wrap.classList.add('visible');
+    document.getElementById('otherText').focus();
+  } else {
+    wrap.classList.remove('visible');
+    document.getElementById('otherText').value = '';
+    document.getElementById('otherCharHint').textContent = '0 / 100';
+  }
   updateSubmitBtn();
   renderOptions();
 }
@@ -524,11 +572,23 @@ function updateSubmitBtn() {
   if (selected.size === 0) {
     btn.disabled = true;
     btn.textContent = '请选择一项';
+  } else if (selected.has('other') && !document.getElementById('otherText').value.trim()) {
+    btn.disabled = true;
+    btn.textContent = '请写明具体内容';
   } else {
     btn.disabled = false;
     btn.textContent = '提交';
   }
 }
+
+// char counter + live validation for "other" textarea
+document.getElementById('otherText').addEventListener('input', () => {
+  const val = document.getElementById('otherText').value;
+  const hint = document.getElementById('otherCharHint');
+  hint.textContent = `${val.length} / 100`;
+  hint.className = 'other-char-hint' + (val.length >= 90 ? ' warn' : '');
+  updateSubmitBtn();
+});
 
 // ════════════════════════════════════════════════════
 //  SUBMIT → Edge Function
@@ -541,6 +601,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
 
   try {
     const optionId = [...selected][0];
+    const otherText = optionId === 'other' ? document.getElementById('otherText').value.trim() : null;
 
     // 本地去重
     const lsKey = 'duke_voted_2026';
@@ -562,7 +623,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         'Content-Type': 'application/json',
         'Prefer': 'return=minimal',
       },
-      body: JSON.stringify({ voter_hash: 'local_' + Date.now(), option_id: optionId }),
+      body: JSON.stringify({ voter_hash: 'local_' + Date.now(), option_id: optionId, other_text: otherText }),
     });
 
     if (!res.ok) {
