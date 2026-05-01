@@ -339,7 +339,7 @@
   <div class="meta-bar">
     <span class="badge">📊 实时结果</span>
     <span class="dot">·</span>
-    <span id="deadlineText">截止 2026年4月30日</span>
+    <span id="deadlineText">截止 5/3 8PM EST · 5/4 8AM 北京</span>
     <span class="dot">·</span>
     <span id="totalVotersText">加载中…</span>
   </div>
@@ -375,7 +375,7 @@
 const SUPABASE_URL  = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
 const VOTE_EDGE     = `${SUPABASE_URL}/functions/v1/duke-vote`;
-const DEADLINE      = new Date('2026-04-30T23:59:59+08:00'); // 北京时间4月30日午夜
+const DEADLINE      = new Date('2026-05-04T08:00:00+08:00'); // 北京时间5月4日8:00AM / 美东时间5月3日8:00PM
 
 const OPTIONS = [
   { id: 'campus',    label: '校园' },
@@ -389,6 +389,7 @@ const OPTIONS = [
   { id: 'clubs',     label: 'Clubs' },
   { id: 'group',     label: '扯谈 Duke 家长群 😎' },
   { id: 'basketball',label: '篮球 篮球 篮球 🏀🏀🏀' },
+  { id: 'other',     label: '其他 Other' },
 ];
 
 // ════════════════════════════════════════════════════
@@ -408,7 +409,7 @@ async function init() {
 
   if (isClosed) {
     document.getElementById('closedBanner').classList.add('visible');
-    document.getElementById('closedDateText').textContent = '2026年5月31日';
+    document.getElementById('closedDateText').textContent = '5月4日（北京时间）';
     document.getElementById('deadlineText').textContent = '已结束';
     document.getElementById('submitBtn').disabled = true;
     document.getElementById('submitBtn').textContent = '投票已结束';
