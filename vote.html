@@ -612,6 +612,9 @@ function updateSubmitBtn() {
   if (!firstPick) {
     btn.disabled = true;
     btn.textContent = '请选择一项';
+  } else if (firstPick === 'ranking' && !secondPick) {
+    btn.disabled = true;
+    btn.textContent = '请再选一项';
   } else if (otherActive && !document.getElementById('otherText').value.trim()) {
     btn.disabled = true;
     btn.textContent = '请写明具体内容';
