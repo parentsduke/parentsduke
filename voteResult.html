@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投票结果 — 你最爱Duke的哪些？</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=DM+Serif+Display:ital@0;1&family=Noto+Sans+SC:wght@300;400;500&display=swap');
+
+  :root {
+    --duke-navy: #001A57;
+    --duke-royal: #003087;
+    --duke-gold: #C8972B;
+    --duke-gold-light: #F5D68A;
+    --bg: #F7F4EE;
+    --card: #FFFFFF;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    color: var(--text);
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,26,87,0.08) 0%, transparent 70%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23001A57' fill-opacity='0.025'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--duke-navy);
+    padding: 36px 28px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--duke-gold) 0%, var(--duke-gold-light) 50%, var(--duke-gold) 100%);
+  }
+  .header-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--duke-gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .header-title {
+    font-family: 'DM Serif Display', 'Noto Serif SC', serif;
+    font-size: 26px;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+  }
+  .stat-item {
+    flex: 1;
+    padding: 14px 16px;
+    text-align: center;
+    border-right: 1px solid #eee;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--duke-navy);
+    font-weight: 700;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* REFRESH */
+  .refresh-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: 1px solid #ddd;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover { border-color: var(--duke-gold); color: var(--duke-gold); }
+  .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RESULTS LIST */
+  .results-body { padding: 0 20px; }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 14px 0 8px;
+  }
+
+  .result-item {
+    background: var(--card);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border: 1.5px solid #E8E4DA;
+    overflow: hidden;
+    position: relative;
+  }
+  .result-item.top1 { border-color: var(--duke-gold); }
+  .result-item.top2 { border-color: #b8b0a0; }
+  .result-item.top3 { border-color: #c8a870; }
+
+  .result-bar-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #FFF8E6, #FFF3D0);
+    width: 0%;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+  .result-item.top1 .result-bar-bg {
+    background: linear-gradient(90deg, #FFF3D0, #FFE8A0);
+  }
+
+  .result-inner {
+    position: relative; z-index: 1;
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .rank-badge {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    background: #f0ece4;
+    color: var(--muted);
+  }
+  .result-item.top1 .rank-badge { background: var(--duke-gold); color: #fff; }
+  .result-item.top2 .rank-badge { background: #9ca3af; color: #fff; }
+  .result-item.top3 .rank-badge { background: #c8a870; color: #fff; }
+
+  .result-label {
+    flex: 1;
+    font-size: 15px;
+    color: var(--text);
+  }
+
+  .result-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .result-pct {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--duke-navy);
+  }
+  .result-item.top1 .result-pct { color: #8a6a00; }
+  .result-count {
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* CHART */
+  .chart-wrap {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1.5px solid #E8E4DA;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .chart-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--duke-navy);
+    margin-bottom: 16px;
+  }
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bar-row-label {
+    font-size: 12px;
+    color: var(--text);
+    width: 90px;
+    flex-shrink: 0;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bar-track {
+    flex: 1;
+    height: 20px;
+    background: #f0ece4;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--duke-navy);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .bar-row:first-child .bar-fill { background: var(--duke-gold); }
+  .bar-row:nth-child(2) .bar-fill { background: #4A7DB5; }
+  .bar-pct-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    width: 34px;
+    flex-shrink: 0;
+  }
+
+  /* LOADING */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    flex-direction: column;
+    gap: 14px;
+    transition: opacity 0.4s;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #e5e7eb;
+    border-top-color: var(--duke-navy);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  .loading-text { font-size: 13px; color: var(--muted); }
+
+  .error-msg {
+    margin: 20px;
+    padding: 14px 16px;
+    background: #FEE2E2;
+    color: #991b1b;
+    border-radius: 8px;
+    font-size: 13px;
+    display: none;
+  }
+  .error-msg.visible { display: block; }
+
+  .footer {
+    text-align: center;
+    padding: 24px 20px 0;
+    font-size: 11px;
+    color: #aaa;
+  }
+  .footer a { color: var(--duke-gold); text-decoration: none; }
+
+  .zero-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text">正在加载投票结果…</div>
+</div>
+
+<div class="container">
+  <div class="header">
+    <div class="header-label">扯谈 Duke 家长群 · 投票结果</div>
+    <div class="header-title">你最爱 Duke 的哪些？</div>
+    <div class="header-sub">实时结果 · 截止 5/3 8PM EST · 5/4 8AM 北京</div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num" id="statTotalVotes">—</div>
+      <div class="stat-label">总票数</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statTotalVoters">—</div>
+      <div class="stat-label">参与人数</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statTopOption">—</div>
+      <div class="stat-label">最高票选项</div>
+    </div>
+  </div>
+
+  <div class="refresh-bar">
+    <span id="lastUpdated" style="font-size:11px;">加载中…</span>
+    <button class="refresh-btn" id="refreshBtn" onclick="refresh()">
+      <svg id="refreshIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M23 4v6h-6M1 20v-6h6"/>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg>
+      刷新
+    </button>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="results-body">
+    <div class="section-title">📊 排行榜</div>
+    <div id="rankingList"></div>
+
+    <div class="chart-wrap" id="chartWrap" style="display:none">
+      <div class="chart-title">票数分布</div>
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a href="https://dukeparents.org" target="_blank">dukeparents.org</a> · 扯谈Duke家长群
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL  = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+
+const OPTIONS = [
+  { id: 'campus',     label: '校园' },
+  { id: 'weather',    label: '天气' },
+  { id: 'dining',     label: '食堂' },
+  { id: 'profs',      label: '教授' },
+  { id: 'friends',    label: '同学' },
+  { id: 'garden',     label: '杜克花园' },
+  { id: 'lemur',      label: 'Lemur Center' },
+  { id: 'dorm',       label: '宿舍' },
+  { id: 'clubs',      label: 'Clubs' },
+  { id: 'group',      label: '扯谈 Duke 家长群 😎' },
+  { id: 'basketball', label: '篮球 篮球 篮球 🏀🏀🏀' },
+  { id: 'ranking',    label: '杜克大学排名 🏆' },
+  { id: 'other',      label: '其他 Other' },
+];
+
+let counts = {};
+let totalVoters = 0;
+
+async function loadResults() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/duke_votes?select=option_id,second_option_id,voter_hash`,
+      {
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+        }
+      }
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rows = await res.json();
+
+    counts = {};
+    OPTIONS.forEach(o => counts[o.id] = 0);
+    rows.forEach(r => {
+      if (r.option_id && counts[r.option_id] !== undefined) counts[r.option_id]++;
+      if (r.second_option_id && counts[r.second_option_id] !== undefined) counts[r.second_option_id]++;
+    });
+
+    const unique = new Set(rows.map(r => r.voter_hash));
+    totalVoters = unique.size;
+
+    document.getElementById('errorMsg').classList.remove('visible');
+    return true;
+  } catch(e) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = '加载失败：' + e.message;
+    el.classList.add('visible');
+    return false;
+  }
+}
+
+function renderResults() {
+  const sorted = OPTIONS
+    .map(o => ({ ...o, votes: counts[o.id] || 0 }))
+    .sort((a, b) => b.votes - a.votes);
+
+  const totalVotes = sorted.reduce((s, o) => s + o.votes, 0);
+  const topOption = sorted[0];
+
+  // Stats bar
+  document.getElementById('statTotalVotes').textContent = totalVotes;
+  document.getElementById('statTotalVoters').textContent = totalVoters;
+  document.getElementById('statTopOption').textContent = totalVotes > 0 ? topOption.label.replace(/[^\u4e00-\u9fa5a-zA-Z ]/g, '').trim().slice(0, 6) || topOption.label.slice(0, 6) : '—';
+
+  // Ranking list
+  const list = document.getElementById('rankingList');
+  list.innerHTML = '';
+
+  if (totalVotes === 0) {
+    list.innerHTML = '<div class="zero-state">暂无投票数据 😴</div>';
+    document.getElementById('chartWrap').style.display = 'none';
+    return;
+  }
+
+  sorted.forEach((opt, i) => {
+    const pct = totalVotes ? Math.round(opt.votes / totalVotes * 100) : 0;
+    const rankClass = i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : '';
+    const rankLabel = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+
+    const div = document.createElement('div');
+    div.className = `result-item ${rankClass}`;
+    div.innerHTML = `
+      <div class="result-bar-bg" style="width:0%" data-pct="${pct}"></div>
+      <div class="result-inner">
+        <div class="rank-badge">${rankLabel}</div>
+        <div class="result-label">${opt.label}</div>
+        <div class="result-stats">
+          <div class="result-pct">${pct}%</div>
+          <div class="result-count">${opt.votes} 票</div>
+        </div>
+      </div>`;
+    list.appendChild(div);
+  });
+
+  // Animate bars after a tick
+  setTimeout(() => {
+    list.querySelectorAll('.result-bar-bg').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 50);
+
+  // Bar chart (top 8)
+  const chartWrap = document.getElementById('chartWrap');
+  const barChart = document.getElementById('barChart');
+  const top8 = sorted.filter(o => o.votes > 0).slice(0, 8);
+
+  if (top8.length > 0) {
+    chartWrap.style.display = 'block';
+    barChart.innerHTML = '';
+    const maxVotes = top8[0].votes;
+    top8.forEach(opt => {
+      const barPct = maxVotes ? Math.round(opt.votes / maxVotes * 100) : 0;
+      const displayPct = totalVotes ? Math.round(opt.votes / totalVotes * 100) : 0;
+      const row = document.createElement('div');
+      row.className = 'bar-row';
+      row.innerHTML = `
+        <div class="bar-row-label" title="${opt.label}">${opt.label}</div>
+        <div class="bar-track">
+          <div class="bar-fill" data-pct="${barPct}" style="width:0%"></div>
+        </div>
+        <div class="bar-pct-label">${displayPct}%</div>`;
+      barChart.appendChild(row);
+    });
+    setTimeout(() => {
+      barChart.querySelectorAll('.bar-fill').forEach(el => {
+        el.style.width = el.dataset.pct + '%';
+      });
+    }, 100);
+  } else {
+    chartWrap.style.display = 'none';
+  }
+
+  // Last updated
+  const now = new Date();
+  document.getElementById('lastUpdated').textContent =
+    `更新于 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+}
+
+async function refresh() {
+  const btn = document.getElementById('refreshBtn');
+  const icon = document.getElementById('refreshIcon');
+  btn.disabled = true;
+  icon.style.animation = 'spin 0.8s linear infinite';
+  await loadResults();
+  renderResults();
+  btn.disabled = false;
+  icon.style.animation = '';
+}
+
+async function init() {
+  await loadResults();
+  renderResults();
+  document.getElementById('loadingOverlay').classList.add('hidden');
+  setTimeout(() => document.getElementById('loadingOverlay').remove(), 500);
+
+  // Auto-refresh every 30 seconds
+  setInterval(() => {
+    loadResults().then(() => renderResults());
+  }, 30000);
+}
+
+init();
+</script>
+</body>
+</html>
