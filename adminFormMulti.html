@@ -20,7 +20,7 @@
       --green:  #1a6b3c;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); min-height: 100vh; }
+    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
     /* ── Header ── */
     header {
@@ -118,7 +118,7 @@
     .login-error.show { display: block; }
 
     /* ── Admin Panel ── */
-    #adminPanel { display: none; padding: 32px 24px; }
+    #adminPanel { display: none; padding: 32px 24px 16px; flex: 1; overflow: hidden; flex-direction: column; }
     .panel-header {
       display: flex;
       align-items: center;
@@ -174,7 +174,8 @@
       border-radius: 12px;
       overflow-x: scroll;
       overflow-y: scroll;
-      height: calc(100vh - 230px);
+      flex: 1;
+      min-height: 0;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       scrollbar-width: thin;
       scrollbar-color: #c9a84c #f0f0f0;
@@ -565,7 +566,7 @@
 
   function showPanel(email) {
     document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'block';
+    document.getElementById('adminPanel').style.display = 'flex';
     document.getElementById('btnLogout').style.display = 'inline-block';
     document.getElementById('userEmail').textContent = email;
     loadRecords();
