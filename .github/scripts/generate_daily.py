@@ -327,16 +327,21 @@ Dec 14 (Mon): Final examinations end (10:00 PM)
 # ══════════════════════════════════════════════════════════════
 #  抓取工具
 # ══════════════════════════════════════════════════════════════
-def fetch_rss(url, max_items=8):
+def fetch_rss(url, max_items=8, max_age_days=180):
     try:
         feed = feedparser.parse(url)
         items = []
-        for e in feed.entries[:max_items]:
+        now = datetime.now()
+        for e in feed.entries:
+            if len(items) >= max_items:
+                break
             pub = e.get('published_parsed') or e.get('updated_parsed')
             date_str = ''
             if pub:
                 dt = datetime(*pub[:6])
-                date_str = f"{dt.month}月{dt.day}日"
+                if (now - dt).days > max_age_days:
+                    continue
+                date_str = f"{dt.year}年{dt.month}月{dt.day}日"
             title = e.get('title', '').strip()
             if date_str:
                 title = f"[{date_str}] {title}"
