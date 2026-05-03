@@ -548,7 +548,7 @@ def call_gemini(prompt):
         data = r.json()
         if 'candidates' in data:
             time.sleep(13)  # Flash: 5 RPM 限制
-            return data['candidates'][0]['content']['parts'][0]['text']
+            return clean_ai_html(data['candidates'][0]['content']['parts'][0]['text'])
         if r.status_code == 429:
             print('  Gemini超限(429)，降级到Groq')
             return None
@@ -574,7 +574,7 @@ def call_groq(prompt):
             data = r.json()
             if 'choices' in data:
                 time.sleep(3)  # Groq RPM保护
-                return data['choices'][0]['message']['content']
+                return clean_ai_html(data['choices'][0]['message']['content'])
             if r.status_code == 429:
                 wait = 20 * (attempt + 1)
                 print(f'  Groq超限(429)，等待{wait}秒重试...')
@@ -610,7 +610,7 @@ def call_openrouter(prompt):
             data = r.json()
             if 'choices' in data:
                 print(f'  OpenRouter({model})成功')
-                return data['choices'][0]['message']['content']
+                return clean_ai_html(data['choices'][0]['message']['content'])
             print(f'  OpenRouter({model})失败: {r.status_code} {str(data)[:80]}')
             time.sleep(5)
         except Exception as ex:
@@ -632,7 +632,7 @@ def call_cerebras(prompt):
                           timeout=30)
         data = r.json()
         if 'choices' in data:
-            return data['choices'][0]['message']['content']
+            return clean_ai_html(data['choices'][0]['message']['content'])
         print(f'  Cerebras错误: {r.status_code} {str(data)[:100]}')
         return None
     except Exception as ex:
@@ -653,7 +653,7 @@ def call_mistral(prompt):
                           timeout=30)
         data = r.json()
         if 'choices' in data:
-            return data['choices'][0]['message']['content']
+            return clean_ai_html(data['choices'][0]['message']['content'])
         print(f'  Mistral错误: {r.status_code} {str(data)[:100]}')
         return None
     except Exception as ex:
@@ -675,6 +675,18 @@ def gemini(prompt):
     return None
 
 FALLBACK_HTML = '<p style="color:rgba(255,255,255,0.4);font-size:13px;">内容生成失败，请稍后刷新</p>'
+
+def clean_ai_html(text):
+    """去除 AI 返回内容中的 Markdown 代码块标记"""
+    if not text:
+        return text
+    import re
+    # 去掉 ```html ... ``` 或 ``` ... ```
+    text = re.sub(r'^```[a-zA-Z]*\s*', '', text.strip())
+    text = re.sub(r'\s*```$', '', text.strip())
+    # 去掉行内残留的 ``` 
+    text = text.replace('```', '')
+    return text.strip()'
 
 # ══════════════════════════════════════════════════════════════
 #  生成板块
