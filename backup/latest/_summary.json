@@ -1,0 +1,57 @@
+{
+  "date": "2026-05-03",
+  "tables": {
+    "duke_votes": {
+      "status": "ok",
+      "rows": 34
+    },
+    "admissions_submissions": {
+      "status": "ok",
+      "rows": 91
+    },
+    "admissions_submissionsMulti": {
+      "status": "ok",
+      "rows": 12
+    },
+    "profiles": {
+      "status": "ok",
+      "rows": 161
+    },
+    "pending_uploads": {
+      "status": "ok",
+      "rows": 223
+    },
+    "private_qr_links": {
+      "status": "ok",
+      "rows": 201
+    },
+    "qr_codes": {
+      "status": "ok",
+      "rows": 10
+    },
+    "site_stats": {
+      "status": "ok",
+      "rows": 1
+    },
+    "xdx_entries": {
+      "status": "ok",
+      "rows": 3
+    },
+    "documents": {
+      "status": "ok",
+      "rows": 0
+    },
+    "csv_access": {
+      "status": "ok",
+      "rows": 3
+    },
+    "admissions_sharing": {
+      "status": "ok",
+      "rows": 0
+    },
+    "approve_uploads": {
+      "status": "ok",
+      "rows": 114
+    }
+  }
+}
