@@ -2314,19 +2314,6 @@
     "groupName": null
   },
   {
-    "id": "6710458a-f4af-47e1-8c35-65705427efe4",
-    "token": "d8e62b76ee2a",
-    "image_url": "https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg",
-    "label": "扯谈Duke群2.0",
-    "used": false,
-    "used_at": null,
-    "created_at": "2026-05-02T22:56:57.596221+00:00",
-    "reserved_for": "leaann31@hotmail.com",
-    "reserved_at": "2026-05-02T23:03:34.429+00:00",
-    "opened_at": null,
-    "groupName": null
-  },
-  {
     "id": "806bc97d-d421-46f0-9ad3-4e89b3de0691",
     "token": "d677ac845436",
     "image_url": "https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg",
@@ -2561,19 +2548,6 @@
     "groupName": null
   },
   {
-    "id": "4f8fe228-24c5-46ed-9457-0d6ad00ed197",
-    "token": "f9fdf1806143",
-    "image_url": "https://dukeparents.org/q30d.png",
-    "label": "Duke 2030 家长群",
-    "used": false,
-    "used_at": null,
-    "created_at": "2026-05-03T04:17:22.47676+00:00",
-    "reserved_for": "lylylillian@gmail.com",
-    "reserved_at": "2026-05-03T04:17:21.766+00:00",
-    "opened_at": null,
-    "groupName": null
-  },
-  {
     "id": "cf3b7edc-95d3-492f-a6c6-57dc1ed765de",
     "token": "001a09bc6b83",
     "image_url": "https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg",
@@ -2610,6 +2584,32 @@
     "reserved_for": "34352820@qq.com",
     "reserved_at": "2026-05-03T06:18:29.417+00:00",
     "opened_at": "2026-05-03T06:52:14.965+00:00",
+    "groupName": null
+  },
+  {
+    "id": "6710458a-f4af-47e1-8c35-65705427efe4",
+    "token": "d8e62b76ee2a",
+    "image_url": "https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg",
+    "label": "扯谈Duke群2.0",
+    "used": true,
+    "used_at": "2026-05-03T09:57:28.926+00:00",
+    "created_at": "2026-05-02T22:56:57.596221+00:00",
+    "reserved_for": "leaann31@hotmail.com",
+    "reserved_at": "2026-05-02T23:03:34.429+00:00",
+    "opened_at": "2026-05-03T09:57:28.926+00:00",
+    "groupName": null
+  },
+  {
+    "id": "4f8fe228-24c5-46ed-9457-0d6ad00ed197",
+    "token": "f9fdf1806143",
+    "image_url": "https://dukeparents.org/q30d.png",
+    "label": "Duke 2030 家长群",
+    "used": true,
+    "used_at": "2026-05-03T10:13:32.701+00:00",
+    "created_at": "2026-05-03T04:17:22.47676+00:00",
+    "reserved_for": "lylylillian@gmail.com",
+    "reserved_at": "2026-05-03T04:17:21.766+00:00",
+    "opened_at": "2026-05-03T10:13:32.701+00:00",
     "groupName": null
   }
 ]
