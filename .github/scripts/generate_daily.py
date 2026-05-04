@@ -686,7 +686,7 @@ def clean_ai_html(text):
     text = re.sub(r'\s*```$', '', text.strip())
     # 去掉行内残留的 ``` 
     text = text.replace('```', '')
-    return text.strip()'
+    return text.strip()
 
 # ══════════════════════════════════════════════════════════════
 #  生成板块
