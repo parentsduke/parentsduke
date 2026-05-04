@@ -601,25 +601,20 @@ def call_openrouter(prompt):
     headers = {'Authorization': f'Bearer {OPENROUTER_KEY}',
                'Content-Type': 'application/json',
                'HTTP-Referer': 'https://dukeparents.org'}
-    models = [
-        'meta-llama/llama-3.3-70b-instruct:free',
-        'mistralai/mistral-7b-instruct:free',
-        'google/gemma-3-12b-it:free',
-    ]
-    for model in models:
-        try:
-            body = {'model': model,
-                    'messages': [{'role': 'user', 'content': prompt}],
-                    'max_tokens': 1500}
-            r = requests.post(url, json=body, headers=headers, timeout=60)
-            data = r.json()
-            if 'choices' in data:
-                print(f'  OpenRouter({model})成功')
-                return clean_ai_html(data['choices'][0]['message']['content'])
-            print(f'  OpenRouter({model})失败: {r.status_code} {str(data)[:80]}')
-            time.sleep(5)
-        except Exception as ex:
-            print(f'  OpenRouter({model})异常: {ex}')
+    # 使用 openrouter/free 路由器，自动从所有可用免费模型中选择
+    try:
+        body = {'model': 'openrouter/auto',
+                'messages': [{'role': 'user', 'content': prompt}],
+                'max_tokens': 1500}
+        r = requests.post(url, json=body, headers=headers, timeout=60)
+        data = r.json()
+        if 'choices' in data:
+            used = data.get('model', 'openrouter/auto')
+            print(f'  OpenRouter({used})成功')
+            return clean_ai_html(data['choices'][0]['message']['content'])
+        print(f'  OpenRouter失败: {r.status_code} {str(data)[:80]}')
+    except Exception as ex:
+        print(f'  OpenRouter异常: {ex}')
     return None
 
 
@@ -631,7 +626,7 @@ def call_cerebras(prompt):
         r = requests.post('https://api.cerebras.ai/v1/chat/completions',
                           headers={'Authorization': f'Bearer {CEREBRAS_KEY}',
                                    'Content-Type': 'application/json'},
-                          json={'model': 'llama-3.3-70b',
+                          json={'model': 'llama3.1-8b',
                                 'messages': [{'role': 'user', 'content': prompt}],
                                 'max_tokens': 1500},
                           timeout=30)
