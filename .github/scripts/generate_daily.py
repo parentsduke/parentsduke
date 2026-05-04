@@ -1,5 +1,5 @@
 import os, re, requests, feedparser, json, time
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
@@ -908,13 +908,22 @@ def main():
 
     # ── 并发调用 AI 生成各板块 ──────────────────────────────────
     print('── 并发调用 AI 生成各板块 ──')
-    BASKETBALL_EXTRA = """
-【重要赛程】Duke与Amazon Prime Video达成独家转播合作（大学篮球史上首次）：
-- 2026年11月25日：vs. UConn，拉斯维加斯（Amazon Prime Video独家）
-- 2026年12月21日：vs. Michigan，麦迪逊广场花园MSG（Amazon Prime Video独家）
-- 2027年2月20日：vs. Gonzaga，底特律（Amazon Prime Video独家）
-以上三场比赛仅在Amazon Prime Video播出，需订阅才能观看。
-"""
+    # Amazon Prime Video 独家赛程：每场比赛提前5天显示，当天结束后消失
+    _today = datetime.now().date()
+    _prime_games = [
+        (date(2026, 11, 25), 'vs. UConn，拉斯维加斯'),
+        (date(2026, 12, 21), 'vs. Michigan，麦迪逊广场花园MSG'),
+        (date(2027,  2, 20), 'vs. Gonzaga，底特律'),
+    ]
+    _active_games = [f'- {g[0].strftime("%Y年%-m月%-d日")}：{g[1]}（Amazon Prime Video独家）'
+                     for g in _prime_games
+                     if g[0] - timedelta(days=5) <= _today <= g[0]]
+    if _active_games:
+        BASKETBALL_EXTRA = "【重要赛程】Duke与Amazon Prime Video达成独家转播合作（大学篮球史上首次）：\n"
+        BASKETBALL_EXTRA += "\n".join(_active_games)
+        BASKETBALL_EXTRA += "\n以上比赛仅在Amazon Prime Video播出，需订阅才能观看。"
+    else:
+        BASKETBALL_EXTRA = ""
 
     tasks = {
         'weekly-school':       lambda: generate_section('学校新闻', school_items),
