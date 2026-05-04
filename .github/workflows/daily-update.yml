@@ -36,4 +36,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add index.html data/ backup/latest/
           git diff --staged --quiet || git commit -m "📰 每日Duke动态自动更新 $(date +'%Y-%m-%d')"
+          git pull --rebase origin main
           git push
