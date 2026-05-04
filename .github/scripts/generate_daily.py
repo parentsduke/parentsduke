@@ -24,7 +24,7 @@ RSS_FEEDS = {
     'dukeengage':       'https://news.google.com/rss/search?q=DukeEngage+site:dukeengage.duke.edu&hl=en-US&gl=US&ceid=US:en',
     'undergrad':        'https://news.google.com/rss/search?q=Duke+undergraduate+site:undergrad.duke.edu&hl=en-US&gl=US&ceid=US:en',
     'interdisciplinary':'https://today.duke.edu/tags/interdisciplinary-studies/rss',
-    'visa':             'https://news.google.com/rss/search?q=Duke+visa+immigration+site:visaservices.duke.edu&hl=en-US&gl=US&ceid=US:en',
+    'visa':             'https://news.google.com/rss/search?q=Duke+University+international+student+visa+F1+J1&hl=en-US&gl=US&ceid=US:en',
     'goduke_mbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=MBB',
     'goduke_wbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=WBB',
     'goduke_all':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200',
@@ -49,6 +49,9 @@ HTML_SOURCES = {
                                      '.post-title a','.entry-title a','p a']},
     'focus':          {'urls': ['https://focus.duke.edu/news/'],
                        'selectors': ['h2 a','h3 a','.entry-title a','article a']},
+    'visa_site':      {'urls': ['https://visaservices.duke.edu/updates',
+                                'https://visaservices.duke.edu/'],
+                       'selectors': ['h2 a','h3 a','.views-row a','article a','.field-content a']},
     'alumni_sendoff': {'urls': ['https://alumni.duke.edu/tags/send-party',
                                 'https://alumni.duke.edu/events-programs',
                                 'https://alumni.duke.edu/tags/new-student-send-party',
@@ -686,7 +689,7 @@ def clean_ai_html(text):
     text = re.sub(r'\s*```$', '', text.strip())
     # 去掉行内残留的 ``` 
     text = text.replace('```', '')
-    return text.strip()
+    return text.strip()'
 
 # ══════════════════════════════════════════════════════════════
 #  生成板块
@@ -731,6 +734,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "- 链接用<a href=\"链接\" target=\"_blank\">标题</a>格式\n"
         f"{political_rule}"
         f"{year_rule}"
+        "- Duke Kunshan University 固定翻译为'杜克昆山大学'，不得写成其他任何译法\n"
         "- 统一用'大一新生'替代'首年学生'或'First-Year students'\n"
         "- 只输出HTML，不要其他文字"
     )
@@ -862,6 +866,7 @@ def main():
                 'pratt':           ex.submit(fetch_source, 'pratt', 3),
                 'trinity':         ex.submit(fetch_source, 'trinity', 3),
                 'visa':            ex.submit(fetch_source, 'visa', 8),
+                'visa_site':       ex.submit(fetch_source, 'visa_site', 5),
                 'calendar':        ex.submit(fetch_calendar),
                 'reg_text':        ex.submit(fetch_pages_text, REGISTRATION_PAGES),
                 'housing_text':    ex.submit(fetch_pages_text, HOUSING_PAGES),
@@ -880,7 +885,7 @@ def main():
                         r['library'] + r['alumni_sendoff'])
     chronicle_items  = r['chronicle']
     research_items   = r['research'] + r['pratt'] + r['trinity']
-    visa_items       = r['visa']
+    visa_items       = r['visa'] + r['visa_site']
     calendar_items   = r['calendar']
 
     print(f'学校:{len(school_items)} 体育:{len(basketball_items)} '
