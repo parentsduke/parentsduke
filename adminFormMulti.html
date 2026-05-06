@@ -750,7 +750,7 @@
         <option value="false" ${committedVal==='false'?'selected':''}>❌ 未Committed</option>
       </select>`;
 
-      const isGradType = r.admission_type === 'grad_masters' || r.admission_type === 'grad_phd';
+      const isGradType = ['grad_masters','grad_phd','硕士','博士'].includes(r.admission_type);
       const letterPath = isGradType ? r.grad_letter_path : r.committed_letter_path;
       const letterCell = letterPath
         ? `<a class="file-link" href="#" onclick="openFile('${letterPath}');return false;">查看文件</a>`
@@ -882,7 +882,7 @@
       r.submitter_name || '',
       r.submitter_contact || '',
       r.submitter_email || '',
-      getFileUrl((r.admission_type === 'grad_masters' || r.admission_type === 'grad_phd') ? r.grad_letter_path : r.committed_letter_path) || '',
+      getFileUrl((['grad_masters','grad_phd','硕士','博士'].includes(r.admission_type)) ? r.grad_letter_path : r.committed_letter_path) || '',
       getFileUrl(r.committed_letter_path) || '',
       r.rejected_at ? '已拒绝' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '待处理',
     ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
@@ -901,7 +901,7 @@
   // ── 按届次自动选择二维码和群名 ──
   function getQRInfo(classYear, admissionType, college) {
     const base = 'https://dukeparents.org';
-    const isGrad = (admissionType === 'grad_masters' || admissionType === 'grad_phd');
+    const isGrad = (['grad_masters','grad_phd','硕士','博士'].includes(admissionType));
     if (isGrad) {
       return { image_url: `${base}/qgrad.png`, label: 'Duke 研究生家长群', groupName: 'Duke 研究生家长群' };
     }
