@@ -151,6 +151,39 @@ def fetch_quote(symbol):
         print(f'  抓取失败 {symbol}: {ex}')
         return None
 
+def fetch_dji_from_stooq():
+    """从 stooq.com 抓道琼斯准确收盘数据"""
+    try:
+        url = 'https://stooq.com/q/d/l/?s=%5Edji&i=d'
+        r = requests.get(url, headers=HEADERS, timeout=10)
+        lines = r.text.strip().split('\n')
+        if len(lines) < 3:
+            return None
+        def parse_row(line):
+            parts = line.split(',')
+            return float(parts[4])
+        price = parse_row(lines[-1])
+        prev  = parse_row(lines[-2])
+        chg   = price - prev
+        pct   = (chg / prev * 100) if prev else 0
+        print(f'  stooq ^DJI: price={price} prev={prev} pct={pct:.2f}%')
+        return {
+            'symbol':       '^DJI',
+            'price':        price,
+            'prev_close':   prev,
+            'change':       chg,
+            'change_pct':   pct,
+            'currency':     'USD',
+            'market_state': 'CLOSED',
+            'ext_price':    None,
+            'ext_chg':      None,
+            'ext_pct':      None,
+            'ext_label':    None,
+        }
+    except Exception as ex:
+        print(f'  stooq ^DJI 失败: {ex}')
+        return None
+
 def fetch_all_quotes():
     results = {}
     # 先用stooq抓准确的道琼斯数据
