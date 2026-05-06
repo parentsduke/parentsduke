@@ -46,6 +46,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;mi
 .q-symbol{font-size:10px;font-family:'JetBrains Mono',monospace;color:#444d56;margin-bottom:6px}
 .q-price{font-family:'JetBrains Mono',monospace;font-weight:600;color:#fff;margin-bottom:4px}
 .q-change{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.q-ext{margin-top:6px;padding-top:6px;border-top:1px solid #2a2a2a;font-size:11px;font-family:'JetBrains Mono',monospace}.q-ext-label{color:#666;margin-right:4px}
+.tv-chart-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin:12px 0 20px}
+.tv-chart-item{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px}
+.tv-chart-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.tv-chart-box{width:100%;height:200px}
 .up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--flat)}
 .news-wrap{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-top:4px}
 .news-wrap ul{list-style:none;padding:0}
@@ -65,39 +69,147 @@ footer a{color:var(--gold);text-decoration:none}
     <div class="market-state">⚪ 已收盘</div>
     <h1>📈 全球市场行情</h1>
   </div>
-  <div class="meta">2026-05-06 05:05 ET<br>17:05 北京时间</div>
+  <div class="meta">2026-05-06 05:22 ET<br>17:22 北京时间</div>
 </div>
 <div class="container">
   <div class="commentary">
     <div class="commentary-label">▸ AI 市场点评</div>
-    今日全球主要市场整体上涨，谷歌和礼来公司分别上涨11.05%和13.14%，而NVIDIA和Meta则下跌7.82%和9.89%。这些变化可能与各公司的最新业绩和市场预期有关。同时，人民币汇率小幅升值，对于正在美国留学的孩子来说，汇款费用可能会略微减少，但影响相对较小。留学家庭可以继续关注市场动态，但不应过度反应今日的波动。
+    今日美国股市表现良好，科技股如苹果和谷歌领涨，纳斯达克指数涨幅达到1.03%。黄金和白银价格大幅上涨，分别增加3.32%和5.77%，可能是由于投资者对市场风险的担忧。人民币汇率今日小幅下降，当前汇率为1美元对6.811元人民币，这可能会使留学家庭的汇款成本略微增加。留学家庭在管理财务时应注意汇率的变化以避免不必要的损失。
   </div>
-  <div class="section-title">🇺🇸 美股指数</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">S&P 500</div><div class="q-symbol">^GSPC</div><div class="q-price" style="font-size:24px">7,259.22</div><div class="q-change up">+120.42 (+1.69%)</div></div><div class="q-card up-border"><div class="q-label">纳斯达克</div><div class="q-symbol">^IXIC</div><div class="q-price" style="font-size:24px">25,326.12</div><div class="q-change up">+662.33 (+2.69%)</div></div><div class="q-card up-border"><div class="q-label">道琼斯</div><div class="q-symbol">^DJI</div><div class="q-price" style="font-size:24px">49,298.25</div><div class="q-change up">+156.32 (+0.32%)</div></div><div class="q-card up-border"><div class="q-label">罗素2000</div><div class="q-symbol">^RUT</div><div class="q-price" style="font-size:24px">2,845.00</div><div class="q-change up">+88.95 (+3.23%)</div></div><div class="q-card down-border"><div class="q-label">VIX恐慌指数</div><div class="q-symbol">^VIX</div><div class="q-price" style="font-size:24px">16.82</div><div class="q-change down">-0.07 (-0.41%)</div></div></div><div class="section-title">📱 美股科技</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">Apple</div><div class="q-symbol">AAPL</div><div class="q-price" style="font-size:18px">284.2</div><div class="q-change up">+13.47 (+4.98%)</div></div><div class="q-card down-border"><div class="q-label">NVIDIA</div><div class="q-symbol">NVDA</div><div class="q-price" style="font-size:18px">196.5</div><div class="q-change down">-16.67 (-7.82%)</div></div><div class="q-card up-border"><div class="q-label">Tesla</div><div class="q-symbol">TSLA</div><div class="q-price" style="font-size:18px">389.4</div><div class="q-change up">+13.35 (+3.55%)</div></div><div class="q-card down-border"><div class="q-label">Microsoft</div><div class="q-symbol">MSFT</div><div class="q-price" style="font-size:18px">411.4</div><div class="q-change down">-17.87 (-4.16%)</div></div><div class="q-card up-border"><div class="q-label">Google</div><div class="q-symbol">GOOGL</div><div class="q-price" style="font-size:18px">388.4</div><div class="q-change up">+38.65 (+11.05%)</div></div><div class="q-card up-border"><div class="q-label">Amazon</div><div class="q-symbol">AMZN</div><div class="q-price" style="font-size:18px">273.6</div><div class="q-change up">+13.85 (+5.33%)</div></div><div class="q-card down-border"><div class="q-label">Meta</div><div class="q-symbol">META</div><div class="q-price" style="font-size:18px">605</div><div class="q-change down">-66.38 (-9.89%)</div></div><div class="q-card up-border"><div class="q-label">Eli Lilly</div><div class="q-symbol">LLY</div><div class="q-price" style="font-size:18px">988.9</div><div class="q-change up">+114.87 (+13.14%)</div></div></div><div class="section-title">🇭🇰 港股</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">恒生指数</div><div class="q-symbol">^HSI</div><div class="q-price" style="font-size:18px">26,213.78</div><div class="q-change up">+534.00 (+2.08%)</div></div></div><div class="section-title">🇨🇳 A股</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">上证综指</div><div class="q-symbol">000001.SS</div><div class="q-price" style="font-size:18px">4,160.17</div><div class="q-change up">+73.83 (+1.81%)</div></div><div class="q-card up-border"><div class="q-label">深证成指</div><div class="q-symbol">399001.SZ</div><div class="q-price" style="font-size:18px">15,459.62</div><div class="q-change up">+463.87 (+3.09%)</div></div><div class="q-card up-border"><div class="q-label">沪深300</div><div class="q-symbol">000300.SS</div><div class="q-price" style="font-size:18px">4,877.09</div><div class="q-change up">+106.14 (+2.22%)</div></div></div><div class="section-title">💱 外汇</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">USD/CNY</div><div class="q-symbol">USDCNY=X</div><div class="q-price" style="font-size:18px">6.812</div><div class="q-change down">-0.03 (-0.37%)</div></div><div class="q-card down-border"><div class="q-label">USD/HKD</div><div class="q-symbol">USDHKD=X</div><div class="q-price" style="font-size:18px">7.836</div><div class="q-change down">-0.00 (-0.02%)</div></div><div class="q-card up-border"><div class="q-label">EUR/USD</div><div class="q-symbol">EURUSD=X</div><div class="q-price" style="font-size:18px">1.176</div><div class="q-change up">+0.01 (+0.66%)</div></div><div class="q-card down-border"><div class="q-label">USD/JPY</div><div class="q-symbol">USDJPY=X</div><div class="q-price" style="font-size:18px">156.1</div><div class="q-change down">-4.10 (-2.56%)</div></div></div><div class="section-title">🛢 大宗商品</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">黄金</div><div class="q-symbol">GC=F</div><div class="q-price" style="font-size:18px">4,709.50</div><div class="q-change up">+79.60 (+1.72%)</div></div><div class="q-card down-border"><div class="q-label">原油</div><div class="q-symbol">CL=F</div><div class="q-price" style="font-size:18px">96.02</div><div class="q-change down">-5.92 (-5.81%)</div></div><div class="q-card up-border"><div class="q-label">白银</div><div class="q-symbol">SI=F</div><div class="q-price" style="font-size:18px">77.44</div><div class="q-change up">+1.48 (+1.95%)</div></div></div><div class="section-title">₿ 加密货币</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">Bitcoin</div><div class="q-symbol">BTC-USD</div><div class="q-price" style="font-size:18px">81,819.59</div><div class="q-change up">+3162.34 (+4.02%)</div></div></div><div class="section-title">📊 美债/指数</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">10年期美债收益率</div><div class="q-symbol">^TNX</div><div class="q-price" style="font-size:18px">4.416</div><div class="q-change down">-0.00 (-0.05%)</div></div><div class="q-card down-border"><div class="q-label">30年期美债收益率</div><div class="q-symbol">^TYX</div><div class="q-price" style="font-size:18px">4.984</div><div class="q-change down">-0.00 (-0.06%)</div></div><div class="q-card up-border"><div class="q-label">S&P 600小盘股</div><div class="q-symbol">^SP600</div><div class="q-price" style="font-size:18px">1,680.45</div><div class="q-change up">+28.54 (+1.73%)</div></div></div><div class="section-title">💼 共同基金</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">Vanguard 扩展市场</div><div class="q-symbol">VIEIX</div><div class="q-price" style="font-size:18px">173.9</div><div class="q-change up">+4.47 (+2.64%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 优质股票</div><div class="q-symbol">VPMAX</div><div class="q-price" style="font-size:18px">210.6</div><div class="q-change up">+10.67 (+5.34%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 联邦货币</div><div class="q-symbol">VFTNX</div><div class="q-price" style="font-size:18px">49.41</div><div class="q-change up">+0.93 (+1.92%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 机构指数</div><div class="q-symbol">VINIX</div><div class="q-price" style="font-size:18px">581.5</div><div class="q-change up">+9.72 (+1.70%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 能源基金</div><div class="q-symbol">VGELX</div><div class="q-price" style="font-size:18px">112.6</div><div class="q-change up">+2.21 (+2.00%)</div></div><div class="q-card up-border"><div class="q-label">BTC 全市场</div><div class="q-symbol">BTSMX</div><div class="q-price" style="font-size:18px">24.92</div><div class="q-change up">+0.01 (+0.04%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 全球股票</div><div class="q-symbol">VTSNX</div><div class="q-price" style="font-size:18px">179</div><div class="q-change up">+3.14 (+1.79%)</div></div><div class="q-card down-border"><div class="q-label">PIMCO 债券基金</div><div class="q-symbol">PTTRX</div><div class="q-price" style="font-size:18px">8.73</div><div class="q-change down">-0.04 (-0.46%)</div></div><div class="q-card down-border"><div class="q-label">DoubleLine 贷款</div><div class="q-symbol">DHLYX</div><div class="q-price" style="font-size:18px">32.43</div><div class="q-change down">-0.08 (-0.25%)</div></div><div class="q-card up-border"><div class="q-label">PIMCO 房产基金</div><div class="q-symbol">PIRMX</div><div class="q-price" style="font-size:18px">9.93</div><div class="q-change up">+0.03 (+0.30%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 惠灵顿</div><div class="q-symbol">VWENX</div><div class="q-price" style="font-size:18px">79.54</div><div class="q-change up">+0.48 (+0.61%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 2065目标</div><div class="q-symbol">VSVNX</div><div class="q-price" style="font-size:18px">34.22</div><div class="q-change up">+0.54 (+1.60%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 医疗基金</div><div class="q-symbol">VGHAX</div><div class="q-price" style="font-size:18px">80.07</div><div class="q-change up">+0.50 (+0.63%)</div></div></div>
+  <div class="section-title">🇺🇸 美股指数</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">S&P 500</div><div class="q-symbol">^GSPC</div><div class="q-price" style="font-size:24px">7,259.22</div><div class="q-change up">+58.47 (+0.81%)</div></div><div class="q-card up-border"><div class="q-label">纳斯达克</div><div class="q-symbol">^IXIC</div><div class="q-price" style="font-size:24px">25,326.13</div><div class="q-change up">+258.33 (+1.03%)</div></div><div class="q-card up-border"><div class="q-label">道琼斯</div><div class="q-symbol">^DJI</div><div class="q-price" style="font-size:24px">49,298.25</div><div class="q-change up">+356.35 (+0.73%)</div></div><div class="q-card up-border"><div class="q-label">罗素2000</div><div class="q-symbol">^RUT</div><div class="q-price" style="font-size:24px">2,845.00</div><div class="q-change up">+49.00 (+1.75%)</div></div><div class="q-card down-border"><div class="q-label">VIX恐慌指数</div><div class="q-symbol">^VIX</div><div class="q-price" style="font-size:24px">16.83</div><div class="q-change down">-0.55 (-3.16%)</div></div></div><div class="tv-chart-row"><div class="tv-chart-item"><div class="tv-chart-label">S&P 500</div><div class="tv-chart-wrap">
+  <div id="tv-us_indices-0" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"SP:SPX",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_indices-0"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">道琼斯</div><div class="tv-chart-wrap">
+  <div id="tv-us_indices-1" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"DJ:DJI",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_indices-1"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">纳斯达克</div><div class="tv-chart-wrap">
+  <div id="tv-us_indices-2" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:IXIC",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_indices-2"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div></div><div class="section-title">📱 美股科技</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">Apple</div><div class="q-symbol">AAPL</div><div class="q-price" style="font-size:18px">284.2</div><div class="q-change up">+7.35 (+2.66%)</div></div><div class="q-card down-border"><div class="q-label">NVIDIA</div><div class="q-symbol">NVDA</div><div class="q-price" style="font-size:18px">196.5</div><div class="q-change down">-1.98 (-1.00%)</div></div><div class="q-card down-border"><div class="q-label">Tesla</div><div class="q-symbol">TSLA</div><div class="q-price" style="font-size:18px">389.4</div><div class="q-change down">-3.14 (-0.80%)</div></div><div class="q-card down-border"><div class="q-label">Microsoft</div><div class="q-symbol">MSFT</div><div class="q-price" style="font-size:18px">411.4</div><div class="q-change down">-2.24 (-0.54%)</div></div><div class="q-card up-border"><div class="q-label">Google</div><div class="q-symbol">GOOGL</div><div class="q-price" style="font-size:18px">388.4</div><div class="q-change up">+5.18 (+1.35%)</div></div><div class="q-card up-border"><div class="q-label">Amazon</div><div class="q-symbol">AMZN</div><div class="q-price" style="font-size:18px">273.5</div><div class="q-change up">+1.50 (+0.55%)</div></div><div class="q-card down-border"><div class="q-label">Meta</div><div class="q-symbol">META</div><div class="q-price" style="font-size:18px">605</div><div class="q-change down">-5.45 (-0.89%)</div></div><div class="q-card up-border"><div class="q-label">Eli Lilly</div><div class="q-symbol">LLY</div><div class="q-price" style="font-size:18px">988.9</div><div class="q-change up">+20.94 (+2.16%)</div></div></div><div class="tv-chart-row"><div class="tv-chart-item"><div class="tv-chart-label">Apple</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-0" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:AAPL",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-0"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">NVIDIA</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-1" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:NVDA",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-1"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">Tesla</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-2" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:TSLA",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-2"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div></div><div class="section-title">🇭🇰 港股</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">恒生指数</div><div class="q-symbol">^HSI</div><div class="q-price" style="font-size:18px">26,213.78</div><div class="q-change up">+315.17 (+1.22%)</div></div></div><div class="section-title">🇨🇳 A股</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">上证综指</div><div class="q-symbol">000001.SS</div><div class="q-price" style="font-size:18px">4,160.17</div><div class="q-change up">+48.01 (+1.17%)</div></div><div class="q-card up-border"><div class="q-label">深证成指</div><div class="q-symbol">399001.SZ</div><div class="q-price" style="font-size:18px">15,459.62</div><div class="q-change up">+352.07 (+2.33%)</div></div><div class="q-card up-border"><div class="q-label">沪深300</div><div class="q-symbol">000300.SS</div><div class="q-price" style="font-size:18px">4,877.09</div><div class="q-change up">+69.78 (+1.45%)</div></div></div><div class="section-title">💱 外汇</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">USD/CNY</div><div class="q-symbol">USDCNY=X</div><div class="q-price" style="font-size:18px">6.811</div><div class="q-change down">-0.02 (-0.28%)</div></div><div class="q-card up-border"><div class="q-label">USD/HKD</div><div class="q-symbol">USDHKD=X</div><div class="q-price" style="font-size:18px">7.836</div><div class="q-change up">+0.00 (+0.04%)</div></div><div class="q-card up-border"><div class="q-label">EUR/USD</div><div class="q-symbol">EURUSD=X</div><div class="q-price" style="font-size:18px">1.177</div><div class="q-change up">+0.01 (+0.65%)</div></div><div class="q-card down-border"><div class="q-label">USD/JPY</div><div class="q-symbol">USDJPY=X</div><div class="q-price" style="font-size:18px">156</div><div class="q-change down">-1.15 (-0.73%)</div></div></div><div class="section-title">🛢 大宗商品</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">黄金</div><div class="q-symbol">GC=F</div><div class="q-price" style="font-size:18px">4,707.10</div><div class="q-change up">+151.30 (+3.32%)</div></div><div class="q-card down-border"><div class="q-label">原油</div><div class="q-symbol">CL=F</div><div class="q-price" style="font-size:18px">95.92</div><div class="q-change down">-6.35 (-6.21%)</div></div><div class="q-card up-border"><div class="q-label">白银</div><div class="q-symbol">SI=F</div><div class="q-price" style="font-size:18px">77.32</div><div class="q-change up">+4.22 (+5.77%)</div></div></div><div class="section-title">₿ 加密货币</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">Bitcoin</div><div class="q-symbol">BTC-USD</div><div class="q-price" style="font-size:18px">81,782.74</div><div class="q-change up">+855.69 (+1.06%)</div></div></div><div class="section-title">📊 美债/指数</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">10年期美债收益率</div><div class="q-symbol">^TNX</div><div class="q-price" style="font-size:18px">4.416</div><div class="q-change down">-0.03 (-0.67%)</div></div><div class="q-card down-border"><div class="q-label">30年期美债收益率</div><div class="q-symbol">^TYX</div><div class="q-price" style="font-size:18px">4.984</div><div class="q-change down">-0.04 (-0.82%)</div></div><div class="q-card up-border"><div class="q-label">S&P 600小盘股</div><div class="q-symbol">^SP600</div><div class="q-price" style="font-size:18px">1,680.45</div><div class="q-change up">+24.44 (+1.48%)</div></div></div><div class="section-title">💼 共同基金</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">Vanguard 扩展市场</div><div class="q-symbol">VIEIX</div><div class="q-price" style="font-size:18px">173.9</div><div class="q-change up">+2.17 (+1.26%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 优质股票</div><div class="q-symbol">VPMAX</div><div class="q-price" style="font-size:18px">210.6</div><div class="q-change up">+5.06 (+2.46%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 联邦货币</div><div class="q-symbol">VFTNX</div><div class="q-price" style="font-size:18px">49.41</div><div class="q-change up">+0.45 (+0.92%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 机构指数</div><div class="q-symbol">VINIX</div><div class="q-price" style="font-size:18px">581.5</div><div class="q-change up">+4.69 (+0.81%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 能源基金</div><div class="q-symbol">VGELX</div><div class="q-price" style="font-size:18px">112.6</div><div class="q-change up">+0.28 (+0.25%)</div></div><div class="q-card up-border"><div class="q-label">BTC 全市场</div><div class="q-symbol">BTSMX</div><div class="q-price" style="font-size:18px">24.92</div><div class="q-change up">+0.17 (+0.69%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 全球股票</div><div class="q-symbol">VTSNX</div><div class="q-price" style="font-size:18px">179</div><div class="q-change up">+1.92 (+1.08%)</div></div><div class="q-card up-border"><div class="q-label">PIMCO 债券基金</div><div class="q-symbol">PTTRX</div><div class="q-price" style="font-size:18px">8.73</div><div class="q-change up">+0.02 (+0.23%)</div></div><div class="q-card up-border"><div class="q-label">DoubleLine 贷款</div><div class="q-symbol">DHLYX</div><div class="q-price" style="font-size:18px">32.43</div><div class="q-change up">+0.03 (+0.09%)</div></div><div class="q-card up-border"><div class="q-label">PIMCO 房产基金</div><div class="q-symbol">PIRMX</div><div class="q-price" style="font-size:18px">9.93</div><div class="q-change up">+0.01 (+0.10%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 惠灵顿</div><div class="q-symbol">VWENX</div><div class="q-price" style="font-size:18px">79.54</div><div class="q-change up">+0.36 (+0.45%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 2065目标</div><div class="q-symbol">VSVNX</div><div class="q-price" style="font-size:18px">34.22</div><div class="q-change up">+0.29 (+0.85%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 医疗基金</div><div class="q-symbol">VGHAX</div><div class="q-price" style="font-size:18px">80.07</div><div class="q-change up">+0.02 (+0.02%)</div></div></div>
   <div class="section-title">📰 财经新闻摘要</div>
   <div class="news-wrap"><b>📈 财经市场</b>
 <ul>
-<li>[MarketWatch] 比尔·科斯比降低曼哈顿联排别墅价格至599万美元 <a href="https://www.marketwatch.com/story/bill-cosby-cuts-the-price-of-his-new-york-townhouse-to-5-99-million-f6270069?mod=mw_rss_topstories" target="_blank">原文</a></li>
-<li>[MarketWatch] 单身百万富翁不喜欢消费，怎么办？ <a href="https://www.marketwatch.com/story/i-have-more-money-than-i-know-what-to-do-with-im-a-single-millionaire-with-no-heirs-and-dont-like-spending-whats-wrong-dd5acfb6?mod=mw_rss_topstories" target="_blank">原文</a></li>
-<li>[Yahoo金融] 迈克尔·伯里出售滚天网络巨头所有股份 <a href="https://finance.yahoo.com/markets/stocks/articles/michael-burry-sells-entire-stake-202300350.html" target="_blank">原文</a></li>
-<li>[Yahoo金融] 抵押贷款利率何时会降至4%？ <a href="https://finance.yahoo.com/personal-finance/mortgages/article/when-will-mortgage-rates-go-down-to-4-again-203022918.html" target="_blank">原文</a></li>
+<li>[MarketWatch] 56岁单身人士无法将兄弟列为保险受益人 <a href="https://www.marketwatch.com/story/i-am-56-single-and-renewing-my-400-000-term-life-policy-the-agent-says-i-cant-name-my-brother-as-beneficiary-why-not-1770bf58?mod=mw_rss_topstories" target="_blank">原文</a></li>
+<li>[Yahoo金融] 迈克尔·伯里出售所有抢手股 <a href="https://finance.yahoo.com/markets/stocks/articles/michael-burry-sells-entire-stake-202300350.html" target="_blank">原文</a></li>
+<li>[Bloomberg] 欧元区经济增长超预期 <a href="https://www.bloomberg.com/news/articles/2026-05-06/orsted-keeps-guidance-as-europe-focus-drives-turnaround" target="_blank">原文</a></li>
+<li>[MarketWatch] 周五可能会引发债券市场焦虑 <a href="https://www.marketwatch.com/story/why-friday-may-see-another-spike-in-bond-market-anxiety-bcb66488?mod=mw_rss_topstories" target="_blank">原文</a></li>
 </ul>
 
 <b>🌍 国际时事</b>
 <ul>
-<li>[Bloomberg] 封锁霍尔木兹海峡令船东束手无策 <a href="https://www.bloomberg.com/news/articles/2026-05-06/shipowners-grapple-for-fixes-in-hormuz-after-trump-drops-plan" target="_blank">原文</a></li>
-<li>[Bloomberg] 伊朗战争促中国金属出口 бума <a href="https://www.bloomberg.com/news/articles/2026-05-06/chinese-metals-demand-gets-lift-as-mideast-war-spurs-export-boom" target="_blank">原文</a></li>
+<li>[Bloomberg] 美元跌至战争开始以来最低点 <a href="https://www.bloomberg.com/news/articles/2026-05-06/dollar-hits-lowest-since-war-started-on-report-end-is-near" target="_blank">原文</a></li>
+<li>[Bloomberg] 欧美股市集体上涨 <a href="https://www.bloomberg.com/news/articles/2026-05-05/asian-stocks-to-track-us-gains-on-truce-optimism-markets-wrap" target="_blank">原文</a></li>
 </ul>
 
 <b>💻 科技动态</b>
 <ul>
-<li>[Yahoo金融] Zoom视频通信股票暴涨 <a href="https://www.investors.com/news/technology/zoom-communications-hits-80-plus-relative-strength-rating-benchmark/?src=A00220&yptr=yahoo" target="_blank">原文</a></li>
-<li>[Bloomberg] 全球股票因人工智能投资而大涨 <a href="https://www.bloomberg.com/news/articles/2026-05-05/asian-stocks-to-track-us-gains-on-truce-optimism-markets-wrap" target="_blank">原文</a></li>
+<li>[Yahoo金融] Тим库克：AI将使下一代笔记本电脑和智能手机更加昂贵 <a href="https://finance.yahoo.com/sectors/technology/articles/apples-tim-cook-says-ai-230500503.html" target="_blank">原文</a></li>
+<li>[Bloomberg] 三星电子市值达1万亿美元 <a href="https://www.bloomberg.com/news/videos/2026-05-06/samsung-hits-1-trillion-valuation-video-motufu3p" target="_blank">原文</a></li>
 </ul>
 
 <b>🌏 亚洲动态</b>
 <ul>
-<li>[Bloomberg] CATL熊市退场，香港股价暴涨 <a href="https://www.bloomberg.com/news/articles/2026-05-06/catl-bears-retreat-in-hong-kong-after-blockbuster-share-sale" target="_blank">原文</a></li>
-<li>[Bloomberg] 非洲主要港口错失加油机会 <a href="https://www.bloomberg.com/news/videos/2026-05-06/top-african-ports-miss-refuel-gain-video" target="_blank">原文</a></li>
+<li>[MarketWatch] 韩国股市继续飙升 <a href="https://www.marketwatch.com/story/this-chart-tells-the-story-of-the-hottest-stock-market-in-the-world-as-samsung-electronics-reaches-1-trillion-in-market-cap-1bd7892b?mod=mw_rss_topstories" target="_blank">原文</a></li>
+<li>[Bloomberg] 日元暴升至10周高点 <a href="https://www.bloomberg.com/news/articles/2026-05-06/yen-rallies-as-much-as-1-4-amid-broad-dollar-weakness" target="_blank">原文</a></li>
 </ul></div>
 </div>
 <footer>
