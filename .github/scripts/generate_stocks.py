@@ -153,6 +153,8 @@ def fetch_quote(symbol):
 
 def fetch_all_quotes():
     results = {}
+    # 先用stooq抓准确的道琼斯数据
+    dji_stooq = fetch_dji_from_stooq()
     for group, items in TICKERS.items():
         results[group] = []
         for symbol, label in items:
