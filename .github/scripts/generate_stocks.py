@@ -159,6 +159,10 @@ def fetch_all_quotes():
             q = fetch_quote(symbol)
             if q:
                 q['label'] = label
+                # 用stooq的准确数据覆盖道琼斯
+                if symbol == '^DJI' and dji_stooq:
+                    dji_stooq['label'] = label
+                    q = dji_stooq
                 results[group].append(q)
                 print(f'  ✓ {symbol}: {q["price"]:.4g} ({q["change_pct"]:+.2f}%)')
             time.sleep(0.3)
