@@ -621,6 +621,26 @@ def send_email(html):
     from zoneinfo import ZoneInfo
     now_et = datetime.now(ZoneInfo('America/New_York'))
     subject = f"📈 全球市场日报 · {now_et.strftime('%Y-%m-%d')}"
+
+    # 邮件客户端不支持CSS变量，替换为硬编码颜色
+    email_html = html
+    replacements = {
+        'var(--bg)':      '#0d1117',
+        'var(--card)':    '#161b22',
+        'var(--border)':  '#30363d',
+        'var(--text)':    '#e6edf3',
+        'var(--muted)':   '#8b949e',
+        'color:#fff':     'color:#e6edf3',
+        'background:#0d1117': 'background:#0d1117',
+        # 去掉TradingView图表（邮件里不支持JS）
+    }
+    for old, new in replacements.items():
+        email_html = email_html.replace(old, new)
+
+    # 移除TradingView图表块（邮件不支持JS）
+    import re
+    email_html = re.sub(r'<div class="tv-chart-row">.*?</div>\s*</div>', '', email_html, flags=re.DOTALL)
+
     try:
         r = requests.post(
             'https://api.resend.com/emails',
@@ -632,7 +652,7 @@ def send_email(html):
                 'from':    EMAIL_FROM,
                 'to':      [EMAIL_TO],
                 'subject': subject,
-                'html':    html,
+                'html':    email_html,
             },
             timeout=15,
         )
