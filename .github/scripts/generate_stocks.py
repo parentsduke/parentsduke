@@ -28,6 +28,7 @@ TICKERS = {
         ('GOOGL', 'Google'),
         ('AMZN',  'Amazon'),
         ('META',  'Meta'),
+        ('LLY',   'Eli Lilly'),
     ],
     'hk': [
         ('^HSI',  '恒生指数'),
@@ -122,6 +123,11 @@ def fetch_quote(symbol):
         else:
             chg = price - prev
             pct = (chg / prev * 100) if prev else 0
+        # 盘后/盘前数据
+        ext_price = meta.get('postMarketPrice') or meta.get('preMarketPrice')
+        ext_chg   = meta.get('postMarketChange') or meta.get('preMarketChange')
+        ext_pct   = meta.get('postMarketChangePercent') or meta.get('preMarketChangePercent')
+        ext_label = '盘后' if meta.get('postMarketPrice') else ('盘前' if meta.get('preMarketPrice') else None)
         return {
             'symbol':       symbol,
             'price':        price,
@@ -130,6 +136,10 @@ def fetch_quote(symbol):
             'change_pct':   pct,
             'currency':     meta.get('currency', 'USD'),
             'market_state': market_state,
+            'ext_price':    ext_price,
+            'ext_chg':      ext_chg,
+            'ext_pct':      (ext_pct * 100) if ext_pct else None,
+            'ext_label':    ext_label,
         }
     except Exception as ex:
         print(f'  抓取失败 {symbol}: {ex}')
@@ -316,12 +326,24 @@ def market_state_label(state):
 # ══════════════════════════════════════════════════════════════
 def build_card(q, big=False):
     cls = change_class(q['change_pct'])
-    price_size = '26px' if big else '20px'
+    price_size = '24px' if big else '18px'
+    # 盘后/盘前扩展行
+    ext_html = ''
+    if q.get('ext_price') and q.get('ext_pct') is not None:
+        ext_cls = change_class(q['ext_pct'])
+        ext_sign = '+' if q['ext_chg'] >= 0 else ''
+        ext_html = (f'<div class="q-ext">'
+                    f'<span class="q-ext-label">{q["ext_label"]}</span>'
+                    f'<span class="{ext_cls}">'
+                    f'{fmt(q["ext_price"])} '
+                    f'{ext_sign}{q["ext_chg"]:+.2f} ({ext_sign}{q["ext_pct"]:.2f}%)'
+                    f'</span></div>')
     return (f'<div class="q-card {cls}-border">'
             f'<div class="q-label">{q["label"]}</div>'
             f'<div class="q-symbol">{q["symbol"]}</div>'
             f'<div class="q-price" style="font-size:{price_size}">{fmt(q["price"])}</div>'
             f'<div class="q-change {cls}">{change_str(q["change"], q["change_pct"])}</div>'
+            f'{ext_html}'
             f'</div>')
 
 def build_section(title, items, big=False):
@@ -400,7 +422,7 @@ body{{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;m
 .q-label{{font-size:12px;color:var(--muted);margin-bottom:2px}}
 .q-symbol{{font-size:10px;font-family:'JetBrains Mono',monospace;color:#444d56;margin-bottom:6px}}
 .q-price{{font-family:'JetBrains Mono',monospace;font-weight:600;color:#fff;margin-bottom:4px}}
-.q-change{{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600}}
+.q-change{{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}.q-ext{{margin-top:6px;padding-top:6px;border-top:1px solid #2a2a2a;font-size:11px;font-family:'JetBrains Mono',monospace}}.q-ext-label{{color:#666;margin-right:4px}}
 .up{{color:var(--green)}}.down{{color:var(--red)}}.flat{{color:var(--flat)}}
 .news-wrap{{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-top:4px}}
 .news-wrap ul{{list-style:none;padding:0}}
