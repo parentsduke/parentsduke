@@ -107,22 +107,28 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (compatible; StocksBot/1.0)'}
 #  抓取行情（Yahoo Finance）
 # ══════════════════════════════════════════════════════════════
 def fetch_quote(symbol):
-    url = f'https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=2d'
+    # 取5天数据，用历史收盘价计算涨跌幅，避免 meta 字段盘后污染
+    url = f'https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=5d'
     try:
         r = requests.get(url, headers=HEADERS, timeout=10)
         data = r.json()
-        meta = data['chart']['result'][0]['meta']
+        result = data['chart']['result'][0]
+        meta   = result['meta']
         market_state = meta.get('marketState', 'CLOSED')
+
+        # 用 regularMarketPrice 作为当前价（盘中/收盘均准确）
         price = meta.get('regularMarketPrice', 0)
-        prev  = meta.get('regularMarketPreviousClose') or meta.get('chartPreviousClose', price)
-        official_chg = meta.get('regularMarketChange')
-        official_pct = meta.get('regularMarketChangePercent')
-        if official_chg is not None and official_pct is not None:
-            chg = official_chg
-            pct = official_pct * 100
-        else:
-            chg = price - prev
-            pct = (chg / prev * 100) if prev else 0
+
+        # prev 永远用 regularMarketPreviousClose（前收盘，不受盘后影响）
+        prev = meta.get('regularMarketPreviousClose') or meta.get('chartPreviousClose', price)
+
+        # 涨跌幅：收盘/盘中用 price vs prev 直接算
+        # 盘后/盘前时 price 仍是正式收盘价，同样准确
+        chg = price - prev
+        pct = (chg / prev * 100) if prev else 0
+        if symbol in ('^DJI', '^GSPC', '^IXIC'):
+            print(f'  DEBUG {symbol}: price={price} prev={prev} chg={chg:.2f} pct={pct:.2f}%')
+
         # 盘后/盘前数据
         ext_price = meta.get('postMarketPrice') or meta.get('preMarketPrice')
         ext_chg   = meta.get('postMarketChange') or meta.get('preMarketChange')
