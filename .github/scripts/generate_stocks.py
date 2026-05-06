@@ -108,10 +108,18 @@ def fetch_quote(symbol):
         r = requests.get(url, headers=HEADERS, timeout=10)
         data = r.json()
         meta = data['chart']['result'][0]['meta']
-        price = meta.get('regularMarketPrice') or meta.get('price', 0)
-        prev  = meta.get('chartPreviousClose') or meta.get('previousClose', price)
-        chg   = price - prev
-        pct   = (chg / prev * 100) if prev else 0
+        market_state = meta.get('marketState', 'CLOSED')
+        price = meta.get('regularMarketPrice', 0)
+        prev  = meta.get('regularMarketPreviousClose') or meta.get('chartPreviousClose', price)
+        # 优先使用官方字段，避免盘前/盘后价格混入涨跌幅计算
+        official_chg = meta.get('regularMarketChange')
+        official_pct = meta.get('regularMarketChangePercent')
+        if official_chg is not None and official_pct is not None:
+            chg = official_chg
+            pct = official_pct * 100  # Yahoo返回小数形式，如0.004 = 0.4%
+        else:
+            chg = price - prev
+            pct = (chg / prev * 100) if prev else 0
         return {
             'symbol':       symbol,
             'price':        price,
@@ -119,7 +127,7 @@ def fetch_quote(symbol):
             'change':       chg,
             'change_pct':   pct,
             'currency':     meta.get('currency', 'USD'),
-            'market_state': meta.get('marketState', 'CLOSED'),
+            'market_state': market_state,
         }
     except Exception as ex:
         print(f'  抓取失败 {symbol}: {ex}')
@@ -306,7 +314,7 @@ def market_state_label(state):
 # ══════════════════════════════════════════════════════════════
 def build_card(q, big=False):
     cls = change_class(q['change_pct'])
-    price_size = '26px' if big else '20px'
+    price_size = '24px' if big else '18px'
     return (f'<div class="q-card {cls}-border">'
             f'<div class="q-label">{q["label"]}</div>'
             f'<div class="q-symbol">{q["symbol"]}</div>'
@@ -381,16 +389,16 @@ body{{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;m
 .commentary{{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:6px;padding:14px 18px;margin-bottom:24px;font-size:14px;line-height:1.8;color:#cdd9e5}}
 .commentary-label{{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--gold);margin-bottom:8px;letter-spacing:0.1em}}
 .section-title{{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--gold);letter-spacing:0.15em;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #21262d}}
-.card-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:4px}}
-.q-card{{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 14px;transition:border-color 0.15s}}
+.card-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;margin-bottom:4px}}
+.q-card{{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px 16px;transition:border-color 0.15s;min-width:0;overflow:hidden}}
 .q-card:hover{{border-color:var(--gold)}}
 .up-border{{border-top:2px solid var(--green)}}
 .down-border{{border-top:2px solid var(--red)}}
 .flat-border{{border-top:2px solid var(--flat)}}
-.q-label{{font-size:12px;color:var(--muted);margin-bottom:2px}}
+.q-label{{font-size:12px;color:var(--muted);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 .q-symbol{{font-size:10px;font-family:'JetBrains Mono',monospace;color:#444d56;margin-bottom:6px}}
 .q-price{{font-family:'JetBrains Mono',monospace;font-weight:600;color:#fff;margin-bottom:4px}}
-.q-change{{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600}}
+.q-change{{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 .up{{color:var(--green)}}.down{{color:var(--red)}}.flat{{color:var(--flat)}}
 .news-wrap{{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-top:4px}}
 .news-wrap ul{{list-style:none;padding:0}}
@@ -401,7 +409,7 @@ body{{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;m
 .no-data{{color:var(--muted);font-size:13px;padding:8px 0}}
 footer{{text-align:center;padding:24px 16px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);border-top:1px solid #21262d;margin-top:32px}}
 footer a{{color:var(--gold);text-decoration:none}}
-@media(max-width:480px){{.card-grid{{grid-template-columns:repeat(2,1fr)}}.top-bar h1{{font-size:14px}}}}
+@media(max-width:480px){{.card-grid{{grid-template-columns:repeat(2,1fr)}}.q-price{{font-size:16px!important}}.top-bar h1{{font-size:14px}}}}
 </style>
 </head>
 <body>
