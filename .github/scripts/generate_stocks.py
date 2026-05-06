@@ -107,7 +107,6 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (compatible; StocksBot/1.0)'}
 #  抓取行情（Yahoo Finance）
 # ══════════════════════════════════════════════════════════════
 def fetch_quote(symbol):
-    # 取5天数据，用历史收盘价计算涨跌幅，避免 meta 字段盘后污染
     url = f'https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=5d'
     try:
         r = requests.get(url, headers=HEADERS, timeout=10)
@@ -116,24 +115,36 @@ def fetch_quote(symbol):
         meta   = result['meta']
         market_state = meta.get('marketState', 'CLOSED')
 
-        # 用 regularMarketPrice 作为当前价（盘中/收盘均准确）
-        price = meta.get('regularMarketPrice', 0)
+        # 从 OHLC 历史取最近两根K线收盘价
+        closes = result.get('indicators', {}).get('quote', [{}])[0].get('close', [])
+        closes = [c for c in closes if c is not None]
 
-        # prev 永远用 regularMarketPreviousClose（前收盘，不受盘后影响）
-        prev = meta.get('regularMarketPreviousClose') or meta.get('chartPreviousClose', price)
+        if len(closes) >= 2:
+            # 前收：倒数第二根K线（历史已成交，永不变）
+            prev  = closes[-2]
+            # 收盘价：倒数第一根K线（收盘后写入，盘中/盘前用meta的regularMarketPrice）
+            price = closes[-1] if market_state in ('CLOSED', 'POST') else meta.get('regularMarketPrice', closes[-1])
+        else:
+            prev  = meta.get('regularMarketPreviousClose', 0)
+            price = meta.get('regularMarketPrice', 0)
 
-        # 涨跌幅：收盘/盘中用 price vs prev 直接算
-        # 盘后/盘前时 price 仍是正式收盘价，同样准确
         chg = price - prev
         pct = (chg / prev * 100) if prev else 0
-        if symbol in ('^DJI', '^GSPC', '^IXIC'):
-            print(f'  DEBUG {symbol}: price={price} prev={prev} chg={chg:.2f} pct={pct:.2f}%')
 
-        # 盘后/盘前数据
-        ext_price = meta.get('postMarketPrice') or meta.get('preMarketPrice')
-        ext_chg   = meta.get('postMarketChange') or meta.get('preMarketChange')
-        ext_pct   = meta.get('postMarketChangePercent') or meta.get('preMarketChangePercent')
-        ext_label = '盘后' if meta.get('postMarketPrice') else ('盘前' if meta.get('preMarketPrice') else None)
+        # 盘前/盘后扩展行（相对当日收盘的变化）
+        if market_state == 'POST':
+            ext_price = meta.get('postMarketPrice')
+            ext_chg   = meta.get('postMarketChange')
+            ext_pct_r = meta.get('postMarketChangePercent')
+            ext_label = '盘后'
+        elif market_state == 'PRE':
+            ext_price = meta.get('preMarketPrice')
+            ext_chg   = meta.get('preMarketChange')
+            ext_pct_r = meta.get('preMarketChangePercent')
+            ext_label = '盘前'
+        else:
+            ext_price = ext_chg = ext_pct_r = ext_label = None
+
         return {
             'symbol':       symbol,
             'price':        price,
@@ -144,7 +155,7 @@ def fetch_quote(symbol):
             'market_state': market_state,
             'ext_price':    ext_price,
             'ext_chg':      ext_chg,
-            'ext_pct':      (ext_pct * 100) if ext_pct else None,
+            'ext_pct':      (ext_pct_r * 100) if ext_pct_r else None,
             'ext_label':    ext_label,
         }
     except Exception as ex:
@@ -391,9 +402,50 @@ def build_card(q, big=False):
             f'{ext_html}'
             f'</div>')
 
-def build_section(title, items, big=False):
+TV_CHARTS = {
+    'us_indices': [
+        ('SP:SPX',      'S&P 500'),
+        ('DJ:DJI',      '道琼斯'),
+        ('NASDAQ:IXIC', '纳斯达克'),
+    ],
+    'us_stocks': [
+        ('NASDAQ:AAPL', 'Apple'),
+        ('NASDAQ:NVDA', 'NVIDIA'),
+        ('NASDAQ:TSLA', 'Tesla'),
+    ],
+}
+
+def build_tv_chart(tv_symbol, label, chart_id):
+    return f'''<div class="tv-chart-wrap">
+  <div id="{chart_id}" class="tv-chart-box"></div>
+  <script>
+  (function(){{
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){{
+      new TradingView.widget({{
+        autosize:true,height:200,symbol:"{tv_symbol}",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"{chart_id}"
+      }});
+    }};
+    document.head.appendChild(s);
+  }})();
+  </script>
+</div>'''
+
+def build_section(title, key, items, big=False):
     cards = ''.join(build_card(q, big) for q in items)
-    return f'<div class="section-title">{title}</div><div class="card-grid">{cards}</div>'
+    charts_html = ''
+    if key in TV_CHARTS:
+        chart_divs = ''
+        for i, (tv_sym, lbl) in enumerate(TV_CHARTS[key]):
+            chart_id = f'tv-{key}-{i}'
+            chart_divs += f'<div class="tv-chart-item"><div class="tv-chart-label">{lbl}</div>{build_tv_chart(tv_sym, lbl, chart_id)}</div>'
+        charts_html = f'<div class="tv-chart-row">{chart_divs}</div>'
+    return f'<div class="section-title">{title}</div><div class="card-grid">{cards}</div>{charts_html}'
 
 def generate_html(data, commentary, news_html):
     now_et = datetime.now(ZoneInfo('America/New_York'))
@@ -418,7 +470,7 @@ def generate_html(data, commentary, news_html):
     ]:
         items = data.get(key, [])
         if items:
-            sections_html += build_section(title, items, big)
+            sections_html += build_section(title, key, items, big)
 
     return f'''<!DOCTYPE html>
 <html lang="zh-CN">
@@ -468,6 +520,10 @@ body{{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;m
 .q-symbol{{font-size:10px;font-family:'JetBrains Mono',monospace;color:#444d56;margin-bottom:6px}}
 .q-price{{font-family:'JetBrains Mono',monospace;font-weight:600;color:#fff;margin-bottom:4px}}
 .q-change{{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}.q-ext{{margin-top:6px;padding-top:6px;border-top:1px solid #2a2a2a;font-size:11px;font-family:'JetBrains Mono',monospace}}.q-ext-label{{color:#666;margin-right:4px}}
+.tv-chart-row{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin:12px 0 20px}}
+.tv-chart-item{{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px}}
+.tv-chart-label{{font-size:12px;color:var(--muted);margin-bottom:6px}}
+.tv-chart-box{{width:100%;height:200px}}
 .up{{color:var(--green)}}.down{{color:var(--red)}}.flat{{color:var(--flat)}}
 .news-wrap{{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-top:4px}}
 .news-wrap ul{{list-style:none;padding:0}}
