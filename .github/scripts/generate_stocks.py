@@ -30,8 +30,20 @@ TICKERS = {
         ('META',  'Meta'),
         ('LLY',   'Eli Lilly'),
     ],
+    'futures': [
+        ('ES=F',  'S&P 500期货'),
+        ('YM=F',  '道琼斯期货'),
+        ('NQ=F',  '纳斯达克期货'),
+        ('RTY=F', '罗素2000期货'),
+    ],
     'hk': [
         ('^HSI',  '恒生指数'),
+    ],
+    'asia_europe': [
+        ('^N225',  '日经225'),
+        ('^KS11',  '韩国KOSPI'),
+        ('^STOXX50E', '欧元区STOXX50'),
+        ('^FTSE',  '英国富时100'),
     ],
     'china': [
         ('000001.SS', '上证综指'),
@@ -56,6 +68,12 @@ TICKERS = {
         ('^TNX',  '10年期美债收益率'),
         ('^TYX',  '30年期美债收益率'),
         ('^SP600','S&P 600小盘股'),
+        ('^FVX',  '5年期美债收益率'),
+    ],
+    'ai_tech': [
+        ('PLTR',  'Palantir'),
+        ('AMD',   'AMD'),
+        ('AVGO',  'Broadcom'),
     ],
     'mutual_funds': [
         ('VIEIX', 'Vanguard 扩展市场'),
@@ -408,10 +426,37 @@ TV_CHARTS = {
         ('DJ:DJI',      '道琼斯'),
         ('NASDAQ:IXIC', '纳斯达克'),
     ],
+    'futures': [
+        ('CME_MINI:ES1!', 'S&P 500期货'),
+        ('CBOT_MINI:YM1!','道琼斯期货'),
+        ('CME_MINI:NQ1!', '纳斯达克期货'),
+        ('CME_MINI:RTY1!','罗素2000期货'),
+    ],
+    'ai_tech': [
+        ('NASDAQ:PLTR', 'Palantir'),
+        ('NASDAQ:AMD',  'AMD'),
+        ('NASDAQ:AVGO', 'Broadcom'),
+    ],
+    'fx': [
+        ('FX:USDCNH', 'USD/CNY'),
+        ('FX:USDHKD', 'USD/HKD'),
+        ('FX:EURUSD', 'EUR/USD'),
+        ('FX:USDJPY', 'USD/JPY'),
+    ],
+    'commodities': [
+        ('COMEX:GC1!', '黄金'),
+        ('NYMEX:CL1!', '原油'),
+        ('COMEX:SI1!', '白银'),
+    ],
     'us_stocks': [
         ('NASDAQ:AAPL', 'Apple'),
         ('NASDAQ:NVDA', 'NVIDIA'),
         ('NASDAQ:TSLA', 'Tesla'),
+        ('NASDAQ:MSFT', 'Microsoft'),
+        ('NASDAQ:GOOGL','Google'),
+        ('NASDAQ:AMZN', 'Amazon'),
+        ('NASDAQ:META', 'Meta'),
+        ('NYSE:LLY',    'Eli Lilly'),
     ],
 }
 
@@ -458,15 +503,18 @@ def generate_html(data, commentary, news_html):
 
     sections_html = ''
     for title, key, big in [
-        ('🇺🇸 美股指数',  'us_indices',  True),
-        ('📱 美股科技',   'us_stocks',   False),
-        ('🇭🇰 港股',      'hk',          False),
-        ('🇨🇳 A股',       'china',       False),
-        ('💱 外汇',       'fx',          False),
-        ('🛢 大宗商品',   'commodities', False),
-        ('₿ 加密货币',   'crypto',       False),
-        ('📊 美债/指数',  'bonds',        False),
-        ('💼 共同基金',   'mutual_funds', False),
+        ('🇺🇸 美股指数',  'us_indices',   True),
+        ('📈 期货指数',   'futures',      True),
+        ('📱 美股科技',   'us_stocks',    False),
+        ('🤖 AI科技股',   'ai_tech',      False),
+        ('🇭🇰 港股',      'hk',           False),
+        ('🌏 亚太/欧洲',  'asia_europe',  False),
+        ('🇨🇳 A股',       'china',        False),
+        ('💱 外汇',       'fx',           False),
+        ('🛢 大宗商品',   'commodities',  False),
+        ('₿ 加密货币',   'crypto',        False),
+        ('📊 美债/指数',  'bonds',         False),
+        ('💼 共同基金',   'mutual_funds',  False),
     ]:
         items = data.get(key, [])
         if items:
