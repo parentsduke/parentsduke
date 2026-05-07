@@ -310,14 +310,122 @@ function toggleBannerMusic() {
 
 
 <header id="top-qrcode">
-    <h3>欢迎来到扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群网站</h3>
-    <div class="qrcode-wrapper">
-        <img src="form.png" class="thumb qrcode" alt="入群请求扫描二维码" onclick="openOverlay(this.src, this.alt)">
-    </div>
-    <h4>💥祝贺2030届新家长！</h4>
-    <h4>新生和历届家长请扫描二维码申请进入家长群</h4>
-    <h6>(如遇扫码错误，请使用网页底部的管理员二维码)</h6>
+    <h1>欢迎来到扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群网站</h1>
 </header>
+
+<!-- ===== 每日Duke动态 ===== -->
+<section id="duke-weekly" style="background:#001a4d;border-top:3px solid #B8963E;border-bottom:3px solid #B8963E;padding:24px 20px;margin:0;">
+  <div style="max-width:800px;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <h2 style="color:#B8963E;font-size:18px;font-weight:700;margin:0;">📰 每日Duke动态</h2>
+        <button onclick="openSubscribeModal()" style="background:transparent;border:1px solid #B8963E;color:#B8963E;font-size:11px;padding:3px 10px;border-radius:12px;cursor:pointer;white-space:nowrap;">📧 订阅</button>
+      </div>
+      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;">2026年5月7日</span>
+    </div>
+    <div id="weekly-sections">
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏫 学校新闻</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-school"><ul>
+<li>2026年5月6日：<a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE9yLUI4Mk9zQmpqS0FqZm03NFVrbjJaYThQV2V1M1pDYW9RcGZqeGtIV1hHUzdhRTk0c0lGbHFmOGJIZ0RUSTZwZ1lTWUxiOFZ3OFFaZXpiRGlZbDdWS2VhWG1mcDJrNk9xa2pNVndNLXkzenVBRWFkemFXMUdra2s" target="_blank">蓝魔和脑研究的交集</a></li>
+<li>2026年4月30日：<a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNOFc0SndQNVByZDBqdFVmdlRsamYyNFJwLWYwRm9QVFhLTmk0QmRSNGlJbEh2MDJxUVI5aWtkZkN2NTd0Q2Uya0g0MC1wbG1QQmYwVXUwYlljLWFOTmpFbk1NMndqU1F4WW9BdDJkVlhwa0hEVG8tei1veEFZM3pFUjRaTzZ2RlFN" target="_blank">两名杜克大学教师当选国家科学院</a></li>
+<li>2026年4月29日：<a href="https://news.google.com/rss/articles/CBMiigFBVV95cUxPQjBQOWtkV3hWMjN6M3dyMTB2dXNDTkQ2bHFjbVI3dnBvVEM5dFFsdXJacFVOaEcxM3VGQTltdHdnU29ibUlyemRtb2pSTHo1QXlLd3dEYVgwOVFDOGlfemItWXk2bEhIcmE5WGh2WDU0V2htM0I5eklWQzYxVzBxNEVGTTFPVFFyeHc" target="_blank">新方法用于骨关节炎患者的关节修复</a></li>
+<li>2026年4月29日：<a href="https://news.google.com/rss/articles/CBMib0FVX3lxTE9pQ0laTEFxSTk2eDVscFcxVGNRSkhLVFpFRWhqaXhqWDU4LVdmUXBMWVBuUHRQeG9GdkJMaFc0dlFfQ3F3MDRnajFiS1dBUEV4d2ZsRVZSWXl5UlYxZGlSV2VEV2pRWVBUM0lTUXFoWQ" target="_blank">一个问题让她选择放弃自己的腿</a></li>
+</ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🏀 篮球动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-basketball"><ul>
+<li>2026年5月6日：杜克大学宣布了2026年夏季的校园道路和公用设施项目，包括东校区和西校区的建筑翻新和公用设施升级，可查看<a href="https://today.duke.edu/2026/05/campus-road-and-utility-projects-summer-2026" target="_blank">校园道路和公用设施项目</a>。</li>
+<li>2026年4月27日：杜克大学体育部组织了为期一周的社区服务活动，吸引了111名志愿者，参与了辅导、食品分发和运动等活动，可查看<a href="https://today.duke.edu/2026/04/duke-athletics-enjoys-week-giving-back-community" target="_blank">杜克大学体育部社区服务活动</a>。</li>
+<li>2026年4月20日：一名杜克大学击剑运动员兼环境科学学者，将自己的两个热爱——击剑和环境科学相结合，可查看<a href="https://today.duke.edu/2026/04/fencing-environmental-science" target="_blank">击剑和环境科学</a>。</li>
+</ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📋 招生信息</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-admissions"><ul>
+<li><strong>2026-2027学年大一新生申请截止日期：</strong>早申（Early Decision）截止日期为11月2日，常规申请（Regular Decision）截止日期为1月4日。可通过<a href="https://www.commonapp.org/" target="_blank">Common Application</a>或<a href="https://www.questbridge.org/college-partners/duke-university" target="_blank">QuestBridge</a>提交。</li>
+<li><strong>2030届录取学生：</strong>欢迎加入杜克大家庭！录取学生需登录<a href="https://admiss.ugrad.duke.edu/apply/" target="_blank">申请门户</a>确认入学意愿。</li>
+<li><strong>财务援助（Financial Support）：</strong>杜克大学致力于教育平权，50%的本科生获得援助，75%的学生毕业时无债务。早申财务援助申请（CSS Profile & FAFSA）截止日期为11月3日，常规申请截止日期为2月1日。可通过<a href="https://admissions.duke.edu/financial-support" target="_blank">财务援助页面</a>测算成本。</li>
+<li><strong>转学生申请须知：</strong>转学申请截止日期为2027年3月15日，申请者需通过<a href="https://admiss.ugrad.duke.edu/apply/" target="_blank">杜克转学申请系统</a>或Coalition系统提交资料。</li>
+<li><strong>校园访问与体验：</strong>杜克大学提供实地和虚拟访问机会，包括校园导览及针对录取学生的“Blue Devil Days”活动。详情及预约请咨询<a href="https://admissions.duke.edu/visit/" target="_blank">访问预约中心</a>。</li>
+</ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📅 学期日历</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-calendar"><ul>
+<li>📅 5月7日 — 今日</li>
+<li>📅 5月8日 — 毕业典礼开始（Commencement begins）</li>
+<li>📅 5月10日 — 毕业典礼（毕业生学位授予仪式）</li>
+<li>📅 5月13日 — 暑期学期Term 1开课</li>
+<li>🏥 5月5日 — AMCAS申请系统开放（2027医学院申请季）</li>
+</ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📝 选课 &amp; 宿舍</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-registration"><ul>
+  <li>📌 2026-05-07 — 今日家长社区编辑</li>
+  <li>📌 2026年5月7日之前 — 房宿信息</li>
+  <li>📌 2026年6月1日 — 2026-2027年房宿申请重新开放<a href="https://students.duke.edu/living/housing/housing-assignments/fall26-housing/" target="_blank">查看详情</a></li>
+  <li>📌 2026年7月29日 12:00 PM — 新生注册开始<a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+  <li>📌 2026年4月6日 7:00 AM — 50-99学生开始选课<a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+  <li>📌 2026年4月8日 12:01 AM — 新生开始选课<a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+  <li>📌 2026年1月 - 2027年12月 — 房宿申请</li>
+  <li>📌 2026年3月23日 12:01 AM — 购物车开始开放<a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+</ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎒 开学前安排</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-prematric"><ul>
+  <li>📌 5月16日(周六) 3:30-5:30 PM — Mumbai Send-Off Party（Mumbai）</li>
+  <li>📌 5月17日(周日) 2:00-4:00 PM — 北京 Send-Off Party（北京）</li>
+  <li>📌 5月19日(周二) 7:00-9:30 PM — Bengaluru Send-Off Party（Bengaluru）</li>
+  <li>📌 5月23日(周六) 6:00-8:00 PM — Delhi Send-Off Party（德里）</li>
+  <li>📌 5月31日 — Experiential Orientation Matching Questionnaire截止（需完成问卷）</li>
+  <li>📌 6月10日 — Class of 2030住房分配结果发布（Housing Portal）</li>
+  <li>📌 6月11日 8:30–10:00 AM EST — 国际生网络迎新Zoom Session 1（必须参加）</li>
+  <li>📌 6月15日 — 官方标准化考试成绩（SAT/ACT）提交截止</li>
+  <li>📌 6月23日 8:30–10:00 AM EST — 国际生网络迎新Zoom Session 2（必须参加）</li>
+  <li>📅 6月27日(周六) 2:00-5:00 PM — 上海 Send-Off Party（Duke Kunshan University）</li>
+  <li>📅 7月2日 8:30–10:00 AM EST — 国际生网络迎新Zoom Session 3（必须参加）</li>
+  <li>📅 7月25日(周六) 3:00-5:00 PM — 台北 Send-Off Party（Xinyi District）</li>
+  <li>📅 8月15日(周六) — 新生搬入日（First-Year Move-In Day）<a href="https://students.duke.edu/info-for/students/incoming-students/move-in-day/" target="_blank">查看详情</a></li>
+  <li>📅 8月16日(周日) – 8月21日(周五) — Experiential Orientation Week（体验式迎新周）<a href="https://students.duke.edu/info-for/students/incoming-students/experiential-orientation/first-year-students/" target="_blank">查看详情</a></li>
+  <li>📅 8月24日(周一) — 正式开学</li>
+</ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🎓 校园生活</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-campus"><ul>
+<li>2026年5月6日：杜克大学任命Karl Hanson为首席房地产官，负责制定房地产开发战略，管理大学的房地产资产。前往 <a href="https://today.duke.edu/2026/05/karl-hanson-named-chief-real-estate-officer-duke-university" target="_blank">了解更多</a>。</li>
+<li>2026年5月6日：杜克大学举办"开放门户论坛"，邀请当地承包商了解在杜克大学的项目机会。前往 <a href="https://today.duke.edu/2026/05/duke-open-doors-forum-connects-local-contractors-projects" target="_blank">了解更多</a>。</li>
+<li>2026年5月6日：杜克大学宣布2026年夏季的校园道路和公用设施项目，包括建筑物更新和公用设施升级。前往 <a href="https://today.duke.edu/2026/05/campus-road-and-utility-projects-summer-2026" target="_blank">了解更多</a>。</li>
+<li>2026年4月20日：杜克大学宣布"永不被抓住"（Never Caught）将成为2026年杜克大学共同体验项目。前往 <a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxQUXlKN2N0Qkl1a2dqRFBEWFpIXzd0YUdPNnV0dWJ0cl9heXhNZmYzM0JqZU5RTkt2U1JoRlh6VThLZ0JZVXJnTEFnUkswWXFhMkVEaThDVlo2enNSVHZIUVYwX3FCSXB2eFBiclhOT09WZURCWWFqdzFqZlNWcDRZblNR" target="_blank">了解更多</a>。</li>
+<li>2026年4月29日：杜克大学一名大三学生获得杜鲁门奖学金。前往 <a href="https://news.google.com/rss/articles/CBMiekFVX3lxTE5BemhyZVJVVjA3cFdvQW9JOTdqaDh2cjhhZjBETS1CSERRblpPNmttLW9oU3E5Vk5ReEEtOFhSZTRSdDFEMjhoTnJCbFdBaWxmMFpNT1RSLTd1OF9aTW41bnVKc0d1RzI0VmF5TmJlclRDaGlmNjY2NGx3" target="_blank">了解更多</a>。</li>
+</ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>📰 Chronicle学生报</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-chronicle"><ul>
+<li>2026年4月27日：<a href="https://news.google.com/rss/articles/CBMiZkFVX3lxTE05WDd2a05UNzhNakFXVnd5ZlBVQ3R5UENjOHRHVzE5NFZzZTJYSW84eW9vTmdrRTlDY0dRNVNMWkVkN09qVDh1X0Itc1FUZFB3V0xzMmthR3lPcDF0Yms3SUJZU1RNQQ" target="_blank">女子足球</a>相关报道。</li>
+<li>2026年4月26日：<a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE5lZ09xTFFnTEtVaHdpZlVhTmZ2Z1BmelNTM2oydlRKeTRZQTBoQXRDazJwY3NBLXhCUUFQaVhFVTBmM3BHd0pwcnM3c0hxS24tMm9mVGhOMmlUdnNSaDJQNXZEclNydmtIUU5ONmppcGlva0F3MzZobUx0TS1laG8" target="_blank">桑福德，我无法改变世界</a>一文探讨了学生在桑福德学校的体验。</li>
+<li>2026年4月24日：杜克大学学生在<a href="https://news.google.com/rss/articles/CBMickFVX3lxTE16WEh4cnlWSUsxVGN5OERkWkY5aHhId0VOUUxnRGlvLWRIT3ZLSW4yX2dSS2dOQ1FiaDF4WHptaHlSeTNQVzJQUldhRDlZcUlWRzhieWptMkxONmZ4M1BPdWx0VTJGOWh3TjRBOUZoTEs0Zw" target="_blank">LDOC</a>活动中分享了他们最喜欢的回忆和人生智慧。</li>
+<li>2026年4月21日：<a href="https://news.google.com/rss/articles/CBMie0FVX3lxTE5wc2lrWmxxT0NQcDZXb1BVR2R2Ml9GMDRkOG5XU2pqcDBGSzhSdy1lSHowX3M1eFB6MUVnVG9mUDhXRXN2UHdSUjNJbnk1YVlIOTV0eHNSbWp5NWJvalc1dEJRamZCUHF0MUE0dk5pN09nYWNLcS1BVWVCTQ" target="_blank">艺术属于每个人</a>一文讨论了艺术在校园中的重要性。</li>
+<li>2026年4月20日：<a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxNY2RMV1RReEYxWkNWbGtzTW5QRC1zZUp4Zml2R0RNZXRxWGJRbmU4dllPNDZ0Vmd1ZURHT3lCUEN3OU5ncC04amVPTFVDQkZZTlJJWnY5Qlpka1hTaTJXSk9NOVpGSk9CNXZrNjNfT0d2RnNTU0l4eVdKRmZEMXR4aTlBcVRCb1ZZUmpMUV9DTkNwMHc" target="_blank">周一周一就像我们一样</a>，一群学生对“周一周一”这个现象进行了讨论。</li>
+</ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🔬 科研动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-research"><ul>
+  <li>[2026年5月7日] 杜克校友分享其参与航天事业的心路历程，通过空间摄影生动展现了对宇宙的热爱与追求。 <a href="https://today.duke.edu/2026/05/portraits-space" target="_blank">阅读详情</a></li>
+  <li>[2026年5月4日] 2026届毕业生故事：包括杜克大学及杜克昆山大学在内的数千名毕业生正奔赴各界，致力于应对全球医疗、环保及公共安全领域的挑战。 <a href="https://today.duke.edu/2026/05/stories-graduates-class-2026" target="_blank">阅读详情</a></li>
+  <li>[2026年5月1日] 在2026年杜克科研创新峰会上，专家学者共同探讨如何以韧性与乐观态度应对全球性复杂挑战。 <a href="https://news.google.com/rss/articles/CBMinAFBVV95cUxNaHlWV2lwSlZOQkZjdF83OXNadFpKVjNUZl9KWXE3MUQ0UnI1aGIyOXkxb2wyWlJCanVmN3BiNHBuNXRzalhqTEtkdWNrV1JRU2pibWFUeFEyZFBITzRaeTBOZldFQ2dQMUZqemVNVUdzTDFxbURyRmN1bVBfZ3R6REpqWHZmSzA2bS1NZEtpWTRHSm1YX1pJazEwSW8?oc=5" target="_blank">阅读详情</a></li>
+  <li>[2026年4月30日] 杜克大学两名教授凭借卓越的学术成就当选美国国家科学院院士，未来将为科学政策提供专业建议。 <a href="https://today.duke.edu/2026/04/two-duke-faculty-elected-national-academy-sciences" target="_blank">阅读详情</a></li>
+  <li>[2026年4月28日] 抗癌技术新突破：杜克大学工程师开发出微泡超声技术，可引导药物精准爆破并进入肿瘤细胞，提升治疗效果。 <a href="https://today.duke.edu/2026/04/bursting-microbubbles-could-unlock-power-more-cancer-drugs" target="_blank">阅读详情</a></li>
+</ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span>🛂 签证与国际生动态</span><span class="weekly-arrow">▶</span></button><div class="weekly-body" id="weekly-visa">以下是您要求的中文摘要：
+
+<ul>
+  <li>2026年3月1日 <a href="https://visaservices.duke.edu/" target="_blank">Duke Visa Services</a> 公布：大一新生入学日渐临近，学生及父母注意准备签证文件，确保入学前有足够的签证更新周期。</li>
+  <li><a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxPcm5JWVJQMFU4cDR6MjVHbzI0a3F6SzhCVWh1c090RTk5a0ZiSDBXd3dmaS1fNnM4QWJNLUFBNXA0NUR5bzZob1VxR0pnb3JnT3Y4NWdUZTM2UjE2QmQ5X1NlMWJQeXpuMGxrUVBvOTVHNXNNTGstZ3BsNW5MdDFlQ3dRVzFMX3Z6b0VIRF9Eb1pGR2Nqb3g4QzlkSXFnLWx2RW1hSWVTY0F6MTJSV25OUFc4dDQ?oc=5" target="_blank">International Students Studying in the United States: Trends and Impacts 2025</a>显示，2025年国际学生在美国学习的趋势和影响有所变化，建议父母密切关注最新信息。</li>
+  <li>2025年12月4日 <a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxPcm5JWVJQMFU4cDR6MjVHbzI0a3F6SzhCVWh1c090RTk5a0ZiSDBXd3dmaS1fNnM4QWJNLUFBNXA0NUR5bzZob1VxR0pnb3JnT3Y4NWdUZTM2UjE2QmQ5X1NlMWJQeXpuMGxrUVBvOTVHNXNNTGstZ3BsNW5MdDFlQ3dRVzFMX3Z6b0VIRF9Eb1pGR2Nqb3g4QzlkSXFnLWx2RW1hSWVTY0F6MTJSV25OUFc4dDQ?oc=5" target="_blank">国际学生在美国学习的趋势和影响</a>报告发布，提供了2025年国际学生在美国学习的相关数据和分析。</li>
+  <li>杜克大学家长社区强烈建议所有学生和父母熟知本校签证服务 <a href="https://visaservices.duke.edu/" target="_blank">Duke Visa Services</a> 的最新信息和政策。</li>
+  <li><a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxPcm5JWVJQMFU4cDR6MjVHbzI0a3F6SzhCVWh1c090RTk5a0ZiSDBXd3dmaS1fNnM4QWJNLUFBNXA0NUR5bzZob1VxR0pnb3JnT3Y4NWdUZTM2UjE2QmQ5X1NlMWJQeXpuMGxrUVBvOTVHNXNNTGstZ3BsNW5MdDFlQ3dRVzFMX3Z6b0VIRF9Eb1pGR2Nqb3g4QzlkSXFnLWx2RW1hSWVTY0F6MTJSV25OUFc4dDQ?oc=5" target="_blank">国际学生在美国学习的趋势和影响</a>报告指出，国际学生在美国学习的数量和收入对美国经济发展有着重要影响。</li>
+</ul></div></div>
+    </div>
+  </div>
+</section>
+<style>
+.weekly-item{border-bottom:1px solid rgba(184,150,62,0.2);}
+.weekly-item:last-child{border-bottom:none;}
+.weekly-btn{width:100%;background:none;border:none;color:#fff;font-size:14px;font-family:"Noto Serif SC",serif;font-weight:600;padding:12px 4px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;text-align:left;}
+.weekly-btn:hover{color:#B8963E;}
+.weekly-arrow{font-size:10px;color:#B8963E;transition:transform 0.2s;}
+.weekly-btn.open .weekly-arrow{transform:rotate(90deg);}
+.weekly-body{display:none;padding:4px 0 16px 0;color:rgba(255,255,255,0.85);font-size:13px;line-height:1.7;}
+.weekly-body.open{display:block;}
+.weekly-body a{color:#B8963E;}
+.weekly-body ul{padding-left:18px;margin:6px 0;}
+.weekly-body li{margin-bottom:6px;}
+</style>
+<script>
+function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.classList.toggle("open");}
+(function(){var el=document.getElementById("weekly-date");if(el){var d=new Date();var m=d.getMonth()+1;var day=d.getDate();el.textContent=d.getFullYear()+"年"+m+"月"+day+"日";}})();
+</script>
 
 <main id="protected-area"></main>
 
@@ -3949,6 +4057,41 @@ function toggleBannerMusic() {
             <a href="https://registrar.duke.edu/faculty-staff-resources/academic-policies/grade-point-average/" target="_blank" style="color:#003366;">Duke GPA计算规则</a> &nbsp;|&nbsp;
             <a href="https://premed.duke.edu/shadowing/" target="_blank" style="color:#003366;">临床观摩(shadowing)资源</a>
           </div>
+
+          <!-- 医学院排名 -->
+          <h3 style="color:#003366; margin:16px 0 6px;">🏆 医学院排名 2026（med.admit.org）</h3>
+          <p style="margin:0 0 10px; font-size:13px; color:#555;">基于Match list强度、录取数据及NIH科研经费综合排名。<strong style="color:#012169;">Duke排第4名</strong>，MCAT中位数520，GPA中位数3.91。</p>
+          <div style="overflow-x:auto; margin:0 0 6px;">
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+              <thead>
+                <tr style="background:#012169; color:#fff;">
+                  <th style="padding:8px 10px; text-align:left;">排名</th>
+                  <th style="padding:8px 10px; text-align:left;">学校</th>
+                  <th style="padding:8px 10px; text-align:left;">城市</th>
+                  <th style="padding:8px 10px; text-align:center;">MCAT</th>
+                  <th style="padding:8px 10px; text-align:center;">GPA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#fff;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#1</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">Harvard Medical School</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">Boston, MA</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">521</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.97</td></tr>
+                <tr style="background:#f9f9f9;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#2</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">Johns Hopkins</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">Baltimore, MD</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">521</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.97</td></tr>
+                <tr style="background:#fff;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#3</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">UCSF</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">San Francisco, CA</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">517</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.92</td></tr>
+                <tr style="background:#FFF8E1;border-left:4px solid #C8972B;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#C8972B;">#4</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#012169;">Duke University ⭐</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">Durham, NC</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;font-weight:600;">520</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;font-weight:600;">3.91</td></tr>
+                <tr style="background:#f9f9f9;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#5</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">UPenn (Perelman)</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">Philadelphia, PA</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">522</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.97</td></tr>
+                <tr style="background:#fff;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#6</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">Stanford University</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">Stanford, CA</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">520</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.95</td></tr>
+                <tr style="background:#f9f9f9;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#7</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">Columbia University</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">New York, NY</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">522</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.95</td></tr>
+                <tr style="background:#fff;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#8</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">NYU Grossman</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">New York, NY</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">523</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.97</td></tr>
+                <tr style="background:#f9f9f9;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#9</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">Vanderbilt University</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">Nashville, TN</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">522</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.97</td></tr>
+                <tr style="background:#fff;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#10</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">WashU St. Louis</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">Saint Louis, MO</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">521</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.96</td></tr>
+                <tr style="background:#f9f9f9;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#11</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">Yale School of Medicine</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">New Haven, CT</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">522</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.96</td></tr>
+                <tr style="background:#fff;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#12</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">University of Michigan</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">Ann Arbor, MI</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">517</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.92</td></tr>
+                <tr style="background:#f9f9f9;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#13</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">Cleveland Clinic Lerner</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">Cleveland, OH</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">520</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.98</td></tr>
+                <tr style="background:#fff;"><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:700;color:#888;">#14</td><td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;">Mayo Clinic</td><td style="padding:7px 10px;border-bottom:1px solid #eee;color:#666;">Rochester, MN</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">522</td><td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">3.95</td></tr>
+                <tr style="background:#f9f9f9;"><td style="padding:7px 10px;font-weight:700;color:#888;">#15</td><td style="padding:7px 10px;font-weight:600;">Weill Cornell Medicine</td><td style="padding:7px 10px;color:#666;">New York, NY</td><td style="padding:7px 10px;text-align:center;">519</td><td style="padding:7px 10px;text-align:center;">3.94</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:11px; color:#999; margin:0 0 14px;">数据来源：<a href="https://med.admit.org/school-rankings" target="_blank" style="color:#999;">med.admit.org</a> · 2026年排名</p>
 
         </div>
       </div>
@@ -12096,7 +12239,7 @@ async function submitInviteRequest(btn) {
   btn.disabled = true; btn.textContent = '提交中...';
 
   try {
-    // 1. 写入 approve_uploads 数据库（未登录时创建匿名客户端）
+    // 1. 写入 pending_uploads 数据库（未登录时创建匿名客户端）
     var sbClient = window._supabaseClient;
     if (!sbClient && window.supabase) {
       sbClient = window.supabase.createClient(
@@ -12105,25 +12248,16 @@ async function submitInviteRequest(btn) {
       );
     }
     if (sbClient) {
-      var insertResult = await sbClient.from('approve_uploads').insert({
+      var insertResult = await sbClient.from('pending_uploads').insert({
         file_path:   emailVal,
         file_name:   wxgroupVal + ' - ' + nicknameVal,
         title:       classVal + '届 - ' + wxgroupVal + ' - ' + nicknameVal,
         uploaded_by: classVal,
-        status:      'pending'
+        status:      'pending',
+        file_type:   'invite_request'
       });
       if (insertResult.error) {
         console.error('DB insert error:', insertResult.error.message);
-        // 通知申请者提交失败
-        await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/send-notification', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8' },
-          body: JSON.stringify({ type: 'invite_request_failed', email: emailVal, name: nicknameVal, class: classVal, wxgroup: wxgroupVal })
-        });
-        btn.disabled = false; btn.textContent = '提交申请';
-        msg.style.color = 'crimson';
-        msg.textContent = '提交失败，请稍后重试，系统已发送邮件通知您';
-        // 继续发管理员通知（不return）
       }
     }
 
@@ -12185,8 +12319,8 @@ async function loadInviteRequests() {
   var badge     = document.getElementById('inviteRequestBadge');
   if (!container) return;
   container.innerHTML = '<span style="color:#aaa;">加载中...</span>';
-  var result = await supabase.from('approve_uploads').select('*')
-    .eq('status', 'pending')
+  var result = await supabase.from('pending_uploads').select('*')
+    .eq('status', 'pending').eq('file_type', 'invite_request')
     .order('uploaded_at', { ascending: false });
   if (result.error) {
     container.innerHTML = '<span style="color:crimson;">加载失败：' + result.error.message + '</span>'; return;
@@ -12211,7 +12345,7 @@ async function markInviteDone(id, btn) {
   var supabase = window._supabaseClient;
   if (!supabase) return;
   btn.disabled = true;
-  await supabase.from('approve_uploads').update({ status: 'approved' }).eq('id', id);
+  await supabase.from('pending_uploads').update({ status: 'approved' }).eq('id', id);
   loadInviteRequests();
 }
 
@@ -12219,7 +12353,7 @@ async function deleteInvite(id, btn) {
   var supabase = window._supabaseClient;
   if (!supabase) return;
   btn.disabled = true;
-  await supabase.from('approve_uploads').delete().eq('id', id);
+  await supabase.from('pending_uploads').delete().eq('id', id);
   loadInviteRequests();
 }
 
@@ -12580,21 +12714,7 @@ window.showPV();
       </div>
     `;
 
-    // ===== 周报弹窗 =====
-    if (document.getElementById('weekly-modal')) return;
-    var modal = document.createElement('div');
-    modal.id = 'weekly-modal';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
-    modal.innerHTML = `
-      <div style="position:relative;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.5);">
-        <button onclick="document.getElementById('weekly-modal').remove()" style="position:sticky;top:8px;left:100%;float:right;margin:8px 8px 0 0;background:rgba(1,33,105,0.85);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;line-height:32px;text-align:center;z-index:10;">×</button>
-        <img src="https://dukeparents.org/weekly040726.png" style="width:100%;display:block;border-radius:8px;" alt="扯谈周报">
-      </div>
-    `;
-    modal.addEventListener('click', function(e) {
-      if (e.target === modal) modal.remove();
-    });
-    document.body.appendChild(modal);
+
   }
 
   function showContent(user) {
@@ -13446,21 +13566,7 @@ window.showPV();
       </select>
     </div>
     <div style="margin-bottom:12px;">
-      <select id="invite-name" onchange="
-        var v=this.value;
-        var box=document.getElementById('hub-qbox');
-        var txt=document.getElementById('hub-question-text');
-        var marker=document.getElementById('hub-already-in');
-        if(v==='扯谈Duke群1.0'||v==='扯谈Duke群2.0'){
-          var other=v==='扯谈Duke群1.0'?'扯谈Duke群2.0':'扯谈Duke群1.0';
-          txt.textContent='请问您目前是否已在'+other+'中？';
-          box.style.display='block';
-          if(marker)marker.dataset.confirmed='';
-        }else{
-          box.style.display='none';
-        }
-        handleInviteNameChange(v);
-      "
+      <select id="invite-name"
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none; background:#fff; color:#333;">
         <option value="">请选择微信家长群名</option>
         <option value="Duke2030本科生家长群">Duke2030本科生家长群</option>
@@ -13573,28 +13679,7 @@ function handleInviteNameChange(val) {
   }
 }
 
-// 用addEventListener绑定，兼容iOS Safari
-document.addEventListener('DOMContentLoaded', function() {
-  var inviteNameSel = document.getElementById('invite-name');
-  if (inviteNameSel) {
-    inviteNameSel.addEventListener('change', function() {
-      handleInviteNameChange(this.value);
-    });
-  }
-});
-
-// 额外保险：延迟1秒再绑定一次，防止页面其他脚本干扰
-setTimeout(function() {
-  try {
-    var inviteNameSel = document.getElementById('invite-name');
-    if (inviteNameSel && !inviteNameSel._hubBound) {
-      inviteNameSel._hubBound = true;
-      inviteNameSel.addEventListener('change', function() {
-        handleInviteNameChange(this.value);
-      });
-    }
-  } catch(e) {}
-}, 1000);
+// invite-name 不触发互斥检查
 
 function handleHubAnswer(answer) {
   var marker = document.getElementById('hub-already-in');
@@ -13676,6 +13761,78 @@ function goToGroupForm() {
     openOverlay('qhub.png', '联系我们');
   }
 }
+</script>
+
+<script src="script.js"></script>
+    
+
+<!-- ===== 订阅 Modal ===== -->
+<div id="subscribe-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:12px;padding:28px 24px;max-width:360px;width:90%;text-align:center;">
+    <h3 style="color:#001F5B;margin:0 0 8px;">📧 订阅每日Duke动态</h3>
+    <p style="color:#555;font-size:13px;margin:0 0 16px;">每天美东时间早上8点发送到您的邮箱</p>
+    <input id="subscribe-email" type="email" placeholder="请输入邮箱地址"
+      style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px;margin-bottom:12px;">
+    <div id="subscribe-msg" style="font-size:13px;min-height:20px;margin-bottom:10px;"></div>
+    <button onclick="submitSubscribe()"
+      style="background:#001F5B;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">
+      确认订阅
+    </button>
+    <button onclick="closeSubscribeModal()"
+      style="background:transparent;border:none;color:#999;font-size:13px;margin-top:10px;cursor:pointer;">
+      取消
+    </button>
+  </div>
+</div>
+
+<script>
+function openSubscribeModal() {
+  document.getElementById('subscribe-modal').style.display = 'flex';
+  document.getElementById('subscribe-email').value = '';
+  document.getElementById('subscribe-msg').textContent = '';
+}
+function closeSubscribeModal() {
+  document.getElementById('subscribe-modal').style.display = 'none';
+}
+async function submitSubscribe() {
+  const email = document.getElementById('subscribe-email').value.trim();
+  const msg   = document.getElementById('subscribe-msg');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    msg.style.color = '#c00';
+    msg.textContent = '请输入有效的邮箱地址';
+    return;
+  }
+  msg.style.color = '#555';
+  msg.textContent = '提交中…';
+  try {
+    const res = await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      if (data.status === 'already_confirmed') {
+        msg.style.color = '#888';
+        msg.textContent = '该邮箱已订阅 ✓';
+      } else {
+        msg.style.color = '#1a7a3c';
+        msg.textContent = '✅ 确认邮件已发送，请查收！';
+        setTimeout(closeSubscribeModal, 2500);
+      }
+    } else {
+      msg.style.color = '#c00';
+      msg.textContent = data.error || '提交失败，请稍后重试';
+    }
+  } catch(e) {
+    msg.style.color = '#c00';
+    msg.textContent = '网络错误，请稍后重试';
+  }
+}
+// 点击遮罩关闭
+document.getElementById('subscribe-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeSubscribeModal();
+});
 </script>
 
 </body>
