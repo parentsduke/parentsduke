@@ -12,6 +12,19 @@ RESEND_KEY    = os.environ.get('RESEND_API_KEY', '')
 
 EMAIL_TO      = 'weihong_j@yahoo.com'
 EMAIL_FROM    = 'daily@dukeparents.org'
+
+SECTION_LABELS = {
+    'weekly-school':       '🏫 学校新闻',
+    'weekly-basketball':   '🏀 篮球/体育动态',
+    'weekly-admissions':   '📋 招生信息',
+    'weekly-prematric':    '📅 开学前安排',
+    'weekly-calendar':     '🗓 学术日历',
+    'weekly-registration': '📝 选课与住房',
+    'weekly-campus':       '🎓 校园生活',
+    'weekly-chronicle':    '📰 Chronicle学生报',
+    'weekly-research':     '🔬 科研动态',
+    'weekly-visa':         '🛂 签证与国际生',
+}
 HEADERS = {'User-Agent': 'Mozilla/5.0 (compatible; DukeParentsBot/1.0)'}
 
 # ══════════════════════════════════════════════════════════════
@@ -1063,15 +1076,3 @@ if __name__ == '__main__':
 # ══════════════════════════════════════════════════════════════
 #  发送邮件（Resend）
 # ══════════════════════════════════════════════════════════════
-SECTION_LABELS = {
-    'weekly-school':       '🏫 学校新闻',
-    'weekly-basketball':   '🏀 篮球/体育动态',
-    'weekly-admissions':   '📋 招生信息',
-    'weekly-prematric':    '📅 开学前安排',
-    'weekly-calendar':     '🗓 学术日历',
-    'weekly-registration': '📝 选课与住房',
-    'weekly-campus':       '🎓 校园生活',
-    'weekly-chronicle':    '📰 Chronicle学生报',
-    'weekly-research':     '🔬 科研动态',
-    'weekly-visa':         '🛂 签证与国际生',
-}
