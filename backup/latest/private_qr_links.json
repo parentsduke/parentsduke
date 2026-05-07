@@ -2665,19 +2665,6 @@
     "groupName": null
   },
   {
-    "id": "a0946b82-6d70-47d5-bf47-dcd79177409f",
-    "token": "20a0a17065d9",
-    "image_url": "https://dukeparents.org/q30d.png",
-    "label": "Duke 2030 家长群",
-    "used": false,
-    "used_at": null,
-    "created_at": "2026-05-06T14:01:39.63886+00:00",
-    "reserved_for": "15902021123@139.com",
-    "reserved_at": "2026-05-06T14:01:39.425+00:00",
-    "opened_at": null,
-    "groupName": null
-  },
-  {
     "id": "664346ef-69ea-4791-894f-1174f36fec42",
     "token": "5aec04bd51e0",
     "image_url": "https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg",
@@ -2701,6 +2688,32 @@
     "reserved_for": "yinglisea@gmail.com",
     "reserved_at": "2026-05-06T14:01:57.249+00:00",
     "opened_at": null,
+    "groupName": null
+  },
+  {
+    "id": "e67ccefa-ae02-4a46-b824-9d70d5848cf2",
+    "token": "6722d57a51fb",
+    "image_url": "https://dukeparents.org/qgrad.png",
+    "label": "Duke 研究生家长群",
+    "used": true,
+    "used_at": "2026-05-07T05:42:52.605+00:00",
+    "created_at": "2026-05-07T02:14:33.400115+00:00",
+    "reserved_for": "1003393583@qq.com",
+    "reserved_at": "2026-05-07T02:14:32.146+00:00",
+    "opened_at": "2026-05-07T05:42:52.599+00:00",
+    "groupName": "Duke 研究生家长群"
+  },
+  {
+    "id": "a0946b82-6d70-47d5-bf47-dcd79177409f",
+    "token": "20a0a17065d9",
+    "image_url": "https://dukeparents.org/q30d.png",
+    "label": "Duke 2030 家长群",
+    "used": true,
+    "used_at": "2026-05-07T08:47:26.712+00:00",
+    "created_at": "2026-05-06T14:01:39.63886+00:00",
+    "reserved_for": "15902021123@139.com",
+    "reserved_at": "2026-05-06T14:01:39.425+00:00",
+    "opened_at": "2026-05-07T08:47:26.712+00:00",
     "groupName": null
   }
 ]
