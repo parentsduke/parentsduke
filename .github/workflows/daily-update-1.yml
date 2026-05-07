@@ -1,0 +1,44 @@
+name: 每日Duke动态自动更新
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # 每天北京时间20:00（UTC 12:00）
+  workflow_dispatch:
+
+jobs:
+  update-daily:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 签出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Python 依赖
+        run: pip install requests feedparser beautifulsoup4
+
+      - name: 抓取新闻并生成日报
+        env:
+          GEMINI_API_KEY:     ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY:       ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          CEREBRAS_API_KEY:   ${{ secrets.CEREBRAS_API_KEY }}
+          MISTRAL_API_KEY:    ${{ secrets.MISTRAL_API_KEY }}
+          RESEND_API_KEY:     ${{ secrets.RESEND_API_KEY }}
+          BREVO_API_KEY:      ${{ secrets.BREVO_API_KEY }}
+          SUPABASE_URL:       ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 .github/scripts/generate_daily.py
+
+      - name: 备份 Supabase 数据
+        env:
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 .github/scripts/backup_supabase.py
+
+      - name: 提交更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html data/ backup/latest/
+          git diff --staged --quiet || git commit -m "📰 每日Duke动态自动更新 $(date +'%Y-%m-%d')"
+          git pull --rebase origin main
+          git push
