@@ -879,6 +879,71 @@ def update_index(sections_html):
         f.write(content)
     print('  index.html 已更新')
 
+def send_email(sections):
+    if not RESEND_KEY:
+        print('  跳过邮件：未设置 RESEND_API_KEY')
+        return
+    now = datetime.now()
+    subject = f"📋 杜克家长日报 · {now.year}年{now.month}月{now.day}日"
+
+    body_parts = []
+    for key, label in SECTION_LABELS.items():
+        content = sections.get(key, '')
+        if content and content != FALLBACK_HTML:
+            body_parts.append(
+                f'<h2 style="color:#012169;border-bottom:2px solid #012169;'
+                f'padding-bottom:6px;margin-top:32px">{label}</h2>'
+                f'{content}'
+            )
+
+    html = f'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>
+  body{{font-family:serif;max-width:700px;margin:0 auto;padding:24px;color:#1a1a1a;background:#fff}}
+  h2{{font-size:16px}}
+  ul{{padding-left:20px;line-height:1.9}}
+  li{{margin-bottom:6px;font-size:14px}}
+  a{{color:#012169}}
+  .footer{{margin-top:40px;font-size:12px;color:#888;border-top:1px solid #eee;padding-top:16px}}
+</style>
+</head>
+<body>
+<h1 style="color:#012169;font-size:20px">📋 杜克家长日报</h1>
+<p style="color:#888;font-size:13px">{now.year}年{now.month}月{now.day}日 · dukeparents.org</p>
+{"".join(body_parts)}
+<div class="footer">
+  数据来源：Duke Today · GoDuke · Duke Chronicle 等<br>
+  仅供参考，详情请访问 <a href="https://dukeparents.org">dukeparents.org</a>
+</div>
+</body>
+</html>'''
+
+    try:
+        r = requests.post(
+            'https://api.resend.com/emails',
+            headers={
+                'Authorization': f'Bearer {RESEND_KEY}',
+                'Content-Type': 'application/json',
+            },
+            json={
+                'from':    EMAIL_FROM,
+                'to':      [EMAIL_TO],
+                'subject': subject,
+                'html':    html,
+            },
+            timeout=15,
+        )
+        if r.status_code in (200, 201):
+            print(f'  ✓ 邮件已发送至 {EMAIL_TO}')
+        else:
+            print(f'  ✗ 邮件发送失败: {r.status_code} {r.text}')
+    except Exception as ex:
+        print(f'  ✗ 邮件异常: {ex}')
+
+
 # ══════════════════════════════════════════════════════════════
 #  主流程
 # ══════════════════════════════════════════════════════════════
@@ -1010,67 +1075,3 @@ SECTION_LABELS = {
     'weekly-research':     '🔬 科研动态',
     'weekly-visa':         '🛂 签证与国际生',
 }
-
-def send_email(sections):
-    if not RESEND_KEY:
-        print('  跳过邮件：未设置 RESEND_API_KEY')
-        return
-    now = datetime.now()
-    subject = f"📋 杜克家长日报 · {now.year}年{now.month}月{now.day}日"
-
-    body_parts = []
-    for key, label in SECTION_LABELS.items():
-        content = sections.get(key, '')
-        if content and content != FALLBACK_HTML:
-            body_parts.append(
-                f'<h2 style="color:#012169;border-bottom:2px solid #012169;'
-                f'padding-bottom:6px;margin-top:32px">{label}</h2>'
-                f'{content}'
-            )
-
-    html = f'''<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<style>
-  body{{font-family:serif;max-width:700px;margin:0 auto;padding:24px;color:#1a1a1a;background:#fff}}
-  h2{{font-size:16px}}
-  ul{{padding-left:20px;line-height:1.9}}
-  li{{margin-bottom:6px;font-size:14px}}
-  a{{color:#012169}}
-  .footer{{margin-top:40px;font-size:12px;color:#888;border-top:1px solid #eee;padding-top:16px}}
-</style>
-</head>
-<body>
-<h1 style="color:#012169;font-size:20px">📋 杜克家长日报</h1>
-<p style="color:#888;font-size:13px">{now.year}年{now.month}月{now.day}日 · dukeparents.org</p>
-{"".join(body_parts)}
-<div class="footer">
-  数据来源：Duke Today · GoDuke · Duke Chronicle 等<br>
-  仅供参考，详情请访问 <a href="https://dukeparents.org">dukeparents.org</a>
-</div>
-</body>
-</html>'''
-
-    try:
-        r = requests.post(
-            'https://api.resend.com/emails',
-            headers={
-                'Authorization': f'Bearer {RESEND_KEY}',
-                'Content-Type': 'application/json',
-            },
-            json={
-                'from':    EMAIL_FROM,
-                'to':      [EMAIL_TO],
-                'subject': subject,
-                'html':    html,
-            },
-            timeout=15,
-        )
-        if r.status_code in (200, 201):
-            print(f'  ✓ 邮件已发送至 {EMAIL_TO}')
-        else:
-            print(f'  ✗ 邮件发送失败: {r.status_code} {r.text}')
-    except Exception as ex:
-        print(f'  ✗ 邮件异常: {ex}')
