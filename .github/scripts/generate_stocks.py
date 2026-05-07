@@ -215,6 +215,9 @@ def fetch_dji_from_stooq():
 
 def fetch_all_quotes():
     results = {}
+    # 抓取中行汇率
+    boc = fetch_boc_rates()
+    results['boc_rates'] = boc
     # 先用stooq抓准确的道琼斯数据
     dji_stooq = fetch_dji_from_stooq()
     for group, items in TICKERS.items():
@@ -231,6 +234,61 @@ def fetch_all_quotes():
                 print(f'  ✓ {symbol}: {q["price"]:.4g} ({q["change_pct"]:+.2f}%)')
             time.sleep(0.3)
     return results
+
+
+# ══════════════════════════════════════════════════════════════
+#  中国银行美元汇率
+# ══════════════════════════════════════════════════════════════
+def fetch_boc_rates():
+    """抓取中国银行当日美元汇率（现汇买入、现汇卖出、中间价）"""
+    try:
+        url = 'https://srh.bankofchina.com/search/whpj/search_cn.jsp'
+        payload = {
+            'erectDate': '',
+            'nothing':   '',
+            'pjname':    '美元',
+        }
+        r = requests.post(url, data=payload, headers=HEADERS, timeout=10)
+        r.encoding = 'utf-8'
+        from html.parser import HTMLParser
+
+        class RateParser(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.in_td = False
+                self.cells = []
+                self.current = ''
+            def handle_starttag(self, tag, attrs):
+                if tag == 'td':
+                    self.in_td = True
+                    self.current = ''
+            def handle_endtag(self, tag):
+                if tag == 'td':
+                    self.in_td = False
+                    self.cells.append(self.current.strip())
+            def handle_data(self, data):
+                if self.in_td:
+                    self.current += data
+
+        parser = RateParser()
+        parser.feed(r.text)
+        cells = [c for c in parser.cells if c]
+
+        # 中行表格列顺序：货币名称 | 现汇买入 | 现钞买入 | 现汇卖出 | 现钞卖出 | 中间价 | 发布时间
+        # 找到"美元"那一行
+        for i, cell in enumerate(cells):
+            if '美元' in cell and i + 6 < len(cells):
+                buy  = float(cells[i + 1])   # 现汇买入
+                sell = float(cells[i + 3])   # 现汇卖出
+                mid  = float(cells[i + 5])   # 中间价
+                pub_time = cells[i + 6]       # 发布时间
+                print(f'  ✓ 中行美元: 买入={buy} 卖出={sell} 中间价={mid} 时间={pub_time}')
+                return {'buy': buy, 'sell': sell, 'mid': mid, 'pub_time': pub_time}
+        print('  ✗ 中行汇率：未找到美元行')
+        return None
+    except Exception as ex:
+        print(f'  ✗ 中行汇率抓取失败: {ex}')
+        return None
 
 # ══════════════════════════════════════════════════════════════
 #  抓取新闻
@@ -501,6 +559,19 @@ def generate_html(data, commentary, news_html):
     spx = next((q for q in data.get('us_indices', []) if q['symbol'] == '^GSPC'), None)
     market_state = market_state_label(spx['market_state']) if spx else ''
 
+    # 把中行汇率转成卡片格式
+    boc = data.get('boc_rates')
+    if boc:
+        data['boc_usd'] = [
+            {'symbol': 'BOC-BUY',  'label': '现汇买入', 'price': boc['buy'],  'change': 0, 'change_pct': 0, 'currency': 'CNY', 'market_state': 'CLOSED', 'prev_close': boc['buy'],  'ext_price': None, 'ext_chg': None, 'ext_pct': None, 'ext_label': None},
+            {'symbol': 'BOC-SELL', 'label': '现汇卖出', 'price': boc['sell'], 'change': 0, 'change_pct': 0, 'currency': 'CNY', 'market_state': 'CLOSED', 'prev_close': boc['sell'], 'ext_price': None, 'ext_chg': None, 'ext_pct': None, 'ext_label': None},
+            {'symbol': 'BOC-MID',  'label': '中间价',   'price': boc['mid'],  'change': 0, 'change_pct': 0, 'currency': 'CNY', 'market_state': 'CLOSED', 'prev_close': boc['mid'],  'ext_price': None, 'ext_chg': None, 'ext_pct': None, 'ext_label': None},
+        ]
+        # 在标题后加发布时间
+        data['boc_pub_time'] = boc.get('pub_time', '')
+    else:
+        data['boc_usd'] = []
+
     sections_html = ''
     for title, key, big in [
         ('🇺🇸 美股指数',  'us_indices',   True),
@@ -511,6 +582,7 @@ def generate_html(data, commentary, news_html):
         ('🌏 亚太/欧洲',  'asia_europe',  False),
         ('🇨🇳 A股',       'china',        False),
         ('💱 外汇',       'fx',           False),
+        ('🏦 中行美元汇率', 'boc_usd',      False),
         ('🛢 大宗商品',   'commodities',  False),
         ('₿ 加密货币',   'crypto',        False),
         ('📊 美债/指数',  'bonds',         False),
