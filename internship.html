@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI实习助手 — 杜克家长</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #001F5B;
+  --gold: #C8973A;
+  --cream: #F7F3ED;
+  --ink: #1a1a1a;
+  --muted: #6b6b6b;
+  --border: #e0d9cf;
+  --card: #ffffff;
+  --accent: #2A4BA0;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Serif SC', serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* AUTH GUARD */
+#auth-guard {
+  display: none;
+  position: fixed; inset: 0;
+  background: var(--navy);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+#auth-guard p { color: #fff; font-size: 16px; }
+#auth-guard a { color: var(--gold); text-decoration: none; }
+
+/* HEADER */
+header {
+  background: var(--navy);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 2px solid var(--gold);
+}
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 0.05em;
+}
+.logo span { color: var(--gold); }
+.back-link {
+  color: var(--gold);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  text-decoration: none;
+  border: 1px solid var(--gold);
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.back-link:hover { background: var(--gold); color: var(--navy); }
+
+/* HERO */
+.hero {
+  background: var(--navy);
+  padding: 48px 24px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,151,58,0.15), transparent 70%);
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(200,151,58,0.15);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(26px, 6vw, 42px);
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.hero h1 em { color: var(--gold); font-style: normal; }
+.hero p {
+  color: rgba(255,255,255,0.65);
+  font-size: 14px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--navy);
+  padding: 0 24px 24px;
+  gap: 12px;
+  justify-content: center;
+}
+.tab {
+  flex: 1;
+  max-width: 200px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-align: center;
+}
+.tab.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+  font-weight: 700;
+}
+.tab:not(.active):hover {
+  border-color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.8);
+}
+
+/* MAIN */
+main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* FORM CARD */
+.form-card {
+  background: var(--card);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  padding: 28px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 20px rgba(0,31,91,0.06);
+}
+.form-card h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  color: var(--navy);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.04em;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: #faf9f7;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--navy);
+  background: #fff;
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* CHECKBOXES */
+.check-group {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 4px;
+}
+.check-item {
+  display: flex; align-items: center; gap: 6px;
+  background: #faf9f7;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+  user-select: none;
+}
+.check-item input { display: none; }
+.check-item.checked {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+/* GENERATE BTN */
+.generate-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.04em;
+}
+.generate-btn:hover { background: var(--accent); transform: translateY(-1px); }
+.generate-btn:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+
+/* RESULT */
+.result-card {
+  background: var(--card);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 2px 20px rgba(0,31,91,0.06);
+  display: none;
+}
+.result-card.visible { display: block; }
+.result-header {
+  background: var(--navy);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.result-header h3 {
+  font-family: 'Syne', sans-serif;
+  color: #fff;
+  font-size: 16px;
+}
+.result-header .tag {
+  background: var(--gold);
+  color: var(--navy);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.result-body { padding: 24px; }
+.result-section {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.result-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.result-section h4 {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.result-section h4::before {
+  content: '';
+  display: inline-block;
+  width: 16px; height: 2px;
+  background: var(--gold);
+}
+.result-section p, .result-section li {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #333;
+}
+.result-section ul { padding-left: 18px; }
+.result-section li { margin-bottom: 4px; }
+.result-section .bilingual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.bilingual .zh { color: var(--ink); }
+.bilingual .en { color: var(--muted); font-size: 13px; }
+
+/* LOADING */
+.loading {
+  display: none;
+  padding: 40px 24px;
+  text-align: center;
+}
+.loading.visible { display: block; }
+.loading-dots {
+  display: flex; justify-content: center; gap: 8px; margin-bottom: 16px;
+}
+.dot {
+  width: 10px; height: 10px;
+  background: var(--navy);
+  border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+.loading p { color: var(--muted); font-size: 13px; font-family: 'DM Mono', monospace; }
+
+/* HISTORY */
+.history-section { margin-top: 28px; }
+.history-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.history-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.history-item:hover { border-color: var(--navy); }
+.history-item .info { font-size: 13px; color: var(--ink); }
+.history-item .date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+
+/* ERROR */
+.error-msg {
+  background: #fff0f0;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #c00;
+  margin-top: 12px;
+  display: none;
+}
+.error-msg.visible { display: block; }
+
+@media (max-width: 480px) {
+  .form-row { grid-template-columns: 1fr; }
+  .result-section .bilingual { grid-template-columns: 1fr; }
+  header { padding: 12px 16px; }
+  .form-card { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Auth Guard -->
+<div id="auth-guard">
+  <p>请先登录后访问此页面</p>
+  <a href="/index.html?redirect=/internship.html">前往登录 →</a>
+</div>
+
+<header>
+  <div class="logo">Duke<span>Parents</span> · AI实习助手</div>
+  <a href="/index.html" class="back-link">← 返回首页</a>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">AI POWERED · 双语支持</div>
+  <h1>找到适合的<em>实习机会</em></h1>
+  <p>基于专业背景与求职意向，AI为您生成个性化求职策略、简历建议与Cover Letter模板</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('student')">🎓 我是学生</button>
+  <button class="tab" onclick="switchTab('parent')">👨‍👩‍👧 我是家长</button>
+</div>
+
+<main>
+
+<!-- STUDENT PANEL -->
+<div id="panel-student" class="panel active">
+  <div class="form-card">
+    <h2>🎓 学生信息</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>专业 / Major</label>
+        <input type="text" id="s-major" placeholder="e.g. Computer Science">
+      </div>
+      <div class="form-group">
+        <label>年级 / Year</label>
+        <select id="s-year">
+          <option value="">请选择</option>
+          <option>大一 Freshman</option>
+          <option>大二 Sophomore</option>
+          <option>大三 Junior</option>
+          <option>大四 Senior</option>
+          <option>研究生 Graduate</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>意向行业 / Target Industry</label>
+      <div class="check-group" id="s-industry">
+        <label class="check-item"><input type="checkbox" value="科技/Tech">科技/Tech</label>
+        <label class="check-item"><input type="checkbox" value="金融/Finance">金融/Finance</label>
+        <label class="check-item"><input type="checkbox" value="咨询/Consulting">咨询/Consulting</label>
+        <label class="check-item"><input type="checkbox" value="医疗/Healthcare">医疗/Healthcare</label>
+        <label class="check-item"><input type="checkbox" value="法律/Law">法律/Law</label>
+        <label class="check-item"><input type="checkbox" value="媒体/Media">媒体/Media</label>
+        <label class="check-item"><input type="checkbox" value="教育/Education">教育/Education</label>
+        <label class="check-item"><input type="checkbox" value="非营利/Nonprofit">非营利/Nonprofit</label>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>地点偏好 / Location</label>
+        <select id="s-location">
+          <option value="">不限</option>
+          <option>美国东部</option>
+          <option>美国西部</option>
+          <option>美国全境</option>
+          <option>中国</option>
+          <option>远程/Remote</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>实习时间 / Timeline</label>
+        <select id="s-timeline">
+          <option value="">请选择</option>
+          <option>2025年夏季</option>
+          <option>2025年秋季</option>
+          <option>2026年春季</option>
+          <option>2026年夏季</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>技能/经历简述 / Skills & Experience</label>
+      <textarea id="s-skills" placeholder="例如：熟悉Python、R，有数据分析项目经验，参加过Duke创业社..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>其他补充 / Additional Notes（选填）</label>
+      <textarea id="s-notes" placeholder="GPA、特殊经历、目标公司等..."></textarea>
+    </div>
+    <button class="generate-btn" onclick="generate('student')">
+      ✦ 生成求职方案
+    </button>
+    <div class="error-msg" id="s-error"></div>
+  </div>
+
+  <div class="loading" id="s-loading">
+    <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <p>AI正在分析您的背景，生成个性化方案...</p>
+  </div>
+
+  <div class="result-card" id="s-result">
+    <div class="result-header">
+      <h3>✦ 您的求职方案</h3>
+      <span class="tag">AI GENERATED</span>
+    </div>
+    <div class="result-body" id="s-result-body"></div>
+  </div>
+
+  <div class="history-section" id="s-history-section" style="display:none">
+    <div class="history-title">历史记录</div>
+    <div id="s-history-list"></div>
+  </div>
+</div>
+
+<!-- PARENT PANEL -->
+<div id="panel-parent" class="panel">
+  <div class="form-card">
+    <h2>👨‍👩‍👧 孩子信息</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>专业 / Major</label>
+        <input type="text" id="p-major" placeholder="e.g. Economics">
+      </div>
+      <div class="form-group">
+        <label>年级 / Year</label>
+        <select id="p-year">
+          <option value="">请选择</option>
+          <option>大一 Freshman</option>
+          <option>大二 Sophomore</option>
+          <option>大三 Junior</option>
+          <option>大四 Senior</option>
+          <option>研究生 Graduate</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>意向行业 / Target Industry</label>
+      <div class="check-group" id="p-industry">
+        <label class="check-item"><input type="checkbox" value="科技/Tech">科技/Tech</label>
+        <label class="check-item"><input type="checkbox" value="金融/Finance">金融/Finance</label>
+        <label class="check-item"><input type="checkbox" value="咨询/Consulting">咨询/Consulting</label>
+        <label class="check-item"><input type="checkbox" value="医疗/Healthcare">医疗/Healthcare</label>
+        <label class="check-item"><input type="checkbox" value="法律/Law">法律/Law</label>
+        <label class="check-item"><input type="checkbox" value="媒体/Media">媒体/Media</label>
+        <label class="check-item"><input type="checkbox" value="教育/Education">教育/Education</label>
+        <label class="check-item"><input type="checkbox" value="非营利/Nonprofit">非营利/Nonprofit</label>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>地点偏好 / Location</label>
+        <select id="p-location">
+          <option value="">不限</option>
+          <option>美国东部</option>
+          <option>美国西部</option>
+          <option>美国全境</option>
+          <option>中国</option>
+          <option>远程/Remote</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>实习时间 / Timeline</label>
+        <select id="p-timeline">
+          <option value="">请选择</option>
+          <option>2025年夏季</option>
+          <option>2025年秋季</option>
+          <option>2026年春季</option>
+          <option>2026年夏季</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>孩子的技能/经历 / Skills & Experience</label>
+      <textarea id="p-skills" placeholder="例如：学过Python，参加过投资俱乐部，有科研经历..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>家长的期望与顾虑 / Parent Notes（选填）</label>
+      <textarea id="p-notes" placeholder="例如：希望回国发展、对某类工作有顾虑、需要实习签证..."></textarea>
+    </div>
+    <button class="generate-btn" onclick="generate('parent')">
+      ✦ 生成求职方案
+    </button>
+    <div class="error-msg" id="p-error"></div>
+  </div>
+
+  <div class="loading" id="p-loading">
+    <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <p>AI正在分析孩子的背景，生成个性化方案...</p>
+  </div>
+
+  <div class="result-card" id="p-result">
+    <div class="result-header">
+      <h3>✦ 孩子的求职方案</h3>
+      <span class="tag">AI GENERATED</span>
+    </div>
+    <div class="result-body" id="p-result-body"></div>
+  </div>
+
+  <div class="history-section" id="p-history-section" style="display:none">
+    <div class="history-title">历史记录</div>
+    <div id="p-history-list"></div>
+  </div>
+</div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.bB5oFHALPGUDKyEQ3ikQqDfEKDPMEkAbPy9FfznIk3c';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Auth guard
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    document.getElementById('auth-guard').style.display = 'flex';
+  }
+})();
+
+// Tab switch
+function switchTab(role) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', (i===0 && role==='student') || (i===1 && role==='parent'));
+  });
+  document.getElementById('panel-student').classList.toggle('active', role==='student');
+  document.getElementById('panel-parent').classList.toggle('active', role==='parent');
+}
+
+// Checkbox toggle
+document.querySelectorAll('.check-item').forEach(item => {
+  item.addEventListener('click', () => item.classList.toggle('checked'));
+});
+
+function getChecked(groupId) {
+  return Array.from(document.querySelectorAll(`#${groupId} .check-item.checked input`))
+    .map(i => i.value).join('、');
+}
+
+// Generate
+async function generate(role) {
+  const p = role === 'student' ? 's' : 'p';
+  const major    = document.getElementById(`${p}-major`).value.trim();
+  const year     = document.getElementById(`${p}-year`).value;
+  const industry = getChecked(`${p}-industry`);
+  const location = document.getElementById(`${p}-location`).value;
+  const timeline = document.getElementById(`${p}-timeline`).value;
+  const skills   = document.getElementById(`${p}-skills`).value.trim();
+  const notes    = document.getElementById(`${p}-notes`).value.trim();
+  const errEl    = document.getElementById(`${p}-error`);
+
+  errEl.classList.remove('visible');
+
+  if (!major || !year) {
+    errEl.textContent = '请填写专业和年级';
+    errEl.classList.add('visible');
+    return;
+  }
+  if (!industry) {
+    errEl.textContent = '请至少选择一个意向行业';
+    errEl.classList.add('visible');
+    return;
+  }
+
+  document.getElementById(`${p}-loading`).classList.add('visible');
+  document.getElementById(`${p}-result`).classList.remove('visible');
+  document.querySelector(`#panel-${role === 'student' ? 'student' : 'parent'} .generate-btn`).disabled = true;
+
+  const roleLabel = role === 'student' ? 'Duke大学学生' : 'Duke大学学生（家长视角）';
+  const notesLabel = role === 'student' ? '补充信息' : '家长期望与顾虑';
+
+  const prompt = `你是一位顶级职业顾问，专门帮助${roleLabel}找实习。请用中英双语，根据以下信息生成完整求职方案。
+
+基本信息：
+- 专业：${major}
+- 年级：${year}
+- 意向行业：${industry}
+- 地点偏好：${location || '不限'}
+- 实习时间：${timeline || '未指定'}
+- 技能/经历：${skills || '未填写'}
+- ${notesLabel}：${notes || '无'}
+
+请严格按照以下JSON格式返回，不要加任何Markdown代码块标记：
+{
+  "strategy": {
+    "zh": "3-4段求职策略分析（中文）",
+    "en": "3-4 paragraphs job search strategy (English)"
+  },
+  "resume_tips": {
+    "zh": ["简历建议1", "简历建议2", "简历建议3", "简历建议4"],
+    "en": ["Resume tip 1", "Resume tip 2", "Resume tip 3", "Resume tip 4"]
+  },
+  "keywords": {
+    "zh": ["关键词1", "关键词2", "关键词3", "关键词4", "关键词5"],
+    "en": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"]
+  },
+  "cover_letter": {
+    "zh": "中文Cover Letter模板（含[占位符]）",
+    "en": "English Cover Letter template (with [placeholders])"
+  },
+  "resources": {
+    "zh": ["推荐资源1", "推荐资源2", "推荐资源3"],
+    "en": ["Resource 1", "Resource 2", "Resource 3"]
+  }
+}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.map(b => b.text || '').join('').trim();
+    const clean = text.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+    renderResult(p, result, { major, year, industry, timeline });
+    saveHistory(role, { major, year, industry, timeline }, result);
+  } catch(e) {
+    errEl.textContent = 'AI生成失败，请稍后重试';
+    errEl.classList.add('visible');
+  } finally {
+    document.getElementById(`${p}-loading`).classList.remove('visible');
+    document.querySelector(`#panel-${role === 'student' ? 'student' : 'parent'} .generate-btn`).disabled = false;
+  }
+}
+
+function renderResult(p, r, meta) {
+  const body = document.getElementById(`${p}-result-body`);
+  body.innerHTML = `
+    <div class="result-section">
+      <h4>求职策略 / Strategy</h4>
+      <div class="bilingual">
+        <div class="zh">${r.strategy.zh.replace(/\n/g,'<br>')}</div>
+        <div class="en">${r.strategy.en.replace(/\n/g,'<br>')}</div>
+      </div>
+    </div>
+    <div class="result-section">
+      <h4>简历建议 / Resume Tips</h4>
+      <div class="bilingual">
+        <div class="zh"><ul>${r.resume_tips.zh.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+        <div class="en"><ul>${r.resume_tips.en.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+      </div>
+    </div>
+    <div class="result-section">
+      <h4>搜索关键词 / Search Keywords</h4>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        ${r.keywords.zh.map(k=>`<span style="background:var(--navy);color:#fff;padding:4px 12px;border-radius:20px;font-size:13px;">${k}</span>`).join('')}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        ${r.keywords.en.map(k=>`<span style="background:#f0f0f0;color:var(--ink);padding:4px 12px;border-radius:20px;font-size:12px;">${k}</span>`).join('')}
+      </div>
+    </div>
+    <div class="result-section">
+      <h4>Cover Letter 模板</h4>
+      <div class="bilingual">
+        <div class="zh" style="white-space:pre-line;font-size:13px;">${r.cover_letter.zh}</div>
+        <div class="en" style="white-space:pre-line;font-size:13px;">${r.cover_letter.en}</div>
+      </div>
+    </div>
+    <div class="result-section">
+      <h4>推荐资源 / Resources</h4>
+      <div class="bilingual">
+        <div class="zh"><ul>${r.resources.zh.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+        <div class="en"><ul>${r.resources.en.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+      </div>
+    </div>
+  `;
+  document.getElementById(`${p}-result`).classList.add('visible');
+  document.getElementById(`${p}-result`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// History (localStorage)
+function saveHistory(role, meta, result) {
+  const key = `internship-history-${role}`;
+  const history = JSON.parse(localStorage.getItem(key) || '[]');
+  history.unshift({ meta, result, date: new Date().toLocaleDateString('zh-CN') });
+  if (history.length > 5) history.pop();
+  localStorage.setItem(key, JSON.stringify(history));
+  renderHistory(role);
+}
+
+function renderHistory(role) {
+  const p = role === 'student' ? 's' : 'p';
+  const key = `internship-history-${role}`;
+  const history = JSON.parse(localStorage.getItem(key) || '[]');
+  const section = document.getElementById(`${p}-history-section`);
+  const list = document.getElementById(`${p}-history-list`);
+  if (!history.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = history.map((h, i) => `
+    <div class="history-item" onclick="loadHistory('${role}', ${i})">
+      <div class="info">${h.meta.major} · ${h.meta.year} · ${h.meta.industry}</div>
+      <div class="date">${h.date}</div>
+    </div>
+  `).join('');
+}
+
+function loadHistory(role, idx) {
+  const p = role === 'student' ? 's' : 'p';
+  const key = `internship-history-${role}`;
+  const history = JSON.parse(localStorage.getItem(key) || '[]');
+  if (history[idx]) renderResult(p, history[idx].result, history[idx].meta);
+}
+
+// Load history on init
+renderHistory('student');
+renderHistory('parent');
+</script>
+</body>
+</html>
