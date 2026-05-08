@@ -13770,15 +13770,25 @@ function goToGroupForm() {
 </script>
 
 <script src="script.js"></script>
-    
-
+ 
 <!-- ===== 订阅 Modal ===== -->
 <div id="subscribe-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:12px;padding:28px 24px;max-width:360px;width:90%;text-align:center;">
     <h3 style="color:#001F5B;margin:0 0 8px;">📧 订阅每日Duke动态</h3>
-    <p style="color:#555;font-size:13px;margin:0 0 16px;">每天美东时间早上8点发送到您的邮箱</p>
+    <p style="color:#555;font-size:13px;margin:0 0 16px;">每天美东时间早上8点发送到您的邮箱</p >
     <input id="subscribe-email" type="email" placeholder="请输入邮箱地址"
       style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px;margin-bottom:12px;">
+    <select id="subscribe-class-year"
+      style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px;margin-bottom:12px;color:#333;">
+      <option value="">请选择届次</option>
+      <option value="2025">2025届</option>
+      <option value="2026">2026届</option>
+      <option value="2027">2027届</option>
+      <option value="2028">2028届</option>
+      <option value="2029">2029届</option>
+      <option value="2030">2030届</option>
+      <option value="研究生">研究生群</option>
+    </select>
     <div id="subscribe-msg" style="font-size:13px;min-height:20px;margin-bottom:10px;"></div>
     <button onclick="submitSubscribe()"
       style="background:#001F5B;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;cursor:pointer;width:100%;">
@@ -13795,17 +13805,24 @@ function goToGroupForm() {
 function openSubscribeModal() {
   document.getElementById('subscribe-modal').style.display = 'flex';
   document.getElementById('subscribe-email').value = '';
+  document.getElementById('subscribe-class-year').value = '';
   document.getElementById('subscribe-msg').textContent = '';
 }
 function closeSubscribeModal() {
   document.getElementById('subscribe-modal').style.display = 'none';
 }
 async function submitSubscribe() {
-  const email = document.getElementById('subscribe-email').value.trim();
-  const msg   = document.getElementById('subscribe-msg');
+  const email     = document.getElementById('subscribe-email').value.trim();
+  const classYear = document.getElementById('subscribe-class-year').value;
+  const msg       = document.getElementById('subscribe-msg');
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     msg.style.color = '#c00';
     msg.textContent = '请输入有效的邮箱地址';
+    return;
+  }
+  if (!classYear) {
+    msg.style.color = '#c00';
+    msg.textContent = '请选择届次';
     return;
   }
   msg.style.color = '#555';
@@ -13814,7 +13831,7 @@ async function submitSubscribe() {
     const res = await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email, class_year: classYear })
     });
     const data = await res.json();
     if (data.ok) {
