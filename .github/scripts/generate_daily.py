@@ -954,7 +954,11 @@ def fetch_subscribers():
                 'apikey': SUPABASE_KEY,
                 'Authorization': f'Bearer {SUPABASE_KEY}',
             },
-            params={'confirmed': 'eq.true', 'select': 'email,unsubscribe_token'},
+           params={
+    'confirmed': 'eq.true',
+    'unsubscribed_at': 'is.null',
+    'select': 'email,unsubscribe_token'
+    },
             timeout=10,
         )
         if r.status_code == 200:
