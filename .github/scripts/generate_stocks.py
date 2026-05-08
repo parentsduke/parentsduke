@@ -386,6 +386,8 @@ def generate_commentary(data):
 
     lines = []
     for group, items in data.items():
+        if not isinstance(items, list):  # ← 加这里
+            continue
         for q in items:
             sign = '+' if q['change_pct'] >= 0 else ''
             lines.append(f"{q['label']}({q['symbol']}): {q['price']:.4g} {sign}{q['change_pct']:.2f}%")
