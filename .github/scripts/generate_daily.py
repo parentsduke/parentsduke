@@ -910,7 +910,10 @@ def build_email_html(sections, unsubscribe_token=None):
     unsubscribe_html = ''
     if unsubscribe_token:
         unsubscribe_url = f'https://dukeparents.org/subscribe?action=unsubscribe&token={unsubscribe_token}'
-        unsubscribe_html = f'<br><a href="{unsubscribe_url}" style="color:#aaa;">退订</a>'
+        unsubscribe_html = (
+    f'<br><a href="{unsubscribe_url}" '
+    f'style="color:#999;font-size:11px;">取消订阅</a>'
+)
 
     return f'''<!DOCTYPE html>
 <html lang="zh-CN">
