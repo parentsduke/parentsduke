@@ -816,7 +816,8 @@
         if (approveCell) approveCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
         const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
         if (actionCell) actionCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
-        alert('✅ 已标记为批准');
+      applyFilters();
+      alert('✅ 已标记为批准');
       } catch(e) {
         alert('❌ 操作失败：' + e.message);
       }
@@ -871,7 +872,8 @@
       const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
       if (actionCell) actionCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
 
-      alert(`✅ 已发送入群链接到 ${email}`);
+    applyFilters();
+    alert(`✅ 已发送入群链接到 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
     }
