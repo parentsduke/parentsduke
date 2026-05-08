@@ -60,55 +60,32 @@ const SITE_URL = 'https://dukeparents.org';
 const params = new URLSearchParams(location.search);
 const action = params.get('action');
 const token  = params.get('token');
+const sub    = params.get('sub');
 
 const card = document.getElementById('card');
 
-function show(icon, title, body, link, linkText) {
+function show(icon, title, body) {
   card.innerHTML = `
     <div class="icon">${icon}</div>
     <h2>${title}</h2>
     <p>${body}</p>
-    <a class="btn" href="${link}">${linkText}</a>
+    <a class="btn" href="${SITE_URL}">返回首页</a>
   `;
 }
 
-async function run() {
-  if (!token) {
-    show('❌', '链接无效', '该链接无效或已过期。', SITE_URL, '返回首页');
-    return;
-  }
-
-  if (action === 'confirm') {
-    try {
-      const res = await fetch(`${FUNCTION_URL}?action=confirm&token=${token}`);
-      // Edge Function返回302重定向，fetch会跟随；也可能直接返回状态
-      // 根据最终URL判断结果
-      const finalUrl = res.url || '';
-      if (finalUrl.includes('sub=confirmed') || res.ok) {
-        show('✅', '订阅成功！', '您的邮箱已确认，将于每天美东时间早上8点收到杜克家长日报。', SITE_URL, '返回首页');
-      } else {
-        show('❌', '确认失败', '链接可能已过期或已使用，请重新订阅。', SITE_URL, '返回首页');
-      }
-    } catch {
-      show('❌', '网络错误', '请稍后再试。', SITE_URL, '返回首页');
-    }
-    return;
-  }
-
-  if (action === 'unsubscribe') {
-    try {
-      await fetch(`${FUNCTION_URL}?action=unsubscribe&token=${token}`);
-      show('👋', '已退订', '您已成功退订杜克家长日报，期待未来再次相遇。', SITE_URL, '返回首页');
-    } catch {
-      show('❌', '网络错误', '请稍后再试。', SITE_URL, '返回首页');
-    }
-    return;
-  }
-
-  show('❓', '未知操作', '该链接无效。', SITE_URL, '返回首页');
+// 处理Edge Function redirect回来的结果
+if (sub === 'confirmed') {
+  show('✅', '订阅成功！', '您的邮箱已确认，将于每天美东时间早上8点收到杜克家长日报。');
+} else if (sub === 'unsubscribed') {
+  show('👋', '已退订', '您已成功退订杜克家长日报，期待未来再次相遇。');
+} else if (sub === 'invalid') {
+  show('❌', '链接无效', '该链接无效或已过期，请重新订阅。');
+} else if ((action === 'confirm' || action === 'unsubscribe') && token) {
+  // 直接跳转到Edge Function，让浏览器跟随302
+  location.href = `${FUNCTION_URL}?action=${action}&token=${token}`;
+} else {
+  show('❌', '链接无效', '该链接无效或已过期。');
 }
-
-run();
 </script>
 </body>
 </html>
