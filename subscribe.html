@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>杜克家长日报</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: sans-serif;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 48px 40px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  }
+  .icon { font-size: 48px; margin-bottom: 16px; }
+  h2 { color: #001F5B; font-size: 22px; margin-bottom: 12px; }
+  p { color: #555; font-size: 15px; line-height: 1.6; }
+  .btn {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 12px 28px;
+    background: #001F5B;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 15px;
+  }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 4px solid #e0e0e0;
+    border-top-color: #001F5B;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="spinner"></div>
+  <p>处理中，请稍候…</p>
+</div>
+
+<script>
+const FUNCTION_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/subscribe';
+const SITE_URL = 'https://dukeparents.org';
+
+const params = new URLSearchParams(location.search);
+const action = params.get('action');
+const token  = params.get('token');
+
+const card = document.getElementById('card');
+
+function show(icon, title, body, link, linkText) {
+  card.innerHTML = `
+    <div class="icon">${icon}</div>
+    <h2>${title}</h2>
+    <p>${body}</p>
+    <a class="btn" href="${link}">${linkText}</a>
+  `;
+}
+
+async function run() {
+  if (!token) {
+    show('❌', '链接无效', '该链接无效或已过期。', SITE_URL, '返回首页');
+    return;
+  }
+
+  if (action === 'confirm') {
+    try {
+      const res = await fetch(`${FUNCTION_URL}?action=confirm&token=${token}`);
+      // Edge Function返回302重定向，fetch会跟随；也可能直接返回状态
+      // 根据最终URL判断结果
+      const finalUrl = res.url || '';
+      if (finalUrl.includes('sub=confirmed') || res.ok) {
+        show('✅', '订阅成功！', '您的邮箱已确认，将于每天美东时间早上8点收到杜克家长日报。', SITE_URL, '返回首页');
+      } else {
+        show('❌', '确认失败', '链接可能已过期或已使用，请重新订阅。', SITE_URL, '返回首页');
+      }
+    } catch {
+      show('❌', '网络错误', '请稍后再试。', SITE_URL, '返回首页');
+    }
+    return;
+  }
+
+  if (action === 'unsubscribe') {
+    try {
+      await fetch(`${FUNCTION_URL}?action=unsubscribe&token=${token}`);
+      show('👋', '已退订', '您已成功退订杜克家长日报，期待未来再次相遇。', SITE_URL, '返回首页');
+    } catch {
+      show('❌', '网络错误', '请稍后再试。', SITE_URL, '返回首页');
+    }
+    return;
+  }
+
+  show('❓', '未知操作', '该链接无效。', SITE_URL, '返回首页');
+}
+
+run();
+</script>
+</body>
+</html>
