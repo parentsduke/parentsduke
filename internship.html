@@ -385,6 +385,7 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
   .form-card { padding: 20px 16px; }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
@@ -771,9 +772,7 @@ function switchTab(role) {
   document.getElementById('panel-parent').classList.toggle('active', role==='parent');
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <script>
-window.addEventListener('load', function() {
 const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.bB5oFHALPGUDKyEQ3ikQqDfEKDPMEkAbPy9FfznIk3c';
 const supabase = (window.supabase || window.supabaseJs)?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) || { auth: { getSession: async () => ({ data: { session: null } }), getUser: async () => ({ data: { user: null } }) } };
@@ -1096,7 +1095,6 @@ function loadHistory(role, idx) {
 // Load history on init
 renderHistory('student');
 renderHistory('parent');
-}); // end window.addEventListener('load')
 </script>
 </body>
 </html>
