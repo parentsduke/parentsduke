@@ -840,6 +840,7 @@ function parseJSON(text) {
 
 // Generate
 async function generate(role) {
+  alert("generate called: " + role);
   const p = role === 'student' ? 's' : 'p';
   const major    = document.getElementById(`${p}-major`).value.trim();
   const year     = document.getElementById(`${p}-year`).value;
