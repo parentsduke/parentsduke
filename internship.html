@@ -406,8 +406,8 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
 </div>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('student')">🎓 我是学生</button>
-  <button class="tab" onclick="switchTab('parent')">👨‍👩‍👧 我是家长</button>
+  <button id="tab-student" class="tab active" onclick="document.getElementById('tab-student').classList.add('active');document.getElementById('tab-parent').classList.remove('active');document.getElementById('panel-student').classList.add('active');document.getElementById('panel-parent').classList.remove('active');">🎓 我是学生</button>
+  <button id="tab-parent" class="tab" onclick="document.getElementById('tab-parent').classList.add('active');document.getElementById('tab-student').classList.remove('active');document.getElementById('panel-parent').classList.add('active');document.getElementById('panel-student').classList.remove('active');">👨‍👩‍👧 我是家长</button>
 </div>
 
 <main>
@@ -610,9 +610,8 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Tab switch
 function switchTab(role) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    t.classList.toggle('active', (i===0 && role==='student') || (i===1 && role==='parent'));
-  });
+  document.getElementById('tab-student').classList.toggle('active', role==='student');
+  document.getElementById('tab-parent').classList.toggle('active', role==='parent');
   document.getElementById('panel-student').classList.toggle('active', role==='student');
   document.getElementById('panel-parent').classList.toggle('active', role==='parent');
 }
