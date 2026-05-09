@@ -407,8 +407,9 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
 </div>
 
 <div class="tabs">
-  <button id="tab-student" class="tab active" onclick="document.getElementById('tab-student').classList.add('active');document.getElementById('tab-parent').classList.remove('active');document.getElementById('panel-student').classList.add('active');document.getElementById('panel-parent').classList.remove('active');">🎓 我是学生</button>
-  <button id="tab-parent" class="tab" onclick="document.getElementById('tab-parent').classList.add('active');document.getElementById('tab-student').classList.remove('active');document.getElementById('panel-parent').classList.add('active');document.getElementById('panel-student').classList.remove('active');">👨‍👩‍👧 我是家长</button>
+  <button id="tab-guide" class="tab active" onclick="switchTab('guide')">📖 实习攻略</button>
+  <button id="tab-parent" class="tab" onclick="switchTab('parent')">👨‍👩‍👧 我是家长</button>
+  <button id="tab-student" class="tab" onclick="switchTab('student')">🎓 我是学生</button>
 </div>
 
 <main>
@@ -759,17 +760,198 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
   </div>
 </div>
 
+<!-- GUIDE PANEL -->
+<div id="panel-guide" class="panel active">
+  <!-- TOC -->
+  <div style="background:#f5edd8;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:18px 22px;margin-bottom:28px;">
+    <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;">目录</div>
+    <ol style="padding-left:18px;">
+      <li style="font-size:13px;margin-bottom:5px;"><a href="#g1" style="color:var(--navy);text-decoration:none;font-weight:500;">Duke官方核心资源</a></li>
+      <li style="font-size:13px;margin-bottom:5px;"><a href="#g2" style="color:var(--navy);text-decoration:none;font-weight:500;">按专业方向的实习路径</a></li>
+      <li style="font-size:13px;margin-bottom:5px;"><a href="#g3" style="color:var(--navy);text-decoration:none;font-weight:500;">大一新生时间线</a></li>
+      <li style="font-size:13px;margin-bottom:5px;"><a href="#g4" style="color:var(--navy);text-decoration:none;font-weight:500;">中国学生签证与工作身份</a></li>
+      <li style="font-size:13px;margin-bottom:5px;"><a href="#g5" style="color:var(--navy);text-decoration:none;font-weight:500;">家长能做什么</a></li>
+      <li style="font-size:13px;"><a href="#g6" style="color:var(--navy);text-decoration:none;font-weight:500;">常见误区</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="form-card" id="g1">
+    <h2>① Duke官方核心资源</h2>
+    <p style="font-size:14px;color:#444;margin-bottom:16px;line-height:1.8;">Duke有一套完整的职业发展支持体系，很多学生直到大三才知道这些资源的存在——家长提前了解，可以帮孩子少走弯路。</p>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">🎯 Handshake</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">Duke主要的实习招聘平台。企业直接在上面发布针对Duke学生的职位，用NetID登录即可使用。建议大一入学第一周就注册完善profile，开启职位推送通知。</div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">🏛️ Duke Career Center（careers.duke.edu）</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">提供一对一简历修改、模拟面试（Mock Interview）、行业咨询预约。每学期都有针对不同行业的Career Fair，是接触招聘官的最直接渠道。服务完全免费，但需要提前预约。</div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">🦆 Duke Jump / Alumni Network</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">Duke校友网络极强。通过Duke Jump或LinkedIn可以约校友做Informational Interview，了解行业内情、内推机会。Duke校友普遍对在校学生很热情，这是一个被严重低估的资源。</div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">🔬 Duke Research Opportunities（URSO）</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">通过Undergraduate Research Support Office可以找到教授实验室的Research Assistant机会。对Pre-med和理工科学生尤其重要，部分有薪酬，部分可获得学分。</div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">💼 DukeGroups & 学生组织</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">Duke有专注于咨询、投行、科技、创业等方向的学生组织（如Duke Consulting Club、Duke Investment Club等），内部有专属招募信息和案例培训，是进入竞争性行业的重要跳板。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="form-card" id="g2">
+    <h2>② 按专业方向的实习路径</h2>
+    <p style="font-size:14px;color:#444;margin-bottom:16px;line-height:1.8;">不同专业的实习生态差异很大，时间节奏和准备重点也不同。</p>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">⚙️ Pratt工程学院</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">科技行业是主要去向。大公司（Google、Meta、Microsoft、Amazon）的暑期实习招募从<strong>大二秋季</strong>就开始，截止时间通常在10—12月，比其他行业早半年以上。大一暑假最现实的选择是在Duke做Research Assistant，或参加国内科技公司实习。进入大二后开始准备LeetCode刷题和系统设计。</div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">📚 Trinity文理学院</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">路径更为多元：金融（投行、资管）、咨询（McKinsey、BCG、Bain等）、科技运营、非营利、政府机构都是常见去向。金融和咨询招募时间与科技类似，秋季就开始网申和笔试。咨询侧重case interview训练，需要提前3—6个月系统练习。</div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">🩺 Pre-med Track</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">传统意义上的"实习"对Pre-med学生优先级不如：临床志愿服务（Clinical Volunteering）、科研（Research）、服务性活动（Community Service）。医学院申请看重的是这三类。暑假可在医院、诊所或Duke Health做志愿者，积累临床观察小时数。</div>
+      </div>
+    </div>
+    <div style="background:#e8f0fb;border-left:3px solid var(--navy);border-radius:0 8px 8px 0;padding:14px 18px;margin-top:16px;font-size:13px;line-height:1.7;">
+      <strong style="color:var(--navy);display:block;margin-bottom:6px;">💡 给家长的提示</strong>
+      不同方向的准备节奏相差很大。工程和金融方向大二就要开始行动，Pre-med则从大一起就要积累临床时间。如果孩子入学时方向还不确定，优先鼓励他们在大一广泛探索，多参加Career Fair和Info Session。
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="form-card" id="g3">
+    <h2>③ 大一新生时间线</h2>
+    <p style="font-size:14px;color:#444;margin-bottom:18px;line-height:1.8;">以科技/商科方向为例的参考时间线。</p>
+    <div style="position:relative;padding-left:26px;">
+      <div style="position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:linear-gradient(to bottom,var(--gold),var(--navy));border-radius:2px;"></div>
+      <div style="position:relative;margin-bottom:20px;">
+        <div style="position:absolute;left:-22px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid #fff;box-shadow:0 0 0 2px var(--gold);"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;font-family:'DM Mono',monospace;">8—9月 · 入学</div>
+        <div style="font-size:13px;color:#333;line-height:1.7;">注册Handshake，完善LinkedIn Profile。参加开学的Club Fair，加入1—2个与职业方向相关的学生组织。</div>
+      </div>
+      <div style="position:relative;margin-bottom:20px;">
+        <div style="position:absolute;left:-22px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid #fff;box-shadow:0 0 0 2px var(--gold);"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;font-family:'DM Mono',monospace;">9—10月 · 秋季Career Fair</div>
+        <div style="font-size:13px;color:#333;line-height:1.7;">大一新生以"观察和建立人脉"为主要目标。准备一份简洁的简历，练习30秒自我介绍（Elevator Pitch）。</div>
+      </div>
+      <div style="position:relative;margin-bottom:20px;">
+        <div style="position:absolute;left:-22px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid #fff;box-shadow:0 0 0 2px var(--gold);"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;font-family:'DM Mono',monospace;">10—12月 · 大公司开始招募</div>
+        <div style="font-size:13px;color:#333;line-height:1.7;">科技和金融公司的<strong>大二暑期实习</strong>在这个时期开始投递。大一新生先做准备：学习基础编程或Excel/Python，了解目标行业。</div>
+      </div>
+      <div style="position:relative;margin-bottom:20px;">
+        <div style="position:absolute;left:-22px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid #fff;box-shadow:0 0 0 2px var(--gold);"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;font-family:'DM Mono',monospace;">1—3月 · 春季行动</div>
+        <div style="font-size:13px;color:#333;line-height:1.7;">主动约Career Center做简历修改，开始在Handshake申请大一暑假的实习或Research机会。国内企业很多在这个时期开放暑期实习申请。</div>
+      </div>
+      <div style="position:relative;margin-bottom:20px;">
+        <div style="position:absolute;left:-22px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid #fff;box-shadow:0 0 0 2px var(--gold);"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;font-family:'DM Mono',monospace;">暑假 · 大一结束</div>
+        <div style="font-size:13px;color:#333;line-height:1.7;">目标：拿到一段有含金量的经历——国内科技/金融公司实习、Duke教授的RA机会、或参加暑期项目。不要虚度暑假是最关键的。</div>
+      </div>
+      <div style="position:relative;">
+        <div style="position:absolute;left:-22px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--navy);border:2px solid #fff;box-shadow:0 0 0 2px var(--navy);"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--navy);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;font-family:'DM Mono',monospace;">大二秋季 · 正式出发</div>
+        <div style="font-size:13px;color:#333;line-height:1.7;">有了大一暑假的经历，大二秋季开始正式冲击大公司暑期实习。这一阶段竞争激烈，需要提前准备技术面试或案例面试。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="form-card" id="g4">
+    <h2>④ 中国学生：签证与工作身份</h2>
+    <p style="font-size:14px;color:#444;margin-bottom:16px;line-height:1.8;">这是很多家长最关心的实际问题，也是中国学生与美国本地学生最大的不同之处。</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;">🇺🇸 在美实习</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">F-1签证学生在美国境内带薪实习需要 <strong>CPT授权</strong>，由Duke ISSS审批。通常需要完成至少一年学业，<strong>大一暑假一般无法获批</strong>。</div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;">🇨🇳 回国实习</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">回国实习完全没有签证限制。国内大型科技、金融、咨询公司都有成熟的暑期项目。对大一新生来说，<strong>回国实习是最现实的第一段经历</strong>。</div>
+      </div>
+    </div>
+    <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;margin-bottom:14px;">
+      <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;">🎓 毕业后：OPT与STEM延期</div>
+      <div style="font-size:13px;color:#444;line-height:1.7;">毕业后可申请 <strong>OPT</strong>，有效期1年，STEM专业可申请延期至<strong>3年</strong>。这意味着STEM专业的中国学生毕业后有3年时间在美工作、等待H-1B抽签。选择STEM专业在一定程度上也是对美国就业路径的战略考量。</div>
+    </div>
+    <div style="background:#fff8e8;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:14px 18px;font-size:13px;line-height:1.7;">
+      <strong style="color:var(--gold);display:block;margin-bottom:6px;">⚠️ 注意</strong>
+      签证政策变化频繁，以上信息仅供参考。具体情况请务必咨询Duke ISSS（isss.duke.edu）。重大决定前一定以官方最新政策为准。
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="form-card" id="g5">
+    <h2>⑤ 家长能做什么</h2>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="padding:14px 16px;border:1px solid #c8e6c9;border-radius:10px;background:#f1f8e9;">
+        <div style="font-size:14px;font-weight:700;color:#2a7a3b;margin-bottom:8px;">✅ 可以做的</div>
+        <div style="font-size:13px;color:#333;line-height:1.8;">
+          <p style="margin-bottom:8px;"><strong>分享人脉资源</strong>——帮孩子牵线做Informational Interview，了解行业真实情况。这在美国职场文化中完全正常。</p>
+          <p style="margin-bottom:8px;"><strong>帮助规划暑假</strong>——提前帮孩子联系国内公司的实习机会，特别是大一暑假这段时间窗口。</p>
+          <p style="margin-bottom:8px;"><strong>了解时间节点</strong>——知道大公司招募的截止时间，在孩子可能错过时提醒。</p>
+          <p><strong>情绪支持</strong>——实习求职充满拒信（Rejection），家长的鼓励和正向反馈非常重要。</p>
+        </div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid #ffccbc;border-radius:10px;background:#fff3e0;">
+        <div style="font-size:14px;font-weight:700;color:#bf360c;margin-bottom:8px;">❌ 尽量避免的</div>
+        <div style="font-size:13px;color:#333;line-height:1.8;">
+          <p style="margin-bottom:8px;"><strong>直接替孩子投简历或写Cover Letter</strong>——面试时会露馅，且对孩子长期成长有害。</p>
+          <p style="margin-bottom:8px;"><strong>强迫孩子选择特定方向</strong>——大学是探索期，强迫选择往往适得其反。</p>
+          <p><strong>把"有没有找到实习"当成评价标准</strong>——大一没有实习完全正常，过度焦虑会传递给孩子。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="form-card" id="g6">
+    <h2>⑥ 常见误区</h2>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">❌ "GPA够高就能找到好实习"</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">GPA是门槛，但不是决定因素。顶级公司更看重项目经历、实习经历和面试表现。许多GPA 4.0的学生因为没有准备面试而被拒，反而GPA 3.5但有丰富经历的学生拿到了offer。</div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">❌ "大一不用想实习"</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">大一确实不用找大公司暑期实习，但大一暑假的规划必须从<strong>春季学期</strong>就开始。等到5月才开始找，基本已经错过大部分机会。</div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">❌ "海投就能成功"</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">无差别海投效率极低。精准投递20家认真写了Cover Letter的公司，远好于机械投递200家。更有效的方式是通过Informational Interview建立关系，再正式申请。</div>
+      </div>
+      <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">❌ "国内实习没用"</div>
+        <div style="font-size:13px;color:#444;line-height:1.7;">对中国学生来说，国内大型公司（BAT、华为、顶级金融机构）的实习经历在美国招募中完全被认可，甚至因为体量大、项目清晰而加分。不要轻视国内经历。</div>
+      </div>
+    </div>
+    <div style="background:#e8f0fb;border-left:3px solid var(--navy);border-radius:0 8px 8px 0;padding:14px 18px;margin-top:16px;font-size:13px;line-height:1.7;">
+      <strong style="color:var(--navy);display:block;margin-bottom:6px;">💡 最后一句话</strong>
+      实习求职是一项技能，可以学习和练习。Duke提供了所有必要的工具和支持，孩子需要的是主动迈出第一步。家长最重要的作用，是在背后给予稳定的支持，而不是替孩子走这条路。
+    </div>
+    <div style="margin-top:20px;text-align:center;">
+      <button onclick="switchTab('student')" style="background:var(--navy);color:#fff;border:none;padding:12px 28px;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.04em;margin-right:10px;">🎓 我是学生，生成方案 →</button>
+      <button onclick="switchTab('parent')" style="background:var(--gold);color:var(--navy);border:none;padding:12px 28px;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.04em;">👨‍👩‍👧 我是家长，生成方案 →</button>
+    </div>
+  </div>
+</div>
+
+
 </main>
 
 <script>
 function toggleCheck(el) {
   el.classList.toggle('checked');
-}
-function switchTab(role) {
-  document.getElementById('tab-student').classList.toggle('active', role==='student');
-  document.getElementById('tab-parent').classList.toggle('active', role==='parent');
-  document.getElementById('panel-student').classList.toggle('active', role==='student');
-  document.getElementById('panel-parent').classList.toggle('active', role==='parent');
 }
 </script>
 <script>
@@ -789,10 +971,11 @@ const supabaseClient = _supabase;
 
 // Tab switch
 function switchTab(role) {
-  document.getElementById('tab-student').classList.toggle('active', role==='student');
-  document.getElementById('tab-parent').classList.toggle('active', role==='parent');
-  document.getElementById('panel-student').classList.toggle('active', role==='student');
-  document.getElementById('panel-parent').classList.toggle('active', role==='parent');
+  ['student','parent','guide'].forEach(r => {
+    document.getElementById('tab-'+r).classList.toggle('active', r===role);
+    document.getElementById('panel-'+r).classList.toggle('active', r===role);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // Checkbox toggle handled by onclick
