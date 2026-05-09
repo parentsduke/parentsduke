@@ -775,7 +775,7 @@ function switchTab(role) {
 <script>
 const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.bB5oFHALPGUDKyEQ3ikQqDfEKDPMEkAbPy9FfznIk3c';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = (window.supabase || window.supabaseJs)?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) || { auth: { getSession: async () => ({ data: { session: null } }), getUser: async () => ({ data: { user: null } }) } };
 
 // Auth guard
 (async () => {
