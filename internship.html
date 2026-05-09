@@ -780,7 +780,10 @@ const supabase = (window.supabase || window.supabaseJs)?.createClient(SUPABASE_U
 // Auth guard
 (async () => {
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
+  if (session) {
+    // 尝试刷新token
+    await supabase.auth.refreshSession();
+  } else {
     document.getElementById('auth-guard').style.display = 'flex';
   }
 })();
@@ -807,6 +810,7 @@ function getChecked(groupId) {
 const PROXY_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/ai-proxy';
 
 async function callProxy(provider, prompt, useSearch = false) {
+  await supabase.auth.refreshSession();
   const { data: { session } } = await supabase.auth.getSession();
   const res = await fetch(PROXY_URL, {
     method: 'POST',
@@ -998,9 +1002,12 @@ async function searchJobs(p, major, industry, location) {
   container.appendChild(searchDiv);
   searchDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  const jobPrompt = `请联网搜索当前（2025-2026年）适合${major}专业${industry}方向学生的实习职位。列出5-8个具体职位，包括公司名、职位名、地点、申请截止日期（如有）。用中文回答，职位名保留英文。直接用HTML格式返回ul/li列表。`;
+  const locationLabel = location || '美国';
+  const isUSA = !location || location.includes('美国') || location.includes('远程') || location.includes('Remote');
+  const langNote = isUSA ? '以美国英文职位为主，公司名和职位名保留英文' : `以${locationLabel}职位为主`;
+  const jobPrompt = `Search the web for current (2025-2026) internship positions suitable for ${major} students interested in ${industry}, located in ${locationLabel}. List 5-8 specific positions with company name, job title, location, and application deadline if available. ${langNote}。直接用HTML格式返回ul/li列表。`;
 
-  const resourcePrompt = `请联网搜索当前（2025-2026年）适合${major}专业${industry}方向学生的实习申请资源，包括：实习项目官网、申请截止日期、奖学金/资助项目、行业协会、校招平台。用中文回答，直接用HTML格式返回ul/li列表，每项包含名称和链接（如有）。`;
+  const resourcePrompt = `Search the web for current (2025-2026) internship application resources for ${major} students in ${industry}, targeting ${locationLabel}. Include: official internship program websites, application deadlines, scholarships, industry associations, recruiting platforms. ${langNote}。直接用HTML格式返回ul/li列表，每项包含名称和链接（如有）。`;
 
   const proxyCall = (provider, prompt, useSearch, statusId, contentId) =>
     callProxy(provider, prompt, useSearch).then(text => {
