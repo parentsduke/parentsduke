@@ -775,14 +775,15 @@ function switchTab(role) {
 <script>
 const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.bB5oFHALPGUDKyEQ3ikQqDfEKDPMEkAbPy9FfznIk3c';
-const supabase = (window.supabase || window.supabaseJs)?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) || { auth: { getSession: async () => ({ data: { session: null } }), getUser: async () => ({ data: { user: null } }) } };
+const _supabase = (window.supabase || window.supabaseJs)?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) || { auth: { getSession: async () => ({ data: { session: null } }), getUser: async () => ({ data: { user: null } }) } };
+const supabaseClient = _supabase;
 
 // Auth guard
 (async () => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
     // 尝试刷新token
-    await supabase.auth.refreshSession();
+    await supabaseClient.auth.refreshSession();
   } else {
     document.getElementById('auth-guard').style.display = 'flex';
   }
@@ -810,8 +811,8 @@ function getChecked(groupId) {
 const PROXY_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/ai-proxy';
 
 async function callProxy(provider, prompt, useSearch = false) {
-  await supabase.auth.refreshSession();
-  const { data: { session } } = await supabase.auth.getSession();
+  await supabaseClient.auth.refreshSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   const res = await fetch(PROXY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
