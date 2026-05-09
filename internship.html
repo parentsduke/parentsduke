@@ -392,7 +392,7 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
 <!-- Auth Guard -->
 <div id="auth-guard">
   <p>请先登录后访问此页面</p>
-  <a href="/index.html?redirect=/internship.html">前往登录 →</a>
+  <a href="/login.html?redirect=/internship.html">前往登录 →</a>
 </div>
 
 <header>
@@ -780,12 +780,16 @@ const supabaseClient = _supabase;
 
 // Auth guard
 (async () => {
-  const { data: { session } } = await supabaseClient.auth.getSession();
+  let { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
     // 尝试刷新token
-    await supabaseClient.auth.refreshSession();
-  } else {
-    document.getElementById('auth-guard').style.display = 'flex';
+    const { data } = await supabaseClient.auth.refreshSession();
+    session = data.session;
+  }
+  if (!session) {
+    // 未登录或session已过期，直接跳转登录页
+    window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+    return;
   }
 })();
 
@@ -811,11 +815,16 @@ function getChecked(groupId) {
 const PROXY_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/ai-proxy';
 
 async function callProxy(provider, prompt, useSearch = false) {
-  await supabaseClient.auth.refreshSession();
-  const { data: { session } } = await supabaseClient.auth.getSession();
+  // 刷新session
+  const { data } = await supabaseClient.auth.refreshSession();
+  const session = data.session;
+  if (!session) {
+    window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+    throw new Error('登录已过期，正在跳转登录页...');
+  }
   const res = await fetch(PROXY_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token}` },
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
     body: JSON.stringify({ provider, prompt, useSearch })
   });
   const d = await res.json();
