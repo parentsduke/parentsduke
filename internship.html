@@ -833,15 +833,56 @@ const APIS = [
 ];
 
 function parseJSON(text) {
-  try {
-    const clean = text.replace(/```json|```/g, '').trim();
-    return JSON.parse(clean);
-  } catch {
-    // 尝试提取{}之间的内容
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) { try { return JSON.parse(match[0]); } catch {} }
-    return null;
+  if (!text) return null;
+
+  // 1. 去掉 markdown 代码块
+  let clean = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+
+  // 2. 直接解析
+  try { return JSON.parse(clean); } catch {}
+
+  // 3. 提取第一个完整 { ... }（处理前后有多余文字的情况）
+  const start = clean.indexOf('{');
+  const end = clean.lastIndexOf('}');
+  if (start !== -1 && end !== -1 && end > start) {
+    try { return JSON.parse(clean.slice(start, end + 1)); } catch {}
   }
+
+  // 4. 修复常见问题：多余逗号、单引号、换行符在字符串里
+  try {
+    let fixed = clean
+      .replace(/,\s*([}\]])/g, '$1')        // 尾随逗号
+      .replace(/([{,]\s*)'([^']+)'\s*:/g, '$1"$2":')  // key用单引号
+      .replace(/:\s*'([^']*)'/g, ': "$1"')  // value用单引号
+      .replace(/[\x00-\x1F\x7F]/g, ' ');  // 控制字符
+    return JSON.parse(fixed);
+  } catch {}
+
+  // 5. 用正则逐字段提取（最后兜底）
+  try {
+    const extract = (key, isArr) => {
+      if (isArr) {
+        const m = text.match(new RegExp(`"${key}"\\s*:\\s*\\{([\\s\\S]*?)\\}`, 'i'));
+        if (!m) return {zh:[], en:[]};
+        const zh = [...m[1].matchAll(/"zh"\s*:\s*\[(.*?)\]/s)].map(x=>x[1].split(',').map(s=>s.replace(/['"]/g,'').trim()))[0] || [];
+        const en = [...m[1].matchAll(/"en"\s*:\s*\[(.*?)\]/s)].map(x=>x[1].split(',').map(s=>s.replace(/['"]/g,'').trim()))[0] || [];
+        return {zh, en};
+      }
+      const mzh = text.match(new RegExp(`"${key}"[\\s\\S]*?"zh"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"`, 'i'));
+      const men = text.match(new RegExp(`"${key}"[\\s\\S]*?"en"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"`, 'i'));
+      return {zh: mzh?.[1]||'', en: men?.[1]||''};
+    };
+    const result = {
+      strategy: extract('strategy'),
+      resume_tips: extract('resume_tips', true),
+      keywords: extract('keywords', true),
+      cover_letter: extract('cover_letter'),
+      resources: extract('resources', true),
+    };
+    if (result.strategy.zh || result.strategy.en) return result;
+  } catch {}
+
+  return null;
 }
 
 // Generate
@@ -924,9 +965,12 @@ async function generate(role) {
         // 第一个成功的结果存历史
         if (allResults.length === 1) saveHistory(role, meta, result);
       } else {
-        statusEl.textContent = '解析失败';
-        statusEl.style.color = '#c00';
-        contentEl.innerHTML = `<pre style="font-size:11px;color:#999;white-space:pre-wrap;word-break:break-all;">${text.slice(0, 300)}...</pre>`;
+        // 解析失败但有内容，直接显示原始文本
+        statusEl.textContent = `✓ ${elapsed}s (纯文本)`;
+        statusEl.style.color = '#b8740a';
+        contentEl.innerHTML = `<div style="font-size:13px;line-height:1.8;color:var(--ink);white-space:pre-wrap;">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+        allResults.push({ api: api.name, result: { strategy:{zh:text,en:''}, resume_tips:{zh:[],en:[]}, keywords:{zh:[],en:[]}, cover_letter:{zh:'',en:''}, resources:{zh:[],en:[]} } });
+        if (allResults.length === 1) saveHistory(role, meta, allResults[0].result);
       }
     } catch(e) {
       statusEl.textContent = '请求失败';
