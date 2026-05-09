@@ -419,7 +419,70 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
     <div class="form-row">
       <div class="form-group">
         <label>专业 / Major</label>
-        <input type="text" id="s-major" placeholder="e.g. Computer Science">
+        <select id="s-major">
+      <option value="">请选择专业</option>
+      <optgroup label="工程 Engineering (Pratt)">
+        <option>Biomedical Engineering 生物医学工程</option>
+        <option>Civil Engineering 土木工程</option>
+        <option>Electrical & Computer Engineering 电子计算机工程</option>
+        <option>Environmental Engineering 环境工程</option>
+        <option>Mechanical Engineering 机械工程</option>
+        <option>Computer Science (Pratt) 计算机科学</option>
+      </optgroup>
+      <optgroup label="计算机与数据 CS & Data">
+        <option>Computer Science 计算机科学</option>
+        <option>Computational Biology & Bioinformatics 计算生物学</option>
+        <option>Computational Media 计算媒体</option>
+        <option>Machine Learning & AI 机器学习与人工智能</option>
+        <option>Statistical Science 统计学</option>
+        <option>Mathematics 数学</option>
+      </optgroup>
+      <optgroup label="社会科学 Social Sciences">
+        <option>Economics 经济学</option>
+        <option>Public Policy 公共政策</option>
+        <option>Political Science 政治学</option>
+        <option>Psychology 心理学</option>
+        <option>Sociology 社会学</option>
+        <option>Cultural Anthropology 文化人类学</option>
+        <option>Evolutionary Anthropology 进化人类学</option>
+        <option>Finance 金融</option>
+      </optgroup>
+      <optgroup label="自然科学 Natural Sciences">
+        <option>Biology 生物学</option>
+        <option>Chemistry 化学</option>
+        <option>Physics 物理学</option>
+        <option>Neuroscience 神经科学</option>
+        <option>Biophysics 生物物理</option>
+        <option>Earth & Climate Sciences 地球与气候科学</option>
+        <option>Environmental Sciences 环境科学</option>
+        <option>Global Health 全球健康</option>
+      </optgroup>
+      <optgroup label="人文 Humanities">
+        <option>English 英语</option>
+        <option>History 历史</option>
+        <option>Philosophy 哲学</option>
+        <option>Art History 艺术史</option>
+        <option>Music 音乐</option>
+        <option>Theater Studies 戏剧</option>
+        <option>Dance 舞蹈</option>
+        <option>Religion 宗教</option>
+      </optgroup>
+      <optgroup label="语言 Languages">
+        <option>Chinese 中文</option>
+        <option>French & Francophone Studies 法语</option>
+        <option>German 德语</option>
+        <option>Spanish 西班牙语</option>
+        <option>Asian & Middle Eastern Studies 亚洲与中东研究</option>
+      </optgroup>
+      <optgroup label="其他 Other">
+        <option>Gender, Sexuality & Feminist Studies</option>
+        <option>Journalism & Media 新闻与媒体</option>
+        <option>Education 教育</option>
+        <option>Linguistics 语言学</option>
+        <option>Program II (自设专业)</option>
+        <option>其他 Other</option>
+      </optgroup>
+    </select>
       </div>
       <div class="form-group">
         <label>年级 / Year</label>
@@ -436,14 +499,14 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
     <div class="form-group">
       <label>意向行业 / Target Industry</label>
       <div class="check-group" id="s-industry">
-        <label class="check-item"><input type="checkbox" value="科技/Tech">科技/Tech</label>
-        <label class="check-item"><input type="checkbox" value="金融/Finance">金融/Finance</label>
-        <label class="check-item"><input type="checkbox" value="咨询/Consulting">咨询/Consulting</label>
-        <label class="check-item"><input type="checkbox" value="医疗/Healthcare">医疗/Healthcare</label>
-        <label class="check-item"><input type="checkbox" value="法律/Law">法律/Law</label>
-        <label class="check-item"><input type="checkbox" value="媒体/Media">媒体/Media</label>
-        <label class="check-item"><input type="checkbox" value="教育/Education">教育/Education</label>
-        <label class="check-item"><input type="checkbox" value="非营利/Nonprofit">非营利/Nonprofit</label>
+        <div class="check-item" data-value="科技/Tech" onclick="toggleCheck(this)">科技/Tech</div>
+        <div class="check-item" data-value="金融/Finance" onclick="toggleCheck(this)">金融/Finance</div>
+        <div class="check-item" data-value="咨询/Consulting" onclick="toggleCheck(this)">咨询/Consulting</div>
+        <div class="check-item" data-value="医疗/Healthcare" onclick="toggleCheck(this)">医疗/Healthcare</div>
+        <div class="check-item" data-value="法律/Law" onclick="toggleCheck(this)">法律/Law</div>
+        <div class="check-item" data-value="媒体/Media" onclick="toggleCheck(this)">媒体/Media</div>
+        <div class="check-item" data-value="教育/Education" onclick="toggleCheck(this)">教育/Education</div>
+        <div class="check-item" data-value="非营利/Nonprofit" onclick="toggleCheck(this)">非营利/Nonprofit</div>
       </div>
     </div>
     <div class="form-row">
@@ -470,8 +533,28 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
       </div>
     </div>
     <div class="form-group">
-      <label>技能/经历简述 / Skills & Experience</label>
-      <textarea id="s-skills" placeholder="例如：熟悉Python、R，有数据分析项目经验，参加过Duke创业社..."></textarea>
+      <label>技能/经历 / Skills & Experience</label>
+      <div class="check-group" id="s-skills-tags">
+        <div class="check-item" data-value="Python" onclick="toggleCheck(this)">Python</div>
+        <div class="check-item" data-value="R" onclick="toggleCheck(this)">R</div>
+        <div class="check-item" data-value="Java" onclick="toggleCheck(this)">Java</div>
+        <div class="check-item" data-value="C++" onclick="toggleCheck(this)">C++</div>
+        <div class="check-item" data-value="MATLAB" onclick="toggleCheck(this)">MATLAB</div>
+        <div class="check-item" data-value="SQL" onclick="toggleCheck(this)">SQL</div>
+        <div class="check-item" data-value="Excel" onclick="toggleCheck(this)">Excel</div>
+        <div class="check-item" data-value="Tableau" onclick="toggleCheck(this)">Tableau</div>
+        <div class="check-item" data-value="机器学习" onclick="toggleCheck(this)">机器学习</div>
+        <div class="check-item" data-value="财务建模" onclick="toggleCheck(this)">财务建模</div>
+        <div class="check-item" data-value="Bloomberg" onclick="toggleCheck(this)">Bloomberg</div>
+        <div class="check-item" data-value="实验室经验" onclick="toggleCheck(this)">实验室经验</div>
+        <div class="check-item" data-value="科研发表" onclick="toggleCheck(this)">科研发表</div>
+        <div class="check-item" data-value="创业社" onclick="toggleCheck(this)">创业社</div>
+        <div class="check-item" data-value="投资俱乐部" onclick="toggleCheck(this)">投资俱乐部</div>
+        <div class="check-item" data-value="科研助理" onclick="toggleCheck(this)">科研助理</div>
+        <div class="check-item" data-value="实习经历" onclick="toggleCheck(this)">实习经历</div>
+        <div class="check-item" data-value="领导力" onclick="toggleCheck(this)">领导力</div>
+      </div>
+      <textarea id="s-skills" placeholder="其他补充：GPA、特殊经历、目标公司等..." style="margin-top:10px;"></textarea>
     </div>
     <div class="form-group">
       <label>其他补充 / Additional Notes（选填）</label>
@@ -509,7 +592,70 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
     <div class="form-row">
       <div class="form-group">
         <label>专业 / Major</label>
-        <input type="text" id="p-major" placeholder="e.g. Economics">
+        <select id="p-major">
+      <option value="">请选择专业</option>
+      <optgroup label="工程 Engineering (Pratt)">
+        <option>Biomedical Engineering 生物医学工程</option>
+        <option>Civil Engineering 土木工程</option>
+        <option>Electrical & Computer Engineering 电子计算机工程</option>
+        <option>Environmental Engineering 环境工程</option>
+        <option>Mechanical Engineering 机械工程</option>
+        <option>Computer Science (Pratt) 计算机科学</option>
+      </optgroup>
+      <optgroup label="计算机与数据 CS & Data">
+        <option>Computer Science 计算机科学</option>
+        <option>Computational Biology & Bioinformatics 计算生物学</option>
+        <option>Computational Media 计算媒体</option>
+        <option>Machine Learning & AI 机器学习与人工智能</option>
+        <option>Statistical Science 统计学</option>
+        <option>Mathematics 数学</option>
+      </optgroup>
+      <optgroup label="社会科学 Social Sciences">
+        <option>Economics 经济学</option>
+        <option>Public Policy 公共政策</option>
+        <option>Political Science 政治学</option>
+        <option>Psychology 心理学</option>
+        <option>Sociology 社会学</option>
+        <option>Cultural Anthropology 文化人类学</option>
+        <option>Evolutionary Anthropology 进化人类学</option>
+        <option>Finance 金融</option>
+      </optgroup>
+      <optgroup label="自然科学 Natural Sciences">
+        <option>Biology 生物学</option>
+        <option>Chemistry 化学</option>
+        <option>Physics 物理学</option>
+        <option>Neuroscience 神经科学</option>
+        <option>Biophysics 生物物理</option>
+        <option>Earth & Climate Sciences 地球与气候科学</option>
+        <option>Environmental Sciences 环境科学</option>
+        <option>Global Health 全球健康</option>
+      </optgroup>
+      <optgroup label="人文 Humanities">
+        <option>English 英语</option>
+        <option>History 历史</option>
+        <option>Philosophy 哲学</option>
+        <option>Art History 艺术史</option>
+        <option>Music 音乐</option>
+        <option>Theater Studies 戏剧</option>
+        <option>Dance 舞蹈</option>
+        <option>Religion 宗教</option>
+      </optgroup>
+      <optgroup label="语言 Languages">
+        <option>Chinese 中文</option>
+        <option>French & Francophone Studies 法语</option>
+        <option>German 德语</option>
+        <option>Spanish 西班牙语</option>
+        <option>Asian & Middle Eastern Studies 亚洲与中东研究</option>
+      </optgroup>
+      <optgroup label="其他 Other">
+        <option>Gender, Sexuality & Feminist Studies</option>
+        <option>Journalism & Media 新闻与媒体</option>
+        <option>Education 教育</option>
+        <option>Linguistics 语言学</option>
+        <option>Program II (自设专业)</option>
+        <option>其他 Other</option>
+      </optgroup>
+    </select>
       </div>
       <div class="form-group">
         <label>年级 / Year</label>
@@ -526,14 +672,14 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
     <div class="form-group">
       <label>意向行业 / Target Industry</label>
       <div class="check-group" id="p-industry">
-        <label class="check-item"><input type="checkbox" value="科技/Tech">科技/Tech</label>
-        <label class="check-item"><input type="checkbox" value="金融/Finance">金融/Finance</label>
-        <label class="check-item"><input type="checkbox" value="咨询/Consulting">咨询/Consulting</label>
-        <label class="check-item"><input type="checkbox" value="医疗/Healthcare">医疗/Healthcare</label>
-        <label class="check-item"><input type="checkbox" value="法律/Law">法律/Law</label>
-        <label class="check-item"><input type="checkbox" value="媒体/Media">媒体/Media</label>
-        <label class="check-item"><input type="checkbox" value="教育/Education">教育/Education</label>
-        <label class="check-item"><input type="checkbox" value="非营利/Nonprofit">非营利/Nonprofit</label>
+        <div class="check-item" data-value="科技/Tech" onclick="toggleCheck(this)">科技/Tech</div>
+        <div class="check-item" data-value="金融/Finance" onclick="toggleCheck(this)">金融/Finance</div>
+        <div class="check-item" data-value="咨询/Consulting" onclick="toggleCheck(this)">咨询/Consulting</div>
+        <div class="check-item" data-value="医疗/Healthcare" onclick="toggleCheck(this)">医疗/Healthcare</div>
+        <div class="check-item" data-value="法律/Law" onclick="toggleCheck(this)">法律/Law</div>
+        <div class="check-item" data-value="媒体/Media" onclick="toggleCheck(this)">媒体/Media</div>
+        <div class="check-item" data-value="教育/Education" onclick="toggleCheck(this)">教育/Education</div>
+        <div class="check-item" data-value="非营利/Nonprofit" onclick="toggleCheck(this)">非营利/Nonprofit</div>
       </div>
     </div>
     <div class="form-row">
@@ -561,7 +707,27 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
     </div>
     <div class="form-group">
       <label>孩子的技能/经历 / Skills & Experience</label>
-      <textarea id="p-skills" placeholder="例如：学过Python，参加过投资俱乐部，有科研经历..."></textarea>
+      <div class="check-group" id="p-skills-tags">
+        <div class="check-item" data-value="Python" onclick="toggleCheck(this)">Python</div>
+        <div class="check-item" data-value="R" onclick="toggleCheck(this)">R</div>
+        <div class="check-item" data-value="Java" onclick="toggleCheck(this)">Java</div>
+        <div class="check-item" data-value="C++" onclick="toggleCheck(this)">C++</div>
+        <div class="check-item" data-value="MATLAB" onclick="toggleCheck(this)">MATLAB</div>
+        <div class="check-item" data-value="SQL" onclick="toggleCheck(this)">SQL</div>
+        <div class="check-item" data-value="Excel" onclick="toggleCheck(this)">Excel</div>
+        <div class="check-item" data-value="Tableau" onclick="toggleCheck(this)">Tableau</div>
+        <div class="check-item" data-value="机器学习" onclick="toggleCheck(this)">机器学习</div>
+        <div class="check-item" data-value="财务建模" onclick="toggleCheck(this)">财务建模</div>
+        <div class="check-item" data-value="Bloomberg" onclick="toggleCheck(this)">Bloomberg</div>
+        <div class="check-item" data-value="实验室经验" onclick="toggleCheck(this)">实验室经验</div>
+        <div class="check-item" data-value="科研发表" onclick="toggleCheck(this)">科研发表</div>
+        <div class="check-item" data-value="创业社" onclick="toggleCheck(this)">创业社</div>
+        <div class="check-item" data-value="投资俱乐部" onclick="toggleCheck(this)">投资俱乐部</div>
+        <div class="check-item" data-value="科研助理" onclick="toggleCheck(this)">科研助理</div>
+        <div class="check-item" data-value="实习经历" onclick="toggleCheck(this)">实习经历</div>
+        <div class="check-item" data-value="领导力" onclick="toggleCheck(this)">领导力</div>
+      </div>
+      <textarea id="p-skills" placeholder="其他补充：GPA、特殊经历、目标公司等..." style="margin-top:10px;"></textarea>
     </div>
     <div class="form-group">
       <label>家长的期望与顾虑 / Parent Notes（选填）</label>
@@ -594,6 +760,17 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
 
 </main>
 
+<script>
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+}
+function switchTab(role) {
+  document.getElementById('tab-student').classList.toggle('active', role==='student');
+  document.getElementById('tab-parent').classList.toggle('active', role==='parent');
+  document.getElementById('panel-student').classList.toggle('active', role==='student');
+  document.getElementById('panel-parent').classList.toggle('active', role==='parent');
+}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
@@ -616,17 +793,14 @@ function switchTab(role) {
   document.getElementById('panel-parent').classList.toggle('active', role==='parent');
 }
 
-// Checkbox toggle
-document.querySelectorAll('.check-item').forEach(item => {
-  item.addEventListener('click', (e) => {
-    e.preventDefault();
-    item.classList.toggle('checked');
-  });
-});
+// Checkbox toggle handled by onclick
 
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+}
 function getChecked(groupId) {
-  return Array.from(document.querySelectorAll(`#${groupId} .check-item.checked input`))
-    .map(i => i.value).join('、');
+  return Array.from(document.querySelectorAll(`#${groupId} .check-item.checked`))
+    .map(el => el.dataset.value).join('、');
 }
 
 // API配置 — 通过Supabase Edge Function代理，key不暴露在前端
@@ -672,7 +846,7 @@ async function generate(role) {
   const industry = getChecked(`${p}-industry`);
   const location = document.getElementById(`${p}-location`).value;
   const timeline = document.getElementById(`${p}-timeline`).value;
-  const skills   = document.getElementById(`${p}-skills`).value.trim();
+  const skillTags = getChecked(`${p}-skills-tags`); const skillsText = document.getElementById(`${p}-skills`).value.trim(); const skills = [skillTags, skillsText].filter(Boolean).join('，');
   const notes    = document.getElementById(`${p}-notes`).value.trim();
   const errEl    = document.getElementById(`${p}-error`);
 
