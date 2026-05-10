@@ -403,6 +403,25 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
   .form-card { padding: 20px 16px; }
   .hero p { font-size: 15px; }
 }
+
+/* 搜索结果响应式网格 */
+.search-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 600px) {
+  .search-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1000px) {
+  .search-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+}
+/* 每列内的卡片纵向排列 */
+.search-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -936,7 +955,7 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
   <!-- S6 -->
   <div class="form-card" id="g6">
     <h2>⑥ 常见误区</h2>
-    <div style="display:flex;flex-direction:column;gap:12px;">
+    <div class="search-col">
       <div style="padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:#faf9f7;">
         <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;">❌ "GPA够高就能找到好实习"</div>
         <div style="font-size:13px;color:#222;line-height:1.7;">GPA是门槛，但不是决定因素。顶级公司更看重项目经历、实习经历和面试表现。许多GPA 4.0的学生因为没有准备面试而被拒，反而GPA 3.5但有丰富经历的学生拿到了offer。</div>
@@ -1212,8 +1231,8 @@ async function searchJobs(p, major, industry, location) {
       <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);">Gemini + Perplexity + Tavily + Exa 并行搜索中...</div>
     </div>
     <div style="margin-bottom:12px;font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;display:inline-block;">📋 实时职位 &nbsp;·&nbsp; 📚 申请资源</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;">
-      <div style="display:flex;flex-direction:column;gap:12px;">
+    <div class="search-grid">
+      <div class="search-col">
         <div id="${p}-gemini-jobs" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
             <span style="background:#4285F4;color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px;">Gemini 职位</span>
@@ -1229,7 +1248,7 @@ async function searchJobs(p, major, industry, location) {
           <div id="${p}-gr-content" style="color:#999;font-size:13px;">⏳</div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="search-col">
         <div id="${p}-perplexity-jobs" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
             <span style="background:#6366F1;color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px;">Perplexity 职位</span>
@@ -1245,7 +1264,7 @@ async function searchJobs(p, major, industry, location) {
           <div id="${p}-pr-content" style="color:#999;font-size:13px;">⏳</div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="search-col">
         <div id="${p}-tavily-jobs" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
             <span style="background:#00897B;color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px;">Tavily 职位</span>
@@ -1259,6 +1278,22 @@ async function searchJobs(p, major, industry, location) {
             <span id="${p}-tr-status" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">搜索中...</span>
           </div>
           <div id="${p}-tr-content" style="color:#999;font-size:13px;">⏳</div>
+        </div>
+      </div>
+      <div class="search-col">
+        <div id="${p}-exa-jobs" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="background:#0F172A;color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px;">Exa 职位</span>
+            <span id="${p}-es-status" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">搜索中...</span>
+          </div>
+          <div id="${p}-es-content" style="color:#999;font-size:13px;">⏳</div>
+        </div>
+        <div id="${p}-exa-resources" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="background:#0F172A;color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px;">Exa 资源</span>
+            <span id="${p}-er-status" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">搜索中...</span>
+          </div>
+          <div id="${p}-er-content" style="color:#999;font-size:13px;">⏳</div>
         </div>
       </div>
     </div>
