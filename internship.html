@@ -1193,7 +1193,7 @@ async function generate(role) {
       style="background:linear-gradient(135deg,#4285F4,#6366F1);color:#fff;border:none;padding:12px 28px;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.04em;">
       🔍 搜索实时职位
     </button>
-    <p style="font-size:11px;color:var(--muted);margin-top:8px;font-family:'DM Mono',monospace;">由 Gemini + Perplexity 联网搜索</p>
+    <p style="font-size:11px;color:var(--muted);margin-top:8px;font-family:'DM Mono',monospace;">由 Gemini + Perplexity + Tavily + Exa 联网搜索</p>
   `;
   document.getElementById(`${p}-ai-results`).appendChild(searchBtn);
 }
@@ -1209,10 +1209,10 @@ async function searchJobs(p, major, industry, location) {
   searchDiv.innerHTML = `
     <div style="background:linear-gradient(135deg,#001F5B,#2A4BA0);border-radius:12px;padding:20px 24px;margin-bottom:16px;">
       <div style="font-family:'Syne',sans-serif;color:#fff;font-size:16px;margin-bottom:4px;">🔍 实时职位搜索</div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);">Gemini + Perplexity 并行搜索中...</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);">Gemini + Perplexity + Tavily + Exa 并行搜索中...</div>
     </div>
     <div style="margin-bottom:12px;font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;display:inline-block;">📋 实时职位 &nbsp;·&nbsp; 📚 申请资源</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;">
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div id="${p}-gemini-jobs" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
@@ -1245,6 +1245,22 @@ async function searchJobs(p, major, industry, location) {
           <div id="${p}-pr-content" style="color:#999;font-size:13px;">⏳</div>
         </div>
       </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div id="${p}-tavily-jobs" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="background:#00897B;color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px;">Tavily 职位</span>
+            <span id="${p}-ts-status" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">搜索中...</span>
+          </div>
+          <div id="${p}-ts-content" style="color:#999;font-size:13px;">⏳</div>
+        </div>
+        <div id="${p}-tavily-resources" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="background:#00897B;color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px;">Tavily 资源</span>
+            <span id="${p}-tr-status" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">搜索中...</span>
+          </div>
+          <div id="${p}-tr-content" style="color:#999;font-size:13px;">⏳</div>
+        </div>
+      </div>
     </div>
   `;
   container.appendChild(searchDiv);
@@ -1259,15 +1275,39 @@ async function searchJobs(p, major, industry, location) {
   const yr = now.getMonth() >= 7 ? now.getFullYear() + 1 : now.getFullYear();
   const internYear = `${yr} summer`;
 
-  const jobPrompt = `Search the web for ${internYear} internship positions suitable for ${major} students interested in ${industry}, located in ${locationLabel}. List 5-8 specific positions with company name, job title, location, and application deadline if available. For each position, include a clickable HTML link to the official application page. ${langNote}。直接用HTML格式返回ul/li列表，每个职位标题用<a href="申请链接" target="_blank">包裹。`;
+  const jobPrompt = `Search the web for ${internYear} internship positions suitable for ${major} students interested in ${industry}, located in ${locationLabel}. List 5-8 specific real positions with: company name, job title, location, application deadline, and direct application URL. ${langNote}. Return plain text with each position on a new line starting with a dash.`;
 
-  const resourcePrompt = `Search the web for ${internYear} internship application resources for ${major} students in ${industry}, targeting ${locationLabel}. Include: official internship program websites, application deadlines, scholarships, industry associations, recruiting platforms. ${langNote}。直接用HTML格式返回ul/li列表，每项包含名称和链接（如有）。`;
+  const resourcePrompt = `Search the web for ${internYear} internship application resources for ${major} students in ${industry}, targeting ${locationLabel}. Include official internship program websites, application deadlines, recruiting platforms. ${langNote}. Return plain text with each resource on a new line starting with a dash, include URLs where available.`;
+
+  const formatText = (text) => {
+    if (!text) return '<span style="color:#999">暂无结果</span>';
+    // 如果是JSON，尝试提取有用内容
+    try {
+      const j = JSON.parse(text);
+      if (j.internship_positions) {
+        return '<ul>' + j.internship_positions.map(p =>
+          `<li><strong>${p.company}</strong> — ${p.job_title}<br>
+          ${p.location||''} ${p.pay?'· '+p.pay:''}<br>
+          ${p.application_link ? `<a href="${p.application_link}" target="_blank" style="color:#4285F4;">申请链接 →</a>` : ''}</li>`
+        ).join('') + '</ul>';
+      }
+    } catch(e) {}
+    // 普通文本转HTML列表
+    return '<ul>' + text.split('\n')
+      .filter(l => l.trim())
+      .map(l => {
+        l = l.replace(/^[-•*]\s*/, '');
+        // 把URL变成链接
+        l = l.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#4285F4;">$1</a>');
+        return `<li>${l}</li>`;
+      }).join('') + '</ul>';
+  };
 
   const proxyCall = (provider, prompt, useSearch, statusId, contentId) =>
     callProxy(provider, prompt, useSearch).then(text => {
       document.getElementById(statusId).textContent = '✓ 完成';
       document.getElementById(statusId).style.color = '#1a7a3c';
-      document.getElementById(contentId).innerHTML = `<div style="font-size:13px;line-height:1.8;color:#333;">${text}</div>`;
+      document.getElementById(contentId).innerHTML = `<div style="font-size:13px;line-height:1.8;color:#333;">${formatText(text)}</div>`;
     }).catch(e => { document.getElementById(contentId).innerHTML = `<div style="color:#c00;font-size:12px;">${e.message}</div>`; });
 
   Promise.allSettled([
@@ -1275,6 +1315,10 @@ async function searchJobs(p, major, industry, location) {
     proxyCall('gemini',     resourcePrompt, true,  `${p}-gr-status`, `${p}-gr-content`),
     proxyCall('perplexity', jobPrompt,      false, `${p}-ps-status`, `${p}-ps-content`),
     proxyCall('perplexity', resourcePrompt, false, `${p}-pr-status`, `${p}-pr-content`),
+    proxyCall('tavily',     jobPrompt,      false, `${p}-ts-status`, `${p}-ts-content`),
+    proxyCall('tavily',     resourcePrompt, false, `${p}-tr-status`, `${p}-tr-content`),
+    proxyCall('exa',        jobPrompt,      false, `${p}-es-status`, `${p}-es-content`),
+    proxyCall('exa',        resourcePrompt, false, `${p}-er-status`, `${p}-er-content`),
   ]);
 }
 
