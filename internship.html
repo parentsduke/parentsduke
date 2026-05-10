@@ -1253,9 +1253,15 @@ async function searchJobs(p, major, industry, location) {
   const locationLabel = location || '美国';
   const isUSA = !location || location.includes('美国') || location.includes('远程') || location.includes('Remote');
   const langNote = isUSA ? '以美国英文职位为主，公司名和职位名保留英文' : `以${locationLabel}职位为主`;
-  const jobPrompt = `Search the web for current (2025-2026) internship positions suitable for ${major} students interested in ${industry}, located in ${locationLabel}. List 5-8 specific positions with company name, job title, location, and application deadline if available. ${langNote}。直接用HTML格式返回ul/li列表。`;
 
-  const resourcePrompt = `Search the web for current (2025-2026) internship application resources for ${major} students in ${industry}, targeting ${locationLabel}. Include: official internship program websites, application deadlines, scholarships, industry associations, recruiting platforms. ${langNote}。直接用HTML格式返回ul/li列表，每项包含名称和链接（如有）。`;
+  // 动态计算实习招聘年份：8月前看当年夏季，8月起看下一年夏季
+  const now = new Date();
+  const yr = now.getMonth() >= 7 ? now.getFullYear() + 1 : now.getFullYear();
+  const internYear = `${yr} summer`;
+
+  const jobPrompt = `Search the web for ${internYear} internship positions suitable for ${major} students interested in ${industry}, located in ${locationLabel}. List 5-8 specific positions with company name, job title, location, and application deadline if available. For each position, include a clickable HTML link to the official application page. ${langNote}。直接用HTML格式返回ul/li列表，每个职位标题用<a href="申请链接" target="_blank">包裹。`;
+
+  const resourcePrompt = `Search the web for ${internYear} internship application resources for ${major} students in ${industry}, targeting ${locationLabel}. Include: official internship program websites, application deadlines, scholarships, industry associations, recruiting platforms. ${langNote}。直接用HTML格式返回ul/li列表，每项包含名称和链接（如有）。`;
 
   const proxyCall = (provider, prompt, useSearch, statusId, contentId) =>
     callProxy(provider, prompt, useSearch).then(text => {
@@ -1273,42 +1279,47 @@ async function searchJobs(p, major, industry, location) {
 }
 
 function renderResultHTML(r) {
+  const s = r.strategy || {};
+  const rt = r.resume_tips || {};
+  const kw = r.keywords || {};
+  const cl = r.cover_letter || {};
+  const res = r.resources || {};
   return `
     <div class="result-section">
       <h4>求职策略 / Strategy</h4>
       <div class="bilingual">
-        <div class="zh">${r.strategy.zh.replace(/\n/g,'<br>')}</div>
-        <div class="en">${r.strategy.en.replace(/\n/g,'<br>')}</div>
+        <div class="zh">${(s.zh||'').replace(/\n/g,'<br>')}</div>
+        <div class="en">${(s.en||'').replace(/\n/g,'<br>')}</div>
       </div>
     </div>
     <div class="result-section">
       <h4>简历建议 / Resume Tips</h4>
       <div class="bilingual">
-        <div class="zh"><ul>${r.resume_tips.zh.map(t=>`<li>${t}</li>`).join('')}</ul></div>
-        <div class="en"><ul>${r.resume_tips.en.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+        <div class="zh"><ul>${(rt.zh||[]).map(t=>`<li>${t}</li>`).join('')}</ul></div>
+        <div class="en"><ul>${(rt.en||[]).map(t=>`<li>${t}</li>`).join('')}</ul></div>
       </div>
     </div>
     <div class="result-section">
       <h4>搜索关键词 / Search Keywords</h4>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-        ${r.keywords.zh.map(k=>`<span style="background:var(--navy);color:#fff;padding:4px 12px;border-radius:20px;font-size:13px;">${k}</span>`).join('')}
+        ${(kw.zh||[]).map(k=>`<span style="background:var(--navy);color:#fff;padding:4px 12px;border-radius:20px;font-size:13px;">${k}</span>`).join('')}
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;">
-        ${r.keywords.en.map(k=>`<span style="background:#f0f0f0;color:var(--ink);padding:4px 12px;border-radius:20px;font-size:12px;">${k}</span>`).join('')}
+        ${(kw.en||[]).map(k=>`<span style="background:#f0f0f0;color:var(--ink);padding:4px 12px;border-radius:20px;font-size:12px;">${k}</span>`).join('')}
       </div>
     </div>
     <div class="result-section">
       <h4>Cover Letter 模板</h4>
       <div class="bilingual">
-        <div class="zh" style="white-space:pre-line;font-size:13px;">${r.cover_letter.zh}</div>
-        <div class="en" style="white-space:pre-line;font-size:13px;">${r.cover_letter.en}</div>
+        <div class="zh" style="white-space:pre-line;font-size:13px;">${cl.zh||''}</div>
+        <div class="en" style="white-space:pre-line;font-size:13px;">${cl.en||''}</div>
       </div>
     </div>
     <div class="result-section">
       <h4>推荐资源 / Resources</h4>
       <div class="bilingual">
-        <div class="zh"><ul>${r.resources.zh.map(t=>`<li>${t}</li>`).join('')}</ul></div>
-        <div class="en"><ul>${r.resources.en.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+        <div class="zh"><ul>${(res.zh||[]).map(t=>`<li>${t}</li>`).join('')}</ul></div>
+        <div class="en"><ul>${(res.en||[]).map(t=>`<li>${t}</li>`).join('')}</ul></div>
       </div>
     </div>
   `;
