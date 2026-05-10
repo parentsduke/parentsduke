@@ -649,21 +649,22 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
   <!-- ===== 实习助手 ===== -->
   <div class="accordion" style="background:#f5f5f5;border:2px solid #001F5B;border-radius:10px;margin-bottom:12px;overflow:hidden;">
     <button class="accordion-btn" onclick="toggleAccordion(this)" style="
-      background: repeating-linear-gradient(
-        135deg,
-        #001F5B 0px, #001F5B 12px,
-        #ffffff 12px, #ffffff 24px
-      );
-      color: #fff;
+      background: #fff;
+      color: #001F5B;
+      border-left: 10px solid transparent;
+      border-image: repeating-linear-gradient(
+        180deg,
+        #001F5B 0px, #001F5B 8px,
+        #ffffff 8px, #ffffff 16px
+      ) 1;
       position: relative;
     ">
       <span style="
         font-weight: 800;
         font-size: 17px;
-        color: #fff;
-        text-shadow: 2px 2px 0 #001F5B, -1px -1px 0 #001F5B, 1px -1px 0 #001F5B, -1px 1px 0 #001F5B;
+        color: #001F5B;
         letter-spacing: 0.05em;
-      ">实习助手</span><span class="accordion-arrow" style="color:#fff;text-shadow: 1px 1px 0 #001F5B;">&#9658;</span>
+      ">实习助手</span><span class="accordion-arrow" style="color:#001F5B;">&#9658;</span>
     </button>
     <div class="accordion-body">
       <iframe src="/internship.html" style="width:100%;height:85vh;border:none;display:block;" loading="lazy"></iframe>
