@@ -655,21 +655,15 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
         #ffffff 12px, #ffffff 24px
       );
       color: #fff;
-      text-shadow: 0 0 6px #001F5B, 1px 1px 0 #001F5B;
       position: relative;
     ">
       <span style="
-        background: repeating-linear-gradient(
-          135deg,
-          #ffffff 0px, #ffffff 12px,
-          #001F5B 12px, #001F5B 24px
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
         font-weight: 800;
         font-size: 17px;
-      ">实习助手</span><span class="accordion-arrow" style="color:#fff;">&#9658;</span>
+        color: #fff;
+        text-shadow: 2px 2px 0 #001F5B, -1px -1px 0 #001F5B, 1px -1px 0 #001F5B, -1px 1px 0 #001F5B;
+        letter-spacing: 0.05em;
+      ">实习助手</span><span class="accordion-arrow" style="color:#fff;text-shadow: 1px 1px 0 #001F5B;">&#9658;</span>
     </button>
     <div class="accordion-body">
       <iframe src="/internship.html" style="width:100%;height:85vh;border:none;display:block;" loading="lazy"></iframe>
