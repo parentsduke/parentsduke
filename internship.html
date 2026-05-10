@@ -162,7 +162,7 @@ header {
 }
 
 /* MAIN */
-main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
+main { max-width: 1200px; margin: 0 auto; padding: 28px 20px 60px; }
 
 .panel { display: none; }
 .panel.active { display: block; }
@@ -409,6 +409,12 @@ main { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
+}
+/* 搜索结果区域突破 main 的 max-width 限制 */
+#s-search-results, #p-search-results {
+  width: calc(100vw - 40px);
+  margin-left: calc(-50vw + 50% + 10px);
+  max-width: 1200px;
 }
 
 /* 每列内的卡片纵向排列 */
