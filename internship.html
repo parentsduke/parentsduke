@@ -1334,8 +1334,28 @@ async function searchJobs(p, major, industry, location) {
 
   // 搜索引擎 prompt（给 Tavily/Exa/Serper 用，简洁关键词）
   const industryShort = industry.split('、')[0].replace('/.*','').trim();
-  const searchJobPrompt = `${major} ${industryShort} internship ${internYear} ${locationLabel} apply site:linkedin.com OR site:indeed.com OR site:glassdoor.com OR site:levels.fyi`;
-  const searchResourcePrompt = `${major} ${industryShort} internship ${yr} recruiting programs deadlines ${locationLabel} site:builtin.com OR site:simplify.jobs OR site:intern.supply OR site:github.com`;
+
+  // 根据专业/行业选择合适的职位网站
+  const majorLower = major.toLowerCase();
+  let siteFilter = 'site:linkedin.com OR site:indeed.com OR site:glassdoor.com';
+  if (/computer|cs|software|data|ai|ml|engineering|electrical|mechanical|pratt/i.test(majorLower) ||
+      /tech|科技|engineering|工程/i.test(industry)) {
+    siteFilter = 'site:linkedin.com OR site:indeed.com OR site:levels.fyi OR site:simplify.jobs';
+  } else if (/finance|accounting|economics|business|commerce|金融|商|经济/i.test(majorLower) ||
+             /finance|金融|consulting|咨询/i.test(industry)) {
+    siteFilter = 'site:linkedin.com OR site:indeed.com OR site:vault.com OR site:mergers.com';
+  } else if (/biology|chemistry|biochem|neuroscience|pre-med|health|nursing|医|生物|化学/i.test(majorLower) ||
+             /healthcare|医疗|biotech/i.test(industry)) {
+    siteFilter = 'site:linkedin.com OR site:indeed.com OR site:biospace.com OR site:healthcarejobsite.com';
+  } else if (/psychology|sociology|political|public policy|government|政|社会/i.test(majorLower) ||
+             /nonprofit|非营利|government|政府|education|教育/i.test(industry)) {
+    siteFilter = 'site:linkedin.com OR site:indeed.com OR site:idealist.org OR site:usajobs.gov';
+  } else if (/art|design|media|film|music|communication|journalism|传媒|艺术|设计/i.test(majorLower)) {
+    siteFilter = 'site:linkedin.com OR site:indeed.com OR site:behance.net OR site:mediabistro.com';
+  }
+
+  const searchJobPrompt = `${major} ${industryShort} internship ${internYear} ${locationLabel} apply ${siteFilter}`;
+  const searchResourcePrompt = `${major} ${industryShort} internship ${yr} recruiting programs deadlines ${locationLabel} site:simplify.jobs OR site:intern.supply OR site:linkedin.com`;
 
   const formatText = (text) => {
     if (!text) return '<span style="color:#999">暂无结果</span>';
