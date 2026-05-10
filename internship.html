@@ -1373,13 +1373,15 @@ async function searchJobs(p, major, industry, location) {
     } catch(e) {}
     // 普通文本转HTML
     text = text.replace(/#{1,4}\s*/g, '');  // 全局去掉所有 ### 符号
+    text = text.replace(/\[\.\.\.\]/g, '');   // 去掉 [...] 截断占位符
+    text = text.replace(/^(Apply|Save|Report this job|\[\.\.\.]|Apply$)$/gm, ''); // 去掉无用行
     const lines = text.split('\n').filter(l => l.trim());
     let html = '';
     for (let l of lines) {
       // 去掉 ### ## # 标题符号
       l = l.replace(/^#{1,4}\s*/, '');
       // 跳过纯噪音行
-      if (/^(background|Topics|Resources|Contributing|Stars|Watchers|Uh oh!)$/i.test(l.trim())) continue;
+      if (/^(background|Topics|Resources|Contributing|Stars|Watchers|Uh oh!|Apply|Save|Report this job|US Person Required|Over \d+ applicants|See who .+ has hired)$/i.test(l.trim())) continue;
       if (/^There was an error/i.test(l.trim())) continue;
       // URL变链接（截断显示）
       l = l.replace(/(https?:\/\/[^\s\)]+)/g, (url) => {
