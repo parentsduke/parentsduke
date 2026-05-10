@@ -1332,11 +1332,22 @@ function renderHistory(role) {
   if (!history.length) { section.style.display = 'none'; return; }
   section.style.display = 'block';
   list.innerHTML = history.map((h, i) => `
-    <div class="history-item" onclick="loadHistory('${role}', ${i})">
-      <div class="info">${h.meta.major} · ${h.meta.year} · ${h.meta.industry}</div>
-      <div class="date">${h.date}</div>
+    <div class="history-item" style="display:flex;align-items:center;justify-content:space-between;">
+      <div onclick="loadHistory('${role}', ${i})" style="flex:1;cursor:pointer;">
+        <div class="info">${h.meta.major} · ${h.meta.year} · ${h.meta.industry}</div>
+        <div class="date">${h.date}</div>
+      </div>
+      <button onclick="deleteHistory('${role}', ${i})" style="background:none;border:none;color:#aaa;font-size:16px;cursor:pointer;padding:4px 8px;flex-shrink:0;" title="删除">✕</button>
     </div>
   `).join('');
+}
+
+function deleteHistory(role, idx) {
+  const key = `internship-history-${role}`;
+  const history = JSON.parse(localStorage.getItem(key) || '[]');
+  history.splice(idx, 1);
+  localStorage.setItem(key, JSON.stringify(history));
+  renderHistory(role);
 }
 
 function loadHistory(role, idx) {
