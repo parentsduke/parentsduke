@@ -1213,7 +1213,7 @@ async function generate(role) {
       style="background:linear-gradient(135deg,#4285F4,#6366F1);color:#fff;border:none;padding:12px 28px;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.04em;">
       🔍 搜索实时职位
     </button>
-    <p style="font-size:11px;color:var(--muted);margin-top:8px;font-family:'DM Mono',monospace;">由 Gemini + Perplexity + Tavily + Exa 联网搜索</p>
+    <p style="font-size:11px;color:var(--muted);margin-top:8px;font-family:'DM Mono',monospace;">由 Gemini + Perplexity + Tavily + Exa + Serper 联网搜索</p>
   `;
   document.getElementById(`${p}-ai-results`).appendChild(searchBtn);
 }
@@ -1229,7 +1229,7 @@ async function searchJobs(p, major, industry, location) {
   searchDiv.innerHTML = `
     <div style="background:linear-gradient(135deg,#001F5B,#2A4BA0);border-radius:12px;padding:20px 24px;margin-bottom:16px;">
       <div style="font-family:'Syne',sans-serif;color:#fff;font-size:16px;margin-bottom:4px;">🔍 实时职位搜索</div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);">Gemini + Perplexity + Tavily + Exa 并行搜索中...</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);">Gemini + Perplexity + Tavily + Exa + Serper 并行搜索中...</div>
     </div>
     <div style="margin-bottom:12px;font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;display:inline-block;">📋 实时职位 &nbsp;·&nbsp; 📚 申请资源</div>
     <div class="search-grid">
@@ -1297,6 +1297,23 @@ async function searchJobs(p, major, industry, location) {
           <div id="${p}-er-content" style="color:#999;font-size:13px;">⏳</div>
         </div>
       </div>
+      <div class="search-col">
+        <div id="${p}-serper-jobs" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="background:#059669;color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px;">Serper 职位</span>
+            <span id="${p}-brs-status" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">搜索中...</span>
+          </div>
+          <div id="${p}-brs-content" style="color:#999;font-size:13px;">⏳</div>
+        </div>
+        <div id="${p}-serper-resources" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="background:#059669;color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px;">Serper 资源</span>
+            <span id="${p}-brr-status" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">搜索中...</span>
+          </div>
+          <div id="${p}-brr-content" style="color:#999;font-size:13px;">⏳</div>
+        </div>
+      </div>
+
     </div>
   `;
   container.appendChild(searchDiv);
@@ -1355,6 +1372,9 @@ async function searchJobs(p, major, industry, location) {
     proxyCall('tavily',     resourcePrompt, false, `${p}-tr-status`, `${p}-tr-content`),
     proxyCall('exa',        jobPrompt,      false, `${p}-es-status`, `${p}-es-content`),
     proxyCall('exa',        resourcePrompt, false, `${p}-er-status`, `${p}-er-content`),
+    proxyCall('serper',      jobPrompt,      false, `${p}-brs-status`, `${p}-brs-content`),
+    proxyCall('serper',      resourcePrompt, false, `${p}-brr-status`, `${p}-brr-content`),
+
   ]);
 }
 
