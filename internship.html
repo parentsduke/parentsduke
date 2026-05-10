@@ -1347,6 +1347,7 @@ async function searchJobs(p, major, industry, location) {
       }
     } catch(e) {}
     // 普通文本转HTML
+    text = text.replace(/#{1,4}\s*/g, '');  // 全局去掉所有 ### 符号
     const lines = text.split('\n').filter(l => l.trim());
     let html = '';
     for (let l of lines) {
