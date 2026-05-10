@@ -1372,16 +1372,23 @@ async function searchJobs(p, major, industry, location) {
       }
     } catch(e) {}
     // 普通文本转HTML
-    text = text.replace(/#{1,4}\s*/g, '');  // 全局去掉所有 ### 符号
-    text = text.replace(/\[\.\.\.\]/g, '');   // 去掉 [...] 截断占位符
-    text = text.replace(/^(Apply|Save|Report this job|\[\.\.\.]|Apply$)$/gm, ''); // 去掉无用行
+    text = text.replace(/#{1,4}\s*/g, '');          // 去掉 ###
+    text = text.replace(/\[\.\.\.(\s*\d*)?\]/g, ''); // 去掉 [...] [... 44]
+    text = text.replace(/^\|.*\|$/gm, '');           // 去掉表格行 | --- |
+    text = text.replace(/^-{3,}$/gm, '');              // 去掉分隔线 ---
+    text = text.replace(/\bApply\b/g, '');            // 去掉 Apply 按钮文字
+    text = text.replace(/\bSave\b/g, '');
     const lines = text.split('\n').filter(l => l.trim());
     let html = '';
     for (let l of lines) {
       // 去掉 ### ## # 标题符号
       l = l.replace(/^#{1,4}\s*/, '');
       // 跳过纯噪音行
-      if (/^(background|Topics|Resources|Contributing|Stars|Watchers|Uh oh!|Apply|Save|Report this job|US Person Required|Over \d+ applicants|See who .+ has hired)$/i.test(l.trim())) continue;
+      const trimmed = l.trim();
+      if (!trimmed || trimmed.length < 3) continue;
+      if (/^(background|Topics|Resources|Contributing|Stars|Watchers|Uh oh!|Apply|Save|Report this job|US Person Required|Posted on|weeks? ago|days? ago|months? ago|Summer 2026|Spring 2026|Fall 2026)$/i.test(trimmed)) continue;
+      if (/Over \d+ applicants|See who .+ has hired|has hired for this role/i.test(trimmed)) continue;
+      if (/^\d+\.?\d*[km]?\s*(applicants?|views?)?$/i.test(trimmed)) continue;
       if (/^There was an error/i.test(l.trim())) continue;
       // URL变链接（截断显示）
       l = l.replace(/(https?:\/\/[^\s\)]+)/g, (url) => {
