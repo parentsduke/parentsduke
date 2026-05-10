@@ -1328,9 +1328,14 @@ async function searchJobs(p, major, industry, location) {
   const yr = now.getMonth() >= 7 ? now.getFullYear() + 1 : now.getFullYear();
   const internYear = `${yr} summer`;
 
+  // LLM prompt（给 Gemini/Perplexity 用，指令式）
   const jobPrompt = `Search the web for ${internYear} internship positions suitable for ${major} students interested in ${industry}, located in ${locationLabel}. List 5-8 specific real positions with: company name, job title, location, application deadline, and direct application URL. ${langNote}. Return plain text with each position on a new line starting with a dash.`;
-
   const resourcePrompt = `Search the web for ${internYear} internship application resources for ${major} students in ${industry}, targeting ${locationLabel}. Include official internship program websites, application deadlines, recruiting platforms. ${langNote}. Return plain text with each resource on a new line starting with a dash, include URLs where available.`;
+
+  // 搜索引擎 prompt（给 Tavily/Exa/Serper 用，简洁关键词）
+  const industryShort = industry.split('、')[0].replace('/.*','').trim();
+  const searchJobPrompt = `${major} ${industryShort} internship ${internYear} ${locationLabel} apply site:linkedin.com OR site:indeed.com OR site:glassdoor.com OR site:levels.fyi`;
+  const searchResourcePrompt = `${major} ${industryShort} internship ${yr} recruiting programs deadlines ${locationLabel} site:builtin.com OR site:simplify.jobs OR site:intern.supply OR site:github.com`;
 
   const formatText = (text) => {
     if (!text) return '<span style="color:#999">暂无结果</span>';
@@ -1383,12 +1388,12 @@ async function searchJobs(p, major, industry, location) {
     proxyCall('gemini',     resourcePrompt, true,  `${p}-gr-status`, `${p}-gr-content`),
     proxyCall('perplexity', jobPrompt,      false, `${p}-ps-status`, `${p}-ps-content`),
     proxyCall('perplexity', resourcePrompt, false, `${p}-pr-status`, `${p}-pr-content`),
-    proxyCall('tavily',     jobPrompt,      false, `${p}-ts-status`, `${p}-ts-content`),
-    proxyCall('tavily',     resourcePrompt, false, `${p}-tr-status`, `${p}-tr-content`),
-    proxyCall('exa',        jobPrompt,      false, `${p}-es-status`, `${p}-es-content`),
-    proxyCall('exa',        resourcePrompt, false, `${p}-er-status`, `${p}-er-content`),
-    proxyCall('serper',      jobPrompt,      false, `${p}-brs-status`, `${p}-brs-content`),
-    proxyCall('serper',      resourcePrompt, false, `${p}-brr-status`, `${p}-brr-content`),
+    proxyCall('tavily',     searchJobPrompt, false, `${p}-ts-status`, `${p}-ts-content`),
+    proxyCall('tavily',     searchResourcePrompt, false, `${p}-tr-status`, `${p}-tr-content`),
+    proxyCall('exa',        searchJobPrompt, false, `${p}-es-status`, `${p}-es-content`),
+    proxyCall('exa',        searchResourcePrompt, false, `${p}-er-status`, `${p}-er-content`),
+    proxyCall('serper',      searchJobPrompt, false, `${p}-brs-status`, `${p}-brs-content`),
+    proxyCall('serper',      searchResourcePrompt, false, `${p}-brr-status`, `${p}-brr-content`),
 
   ]);
 }
