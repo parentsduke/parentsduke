@@ -26,17 +26,19 @@
     header {
       background: var(--navy);
       border-bottom: 3px solid var(--gold);
-      padding: 0 32px;
+      padding: 0 16px;
       height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
     }
-    .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; }
-    .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; }
-    .header-left { display: flex; align-items: center; gap: 14px; }
+    .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; flex-shrink: 0; }
+    .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; white-space: nowrap; }
+    .header-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
     .btn-logout {
-      padding: 8px 16px;
+      padding: 6px 12px;
       background: transparent;
       color: rgba(255,255,255,0.8);
       border: 1px solid rgba(255,255,255,0.3);
@@ -44,6 +46,8 @@
       font-size: 13px;
       cursor: pointer;
       font-family: 'Noto Serif SC', serif;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .btn-logout:hover { background: rgba(255,255,255,0.1); }
 
@@ -118,10 +122,10 @@
     .login-error.show { display: block; }
 
     /* ── Admin Panel ── */
-    #adminPanel { display: none; padding: 32px 24px 16px; flex: 1; overflow: hidden; flex-direction: column; }
+    #adminPanel { display: none; padding: 32px 16px 16px; flex: 1; overflow: hidden; flex-direction: column; }
     .panel-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 12px;
@@ -130,15 +134,16 @@
     .panel-title { font-size: 20px; font-weight: 700; color: var(--navy); }
     .panel-meta { font-size: 13px; color: var(--muted); }
     .btn-export {
-      padding: 10px 20px;
+      padding: 10px 14px;
       background: var(--gold);
       color: #fff;
       border: none;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       font-family: 'Noto Serif SC', serif;
       cursor: pointer;
+      white-space: nowrap;
     }
     .btn-export:hover { background: #a07830; }
 
@@ -179,6 +184,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       scrollbar-width: thin;
       scrollbar-color: #c9a84c #f0f0f0;
+      padding-bottom: 16px;
     }
     .table-wrap::-webkit-scrollbar {
       height: 8px;
@@ -258,6 +264,10 @@
       font-size: 12px;
       color: rgba(255,255,255,0.6);
       font-family: 'DM Mono', monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
     }
 
     /* ── 人员标记列 ── */
@@ -284,10 +294,12 @@
 <header>
   <div class="header-left">
     <span class="hd">D</span>
-    <span class="ht">录取信息管理</span>
+    <div style="display:flex;flex-direction:column;gap:1px;">
+      <span class="ht">录取信息管理</span>
+      <span class="user-email" id="userEmail"></span>
+    </div>
   </div>
-  <div style="display:flex;align-items:center;gap:16px;">
-    <span class="user-email" id="userEmail"></span>
+  <div class="header-right">
     <button class="btn-logout" id="btnLogout" onclick="logout()" style="display:none;">退出登录</button>
   </div>
 </header>
@@ -327,10 +339,10 @@
       <div class="panel-title">录取提交记录</div>
       <div class="panel-meta" id="recordCount">加载中…</div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;max-width:100%;">
       <button class="btn-export" onclick="exportCSV()">导出 CSV</button>
       <button class="btn-export" onclick="previewCommittedEmails()" style="background:#555;">🔍 群发预览</button>
-      <button class="btn-export" onclick="sendCommittedEmails()" style="background:#1a6b3c;">📧 群发Committed邮件</button>
+      <button class="btn-export" onclick="sendCommittedEmails()" style="background:#1a6b3c;flex-shrink:0;">📧 群发Committed邮件</button>
     </div>
   </div>
 
@@ -642,7 +654,7 @@
         ? `<span class="tag tag-rd">RD</span>`
         : r.admission_type || '—';
       const committedVal = r.committed === true ? 'true' : r.committed === false ? 'false' : '';
-      const committedTag = `<select class="person-select" onchange="saveCommitted('${r.id}',this.value)" style="min-width:80px;">
+      const committedTag = `<select class="person-select" onchange="saveCommitted('${r.id}',this.value)" style="min-width:110px;font-size:12px;">
         <option value="" ${committedVal===''?'selected':''}>—</option>
         <option value="true" ${committedVal==='true'?'selected':''}>✅ 已Committed</option>
         <option value="false" ${committedVal==='false'?'selected':''}>❌ 未Committed</option>
@@ -691,13 +703,13 @@
         <td>${committedTag}</td>
         <td style="white-space:nowrap;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${date}</td>
         <td style="font-weight:600;">${r.student_name_cn || '—'}</td>
-        <td>${r.student_name_en || '—'}</td>
-        <td>${r.high_school || '—'}</td>
-        <td>${r.location || '—'}</td>
+        <td style="white-space:nowrap;">${r.student_name_en || '—'}</td>
+        <td style="white-space:nowrap;">${r.high_school || '—'}</td>
+        <td style="white-space:nowrap;">${r.location || '—'}</td>
         <td>${typeTag}</td>
         <td style="font-family:'DM Mono',monospace;">${r.class_year || '—'}</td>
-        <td style="font-size:12px;">${r.college || '—'}</td>
-        <td style="font-size:12px;">${r.major || '—'}</td>
+        <td style="font-size:12px;white-space:nowrap;">${r.college || '—'}</td>
+        <td style="font-size:12px;white-space:nowrap;">${r.major || '—'}</td>
         <td style="font-size:12px;max-width:160px;">${r.notes || '—'}</td>
         <td>${r.submitter_name || '—'}</td>
         <td style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_contact || '—'}</td>
