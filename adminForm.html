@@ -123,6 +123,13 @@
 
     /* ── Admin Panel ── */
     #adminPanel { display: none; padding: 32px 16px 16px; flex: 1; overflow: hidden; flex-direction: column; }
+
+    @media (min-width: 768px) {
+      header { padding: 0 32px; }
+      #adminPanel { padding: 32px 24px 16px; }
+      .btn-export { padding: 10px 20px; font-size: 13px; }
+      .user-email { max-width: none; }
+    }
     .panel-header {
       display: flex;
       align-items: flex-start;
@@ -184,7 +191,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       scrollbar-width: thin;
       scrollbar-color: #c9a84c #f0f0f0;
-      padding-bottom: 16px;
+      padding-bottom: 60px;
     }
     .table-wrap::-webkit-scrollbar {
       height: 8px;
@@ -200,7 +207,8 @@
     }
     table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       font-size: 13px;
       min-width: 1260px;
     }
