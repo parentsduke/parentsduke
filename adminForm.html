@@ -20,10 +20,7 @@
       --green:  #1a6b3c;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-    @media (max-width: 767px) {
-      body { height: 100vh; overflow: hidden; }
-    }
+    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
     /* ── Header ── */
     header {
@@ -189,10 +186,10 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       overflow-x: scroll;
-      overflow-y: auto;
+      overflow-y: scroll;
       flex: 1;
       min-height: 0;
-      max-height: calc(100vh - 220px);
+      
       position: relative;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       scrollbar-width: thin;
