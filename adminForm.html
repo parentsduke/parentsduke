@@ -20,7 +20,10 @@
       --green:  #1a6b3c;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    @media (max-width: 767px) {
+      body { height: 100vh; overflow: hidden; }
+    }
 
     /* ── Header ── */
     header {
@@ -129,6 +132,7 @@
       #adminPanel { padding: 32px 24px 16px; }
       .btn-export { padding: 10px 20px; font-size: 13px; }
       .user-email { max-width: none; }
+      .table-wrap { padding-bottom: 16px; }
     }
     .panel-header {
       display: flex;
