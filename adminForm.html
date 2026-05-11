@@ -714,7 +714,7 @@
         /></td>
         <td>${committedTag}</td>
         <td style="white-space:nowrap;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${date}</td>
-        <td style="font-weight:600;">${r.student_name_cn || '—'}</td>
+        <td style="font-weight:600;white-space:nowrap;">${r.student_name_cn || '—'}</td>
         <td style="white-space:nowrap;">${r.student_name_en || '—'}</td>
         <td style="white-space:nowrap;">${r.high_school || '—'}</td>
         <td style="white-space:nowrap;">${r.location || '—'}</td>
@@ -723,9 +723,9 @@
         <td style="font-size:12px;white-space:nowrap;">${r.college || '—'}</td>
         <td style="font-size:12px;white-space:nowrap;">${r.major || '—'}</td>
         <td style="font-size:12px;max-width:160px;">${r.notes || '—'}</td>
-        <td>${r.submitter_name || '—'}</td>
-        <td style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_contact || '—'}</td>
-        <td style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_email || '—'}</td>
+        <td style="white-space:nowrap;">${r.submitter_name || '—'}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:12px;white-space:nowrap;">${r.submitter_contact || '—'}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:12px;white-space:nowrap;">${r.submitter_email || '—'}</td>
         <td>${letterCell}</td>
         <td>${clCell}</td>
         <td style="white-space:nowrap;text-align:center;">
