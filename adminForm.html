@@ -722,7 +722,7 @@
         <td style="font-family:'DM Mono',monospace;">${r.class_year || '—'}</td>
         <td style="font-size:12px;white-space:nowrap;">${r.college || '—'}</td>
         <td style="font-size:12px;white-space:nowrap;">${r.major || '—'}</td>
-        <td style="font-size:12px;max-width:160px;">${r.notes || '—'}</td>
+        <td style="font-size:12px;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r.notes || ''}">${r.notes || '—'}</td>
         <td style="white-space:nowrap;">${r.submitter_name || '—'}</td>
         <td style="font-family:'DM Mono',monospace;font-size:12px;white-space:nowrap;">${r.submitter_contact || '—'}</td>
         <td style="font-family:'DM Mono',monospace;font-size:12px;white-space:nowrap;">${r.submitter_email || '—'}</td>
