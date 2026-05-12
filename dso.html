@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duke Symphony Orchestra</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --duke-blue: #003087;
+    --duke-dark: #001a4d;
+    --duke-gold: #c8a951;
+    --duke-light: #e8eef7;
+    --white: #fafafa;
+    --text: #1a1a2e;
+    --text-light: #4a4a6a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--white);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(160deg, #1a0a3d 0%, #2d1065 50%, #4a1a8a 100%);
+    color: white;
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '𝄞𝄢𝄡';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 7rem;
+    opacity: 0.07;
+    letter-spacing: -0.2rem;
+    line-height: 1;
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--duke-gold);
+    margin-bottom: 0.75rem;
+    font-weight: 300;
+    font-style: italic;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .hero-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(200, 169, 81, 0.18);
+    border: 1px solid var(--duke-gold);
+    color: var(--duke-gold);
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── ACCORDION ── */
+  .accordion-wrap { padding: 0; }
+
+  .acc-item { border-bottom: 1px solid #dde4f0; }
+  .acc-item:first-child { border-top: 1px solid #dde4f0; }
+
+  .acc-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .acc-trigger:hover { background: #f0f4fb; }
+  .acc-trigger.open { background: #eef2fa; }
+
+  .acc-icon {
+    flex-shrink: 0;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: #2d1065;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: white;
+    transition: background 0.2s;
+  }
+  .acc-trigger.open .acc-icon {
+    background: var(--duke-gold);
+    color: var(--duke-dark);
+  }
+
+  .acc-title-group { flex: 1; min-width: 0; }
+  .acc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--duke-dark);
+    line-height: 1.2;
+  }
+  .acc-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 0.1rem;
+  }
+
+  .acc-chevron {
+    flex-shrink: 0;
+    width: 1.2rem;
+    height: 1.2rem;
+    color: #8899bb;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  .acc-trigger.open .acc-chevron {
+    transform: rotate(180deg);
+    color: #2d1065;
+  }
+
+  .acc-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s;
+    opacity: 0;
+  }
+  .acc-body.open { opacity: 1; }
+
+  .acc-inner {
+    padding: 0 1.4rem 1.4rem 4.6rem;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--text-light);
+  }
+
+  .acc-inner p { margin-bottom: 0.85rem; }
+  .acc-inner p:last-child { margin-bottom: 0; }
+  .acc-inner strong { color: var(--duke-dark); font-weight: 400; }
+  .acc-inner a { color: #2d1065; }
+
+  .fact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+  }
+  .fact-chip {
+    background: var(--duke-light);
+    border-left: 3px solid #2d1065;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.78rem;
+    color: var(--duke-dark);
+    line-height: 1.3;
+  }
+  .fact-chip span {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--text-light);
+    font-style: italic;
+  }
+
+  .highlight-quote {
+    border-left: 3px solid var(--duke-gold);
+    padding: 0.6rem 0.9rem;
+    margin: 0.8rem 0;
+    background: #fffbf0;
+    font-style: italic;
+    font-size: 0.88rem;
+    color: #5a4a1a;
+    line-height: 1.6;
+  }
+
+  .tradition-list { list-style: none; margin-top: 0.6rem; }
+  .tradition-list li {
+    padding: 0.45rem 0;
+    border-bottom: 1px dashed #dde4f0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+  }
+  .tradition-list li:last-child { border-bottom: none; }
+  .tradition-list li::before {
+    content: '▸';
+    color: #2d1065;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .step-list { list-style: none; margin-top: 0.6rem; counter-reset: steps; }
+  .step-list li {
+    padding: 0.5rem 0 0.5rem 2.4rem;
+    border-bottom: 1px dashed #dde4f0;
+    font-size: 0.88rem;
+    position: relative;
+    counter-increment: steps;
+  }
+  .step-list li:last-child { border-bottom: none; }
+  .step-list li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    background: #2d1065;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: normal;
+  }
+
+  /* ── LINK BUTTONS ── */
+  .link-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+  .link-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: 'Source Serif 4', Georgia, serif;
+    transition: filter 0.18s, transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .link-btn:active { transform: scale(0.97); }
+  .link-btn:hover { filter: brightness(1.08); }
+  .link-btn-label {
+    font-size: 0.72rem;
+    font-weight: 400;
+    opacity: 0.8;
+    letter-spacing: 0.04em;
+    font-style: italic;
+  }
+  .link-btn-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .link-btn-url {
+    font-size: 0.68rem;
+    opacity: 0.65;
+    word-break: break-all;
+  }
+  .link-btn.primary {
+    background: #2d1065;
+    color: white;
+    grid-column: 1 / -1;
+  }
+  .link-btn.gold {
+    background: var(--duke-gold);
+    color: #1a0a00;
+  }
+  .link-btn.outline {
+    background: var(--duke-light);
+    color: var(--duke-dark);
+    border: 1px solid #c0cce8;
+  }
+  .link-btn.dark {
+    background: #1a0a3d;
+    color: white;
+  }
+  .link-btn.email {
+    background: #f0f4fb;
+    color: var(--duke-dark);
+    border: 1px solid #c0cce8;
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .link-btn.email .email-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .link-btn.email .email-text { flex: 1; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: #1a0a3d;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 1.2rem 1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+  }
+  .footer a { color: var(--duke-gold); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="hero-eyebrow">Duke University · Department of Music</p>
+  <h1>Duke Symphony<br>Orchestra</h1>
+  <p class="hero-subtitle">DSO — Making music in Durham since 1926</p>
+  <div class="hero-badges">
+    <div class="hero-badge">🎻 创立于1926年</div>
+    <div class="hero-badge">🎵 80–100名乐手</div>
+    <div class="hero-badge">🏛 Baldwin Auditorium</div>
+  </div>
+</header>
+
+<div class="accordion-wrap" id="accordion">
+
+  <!-- 1 乐团简史 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="0" aria-expanded="false">
+      <div class="acc-icon">📖</div>
+      <div class="acc-title-group">
+        <div class="acc-title">乐团简史</div>
+        <div class="acc-subtitle">百年交响，始于1926</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-0">
+      <div class="acc-inner">
+        <p>Duke Symphony Orchestra（简称 <strong>DSO</strong>）成立于 <strong>1926年</strong>，至2025–26学年迎来建团百年。乐团隶属于杜克大学音乐系，是校内历史最悠久的学生表演团体之一，长期服务于杜克大学乃至三角地区的古典音乐文化生活。</p>
+        <p>早年乐团也曾巡演北卡罗来纳州各地，包括频繁亮相阿什维尔（Asheville）。现任音乐总监 <strong>Harry Davidson</strong> 教授于1999年前后接任，已执棒逾 <strong>27年</strong>——占乐团百年历史的四分之一以上——被认为是 DSO 现代化发展的重要推手。</p>
+        <p>2025–26学年百年庆典音乐会上，乐团特别邀请历届 DSO 校友携带乐器重返舞台，共同演绎伯恩斯坦《康第德》序曲、圣-桑《第二钢琴协奏曲》及科普兰《比利小子》组曲，以音乐回顾百年征程。</p>
+        <div class="fact-row">
+          <div class="fact-chip">1926<span>建团年份</span></div>
+          <div class="fact-chip">2025–26<span>百年庆典</span></div>
+          <div class="fact-chip">27年+<span>Davidson执棒时长</span></div>
+          <div class="fact-chip">17世纪–20世纪<span>曲目跨度</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 乐团概览 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="1" aria-expanded="false">
+      <div class="acc-icon">🎻</div>
+      <div class="acc-title-group">
+        <div class="acc-title">乐团概览与演出季</div>
+        <div class="acc-subtitle">规模、曲目与Baldwin Auditorium</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-1">
+      <div class="acc-inner">
+        <p>DSO 每年招募 <strong>80至100名</strong> 乐手，成员以本科生为主，兼有研究生及杜克大学更广泛社区成员。乐团每周排练 <strong>两次</strong>，每个演出季在东校区 <strong>Baldwin Auditorium</strong> 举办 <strong>四场</strong> 正式音乐会，场场免费向公众开放，平均每场吸引逾百名观众。</p>
+        <p>曲目涵盖17世纪至20世纪的管弦乐经典，从巴赫、海顿、莫扎特，到贝多芬、勃拉姆斯、柴可夫斯基，再到德沃夏克、科普兰、拉威尔皆有涉猎——既有耳熟能详的名作，也不乏鲜少演奏的珍品。</p>
+        <p>每个演出季通常围绕一个整体主题展开，可能是某位作曲家及其影响、特定音乐流派（如歌剧），或一组相互关联的作曲家群体。此外，DSO 还会在家庭周末音乐会（Family Weekend Concert）等校园特别活动中登台演出，部分赛季亦会呈现半舞台化歌剧制作。</p>
+        <div class="fact-row">
+          <div class="fact-chip">80–100人<span>每年规模</span></div>
+          <div class="fact-chip">4场/年<span>正式音乐会</span></div>
+          <div class="fact-chip">每周2次<span>排练频率</span></div>
+          <div class="fact-chip">免费入场<span>所有演出</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 标志性传统 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="2" aria-expanded="false">
+      <div class="acc-icon">🎆</div>
+      <div class="acc-title-group">
+        <div class="acc-title">标志性传统</div>
+        <div class="acc-subtitle">草坪音乐会、Beaufort公益演出与更多</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-2">
+      <div class="acc-inner">
+        <ul class="tradition-list">
+          <li><strong>东校区草坪 Pops 音乐会：</strong>每年劳动节周末，DSO 在东校区草坪举办完全由学生自主策划和执行的流行音乐会。乐团仅经过一次周六排练便登台演出，以轻松愉快的方式迎接新学年、欢迎大一新生融入校园生活，已成为达勒姆的秋日标志性活动。</li>
+          <li><strong>Beaufort 公益演出：</strong>自 <strong>2004年</strong> 起，DSO 每年春季赴南卡罗来纳州博福特（Beaufort）演出，最初为当地 Keyserling 癌症中心筹款，累计已募集逾 <strong>25万美元</strong>。现与"低地地区领导力教育基金会"合作，继续推进社区领导力项目。乐手们入住当地志愿者家庭，被视为乐团最受珍视的旅行传统。</li>
+          <li><strong>学生协奏曲大赛（Concerto Competition）：</strong>杜克音乐系每年举办此比赛，面向全体在校学生开放（无论专业、学历）。获胜者将在当年春季音乐会中与 DSO 同台，担任独奏者——这是杜克学生音乐生涯中最高荣誉之一。</li>
+          <li><strong>主题演出季：</strong>每年演出季围绕统一主题策划，历史上曾以"莎士比亚音乐季""美国大师""俄罗斯浪漫"等为主题，将音乐史叙事与精彩演出融为一体。</li>
+          <li><strong>毕业生之夜（Senior Night）：</strong>每年春季末场音乐会以应届毕业生为主角，由他们参与选曲，并在台上分享乐团历史与个人感言，兼具艺术价值与情感温度。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 音乐总监 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="3" aria-expanded="false">
+      <div class="acc-icon">🎼</div>
+      <div class="acc-title-group">
+        <div class="acc-title">音乐总监 Harry Davidson</div>
+        <div class="acc-subtitle">执棒27年，塑造 DSO 现代面貌</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-3">
+      <div class="acc-inner">
+        <p><strong>Harry Davidson</strong> 现任杜克大学音乐系 Professor of the Practice，同时担任 DSO 音乐总监逾27年，其执棒时长已超过乐团百年历史的四分之一。他的领导风格以严谨、包容、以学生成长为本著称。</p>
+        <p>2000年7月，Davidson 在华盛顿特区肯尼迪艺术中心指挥美国国家交响乐团，完成职业生涯重要里程碑。他曾客席执棒奥地利、芬兰及美国多支职业乐团，包括夏洛特交响乐团、阿克伦交响乐团，并多次在奥柏林音乐学院驻留。</p>
+        <p>2007年起，他兼任克利夫兰音乐学院歌剧院音乐总监，每学期在指挥一部歌剧制作的同时，继续在杜克担任 DSO 总监。他亦曾是底特律交响乐团 Antal Doráti 指挥大赛及维也纳 Hans Swarowsky 指挥大赛的决赛选手。</p>
+        <div class="highlight-quote">
+          "我们非常感激能在这个历史性节点为乐团演出和服务。我们也为乐团发展成一个多元、包容的空间而深感自豪——在这里，来自各行各业的人们汇聚一堂，共同创造音乐。"<br>
+          <em style="font-size:0.8rem">—— DSO 联合主席 Hailey Kasney & Ava Meigs，2026年百年庆典音乐会</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 加入乐团 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="4" aria-expanded="false">
+      <div class="acc-icon">🎓</div>
+      <div class="acc-title-group">
+        <div class="acc-title">加入 DSO · 试音与招募</div>
+        <div class="acc-subtitle">向全体杜克师生开放，无专业限制</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-4">
+      <div class="acc-inner">
+        <p>DSO 向<strong>全体在校杜克学生</strong>（本科生、研究生均可）开放，<strong>无专业要求、无学费</strong>。非音乐专业学生欢迎加入，参与不需要以音乐课程为前提。每学期可选择修读 <strong>0.5学分</strong> 的乐团课程，也可选择不修学分参与。</p>
+
+        <p><strong>试音流程</strong></p>
+        <ul class="tradition-list">
+          <li>试音在<strong>每学年秋季第一周</strong>举行（通常为开学前后）。</li>
+          <li>有兴趣的学生应提前在杜克音乐系网站填写<a href="https://music.duke.edu/ensembles/auditions-schedule-contacts" target="_blank">早期兴趣登记表</a>，以便在8月初试音报名开放时第一时间收到通知。</li>
+          <li>正式报名链接于<strong>8月初</strong>发布，学生需使用杜克邮箱注册，并选择所属乐器的试音时段。</li>
+          <li>试音要求因乐器而异；若有疑问可直接联系音乐总监 Harry Davidson（邮箱：hdavid@duke.edu）。</li>
+          <li>若秋季因海外留学等原因无法参加试音，可联系 Davidson 教授安排春季补试。</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>时间承诺</strong></p>
+        <ul class="tradition-list">
+          <li>每周排练 <strong>2次</strong>，学期内共举办 <strong>4场</strong> 正式音乐会（Baldwin Auditorium）。</li>
+          <li>参与家庭周末音乐会及春季 Beaufort 公益旅行演出（2–3天）。</li>
+          <li>秋季劳动节周末参加草坪 Pops 音乐会（仅需一次周六排练）。</li>
+        </ul>
+
+        <p style="margin-top:1.1rem"><strong>📎 相关链接</strong></p>
+        <div class="link-grid">
+
+          <!-- 主要入口：试音登记 -->
+          <a class="link-btn primary" href="https://music.duke.edu/ensembles/auditions-schedule-contacts" target="_blank">
+            <span class="link-btn-label">🎟 第一步 · 必填</span>
+            <span class="link-btn-name">早期兴趣登记表</span>
+            <span class="link-btn-url">music.duke.edu › auditions-schedule-contacts</span>
+          </a>
+
+          <!-- DSO 官网 -->
+          <a class="link-btn gold" href="https://dukesymphony.com" target="_blank">
+            <span class="link-btn-label">🎻 官方网站</span>
+            <span class="link-btn-name">dukesymphony.com</span>
+            <span class="link-btn-url">试音 · 演出季 · 协奏曲大赛</span>
+          </a>
+
+          <!-- 音乐系乐团页 -->
+          <a class="link-btn outline" href="https://music.duke.edu/ensembles/symphony-orchestra" target="_blank">
+            <span class="link-btn-label">🏛 杜克音乐系</span>
+            <span class="link-btn-name">官方乐团页面</span>
+            <span class="link-btn-url">music.duke.edu › symphony-orchestra</span>
+          </a>
+
+          <!-- Instagram -->
+          <a class="link-btn dark" href="https://www.instagram.com/dukesymphony/" target="_blank">
+            <span class="link-btn-label">📸 Instagram</span>
+            <span class="link-btn-name">@dukesymphony</span>
+            <span class="link-btn-url">演出动态 · 排练幕后</span>
+          </a>
+
+          <!-- Facebook -->
+          <a class="link-btn outline" href="https://www.facebook.com/DukeSymphony/" target="_blank">
+            <span class="link-btn-label">💬 Facebook</span>
+            <span class="link-btn-name">Duke Symphony Orchestra</span>
+            <span class="link-btn-url">约1,000人关注 · 赛季演出信息</span>
+          </a>
+
+          <!-- 邮件联系 -->
+          <a class="link-btn email" href="mailto:hdavid@duke.edu" target="_blank">
+            <span class="email-icon">✉️</span>
+            <span class="email-text">
+              <span class="link-btn-label">有疑问？直接联系音乐总监</span>
+              <span class="link-btn-name" style="display:block">hdavid@duke.edu</span>
+              <span class="link-btn-url">Harry Davidson 教授 · 试音安排 · 春季补试</span>
+            </span>
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 学生委员会与社群 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="5" aria-expanded="false">
+      <div class="acc-icon">🤝</div>
+      <div class="acc-title-group">
+        <div class="acc-title">学生委员会与乐团社群</div>
+        <div class="acc-subtitle">学生自治，音乐之外的纽带</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-5">
+      <div class="acc-inner">
+        <p>DSO 设有由学生选举产生的 <strong>Executive Committee（执行委员会）</strong>，负责统筹乐团对外演出的宣传推广、各场音乐会的后勤协调，以及组织排练之外的社群活动，致力于在有共同音乐热情的同学之间建立更紧密的社区感。</p>
+        <p>此外，草坪 Pops 音乐会完全由学生自主策划与执行——从曲目选定、场地布置到现场统筹，全程不依赖教职员工介入，是锻炼学生领导力的重要平台。</p>
+        <ul class="tradition-list">
+          <li><strong>社交活动：</strong>执行委员会定期组织排练外的聚会与社群活动，包括团建晚餐、乐团内部庆典等。</li>
+          <li><strong>协奏曲大赛幕后：</strong>学生委员会协助赛事宣传与流程组织，鼓励更多同学参与这一年度盛事。</li>
+          <li><strong>多元包容：</strong>乐团明确强调欢迎来自所有专业和背景的演奏者，将 DSO 打造为杜克大学"多元、包容的音乐空间"。</li>
+        </ul>
+        <div class="highlight-quote">
+          "音乐从语言能力终结的地方开始。"<br>
+          <em style="font-size:0.8rem">—— Jean Sibelius（DSO 官网题词）</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7 相关乐团与社交媒体 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="6" aria-expanded="false">
+      <div class="acc-icon">📱</div>
+      <div class="acc-title-group">
+        <div class="acc-title">相关乐团与关注渠道</div>
+        <div class="acc-subtitle">Chamber Players、Ciompi Quartet 及社交媒体</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-6">
+      <div class="acc-inner">
+        <p>除 DSO 外，杜克音乐系旗下还设有多支与交响乐演奏密切相关的乐团：</p>
+        <ul class="tradition-list">
+          <li><strong>Duke Chamber Players：</strong>完全由学生自主组织和管理的室内乐团，每学期举办音乐会，为希望进行小编制合奏的同学提供灵活平台。</li>
+          <li><strong>Ciompi Quartet：</strong>杜克音乐系驻校四重奏，由著名意大利小提琴家 Giorgio Ciompi 于1965年创立，全部成员均为杜克教授，在校内外广受赞誉。</li>
+          <li><strong>Duke New Music Ensemble（DNME）：</strong>专注于当代音乐的演奏团体，与交响乐团相辅相成，拓展学生对现代曲目的接触。</li>
+        </ul>
+        <p style="margin-top:0.9rem"><strong>关注 DSO</strong></p>
+        <ul class="tradition-list">
+          <li><strong>Instagram</strong> — <a href="https://www.instagram.com/dukesymphony/" target="_blank">@dukesymphony</a> · 演出动态与排练幕后</li>
+          <li><strong>Facebook</strong> — <a href="https://www.facebook.com/DukeSymphony/" target="_blank">Duke Symphony Orchestra</a> · 约1,000人关注，赛季期间更新演出信息</li>
+          <li><strong>DSO 官网</strong> — <a href="https://dukesymphony.com" target="_blank">dukesymphony.com</a> · 试音信息、演出季日程、协奏曲大赛详情</li>
+          <li><strong>杜克音乐系</strong> — <a href="https://music.duke.edu/ensembles/symphony-orchestra" target="_blank">music.duke.edu</a> · 官方乐团页面与票务</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /accordion-wrap -->
+
+<footer class="footer">
+  内容来源：Duke Symphony Orchestra 官网 · Duke Department of Music · Duke Chronicle<br>
+  <a href="https://dukesymphony.com" target="_blank">dukesymphony.com</a> &nbsp;·&nbsp;
+  <a href="https://music.duke.edu/ensembles/symphony-orchestra" target="_blank">music.duke.edu</a>
+</footer>
+
+<script>
+  const triggers = document.querySelectorAll('.acc-trigger');
+
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const index = trigger.dataset.index;
+      const body = document.getElementById('body-' + index);
+      const isOpen = trigger.classList.contains('open');
+
+      triggers.forEach(t => {
+        t.classList.remove('open');
+        t.setAttribute('aria-expanded', 'false');
+      });
+      document.querySelectorAll('.acc-body').forEach(b => {
+        b.style.maxHeight = '0';
+        b.classList.remove('open');
+      });
+
+      if (!isOpen) {
+        trigger.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        body.classList.add('open');
+      }
+    });
+  });
+</script>
+</body>
+</html>
