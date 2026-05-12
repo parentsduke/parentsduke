@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duke Marching & Pep Band</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --duke-blue: #003087;
+    --duke-dark: #001a4d;
+    --duke-gold: #c8a951;
+    --duke-light: #e8eef7;
+    --white: #fafafa;
+    --text: #1a1a2e;
+    --text-light: #4a4a6a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--white);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(160deg, var(--duke-dark) 0%, var(--duke-blue) 60%, #1a4a9e 100%);
+    color: white;
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '♩♪♫♬';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 7rem;
+    opacity: 0.06;
+    letter-spacing: -0.5rem;
+    line-height: 1;
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--duke-gold);
+    margin-bottom: 0.75rem;
+    font-weight: 300;
+    font-style: italic;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .hero-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(200, 169, 81, 0.2);
+    border: 1px solid var(--duke-gold);
+    color: var(--duke-gold);
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── ACCORDION ── */
+  .accordion-wrap {
+    padding: 0;
+  }
+
+  .acc-item {
+    border-bottom: 1px solid #dde4f0;
+  }
+  .acc-item:first-child {
+    border-top: 1px solid #dde4f0;
+  }
+
+  .acc-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .acc-trigger:hover {
+    background: #f0f4fb;
+  }
+  .acc-trigger.open {
+    background: #eef2fa;
+  }
+
+  .acc-icon {
+    flex-shrink: 0;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--duke-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: white;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .acc-trigger.open .acc-icon {
+    background: var(--duke-gold);
+    color: var(--duke-dark);
+  }
+
+  .acc-title-group {
+    flex: 1;
+    min-width: 0;
+  }
+  .acc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--duke-dark);
+    line-height: 1.2;
+  }
+  .acc-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 0.1rem;
+  }
+
+  .acc-chevron {
+    flex-shrink: 0;
+    width: 1.2rem;
+    height: 1.2rem;
+    color: #8899bb;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  .acc-trigger.open .acc-chevron {
+    transform: rotate(180deg);
+    color: var(--duke-blue);
+  }
+
+  .acc-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s;
+    opacity: 0;
+  }
+  .acc-body.open {
+    opacity: 1;
+  }
+
+  .acc-inner {
+    padding: 0 1.4rem 1.4rem 4.6rem;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--text-light);
+  }
+
+  .acc-inner p { margin-bottom: 0.85rem; }
+  .acc-inner p:last-child { margin-bottom: 0; }
+
+  .acc-inner strong {
+    color: var(--duke-dark);
+    font-weight: 400;
+  }
+
+  .fact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+  }
+  .fact-chip {
+    background: var(--duke-light);
+    border-left: 3px solid var(--duke-blue);
+    padding: 0.3rem 0.7rem;
+    font-size: 0.78rem;
+    color: var(--duke-dark);
+    line-height: 1.3;
+  }
+  .fact-chip span {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--text-light);
+    font-style: italic;
+  }
+
+  .highlight-quote {
+    border-left: 3px solid var(--duke-gold);
+    padding: 0.6rem 0.9rem;
+    margin: 0.8rem 0;
+    background: #fffbf0;
+    font-style: italic;
+    font-size: 0.88rem;
+    color: #5a4a1a;
+    line-height: 1.6;
+  }
+
+  .tradition-list {
+    list-style: none;
+    margin-top: 0.6rem;
+  }
+  .tradition-list li {
+    padding: 0.45rem 0;
+    border-bottom: 1px dashed #dde4f0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+  }
+  .tradition-list li:last-child { border-bottom: none; }
+  .tradition-list li::before {
+    content: '▸';
+    color: var(--duke-blue);
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--duke-dark);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 1.2rem 1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+  }
+  .footer a {
+    color: var(--duke-gold);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="hero-eyebrow">Duke University Athletics</p>
+  <h1>Marching &amp;<br>Pep Band</h1>
+  <p class="hero-subtitle">Duke University Marching Band (DUMB)</p>
+  <div class="hero-badge">🎺 自1906年起 · Since 1906</div>
+</header>
+
+<div class="accordion-wrap" id="accordion">
+
+  <!-- 1 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="0" aria-expanded="false">
+      <div class="acc-icon">📖</div>
+      <div class="acc-title-group">
+        <div class="acc-title">乐队简史</div>
+        <div class="acc-subtitle">一百多年的蓝魔之声</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-0">
+      <div class="acc-inner">
+        <p>Duke Marching &amp; Pep Band（正式缩写 <strong>DUMB</strong>）于 <strong>1906年</strong> 在当时的 Trinity College（1924年更名为杜克大学）成立，是大西洋海岸联盟（ACC）历史最悠久的进行曲乐队之一。</p>
+        <p>早期记录稀少，但1914年的校刊《Chanticleer》中已出现一张十三人乐队合影。1920年代，乐队风格偏向娱乐爵士风，活跃于体育赛事、游行、礼拜堂演出乃至广播节目。</p>
+        <p>1951年，Paul Bryan 出任乐队总监，任职长达37年；1960年他又聘请 Jim Henry 专职指挥进行曲乐队，开启了现代化阶段。1996年乐队规模曾达到创纪录的 <strong>145人</strong>。</p>
+        <div class="fact-row">
+          <div class="fact-chip">1906<span>建队年份</span></div>
+          <div class="fact-chip">ACC最古老之一<span>历史地位</span></div>
+          <div class="fact-chip">~150人<span>当前规模</span></div>
+          <div class="fact-chip">非音乐专业为主<span>成员构成</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="1" aria-expanded="false">
+      <div class="acc-icon">🏀</div>
+      <div class="acc-title-group">
+        <div class="acc-title">Pep Band 与 Cameron Indoor</div>
+        <div class="acc-subtitle">Cameron Crazies 背后的音浪</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-1">
+      <div class="acc-inner">
+        <p><strong>1962年</strong>，篮球教练 Vic Bubas 委托乐队总监 Jim Henry 组建一支专门为篮球比赛助威的乐队，这也是<strong>密西西比河以东第一支现代风格的大学篮球 Pep Band</strong>。最初媒体称之为"草帽 Pep Band"（Straw Hat Pep Band）。</p>
+        <p>如今约有 <strong>70名</strong> 乐队成员入选 Pep Band，在 Cameron Indoor Stadium 主场比赛时坐镇球场，与传奇球迷团体 Cameron Crazies 共同制造主场威慑。每逢 ACC 锦标赛和 NCAA 锦标赛，乐队都随队出征。</p>
+        <div class="highlight-quote">
+          "在 Cameron 里，你感觉自己就是球队的一部分……成为乐队的一员已经定义了我这个人，也定义了我作为杜克学生的身份。"<br>
+          <em style="font-size:0.8rem">—— 前鼓指挥 Stephanie Egeler</em>
+        </div>
+        <p>Pep Band 的曲目单包括 <em>Everytime We Touch</em>、<em>Shake It Off</em>、<em>Mortal Kombat</em> 以及杜克校歌《Blue and White》等，曲风多变，与 Crazies 的激情形成完美共振。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="2" aria-expanded="false">
+      <div class="acc-icon">🎭</div>
+      <div class="acc-title-group">
+        <div class="acc-title">标志性传统与趣事</div>
+        <div class="acc-subtitle">Wipeout、冲浪板与更多</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-2">
+      <div class="acc-inner">
+        <ul class="tradition-list">
+          <li><strong>Wipeout 冲浪板表演：</strong>每当乐队奏响经典曲 <em>Wipeout</em>，长号手冲向 Cameron Crazies 击掌，随后在地板上滚成一排，抬起冲浪板，让吉祥物 Blue Devil 在上面"冲浪"穿越整个球场。这一传统可追溯至2002年。</li>
+          <li><strong>UNC 主场大战涂装：</strong>每年迎战 UNC 的主场比赛，Pep Band 成员将蓝白条纹Rugby球衣图案<em>画在自己身上</em>，全程赤膊出战（或上半身彩绘）。</li>
+          <li><strong>Section Wars：</strong>各乐器声部之间的趣味竞技，项目包括：跑 FitnessGram PACER 体测、Mario Kart 比赛、生菜速食大赛等，为乐队内部建立紧密的社群感。</li>
+          <li><strong>Project Band（2023起）：</strong>面向大一新生的沉浸式定向营，将乐队培训与校园定向结合，取代过去单独举办的乐队集训营。</li>
+          <li><strong>2012年专辑：</strong>乐队自制发行了《Gameday Faves: Duke Classics》，收录球迷最爱的助威金曲。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="3" aria-expanded="false">
+      <div class="acc-icon">🏈</div>
+      <div class="acc-title-group">
+        <div class="acc-title">进行曲乐队与足球赛季</div>
+        <div class="acc-subtitle">赛场内外的蓝白旋律</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-3">
+      <div class="acc-inner">
+        <p>秋季开学，成员首先组成<strong>进行曲乐队</strong>，出征 Wallace Wade Stadium 的每一场主场足球赛。主场赛前例行节目包括：美国国歌、校歌《Dear Old Duke》，以及两首杜克战歌 <em>Fight Blue Devils, Fight!</em> 和 <em>Blue and White</em>。</p>
+        <p>中场秀通常以时下流行音乐为主题，偶尔融入舞蹈动作。1976年乐队曾短暂尝试斯坦福式的"随机散乱"（scramble band）风格，但翌年便回归传统方阵表演形式。</p>
+        <p>乐队每周练习 <strong>2–3次</strong>（周三、周五晚及足球赛前的周一），并参与部分客场及保龄球赛（Bowl Game）演出，历史上曾出征2012 Belk Bowl、2013 Chick-fil-A Bowl 等。</p>
+        <p>此外，乐队在秋季还以 Pep Band 形式亮相排球、曲棍球和足球赛事。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="4" aria-expanded="false">
+      <div class="acc-icon">🎓</div>
+      <div class="acc-title-group">
+        <div class="acc-title">加入乐队 · 招募信息</div>
+        <div class="acc-subtitle">无需音乐专业，无需行进经验</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-4">
+      <div class="acc-inner">
+
+        <p>乐队成员<strong>绝大多数并非音乐专业学生</strong>，本科生和研究生均可申请，高中行进乐队经验不是必要条件——甚至有成员在加入后才开始学习一门新乐器。</p>
+
+        <p><strong>是否需要试音（Audition）？</strong></p>
+        <ul class="tradition-list">
+          <li><strong>绝大多数乐器无需试音即可加入。</strong>参加乐队集训营时，小号、长号手需为指挥演奏一段战歌片段（乐谱在第一次排练时发放），目的仅为安排声部席位，<em>不影响录取资格</em>。</li>
+          <li><strong>打击乐（Drumline）</strong> 是唯一需要正式试音才能获得席位的声部，竞争较激烈。</li>
+          <li>其他管乐声部（如萨克斯、长笛、圆号等）均无试音要求，直接参加集训营即可。</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>加入流程</strong></p>
+        <ul class="tradition-list">
+          <li>填写官网的 <em>Information Request Form</em>（信息申请表），乐队招募组会主动联系有高中乐队经历的新生。</li>
+          <li>参加 <strong>Project Band 定向营</strong>（2023–24学年起）：在大一定向周内同步进行，涵盖行进技术训练、新曲目学习、声部社区活动（如参观 Falls Lake、声部竞技等），无需另行抽时间参加单独集训营。</li>
+          <li>集训营后正式加入秋季进行曲乐队，篮球赛季转入 Pep Band。</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>时间承诺</strong></p>
+        <ul class="tradition-list">
+          <li>每周练习约 <strong>2–3次</strong>（周三、周五晚间为常规排练，足球比赛前周一加练），与大多数高校乐队相比<em>排练强度相对较低</em>。</li>
+          <li>出席全部主场足球赛及大部分篮球主场赛，NCAA/ACC 锦标赛随队出行。</li>
+          <li>据乐队描述，因时间冲突而中途退出的成员极少。</li>
+        </ul>
+
+        <div class="highlight-quote">
+          "有人从高中就深度参与进行曲乐队，也有人完全没有经验。甚至有人决定借此机会学一门全新的乐器。"<br>
+          <em style="font-size:0.8rem">—— 大二成员 Noella Barron（中音萨克斯），Duke Chronicle 2024</em>
+        </div>
+
+        <p>乐队官网 / 报名表：<strong><a href="https://www.dukeband.org/join" target="_blank" style="color:var(--duke-blue)">dukeband.org/join</a></strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="5" aria-expanded="false">
+      <div class="acc-icon">📱</div>
+      <div class="acc-title-group">
+        <div class="acc-title">社交媒体 · 关注渠道</div>
+        <div class="acc-subtitle">在线追踪蓝魔之声</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="body-5">
+      <div class="acc-inner">
+        <ul class="tradition-list">
+          <li>
+            <strong>Instagram</strong> — <a href="https://www.instagram.com/dukemarchingband/" target="_blank" style="color:var(--duke-blue)">@dukemarchingband</a><br>
+            <span style="font-size:0.82rem;color:var(--text-light)">官方账号，发布赛场照片与活动动态</span>
+          </li>
+          <li>
+            <strong>Facebook 主页</strong> — <a href="https://www.facebook.com/p/Duke-University-Marching-Band-100063241477213/" target="_blank" style="color:var(--duke-blue)">Duke University Marching Band</a><br>
+            <span style="font-size:0.82rem;color:var(--text-light)">约 2,100 人关注，赛季期间不定期更新</span>
+          </li>
+          <li>
+            <strong>Facebook 兴趣小组</strong> — Duke University Marching Band Interest Group<br>
+            <span style="font-size:0.82rem;color:var(--text-light)">每学年开放一个新届新生兴趣群，有意加入的学生可在此交流</span>
+          </li>
+          <li>
+            <strong>X（原 Twitter）</strong> — <a href="https://x.com/dumband" target="_blank" style="color:var(--duke-blue)">@DUMBand</a><br>
+            <span style="font-size:0.82rem;color:var(--text-light)">账号较早期注册，现活跃度有限</span>
+          </li>
+          <li>
+            <strong>YouTube</strong> — <a href="https://www.youtube.com/channel/UC8WN0PwlpdSIbj-mtXsHB1g" target="_blank" style="color:var(--duke-blue)">Duke University Marching Band</a><br>
+            <span style="font-size:0.82rem;color:var(--text-light)">收录演出视频及专辑《Gameday Faves: Duke Classics》相关内容</span>
+          </li>
+          <li>
+            <strong>官网</strong> — <a href="https://www.dukeband.org" target="_blank" style="color:var(--duke-blue)">dukeband.org</a><br>
+            <span style="font-size:0.82rem;color:var(--text-light)">赛季日程、招募信息、加入申请表</span>
+          </li>
+        </ul>
+        <p style="margin-top:0.9rem">乐队校友协会（DBAA）也在 Instagram、X 和 LinkedIn 上独立运营账号，并举办面向球迷的"客座指挥"体验活动，详见 <a href="https://www.dukealumniband.org" target="_blank" style="color:var(--duke-blue)">dukealumniband.org</a>。</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /accordion-wrap -->
+
+<footer class="footer">
+  内容来源：Duke University Marching &amp; Pep Band 官网 · Duke Today · Duke Chronicle<br>
+  <a href="https://www.dukeband.org" target="_blank">dukeband.org</a>
+</footer>
+
+<script>
+  const triggers = document.querySelectorAll('.acc-trigger');
+
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const index = trigger.dataset.index;
+      const body = document.getElementById('body-' + index);
+      const isOpen = trigger.classList.contains('open');
+
+      // Close all
+      triggers.forEach(t => {
+        t.classList.remove('open');
+        t.setAttribute('aria-expanded', 'false');
+      });
+      document.querySelectorAll('.acc-body').forEach(b => {
+        b.style.maxHeight = '0';
+        b.classList.remove('open');
+      });
+
+      // Open clicked if it was closed
+      if (!isOpen) {
+        trigger.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        body.classList.add('open');
+      }
+    });
+  });
+</script>
+</body>
+</html>
