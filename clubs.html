@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duke 学生社团总览</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --duke-blue: #003087;
+    --duke-dark: #001a4d;
+    --duke-gold: #c8a951;
+    --duke-light: #e8eef7;
+    --white: #fafafa;
+    --text: #1a1a2e;
+    --text-light: #4a4a6a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--white);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(160deg, #001a3d 0%, #003087 55%, #1a4a9e 100%);
+    color: white;
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '◆◇◆◇◆';
+    position: absolute;
+    top: -15px;
+    right: -10px;
+    font-size: 6rem;
+    opacity: 0.05;
+    letter-spacing: 0.2rem;
+    line-height: 1;
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--duke-gold);
+    margin-bottom: 0.75rem;
+    font-weight: 300;
+    font-style: italic;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .hero-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(200, 169, 81, 0.18);
+    border: 1px solid var(--duke-gold);
+    color: var(--duke-gold);
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── 入口按钮区 ── */
+  .entry-bar {
+    background: #f0f4fb;
+    border-bottom: 1px solid #dde4f0;
+    padding: 1rem 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+  }
+  .entry-bar-label {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    font-style: italic;
+    flex-shrink: 0;
+  }
+  .entry-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    font-family: 'Source Serif 4', Georgia, serif;
+    text-decoration: none;
+    border: 1px solid;
+    transition: filter 0.15s;
+  }
+  .entry-btn:hover { filter: brightness(0.92); }
+  .entry-btn.primary { background: var(--duke-blue); color: white; border-color: var(--duke-blue); }
+  .entry-btn.gold { background: var(--duke-gold); color: #1a0a00; border-color: var(--duke-gold); }
+  .entry-btn.outline { background: white; color: var(--duke-dark); border-color: #b0bbd4; }
+
+  /* ── ACCORDION ── */
+  .accordion-wrap { padding: 0; }
+
+  .acc-item { border-bottom: 1px solid #dde4f0; }
+  .acc-item:first-child { border-top: 1px solid #dde4f0; }
+
+  .acc-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .acc-trigger:hover { background: #f0f4fb; }
+  .acc-trigger.open { background: #eef2fa; }
+
+  .acc-icon {
+    flex-shrink: 0;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--duke-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: white;
+    transition: background 0.2s;
+  }
+  .acc-trigger.open .acc-icon {
+    background: var(--duke-gold);
+    color: var(--duke-dark);
+  }
+
+  .acc-title-group { flex: 1; min-width: 0; }
+  .acc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--duke-dark);
+    line-height: 1.2;
+  }
+  .acc-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 0.1rem;
+  }
+  .acc-count {
+    flex-shrink: 0;
+    background: var(--duke-light);
+    color: var(--duke-blue);
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-style: normal;
+    border: 1px solid #c0cce8;
+  }
+  .acc-trigger.open .acc-count {
+    background: var(--duke-gold);
+    color: #1a0a00;
+    border-color: var(--duke-gold);
+  }
+
+  .acc-chevron {
+    flex-shrink: 0;
+    width: 1.2rem;
+    height: 1.2rem;
+    color: #8899bb;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  .acc-trigger.open .acc-chevron {
+    transform: rotate(180deg);
+    color: var(--duke-blue);
+  }
+
+  .acc-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s;
+    opacity: 0;
+  }
+  .acc-body.open { opacity: 1; }
+
+  .acc-inner {
+    padding: 0 1.4rem 1.4rem 4.6rem;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--text-light);
+  }
+  .acc-inner p { margin-bottom: 0.85rem; }
+  .acc-inner p:last-child { margin-bottom: 0; }
+  .acc-inner strong { color: var(--duke-dark); font-weight: 400; }
+  .acc-inner a { color: var(--duke-blue); }
+
+  /* ── 社团卡片网格 ── */
+  .club-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
+    margin-top: 0.8rem;
+  }
+  .club-card {
+    background: white;
+    border: 1px solid #dde4f0;
+    border-left: 3px solid var(--duke-blue);
+    border-radius: 3px;
+    padding: 0.6rem 0.75rem;
+    text-decoration: none;
+    display: block;
+    transition: border-left-color 0.15s, background 0.15s;
+  }
+  .club-card:hover {
+    background: #f0f4fb;
+    border-left-color: var(--duke-gold);
+  }
+  .club-card-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--duke-dark);
+    line-height: 1.25;
+    font-family: 'Playfair Display', serif;
+  }
+  .club-card-desc {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 0.15rem;
+    line-height: 1.35;
+  }
+  .club-card.full-width { grid-column: 1 / -1; border-left-color: var(--duke-gold); }
+  .club-card.full-width .club-card-name { color: #5a3a00; }
+
+  /* ── 社团列表（无链接） ── */
+  .club-list {
+    list-style: none;
+    margin-top: 0.6rem;
+    column-count: 2;
+    column-gap: 1rem;
+  }
+  .club-list li {
+    padding: 0.3rem 0;
+    border-bottom: 1px dashed #dde4f0;
+    font-size: 0.82rem;
+    break-inside: avoid;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+  .club-list li:last-child { border-bottom: none; }
+  .club-list li::before {
+    content: '▸';
+    color: var(--duke-blue);
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    margin-top: 0.2rem;
+  }
+  .club-list.single-col { column-count: 1; }
+
+  /* ── 说明框 ── */
+  .info-box {
+    background: var(--duke-light);
+    border-left: 3px solid var(--duke-blue);
+    padding: 0.65rem 0.9rem;
+    margin: 0.8rem 0;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    color: var(--duke-dark);
+  }
+  .info-box.gold {
+    background: #fffbf0;
+    border-left-color: var(--duke-gold);
+    color: #5a3a00;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--duke-dark);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 1.2rem 1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+  }
+  .footer a { color: var(--duke-gold); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="hero-eyebrow">Duke University · Student Organizations</p>
+  <h1>Duke 学生社团<br>总览指南</h1>
+  <p class="hero-subtitle">600+ 社团，从华人文化到竞技体育，总有一款适合你</p>
+  <div class="hero-badges">
+    <div class="hero-badge">🏛 600+ 注册社团</div>
+    <div class="hero-badge">🎓 本科+研究生均可加入</div>
+    <div class="hero-badge">📅 每年8月博览会</div>
+  </div>
+</header>
+
+<!-- 快速入口 -->
+<div class="entry-bar">
+  <span class="entry-bar-label">官方平台：</span>
+  <a class="entry-btn primary" href="https://duke.campusgroups.com/club_signup" target="_blank">🔍 DukeGroups 社团搜索</a>
+  <a class="entry-btn gold" href="https://students.duke.edu/belonging/get-involved/student-organizations/" target="_blank">📋 官方社团总览</a>
+  <a class="entry-btn outline" href="https://students.duke.edu/belonging/get-involved/student-organizations/rso-hub/" target="_blank">📌 新社团注册指南</a>
+</div>
+
+<div class="accordion-wrap" id="accordion">
+
+  <!-- ① 概览与加入方式 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="0" aria-expanded="false">
+      <div class="acc-icon">📖</div>
+      <div class="acc-title-group">
+        <div class="acc-title">社团体系概览</div>
+        <div class="acc-subtitle">RSO、USO、Sport Club 的区别与加入方式</div>
+      </div>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="clubs-body-0">
+      <div class="acc-inner">
+        <p>Duke共有<strong>600+</strong>注册学生组织，约<strong>90%</strong>的学生至少加入一个社团。所有在校本科生、研究生及专业学位生均可参与，大多数社团无需专业背景。</p>
+
+        <div class="info-box">
+          <strong>RSO（认可学生组织）</strong> — 完全学生自治，需至少10名在校生+1名教职顾问，通过Student Involvement and Leadership注册。共约550+个。<br><br>
+          <strong>USO（大学赞助组织）</strong> — 与特定院系紧密挂钩，由院系提供行政支持，是RSO的子集。<br><br>
+          <strong>Sport Club（运动社团）</strong> — 由Duke Recreation管理，30+支，不需要选拔/试训，所有技能水平均欢迎。
+        </div>
+
+        <p><strong>加入方式</strong></p>
+        <ul class="club-list single-col">
+          <li>每年8月下旬（开学前后）举办 <strong>Duke Groups Fair</strong>——数百个社团在East Duke Lawn设摊，是了解、加入社团最直接的方式。</li>
+          <li>全年可通过 <a href="https://duke.campusgroups.com/club_signup" target="_blank">DukeGroups平台</a> 按类别、关键词搜索并联系社团负责人。</li>
+          <li>成立新社团：需10+名在校生、1名教职顾问、基本章程，通过DukeGroups提交申请即可。</li>
+        </ul>
+
+        <div class="info-box gold" style="margin-top:1rem">
+          <strong>经费来源：</strong>RSO可向Duke Student Government下设的SOFC（学生组织财务委员会）申请经费，USO由赞助院系另行提供资金支持。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 华人与亚裔文化社团 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="1" aria-expanded="false">
+      <div class="acc-icon">🏮</div>
+      <div class="acc-title-group">
+        <div class="acc-title">华人、亚裔与国际文化社团</div>
+        <div class="acc-subtitle">CSA、DCSSA、ASA 及其他亚裔/国际学生组织</div>
+      </div>
+      <span class="acc-count">10+</span>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="clubs-body-1">
+      <div class="acc-inner">
+        <p>与华人家庭最相关的几个组织：</p>
+
+        <div class="club-grid">
+          <a class="club-card full-width" href="https://www.dukecsa.com/" target="_blank">
+            <div class="club-card-name">🇨🇳 CSA — Duke Chinese Students Association（本科生华人社）</div>
+            <div class="club-card-desc">代表本科华人学生，举办文化活动、职业交流、春晚、中秋等节庆；提供大小兄弟姐妹制度帮助新生融入。官网：dukecsa.com</div>
+          </a>
+          <a class="club-card full-width" href="https://duke.campusgroups.com/dcssa/home/" target="_blank">
+            <div class="club-card-name">🎓 DCSSA — Duke Chinese Students & Scholars Association（中国学生学者联合会）</div>
+            <div class="club-card-desc">校内最大学生组织之一，成立30+年，面向研究生/学者群体。提供机场接机、新生迎新、春节/中秋等节庆活动及职业讲座。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup?group_type=28451" target="_blank">
+            <div class="club-card-name">🌏 ASA — Asian Students Association</div>
+            <div class="club-card-desc">亚太裔学生权益倡导与文化社区，举办Asian Creative Festival、春季大汇演等。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">🇹🇼 TASA — Taiwanese American Students Association</div>
+            <div class="club-card-desc">饺子夜、麻将之夜、火锅局、Coffee Chats导师制。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">🇸🇬 Duke Singapore Students Association</div>
+            <div class="club-card-desc">新加坡学生社区，举办新生野餐、中秋&春节庆典及Dinner&Games活动。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">🇯🇵 JCC — Japanese Cultural Club</div>
+            <div class="club-card-desc">动漫放映、折纸、日语系联合活动，欢迎任何对日本文化感兴趣的同学。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">🇰🇷 KUSA — Korean Undergrad Students Association</div>
+            <div class="club-card-desc">中秋（Chuseok）、春节（Seol-nal）节庆，与韩语系合办活动。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">🌐 Duke International Association</div>
+            <div class="club-card-desc">面向所有国际学生，Springternational、Pangea Night、国际大使项目。</div>
+          </a>
+        </div>
+
+        <p style="margin-top:1rem"><strong>其他亚裔相关社团</strong></p>
+        <ul class="club-list">
+          <li>Duke South Asian Students Association (Diya) — 印度次大陆文化，Holi、Awaaz、三角地区Garba</li>
+          <li>Duke ASEAN — 东南亚文化，Buddies导师制、游戏夜</li>
+          <li>Pakistani Students Association</li>
+          <li>Vietnamese Student Association</li>
+          <li>Duke Africa / DukeAFRICA</li>
+          <li>Asian American Theater — 亚裔主题剧目创作</li>
+          <li>Temptasians A Cappella — 亚裔主题无伴奏合唱团</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 学术与职业发展 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="2" aria-expanded="false">
+      <div class="acc-icon">💼</div>
+      <div class="acc-title-group">
+        <div class="acc-title">学术、职业与竞赛社团</div>
+        <div class="acc-subtitle">商业、科研、法律、工程、医学预科方向</div>
+      </div>
+      <span class="acc-count">50+</span>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="clubs-body-2">
+      <div class="acc-inner">
+        <p>Duke学生在学术竞赛与职业类社团上有极强的参与度，以下为各方向代表社团：</p>
+
+        <p><strong>商业与咨询</strong></p>
+        <div class="club-grid">
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">Duke Business Society</div>
+            <div class="club-card-desc">案例竞赛、本地企业咨询、行业领袖讲座、导师制。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">Alpha Kappa Psi Business Fraternity</div>
+            <div class="club-card-desc">最古老的商科兄弟会，注重职业网络与领导力培养。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">TAMID at Duke</div>
+            <div class="club-card-desc">与以色列科技初创公司合作的咨询+投资实验社团。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">Business Behind Health</div>
+            <div class="club-card-desc">聚焦医疗行业商业逻辑，对接Pratt与Trinity学生。</div>
+          </a>
+        </div>
+
+        <p style="margin-top:1rem"><strong>工程与科技（Pratt重点）</strong></p>
+        <div class="club-grid">
+          <a class="club-card" href="https://sites.google.com/duke.edu/undergradstudentaffairs/student-groups" target="_blank">
+            <div class="club-card-name">Duke Robotics Club</div>
+            <div class="club-card-desc">设计制造机器人参加国内外竞赛，结合工程+编程+设计。</div>
+          </a>
+          <a class="club-card" href="https://sites.google.com/duke.edu/undergradstudentaffairs/student-groups" target="_blank">
+            <div class="club-card-name">Duke AERO — 火箭队</div>
+            <div class="club-card-desc">2025年携"Perseus"号（11英尺、125磅）参加IREC国际火箭赛，150+支队伍中脱颖而出。</div>
+          </a>
+          <a class="club-card" href="https://sites.google.com/duke.edu/undergradstudentaffairs/student-groups" target="_blank">
+            <div class="club-card-name">Duke Motorsports — 赛车队</div>
+            <div class="club-card-desc">2025年FSAE赛事109队中排名第16，SAE Formula设计竞赛。</div>
+          </a>
+          <a class="club-card" href="https://sites.google.com/duke.edu/undergradstudentaffairs/student-groups" target="_blank">
+            <div class="club-card-name">Duke iGEM — 合成生物学</div>
+            <div class="club-card-desc">2025年摘金，项目RESPIRA开发气道感染智能应对系统，400+队中提名最佳软件工具。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">American Society of Civil Engineers</div>
+            <div class="club-card-desc">土木工程学生分会，技术竞赛与职业活动。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">FEMMES+ — 女生STEM营</div>
+            <div class="club-card-desc">每年为杜汉姆4-6年级女生举办4天STEM夏令营，全程由Duke学生设计运营。</div>
+          </a>
+        </div>
+
+        <p style="margin-top:1rem"><strong>法律与政策</strong></p>
+        <ul class="club-list">
+          <li><strong>Duke Mock Trial</strong> — 全国最具竞争力的模拟法庭队伍之一</li>
+          <li>Bench and Bar Pre-Law Society — 法学预科，LSAT备考+律所参观</li>
+          <li>Alexander Hamilton Society — 外交政策辩论</li>
+          <li>American Grand Strategy — 美国战略研究</li>
+          <li>Women in National Security at Duke</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>医学预科与健康</strong></p>
+        <ul class="club-list">
+          <li><strong>American Medical Student Association (AMSA)</strong> — MCAT备考、医院志愿、申请辅导</li>
+          <li>Business Behind Health at Duke</li>
+          <li>Brain Injury Awareness Club</li>
+          <li>Blue Devils Versus Cancer</li>
+          <li>Synapse — 神经科学社团</li>
+          <li>American Chemical Society Chapter</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 艺术与表演 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="3" aria-expanded="false">
+      <div class="acc-icon">🎭</div>
+      <div class="acc-title-group">
+        <div class="acc-title">艺术、音乐与表演社团</div>
+        <div class="acc-subtitle">音乐剧、无伴奏合唱、舞蹈、器乐、话剧</div>
+      </div>
+      <span class="acc-count">30+</span>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="clubs-body-3">
+      <div class="acc-inner">
+        <p>Duke音乐系与艺术类学生社团资源丰富，详细介绍见本站 DSO 和 DUMB 专页。</p>
+
+        <p><strong>器乐乐团（详见专页）</strong></p>
+        <div class="club-grid">
+          <a class="club-card" href="/dso.html" target="_blank">
+            <div class="club-card-name">🎻 Duke Symphony Orchestra (DSO)</div>
+            <div class="club-card-desc">创立1926年，80-100人，Baldwin Auditorium每年4场音乐会，全部免费。详见DSO专页。</div>
+          </a>
+          <a class="club-card" href="/dumb.html" target="_blank">
+            <div class="club-card-name">🎺 Duke Marching & Pep Band (DUMB)</div>
+            <div class="club-card-desc">创立1906年，约150人，Cameron Indoor主场助威标配。详见DUMB专页。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">Duke Chamber Players</div>
+            <div class="club-card-desc">学生自治室内乐团，小编制合奏，每学期音乐会。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">Duke New Music Ensemble (DNME)</div>
+            <div class="club-card-desc">专注当代音乐，与DSO互补。</div>
+          </a>
+        </div>
+
+        <p style="margin-top:1rem"><strong>音乐剧与话剧</strong></p>
+        <div class="club-grid">
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">Hoof 'n' Horn</div>
+            <div class="club-card-desc">每年制作两部全长音乐剧，Duke最具历史的学生戏剧组织。</div>
+          </a>
+          <a class="club-card" href="https://duke.campusgroups.com/club_signup" target="_blank">
+            <div class="club-card-name">Asian American Theater</div>
+            <div class="club-card-desc">亚裔视角的戏剧创作与表演。</div>
+          </a>
+        </div>
+
+        <p style="margin-top:1rem"><strong>无伴奏合唱 (A Cappella)</strong></p>
+        <ul class="club-list">
+          <li><strong>The Pitchforks</strong> — 校内最知名的混声无伴奏合唱团</li>
+          <li>Temptasians A Cappella Group — 亚裔主题</li>
+          <li>Duke Dischords（男声）</li>
+          <li>Out of the Blue（混声）</li>
+          <li>Rhythm and Blue（混声）</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>舞蹈</strong></p>
+        <ul class="club-list">
+          <li>Club Dancing Devils — 竞技舞蹈（归Recreation管理）</li>
+          <li>Club Ballroom Dancing — 交谊舞/比赛</li>
+          <li>Defining Movement (DefMo) — 多元文化舞蹈</li>
+          <li>Duke Bhangra / Diya — 南亚舞蹈</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>出版与媒体</strong></p>
+        <ul class="club-list">
+          <li>The Archive — 文学杂志</li>
+          <li>The Muse Magazine — 女性视角文化杂志</li>
+          <li>The Lemur: Duke's Premier Big Ideas Magazine</li>
+          <li>TEDxDuke Coordinating Committee</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ 运动社团 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="4" aria-expanded="false">
+      <div class="acc-icon">⚽</div>
+      <div class="acc-title-group">
+        <div class="acc-title">Sport Clubs — 运动社团</div>
+        <div class="acc-subtitle">30+支，无需试训，欢迎各水平参与</div>
+      </div>
+      <span class="acc-count">32支</span>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="clubs-body-4">
+      <div class="acc-inner">
+        <div class="info-box">
+          Sport Clubs由Duke Recreation & Physical Education管理，不需要选拔/试训（部分竞赛项目除外），本科生、研究生及持有Duke Rec会员资格者均可参与。各社团发邮件联系即可入队：<a href="https://recreation.duke.edu/programs/sport-clubs/" target="_blank">recreation.duke.edu/programs/sport-clubs</a>
+        </div>
+
+        <p><strong>球类运动</strong></p>
+        <ul class="club-list">
+          <li>Club Badminton — 羽毛球（常见华人参与度高）</li>
+          <li>Club Table Tennis — 乒乓球</li>
+          <li>Club Basketball (M/W) — 篮球</li>
+          <li>Club Soccer (M/W) — 足球</li>
+          <li>Club Volleyball (M/W) — 排球</li>
+          <li>Club Baseball — 棒球</li>
+          <li>Club Rugby — 橄榄球</li>
+          <li>Club Ultimate (M/W) — 飞盘</li>
+          <li>Club Squash — 壁球</li>
+          <li>Club Water Polo — 水球</li>
+          <li>Club Lacrosse (M/W) — 曲棍球</li>
+          <li>Club Field Hockey — 曲棍球(场地)</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>水上 / 雪上 / 竞速</strong></p>
+        <ul class="club-list">
+          <li>Club Rowing (M) — 赛艇</li>
+          <li>Club Swimming — 游泳</li>
+          <li>Club Sailing — 帆船</li>
+          <li>Club Triathlon — 铁人三项</li>
+          <li>Club Cycling — 自行车</li>
+          <li>Club Running — 长跑</li>
+          <li>Club Ski & Board — 滑雪/单板</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>格斗 / 武术 / 其他</strong></p>
+        <ul class="club-list">
+          <li>Club Brazilian Jiu Jitsu — 柔术</li>
+          <li>Club Taekwondo — 跆拳道</li>
+          <li>Club Tennis — 网球</li>
+          <li>Club Golf — 高尔夫</li>
+          <li>Club Equestrian — 马术</li>
+          <li>Club Figure Skating — 花样滑冰</li>
+          <li>Club Ice Hockey — 冰球</li>
+          <li>Club Ballroom Dancing — 交谊舞</li>
+          <li>Club Dancing Devils — 竞技舞蹈</li>
+        </ul>
+
+        <div class="info-box gold" style="margin-top:1rem">
+          <strong>经济援助：</strong>Duke Recreation提供Sport Club财务援助申请（每学年两次），减免单个社团会费，申请表格见 recreation.duke.edu。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ 服务、宗教与身份认同 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="5" aria-expanded="false">
+      <div class="acc-icon">🤝</div>
+      <div class="acc-title-group">
+        <div class="acc-title">服务、公益与身份认同社团</div>
+        <div class="acc-subtitle">志愿服务、宗教信仰、LGBTQ、残障权益等</div>
+      </div>
+      <span class="acc-count">100+</span>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="clubs-body-5">
+      <div class="acc-inner">
+
+        <p><strong>社区服务与公益</strong></p>
+        <ul class="club-list">
+          <li><strong>Duke Partnership for Service (dPS)</strong> — 统筹Duke学生志愿活动平台，组织DukeEngage年会</li>
+          <li>Alpha Phi Omega — 全国性服务兄弟会，开放入会</li>
+          <li>Adopt a Grandparent — 结对陪伴老人</li>
+          <li>Bring Happiness for Hospice — 安宁疗护关怀</li>
+          <li>Bringing Hope to the Family Duke — 家庭支持服务</li>
+          <li>Bull City Scholars — 服务达汉姆本地学生</li>
+          <li>Students Providing Aid</li>
+          <li>The UNICEF Club at Duke University</li>
+          <li>Blue Devils Versus Cancer</li>
+          <li>Beyond Borders — 国际志愿服务</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>宗教与信仰</strong></p>
+        <ul class="club-list">
+          <li>Jewish Life at Duke — 宗教服务、节日庆典及社区服务</li>
+          <li>Buddhist Meditation Community at Duke</li>
+          <li>Thomistic Institute — 天主教思想</li>
+          <li>多个基督教团契（见DukeGroups搜索"Christian"）</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>身份认同与多元包容</strong></p>
+        <ul class="club-list">
+          <li>Blue Devils United — LGBTQ+权益倡导与社区</li>
+          <li>Duke Disability Alliance (DDA) — 残障学生权益</li>
+          <li>Association of Mixed People at Duke — 多元族裔认同</li>
+          <li>Body Empowerment Project — 身体积极运动</li>
+          <li>Black Student Alliance (BSA)</li>
+          <li>Native American Student Alliance (NASA)</li>
+          <li>Latinx Student Organization (LSO)</li>
+          <li>Defining Movement (DefMo) — 跨越族裔边界的多元文化组织</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>学生自治</strong></p>
+        <div class="club-grid">
+          <a class="club-card" href="https://dukestudentgovernment.org/" target="_blank">
+            <div class="club-card-name">Duke Student Government (DSG)</div>
+            <div class="club-card-desc">本科生自治议会，每周三晚开放旁听，代表学生参与校务决策。</div>
+          </a>
+          <a class="club-card" href="https://duuke.org/" target="_blank">
+            <div class="club-card-name">Duke University Union (DUU)</div>
+            <div class="club-card-desc">全校最大学生组织，每年策划200+活动，含演出、电影、讲座等。</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑦ 兄弟会与姐妹会 -->
+  <div class="acc-item">
+    <button class="acc-trigger" data-index="6" aria-expanded="false">
+      <div class="acc-icon">🏛</div>
+      <div class="acc-title-group">
+        <div class="acc-title">兄弟会与姐妹会 (Greek Life)</div>
+        <div class="acc-subtitle">IFC、Panhellenic、NPHC 三大体系简介</div>
+      </div>
+      <span class="acc-count">15+章</span>
+      <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body" id="clubs-body-6">
+      <div class="acc-inner">
+        <div class="info-box">
+          Duke的Greek Life历史可追溯至Trinity College时代，目前约<strong>25-30%</strong>的本科生参与其中。分为三个体系：IFC（传统男性兄弟会）、Panhellenic（女性姐妹会）、NPHC（历史黑人兄弟/姐妹会）。此外还有共学兄弟会（Co-ed，如Alpha Kappa Psi商科兄弟会）。
+        </div>
+
+        <p><strong>主要特点</strong></p>
+        <ul class="club-list single-col">
+          <li>所有章节均在DukeGroups注册，需遵守大学政策。</li>
+          <li>入会流程（Recruitment/Rush）通常在秋季学期开始后几周举行；NPHC各会的入会时间不固定。</li>
+          <li>大多数IFC兄弟会没有专属宿舍楼，活动地点为Wilson Recreation Center及校外租用场地。</li>
+          <li>Panhellenic有Formal Recruitment流程（注册后按程序参观各章节）。</li>
+          <li>参与Greek Life不是进入社交圈的唯一方式，很多中国学生并未参与，主要依赖专业社团和文化社团社交。</li>
+        </ul>
+
+        <p style="margin-top:0.9rem"><strong>DukeGroups列出的Greek章节（部分）</strong></p>
+        <ul class="club-list">
+          <li>Alpha Kappa Alpha Sorority（NPHC）</li>
+          <li>alpha Kappa Delta Phi（亚裔姐妹会）</li>
+          <li>Alpha Kappa Psi Business Fraternity（商科，共学）</li>
+          <li>Zeta Phi Beta Sorority（NPHC）</li>
+          <li>Alpha Phi Alpha Fraternity（NPHC）</li>
+          <li>La Unidad Latina, Lambda Upsilon Lambda（拉丁文化兄弟会）</li>
+          <li>Lambda Theta Alpha Latin Sorority</li>
+          <li>更多IFC/Panhellenic章节见DukeGroups搜索"Greek"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /accordion-wrap -->
+
+<footer class="footer">
+  数据来源：Duke Student Affairs · DukeGroups · Duke Recreation & Physical Education · Duke Chronicle<br>
+  <a href="https://duke.campusgroups.com/club_signup" target="_blank">duke.campusgroups.com</a> &nbsp;·&nbsp;
+  <a href="https://students.duke.edu/belonging/get-involved/student-organizations/" target="_blank">students.duke.edu</a>
+</footer>
+
+<script>
+  const triggers = document.querySelectorAll('.acc-trigger');
+
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const index = trigger.dataset.index;
+      const body = document.getElementById('clubs-body-' + index);
+      const isOpen = trigger.classList.contains('open');
+
+      triggers.forEach(t => {
+        t.classList.remove('open');
+        t.setAttribute('aria-expanded', 'false');
+      });
+      document.querySelectorAll('.acc-body').forEach(b => {
+        b.style.maxHeight = '0';
+        b.classList.remove('open');
+      });
+
+      if (!isOpen) {
+        trigger.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        body.classList.add('open');
+      }
+    });
+  });
+</script>
+</body>
+</html>
