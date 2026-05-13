@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 基础知识 · 详细版</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: #1e1e2e;
+    --accent: #7c6af7;
+    --accent2: #4fd1c5;
+    --accent3: #f6ad55;
+    --text: #e8e8f0;
+    --muted: #6b6b88;
+    --glow: rgba(124,106,247,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Serif SC', serif;
+    min-height: 100vh;
+    padding: 48px 20px 80px;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 15% 8%, rgba(124,106,247,0.09) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 85% 85%, rgba(79,209,197,0.07) 0%, transparent 50%);
+  }
+  .container { max-width: 820px; margin: 0 auto; }
+
+  /* Header */
+  header { text-align:center; margin-bottom: 60px; }
+  header::after { content:''; display:block; width:60px; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); margin:24px auto 0; }
+  .label { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.3em; color:var(--accent); text-transform:uppercase; margin-bottom:16px; opacity:0; animation:fadeUp .6s ease forwards; }
+  h1 { font-size:clamp(28px,5vw,44px); font-weight:700; line-height:1.2; opacity:0; animation:fadeUp .6s .15s ease forwards; }
+  h1 em { font-style:normal; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .subtitle { color:var(--muted); font-size:15px; margin-top:12px; opacity:0; animation:fadeUp .6s .25s ease forwards; }
+
+  /* Category headers */
+  .category {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 32px 4px 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2px;
+    opacity:0;
+  }
+  .category.visible { animation: fadeUp .5s ease forwards; }
+
+  /* Accordion */
+  .accordion { display:flex; flex-direction:column; gap:2px; margin-bottom:4px; }
+  .item { border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--surface); transition:border-color .3s,box-shadow .3s; opacity:0; }
+  .item:hover { border-color:rgba(124,106,247,.3); }
+  .item.open { border-color:rgba(124,106,247,.45); box-shadow:0 0 36px var(--glow); }
+
+  .trigger { width:100%; display:flex; align-items:center; gap:16px; padding:20px 22px; background:none; border:none; color:var(--text); cursor:pointer; text-align:left; transition:background .2s; }
+  .trigger:hover { background:rgba(124,106,247,.04); }
+
+  .icon-wrap { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; background:rgba(124,106,247,.1); border:1px solid rgba(124,106,247,.2); transition:background .3s,transform .3s; }
+  .open .icon-wrap { background:rgba(124,106,247,.22); transform:scale(1.06); }
+
+  .trigger-text { flex:1; }
+  .trigger-title { font-size:16px; font-weight:700; line-height:1.3; }
+  .trigger-sub { font-size:11px; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono',monospace; letter-spacing:.05em; }
+
+  .chevron { width:20px; height:20px; color:var(--muted); flex-shrink:0; transition:transform .35s cubic-bezier(.4,0,.2,1),color .3s; }
+  .open .chevron { transform:rotate(180deg); color:var(--accent); }
+
+  .panel { max-height:0; overflow:hidden; transition:max-height .48s cubic-bezier(.4,0,.2,1); }
+  .panel-inner { padding:0 24px 28px 80px; border-top:1px solid var(--border); }
+
+  /* Content styles */
+  .panel-inner p { font-size:14.5px; line-height:1.9; color:#c4c4d8; margin-top:18px; }
+  .panel-inner p + p { margin-top:10px; }
+
+  .hl { display:inline-block; background:rgba(124,106,247,.12); border:1px solid rgba(124,106,247,.25); border-radius:4px; padding:1px 7px; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--accent2); }
+  .hl-orange { background:rgba(246,173,85,.1); border-color:rgba(246,173,85,.25); color:var(--accent3); }
+
+  .tag-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .tag { font-family:'JetBrains Mono',monospace; font-size:11px; padding:4px 10px; border-radius:20px; border:1px solid var(--border); color:var(--muted); letter-spacing:.05em; }
+
+  .steps { margin-top:14px; display:flex; flex-direction:column; gap:10px; }
+  .step { display:flex; gap:14px; align-items:flex-start; }
+  .step-num { width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-size:11px; font-family:'JetBrains Mono',monospace; font-weight:600; flex-shrink:0; margin-top:2px; color:#fff; }
+  .step-text { font-size:14px; line-height:1.75; color:#c4c4d8; }
+  .step-text strong { color:var(--accent2); font-weight:700; }
+
+  .compare { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .compare-box { background:rgba(255,255,255,.025); border:1px solid var(--border); border-radius:8px; padding:14px; }
+  .compare-box h4 { font-size:11px; font-family:'JetBrains Mono',monospace; color:var(--accent); letter-spacing:.1em; margin-bottom:8px; text-transform:uppercase; }
+  .compare-box p { font-size:13px; color:#a0a0c0; margin-top:0 !important; line-height:1.65; }
+
+  .example-box { background:rgba(79,209,197,.05); border:1px solid rgba(79,209,197,.2); border-radius:8px; padding:16px 18px; margin-top:14px; }
+  .example-box .ex-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.15em; color:var(--accent2); text-transform:uppercase; margin-bottom:8px; }
+  .example-box p { font-size:13.5px; color:#b0d8d4; margin-top:0 !important; line-height:1.75; }
+
+  .formula-box { background:rgba(124,106,247,.06); border:1px solid rgba(124,106,247,.2); border-radius:8px; padding:14px 18px; margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:13px; color:#b0a8f8; line-height:2; }
+
+  .warn-box { background:rgba(246,173,85,.06); border:1px solid rgba(246,173,85,.2); border-radius:8px; padding:14px 18px; margin-top:14px; }
+  .warn-box p { font-size:13.5px; color:#e8c98a; margin-top:0 !important; line-height:1.75; }
+
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px; }
+  .grid3-box { background:rgba(255,255,255,.025); border:1px solid var(--border); border-radius:8px; padding:12px; text-align:center; }
+  .grid3-box .num { font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:600; color:var(--accent); }
+  .grid3-box .desc { font-size:12px; color:var(--muted); margin-top:4px; line-height:1.5; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  @media(max-width:600px){
+    .panel-inner{padding-left:20px;}
+    .compare,.grid3{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="label">完整入门指南 · 详细版</div>
+    <h1>AI <em>基础知识</em></h1>
+    <p class="subtitle">从概念到应用，系统理解人工智能</p>
+  </header>
+
+  <!-- 第一部分：基础概念 -->
+  <div class="category">01 · 基础概念</div>
+  <div class="accordion">
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🧠</div>
+        <div class="trigger-text">
+          <div class="trigger-title">什么是人工智能</div>
+          <div class="trigger-sub">Artificial Intelligence · AI的定义与分类</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>人工智能（AI）是让计算机模拟人类智能行为的技术领域，涵盖感知、理解、推理、学习和决策。它不是魔法，本质是大规模数学与统计学的工程实现。</p>
+        <div class="grid3">
+          <div class="grid3-box"><div class="num">弱AI</div><div class="desc">专注单一任务<br>如下棋、人脸识别<br>已大量落地</div></div>
+          <div class="grid3-box"><div class="num">强AI</div><div class="desc">通用推理能力<br>接近人类智能<br>尚未实现</div></div>
+          <div class="grid3-box"><div class="num">超级AI</div><div class="desc">全面超越人类<br>属于理论概念<br>存在争议</div></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">类比理解</div>
+          <p>AI就像一个经过专门训练的"专家系统"。下棋AI在棋盘上无敌，但让它帮你订外卖它完全不知道该怎么做——这就是弱AI的本质。</p>
+        </div>
+        <p>AI、机器学习、深度学习是包含关系：AI最大，机器学习是AI的子集，深度学习是机器学习的子集。日常说的"AI"通常特指基于深度学习的现代系统。</p>
+        <div class="tag-row">
+          <span class="tag">感知</span><span class="tag">推理</span><span class="tag">学习</span><span class="tag">决策</span><span class="tag">自然语言处理</span><span class="tag">计算机视觉</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">📊</div>
+        <div class="trigger-text">
+          <div class="trigger-title">机器学习</div>
+          <div class="trigger-sub">Machine Learning · 让机器从数据中学习规律</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>传统编程：人写规则，机器执行。机器学习：给机器数据和答案，让它自己找规则。这是一个根本性的范式转变。</p>
+        <div class="compare">
+          <div class="compare-box"><h4>传统编程</h4><p>数据 + 人工规则 → 输出<br><br>例：写if-else判断垃圾邮件</p></div>
+          <div class="compare-box"><h4>机器学习</h4><p>数据 + 标注答案 → 模型自动找规则<br><br>例：喂给模型10万封邮件让它学</p></div>
+        </div>
+        <p>机器学习的三大类型：</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>监督学习</strong>：有标注的训练数据。输入→已知输出，学习映射关系。如图片分类（这是猫/狗）、房价预测。</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>无监督学习</strong>：数据没有标注，模型自己找结构和聚类。如用户行为分群、异常检测。</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>强化学习</strong>：通过与环境交互、获得奖惩信号来学习。AlphaGo击败人类围棋冠军用的就是这个。</div></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">生活类比</div>
+          <p>监督学习像有老师批改作业；无监督学习像自己整理房间找规律；强化学习像玩游戏——靠得分反馈摸索最优策略。</p>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🕸️</div>
+        <div class="trigger-text">
+          <div class="trigger-title">神经网络与深度学习</div>
+          <div class="trigger-sub">Neural Network & Deep Learning · AI能力的核心引擎</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>神经网络松散地模拟人脑神经元连接——由大量节点分层排列，每层提取不同抽象层次的特征，通过反向传播调整权重来学习。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>输入层</strong>：接收原始数据（图片像素值、文字编码等）</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>隐藏层</strong>：逐层提取特征。识别猫的图片时：第1层检测边缘→第2层检测形状→第3层检测耳朵眼睛→第N层识别"猫"</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>输出层</strong>：给出预测结果（概率分布）</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>反向传播</strong>：将预测误差从后往前传播，按梯度下降调整每个权重，反复迭代直到准确率满意</div></div>
+        </div>
+        <div class="formula-box">
+          损失函数 → 计算预测与真实答案的差距<br>
+          梯度下降 → 沿误差减小最快的方向调整参数<br>
+          反向传播 → 高效计算每层梯度的算法
+        </div>
+        <p>深度学习就是"深"（层数多）的神经网络。层数越多，能学习的特征越抽象，但训练难度和计算量也越大。现代大模型动辄数百层。</p>
+        <div class="tag-row">
+          <span class="tag">CNN（卷积神经网络）</span><span class="tag">RNN（循环神经网络）</span><span class="tag">反向传播</span><span class="tag">梯度下降</span>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- 第二部分：核心架构 -->
+  <div class="category">02 · 核心架构</div>
+  <div class="accordion">
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">⚡</div>
+        <div class="trigger-text">
+          <div class="trigger-title">Transformer架构</div>
+          <div class="trigger-sub">自注意力机制 · 现代AI的基石</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>2017年Google发表《Attention Is All You Need》，提出Transformer架构，彻底改变了AI领域。核心创新是<span class="hl">自注意力机制</span>（Self-Attention）。</p>
+        <p>旧方法（RNN）像接力赛，逐词处理，早期信息传到后面已严重衰减。Transformer让每个词同时"看"句子里所有词，直接计算相关性。</p>
+        <div class="example-box">
+          <div class="ex-label">自注意力示例</div>
+          <p>"动物没有过马路，因为<strong>它</strong>太累了" → 模型计算"它"与每个词的相关分数：动物(0.82)、马路(0.03)、太累(0.07)……自动学会"它=动物"。</p>
+        </div>
+        <div class="formula-box">
+          每个词生成三个向量：Q（我想查什么）、K（我能提供什么）、V（我携带的内容）<br>
+          注意力分数 = softmax( Q·K / √d ) · V<br>
+          结果：每个词融合了全局语境的新表示
+        </div>
+        <p>Transformer的另一大优势是可以<span class="hl">并行计算</span>——所有词同时处理，不像RNN必须串行，因此可以大规模利用GPU集群训练超大模型。</p>
+        <div class="tag-row">
+          <span class="tag">Self-Attention</span><span class="tag">位置编码</span><span class="tag">多头注意力</span><span class="tag">并行计算</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">💬</div>
+        <div class="trigger-text">
+          <div class="trigger-title">大语言模型（LLM）</div>
+          <div class="trigger-sub">Large Language Model · 预测下一个词的艺术</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>LLM的训练目标极其简单：给定前面的文字，<span class="hl">预测下一个词</span>。但当模型参数量达到千亿级、训练数据达到万亿token时，涌现出了推理、编程、翻译等意想不到的能力。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>预训练（Pre-training）</strong>：用互联网规模的文本（书籍、网页、代码等）训练，学习语言的统计规律和世界知识</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>指令微调（Instruction Tuning）</strong>：用人工标注的"问题-答案"对继续训练，让模型学会按指令回答</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>RLHF</strong>：基于人类反馈的强化学习，让人类评估模型回答的好坏，训练一个"奖励模型"来指导LLM变得更有帮助、更安全</div></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">涌现能力</div>
+          <p>GPT-2（15亿参数）几乎不会算数。GPT-3（1750亿参数）能做简单推理。GPT-4能解竞赛数学题。没有人专门教它——能力在规模增大时"突然涌现"。</p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">GPT-4o</span><span class="tag">Claude 3.5</span><span class="tag">Gemini</span><span class="tag">LLaMA 3</span><span class="tag">千问</span><span class="tag">DeepSeek</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🎨</div>
+        <div class="trigger-text">
+          <div class="trigger-title">生成式AI与扩散模型</div>
+          <div class="trigger-sub">Generative AI · 从文字到图像的创造</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>生成式AI能创造出原本不存在的内容。文本生成依赖Transformer，图像生成主要依赖<span class="hl">扩散模型</span>（Diffusion Model）。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">→</div><div class="step-text"><strong>前向扩散</strong>：训练时，将真实图片逐步加噪声，直到变成纯随机噪声</div></div>
+          <div class="step"><div class="step-num">←</div><div class="step-text"><strong>反向去噪</strong>：训练模型学习每一步如何去噪，即学习"噪声→图片"的逆过程</div></div>
+          <div class="step"><div class="step-num">✨</div><div class="step-text"><strong>生成时</strong>：从随机噪声出发，用学会的去噪能力逐步生成清晰图像，同时用文字提示词引导方向</div></div>
+        </div>
+        <div class="compare">
+          <div class="compare-box"><h4>文本生成</h4><p>Transformer架构<br>ChatGPT、Claude<br>逐Token预测输出</p></div>
+          <div class="compare-box"><h4>图像生成</h4><p>扩散模型架构<br>Midjourney、DALL·E<br>噪声→图像迭代去噪</p></div>
+        </div>
+        <p>多模态模型（如GPT-4o）将两者结合，能同时理解和生成文字、图片、语音，正在成为主流方向。</p>
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- 第三部分：进阶应用 -->
+  <div class="category">03 · 进阶应用</div>
+  <div class="accordion">
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">✍️</div>
+        <div class="trigger-text">
+          <div class="trigger-title">提示词工程</div>
+          <div class="trigger-sub">Prompt Engineering · 与AI高效沟通的方法论</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>提示词工程是设计和优化输入文本（提示词），以从LLM获得更好输出的技术。同一个问题，措辞不同，效果可以天差地别。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">①</div><div class="step-text"><strong>明确角色</strong>："你是一位有20年经验的儿科医生，请用家长能理解的语言……"</div></div>
+          <div class="step"><div class="step-num">②</div><div class="step-text"><strong>给出背景</strong>：提供足够的上下文信息，不要假设模型"懂你"</div></div>
+          <div class="step"><div class="step-num">③</div><div class="step-text"><strong>明确格式</strong>："用三段式，每段不超过100字""用表格对比""只返回JSON"</div></div>
+          <div class="step"><div class="step-num">④</div><div class="step-text"><strong>思维链（Chain of Thought）</strong>：加上"请逐步思考"，让模型先推理再给答案，准确率显著提升</div></div>
+          <div class="step"><div class="step-num">⑤</div><div class="step-text"><strong>少样本示例（Few-shot）</strong>：在提示词里给2-3个例子，模型会模仿格式和风格</div></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">对比示例</div>
+          <p>❌ 弱提示："解释一下量子计算"<br>✅ 强提示："我是高中物理老师，请用不超过200字向没有大学物理基础的学生解释量子计算的核心概念，用一个生活类比帮助理解"</p>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">📚</div>
+        <div class="trigger-text">
+          <div class="trigger-title">RAG · 检索增强生成</div>
+          <div class="trigger-sub">Retrieval-Augmented Generation · 让AI读你的文档</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>LLM的知识停留在训练截止日期，也不了解你的私有文档。RAG解决这个问题：先检索相关内容，再让模型基于检索结果生成答案。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>文档向量化</strong>：将你的文档切片，用Embedding模型转成向量，存入向量数据库</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>检索</strong>：用户提问时，将问题也转成向量，在数据库里找最相近的文档片段</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>增强生成</strong>：将检索到的文档片段塞入提示词，让LLM基于这些内容回答，并标注出处</div></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">典型应用</div>
+          <p>企业内部知识库问答、法律文书检索、医疗文献查询——这些场景需要基于特定文档回答，而不是靠模型"记忆"，RAG是标准解法。</p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">向量数据库</span><span class="tag">Embedding</span><span class="tag">语义搜索</span><span class="tag">知识库问答</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🤖</div>
+        <div class="trigger-text">
+          <div class="trigger-title">AI Agent · 自主完成任务</div>
+          <div class="trigger-sub">从问答机器人到自动化工作流</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>普通LLM是"问一答一"；Agent是给模型配备工具和规划能力，让它<span class="hl">自主分解任务、调用工具、循环推理</span>，直到完成复杂目标。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">①</div><div class="step-text"><strong>规划</strong>：模型将大目标分解为多个子任务，制定执行计划</div></div>
+          <div class="step"><div class="step-num">②</div><div class="step-text"><strong>工具调用</strong>：联网搜索、运行代码、读写文件、调用API……模型决定何时用什么工具</div></div>
+          <div class="step"><div class="step-num">③</div><div class="step-text"><strong>观察反馈</strong>：获取工具执行结果，判断是否继续、修正或完成</div></div>
+          <div class="step"><div class="step-num">④</div><div class="step-text"><strong>循环执行</strong>：重复上述过程，直到任务完成或达到最大步数限制</div></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">实际案例</div>
+          <p>"帮我分析最近一个月竞品的定价变化并生成报告" → Agent自动搜索各竞品网站→提取价格数据→用代码生成图表→撰写分析报告→发送邮件，全程无需人工干预。</p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">工具调用</span><span class="tag">ReAct框架</span><span class="tag">多Agent协作</span><span class="tag">自动化工作流</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🔬</div>
+        <div class="trigger-text">
+          <div class="trigger-title">训练、微调与推理</div>
+          <div class="trigger-sub">Training, Fine-tuning & Inference · 模型的生命周期</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>一个AI模型从诞生到使用，经历三个阶段：</p>
+        <div class="compare">
+          <div class="compare-box"><h4>预训练</h4><p>海量数据+超大算力<br>GPT-4耗资约1亿美元<br>数周到数月<br>确定模型基础能力</p></div>
+          <div class="compare-box"><h4>微调</h4><p>少量专业数据继续训练<br>成本低得多<br>适配特定领域或风格<br>如医疗、法律专用模型</p></div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">→</div><div class="step-text"><strong>推理（Inference）</strong>：使用训练好的模型处理用户输入、生成输出。你每次向ChatGPT提问都是推理。比训练便宜，但大规模服务时仍是主要成本。</div></div>
+        </div>
+        <div class="formula-box">
+          量化（Quantization）：将模型权重从32位浮点压缩为8位/4位整数<br>
+          效果：模型体积缩小75%，速度提升，精度略有损失<br>
+          意义：让大模型能在消费级GPU甚至手机上运行
+        </div>
+        <div class="tag-row">
+          <span class="tag">LoRA微调</span><span class="tag">量化</span><span class="tag">蒸馏</span><span class="tag">RLHF</span><span class="tag">GPU集群</span>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- 第四部分：风险与未来 -->
+  <div class="category">04 · 风险与未来</div>
+  <div class="accordion">
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🛡️</div>
+        <div class="trigger-text">
+          <div class="trigger-title">AI的局限与幻觉问题</div>
+          <div class="trigger-sub">Hallucination & Limitations · 为什么AI会"一本正经地胡说"</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>LLM最著名的问题是<span class="hl">幻觉</span>（Hallucination）——模型会自信地生成根本不存在的事实：假论文、假引用、假历史事件。</p>
+        <div class="warn-box"><p>根本原因：LLM本质是在预测"最可能出现的下一个词"，而不是在"查找事实"。它没有"不知道"这个选项，只有"生成概率最高的内容"。</p></div>
+        <p>其他主要局限：</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">①</div><div class="step-text"><strong>知识截止</strong>：训练数据有截止日期，不了解最新事件（可通过联网搜索补救）</div></div>
+          <div class="step"><div class="step-num">②</div><div class="step-text"><strong>数据偏见</strong>：训练数据中的性别、种族、文化偏见会被模型学习并放大</div></div>
+          <div class="step"><div class="step-num">③</div><div class="step-text"><strong>可解释性差</strong>：无法精确知道模型为什么给出某个答案（黑盒问题）</div></div>
+          <div class="step"><div class="step-num">④</div><div class="step-text"><strong>上下文窗口有限</strong>：模型一次能处理的文字长度有上限，超出就会"忘记"早期内容</div></div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🔭</div>
+        <div class="trigger-text">
+          <div class="trigger-title">AI安全与对齐</div>
+          <div class="trigger-sub">AI Safety & Alignment · 如何让AI做我们真正想要它做的事</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>AI对齐（Alignment）研究的核心问题是：如何确保AI系统按照人类真实意图行事，而不产生有害的意外后果。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">近期</div><div class="step-text"><strong>误用风险</strong>：深度伪造（Deepfake）、自动化诈骗、大规模虚假信息、辅助网络攻击</div></div>
+          <div class="step"><div class="step-num">中期</div><div class="step-text"><strong>就业冲击</strong>：重复性脑力劳动（客服、翻译、初级编程、数据分析）面临大规模替代</div></div>
+          <div class="step"><div class="step-num">长期</div><div class="step-text"><strong>对齐挑战</strong>：如果AI能力远超人类，如何保证它的目标和价值观与人类一致？这是Anthropic、OpenAI等公司的核心研究课题</div></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">RLHF的对齐作用</div>
+          <p>通过人类反馈强化学习，告诉模型哪些回答是有帮助的、无害的、诚实的。但这只能减少表面有害输出，更深层的价值对齐问题尚未解决。</p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">AI Safety</span><span class="tag">价值对齐</span><span class="tag">可解释AI</span><span class="tag">红队测试</span><span class="tag">宪法AI</span>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function toggle(btn) {
+    const item = btn.closest('.item');
+    const panel = item.querySelector('.panel');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.item.open').forEach(el => {
+      el.classList.remove('open');
+      el.querySelector('.panel').style.maxHeight = '0';
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+    }
+  }
+
+  // staggered entrance
+  const allItems = document.querySelectorAll('.item, .category');
+  let delay = 0.35;
+  allItems.forEach(el => {
+    el.style.animation = `fadeUp 0.5s ${delay}s ease forwards`;
+    delay += 0.06;
+    if (el.classList.contains('category')) delay += 0.04;
+  });
+</script>
+</body>
+</html>
