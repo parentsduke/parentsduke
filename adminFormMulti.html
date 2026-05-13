@@ -770,9 +770,6 @@
                 <button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
                   style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                   onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
-                <button onclick="revokeApproval('${r.id}','${r.student_name_cn||r.student_name_en||''}','${r.submitter_email||''}','${r.class_year||''}','${r.admission_type||''}')"
-                  style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#fdf0ee'" onmouseout="this.style.background='#fff'">取消批准</button>
                 ${r.approved_by ? `<span style="font-size:11px;color:#888070;font-family:'DM Mono',monospace;">批:${r.approved_by}</span>` : ''}
                 ${(() => { const resents = (r.approval_log||[]).filter(e=>e.action==='resent'); return resents.length ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">发(${resents.length}):${resents.map(e=>e.by).join(' ')}</span>` : ''; })()}
               </div>`
@@ -821,7 +818,12 @@
           ${r.rejected_at
             ? `<span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>`
             : r.approved_at
-            ? `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`
+            ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>
+                <button onclick="revokeApproval('${r.id}','${r.student_name_cn||r.student_name_en||''}','${r.submitter_email||''}','${r.class_year||''}','${r.admission_type||''}')"
+                  style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#fdf0ee'" onmouseout="this.style.background='#fff'">取消批准</button>
+               </div>`
             : r.shelved_at
             ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
                 <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
@@ -979,7 +981,12 @@
         }
         const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
         if (actionCell) {
-          actionCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
+          actionCell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>
+            <button onclick="revokeApproval('${recordId}','${studentName}','','${classYear}','${admissionType}')"
+              style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+              onmouseover="this.style.background='#fdf0ee'" onmouseout="this.style.background='#fff'">取消批准</button>
+          </div>`;
         }
         alert('✅ 已标记为批准');
       } catch(e) {
@@ -1030,14 +1037,21 @@
           <button onclick="resendApproval('${recordId}','${email}','${studentName}','${classYear}','${admissionType}','${college.replace(/'/g,"\\'")}')"
             style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
             onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
-          <button onclick="revokeApproval('${recordId}','${studentName}','${email}','${classYear}','${admissionType}')"
-            style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-            onmouseover="this.style.background='#fdf0ee'" onmouseout="this.style.background='#fff'">取消批准</button>
           <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">${adminName}</span>
         </div>`;
       }
 
       alert(`✅ 已发送入群链接到 ${email}`);
+
+      const actionCellEmail = document.querySelector(`#row-${recordId} td:last-child`);
+      if (actionCellEmail) {
+        actionCellEmail.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>
+          <button onclick="revokeApproval('${recordId}','${studentName}','${email}','${classYear}','${admissionType}')"
+            style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#fdf0ee'" onmouseout="this.style.background='#fff'">取消批准</button>
+        </div>`;
+      }
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
     }
