@@ -488,6 +488,7 @@
           <th>录取通知书</th>
           <th>Committed Letter</th>
           <th>操作</th>
+          <th style="min-width:72px;">取消批准</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -845,6 +846,17 @@
                </div>`
           }
         </td>
+        <td id="cell-unapprove-${r.id}" style="text-align:center;padding:8px 6px;">
+          ${r.approved_at && !r.rejected_at && !r.shelved_at
+            ? `<button onclick="unapproveRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
+                style="padding:5px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:6px;
+                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#fff0ed'" onmouseout="this.style.background='#fff'">
+                取消批准
+              </button>`
+            : `<span style="color:var(--muted);font-size:12px;">—</span>`
+          }
+        </td>
       </tr>`;
     }).join('');
   }
@@ -1101,6 +1113,35 @@
       }
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 取消批准 ──
+  async function unapproveRecord(recordId, studentName) {
+    if (!confirm(`确认取消批准 ${studentName}？\n\n将清除批准状态，记录回到待处理。`)) return;
+    try {
+      const now = new Date().toISOString();
+      await db.from('admissions_submissionsMulti')
+        .update({ approved_at: null, approved_by: null })
+        .eq('id', recordId);
+      await db.rpc('append_approval_log', {
+        record_id: recordId,
+        entry: { action: 'unapproved', by: adminName, at: now }
+      });
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) { rec.approved_at = null; rec.approved_by = null; }
+      // 更新批准列
+      const approveCell = document.getElementById(`cell-approve-${recordId}`);
+      if (approveCell) {
+        approveCell.innerHTML = `<button onclick="approveRecord('${recordId}','${rec?.submitter_email||''}','${studentName}','${rec?.class_year||''}','${rec?.admission_type||''}','${(rec?.college||'').replace(/'/g,"\\'")}')"
+          style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+          onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">批准入群</button>`;
+      }
+      // 更新取消批准列
+      const unapproveCell = document.getElementById(`cell-unapprove-${recordId}`);
+      if (unapproveCell) unapproveCell.innerHTML = `<span style="color:var(--muted);font-size:12px;">—</span>`;
+    } catch(e) {
+      alert('取消批准失败：' + e.message);
     }
   }
 
