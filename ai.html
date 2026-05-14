@@ -783,6 +783,18 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
           看到"量子AI""量子深度学习"的新闻，大概率是夸大宣传。量子计算机目前的qubit数量少、错误率高，连基础的稳定运算都尚未完全解决，距离加速大模型训练还有很长的路。<br><br>
           真正改变了今天AI普及的"量化"，是安静无名的 <span class="hl">INT4/INT8 Quantization</span>——它让十亿参数的模型装进了你的手机。</p>
         </div>
+
+        <div class="example-box" style="margin-top:14px; background:rgba(124,106,247,.05); border-color:rgba(124,106,247,.2);">
+          <div class="ex-label">🔬 量子计算机对AI有多大帮助？</div>
+          <p style="margin-top:10px;">结论先说：<strong>目前几乎为零</strong>。</p>
+          <div class="steps" style="margin-top:12px;">
+            <div class="step"><div class="step-num">①</div><div class="step-text"><strong>现实很骨感</strong>：量子计算机正处于"嘈杂中等规模量子"（NISQ）阶段——qubit数量少、错误率高、相干时间极短。训练神经网络需要数万亿次稳定的矩阵乘法，这恰恰是现在量子计算机最做不到的事</div></div>
+            <div class="step"><div class="step-num">②</div><div class="step-text"><strong>理论上有潜力的方向</strong>：优化问题（量子退火可能更快找到损失函数最小值）、矩阵运算（HHL算法理论上指数级加速）、概率模型采样——但这些都还停留在论文里</div></div>
+            <div class="step"><div class="step-num">③</div><div class="step-text"><strong>根本障碍：退相干</strong>：量子态极其脆弱，任何微小外界干扰都会让计算结果崩溃。谷歌2024年的Willow芯片有105个qubit，但训练GPT-4级别模型所需算力，与之差了不知道多少个数量级</div></div>
+            <div class="step"><div class="step-num">④</div><div class="step-text"><strong>未来10-20年？</strong>：学界分歧很大。乐观派认为容错量子计算机一旦实现，某些AI训练任务会被彻底重写；悲观派认为神经网络的计算模式和量子优势的适用场景根本对不上</div></div>
+          </div>
+          <p style="margin-top:14px;"><strong>一句话：</strong>量子计算机是面向未来的科学赌注，AI量化是今天就在用的工程工具。两者解决的是完全不同层面的问题。</p>
+        </div>
       </div></div>
     </div>
 
