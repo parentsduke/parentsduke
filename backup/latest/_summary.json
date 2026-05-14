@@ -1,5 +1,5 @@
 {
-  "date": "2026-05-13",
+  "date": "2026-05-14",
   "tables": {
     "duke_votes": {
       "status": "ok",
@@ -7,23 +7,23 @@
     },
     "admissions_submissions": {
       "status": "ok",
-      "rows": 98
+      "rows": 99
     },
     "admissions_submissionsMulti": {
       "status": "ok",
-      "rows": 21
+      "rows": 24
     },
     "profiles": {
       "status": "ok",
-      "rows": 170
+      "rows": 171
     },
     "pending_uploads": {
       "status": "ok",
-      "rows": 239
+      "rows": 241
     },
     "private_qr_links": {
       "status": "ok",
-      "rows": 236
+      "rows": 191
     },
     "qr_codes": {
       "status": "ok",
@@ -46,12 +46,12 @@
       "rows": 3
     },
     "admissions_sharing": {
-      "status": "ok",
+      "status": "error",
       "rows": 0
     },
     "approve_uploads": {
       "status": "ok",
-      "rows": 114
+      "rows": 113
     }
   }
 }
