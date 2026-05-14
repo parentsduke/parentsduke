@@ -356,6 +356,83 @@
       </div></div>
     </div>
 
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">👤</div>
+        <div class="trigger-text">
+          <div class="trigger-title">人脸识别全流程</div>
+          <div class="trigger-sub">Face Recognition · 高铁刷脸0.3秒背后发生了什么</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>你在高铁站把脸对准闸机，0.3秒后闸门打开。这0.3秒里，AI完成了一套完整的识别流程。</p>
+
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text">
+            <strong>采集图像</strong><br>
+            闸机内置近红外摄像头（而非普通摄像头）拍摄你的脸。近红外的优势：不受光线影响，强光、逆光、黑暗都能清晰成像；同时能识别照片攻击——真人皮肤和打印照片反射率不同。
+          </div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">
+            <strong>人脸检测（Detection）</strong><br>
+            先确认画面里有没有人脸、在哪里。用MTCNN或RetinaFace等检测模型，输出人脸的边界框坐标。如果你戴了口罩或低着头，这一步可能失败，系统提示"请正视摄像头"。
+          </div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">
+            <strong>关键点定位（Landmark Detection）</strong><br>
+            在检测到的人脸上，标记68~106个关键点：双眼角、鼻尖、嘴角、下颌轮廓……用这些点计算人脸的姿态角度（俯仰、偏转、旋转），为下一步对齐做准备。
+          </div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">
+            <strong>人脸对齐（Alignment）</strong><br>
+            根据关键点，把人脸"掰正"——无论你是仰头、侧脸还是微笑，都被变换成标准正脸的位置和大小（通常112×112像素）。这一步确保后续特征提取的一致性。
+          </div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-text">
+            <strong>特征提取（Feature Extraction）</strong><br>
+            把对齐后的人脸图像送入深度神经网络（如ArcFace模型），输出一个512维的特征向量——你这张脸被压缩成512个数字。<br>
+            这512个数字不是随机的：同一个人在不同角度、表情、年龄下提取的向量，距离很近；不同人的向量，距离很远。这是整个系统的核心。
+          </div></div>
+          <div class="step"><div class="step-num">6</div><div class="step-text">
+            <strong>特征比对（Matching）</strong><br>
+            用你的512维向量，去数据库里搜索最相近的向量。<br>
+            · 1:1验证（如手机解锁）：只和你注册时的向量比较，计算余弦相似度，超过阈值（如0.85）就通过<br>
+            · 1:N识别（如高铁进站）：和数据库里几亿人的向量比较，找最相似的那个，再核验是否是持票人<br>
+            几亿人的向量搜索用FAISS等近似最近邻算法，毫秒级完成。
+          </div></div>
+          <div class="step"><div class="step-num">7</div><div class="step-text">
+            <strong>活体检测（Liveness Detection）</strong><br>
+            防止用照片或视频冒充真人。常用方法：<br>
+            · 眨眼/转头指令（交互式）<br>
+            · 3D结构光（iPhone Face ID）：发射3万个红外点，计算深度信息，照片完全没有深度<br>
+            · 静默活体检测：分析皮肤的细微光泽、血流引起的细微颜色变化，无需用户配合
+          </div></div>
+          <div class="step"><div class="step-num">8</div><div class="step-text">
+            <strong>决策输出</strong><br>
+            所有步骤全部通过后，系统发送"验证通过"信号，闸门打开。整个流程0.3秒完成。
+          </div></div>
+        </div>
+
+        <div class="example-box" style="margin-top:16px;">
+          <div class="ex-label">不同场景的技术侧重点</div>
+          <p>
+            <strong>高铁进站（1:N，海量库）</strong>：重点在搜索速度和召回率，宁可多提示"请重新对准"也不能放错人<br><br>
+            <strong>iPhone Face ID（1:1，极高精度）</strong>：用3D结构光+神经引擎，误识率低于百万分之一，比Touch ID的五万分之一高出20倍<br><br>
+            <strong>支付宝刷脸付款</strong>：加入了风控模型——同一张脸在不同城市短时间内连续支付，会触发额外验证<br><br>
+            <strong>公安布控（实时视频流）</strong>：对监控视频中每一帧做实时检测，在人群中自动标记特定人员，要求极低延迟
+          </p>
+        </div>
+
+        <div class="warn-box" style="margin-top:10px;">
+          <p><strong>🔍 中等深度：ArcFace损失函数——为什么人脸识别特别准</strong><br><br>
+          普通分类任务的神经网络只需要把不同类别分开。人脸识别更难：数据库里可能有10亿人，不可能每人都是一个"类别"，而且同一个人10年后再来，模型还得认出来。<br><br>
+          ArcFace的解决方案：训练时不只要求"同一个人的向量要聚在一起，不同人的向量要分开"，还要求"同一个人的向量夹角不超过X度，不同人的向量夹角至少超过Y度"——用角度间距（Angular Margin）作为损失函数，训练出的特征向量分布更均匀、更鲁棒。<br><br>
+          效果：同一个人戴眼镜和不戴眼镜、10年前后、微笑和严肃，向量距离都足够近；不同人即使外貌相似（双胞胎），向量距离也拉得足够开。</p>
+        </div>
+
+        <div class="tag-row">
+          <span class="tag">MTCNN</span><span class="tag">ArcFace</span><span class="tag">关键点检测</span><span class="tag">活体检测</span><span class="tag">FAISS</span><span class="tag">512维特征向量</span>
+        </div>
+      </div></div>
+    </div>
+
   </div>
 
   <!-- 第二部分：核心架构 -->
@@ -865,6 +942,237 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
           <strong>对齐税的现实体现：</strong><br>
           · GPT-4在某些创意写作评测中，经过RLHF后比原始预训练模型更"保守"<br>
           · 过度对齐的模型会拒绝合理请求，用户体验变差——这是AI公司在安全和实用之间持续调整的根本原因</p>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+  <!-- 第五部分：主要公司与模型 -->
+  <div class="category">05 · 主要公司与模型</div>
+  <div class="accordion">
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🇺🇸</div>
+        <div class="trigger-text">
+          <div class="trigger-title">OpenAI · GPT系列</div>
+          <div class="trigger-sub">最有影响力的AI公司 · ChatGPT引爆全球</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>2015年由Sam Altman、Elon Musk等人联合创立，初为非营利机构，后转型为"有限营利"公司。微软累计投资超130亿美元，Azure云服务是其主要算力来源。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">2020</div><div class="step-text"><strong>GPT-3</strong>（1750亿参数）：首次展示大模型的涌现能力，开发者圈引发轰动，但普通用户尚未感知</div></div>
+          <div class="step"><div class="step-num">2022</div><div class="step-text"><strong>ChatGPT</strong>（基于GPT-3.5）：2022年11月上线，5天用户破百万，2个月破亿——史上增长最快的消费产品。让AI第一次真正进入大众视野</div></div>
+          <div class="step"><div class="step-num">2023</div><div class="step-text"><strong>GPT-4</strong>：多模态（能看图）、推理能力大幅提升。通过美国律师资格考试前10%、医师执照考试、SAT数学满分</div></div>
+          <div class="step"><div class="step-num">2024</div><div class="step-text"><strong>GPT-4o</strong>（omni）：语音、图像、文字统一处理，实时语音对话延迟低至232ms，接近真人对话体验</div></div>
+          <div class="step"><div class="step-num">2024</div><div class="step-text"><strong>o1 / o3系列</strong>：专门针对复杂推理训练，在回答前进行"深度思考"（Chain of Thought内化），数学和编程能力大幅超越GPT-4o</div></div>
+          <div class="step"><div class="step-num">2025</div><div class="step-text"><strong>GPT-4.5 / o4-mini</strong>：持续迭代，在保持能力的同时大幅降低推理成本，o4-mini每百万token成本不到o1的十分之一</div></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">核心产品线</div>
+          <p>
+            <strong>ChatGPT</strong>：面向消费者的对话产品，免费版用GPT-4o mini，Plus（$20/月）用GPT-4o和o系列<br>
+            <strong>API</strong>：开发者接口，按token计费，支撑了全球数百万个AI应用<br>
+            <strong>Sora</strong>：文生视频模型，2024年发布，能生成60秒高质量视频<br>
+            <strong>DALL·E 3</strong>：文生图模型，集成在ChatGPT中
+          </p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">GPT-4o</span><span class="tag">o3</span><span class="tag">ChatGPT</span><span class="tag">Sora</span><span class="tag">DALL·E</span><span class="tag">Whisper</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🔬</div>
+        <div class="trigger-text">
+          <div class="trigger-title">Anthropic · Claude系列</div>
+          <div class="trigger-sub">AI安全优先 · 前OpenAI团队创立</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>2021年由Dario Amodei（前OpenAI研究副总裁）率领约11名OpenAI员工创立，核心理念是"负责任地开发AI"。Google和Amazon累计投资超80亿美元。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">2023</div><div class="step-text"><strong>Claude 1</strong>：首款产品，以安全性和长上下文（最早支持100k token）见长</div></div>
+          <div class="step"><div class="step-num">2023</div><div class="step-text"><strong>Claude 2</strong>：上下文扩展至200k token，约15万汉字，能处理整本书；代码能力大幅提升</div></div>
+          <div class="step"><div class="step-num">2024</div><div class="step-text"><strong>Claude 3系列</strong>（Haiku/Sonnet/Opus）：三档定位，Opus在多项基准测试中超越GPT-4；Haiku速度极快、成本极低，适合高频调用</div></div>
+          <div class="step"><div class="step-num">2024</div><div class="step-text"><strong>Claude 3.5 Sonnet</strong>：编程能力成为业界标杆，SWE-bench（真实软件工程任务）得分业界第一；新增"Artifacts"功能可直接生成可运行代码</div></div>
+          <div class="step"><div class="step-num">2025</div><div class="step-text"><strong>Claude 3.7 / Claude 4系列</strong>：引入混合推理模式（快速回答+深度思考可切换），持续领跑编程和长文本理解</div></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">Anthropic的独特之处</div>
+          <p>
+            <strong>宪法AI训练</strong>：Claude用价值原则自我批评修正，安全性在同类模型中最高<br>
+            <strong>可解释性研究</strong>：Anthropic是目前最深入研究"模型内部发生了什么"的公司<br>
+            <strong>超长上下文</strong>：率先将上下文窗口推进到200k token，现已成行业标配<br>
+            <strong>企业市场</strong>：Claude API是AWS Bedrock和Google Cloud的核心模型之一，大量企业通过云端调用
+          </p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">Claude 3.5 Sonnet</span><span class="tag">Claude Opus</span><span class="tag">宪法AI</span><span class="tag">200k上下文</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🔵</div>
+        <div class="trigger-text">
+          <div class="trigger-title">Google · Gemini系列</div>
+          <div class="trigger-sub">搜索巨头的AI反击 · 最强多模态能力</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>Google是Transformer架构、BERT、Word2Vec等AI基础技术的发明者，却在ChatGPT爆发后被迫追赶。内部将ChatGPT的出现定为"红色警报"，全力押注Gemini。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">2023</div><div class="step-text"><strong>Bard</strong>：仓促上线，发布会演示出错，市值单日蒸发1000亿美元——AI史上最惨烈的产品发布</div></div>
+          <div class="step"><div class="step-num">2023</div><div class="step-text"><strong>Gemini 1.0</strong>（Ultra/Pro/Nano）：Ultra在部分基准测试上首次超过GPT-4；Nano可在手机端运行，集成进Pixel手机</div></div>
+          <div class="step"><div class="step-num">2024</div><div class="step-text"><strong>Gemini 1.5 Pro</strong>：100万token上下文窗口（业界最大），能一次处理1小时视频或100万行代码；视频理解能力业界第一</div></div>
+          <div class="step"><div class="step-num">2024</div><div class="step-text"><strong>Gemini 2.0 Flash</strong>：速度极快、成本极低，在Google搜索、Gmail、Docs中大规模部署</div></step></div>
+          <div class="step"><div class="step-num">2025</div><div class="step-text"><strong>Gemini 2.5 Pro</strong>：推理能力大幅提升，编程基准测试跻身第一梯队，与Claude、GPT-4o形成三强鼎立</div></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">Google的独特优势</div>
+          <p>
+            <strong>数据优势</strong>：拥有搜索、YouTube、Gmail、Maps等海量数据，训练数据质量和多样性无可比拟<br>
+            <strong>端侧部署</strong>：Gemini Nano运行在Pixel手机上，实现完全离线的AI功能<br>
+            <strong>搜索整合</strong>：Google搜索的"AI Overview"每天服务数十亿次查询，是世界上使用最频繁的AI功能<br>
+            <strong>自研芯片</strong>：TPU（张量处理器）是专为AI计算设计的芯片，训练效率比NVIDIA GPU高2~3倍
+          </p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">Gemini 2.5 Pro</span><span class="tag">100万token</span><span class="tag">TPU</span><span class="tag">NotebookLM</span><span class="tag">Vertex AI</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🦙</div>
+        <div class="trigger-text">
+          <div class="trigger-title">Meta · LLaMA系列</div>
+          <div class="trigger-sub">开源路线的旗手 · 推动AI民主化</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>Meta（Facebook母公司）选择了与OpenAI/Anthropic截然不同的路线——开源模型权重，免费供所有人下载使用。这一决策深刻改变了AI行业格局。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">2023</div><div class="step-text"><strong>LLaMA 1</strong>：原本限研究用途，权重泄露后迅速在GitHub传播，引发开源社区爆发</div></div>
+          <div class="step"><div class="step-num">2023</div><div class="step-text"><strong>LLaMA 2</strong>：正式开源商用，70亿/130亿/700亿参数三个版本，性能接近GPT-3.5，开源社区基于此构建了数万个衍生模型</div></div>
+          <div class="step"><div class="step-num">2024</div><div class="step-text"><strong>LLaMA 3</strong>（8B/70B/405B）：405B版本性能首次逼近GPT-4，开源模型与闭源模型差距大幅缩小；8B版本可在消费级笔记本运行</div></div>
+          <div class="step"><div class="step-num">2024</div><div class="step-text"><strong>LLaMA 3.2</strong>：加入视觉能力，支持图文混合输入；最小版本11B可在手机端运行</div></step></div>
+        </div>
+        <div class="example-box">
+          <div class="ex-label">开源的深远影响</div>
+          <p>
+            <strong>降低门槛</strong>：创业公司不需要花几千万训练模型，直接在LLaMA上微调即可<br>
+            <strong>本地部署</strong>：医院、律所等对数据隐私要求高的机构，可以在自己服务器上运行LLaMA，数据不出公司<br>
+            <strong>生态爆发</strong>：Ollama、LM Studio等工具让普通用户在自己电脑上3分钟内跑起来本地大模型<br>
+            <strong>衍生模型</strong>：Mistral、Vicuna、WizardLM等数千个优秀模型都基于LLaMA微调而来
+          </p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">LLaMA 3</span><span class="tag">开源</span><span class="tag">Ollama</span><span class="tag">本地部署</span><span class="tag">405B参数</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🇨🇳</div>
+        <div class="trigger-text">
+          <div class="trigger-title">中国主要AI公司与模型</div>
+          <div class="trigger-sub">百度·阿里·字节·DeepSeek · 快速追赶的中国力量</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>中国AI大模型在2023年后迅速崛起，形成多强竞争格局。部分模型在特定领域已达到国际领先水平。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">百度</div><div class="step-text">
+            <strong>文心一言（ERNIE Bot）</strong>：国内最早发布的GPT对标产品（2023年3月），基于文心大模型。ERNIE 4.0在中文理解和生成上表现突出。百度搜索已全面接入AI摘要。
+          </div></div>
+          <div class="step"><div class="step-num">阿里</div><div class="step-text">
+            <strong>通义千问（Qwen）</strong>：阿里云旗下，已开源多个版本。Qwen2.5-72B在开源模型排行榜上长期名列前茅，代码能力尤其出色；Qwen-VL支持图文理解。
+          </div></div>
+          <div class="step"><div class="step-num">字节</div><div class="step-text">
+            <strong>豆包（Doubao）</strong>：字节跳动旗下，以极低价格（API价格约为GPT-4o的1/100）快速抢占市场。豆包App月活超3000万，是国内使用最广泛的AI助手之一。
+          </div></div>
+          <div class="step"><div class="step-num">腾讯</div><div class="step-text">
+            <strong>混元大模型</strong>：集成进微信、腾讯文档等产品。混元T1推理模型于2025年发布，定位对标o1，在数学推理上表现突出。
+          </div></div>
+          <div class="step"><div class="step-num">华为</div><div class="step-text">
+            <strong>盘古大模型</strong>：主攻企业和政务市场，在气象预测（盘古气象）、矿山、电力等垂直行业落地深度。不面向消费者，走B端路线。
+          </div></div>
+        </div>
+        <div class="example-box" style="margin-top:12px;">
+          <div class="ex-label">⭐ DeepSeek——最震撼国际社会的中国AI</div>
+          <p>
+            <strong>背景</strong>：深度求索，杭州量化私募幻方科技旗下AI团队，2023年成立，团队规模不到200人<br><br>
+            <strong>DeepSeek-V2（2024）</strong>：用创新的MoE架构（混合专家模型），推理成本比GPT-4低99%，API价格每百万token仅约1元人民币，引发行业价格战<br><br>
+            <strong>DeepSeek-R1（2025年1月）</strong>：推理能力与o1相当，但训练成本约600万美元（o3训练成本估计超1亿美元）。开源后一夜爆红，登上全球App Store榜首，美国科技股单日市值蒸发超1万亿美元（英伟达跌17%）<br><br>
+            <strong>技术创新</strong>：<br>
+            · MoE（混合专家）：模型有很多"专家"子网络，每次推理只激活其中少数几个，大幅降低计算量<br>
+            · 纯强化学习训练推理能力：不依赖人工标注的推理链，模型自己"悟"出解题方法<br>
+            · 对国际AI格局的意义：证明了顶级AI能力不一定需要顶级算力，效率创新同样能突破封锁
+          </p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">DeepSeek-R1</span><span class="tag">通义千问</span><span class="tag">文心一言</span><span class="tag">豆包</span><span class="tag">MoE架构</span><span class="tag">开源</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🏆</div>
+        <div class="trigger-text">
+          <div class="trigger-title">其他重要公司与模型</div>
+          <div class="trigger-sub">Mistral · xAI · Stability AI · Midjourney · NVIDIA</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <div class="steps">
+          <div class="step"><div class="step-num">🇫🇷</div><div class="step-text">
+            <strong>Mistral AI（法国）</strong>：欧洲最重要的AI公司，开源Mistral 7B模型以极小体积实现超强性能，震惊业界。Mixtral 8x7B用MoE架构以450亿参数达到700亿参数模型的效果。Le Chat是其对话产品，欧洲企业首选。
+          </div></div>
+          <div class="step"><div class="step-num">⚡</div><div class="step-text">
+            <strong>xAI（Elon Musk）</strong>：2023年马斯克离开OpenAI董事会后创立，推出Grok系列。Grok-2集成在X（Twitter）平台，是少数允许讨论敏感话题的模型之一。Grok-3于2025年发布，在数学和科学推理上表现出色。
+          </div></div>
+          <div class="step"><div class="step-num">🎨</div><div class="step-text">
+            <strong>Midjourney</strong>：图像生成领域最具影响力的产品，用Discord机器人形式运营，月活超2000万。画面质量和艺术风格被公认为业界最高水准，深受设计师和艺术家喜爱。V6版本引入了更强的文字渲染能力。
+          </div></div>
+          <div class="step"><div class="step-num">🖼️</div><div class="step-text">
+            <strong>Stability AI</strong>：Stable Diffusion的开发者，开源策略使其成为图像生成领域的"Linux"。SDXL、SD3等版本持续迭代，但公司经营困难，创始人已离职。
+          </div></div>
+          <div class="step"><div class="step-num">💚</div><div class="step-text">
+            <strong>NVIDIA</strong>：严格说不是AI应用公司，但是AI时代最重要的基础设施提供者。H100/H200/B200 GPU是训练大模型的标准硬件，市值一度突破3.3万亿美元超越苹果成为全球第一。CUDA生态是AI开发者无法绕开的基础平台。
+          </div></div>
+          <div class="step"><div class="step-num">🤗</div><div class="step-text">
+            <strong>Hugging Face</strong>：AI界的GitHub，托管超50万个开源模型和10万个数据集。Transformers库是最广泛使用的AI开发库，几乎所有开源模型都支持通过它调用。估值45亿美元，但商业模式仍以企业服务为主。
+          </div></div>
+        </div>
+        <div class="example-box" style="margin-top:12px;">
+          <div class="ex-label">行业格局总结（2025年）</div>
+          <p>
+            <strong>闭源顶级模型</strong>：GPT-4o/o3（OpenAI）、Claude 3.5 Sonnet（Anthropic）、Gemini 2.5 Pro（Google）三强鼎立，各有所长<br><br>
+            <strong>开源最强</strong>：LLaMA 3.1 405B（Meta）、DeepSeek-R1（深度求索）、Qwen2.5（阿里），差距正在缩小<br><br>
+            <strong>图像生成</strong>：Midjourney（质量最高）、DALL·E 3（集成最广）、Stable Diffusion（开源最自由）<br><br>
+            <strong>视频生成</strong>：Sora（OpenAI）、可灵（快手）、即梦（字节）、Runway Gen-3<br><br>
+            <strong>趋势</strong>：推理模型（o1/R1类）正在成为新主流，小模型+RAG替代大模型成本，端侧AI（手机本地运行）快速成熟
+          </p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">Mistral</span><span class="tag">Grok</span><span class="tag">Midjourney</span><span class="tag">Runway</span><span class="tag">NVIDIA H100</span><span class="tag">CUDA</span>
         </div>
       </div></div>
     </div>
