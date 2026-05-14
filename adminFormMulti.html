@@ -767,13 +767,13 @@
         <td id="cell-approve-${r.id}" style="text-align:center;padding:8px 6px;">
           ${r.rejected_at || r.shelved_at ? '' : r.approved_at
             ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                <button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
+                <button onclick="resendApproval('${r.id}','${esc(r.submitter_email)}','${esc(r.student_name_cn||r.student_name_en)}','${r.class_year||''}','${r.admission_type||''}','${esc(r.college)}')"
                   style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                   onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
                 ${r.approved_by ? `<span style="font-size:11px;color:#888070;font-family:'DM Mono',monospace;">批:${r.approved_by}</span>` : ''}
                 ${(() => { const resents = (r.approval_log||[]).filter(e=>e.action==='resent'); return resents.length ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">发(${resents.length}):${resents.map(e=>e.by).join(' ')}</span>` : ''; })()}
               </div>`
-            : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}','${r.class_year||''}','${r.admission_type||''}','${(r.college||'').replace(/'/g,"\\'")}')"
+            : `<button onclick="approveRecord('${r.id}','${esc(r.submitter_email)}','${esc(r.student_name_cn||r.student_name_en)}','${r.class_year||''}','${r.admission_type||''}','${esc(r.college)}')"
                 style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                 onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">批准入群</button>`
           }
@@ -820,14 +820,14 @@
             : r.approved_at
             ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
                 <span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>
-                <button onclick="revokeApproval('${r.id}','${r.student_name_cn||r.student_name_en||''}','${r.submitter_email||''}','${r.class_year||''}','${r.admission_type||''}')"
+                <button onclick="revokeApproval('${r.id}','${esc(r.student_name_cn||r.student_name_en)}','${esc(r.submitter_email)}','${r.class_year||''}','${r.admission_type||''}')"
                   style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                   onmouseover="this.style.background='#fdf0ee'" onmouseout="this.style.background='#fff'">取消批准</button>
                </div>`
             : r.shelved_at
             ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
                 <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
-                <button onclick="unshelveRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
+                <button onclick="unshelveRecord('${r.id}','${esc(r.student_name_cn||r.student_name_en)}')"
                   style="padding:4px 10px;background:#fff;color:#b45309;border:1.5px solid #b45309;border-radius:5px;
                          font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                   onmouseover="this.style.background='#fff3e0'" onmouseout="this.style.background='#fff'">
@@ -835,13 +835,13 @@
                 </button>
                </div>`
             : `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                <button onclick="rejectRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
+                <button onclick="rejectRecord('${r.id}','${esc(r.student_name_cn||r.student_name_en)}')"
                   style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;
                          font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                   onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
                   拒绝
                 </button>
-                <button onclick="shelveRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
+                <button onclick="shelveRecord('${r.id}','${esc(r.student_name_cn||r.student_name_en)}')"
                   style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;
                          font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
                   onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">
@@ -933,6 +933,9 @@
     };
   }
 
+  // ── 单引号转义工具（用于 onclick 属性内嵌字符串）──
+  function esc(s) { return (s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+
   // ── 批准 Modal 状态 ──
   let _approveArgs = null;
 
@@ -983,7 +986,7 @@
         if (actionCell) {
           actionCell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
             <span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>
-            <button onclick="revokeApproval('${recordId}','${studentName}','','${classYear}','${admissionType}')"
+            <button onclick="revokeApproval('${recordId}','${esc(studentName)}','','${classYear}','${admissionType}')"
               style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
               onmouseover="this.style.background='#fdf0ee'" onmouseout="this.style.background='#fff'">取消批准</button>
           </div>`;
@@ -1034,7 +1037,7 @@
       const cell = document.getElementById(`cell-approve-${recordId}`);
       if (cell) {
         cell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <button onclick="resendApproval('${recordId}','${email}','${studentName}','${classYear}','${admissionType}','${college.replace(/'/g,"\\'")}')"
+          <button onclick="resendApproval('${recordId}','${esc(email)}','${esc(studentName)}','${classYear}','${admissionType}','${esc(college)}')"
             style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
             onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
           <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">${adminName}</span>
@@ -1047,7 +1050,7 @@
       if (actionCellEmail) {
         actionCellEmail.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
           <span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>
-          <button onclick="revokeApproval('${recordId}','${studentName}','${email}','${classYear}','${admissionType}')"
+          <button onclick="revokeApproval('${recordId}','${esc(studentName)}','${esc(email)}','${classYear}','${admissionType}')"
             style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
             onmouseover="this.style.background='#fdf0ee'" onmouseout="this.style.background='#fff'">取消批准</button>
         </div>`;
@@ -1089,7 +1092,7 @@
       // 5. 恢复批准列
       const approveCell = document.getElementById(`cell-approve-${recordId}`);
       if (approveCell && rec) {
-        approveCell.innerHTML = `<button onclick="approveRecord('${recordId}','${rec.submitter_email||''}','${studentName}','${rec.class_year||''}','${rec.admission_type||''}','${(rec.college||'').replace(/'/g,"\\'")}')"
+        approveCell.innerHTML = `<button onclick="approveRecord('${recordId}','${esc(rec.submitter_email)}','${esc(studentName)}','${rec.class_year||''}','${rec.admission_type||''}','${esc(rec.college)}')"
           style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
           onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">批准入群</button>`;
       }
@@ -1098,13 +1101,13 @@
       const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
       if (actionCell) {
         actionCell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <button onclick="rejectRecord('${recordId}','${studentName}')"
+          <button onclick="rejectRecord('${recordId}','${esc(studentName)}')"
             style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;
                    font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
             onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
             拒绝
           </button>
-          <button onclick="shelveRecord('${recordId}','${studentName}')"
+          <button onclick="shelveRecord('${recordId}','${esc(studentName)}')"
             style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;
                    font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
             onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">
@@ -1133,7 +1136,7 @@
       if (actionCell) {
         actionCell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
           <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
-          <button onclick="unshelveRecord('${recordId}','${studentName}')"
+          <button onclick="unshelveRecord('${recordId}','${esc(studentName)}')"
             style="padding:4px 10px;background:#fff;color:#b45309;border:1.5px solid #b45309;border-radius:5px;
                    font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
             onmouseover="this.style.background='#fff3e0'" onmouseout="this.style.background='#fff'">
@@ -1160,13 +1163,13 @@
       const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
       if (actionCell) {
         actionCell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <button onclick="rejectRecord('${recordId}','${studentName}')"
+          <button onclick="rejectRecord('${recordId}','${esc(studentName)}')"
             style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;
                    font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
             onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
             拒绝
           </button>
-          <button onclick="shelveRecord('${recordId}','${studentName}')"
+          <button onclick="shelveRecord('${recordId}','${esc(studentName)}')"
             style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;
                    font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
             onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">
@@ -1177,7 +1180,7 @@
       // 恢复批准按钮
       const approveCell = document.getElementById(`cell-approve-${recordId}`);
       if (approveCell && rec && !rec.approved_at) {
-        approveCell.innerHTML = `<button onclick="approveRecord('${recordId}','${rec.submitter_email||''}','${studentName}','${rec.class_year||''}','${rec.admission_type||''}','${(rec.college||'').replace(/'/g,"\\'")}')"
+        approveCell.innerHTML = `<button onclick="approveRecord('${recordId}','${esc(rec.submitter_email)}','${esc(studentName)}','${rec.class_year||''}','${rec.admission_type||''}','${esc(rec.college)}')"
           style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
           onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">批准入群</button>`;
       }
@@ -1283,7 +1286,7 @@
         const rec = allRecords.find(r => r.id === recordId);
         const approvedBy = rec?.approved_by || '';
         cell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <button onclick="resendApproval('${recordId}','${email}','${studentName}','${classYear}','${admissionType}','${college.replace(/'/g,"\\'")}')"
+          <button onclick="resendApproval('${recordId}','${esc(email)}','${esc(studentName)}','${classYear}','${admissionType}','${esc(college)}')"
             style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
             onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">重新发送</button>
           ${approvedBy ? `<span style="font-size:11px;color:#888070;font-family:'DM Mono',monospace;">批:${approvedBy}</span>` : ''}
