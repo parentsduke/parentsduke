@@ -7,15 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #16161f;
+    --bg: #2e3245;
+    --surface: #363b52;
+    --surface2: #3c415a;
     --border: #1e1e2e;
     --accent: #7c6af7;
     --accent2: #4fd1c5;
     --accent3: #f6ad55;
     --text: #e8e8f0;
-    --muted: #6b6b88;
+    --muted: #b8b8d0;
     --glow: rgba(124,106,247,0.15);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -72,11 +72,12 @@
   .chevron { width:20px; height:20px; color:var(--muted); flex-shrink:0; transition:transform .35s cubic-bezier(.4,0,.2,1),color .3s; }
   .open .chevron { transform:rotate(180deg); color:var(--accent); }
 
-  .panel { max-height:0; overflow:hidden; transition:max-height .48s cubic-bezier(.4,0,.2,1); }
-  .panel-inner { padding:0 24px 28px 80px; border-top:1px solid var(--border); }
+  .panel { max-height:0; overflow:hidden; transition:max-height .48s cubic-bezier(.4,0,.2,1); border-top:0px solid var(--border); }
+  .item.open .panel { border-top:1px solid var(--border); }
+  .panel-inner { padding:0 24px 28px 80px; }
 
   /* Content styles */
-  .panel-inner p { font-size:14.5px; line-height:1.9; color:#c4c4d8; margin-top:18px; }
+  .panel-inner p { font-size:14.5px; line-height:1.9; color:#e8e8f8; margin-top:18px; }
   .panel-inner p + p { margin-top:10px; }
 
   .hl { display:inline-block; background:rgba(124,106,247,.12); border:1px solid rgba(124,106,247,.25); border-radius:4px; padding:1px 7px; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--accent2); }
@@ -88,13 +89,13 @@
   .steps { margin-top:14px; display:flex; flex-direction:column; gap:10px; }
   .step { display:flex; gap:14px; align-items:flex-start; }
   .step-num { width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-size:11px; font-family:'JetBrains Mono',monospace; font-weight:600; flex-shrink:0; margin-top:2px; color:#fff; }
-  .step-text { font-size:14px; line-height:1.75; color:#c4c4d8; }
+  .step-text { font-size:14px; line-height:1.75; color:#e8e8f8; }
   .step-text strong { color:var(--accent2); font-weight:700; }
 
   .compare { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
   .compare-box { background:rgba(255,255,255,.025); border:1px solid var(--border); border-radius:8px; padding:14px; }
   .compare-box h4 { font-size:11px; font-family:'JetBrains Mono',monospace; color:var(--accent); letter-spacing:.1em; margin-bottom:8px; text-transform:uppercase; }
-  .compare-box p { font-size:13px; color:#a0a0c0; margin-top:0 !important; line-height:1.65; }
+  .compare-box p { font-size:13px; color:#d0d0e8; margin-top:0 !important; line-height:1.65; }
 
   .example-box { background:rgba(79,209,197,.05); border:1px solid rgba(79,209,197,.2); border-radius:8px; padding:16px 18px; margin-top:14px; }
   .example-box .ex-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.15em; color:var(--accent2); text-transform:uppercase; margin-bottom:8px; }
@@ -718,6 +719,75 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
 
     <div class="item">
       <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🗜️</div>
+        <div class="trigger-text">
+          <div class="trigger-title">量化·模型瘦身技术</div>
+          <div class="trigger-sub">Quantization · 让大模型跑在普通设备上</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>量化是把模型参数从高精度压缩成低精度的技术。AI模型训练时用32位浮点数（FP32）存储每个参数——一个70亿参数的模型，FP32下需要约28GB显存，普通显卡根本跑不了。量化把每个参数从32位压到8位（INT8）甚至4位（INT4），显存需求直接砍掉4–8倍。</p>
+
+        <div class="compare" style="margin-top:14px;">
+          <div class="compare-box"><h4>FP32（训练精度）</h4><p>每个参数4字节<br>70亿参数 ≈ 28GB显存<br>精度最高，适合训练</p></div>
+          <div class="compare-box"><h4>INT4（量化后）</h4><p>每个参数0.5字节<br>70亿参数 ≈ 3.5GB显存<br>笔记本显卡可运行</p></div>
+        </div>
+
+        <div class="steps" style="margin-top:14px;">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>推理提速</strong>：INT8矩阵乘法在现代芯片上比FP32快2–4倍，相同硬件响应更快</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>降低部署门槛</strong>：LLaMA、Mistral等开源大模型靠4bit量化才能在消费级显卡上运行，推动了本地AI的普及</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>边缘部署</strong>：手机、嵌入式设备内存有限，量化是把模型塞进去的关键手段</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>代价：精度损失</strong>：数字被"四舍五入"，模型回答质量略有下降。4bit比8bit损失更大，业界目标是用最少精度损失换取最大压缩</div></div>
+        </div>
+
+        <div class="example-box" style="margin-top:14px;">
+          <div class="ex-label">💡 一句话总结</div>
+          <p>量化 = 用轻微的精度损失，换取大幅的速度提升和内存节省。是大模型从"实验室专属"走向"人人可用"的关键技术之一。</p>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">⚛️</div>
+        <div class="trigger-text">
+          <div class="trigger-title">量子计算机 vs AI量化</div>
+          <div class="trigger-sub">Quantum Computing vs Quantization · 同名不同物</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>中文翻译造成了误会——"量化"和"量子计算机"在英文里是完全不同的两个词：<span class="hl">Quantization</span> 和 <span class="hl">Quantum Computing</span>。它们唯一的共同点，是名字里都有"量"字。</p>
+
+        <div class="compare" style="margin-top:14px;">
+          <div class="compare-box">
+            <h4>AI量化（Quantization）</h4>
+            <p>数值精度压缩技巧<br>32位小数 → 8位/4位整数<br>纯软件，普通电脑可运行<br>已大规模商业落地<br>目的：省显存、加速推理</p>
+          </div>
+          <div class="compare-box">
+            <h4>量子计算机（Quantum Computing）</h4>
+            <p>全新计算硬件体系<br>用量子比特（qubit）运算<br>需要极低温物理环境<br>仍在实验室早期阶段<br>目的：解决经典计算机难题</p>
+          </div>
+        </div>
+
+        <div class="steps" style="margin-top:14px;">
+          <div class="step"><div class="step-num">①</div><div class="step-text"><strong>原理不同</strong>：AI量化是工程上的数字压缩；量子计算机利用量子力学的<strong>叠加态</strong>（一个qubit同时是0和1）和<strong>纠缠</strong>，在特定问题上实现指数级加速</div></div>
+          <div class="step"><div class="step-num">②</div><div class="step-text"><strong>成熟度不同</strong>：AI量化今天就能在你的笔记本上跑；量子计算机全球只有极少数机构拥有，且极其脆弱，需要接近绝对零度（-273°C）的环境</div></div>
+          <div class="step"><div class="step-num">③</div><div class="step-text"><strong>擅长问题不同</strong>：量子计算机擅长密码破解、分子模拟、优化问题；对训练神经网络这类任务并无天然优势，不是"更快的GPU"</div></div>
+          <div class="step"><div class="step-num">④</div><div class="step-text"><strong>与AI的关系</strong>：AI量化直接服务于今天的AI部署；量子计算机与AI目前几乎无交集，"量子AI"更多是营销词汇，学术界仍在探索阶段</div></div>
+        </div>
+
+        <div class="warn-box" style="margin-top:14px;">
+          <p><strong>⚠️ 常见误区</strong><br><br>
+          看到"量子AI""量子深度学习"的新闻，大概率是夸大宣传。量子计算机目前的qubit数量少、错误率高，连基础的稳定运算都尚未完全解决，距离加速大模型训练还有很长的路。<br><br>
+          真正改变了今天AI普及的"量化"，是安静无名的 <span class="hl">INT4/INT8 Quantization</span>——它让十亿参数的模型装进了你的手机。</p>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
         <div class="icon-wrap">🎨</div>
         <div class="trigger-text">
           <div class="trigger-title">生成式AI与扩散模型</div>
@@ -805,6 +875,19 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
           · AI读取邮件内容时同时执行了这条隐藏指令<br>
           · 2023年已有研究者演示了通过网页内容劫持AI浏览器插件的真实攻击<br><br>
           <strong>思维链的局限：</strong>GPT-4解数学题时展示的推理步骤，有时是先得出答案、再反推出"合理"的步骤——就像学生先看答案再编解题过程。研究者通过修改中间步骤发现模型并不真正依赖那些推理，这被称为"不忠实的推理链"。</p>
+        </div>
+
+        <div class="example-box" style="margin-top:14px; background:rgba(79,209,197,.05); border-color:rgba(79,209,197,.2);">
+          <div class="ex-label">✍️ 实用公式：怎么写好 Prompt</div>
+          <p style="margin-top:10px;"><strong>一句话公式：角色 + 任务 + 背景 + 格式要求</strong></p>
+          <div class="steps" style="margin-top:12px;">
+            <div class="step"><div class="step-num">1</div><div class="step-text"><strong>说清楚你要什么</strong>：不要说"帮我写篇文章"，要说"帮我写一篇500字的微信推文，介绍Duke大学录取流程，读者是中国高中家长"</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text"><strong>给背景信息</strong>："我是网站管理员，用Supabase做后端，遇到了RLS报错……"——背景越具体，答案越有用</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text"><strong>指定格式</strong>："用列表回答""给我代码，不要解释""控制在100字以内"——格式要求越明确越好</div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-text"><strong>给例子</strong>："按这个格式输出：学生姓名 | 学校 | 届次"——有例子比纯描述清楚得多</div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-text"><strong>设定角色</strong>："你是一个有10年经验的前端工程师""你是一个严格的编辑"——角色设定让回答更聚焦</div></div>
+          </div>
+          <p style="margin-top:14px;">✅ 示例：<br>"你是一个中文写作编辑。帮我把下面这段话改得更口语化，适合微信推送，控制在80字以内：[原文]"</p>
         </div>
       </div></div>
     </div>
