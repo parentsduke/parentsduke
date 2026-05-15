@@ -1402,12 +1402,13 @@
         .update({ is_active: false, used_at: new Date().toISOString() })
         .eq('id', data.id);
 
-      // Activate the next QR (lowest sort_order that is not yet used)
+      // Activate the next QR (lowest sort_order that is not yet used, only q1–q3)
       const { data: nextQR } = await db
         .from('qr_codes')
         .select('id')
         .eq('is_active', false)
         .is('used_at', null)
+        .lte('sort_order', 3)
         .order('sort_order', { ascending: true })
         .limit(1)
         .single();
@@ -1417,10 +1418,10 @@
           .update({ is_active: true })
           .eq('id', nextQR.id);
       } else {
-        // 所有二维码都用完了，重置循环，从第一条重新开始
+        // q1–q3 都用完了，重置循环，从第一条重新开始
         await db.from('qr_codes')
           .update({ is_active: false, used_at: null })
-          .neq('id', 0);
+          .lte('sort_order', 3);
         await db.from('qr_codes')
           .update({ is_active: true })
           .eq('sort_order', 1);
