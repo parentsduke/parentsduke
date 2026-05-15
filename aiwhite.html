@@ -131,9 +131,11 @@
     </p>
   </header>
 
-  <!-- 第一部分：基础概念 -->
-  <div class="category">01 · 基础概念</div>
-  <div class="accordion">
+</div><!-- /container: header only -->
+
+<!-- 第一部分：基础概念 -->
+<div class="category">01 · 基础概念</div>
+<div class="accordion">
 
     <div class="item">
       <button class="trigger" onclick="toggle(this)">
@@ -1370,11 +1372,8 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
     </div>
 
   </div>
-</div>
 
-<!-- ===================== 第六部分：专业人士实战用法 ===================== -->
-<div class="container" style="margin-top:0;">
-
+  <!-- 第六部分：专业人士实战用法 -->
   <div class="category">06 · 专业人士实战用法</div>
   <div class="accordion">
 
@@ -1410,7 +1409,7 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
         <div class="warn-box">
           <p><strong>⚠️ 核心注意事项</strong><br><br>
           <strong>幻觉风险极高</strong>：AI会自信地引用不存在的法条编号、伪造判决书字号。所有法律依据必须回到权威数据库（北大法宝、威科先行、Westlaw）逐一核实，绝不能直接引用AI的法条引用。<br><br>
-          <strong>数据保密</strong>：客户保密信息不得直接粘贴进公共AI产品（ChatGPT、Claude.ai）。企业级方案：使用Microsoft 365 Copilot（数据留在企业租户内）或部署本地化大模型（如基于LLaMA的私有化部署）。<br><br>
+          <strong>数据保密</strong>：客户保密信息不得直接粘贴进公共AI产品（ChatGPT、Claude.ai）。企业级方案：使用Microsoft 365 Copilot（数据留在企业租户内）或部署本地化大模型。<br><br>
           <strong>适合用AI做的</strong>：框架起草、风险梳理、翻译、研究方向定位。<strong>不适合的</strong>：最终法律意见书、出庭陈述、需要当事人签字的正式文件——这些仍需律师全程负责。</p>
         </div>
 
@@ -1437,8 +1436,8 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
           <div class="step"><div class="step-num">1</div><div class="step-text"><strong>文献快速消化</strong>：将PubMed文献PDF上传给Claude（支持长文档），要求"用中文总结这篇RCT的研究设计、主要终点、结论及局限性，并指出该结论是否可以推广到中国患者群体"。每篇从30分钟压缩到5分钟。</div></div>
           <div class="step"><div class="step-num">2</div><div class="step-text"><strong>病历/出院小结起草</strong>：口述或粗略输入患者病史、检查结果、诊断、处理，AI生成结构完整的病历草稿。医生校对修改，减少重复录入时间。（注意：患者信息脱敏后使用）</div></div>
           <div class="step"><div class="step-num">3</div><div class="step-text"><strong>鉴别诊断辅助</strong>：输入症状、体征、检查结果，AI给出鉴别诊断清单及各自的支持/反对依据。GPT-4在美国执照医师考试（USMLE）的得分超过及格线——作为"检查漏诊"的工具，价值显著。</div></div>
-          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>患者教育材料生成</strong>：将专业的术后注意事项改写为患者能看懂的通俗语言（初中阅读水平），批量生成针对不同疾病的健康宣教单页，告别手工排版。</div></div>
-          <div class="step"><div class="step-num">5</div><div class="step-text"><strong>科研写作辅助</strong>：将数据分析结果、图表描述输给AI，协助撰写Methods和Results部分初稿；根据目标期刊的投稿指南调整格式和风格；快速生成回复审稿意见的Response letter框架。</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>患者教育材料生成</strong>：将专业的术后注意事项改写为患者能看懂的通俗语言（初中阅读水平），批量生成针对不同疾病的健康宣教单页。</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-text"><strong>科研写作辅助</strong>：将数据分析结果输给AI，协助撰写Methods和Results部分初稿；根据目标期刊的投稿指南调整格式；快速生成回复审稿意见的Response letter框架。</div></div>
         </div>
 
         <div class="example-box">
@@ -1453,9 +1452,9 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
 
         <div class="warn-box">
           <p><strong>⚠️ 核心注意事项</strong><br><br>
-          <strong>患者数据绝对不能上传公共AI平台</strong>：HIPAA（美国）、《个人信息保护法》（中国）均明确限制医疗数据对外传输。使用AI时必须完全脱敏（姓名、病案号、日期模糊化）。<br><br>
+          <strong>患者数据绝对不能上传公共AI平台</strong>：HIPAA（美国）、《个人信息保护法》（中国）均明确限制医疗数据对外传输。使用AI时必须完全脱敏。<br><br>
           <strong>AI不能替代临床判断</strong>：所有AI给出的鉴别诊断、用药建议，医生必须以自己的临床经验和患者实际情况为准。AI是"知识搜索加速器"，不是"临床决策委托者"。<br><br>
-          <strong>幻觉在医学领域尤其危险</strong>：AI可能编造不存在的药物禁忌、剂量标准、研究数据。药物剂量、相互作用务必查说明书或权威数据库（UpToDate、Micromedex）核实。</p>
+          <strong>幻觉在医学领域尤其危险</strong>：AI可能编造不存在的药物禁忌、剂量标准。药物剂量、相互作用务必查说明书或权威数据库（UpToDate、Micromedex）核实。</p>
         </div>
 
         <div class="tag-row">
@@ -1464,7 +1463,7 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
       </div></div>
     </div>
 
-    <!-- 教授/研究者 -->
+    <!-- 学术研究者 -->
     <div class="item">
       <button class="trigger" onclick="toggle(this)">
         <div class="icon-wrap">🔬</div>
@@ -1478,9 +1477,9 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
         <p>学术研究的瓶颈往往不是"不够聪明"，而是"时间分配低效"——文献综述耗时、写作打磨耗时、审稿回复耗时。AI可以在这些环节大幅提速，让研究者把精力集中在真正需要创造性思维的部分。</p>
 
         <div class="steps">
-          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>文献综述加速</strong>：将10篇相关论文的摘要批量粘贴，要求AI"提炼各文献的核心论点、研究方法、局限性，并归纳研究空白"。在此基础上让AI生成相关文献综述的初稿框架，研究者在框架上填充和修改，而非从空白页开始。</div></div>
-          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>论文语言润色</strong>：非英语母语研究者投国际期刊，将中文逻辑写成的初稿交给Claude，要求"保留所有技术细节，将语言润色为符合Nature/Science系列期刊风格的学术英语，并列出修改说明"。比传统英文润色服务快且便宜。</div></div>
-          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>审稿意见回复</strong>：把审稿人的全部comments和论文相关段落一起粘贴，要求AI"生成逐条回复的框架，对每条审稿意见提供可能的回应策略（接受/部分接受/礼貌反驳），并建议补充哪些分析"。研究者填充具体数据和判断即可。</div></div>
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>文献综述加速</strong>：将10篇相关论文的摘要批量粘贴，要求AI"提炼各文献的核心论点、研究方法、局限性，并归纳研究空白"。在此基础上生成综述初稿框架，研究者在框架上填充修改，而非从空白页开始。</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>论文语言润色</strong>：非英语母语研究者投国际期刊，将初稿交给Claude，要求"保留所有技术细节，将语言润色为符合Nature/Science系列期刊风格的学术英语，并列出修改说明"。比传统英文润色服务快且便宜。</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>审稿意见回复</strong>：把审稿人的全部comments和论文相关段落一起粘贴，要求AI"生成逐条回复框架，对每条审稿意见提供可能的回应策略（接受/部分接受/礼貌反驳），并建议补充哪些分析"。研究者填充具体数据和判断即可。</div></div>
           <div class="step"><div class="step-num">4</div><div class="step-text"><strong>代码与数据分析辅助</strong>：把数据格式和分析目标描述给Claude，让它生成Python/R分析代码；遇到报错把错误信息粘贴进去让它调试。不懂编程的研究者也能独立完成基础数据分析。</div></div>
           <div class="step"><div class="step-num">5</div><div class="step-text"><strong>课程与教案生成</strong>：高校教师输入课程目标、学生背景、学时，AI生成课程大纲、讲义框架、讨论问题、案例分析题，大幅减少备课时间。</div></div>
         </div>
@@ -1489,8 +1488,8 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
           <div class="ex-label">推荐工具矩阵</div>
           <p>
             <strong>文献管理+AI</strong>：Elicit（自动从PubMed抓文献并总结）、Semantic Scholar（免费，AI生成论文摘要和引用关系图）、Connected Papers（可视化文献引用网络）<br><br>
-            <strong>写作辅助</strong>：Claude（长文档处理最强，支持上传PDF）、Grammarly（语法纠错）、Writefull（专为学术写作训练，了解期刊偏好用词）<br><br>
-            <strong>代码与数据</strong>：Claude / ChatGPT（调试代码）、Julius AI（直接上传CSV，用对话生成图表和统计分析）、GitHub Copilot（编程加速）<br><br>
+            <strong>写作辅助</strong>：Claude（长文档处理最强，支持上传PDF）、Writefull（专为学术写作训练，了解期刊偏好用词）<br><br>
+            <strong>代码与数据</strong>：Julius AI（直接上传CSV，用对话生成图表和统计分析）、GitHub Copilot（编程加速）<br><br>
             <strong>会议与笔记</strong>：Otter.ai / 飞书妙记（自动转录学术会议、组会，生成会议摘要）
           </p>
         </div>
@@ -1498,9 +1497,8 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
         <div class="warn-box">
           <p><strong>⚠️ 学术诚信边界</strong><br><br>
           <strong>允许的用法</strong>：润色语言表达、辅助代码调试、梳理文献框架、回复审稿意见——这些是"工具辅助"，等同于使用Grammarly或请同事帮你看文稿。<br><br>
-          <strong>有争议的用法</strong>：让AI生成Results/Discussion实质性内容，然后署名自己——多数顶级期刊已要求在"Author contributions"中注明AI使用情况（Nature、Science系列均已出台政策）。<br><br>
-          <strong>禁止的用法</strong>：伪造实验数据让AI"写"结果、用AI生成论文后冒充全部原创投稿——这是学术不端，与AI无关，属于作者的伦理责任。<br><br>
-          判断标准：<strong>AI是辅助你表达，还是替代你思考？</strong>前者是工具，后者是问题。</p>
+          <strong>有争议的用法</strong>：让AI生成Results/Discussion实质性内容然后署名自己——多数顶级期刊已要求在"Author contributions"中注明AI使用情况（Nature、Science系列均已出台政策）。<br><br>
+          <strong>判断标准</strong>：AI是辅助你表达，还是替代你思考？前者是工具，后者是问题。</p>
         </div>
 
         <div class="tag-row">
@@ -1534,7 +1532,7 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
           <div class="ex-label">行业头部机构的AI实践</div>
           <p>
             <strong>高盛</strong>：内部部署GS AI平台，覆盖代码生成、文档总结、客户沟通起草，据报道已有超过1万名员工在日常使用。<br><br>
-            <strong>摩根士丹利</strong>：与OpenAI合作打造"AI@Morgan Stanley Assistant"，将10万份内部研究报告向理财顾问开放检索，顾问可用自然语言查询客户适合什么产品。<br><br>
+            <strong>摩根士丹利</strong>：与OpenAI合作打造"AI@Morgan Stanley Assistant"，将10万份内部研究报告向理财顾问开放检索，顾问可用自然语言查询适合客户的产品。<br><br>
             <strong>彭博</strong>：发布BloombergGPT，专门在金融文本上训练，对金融实体识别、情感分析、问答任务表现优于通用模型。<br><br>
             <strong>量化基金</strong>：AI辅助因子挖掘——把财务数据、新闻数据、另类数据（卫星图像、信用卡消费）综合建模，部分对冲基金已将自然语言处理因子纳入正式策略。
           </p>
@@ -1542,8 +1540,8 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
 
         <div class="warn-box">
           <p><strong>⚠️ 核心注意事项</strong><br><br>
-          <strong>内幕信息合规</strong>：绝对不能将未公开的重大信息输入任何云端AI工具，这在大多数国家构成证券法合规风险。<br><br>
-          <strong>数据时效性</strong>：免费版Claude/ChatGPT的知识截止到训练数据截止日，不知道最新股价、最新财报。金融分析必须使用实时数据源（彭博、万得），AI只处理你输入的数据，不替代数据终端。<br><br>
+          <strong>内幕信息合规</strong>：绝对不能将未公开的重大信息输入任何云端AI工具，在大多数国家构成证券法合规风险。<br><br>
+          <strong>数据时效性</strong>：免费版Claude/ChatGPT的知识有截止日期，不知道最新股价、最新财报。金融分析必须使用实时数据源（彭博、万得），AI只处理你输入的数据。<br><br>
           <strong>模型幻觉风险</strong>：AI可能编造财务数据、引用不存在的新闻。所有关键数字必须核实至一手来源（SEC EDGAR、交易所公告）。</p>
         </div>
 
@@ -1582,7 +1580,7 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
             <strong>对话式编程</strong>：Claude（最强代码推理，支持上传整个代码库）、ChatGPT o3（复杂算法推导）<br><br>
             <strong>命令行工具</strong>：Claude Code（Anthropic官方CLI，可直接操作文件系统和终端）、Gemini CLI<br><br>
             <strong>代码审查</strong>：CodeRabbit（GitHub PR自动AI审查）、Sourcegraph Cody<br><br>
-            <strong>测试生成</strong>：Codium AI（专门分析代码并生成有意义的单元测试用例，而非无意义的占位测试）
+            <strong>测试生成</strong>：Codium AI（专门分析代码并生成有意义的单元测试用例）
           </p>
         </div>
 
@@ -1597,8 +1595,8 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
 
         <div class="warn-box">
           <p><strong>⚠️ 安全与合规</strong><br><br>
-          <strong>不要粘贴公司机密代码到公共AI产品</strong>：Samsung曾因工程师将内部芯片源代码粘贴进ChatGPT，导致数据泄露给OpenAI，此后全公司禁用ChatGPT。处理公司代码应使用企业版（有数据隔离保障）或本地部署模型。<br><br>
-          <strong>AI生成代码的安全审查</strong>：研究表明，AI生成的代码引入安全漏洞的概率比人工编写更高（AI倾向于直接可用但不安全的写法）。安全敏感的模块必须人工审查，不能直接上线AI代码。<br><br>
+          <strong>不要粘贴公司机密代码到公共AI产品</strong>：Samsung曾因工程师将内部芯片源代码粘贴进ChatGPT导致数据泄露，此后全公司禁用ChatGPT。处理公司代码应使用企业版或本地部署模型。<br><br>
+          <strong>AI生成代码的安全审查</strong>：研究表明AI生成的代码引入安全漏洞的概率比人工编写更高（AI倾向于直接可用但不安全的写法）。安全敏感的模块必须人工审查，不能直接上线AI代码。<br><br>
           <strong>版权问题</strong>：GitHub Copilot可能生成与开源代码高度相似的片段，开源协议许可证风险需要法务确认（企业版Copilot有版权保障政策）。</p>
         </div>
 
@@ -1632,7 +1630,7 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
         <div class="example-box">
           <div class="ex-label">Khan Academy与可汗辅导（Khanmigo）的启示</div>
           <p>
-            可汗学院推出的AI辅导工具Khanmigo，采用苏格拉底式教学法——学生遇到不会的题时，AI<strong>不直接给答案</strong>，而是通过追问引导学生自己推导出解题思路。这个设计理念值得借鉴：<br><br>
+            可汗学院推出的AI辅导工具Khanmigo，采用苏格拉底式教学法——学生遇到不会的题时，AI<strong>不直接给答案</strong>，而是通过追问引导学生自己推导出解题思路。<br><br>
             <strong>对教师的启示</strong>：让AI替学生做题是帮倒忙；让AI引导学生思考，才是正确用法。可以明确要求AI"不给出最终答案，只给下一步提示"。<br><br>
             <strong>国内类似实践</strong>：学而思的AI老师、作业帮的步骤解析功能，都在探索"引导式解题"而非"直接给答案"。
           </p>
@@ -1641,7 +1639,7 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
         <div class="warn-box">
           <p><strong>⚠️ 学生使用AI的政策边界</strong><br><br>
           教师面临的真实挑战是：学生用AI直接完成作业。应对策略：<br><br>
-          · <strong>设计"AI防作弊"作业</strong>：要求学生描述自己的思考过程而非只交结果；设计需要个人经历、本地信息的写作题；课堂限时完成的作品AI无法代劳<br>
+          · <strong>设计"AI防作弊"作业</strong>：要求学生描述自己的思考过程而非只交结果；设计需要个人经历、本地信息的写作题<br>
           · <strong>将AI纳入作业流程</strong>：明确要求学生"用AI生成初稿，然后批判性修改并说明你改了什么以及为什么"——这本身是一种高阶思维训练<br>
           · <strong>教AI素养</strong>：让学生学会提问、识别AI错误、判断AI输出是否可信，这是比单纯禁止更有价值的教育目标</p>
         </div>
@@ -1678,15 +1676,12 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
           <div class="ex-label">完整高质量提示词示例（法律场景）</div>
           <p>
             "你是一位专注于科技公司并购的资深律师，有15年跨境交易经验。<br><br>
-            任务：审查以下股权转让协议（见附件），从<strong>买方</strong>角度识别风险。<br><br>
+            任务：审查以下股权转让协议，从<strong>买方</strong>角度识别风险。<br><br>
             请按以下格式输出：<br>
-            1. 高风险条款（表格：条款名称 | 原文位置 | 风险说明 | 建议修改方向）<br>
+            1. 高风险条款（表格：条款名称｜原文位置｜风险说明｜建议修改方向）<br>
             2. 缺失的标准条款（逐条列出）<br>
             3. 与行业惯例的偏差（3点以内）<br><br>
-            约束：<br>
-            · 不要泛泛评述，每条意见必须对应具体条款<br>
-            · 对你不确定是否符合最新法规的判断，请标注[需核实]<br>
-            · 字数控制在800字以内"
+            约束：每条意见必须对应具体条款；不确定是否符合最新法规的判断请标注[需核实]；字数控制在800字以内。"
           </p>
         </div>
 
@@ -1714,7 +1709,6 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
     </div>
 
   </div>
-</div>
 
 <script>
   function toggle(btn) {
