@@ -330,6 +330,8 @@
 </style>
 </head>
 <body>
+<div id="protected-area"></div>
+<template id="real-content">
 
 <header class="hero">
   <p class="hero-eyebrow">Duke University · Department of Music</p>
@@ -614,5 +616,68 @@
     });
   });
 </script>
+</template>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function () {
+  const SUPABASE_URL      = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function showLogin() {
+    if (window.top !== window.self) { window.top.location.href = "/login.html"; return; }
+    document.getElementById('protected-area').innerHTML = `
+      <div style="text-align:center;padding:80px 20px 40px;background-image:url(https://dukeparents.org/chapel.jpg);background-size:cover;background-position:center;position:relative;min-height:320px;display:flex;align-items:center;justify-content:center;">
+        <div style="position:absolute;inset:0;background:rgba(255,255,255,0.80);"></div>
+        <div style="position:relative;z-index:1;width:100%;">
+          <h2 style="font-family:serif;margin-bottom:8px;">蓝魔港湾</h2>
+          <h2 style="font-family:serif;margin-bottom:24px;">扯谈<span style="font-family:serif;">𝔇𝔲𝔨𝔢</span>群社区</h2>
+          <a href="login.html" style="display:inline-block;padding:12px 32px;background:#003366;color:#fff;border:2px solid #fff;border-radius:8px;text-decoration:none;font-size:16px;">登录</a>
+        </div>
+      </div>`;
+  }
+
+  function showContent() {
+    const template = document.getElementById('real-content');
+    const clone = template.content.cloneNode(true);
+    const main = document.getElementById('protected-area');
+    main.innerHTML = '';
+    main.appendChild(clone);
+
+    // 退出登录按钮
+    const logoutBtn = document.createElement('button');
+    logoutBtn.innerText = '退出登录';
+    logoutBtn.style.cssText = 'position:fixed;top:12px;right:12px;z-index:9999;padding:6px 16px;background:#003366;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;';
+    if (window.top !== window.self) logoutBtn.style.display = 'none';
+    logoutBtn.onclick = async function() {
+      await client.auth.signOut();
+      location.reload();
+    };
+    document.body.appendChild(logoutBtn);
+  }
+
+  async function checkLoginStatus() {
+    const { data: { session } } = await client.auth.getSession();
+    if (session) {
+      const { data: profile } = await client
+        .from('profiles')
+        .select('has_set_password')
+        .eq('id', session.user.id)
+        .single();
+      if (profile && !profile.has_set_password) {
+        window.location.href = '/set-password.html';
+        return;
+      }
+      showContent();
+    } else {
+      showLogin();
+    }
+  }
+
+  checkLoginStatus();
+})();
+</script>
+
 </body>
 </html>

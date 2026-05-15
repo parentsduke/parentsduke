@@ -8875,70 +8875,14 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
                 <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
                   <span>暑期行李储存方案</span><span class="sub-accordion-arrow">▸</span>
                 </button>
-                <div class="sub-accordion-body">
-                  暑假不需要把所有东西都带回家，学生只需带回夏天需要的衣物，其余物品可以和下一年的室友合租储存单元分摊费用。储存单元通常没有空调，注意不要存放食物或不耐热的物品，尽量用袋子和箱子打包。没有车也不是问题，可以和有车的同学组团，或托朋友帮忙运送。
-
-                  <div class="section-title">校园附近自助储存设施</div>
-                  <div class="cal-item">
-                    <div class="cal-date">Extra Space Storage</div>
-                    <div><div class="cal-desc">Durham地区多个分店。<a href="https://www.extraspace.com/storage/facilities/us/north_carolina/durham/?cid=exr&gclsrc=aw.ds&gclid=CjwKCAiA85efBhBbEiwAD7oLQB3_gAl8umtIVXKXL6-XzfgElyAwaFhmRDHaANKvEQ0ZqKws2NHGSBoCnIAQAvD_BwE" target="_blank">extraspace.com</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">Public Storage</div>
-                    <div><div class="cal-desc">位于Kangaroo Drive。<a href="https://www.publicstorage.com/self-storage-search?location=27705" target="_blank">publicstorage.com</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">Brassfield Storage</div>
-                    <div><div class="cal-desc">2717 Western Bypass，电话：919-251-8474。<a href="https://www.brassfieldselfstorage.com/" target="_blank">brassfieldselfstorage.com</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">Uncle Bob's Life Storage</div>
-                    <div><div class="cal-desc">位于Hillsborough Road。<a href="https://www.lifestorage.com/storage-units/north-carolina/raleigh/27705/175-in-durham/" target="_blank">lifestorage.com</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">CubeSmart Self Storage</div>
-                    <div><div class="cal-desc">Durham地区连锁自助储存。<a href="https://www.cubesmart.com/27705-self-storage/" target="_blank">cubesmart.com</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">U-Haul Storage</div>
-                    <div><div class="cal-desc">位于Durham Chapel Hill Blvd。<a href="http://www.uhaul.com/Storage/Durham-NC-27705/Results/" target="_blank">uhaul.com</a></div></div>
-                  </div>
-
-                  <div class="section-title">搬运+储存一体服务</div>
-                  <div class="cal-item">
-                    <div class="cal-date">Storage Scholars</div>
-                    <div><div class="cal-desc">专为大学生提供的上门取送储存服务。<a href="https://www.storagescholars.com/cities-we-serve/chapel-hill-durham-nc" target="_blank">storagescholars.com</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">Trosa Storage</div>
-                    <div><div class="cal-desc"><a href="http://trosamoving.com/index.php/storage" target="_blank">trosamoving.com</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">Dorm Room Movers</div>
-                    <div><div class="cal-desc"><a href="https://www.dormroommovers.com/storage-shipping-services-at-Duke-University-Durham-NC" target="_blank">dormroommovers.com</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">Dorm2Dorm</div>
-                    <div><div class="cal-desc"><a href="https://dorm2dorm.com/schools-serviced/dukeuniversity/" target="_blank">dorm2dorm.com</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">BlueBox</div>
-                    <div><div class="cal-desc"><a href="https://www.campus-enterprises.org/" target="_blank">campus-enterprises.org</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">Pakup</div>
-                    <div><div class="cal-desc"><a href="https://pakupnow.com/" target="_blank">pakupnow.com</a></div></div>
-                  </div>
-
-                  <div class="section-title">仅搬运装卸服务</div>
-                  <div class="cal-item">
-                    <div class="cal-date">University Shipping and Storage</div>
-                    <div><div class="cal-desc">提供搬运服务，不储存物品。<a href="https://www.universityshipping.com/" target="_blank">universityshipping.com</a></div></div>
-                  </div>
-                  <div class="cal-item">
-                    <div class="cal-date">U-Haul Moving Help</div>
-                    <div><div class="cal-desc">提供装卸服务。<a href="https://www.uhaul.com/MovingHelp/" target="_blank">uhaul.com/MovingHelp</a></div></div>
-                  </div>
+                <div class="sub-accordion-body" style="padding:0;">
+                  <iframe
+                    id="storageIframe"
+                    src="summerStorage.html"
+                    style="width:100%; border:none; display:block; min-height:400px;"
+                    scrolling="no"
+                    onload="autoResizeIframe(this)"
+                  ></iframe>
                 </div>
               </div>
             </div>
@@ -13932,5 +13876,16 @@ document.getElementById('subscribe-modal').addEventListener('click', function(e)
 });
 </script>
 
+<script>
+  function autoResizeIframe(iframe) {
+    try {
+      var h = iframe.contentWindow.document.documentElement.scrollHeight
+           || iframe.contentWindow.document.body.scrollHeight;
+      if (h > 200) iframe.style.height = h + 'px';
+    } catch(e) {
+      // 跨域时忽略，保留 min-height
+    }
+  }
+</script>
 </body>
 </html>
