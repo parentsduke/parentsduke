@@ -8871,20 +8871,7 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
               <a href="智齿.html" target="_blank">智齿拔牙经验分享</a>
               <a href="理发.html" target="_blank">Duke周边理发店推荐</a>
               <a href="中国驾照美国开车.html" target="_blank">中国驾照在美开车与换证</a>
-              <div class="sub-accordion">
-                <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-                  <span>暑期行李储存方案</span><span class="sub-accordion-arrow">▸</span>
-                </button>
-                <div class="sub-accordion-body" style="padding:0;">
-                  <iframe
-                    id="storageIframe"
-                    src="summerStorage.html"
-                    style="width:100%; border:none; display:block; min-height:400px;"
-                    scrolling="no"
-                    onload="autoResizeIframe(this)"
-                  ></iframe>
-                </div>
-              </div>
+
             </div>
           </div>
 
@@ -8915,6 +8902,22 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
       </div>
 
     </div>
+
+      <!-- ===== 暑期行李储存方案 ===== -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion(this)">
+          <span>暑期行李储存方案</span><span class="accordion-arrow">&#9658;</span>
+        </button>
+        <div class="accordion-body" style="padding:0;">
+          <iframe
+            id="storageIframe"
+            src="summerStorage.html"
+            style="width:100%; border:none; display:block; min-height:400px;"
+            scrolling="no"
+            onload="autoResizeIframe(this)"
+          ></iframe>
+        </div>
+      </div>
 
     <!-- ===== 历届名单（一个手风琴，三个名单上下排列） ===== -->
     <div class="accordion">
