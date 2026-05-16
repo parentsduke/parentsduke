@@ -623,43 +623,25 @@
 
   <!-- 等待审核屏（提交后显示） -->
   <div id="pendingScreen" style="display:none;text-align:center;padding:60px 20px;">
-    <div style="font-size:56px;margin-bottom:20px;">📬</div>
-    <div style="font-size:22px;font-weight:700;color:#1a6b3c;margin-bottom:12px;">提交成功！</div>
-    <div style="font-size:14px;color:#888070;line-height:1.9;max-width:360px;margin:0 auto 28px;">
-      你的录取信息已收到，管理员审核通过后<br/>
-      将自动发送入群链接到你的邮箱<br/>
-      <span style="color:#003087;font-weight:600;">请注意查收，勿忘检查垃圾邮件</span>
+    <div style="font-size:56px;margin-bottom:20px;">✅</div>
+    <div style="font-size:22px;font-weight:700;color:#1a6b3c;margin-bottom:12px;">提交成功！感谢分享</div>
+    <div style="font-size:14px;color:#888070;line-height:1.9;max-width:380px;margin:0 auto 24px;">
+      你的录取信息已收到，管理员核对后将邀请入群<br/>
+      <span style="color:#003087;font-weight:600;">请注意查收邮件，勿忘检查垃圾邮件夹</span>
+    </div>
+    <div style="background:#fff8e6;border:1px solid rgba(184,150,62,0.4);border-radius:12px;padding:20px 28px;max-width:380px;margin:0 auto 28px;">
+      <div style="font-size:13px;color:#7a5a10;line-height:1.9;">
+        如有疑问或长时间未收到邮件，请联系管理员：<br/>
+        <a href="mailto:parentsduke@gmail.com" style="color:#003087;font-weight:700;font-size:15px;">📧 parentsduke@gmail.com</a>
+      </div>
     </div>
     <button class="btn-again" onclick="resetForm()">再提交一条</button>
   </div>
 
-  <!-- 二维码区 -->
-  <div id="qrSection">
-    <div class="success-icon">🎉</div>
-    <div class="success-title">提交成功！感谢分享</div>
-    <div class="success-sub">你提交的录取信息已收到，将由管理员核对后收录。</div>
-
-    <div class="form-card" style="text-align:center;max-width:480px;margin:0 auto;">
-      <div class="section-title" style="justify-content:center;">扫码加入 Duke 家长微信群</div>
-      <div style="margin-top:16px;">
-        <img id="dynamicQR" src="https://dukeparents.org/images/q1.png"
-             alt="Duke 家长微信群二维码"
-             onclick="openLightbox(this)"
-             style="width:min(320px,100%);height:auto;border-radius:12px;border:1px solid #e2ddd6;box-shadow:0 4px 16px rgba(0,0,0,0.08);cursor:zoom-in;"/>
-        <div style="margin-top:6px;font-size:11px;color:#888070;font-family:'DM Mono',monospace;">点击图片可放大扫码</div>
-        <div id="dynamicQRLabel" style="margin-top:12px;font-size:14px;font-weight:600;color:#003087;">Duke 家长入群驿站</div>
-        <div style="margin-top:8px;font-size:13px;color:#1a1a1a;line-height:1.8;">
-          本二维码用于申请加入以下两个微信群：<br/>
-          <span style="color:#003087;font-weight:600;">Duke 2030 本科生家长群</span><br/>
-          <span style="color:#003087;font-weight:600;">扯谈 Duke 群 2.0</span>
-        </div>
-        <div style="margin-top:6px;font-size:11px;color:#B8963E;font-family:'DM Mono',monospace;">二维码将持续更新</div>
-      </div>
-    </div>
-
-    <div style="text-align:center;margin-top:24px;">
-      <button class="btn-again" onclick="resetForm()">再提交一条</button>
-    </div>
+  <!-- 二维码区（保留结构，不显示内容） -->
+  <div id="qrSection" style="display:none;">
+    <div id="dynamicQRLabel" style="display:none;"></div>
+    <img id="dynamicQR" src="" style="display:none;"/>
   </div>
 
   <!-- 表单区 -->
@@ -706,6 +688,7 @@
     </div>
 
 
+    <div id="formCardsArea">
     <!-- 学生信息 -->
     <div class="form-card">
       <div class="section-title"><span>01</span> 学生基本信息</div>
@@ -774,16 +757,8 @@
           <label>入学届次 <span class="req">*</span></label>
           <select id="fYear" onchange="onYearChange(this.value)">
             <option value="">请选择</option>
-            <option value="2030">2030</option>
-            <option value="2029">2029</option>
-            <option value="2028">2028</option>
-            <option value="2027">2027</option>
-            <option value="2026">2026</option>
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option disabled style="color:#ccc;">──────────</option>
-            <option value="grad_masters">研究生 · 硕士 Master's</option>
-            <option value="grad_phd">研究生 · 博士 PhD</option>
+            <option value="2030">2030（本届）</option>
+            <option value="other">其他届次 / 研究生</option>
           </select>
         </div>
         <div class="form-group full" id="committedGroup">
@@ -953,6 +928,7 @@
     <div id="formError" class="msg"></div>
     <button class="btn-submit" id="submitBtn" onclick="submitForm()">提 交</button>
 
+  </div><!-- /formCardsArea -->
   </div><!-- /formArea -->
 
 </div><!-- /page-wrap -->
@@ -996,38 +972,19 @@
 
   // ── 届次联动 ──
   function onYearChange(val) {
-    const isGrad    = (val === 'grad_masters' || val === 'grad_phd');
-    const year      = parseInt(val);
-    // 2024–2029：显示宿舍照片；2030及研究生：不显示
-    const showDorm  = !isGrad && !isNaN(year) && year >= 2024 && year <= 2029;
-
-    document.getElementById('dormPhotoGroup').style.display     = showDorm ? 'block' : 'none';
-    document.getElementById('gradLetterGroup').style.display    = isGrad  ? 'block' : 'none';
-
-    // 研究生：隐藏录取类型 & Committed 区域
-    const typeRow = document.getElementById('fType').closest('.form-group');
-    typeRow.style.display = isGrad ? 'none' : '';
-    if (isGrad) {
-      document.getElementById('committedGroup').classList.remove('show');
-      document.getElementById('fType').value      = '';
-      document.getElementById('fCommitted').value = '';
-      document.getElementById('letterGroup').style.display          = 'none';
-      document.getElementById('committedLetterGroup').style.display = 'none';
-      removeFile('letter'); removeFile('committed');
-    } else {
-      // 重新触发上传区联动
-      updateUploadZones(document.getElementById('fType').value, document.getElementById('fCommitted').value);
+    if (val === 'other') {
+      window.location.href = 'https://dukeparents.org/formMulti.html';
+      return;
     }
-
-    if (!showDorm) removeFile('dorm');
-    if (!isGrad)   removeFile('gradLetter');
-
-    // 切换学院选项
+    document.getElementById('dormPhotoGroup').style.display  = 'none';
+    document.getElementById('gradLetterGroup').style.display = 'none';
+    updateUploadZones(document.getElementById('fType').value, document.getElementById('fCommitted').value);
+    removeFile('dorm'); removeFile('gradLetter');
     const sel = document.getElementById('fCollege');
     sel.value = '';
     Array.from(sel.options).forEach(opt => {
-      if (opt.classList.contains('grad-only')) { opt.disabled = !isGrad; opt.hidden = !isGrad; }
-      if (opt.classList.contains('ug-only'))   { opt.disabled = isGrad;  opt.hidden = isGrad;  }
+      if (opt.classList.contains('grad-only')) { opt.disabled = true;  opt.hidden = true;  }
+      if (opt.classList.contains('ug-only'))   { opt.disabled = false; opt.hidden = false; }
     });
   }
 
@@ -1358,13 +1315,6 @@
 
       document.getElementById('formArea').style.display = 'none';
       document.getElementById('pendingScreen').style.display = 'block';
-      document.getElementById('qrSection').classList.add('show');
-      const qrNo = await fetchAndRotateQR();
-      if (qrNo) {
-        await db.from('admissions_submissions')
-          .update({ qr_code_no: qrNo })
-          .eq('id', insertedId);
-      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch(e) {
