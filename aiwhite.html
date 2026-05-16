@@ -67,9 +67,9 @@
   .icon-wrap { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; background:rgba(98,84,232,.08); border:1px solid rgba(98,84,232,.18); transition:background .3s,transform .3s; }
   .open .icon-wrap { background:rgba(98,84,232,.16); transform:scale(1.06); }
 
-  .trigger-text { flex:1; }
+  .trigger-text { flex:1; min-width:0; overflow:hidden; }
   .trigger-title { font-size:16px; font-weight:700; line-height:1.3; }
-  .trigger-sub { font-size:11px; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono',monospace; letter-spacing:.05em; }
+  .trigger-sub { font-size:11px; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono',monospace; letter-spacing:.05em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
   .chevron { width:20px; height:20px; color:var(--muted); flex-shrink:0; transition:transform .35s cubic-bezier(.4,0,.2,1),color .3s; }
   .open .chevron { transform:rotate(180deg); color:var(--accent); }
@@ -1709,6 +1709,243 @@ model.fit(X_train, y_train, epochs=100)         # 喂数据，框架全包</div>
     </div>
 
   </div>
+
+  <div class="category">05 · 普通人的AI生活指南</div>
+  <div class="accordion">
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🗣️</div>
+        <div class="trigger-text">
+          <div class="trigger-title">怎么问AI才能得到好答案</div>
+          <div class="trigger-sub">Prompt技巧 · 把AI当一个聪明但需要上下文的助手</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>AI的回答质量，80%取决于你怎么问。同样的问题，问法不同，结果天壤之别。核心原则只有一条：<strong>把你的处境、目的、限制都告诉它</strong>，就像你在向一个真实的专家求助。</p>
+        <div class="compare">
+          <div class="compare-box"><h4>❌ 模糊的问法</h4><p>"帮我写一封邮件"<br><br>"给我讲讲投资"<br><br>"翻译一下这段话"<br><br>"我孩子学习不好怎么办"</p></div>
+          <div class="compare-box"><h4>✅ 有效的问法</h4><p>"帮我写一封婉拒合作的邮件，对方是供应商，我们关系不错，语气要委婉但明确"<br><br>"我45岁，有50万闲钱，风险承受能力低，适合买哪类理财产品？"<br><br>"把这段话翻译成正式商务英文，用在给美国客户的提案里"<br><br>"孩子初二，数学代数部分不好，平时不喜欢刷题，有没有更有趣的学法？"</p></div>
+        </div>
+        <div class="steps" style="margin-top:16px;">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>给角色</strong>：告诉AI它应该扮演谁。"你是一个有10年经验的初中数学老师"比直接问效果好得多——它会调整表达方式和专业程度</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>给背景</strong>：说清楚你的处境。"我是完全不懂股票的新手" vs "我有5年投资经验"，AI会给出完全不同深度的回答</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>给限制</strong>：字数、风格、语言、格式。"用200字以内""用小学生能懂的语言""列成表格""不要用专业术语"</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>给例子</strong>：如果你有参考样本，直接粘进去。"我希望风格像这段话：……"比描述风格准确10倍</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-text"><strong>追问和修改</strong>：第一次回答不满意，直接说"太正式了，口语化一点""第三段展开说""给我3个不同风格的版本"——AI不怕被否定</div></div>
+        </div>
+        <div class="example-box" style="margin-top:14px;">
+          <div class="ex-label">完整示例：让AI帮你准备一次重要对话</div>
+          <p><strong>场景</strong>：要跟老板谈加薪，不知道怎么开口<br><br>
+          <strong>问法</strong>："我在一家互联网公司做运营，工作3年，上次涨薪是2年前。最近负责的项目为公司带来了明显增长，但我性格比较内向，不擅长自我推销。帮我设计一段开场白，让我能自然地引出薪资话题，语气要自信但不咄咄逼人，大概100字左右。"<br><br>
+          <strong>然后继续追问</strong>："如果老板说'现在公司预算紧张'，我应该怎么回应？""帮我列出3个支撑涨薪要求的具体论据，格式是一句话+一个数据"</p>
+        </div>
+        <div class="warn-box">
+          <p><strong>⚠️ 重要：AI不是万能的，也会犯错</strong><br><br>
+          AI会"幻觉"——用非常自信的语气给出错误信息，尤其是具体数字、人名、时间、链接。<br>
+          <strong>适合信任的场景</strong>：写作润色、头脑风暴、解释概念、代码调试、格式转换<br>
+          <strong>需要核实的场景</strong>：医疗建议、法律问题、具体数据、最新新闻、任何需要精确的事实</p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">角色设定</span><span class="tag">提供背景</span><span class="tag">指定格式</span><span class="tag">追问迭代</span><span class="tag">给例子</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">📚</div>
+        <div class="trigger-text">
+          <div class="trigger-title">用AI学任何东西</div>
+          <div class="trigger-sub">自学加速器 · 把AI当私人导师，而不是搜索引擎</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>AI是有史以来最耐心的老师——不嫌你问题幼稚，随时可以换一种方式解释，根据你的水平调整深度。用好了，等于随时有个博士朋友陪你学习。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">①</div><div class="step-text"><strong>快速建立知识地图</strong>：问"我想学XX，完全零基础，帮我列一个从入门到能实际应用的学习路线，每个阶段大概要多久，重点学什么"——先知道全貌，再决定从哪里切入</div></div>
+          <div class="step"><div class="step-num">②</div><div class="step-text"><strong>遇到不懂的立刻深挖</strong>：读书/看视频遇到看不懂的，直接粘给AI问"用最简单的方式解释这个概念，举一个生活中的例子"。不用再去搜索一堆文章了</div></div>
+          <div class="step"><div class="step-num">③</div><div class="step-text"><strong>费曼学习法验证理解</strong>：学完一个概念，让AI扮演完全不懂的人，你来解释给它听。AI会指出你解释里的漏洞，这是检验自己是否真的懂了的最快方法</div></div>
+          <div class="step"><div class="step-num">④</div><div class="step-text"><strong>让AI出题考你</strong>："我刚学完XX，帮我出5道由浅入深的练习题，做完后告诉我哪里答错了、错在哪里"——主动测试比被动阅读记忆深3倍</div></div>
+          <div class="step"><div class="step-num">⑤</div><div class="step-text"><strong>个性化类比</strong>：当某个概念死活理解不了，直接说"我是学音乐的，能不能用音乐来类比解释这个概念"——AI会根据你的背景重新解释</div></div>
+        </div>
+        <div class="example-box" style="margin-top:14px;">
+          <div class="ex-label">实战：用AI在2周内入门Python编程</div>
+          <p><strong>第1天</strong>：问AI"我完全不会编程，想学Python用于处理Excel数据，帮我列一个2周速成计划，每天1小时"<br>
+          <strong>每天学习时</strong>：把看不懂的代码粘给AI，问"这行代码是什么意思？为什么要这么写？"<br>
+          <strong>每学完一节</strong>：让AI出3道练习题，自己写完再让AI点评<br>
+          <strong>遇到报错</strong>：把错误信息完整粘给AI，问"这个错误是什么原因？怎么修复？"<br>
+          <strong>第14天</strong>：把一个真实的工作Excel扔给AI，说"帮我写一个Python脚本自动处理这种格式的文件"，直接得到可用的代码</p>
+        </div>
+        <div class="formula-box">
+          学习效率公式：<br>
+          传统自学 = 读书 + 百度 + 等老师回复<br>
+          AI辅助自学 = 读书 + 随时问 + 立刻出题 + 即时反馈<br>
+          时间压缩比：同等掌握程度，AI辅助约节省40–60%时间
+        </div>
+        <div class="tag-row">
+          <span class="tag">学习路线规划</span><span class="tag">费曼学习法</span><span class="tag">主动测试</span><span class="tag">个性化类比</span><span class="tag">即时反馈</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">✍️</div>
+        <div class="trigger-text">
+          <div class="trigger-title">写作与文字工作</div>
+          <div class="trigger-sub">从发朋友圈到写报告 · AI是写作的副驾驶，不是代驾</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>写作是AI最擅长的领域之一。最好的用法不是让AI"代写"，而是让AI帮你把想法变成文字、把草稿变成好文章——核心观点和判断还是你的。</p>
+        <div class="grid3" style="margin-top:14px;">
+          <div class="grid3-box"><div class="num">润色</div><div class="desc">你先写，AI改——保留你的意思，提升表达质量</div></div>
+          <div class="grid3-box"><div class="num">扩写</div><div class="desc">你给要点，AI丰富细节和举例</div></div>
+          <div class="grid3-box"><div class="num">缩写</div><div class="desc">把长文压成摘要，保留核心信息</div></div>
+          <div class="grid3-box"><div class="num">转换</div><div class="desc">正式↔口语，中文↔英文，书面↔朋友圈风格</div></div>
+          <div class="grid3-box"><div class="num">检查</div><div class="desc">找逻辑漏洞、错别字、前后矛盾</div></div>
+          <div class="grid3-box"><div class="num">框架</div><div class="desc">不知道从哪写起，让AI先给结构</div></div>
+        </div>
+        <div class="example-box" style="margin-top:14px;">
+          <div class="ex-label">日常高频场景</div>
+          <p><strong>朋友圈文案</strong>："我刚爬完黄山，腿快断了但风景很美，帮我写一条朋友圈，要有画面感但不要太文艺，最多50字"<br><br>
+          <strong>投诉/维权邮件</strong>："我买的手机屏幕有问题，商家推诿了两次，帮我写一封正式投诉信，有理有据，语气强硬但不失礼貌"<br><br>
+          <strong>工作汇报</strong>："把这些乱七八糟的工作记录整理成一份月度汇报，格式：本月完成/遇到问题/下月计划，每项不超过3条"<br><br>
+          <strong>自我介绍</strong>："我去参加一个行业交流会，帮我写一段30秒的自我介绍，突出我在供应链管理方面的经验，听众是行业内人士"<br><br>
+          <strong>读书笔记</strong>："我读完了《原则》，帮我把这些零散的划线笔记整理成结构化的读书笔记，提炼出核心观点和对我有用的行动建议"</p>
+        </div>
+        <div class="warn-box">
+          <p><strong>识别"AI味"的写作，避免踩坑</strong><br><br>
+          AI写作有明显特征：大量使用"首先/其次/最后"，喜欢说"总的来说"，句子结构过于整齐，用词偏书面化，缺少个人色彩和具体细节。<br><br>
+          <strong>解决方法</strong>：让AI生成草稿后，自己加入具体的个人经历和感受，删掉过于套路的过渡句，调整一些句子的节奏——这样既有AI的效率，又有你自己的温度。</p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">润色</span><span class="tag">格式转换</span><span class="tag">邮件写作</span><span class="tag">朋友圈</span><span class="tag">工作汇报</span><span class="tag">读书笔记</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🏠</div>
+        <div class="trigger-text">
+          <div class="trigger-title">生活决策与信息处理</div>
+          <div class="trigger-sub">买东西·看病·理财·旅行 · 让AI做你的信息过滤器</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>现代生活最大的问题不是信息不够，而是信息太多、真假难辨、不知道怎么用到自己身上。AI最擅长的就是：帮你从海量信息里提取和你相关的部分，翻译成你能理解和执行的建议。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">🛒</div><div class="step-text"><strong>购物决策</strong>：不要问"XX好不好"，而是说"我预算2000元，主要用来拍孩子日常生活，不想学复杂操作，帮我比较这三款相机的优缺点，用一个表格列出来，最后给我一个推荐"。AI会帮你过滤掉与你无关的参数。</div></div>
+          <div class="step"><div class="step-num">🏥</div><div class="step-text"><strong>就医准备</strong>：把化验单、症状描述粘给AI，让它帮你整理成"就诊前需要告诉医生的关键信息"，并列出你可能需要问医生的问题。AI不能诊断，但能帮你更高效地利用有限的问诊时间。</div></div>
+          <div class="step"><div class="step-num">✈️</div><div class="step-text"><strong>旅行规划</strong>："我们一家三口，孩子8岁，6月初去日本关西5天，预算每天人均500元，孩子喜欢动漫，大人想体验当地生活，不喜欢赶景点，帮我设计一个行程"——比任何攻略都更贴合你的需求。</div></div>
+          <div class="step"><div class="step-num">📄</div><div class="step-text"><strong>读懂复杂文件</strong>：租房合同、保险条款、学校通知——把文件粘进去，问"这里面有没有对我不利的条款？""第8条用大白话解释一下""如果我提前退租，根据这个合同我要付多少违约金？"</div></div>
+          <div class="step"><div class="step-num">💰</div><div class="step-text"><strong>财务理解</strong>：把账单、工资条、理财产品说明书扔给AI，让它帮你算清楚实际到手多少、手续费是多少、真实年化收益率是多少。AI擅长把复杂的财务文字转成你看得懂的数字。</div></div>
+        </div>
+        <div class="example-box" style="margin-top:14px;">
+          <div class="ex-label">进阶用法：让AI帮你做决策框架</div>
+          <p>面对重要决策（换工作、买房、孩子择校），不要让AI替你决定，而是让它帮你<strong>理清决策结构</strong>：<br><br>
+          "我在考虑换工作，帮我列出做这个决定时应该考虑的所有重要因素，按重要程度排序"<br>
+          "帮我分析这两个选项各自的优劣，我的核心诉求是：……"<br>
+          "如果我选A，最坏的结果是什么？最好的结果是什么？"<br><br>
+          AI帮你把决策从模糊的焦虑变成清晰的选项对比，最终拍板还是你自己。</p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">购物比较</span><span class="tag">就医准备</span><span class="tag">旅行规划</span><span class="tag">合同解读</span><span class="tag">决策框架</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🛠️</div>
+        <div class="trigger-text">
+          <div class="trigger-title">工具选择：用哪个AI，怎么选</div>
+          <div class="trigger-sub">ChatGPT · Claude · Gemini · 国内工具 · 不同场景用不同工具</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>2025年可用的AI工具已经很多，不需要每个都用，也不存在"最好的那一个"。选工具的核心逻辑：<strong>免费的先用，够用就行；特定场景选特定工具</strong>。</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">🌐</div><div class="step-text"><strong>ChatGPT（OpenAI）</strong><br>最出名，生态最完整。免费版GPT-4o已经很强。推荐场景：通用问答、写作、代码。有插件和GPTs可以扩展功能。需要网络工具访问。</div></div>
+          <div class="step"><div class="step-num">🔵</div><div class="step-text"><strong>Claude（Anthropic）</strong><br>写作质量和长文处理公认最好，回答更有逻辑、更有细节。推荐场景：写报告、分析长文件、需要深度思考的任务。免费版可用，同样需要网络工具。</div></div>
+          <div class="step"><div class="step-num">🔴</div><div class="step-text"><strong>Gemini（Google）</strong><br>与Google生态深度整合，可以读取Gmail、Google Drive文件。推荐场景：重度使用Google服务的人，需要联网搜索实时信息。</div></div>
+          <div class="step"><div class="step-num">🇨🇳</div><div class="step-text"><strong>国内可直接访问的选项</strong><br>
+          <strong>豆包（字节）</strong>：手机App体验好，免费，中文对话流畅，适合日常使用<br>
+          <strong>通义千问（阿里）</strong>：文档处理和代码能力突出<br>
+          <strong>DeepSeek</strong>：推理能力强，适合需要深度分析的任务，网页版免费<br>
+          <strong>文心一言（百度）</strong>：中文搜索结合好，适合需要中文时事信息的场景</div></div>
+          <div class="step"><div class="step-num">🎨</div><div class="step-text"><strong>图像生成工具</strong><br>
+          <strong>Midjourney</strong>：画质最好，Discord里用，需付费<br>
+          <strong>即梦/可灵</strong>：国内可访问，免费额度够用，中文提示词友好<br>
+          <strong>ChatGPT的DALL·E</strong>：集成方便，质量不如Midjourney但够用</div></div>
+        </div>
+        <div class="formula-box">
+          普通用户推荐起点：<br>
+          国内用户 → 豆包或DeepSeek（免费，无障碍，够用）<br>
+          有网络工具 → ChatGPT免费版或Claude免费版<br>
+          愿意付费 → Claude Pro或ChatGPT Plus（约$20/月），质量明显提升<br>
+          图片生成 → 先试即梦（国内免费），有需求再上Midjourney
+        </div>
+        <div class="warn-box">
+          <p><strong>⚠️ 隐私提醒</strong><br><br>
+          不要把真实姓名、身份证号、银行账号、密码、公司机密文件输入任何AI工具。这些对话通常会被用于改进模型。敏感信息用"某人""某公司""XX元"代替，把信息脱敏后再输入。</p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">ChatGPT</span><span class="tag">Claude</span><span class="tag">Gemini</span><span class="tag">豆包</span><span class="tag">DeepSeek</span><span class="tag">即梦</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <button class="trigger" onclick="toggle(this)">
+        <div class="icon-wrap">🧭</div>
+        <div class="trigger-text">
+          <div class="trigger-title">AI时代，普通人怎么定位自己</div>
+          <div class="trigger-sub">不焦虑·不盲目·找到人机协作的平衡点</div>
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="panel"><div class="panel-inner">
+        <p>关于AI会不会取代人类的讨论已经很多，但对普通人来说，更有用的问题是：<strong>在我的日常工作和生活里，AI能帮我做什么、不能做什么，我该怎么借力？</strong></p>
+        <div class="compare">
+          <div class="compare-box"><h4>AI很擅长的事</h4><p>• 处理大量文字和信息<br>• 生成、改写、翻译文本<br>• 解释概念，回答"是什么"<br>• 找模式、做分类、格式转换<br>• 写代码，调试错误<br>• 没有疲劳，随时可用</p></div>
+          <div class="compare-box"><h4>人类仍有优势的地方</h4><p>• 真实世界的感知和行动<br>• 基于关系的信任和判断<br>• 对"为什么重要"的理解<br>• 创造真正新颖的想法<br>• 承担责任和做价值判断<br>• 读懂潜台词和情绪</p></div>
+        </div>
+        <div class="example-box" style="margin-top:16px;">
+          <div class="ex-label">一个有用的思维框架：把你的工作分三层</div>
+          <p><strong>第一层——可以大量外包给AI的</strong>：整理信息、写初稿、格式转换、重复性文字工作。这部分让AI做，你节省时间。<br><br>
+          <strong>第二层——AI辅助、你来判断的</strong>：分析选项、草拟方案、提供参考。AI给材料，你做决定。<br><br>
+          <strong>第三层——必须由你来做的</strong>：真实的人际关系、需要你个人信誉背书的判断、涉及价值观和情感的决定。<br><br>
+          把精力从第一层转移到第三层——这是AI时代每个人都可以主动做的调整。</p>
+        </div>
+        <div class="steps" style="margin-top:14px;">
+          <div class="step"><div class="step-num">📌</div><div class="step-text"><strong>不必焦虑"被取代"</strong>：AI取代的是<em>任务</em>，不是<em>人</em>。一个用AI的人事专员，比不用AI的人事专员效率高3倍——被取代的是后者，不是这个职业</div></div>
+          <div class="step"><div class="step-num">📌</div><div class="step-text"><strong>学会用比学会原理更重要</strong>：你不需要理解Transformer架构，就像你不需要懂发动机原理才能开车。但你需要知道AI能做什么、怎么有效使用它</div></div>
+          <div class="step"><div class="step-num">📌</div><div class="step-text"><strong>保持判断力</strong>：AI的回答听起来很有权威感，容易让人直接接受。但它的知识有截止日期、会犯事实性错误、不了解你的具体处境。你的判断力是AI工具的最终把关人</div></div>
+          <div class="step"><div class="step-num">📌</div><div class="step-text"><strong>从一个具体场景开始</strong>：不需要系统学习AI，找到你生活或工作中一个痛点，今天就试着让AI帮你处理一次。从解决一个真实问题开始，比看一百篇AI教程更有效</div></div>
+        </div>
+        <div class="formula-box">
+          AI时代的核心能力 =<br>
+          知道向AI问什么（提问能力）<br>
+          + 判断AI答案是否可信（批判性思维）<br>
+          + 把AI输出转化为真实行动（执行力）<br>
+          这三样都是人类的能力，AI帮不了你
+        </div>
+        <div class="tag-row">
+          <span class="tag">人机协作</span><span class="tag">提问能力</span><span class="tag">批判性思维</span><span class="tag">工作分层</span><span class="tag">不焦虑</span>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+
 
 <script>
   function toggle(btn) {
