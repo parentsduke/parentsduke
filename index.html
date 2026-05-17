@@ -313,7 +313,7 @@ function toggleBannerMusic() {
 </header>
 
 <!-- ===== 每日Duke动态 ===== -->
-<section id="duke-weekly" style="background:#001a4d;border-top:3px solid #B8963E;border-bottom:3px solid #B8963E;padding:24px 20px;margin:0;">
+<section id="duke-weekly" style="background:#001a4d;border-top:3px solid #B8963E;border-bottom:3px solid #B8963E;padding:24px 20px;margin:0;display:none;">
   <div style="max-width:800px;margin:0 auto;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
       <div style="display:flex;align-items:center;gap:12px;">
@@ -12703,6 +12703,8 @@ window.showPV();
   window._supabaseClient = client; // 供 script.js 共用
 
   function showLogin() {
+    var dw = document.getElementById("duke-weekly");
+    if (dw) dw.style.display = "none";
     document.getElementById("protected-area").innerHTML = `
       <div style="text-align:center;margin-top:0;padding:80px 20px 40px 20px;background-image:url(https://dukeparents.org/chapel.jpg);background-size:cover;background-position:center;background-repeat:no-repeat;position:relative;min-height:320px;display:flex;align-items:center;justify-content:center;" class="login-hero">
       <div style="position:absolute;inset:0;background:rgba(255,255,255,0.80);"></div>
@@ -12720,6 +12722,8 @@ window.showPV();
   }
 
   function showContent(user) {
+    var dw = document.getElementById("duke-weekly");
+    if (dw) dw.style.display = "block";
     // 登录成功，计数+1
     if (typeof window.incrementAndShowPV === "function") window.incrementAndShowPV();
     const template = document.getElementById("real-content");
