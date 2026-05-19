@@ -142,6 +142,79 @@
     }
     .btn-export:hover { background: #a07830; }
 
+    /* ── Duty Banner ── */
+    .duty-banner {
+      background: #fff8e6;
+      border: 1.5px solid var(--gold);
+      border-radius: 10px;
+      padding: 12px 20px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .duty-banner.no-duty {
+      background: #fff0f0;
+      border-color: #e08080;
+    }
+    .duty-info { display: flex; align-items: center; gap: 10px; }
+    .duty-label { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; }
+    .duty-name { font-size: 18px; font-weight: 900; color: var(--navy); }
+    .duty-week { font-size: 12px; color: var(--muted); }
+    .duty-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-duty {
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      border: 1.5px solid var(--blue);
+      background: transparent;
+      color: var(--blue);
+    }
+    .btn-duty:hover { background: var(--blue); color: #fff; }
+    .btn-duty.primary { background: var(--blue); color: #fff; }
+    .btn-duty.primary:hover { background: #001a4d; }
+
+    /* ── Duty Modal ── */
+    .duty-modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .duty-modal-overlay.open { display: flex; }
+    .duty-modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px 32px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    }
+    .duty-modal h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 20px; }
+    .officer-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .officer-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: #faf9f7;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .officer-row:hover { border-color: var(--blue); }
+    .officer-row.selected { border-color: var(--blue); background: #eef3fb; }
+    .officer-row .o-name { font-weight: 700; font-size: 15px; color: var(--navy); }
+    .officer-row .o-email { font-size: 12px; color: var(--muted); }
+    .officer-row .o-badge { font-size: 11px; background: var(--gold); color: #fff; padding: 2px 8px; border-radius: 10px; }
+    .duty-modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+
     /* ── Filters ── */
     .filters {
       background: var(--card);
@@ -431,6 +504,33 @@
     <button class="btn-export" onclick="exportCSV()">导出 CSV</button>
   </div>
 
+<!-- 值班班长横幅 -->
+<div id="dutyBanner" class="duty-banner" style="display:none;">
+  <div class="duty-info">
+    <div>
+      <div class="duty-label">🔔 本周值班班长</div>
+      <div class="duty-name" id="dutyName">—</div>
+      <div class="duty-week" id="dutyWeek"></div>
+    </div>
+  </div>
+  <div class="duty-actions">
+    <button class="btn-duty" onclick="openDutyModal()">切换值班</button>
+    <button class="btn-duty" onclick="advanceWeek()">下周轮换 →</button>
+  </div>
+</div>
+
+<!-- 值班选择 Modal -->
+<div class="duty-modal-overlay" id="dutyModalOverlay">
+  <div class="duty-modal">
+    <h3>选择本周值班班长</h3>
+    <div class="officer-list" id="officerList"></div>
+    <div class="duty-modal-btns">
+      <button class="btn-duty" onclick="closeDutyModal()">取消</button>
+      <button class="btn-duty primary" onclick="confirmDuty()">确认</button>
+    </div>
+  </div>
+</div>
+
   <div class="filters">
     <span class="filter-label">筛选：</span>
     <select id="filterType" onchange="applyFilters()">
@@ -574,6 +674,7 @@
     document.getElementById('btnLogout').style.display = 'inline-block';
     document.getElementById('userEmail').textContent = email;
     loadRecords();
+    loadDuty();
   }
 
   // ── Data ──
@@ -1271,6 +1372,112 @@
   }
 
   init();
+
+  // ══════════════════════════════════════════
+  // 值班班长管理
+  // ══════════════════════════════════════════
+
+  let dutyOfficers = [];       // 全部班长
+  let currentDutyOfficerId = null;  // 当前值班ID
+  let selectedOfficerId = null;     // modal里选中的
+
+  function getMondayStr(offsetWeeks = 0) {
+    const now = new Date();
+    const day = now.getDay(); // 0=周日
+    const diff = day === 0 ? -6 : 1 - day;
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + diff + offsetWeeks * 7);
+    return monday.toISOString().slice(0, 10);
+  }
+
+  async function loadDuty() {
+    // 加载班长名单
+    const { data: officers } = await db
+      .from('duty_officers')
+      .select('id, name, email, sort_order, is_active')
+      .order('sort_order');
+    dutyOfficers = officers || [];
+
+    // 查本周值班
+    const weekStart = getMondayStr(0);
+    const { data: sched } = await db
+      .from('duty_schedule')
+      .select('officer_id, duty_officers(name, email)')
+      .eq('week_start', weekStart)
+      .limit(1)
+      .maybeSingle();
+
+    const banner = document.getElementById('dutyBanner');
+    banner.style.display = 'flex';
+
+    if (sched && sched.duty_officers) {
+      currentDutyOfficerId = sched.officer_id;
+      document.getElementById('dutyName').textContent = sched.duty_officers.name;
+      document.getElementById('dutyWeek').textContent = `本周（${weekStart}）`;
+      banner.classList.remove('no-duty');
+    } else {
+      currentDutyOfficerId = null;
+      document.getElementById('dutyName').textContent = '暂无排班';
+      document.getElementById('dutyWeek').textContent = `本周（${weekStart}）— 请设置`;
+      banner.classList.add('no-duty');
+    }
+  }
+
+  function openDutyModal() {
+    selectedOfficerId = currentDutyOfficerId;
+    const list = document.getElementById('officerList');
+    list.innerHTML = dutyOfficers
+      .filter(o => o.is_active)
+      .map(o => `
+        <div class="officer-row ${o.id === selectedOfficerId ? 'selected' : ''}"
+             onclick="selectOfficer(${o.id}, this)">
+          <div>
+            <div class="o-name">${o.name}</div>
+            <div class="o-email">${o.email}</div>
+          </div>
+          ${o.id === currentDutyOfficerId ? '<span class="o-badge">当前值班</span>' : ''}
+        </div>
+      `).join('');
+    document.getElementById('dutyModalOverlay').classList.add('open');
+  }
+
+  function selectOfficer(id, el) {
+    selectedOfficerId = id;
+    document.querySelectorAll('.officer-row').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function closeDutyModal() {
+    document.getElementById('dutyModalOverlay').classList.remove('open');
+  }
+
+  async function confirmDuty() {
+    if (!selectedOfficerId) return;
+    const weekStart = getMondayStr(0);
+    // upsert 本周排班
+    const { error } = await db
+      .from('duty_schedule')
+      .upsert({ officer_id: selectedOfficerId, week_start: weekStart }, { onConflict: 'week_start' });
+    if (error) { alert('保存失败：' + error.message); return; }
+    closeDutyModal();
+    await loadDuty();
+  }
+
+  async function advanceWeek() {
+    // 找当前值班在名单中的位置，取下一个
+    const active = dutyOfficers.filter(o => o.is_active);
+    if (active.length === 0) { alert('没有可用班长'); return; }
+    const idx = active.findIndex(o => o.id === currentDutyOfficerId);
+    const next = active[(idx + 1) % active.length];
+    const weekStart = getMondayStr(1); // 下周一
+    const name = next.name;
+    if (!confirm(`下周（${weekStart}）值班设为：${name}？`)) return;
+    const { error } = await db
+      .from('duty_schedule')
+      .upsert({ officer_id: next.id, week_start: weekStart }, { onConflict: 'week_start' });
+    if (error) { alert('保存失败：' + error.message); return; }
+    alert(`✅ 已设置下周值班：${name}`);
+  }
 </script>
 </body>
 </html>
