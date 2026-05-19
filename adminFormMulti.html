@@ -511,6 +511,7 @@
       <div class="duty-label">🔔 本周值班班长</div>
       <div class="duty-name" id="dutyName">—</div>
       <div class="duty-week" id="dutyWeek"></div>
+      <div class="duty-week" id="dutyNextWeek" style="margin-top:4px;"></div>
     </div>
   </div>
   <div class="duty-actions">
@@ -1409,6 +1410,15 @@
       .limit(1)
       .maybeSingle();
 
+    // 查下周值班
+    const nextWeekStart = getMondayStr(1);
+    const { data: nextSched } = await db
+      .from('duty_schedule')
+      .select('duty_officers(name)')
+      .eq('week_start', nextWeekStart)
+      .limit(1)
+      .maybeSingle();
+
     const banner = document.getElementById('dutyBanner');
     banner.style.display = 'flex';
 
@@ -1422,6 +1432,16 @@
       document.getElementById('dutyName').textContent = '暂无排班';
       document.getElementById('dutyWeek').textContent = `本周（${weekStart}）— 请设置`;
       banner.classList.add('no-duty');
+    }
+
+    // 显示下周预告
+    const nextEl = document.getElementById('dutyNextWeek');
+    if (nextSched && nextSched.duty_officers) {
+      nextEl.textContent = `下周预告：${nextSched.duty_officers.name}（${nextWeekStart}）`;
+      nextEl.style.display = '';
+    } else {
+      nextEl.textContent = '';
+      nextEl.style.display = 'none';
     }
   }
 
