@@ -157,6 +157,32 @@ PREMATRIC_HARDCODED = [
         'category': '住房安排',
         'text': 'August 17 (Mon) or 18 (Tue): 转学生搬入日（Transfer Move-In Day）',
     },
+    # ── 开学前 Student Action Items（来源：Duke 2030家长群）──
+    {
+        'expire': (2026, 5, 19),
+        'category': '开学前待办',
+        'text': 'May 19 (Tue) 4:00 PM ET: Summer Transition Series 网络研讨会 Living at Duke (Part 1)——需提前注册，无法参加者可看录像回放',
+    },
+    {
+        'expire': (2026, 5, 31),
+        'category': '开学前待办',
+        'text': 'May 31: Experiential Orientation Matching Survey 填写截止（结果决定迎新项目分配）',
+    },
+    {
+        'expire': (2026, 5, 31),
+        'category': '开学前待办',
+        'text': 'May 31: 新生住房申请（Housing Application）截止——系统将自动选入 First-Year Dining Plan；需要 Housing Accommodations 者须同日通过 Student Disability Access Office 申请',
+    },
+    {
+        'expire': (2026, 5, 31),
+        'category': '开学前待办',
+        'text': 'May 31: Blue Book 填写截止',
+    },
+    {
+        'expire': (2026, 6, 15),
+        'category': '开学前待办',
+        'text': 'June 15: 疫苗接种证明（Immunization Form）须由医生签字并提交至 Duke Student Health——Student Health Gateway 开放上传时间通常为5月中至6月初，开放日期将另行通知',
+    },
     # ── 体验式迎新周 ──
     {
         'expire': (2026, 5, 31),
