@@ -80,8 +80,7 @@ HTML_SOURCES = {
                                 'https://www.cvent.com/api/email/dispatch/v1/email/view/p2-x5djmm9vp9cj56-v65vry5w-avv-fl4q?view=html'],
                        'selectors': ['h2 a','h3 a','.event-title a','.views-field-title a',
                                      'article a','.card-title a','.field-content a',
-                                     '.views-row a','.item-list a'],
-                       'jina_urls': ['https://rsvp.duke.edu/event/7a35007b-bef9-4354-aafe-65865f56c1ec/HOME']},
+                                     '.views-row a','.item-list a']},
 }
 
 REGISTRATION_PAGES = ['https://registrar.duke.edu/registration/']
@@ -158,6 +157,32 @@ PREMATRIC_HARDCODED = [
         'category': '住房安排',
         'text': 'August 17 (Mon) or 18 (Tue): 转学生搬入日（Transfer Move-In Day）',
     },
+    # ── 开学前 Student Action Items（来源：Duke 2030家长群）──
+    {
+        'expire': (2026, 5, 19),
+        'category': '开学前待办',
+        'text': 'May 19 (Tue) 4:00 PM ET: Summer Transition Series 网络研讨会 Living at Duke (Part 1)——需提前注册，无法参加者可看录像回放',
+    },
+    {
+        'expire': (2026, 5, 31),
+        'category': '开学前待办',
+        'text': 'May 31: Experiential Orientation Matching Survey 填写截止（结果决定迎新项目分配）',
+    },
+    {
+        'expire': (2026, 5, 31),
+        'category': '开学前待办',
+        'text': 'May 31: 新生住房申请（Housing Application）截止——系统将自动选入 First-Year Dining Plan；需要 Housing Accommodations 者须同日通过 Student Disability Access Office 申请',
+    },
+    {
+        'expire': (2026, 5, 31),
+        'category': '开学前待办',
+        'text': 'May 31: Blue Book 填写截止',
+    },
+    {
+        'expire': (2026, 6, 15),
+        'category': '开学前待办',
+        'text': 'June 15: 疫苗接种证明（Immunization Form）须由医生签字并提交至 Duke Student Health——Student Health Gateway 开放上传时间通常为5月中至6月初，开放日期将另行通知',
+    },
     # ── 体验式迎新周 ──
     {
         'expire': (2026, 5, 31),
@@ -205,117 +230,41 @@ PREMATRIC_HARDCODED = [
         'category': '国际生专项',
         'text': '需提前完成 ISSS 相关报到手续（开学前）',
     },
-    # ── Send-Off Party（来源：rsvp.duke.edu 官方页面，Class of 2030）──
-    # 已过期/本周内条目
+    # ── Send-Off Party（亚洲/全球）──
     {
         'expire': (2026, 5, 16),
         'category': 'Send-Off Party',
-        'text': '🎉 5月16日(周六) — 印度·孟买 Send-Off Party（Mumbai）',
+        'text': '🎉 5月16日(周六) 3:30-5:30 PM — Mumbai Send-Off Party，Mahalakshmi, Mumbai（主办：Hemal & Dr. Sonali Shah P27）',
+    },
+    {
+        'expire': (2026, 5, 17),
+        'category': 'Send-Off Party',
+        'text': '🎉 5月17日(周日) 2:00-4:00 PM — 北京 Send-Off Party，Changping District（主办：Patrick Cai MBA05 P30）',
     },
     {
         'expire': (2026, 5, 19),
         'category': 'Send-Off Party',
-        'text': '🎉 5月19日(周二) — 印度·班加罗尔 Send-Off Party（Bengaluru）',
+        'text': '🎉 5月19日(周二) 7:00-9:30 PM — Bengaluru Send-Off Party，Jayamahal Extension（主办：Phyllis & Eric Savage 92 P27）',
     },
     {
         'expire': (2026, 5, 23),
         'category': 'Send-Off Party',
-        'text': '🎉 5月23日(周六) — 印度·新德里 Send-Off Party（New Delhi）',
-    },
-    # 海外场次
-    {
-        'expire': (2026, 6, 20),
-        'category': 'Send-Off Party',
-        'text': '🎉 6月20日(周六) — 英国·伦敦 Send-Off Party（London）',
-    },
-    {
-        'expire': (2026, 6, 25),
-        'category': 'Send-Off Party',
-        'text': '🎉 6月25日(周四) — 日本·东京 Send-Off Party（Tokyo）',
+        'text': '🎉 5月23日(周六) 6:00-8:00 PM — Delhi Send-Off Party（主办：Kapuria家庭 P27/P29）',
     },
     {
         'expire': (2026, 6, 27),
         'category': 'Send-Off Party',
-        'text': '🎉 6月27日(周六) — 中国·上海 Send-Off Party',
+        'text': '🎉 6月27日(周六) 2:00-5:00 PM — 上海 Send-Off Party，Duke Kunshan University（主办：Joseph Zhang B.S.20）',
     },
     {
         'expire': (2026, 7, 25),
         'category': 'Send-Off Party',
-        'text': '🎉 7月25日(周六) — 台湾·台北 Send-Off Party（Taipei）',
+        'text': '🎉 7月25日(周六) 3:00-5:00 PM — 台北 Send-Off Party，Xinyi District（主办：Owen Chung & Ying Qi B.S.17）',
     },
-    # 海外 TBA
     {
         'expire': (2026, 9, 1),
         'category': 'Send-Off Party',
-        'text': '🎉 中国·北京 / 香港 / 韩国·首尔 Send-Off Party — 日期待定(TBA)',
-    },
-    # 美国场次（有日期）
-    {
-        'expire': (2026, 7, 12),
-        'category': 'Send-Off Party',
-        'text': '🎉 7月12日(周日) — 美国·巴尔的摩 Send-Off Party（Maryland - Baltimore）',
-    },
-    {
-        'expire': (2026, 7, 19),
-        'category': 'Send-Off Party',
-        'text': '🎉 7月19日(周日) — 美国·田纳西·纳什维尔 / 弗吉尼亚·亚历山大城 Send-Off Party',
-    },
-    {
-        'expire': (2026, 7, 25),
-        'category': 'Send-Off Party',
-        'text': '🎉 7月25日(周六) — 美国·亚特兰大 / 芝加哥 / 密歇根·安阿伯 / 宾州·匹兹堡 Send-Off Party',
-    },
-    {
-        'expire': (2026, 7, 29),
-        'category': 'Send-Off Party',
-        'text': '🎉 7月29日(周三) — 美国·波士顿 / 明尼阿波利斯 Send-Off Party',
-    },
-    {
-        'expire': (2026, 7, 26),
-        'category': 'Send-Off Party',
-        'text': '🎉 7月26日(周日) — 美国·佛罗里达·迈阿密 Send-Off Party',
-    },
-    {
-        'expire': (2026, 7, 9),
-        'category': 'Send-Off Party',
-        'text': '🎉 7月9日(周三) — 美国·费城 Send-Off Party（Pennsylvania - Philadelphia）',
-    },
-    {
-        'expire': (2026, 8, 4),
-        'category': 'Send-Off Party',
-        'text': '🎉 8月4日(周二) — 美国·德克萨斯·奥斯汀 Send-Off Party',
-    },
-    {
-        'expire': (2026, 8, 5),
-        'category': 'Send-Off Party',
-        'text': '🎉 8月5日(周三) — 美国·德克萨斯·达拉斯 Send-Off Party',
-    },
-    {
-        'expire': (2026, 8, 6),
-        'category': 'Send-Off Party',
-        'text': '🎉 8月6日(周四) — 美国·德克萨斯·休斯顿 Send-Off Party',
-    },
-    {
-        'expire': (2026, 8, 8),
-        'category': 'Send-Off Party',
-        'text': '🎉 8月8日(周六) — 美国·佛罗里达·坦帕 / 旧金山湾区（半岛）Send-Off Party',
-    },
-    {
-        'expire': (2026, 8, 9),
-        'category': 'Send-Off Party',
-        'text': '🎉 8月9日(周日) — 美国·旧金山（城区/东湾/Marin）/ 马里兰·贝塞斯达 Send-Off Party',
-    },
-    # 美国 TBA 场次
-    {
-        'expire': (2026, 9, 1),
-        'category': 'Send-Off Party',
-        'text': '🎉 日期待定(TBA) — 加州·洛杉矶 / 橙县 / 圣地亚哥 / 康涅狄格·费尔菲尔德 / 新泽西（仅限受邀）/ 纽约（仅限受邀）/ 北卡·夏洛特/达勒姆/维克县 / 弗吉尼亚·里士满/汉普顿路 Send-Off Party',
-    },
-    # 官方 RSVP 总页面
-    {
-        'expire': (2026, 9, 1),
-        'category': 'Send-Off Party',
-        'text': '📌 官方 RSVP 总页面（含全部城市注册链接）：https://rsvp.duke.edu/event/7a35007b-bef9-4354-aafe-65865f56c1ec/HOME — 注册免费，需提前报名；部分城市需持邀请函（Invitation Only）',
+        'text': '🎉 香港 / 首尔 / 东京 Send-Off Party — 日期待定(TBA)，注册开放后请留意邮件通知',
     },
         # ── 联系方式（永不过期）──
     {
@@ -555,10 +504,6 @@ def fetch_html_source(name, max_items=6):
         items += fetch_html_items(url, cfg['selectors'], max_items)
         if len(items) >= max_items:
             break
-    # 对配置了 jina_urls 的来源，额外用 Jina 抓取 JS 渲染页面
-    for url in cfg.get('jina_urls', []):
-        if len(items) < max_items:
-            items += fetch_jina(url, max_items - len(items))
     seen, deduped = set(), []
     for i in items:
         if i['link'] not in seen:
@@ -1092,15 +1037,15 @@ def send_email(sections):
     subject = f"📋 杜克家长日报 · {now.year}年{now.month}月{now.day}日"
 
     # ── 1. 固定收件人：用 Resend ──────────────────────────────
-    if RESEND_KEY:
-        html = build_email_html(sections)
-        try:
-            ok = send_via_resend(EMAIL_TO, subject, html)
-            print(f'  {"✓" if ok else "✗"} Resend → {EMAIL_TO}')
-        except Exception as ex:
-            print(f'  ✗ Resend 异常: {ex}')
-    else:
-        print('  跳过 Resend：未设置 RESEND_API_KEY')
+    # if RESEND_KEY:
+    #     html = build_email_html(sections)
+    #     try:
+    #         ok = send_via_resend(EMAIL_TO, subject, html)
+    #         print(f'  {"✓" if ok else "✗"} Resend → {EMAIL_TO}')
+    #     except Exception as ex:
+    #         print(f'  ✗ Resend 异常: {ex}')
+    # else:
+    #     print('  跳过 Resend：未设置 RESEND_API_KEY')
 
     # ── 2. 订阅者：用 Brevo ───────────────────────────────────
     if not BREVO_KEY:
