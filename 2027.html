@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duke 2027届毕业指南</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --navy: #001F5B;
+  --duke-blue: #012169;
+  --gold: #C9A84C;
+  --gold-light: #F5E6D3;
+  --bg: #F7F8FC;
+  --white: #fff;
+  --text: #222;
+  --text-light: #555;
+  --border: #DDE3F0;
+  --accent: #003087;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0 0 60px 0;
+}
+
+/* ── Header ── */
+.page-header {
+  background: linear-gradient(135deg, #001040 0%, #001F5B 50%, #002D8A 100%);
+  padding: 40px 20px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.header-badge {
+  display: inline-block;
+  background: rgba(200,75,0,0.85);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+.page-header h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.page-header .subtitle {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  letter-spacing: 0.08em;
+}
+.duke-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 14px 0 0;
+}
+.duke-divider span {
+  width: 40px;
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+}
+.duke-divider .diamond {
+  width: 6px;
+  height: 6px;
+  background: #C9A84C;
+  transform: rotate(45deg);
+}
+
+/* ── Container ── */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ── Section label ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 28px 0 10px;
+  padding-left: 4px;
+}
+
+/* ── Accordion ── */
+.accordion {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  background: var(--white);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s;
+}
+.accordion:hover {
+  box-shadow: 0 3px 12px rgba(0,31,91,0.1);
+}
+
+.accordion-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: var(--duke-blue);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 500;
+  text-align: left;
+  transition: background 0.2s;
+  gap: 10px;
+}
+.accordion-btn:hover,
+.accordion-btn.active {
+  background: #002D8A;
+}
+.accordion-btn .btn-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.accordion-btn .btn-title {
+  flex: 1;
+}
+.accordion-arrow {
+  font-size: 12px;
+  opacity: 0.7;
+  transition: transform 0.3s;
+  flex-shrink: 0;
+}
+.accordion-btn.active .accordion-arrow {
+  transform: rotate(90deg);
+}
+
+.accordion-body {
+  display: none;
+  background: var(--white);
+  padding: 0;
+}
+.accordion-body.open {
+  display: block;
+  animation: fadeDown 0.22s ease;
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Sub-accordion ── */
+.sub-accordion {
+  border-bottom: 1px solid #EEF0F8;
+}
+.sub-accordion:last-child { border-bottom: none; }
+
+.sub-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 20px 11px 20px;
+  background: #fff;
+  color: var(--duke-blue);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 600;
+  text-align: left;
+  transition: background 0.15s;
+  gap: 8px;
+}
+.sub-btn:hover { background: #F0F4FF; }
+.sub-btn.sub-active { background: #EEF2FF; }
+.sub-arrow {
+  font-size: 10px;
+  color: #7a8fc0;
+  transition: transform 0.25s;
+  flex-shrink: 0;
+}
+.sub-btn.sub-active .sub-arrow { transform: rotate(90deg); }
+
+.sub-body {
+  display: none;
+  background: #FAFBFF;
+  border-top: 1px solid #E8ECF8;
+  padding: 8px 20px 12px;
+}
+.sub-body.sub-open {
+  display: block;
+  animation: fadeDown 0.18s ease;
+}
+
+/* ── Cal items ── */
+.cal-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #F0F3FA;
+}
+.cal-item:last-child { border-bottom: none; }
+.cal-date {
+  min-width: 130px;
+  font-weight: 600;
+  color: var(--duke-blue);
+  font-size: 12px;
+  white-space: normal;
+  word-break: break-word;
+  padding-top: 1px;
+}
+.cal-desc { font-size: 13px; color: #333; line-height: 1.6; }
+.cal-note { font-size: 11.5px; color: #888; margin-top: 3px; line-height: 1.5; }
+
+/* ── Checklist ── */
+.checklist {
+  list-style: none;
+  padding: 0;
+}
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid #F0F3FA;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.6;
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist li::before {
+  content: '☐';
+  color: var(--duke-blue);
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: -1px;
+}
+
+/* ── Tag ── */
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-left: 4px;
+  letter-spacing: 0.05em;
+}
+.tag-red { background: #FFF0F0; color: #C00; }
+.tag-gold { background: #FFF4E6; color: #A05000; }
+.tag-blue { background: #EEF2FF; color: #003087; }
+.tag-green { background: #EDFAF4; color: #166534; }
+
+/* ── Info box ── */
+.info-box {
+  background: #EEF3FA;
+  border-left: 4px solid var(--duke-blue);
+  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+  margin: 8px 0;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.65;
+}
+.info-box.gold {
+  background: #FFF8F0;
+  border-left-color: #C9A84C;
+}
+
+/* ── Inner padding ── */
+.pad { padding: 4px 20px 16px; }
+
+@media (max-width: 600px) {
+  .page-header h1 { font-size: 22px; }
+  .cal-item { flex-direction: column; gap: 2px; }
+  .cal-date { min-width: unset; }
+  .accordion-btn { font-size: 14px; padding: 13px 16px; }
+  .sub-btn { padding: 10px 16px; }
+  .pad { padding: 4px 14px 14px; }
+}
+
+/* ── Gallery ── */
+.gallery-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #EEF0F8;
+  flex-wrap: wrap;
+}
+.gallery-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #012169;
+  color: #fff;
+  font-size: 13px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.gallery-upload-btn:hover { background: #002D8A; }
+.gallery-upload-btn:disabled { background: #aaa; cursor: not-allowed; }
+.gallery-sort-btn {
+  font-size: 12px;
+  color: #555;
+  background: #f0f4ff;
+  border: 1px solid #dde3f0;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: background 0.15s;
+}
+.gallery-sort-btn.active { background: #012169; color: #fff; border-color: #012169; }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  padding: 14px 16px;
+}
+.gallery-card {
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f7f8fc;
+  border: 1px solid #e8ecf8;
+  transition: box-shadow 0.2s;
+  position: relative;
+}
+.gallery-card:hover { box-shadow: 0 4px 16px rgba(0,31,91,0.12); }
+.gallery-card img,
+.gallery-card video {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+  background: #e0e5f0;
+}
+.gallery-card video { aspect-ratio: 16/9; }
+.gallery-like-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  background: #fff;
+}
+.like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #555;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 5px;
+  transition: background 0.15s, color 0.15s;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+.like-btn:hover { background: #fffbf0; color: #C9A84C; }
+.like-btn.liked { color: #C9A84C; font-weight: 700; }
+.like-count { font-size: 13px; color: #888; }
+
+.gallery-top-banner {
+  background: #fffdf5;
+  border-bottom: 1px solid #f5e8c0;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.gallery-top-banner .top-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #C9A84C;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.top-items { display: flex; gap: 8px; flex-wrap: wrap; }
+.top-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #fff;
+  border: 1px solid #f5e8c0;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #333;
+  cursor: pointer;
+}
+.top-item:hover { border-color: #C9A84C; }
+.top-item .medal { font-size: 14px; }
+.top-item .tname { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #555; }
+.top-item .tcount { color: #C9A84C; font-weight: 700; }
+
+.gallery-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: #999;
+  font-size: 13px;
+}
+.gallery-status {
+  font-size: 12px;
+  color: #888;
+  padding: 6px 16px 10px;
+  text-align: center;
+}
+
+/* upload modal */
+.upload-modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 8000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.upload-modal-bg.open { display: flex; }
+.upload-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 24px 24px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.upload-modal h3 { font-size: 17px; font-weight: 700; color: #012169; margin-bottom: 16px; }
+.upload-drop {
+  border: 2px dashed #c5cfe8;
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  background: #f7f8fc;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  margin-bottom: 14px;
+}
+.upload-drop:hover, .upload-drop.dragover { border-color: #012169; background: #eef2ff; }
+.upload-drop-icon { font-size: 32px; margin-bottom: 8px; }
+.upload-drop-text { font-size: 13px; color: #555; line-height: 1.6; }
+.upload-preview { max-width: 100%; max-height: 160px; border-radius: 8px; margin: 10px 0; display: none; }
+.upload-progress { font-size: 13px; color: #555; margin-top: 8px; min-height: 20px; }
+.upload-modal-btns { display: flex; gap: 10px; margin-top: 16px; }
+.upload-cancel-btn {
+  flex: 1; padding: 10px; border-radius: 7px; border: 1px solid #dde3f0;
+  background: #fff; font-size: 14px; cursor: pointer; font-family: 'Noto Sans SC', sans-serif;
+}
+.upload-confirm-btn {
+  flex: 2; padding: 10px; border-radius: 7px; border: none;
+  background: #012169; color: #fff; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: 'Noto Sans SC', sans-serif; transition: background 0.2s;
+}
+.upload-confirm-btn:hover { background: #002D8A; }
+.upload-confirm-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+@media (max-width: 600px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px 12px; }
+}
+
+/* ── Auth Gate ── */
+#auth-gate {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(160deg, #001040 0%, #001F5B 60%, #002D8A 100%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#auth-gate.hidden { display: none; }
+
+.gate-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 36px 32px 32px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0,0,10,0.5);
+}
+.gate-logo {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+.gate-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.gate-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+.gate-label {
+  display: block;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #C9A84C;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.gate-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+  font-size: 15px;
+  font-family: 'Noto Sans SC', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+.gate-input::placeholder { color: rgba(255,255,255,0.3); }
+.gate-input:focus { border-color: rgba(200,75,0,0.7); }
+.gate-btn {
+  width: 100%;
+  padding: 13px;
+  background: #C9A84C;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Noto Sans SC', sans-serif;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.05em;
+}
+.gate-btn:hover { background: #a8893a; }
+.gate-btn:active { transform: scale(0.98); }
+.gate-btn:disabled { background: #555; cursor: not-allowed; }
+.gate-error {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #ff8a65;
+  line-height: 1.5;
+  min-height: 20px;
+}
+.gate-hint {
+  margin-top: 20px;
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.28);
+  line-height: 1.6;
+}
+.gate-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 24px;
+  justify-content: center;
+}
+.gate-divider span { width: 36px; height: 1px; background: rgba(255,255,255,0.15); }
+.gate-divider .dia { width: 5px; height: 5px; background: #C9A84C; transform: rotate(45deg); }
+</style>
+</head>
+<body>
+
+<!-- ── Auth Gate ── -->
+<div id="auth-gate">
+  <div class="gate-card">
+    <div class="gate-logo">🎓</div>
+    <div class="gate-title">Duke 2027届毕业指南</div>
+    <div class="gate-divider"><span></span><div class="dia"></div><span></span></div>
+    <div class="gate-sub">本页面仅限 <strong style="color:#fff">扯谈 Duke 群</strong> 27届家长成员查阅<br>请输入您注册时使用的邮箱进行验证</div>
+    <label class="gate-label" for="gate-email">注册邮箱</label>
+    <input class="gate-input" id="gate-email" type="email" placeholder="example@gmail.com" autocomplete="email" />
+    <button class="gate-btn" id="gate-submit" onclick="verifyEmail()">验证身份 →</button>
+    <div class="gate-error" id="gate-error"></div>
+    <div class="gate-hint">如有问题请联系群管理员</div>
+  </div>
+</div>
+
+<div class="page-header">
+  <div class="header-badge">Class of 2027</div>
+  <h1>🎓 杜克大学 2027届毕业指南</h1>
+  <p class="subtitle">Duke University · Class of 2027 · 毕业全攻略</p>
+  <div class="duke-divider">
+    <span></span><div class="diamond"></div><span></span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section-label">📅 毕业典礼</div>
+
+  <!-- 1. 典礼时间与流程 -->
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAcc(this)">
+      <span class="btn-icon">🗓️</span>
+      <span class="btn-title">毕业典礼时间与流程</span>
+      <span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body">
+      <div class="pad">
+        <div class="info-box">
+          2027届毕业典礼预计于 <strong>2027年5月</strong> 举行，具体日期待Duke官方公布。以下参考往届安排。
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          典礼周主要活动 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <div class="cal-item">
+            <div class="cal-date">毕业典礼前周四</div>
+            <div><div class="cal-desc">Duke Chapel Baccalaureate 宗教仪式（自愿参加）</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">毕业典礼前周五</div>
+            <div>
+              <div class="cal-desc">各学院/系单独颁奖典礼（Departmental Ceremonies）</div>
+              <div class="cal-note">时间、地点因学院而异，请关注各学院通知</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">毕业典礼前周六</div>
+            <div>
+              <div class="cal-desc">Senior Recognition Ceremony / Class Day 活动</div>
+              <div class="cal-note">学生自办庆典，学院颁发各类荣誉奖项</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">毕业典礼日（周日）</div>
+            <div>
+              <div class="cal-desc"><strong>全校统一毕业典礼</strong>，Wallace Wade Stadium 举行</div>
+              <div class="cal-note">约上午10:00开始，时长约2小时；每位毕业生可领取若干宾客席位票</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">典礼后</div>
+            <div>
+              <div class="cal-desc">Forever Duke Kickoff — 烟火晚会 & 毕业礼领取</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          入场与座位安排 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <div class="cal-item">
+            <div class="cal-date">毕业生入场</div>
+            <div><div class="cal-desc">按学院/学系列队入场，着学位服；需提前约90分钟到达集合区</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">家长/来宾票</div>
+            <div>
+              <div class="cal-desc">每位毕业生获分配固定数量来宾票（近年约4–6张）</div>
+              <div class="cal-note">超额需求可关注 Duke Commencement 官网候补或转让公告</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">无障碍座位</div>
+            <div><div class="cal-desc">有行动不便需求的来宾可提前联系 Duke Disability Management System 申请</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">现场直播</div>
+            <div>
+              <div class="cal-desc">Duke 官方提供线上直播，无票来宾可在线观看</div>
+              <div class="cal-note">链接通常在典礼前一周发布于 commencement.duke.edu</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          学位服 & 荣誉绶带 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <div class="cal-item">
+            <div class="cal-date">学位服订购</div>
+            <div>
+              <div class="cal-desc">通过 Herff Jones（Duke 官方合作商）订购，大四上学期开放下单</div>
+              <div class="cal-note">早订有折扣；学位帽、学位服、流苏颜色按学院区分</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">学位服领取</div>
+            <div><div class="cal-desc">通常在毕业典礼前1–2天，Duke Store 或指定地点领取</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">荣誉绶带</div>
+            <div>
+              <div class="cal-desc">Latin Honors（Cum Laude / Magna / Summa）、Honor Societies 等荣誉绶带由各学院另行发放</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">护照套 / 毕业戒指</div>
+            <div><div class="cal-desc">Duke Ring（Balfour）及护照套可在 Duke Store 单独购买</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2. 住宿与交通 -->
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAcc(this)">
+      <span class="btn-icon">🏨</span>
+      <span class="btn-title">家长住宿与交通攻略</span>
+      <span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body">
+      <div class="pad">
+        <div class="info-box gold">⚠️ 毕业季是 Durham 酒店最紧俏的时段，建议 <strong>至少提前6个月</strong> 预订住宿。</div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          周边推荐住宿 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <div class="cal-item">
+            <div class="cal-date">校内</div>
+            <div>
+              <div class="cal-desc"><strong>The Inn at Duke</strong>（Washington Duke Inn & Golf Club）</div>
+              <div class="cal-note">步行至 Duke Chapel 约15分钟，毕业季通常最先售罄</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">近校区</div>
+            <div>
+              <div class="cal-desc">Marriott Durham City Center / Sheraton Imperial / Aloft Durham Downtown</div>
+              <div class="cal-note">距校区约10–15分钟车程</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">Chapel Hill</div>
+            <div>
+              <div class="cal-desc">酒店选择更多，距 Duke 约20分钟，可考虑 Rizzo Center 或 Siena Hotel</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">民宿</div>
+            <div>
+              <div class="cal-desc">Airbnb / VRBO 可找到整套民宅，适合多位亲属一同出行</div>
+              <div class="cal-note">搜索 Durham NC / Chapel Hill NC 附近</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          交通与停车 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <div class="cal-item">
+            <div class="cal-date">到达 RDU</div>
+            <div>
+              <div class="cal-desc">Raleigh-Durham 国际机场（RDU）距 Duke 约30分钟</div>
+              <div class="cal-note">打车约 $35–50；无直达公交，建议提前安排接机</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">典礼当天停车</div>
+            <div>
+              <div class="cal-desc">Duke 会公布指定停车场，强烈建议使用指定场地+接驳车</div>
+              <div class="cal-note">Wallace Wade Stadium 周边道路毕业日封闭或严重拥堵</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">校内代步</div>
+            <div><div class="cal-desc">East-West Campus 免费校车 C1/C2；典礼日有专属接驳路线</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section-label">✅ 毕业前 Checklist</div>
+
+  <!-- 3. 学业要求 -->
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAcc(this)">
+      <span class="btn-icon">📚</span>
+      <span class="btn-title">学业 & 学位要求确认</span>
+      <span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body">
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          大四上学期（Fall 2026） <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <ul class="checklist pad">
+            <li>登录 DukeHub → Academics → Degree Audit，确认所有学分/通识要求进度</li>
+            <li>与 Academic Advisor 会面，审核毕业申请资格</li>
+            <li>确认 Major / Minor 课程均已完成或在计划中</li>
+            <li>如有 Thesis / Capstone，确认导师签字与提交时间节点</li>
+            <li>确认 AP/IB/Transfer Credit 已正确记录在成绩单</li>
+            <li>如需双学位（Dual Degree）或联合学位，与两个学院分别确认</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          大四下学期（Spring 2027）<span class="tag tag-red">截止敏感</span> <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <ul class="checklist pad">
+            <li>提交正式毕业申请（Graduation Application）—— 通常截止 <strong>2月初</strong></li>
+            <li>最后一学期选课确认，不可低于毕业所需学分</li>
+            <li>所有 Incomplete（I grade）课程在毕业前转为正式成绩</li>
+            <li>确认 Spring 2027 成绩单无异常，毕业 GPA 满足学院最低要求</li>
+            <li>Thesis / Honors 论文提交至学院及 Duke Libraries ETD 系统</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          成绩单 & 学位证书 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <ul class="checklist pad">
+            <li>毕业后通过 National Student Clearinghouse 或 DukeHub 申请官方成绩单</li>
+            <li>学位证书（Diploma）通常在典礼后6–8周邮寄，务必更新通讯地址</li>
+            <li>如需加急成绩单（用于求职/签证），提前通过 Registrar 申请</li>
+            <li>成绩单确认毕业状态标注后，可申请 WES 认证（适用于回国就业）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 行政事务 -->
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAcc(this)">
+      <span class="btn-icon">📋</span>
+      <span class="btn-title">行政 & 账户事务</span>
+      <span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body">
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          财务结清 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <ul class="checklist pad">
+            <li>确认 Bursar 账户余额为零，无未付费用（学费、罚款、停车罚单等）</li>
+            <li>申请退还宿舍押金（如有）</li>
+            <li>如有 Federal Perkins Loan，完成 Exit Counseling（强制）</li>
+            <li>联邦助学贷款 (Direct Loan) 在毕业后6个月进入还款期，提前了解还款方案</li>
+            <li>确认 529 教育储蓄账户余额使用完毕或妥善处置</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          Duke 账号 & 邮箱 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <ul class="checklist pad">
+            <li>备份 Duke 邮箱中的重要邮件、联系人（毕业后访问权限可能变更）</li>
+            <li>下载 Google Drive / OneDrive 中存储的学术文件</li>
+            <li>确认 Duke Health 医疗记录已导出或转移至个人医生</li>
+            <li>更新各平台（LinkedIn、GitHub等）的学校信息为"已毕业"</li>
+            <li>注意：Duke 已取消终身邮件服务，及时迁移重要通讯至个人邮箱</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          宿舍退房 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <div class="cal-item">
+            <div class="cal-date">退房时间</div>
+            <div>
+              <div class="cal-desc">毕业生宿舍退房通常在毕业典礼后 <strong>24–48小时内</strong></div>
+              <div class="cal-note">HRL 会提前邮件通知具体截止时间，逾期有罚款</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">行李寄存</div>
+            <div>
+              <div class="cal-desc">Duke 提供毕业季临时行李寄存服务，也可联系校外搬家公司</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">物品处置</div>
+            <div>
+              <div class="cal-desc">多余物品可捐赠至 Duke's Dumpster Dive 活动（捐给在校生）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5. 国际生签证 -->
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAcc(this)">
+      <span class="btn-icon">🛂</span>
+      <span class="btn-title">国际生签证 & OPT / 回国事项</span>
+      <span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body">
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          OPT 申请（留美工作）<span class="tag tag-red">时限严格</span> <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <div class="cal-item">
+            <div class="cal-date">申请窗口</div>
+            <div>
+              <div class="cal-desc">最早可在毕业日前 <strong>90天</strong> 提交申请（约 2027年2月初）</div>
+              <div class="cal-note">建议毕业前90天第一时间提交，USCIS 处理约3–5个月</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">Duke ISSS</div>
+            <div>
+              <div class="cal-desc">联系 International Student & Scholar Services 申请 OPT I-20，再网申 Form I-765</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">STEM OPT 延期</div>
+            <div>
+              <div class="cal-desc">STEM 专业（CS、ECE、统计等）可在标准12个月 OPT 结束前申请24个月延期</div>
+              <div class="cal-note">需有合规雇主，在 OPT 到期前90天内申请</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          回国 / 签证注意事项 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <ul class="checklist pad">
+            <li>毕业后 <strong>60天内</strong> 必须离境（或转换签证状态/开始OPT）</li>
+            <li>I-20 上确认毕业日期与实际相符，如延迟毕业需更新</li>
+            <li>如直接回国，毕业前可申请美国大学成绩认证（WES/ECE）</li>
+            <li>确认护照有效期（最好有效期超过1年以上）</li>
+            <li>国内用人单位可能需要教育部留学服务中心的学历认证，提前了解流程</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 6. 毕业后规划 -->
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAcc(this)">
+      <span class="btn-icon">🚀</span>
+      <span class="btn-title">毕业后规划 & 校友资源</span>
+      <span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body">
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          就业 & 求职 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <ul class="checklist pad">
+            <li>通过 Duke Career Center（Handshake）查看最终招聘信息，在校期间持续使用</li>
+            <li>完善 LinkedIn，主动连接 Duke 校友网络（Duke Alumni Association 超过18万人）</li>
+            <li>加入 Duke Alumni Career Services — 毕业生终身可使用</li>
+            <li>参加 Duke Forever Duke 毕业生网络活动</li>
+            <li>回国求职者关注 Duke Alumni 中国区校友群及各城市校友会</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          继续深造（研究生 / 医学院）<span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <ul class="checklist pad">
+            <li>确认录取院校已收到最终成绩单（Official Transcript）</li>
+            <li>研究生 I-20 或 DS-2019 需在 Duke ISSS 更新或由新学校发放</li>
+            <li>Duke 医学院（DUSOM）预科生确认 MCAT / 推荐信已妥善归档</li>
+            <li>Gap Year 计划者可向 Duke 申请延期入学（Deferral），各项目政策不同</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          保险 & 医疗过渡 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <div class="cal-item">
+            <div class="cal-date">学生健康保险</div>
+            <div>
+              <div class="cal-desc">Duke SMIP 保险通常在毕业后约 <strong>8月31日</strong> 终止</div>
+              <div class="cal-note">就业后尽快加入雇主保险；未就业者可通过 ACA Marketplace 购买</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">家长保险</div>
+            <div>
+              <div class="cal-desc">26岁前可继续留在父母的美国保险计划下（ACA 规定）</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">处方药</div>
+            <div><div class="cal-desc">提前请 Duke Student Health 开具足量处方，保险失效后自费较贵</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          校友身份 & 终身福利 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <ul class="checklist pad">
+            <li>注册 Duke Alumni Association（免费），获取校友 ID 卡</li>
+            <li>Duke 图书馆：校友可申请 Community Borrower 权限</li>
+            <li>Duke Recreation：校友享优惠健身房会员资格</li>
+            <li>Duke Athletics：校友购票折扣（部分主场赛事）</li>
+            <li>Duke Continuing Studies：校友注册部分课程享折扣</li>
+            <li>加入微信/微博中国区 Duke 校友群，保持联系</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 7. 家长专区 -->
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAcc(this)">
+      <span class="btn-icon">👨‍👩‍👧</span>
+      <span class="btn-title">家长专区 — 典礼周行程建议</span>
+      <span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body">
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          抵达 Durham 建议行程 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <div class="cal-item">
+            <div class="cal-date">典礼前2天</div>
+            <div>
+              <div class="cal-desc">抵达 Durham，熟悉校园环境，参观 Duke Chapel / Duke Gardens</div>
+              <div class="cal-note">提前踩点停车路线；餐厅提前订位（Durham 热门餐厅毕业季极难订座）</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">典礼前1天</div>
+            <div>
+              <div class="cal-desc">陪同子女参加各学院单独颁奖典礼 / Class Day 活动</div>
+              <div class="cal-note">这一天往往比正式典礼更亲切、人数更少，仪式感更强</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">毕业典礼日</div>
+            <div>
+              <div class="cal-desc">提前2小时出发，利用接驳车；典礼后合影、Forever Duke 烟火晚会</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">典礼后1–2天</div>
+            <div>
+              <div class="cal-desc">协助子女搬出宿舍；可顺道游览 Research Triangle（Chapel Hill / Raleigh）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-accordion">
+        <button class="sub-btn" onclick="toggleSub(this)">
+          Durham 餐饮推荐 <span class="sub-arrow">&#9658;</span>
+        </button>
+        <div class="sub-body">
+          <div class="cal-item">
+            <div class="cal-date">庆祝晚餐</div>
+            <div>
+              <div class="cal-desc">The Washington Duke Inn 餐厅（Fairview）/ Vin Rouge / Mothers & Sons</div>
+              <div class="cal-note">需提前1–2个月预订，说明是毕业庆典</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">休闲餐饮</div>
+            <div><div class="cal-desc">Durham Food Hall / Parker & Otis / Guasaca / Dashi</div></div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-date">中餐</div>
+            <div><div class="cal-desc">Durham 中餐选择有限，可驱车至 Cary / Morrisville 的亚裔聚集区</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 📸 毕业相册 -->
+  <div class="section-label">📸 毕业相册</div>
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAcc(this)">
+      <span class="btn-icon">📸</span>
+      <span class="btn-title">毕业相册 & 点赞排行</span>
+      <span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body" id="gallery-accordion-body">
+
+      <!-- 最多赞排行 -->
+      <div class="gallery-top-banner" id="gallery-top-banner" style="display:none">
+        <span class="top-label">🏆 最多赞</span>
+        <div class="top-items" id="top-items"></div>
+      </div>
+
+      <!-- 工具栏 -->
+      <div class="gallery-toolbar">
+        <div style="display:flex;gap:6px">
+          <button class="gallery-sort-btn active" id="sort-new" onclick="setSort('new')">最新</button>
+          <button class="gallery-sort-btn" id="sort-hot" onclick="setSort('hot')">最热</button>
+        </div>
+        <button class="gallery-upload-btn" onclick="openUploadModal()">＋ 上传照片/视频</button>
+      </div>
+
+      <!-- 图片网格 -->
+      <div class="gallery-grid" id="gallery-grid">
+        <div class="gallery-empty" id="gallery-empty" style="display:none">
+          相册还没有内容，快来上传第一张吧 📷
+        </div>
+      </div>
+      <div class="gallery-status" id="gallery-status"></div>
+
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:32px; padding: 16px; color:#888; font-size:12px;">
+    <div style="color:#001F5B; font-weight:600; font-size:13px; margin-bottom:4px;">扯谈Duke群 · dukeparents.org</div>
+    内容持续更新，以 Duke 官方 commencement.duke.edu 公告为准
+  </div>
+
+</div><!-- /container -->
+
+<!-- 上传弹窗 -->
+<div class="upload-modal-bg" id="upload-modal-bg">
+  <div class="upload-modal">
+    <h3>上传照片 / 视频</h3>
+    <div class="upload-drop" id="upload-drop"
+         onclick="document.getElementById('upload-file-input').click()"
+         ondragover="event.preventDefault();this.classList.add('dragover')"
+         ondragleave="this.classList.remove('dragover')"
+         ondrop="handleDrop(event)">
+      <div class="upload-drop-icon">📁</div>
+      <div class="upload-drop-text">点击选择或拖拽文件到此处<br><span style="color:#aaa;font-size:11px">支持 JPG / PNG / MP4 / MOV，最大 50MB</span></div>
+    </div>
+    <input type="file" id="upload-file-input" accept="image/*,video/*" style="display:none" onchange="handleFileSelect(this.files[0])">
+    <img id="upload-preview" class="upload-preview" />
+    <video id="upload-preview-video" class="upload-preview" controls></video>
+    <div class="upload-progress" id="upload-progress"></div>
+    <div class="upload-modal-btns">
+      <button class="upload-cancel-btn" onclick="closeUploadModal()">取消</button>
+      <button class="upload-confirm-btn" id="upload-confirm-btn" disabled onclick="doUpload()">上传</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Supabase config ──
+const SUPA_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+const SUPA_ANON = 'YOUR_ANON_KEY_HERE'; // 替换为你的 anon key
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_ANON);
+
+// ── Auth gate ──
+const SESSION_KEY = 'duke2027_verified';
+
+async function verifyEmail() {
+  const emailEl = document.getElementById('gate-email');
+  const errorEl = document.getElementById('gate-error');
+  const btn = document.getElementById('gate-submit');
+  const email = emailEl.value.trim().toLowerCase();
+
+  errorEl.textContent = '';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.textContent = '请输入有效的邮箱地址';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '验证中…';
+
+  try {
+    // 查 approve_uploads 表，邮箱匹配且已审批通过
+    const { data, error } = await db
+      .from('approve_uploads')
+      .select('id')
+      .ilike('file_path', email)
+      .limit(1);
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      localStorage.setItem(SESSION_KEY, '1');
+      document.getElementById('auth-gate').classList.add('hidden');
+    } else {
+      errorEl.textContent = '未找到该邮箱，请确认您已通过群审批，或联系管理员';
+      btn.disabled = false;
+      btn.textContent = '验证身份 →';
+    }
+  } catch (e) {
+    errorEl.textContent = '验证失败，请稍后重试';
+    btn.disabled = false;
+    btn.textContent = '验证身份 →';
+  }
+}
+
+// 支持回车提交
+document.addEventListener('DOMContentLoaded', () => {
+  // 已验证过直接放行
+  if (localStorage.getItem(SESSION_KEY)) {
+    document.getElementById('auth-gate').classList.add('hidden');
+  }
+  document.getElementById('gate-email').addEventListener('keydown', e => {
+    if (e.key === 'Enter') verifyEmail();
+  });
+});
+
+// ── Gallery ──
+const GALLERY_FOLDER = '2027'
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/parentsduke/parentsduke/main/'
+const GITHUB_API_BASE = 'https://api.github.com/repos/parentsduke/parentsduke/contents/'
+const GALLERY_UPLOAD_FN = `${SUPA_URL}/functions/v1/gallery-upload`
+const IMAGE_EXTS = ['jpg','jpeg','png','gif','webp']
+const VIDEO_EXTS = ['mp4','mov','webm']
+
+let galleryFiles = []   // { name, url, likes, liked }
+let gallerySort = 'new'
+let galleryLoaded = false
+
+// 生成/读取匿名 voter id
+function getVoterId() {
+  let id = localStorage.getItem('duke_voter_id')
+  if (!id) {
+    id = 'v_' + Math.random().toString(36).slice(2) + Date.now().toString(36)
+    localStorage.setItem('duke_voter_id', id)
+  }
+  return id
+}
+
+// 打开相册时才加载
+
+async function loadGallery() {
+  document.getElementById('gallery-status').textContent = '加载中…'
+  document.getElementById('gallery-grid').innerHTML = ''
+
+  try {
+    // 从 GitHub API 获取 2027/ 目录文件列表
+    const resp = await fetch(`${GITHUB_API_BASE}${GALLERY_FOLDER}`, {
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    })
+    if (resp.status === 404) {
+      showEmpty(); return
+    }
+    const files = await resp.json()
+    const mediaFiles = files.filter(f => {
+      const ext = f.name.split('.').pop().toLowerCase()
+      return IMAGE_EXTS.includes(ext) || VIDEO_EXTS.includes(ext)
+    })
+
+    if (!mediaFiles.length) { showEmpty(); return }
+
+    // 批量查 likes
+    const photoIds = mediaFiles.map(f => `${GALLERY_FOLDER}/${f.name}`)
+    const voterId = getVoterId()
+
+    const { data: likeCounts } = await db
+      .from('photo_likes')
+      .select('photo_id')
+      .in('photo_id', photoIds)
+
+    const { data: myLikes } = await db
+      .from('photo_likes')
+      .select('photo_id')
+      .in('photo_id', photoIds)
+      .eq('voter_id', voterId)
+
+    const countMap = {}
+    const mySet = new Set((myLikes || []).map(r => r.photo_id))
+    ;(likeCounts || []).forEach(r => {
+      countMap[r.photo_id] = (countMap[r.photo_id] || 0) + 1
+    })
+
+    galleryFiles = mediaFiles.map(f => ({
+      name: f.name,
+      url: f.download_url,
+      photoId: `${GALLERY_FOLDER}/${f.name}`,
+      likes: countMap[`${GALLERY_FOLDER}/${f.name}`] || 0,
+      liked: mySet.has(`${GALLERY_FOLDER}/${f.name}`),
+      sha: f.sha,
+    }))
+
+    document.getElementById('gallery-status').textContent = ''
+    renderGallery()
+    renderTopBanner()
+  } catch(e) {
+    document.getElementById('gallery-status').textContent = '加载失败，请稍后重试'
+    console.error(e)
+  }
+}
+
+function showEmpty() {
+  document.getElementById('gallery-status').textContent = ''
+  const grid = document.getElementById('gallery-grid')
+  grid.innerHTML = '<div class="gallery-empty">相册还没有内容，快来上传第一张吧 📷</div>'
+}
+
+function setSort(s) {
+  gallerySort = s
+  document.getElementById('sort-new').classList.toggle('active', s === 'new')
+  document.getElementById('sort-hot').classList.toggle('active', s === 'hot')
+  renderGallery()
+}
+
+function renderGallery() {
+  const sorted = [...galleryFiles].sort((a, b) =>
+    gallerySort === 'hot' ? b.likes - a.likes : b.name.localeCompare(a.name)
+  )
+  const grid = document.getElementById('gallery-grid')
+  if (!sorted.length) { showEmpty(); return }
+  grid.innerHTML = sorted.map(f => {
+    const ext = f.name.split('.').pop().toLowerCase()
+    const isVideo = VIDEO_EXTS.includes(ext)
+    const media = isVideo
+      ? `<video src="${f.url}" preload="metadata" controls></video>`
+      : `<img src="${f.url}" loading="lazy" alt="${f.name}">`
+    const heartFill = f.liked ? '❤️' : '🤍'
+    return `<div class="gallery-card" data-id="${f.photoId}">
+      ${media}
+      <div class="gallery-like-bar">
+        <button class="like-btn ${f.liked ? 'liked' : ''}" onclick="toggleLike('${f.photoId}',this)">
+          ${heartFill} 点赞
+        </button>
+        <span class="like-count" id="lc-${CSS.escape(f.photoId)}">${f.likes}</span>
+      </div>
+    </div>`
+  }).join('')
+}
+
+function renderTopBanner() {
+  const top3 = [...galleryFiles].sort((a,b) => b.likes - a.likes).slice(0,3).filter(f => f.likes > 0)
+  const banner = document.getElementById('gallery-top-banner')
+  if (!top3.length) { banner.style.display = 'none'; return }
+  const medals = ['🥇','🥈','🥉']
+  document.getElementById('top-items').innerHTML = top3.map((f,i) =>
+    `<div class="top-item" onclick="scrollToPhoto('${f.photoId}')">
+      <span class="medal">${medals[i]}</span>
+      <span class="tname">${f.name}</span>
+      <span class="tcount">♥ ${f.likes}</span>
+    </div>`
+  ).join('')
+  banner.style.display = 'flex'
+}
+
+function scrollToPhoto(photoId) {
+  const el = document.querySelector(`[data-id="${photoId}"]`)
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+}
+
+async function toggleLike(photoId, btn) {
+  const file = galleryFiles.find(f => f.photoId === photoId)
+  if (!file) return
+  const voterId = getVoterId()
+
+  if (file.liked) {
+    // 取消点赞
+    await db.from('photo_likes').delete()
+      .eq('photo_id', photoId).eq('voter_id', voterId)
+    file.liked = false
+    file.likes = Math.max(0, file.likes - 1)
+  } else {
+    await db.from('photo_likes').insert({ photo_id: photoId, voter_id: voterId })
+    file.liked = true
+    file.likes++
+  }
+
+  // 更新 UI
+  const countEl = document.getElementById(`lc-${CSS.escape(photoId)}`)
+  if (countEl) countEl.textContent = file.likes
+  btn.classList.toggle('liked', file.liked)
+  btn.innerHTML = `${file.liked ? '❤️' : '🤍'} 点赞`
+  renderTopBanner()
+}
+
+// ── Upload modal ──
+let uploadFile = null
+
+function openUploadModal() {
+  uploadFile = null
+  document.getElementById('upload-preview').style.display = 'none'
+  document.getElementById('upload-preview-video').style.display = 'none'
+  document.getElementById('upload-progress').textContent = ''
+  document.getElementById('upload-confirm-btn').disabled = true
+  document.getElementById('upload-file-input').value = ''
+  document.getElementById('upload-modal-bg').classList.add('open')
+}
+
+function closeUploadModal() {
+  document.getElementById('upload-modal-bg').classList.remove('open')
+}
+
+function handleDrop(e) {
+  e.preventDefault()
+  document.getElementById('upload-drop').classList.remove('dragover')
+  const file = e.dataTransfer.files[0]
+  if (file) handleFileSelect(file)
+}
+
+function handleFileSelect(file) {
+  if (!file) return
+  const ext = file.name.split('.').pop().toLowerCase()
+  const isImg = IMAGE_EXTS.includes(ext)
+  const isVid = VIDEO_EXTS.includes(ext)
+  if (!isImg && !isVid) {
+    document.getElementById('upload-progress').textContent = '不支持该格式，请上传图片或视频'
+    return
+  }
+  if (file.size > 50 * 1024 * 1024) {
+    document.getElementById('upload-progress').textContent = '文件超过 50MB 限制'
+    return
+  }
+  uploadFile = file
+  document.getElementById('upload-progress').textContent = `已选择：${file.name}（${(file.size/1024/1024).toFixed(1)} MB）`
+  document.getElementById('upload-confirm-btn').disabled = false
+
+  const previewImg = document.getElementById('upload-preview')
+  const previewVid = document.getElementById('upload-preview-video')
+  if (isImg) {
+    previewImg.src = URL.createObjectURL(file)
+    previewImg.style.display = 'block'
+    previewVid.style.display = 'none'
+  } else {
+    previewVid.src = URL.createObjectURL(file)
+    previewVid.style.display = 'block'
+    previewImg.style.display = 'none'
+  }
+}
+
+async function doUpload() {
+  if (!uploadFile) return
+  const btn = document.getElementById('upload-confirm-btn')
+  const prog = document.getElementById('upload-progress')
+  btn.disabled = true
+  prog.textContent = '上传中，请稍候…'
+
+  try {
+    const reader = new FileReader()
+    const base64 = await new Promise((res, rej) => {
+      reader.onload = e => res(e.target.result.split(',')[1])
+      reader.onerror = rej
+      reader.readAsDataURL(uploadFile)
+    })
+
+    const resp = await fetch(GALLERY_UPLOAD_FN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        filename: uploadFile.name,
+        content: base64,
+        folder: GALLERY_FOLDER,
+      })
+    })
+    const data = await resp.json()
+    if (!resp.ok || !data.success) throw new Error(data.error || '上传失败')
+
+    prog.textContent = '✅ 上传成功！'
+    setTimeout(() => {
+      closeUploadModal()
+      galleryLoaded = false
+      loadGallery()
+    }, 1200)
+  } catch(e) {
+    prog.textContent = '❌ ' + (e.message || '上传失败，请重试')
+    btn.disabled = false
+  }
+}
+
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.accordion-btn').forEach(b => b.classList.remove('active'));
+  if (!isOpen) {
+    body.classList.add('open');
+    btn.classList.add('active');
+    if (body.id === 'gallery-accordion-body' && !galleryLoaded) {
+      galleryLoaded = true;
+      loadGallery();
+    }
+  }
+}
+
+function toggleSub(btn) {
+  const body = btn.nextElementSibling;
+  body.classList.toggle('sub-open');
+  btn.classList.toggle('sub-active');
+}
+</script>
+</body>
+</html>
