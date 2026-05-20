@@ -1385,12 +1385,16 @@
   let selectedOfficerId = null;     // modal里选中的
 
   function getMondayStr(offsetWeeks = 0) {
-    const now = new Date();
-    const day = now.getDay(); // 0=周日
+    // 统一用美国东部时间（自动处理夏令时）
+    const etNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+    const day = etNow.getDay(); // 0=周日
     const diff = day === 0 ? -6 : 1 - day;
-    const monday = new Date(now);
-    monday.setDate(now.getDate() + diff + offsetWeeks * 7);
-    return monday.toISOString().slice(0, 10);
+    etNow.setDate(etNow.getDate() + diff + offsetWeeks * 7);
+    // 手动格式化，避免 toISOString() 转回 UTC
+    const y = etNow.getFullYear();
+    const m = String(etNow.getMonth() + 1).padStart(2, '0');
+    const d = String(etNow.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
   }
 
   async function loadDuty() {
