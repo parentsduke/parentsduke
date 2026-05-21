@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>义工任务认领系统</title>
+<style>
+:root {
+  --navy: #012169;
+  --navy2: #0a2f7a;
+  --gold: #c9a84c;
+  --gold-light: #e8c96a;
+  --bg: #f0f2f7;
+  --white: #ffffff;
+  --text: #1a1a2e;
+  --gray: #7a7a9a;
+  --border: #dde0eb;
+  --success: #1a7a4a;
+  --success-bg: #e8f5ef;
+  --warn-bg: #fffbea;
+  --warn: #92710a;
+  --info-bg: #eff4ff;
+  --danger: #b82020;
+  --danger-bg: #fef0f0;
+  --purple-bg: #f2eeff;
+  --purple: #5e35b1;
+  --shadow: 0 2px 12px rgba(1,33,105,0.1);
+  --shadow-lg: 0 8px 32px rgba(1,33,105,0.14);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ─── TOPBAR ─── */
+.topbar {
+  background: var(--navy);
+  color: white;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.topbar-logo { width: 30px; height: 30px; }
+.topbar-title { font-size: 15px; font-weight: 700; letter-spacing: 0.5px; }
+.topbar-sub { font-size: 12px; color: var(--gold); margin-left: 2px; }
+.topbar-spacer { flex: 1; }
+.topbar-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: white;
+  padding: 5px 13px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.15s;
+}
+.topbar-btn:hover { background: rgba(255,255,255,0.22); }
+.topbar-role-badge {
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 10px;
+}
+
+/* ─── LAYOUT ─── */
+.page { display: none; }
+.page.active { display: block; }
+.container { max-width: 860px; margin: 0 auto; padding: 24px 16px; }
+.container-wide { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
+
+/* ─── LANDING ─── */
+.landing-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 54px);
+  padding: 32px 16px;
+  background: linear-gradient(160deg, #f0f2f7 60%, #e8ecf8);
+}
+.landing-hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.landing-hero h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.landing-hero p {
+  color: var(--gray);
+  font-size: 15px;
+}
+.landing-cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.role-card {
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 36px 44px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 200px;
+}
+.role-card:hover {
+  border-color: var(--navy);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+.role-card .rc-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+  font-size: 24px;
+}
+.role-card .rc-icon.admin { background: var(--info-bg); }
+.role-card .rc-icon.vol { background: #fff0e0; }
+.role-card h2 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.role-card p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+
+/* ─── PASSWORD ─── */
+.pw-wrap {
+  display: flex; align-items: center; justify-content: center;
+  min-height: calc(100vh - 54px);
+  padding: 16px;
+}
+.pw-box {
+  background: white;
+  border-radius: 12px;
+  padding: 36px;
+  width: 100%;
+  max-width: 340px;
+  box-shadow: var(--shadow-lg);
+}
+.pw-box h2 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.pw-box p { color: var(--gray); font-size: 13px; margin-bottom: 24px; }
+
+/* ─── CARDS ─── */
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 10px; gap: 12px;
+}
+.card-title { font-size: 15px; font-weight: 700; color: var(--navy); line-height: 1.4; }
+.card-desc { font-size: 13px; color: #555; line-height: 1.7; }
+.card-meta {
+  display: flex; gap: 14px; margin-top: 10px;
+  font-size: 12px; color: var(--gray); flex-wrap: wrap; align-items: center;
+}
+.meta-item { display: flex; align-items: center; gap: 4px; }
+
+/* ─── TABS ─── */
+.tabs {
+  display: flex; border-bottom: 2px solid var(--border);
+  margin-bottom: 22px; gap: 0; overflow-x: auto;
+}
+.tab {
+  padding: 10px 20px; cursor: pointer;
+  font-size: 14px; font-weight: 500;
+  color: var(--gray); border-bottom: 2px solid transparent;
+  margin-bottom: -2px; white-space: nowrap; transition: color 0.15s;
+}
+.tab:hover { color: var(--navy); }
+.tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+
+/* ─── SECTION TITLE ─── */
+.section-title {
+  font-size: 15px; font-weight: 700; color: var(--navy);
+  margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+/* ─── FORMS ─── */
+.form-group { margin-bottom: 15px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
+.form-input, .form-textarea, .form-select {
+  width: 100%; padding: 9px 12px;
+  border: 1px solid var(--border); border-radius: 6px;
+  font-size: 14px; font-family: inherit; color: var(--text);
+  transition: border-color 0.15s; background: white;
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  outline: none; border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(1,33,105,0.08);
+}
+.form-textarea { min-height: 78px; resize: vertical; line-height: 1.6; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-hint { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+/* ─── BUTTONS ─── */
+.btn {
+  padding: 9px 18px; border-radius: 6px; border: none;
+  cursor: pointer; font-size: 14px; font-weight: 600;
+  transition: all 0.15s; font-family: inherit; display: inline-flex;
+  align-items: center; gap: 6px; white-space: nowrap;
+}
+.btn-primary { background: var(--navy); color: white; }
+.btn-primary:hover { background: var(--navy2); }
+.btn-gold { background: var(--gold); color: white; }
+.btn-gold:hover { background: #b8943d; }
+.btn-outline {
+  background: white; border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-outline:hover { border-color: var(--navy); color: var(--navy); }
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover { opacity: 0.88; }
+.btn-success { background: var(--success); color: white; }
+.btn-success:hover { opacity: 0.88; }
+.btn-sm { padding: 5px 11px; font-size: 13px; }
+.btn-xs { padding: 3px 8px; font-size: 12px; }
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ─── BADGES ─── */
+.badge {
+  display: inline-block; padding: 2px 10px;
+  border-radius: 20px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.badge-open { background: var(--success-bg); color: var(--success); }
+.badge-claimed { background: var(--warn-bg); color: var(--warn); }
+.badge-inprogress { background: var(--info-bg); color: #1a4fb0; }
+.badge-done { background: var(--purple-bg); color: var(--purple); }
+.badge-full { background: var(--danger-bg); color: var(--danger); }
+.badge-closed { background: #eee; color: #888; }
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; padding: 16px;
+}
+.modal {
+  background: white; border-radius: 12px; padding: 28px;
+  width: 100%; max-width: 520px;
+  max-height: 88vh; overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+.modal-title {
+  font-size: 17px; font-weight: 700; color: var(--navy);
+  margin-bottom: 20px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+
+/* ─── TASK ITEM ─── */
+.task-item {
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 16px; margin-bottom: 10px; background: white;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.task-item:hover { border-color: #aab; box-shadow: var(--shadow); }
+.task-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.task-item-title { font-size: 14px; font-weight: 600; color: var(--navy); }
+.task-item-desc { font-size: 13px; color: #555; margin-top: 6px; line-height: 1.6; }
+.task-slots { font-size: 12px; color: var(--gray); margin-top: 8px; }
+.slots-bar { background: #e8e8f0; border-radius: 3px; height: 5px; margin-top: 4px; }
+.slots-fill { background: var(--gold); height: 100%; border-radius: 3px; transition: width 0.3s; }
+
+/* ─── VOLUNTEER ROW ─── */
+.vol-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid #f0f0f7; font-size: 13px;
+  gap: 12px;
+}
+.vol-row:last-child { border-bottom: none; }
+.vol-name { font-weight: 600; color: var(--navy); }
+.vol-wechat { color: var(--gray); }
+
+/* ─── NOTIFY BOX ─── */
+.notify-box {
+  background: #f8f9ff; border: 1px solid #d8dcee;
+  border-radius: 8px; padding: 14px; margin-top: 14px;
+}
+.notify-label {
+  font-size: 12px; font-weight: 600; color: var(--gray);
+  margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.notify-text {
+  font-size: 13px; color: #333; line-height: 1.8;
+  white-space: pre-wrap; font-family: inherit;
+}
+.copy-success {
+  font-size: 12px; color: var(--success);
+  margin-left: 8px; opacity: 0; transition: opacity 0.3s;
+}
+.copy-success.show { opacity: 1; }
+
+/* ─── STATS ─── */
+.stats-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.stat-box {
+  background: white; border-radius: 8px; padding: 14px 18px;
+  flex: 1; min-width: 100px; border: 1px solid var(--border);
+  text-align: center;
+}
+.stat-num { font-size: 28px; font-weight: 800; color: var(--navy); }
+.stat-label { font-size: 12px; color: var(--gray); margin-top: 2px; }
+
+/* ─── CLAIM RECORD ─── */
+.claim-card {
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px; margin-bottom: 10px; background: white;
+}
+.claim-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.claim-task-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+.claim-project { font-size: 12px; color: var(--gray); margin-top: 2px; }
+.claim-vol-info { font-size: 13px; color: #444; }
+
+/* ─── EMPTY ─── */
+.empty { text-align: center; padding: 52px 16px; color: var(--gray); }
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty p { font-size: 14px; }
+
+/* ─── ALERT ─── */
+.alert {
+  padding: 10px 14px; border-radius: 6px; font-size: 13px;
+  margin-bottom: 14px; line-height: 1.5;
+}
+.alert-success { background: var(--success-bg); color: var(--success); border-left: 3px solid var(--success); }
+.alert-error { background: var(--danger-bg); color: var(--danger); border-left: 3px solid var(--danger); }
+.alert-info { background: var(--info-bg); color: #1a4fb0; border-left: 3px solid #1a4fb0; }
+
+/* ─── PROJECT DETAIL ─── */
+.project-detail-header {
+  background: var(--navy); color: white; border-radius: 10px;
+  padding: 20px 22px; margin-bottom: 16px;
+}
+.project-detail-header h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.project-detail-header p { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.6; }
+.project-detail-header .meta { font-size: 12px; color: var(--gold); margin-top: 8px; }
+
+/* ─── DIVIDER ─── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
+  .role-card { min-width: 160px; padding: 28px 24px; }
+  .stats-row { gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<div class="topbar">
+  <svg class="topbar-logo" viewBox="0 0 30 30" fill="none">
+    <rect width="30" height="30" rx="6" fill="#c9a84c"/>
+    <text x="15" y="21" text-anchor="middle" font-size="16" font-weight="800" fill="#012169" font-family="serif">D</text>
+  </svg>
+  <div>
+    <div class="topbar-title">义工任务认领系统</div>
+    <div class="topbar-sub" id="topbarSub"></div>
+  </div>
+  <div class="topbar-spacer"></div>
+  <span class="topbar-role-badge" id="topbarRole" style="display:none"></span>
+  <button class="topbar-btn" id="topbarBackBtn" style="display:none" onclick="goHome()">返回首页</button>
+</div>
+
+<!-- ═══ LANDING ═══ -->
+<div class="page active" id="pageLanding">
+  <div class="landing-wrap">
+    <div class="landing-hero">
+      <h1>义工任务认领平台</h1>
+      <p>发布企划书 · 拆解任务 · 义工认领 · 跟踪进度</p>
+    </div>
+    <div class="landing-cards">
+      <div class="role-card" onclick="goAdminAuth()">
+        <div class="rc-icon admin">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a4fb0" stroke-width="2"><path d="M12 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><polyline points="16 11 18 13 22 9"/></svg>
+        </div>
+        <h2>管理员入口</h2>
+        <p>发布企划书、管理任务<br>查看认领记录、发送通知</p>
+      </div>
+      <div class="role-card" onclick="goVolunteer()">
+        <div class="rc-icon vol">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c96a1a" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>
+        </div>
+        <h2>义工入口</h2>
+        <p>浏览企划书、查看任务<br>填写信息认领感兴趣的任务</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN AUTH ═══ -->
+<div class="page" id="pageAdminAuth">
+  <div class="pw-wrap">
+    <div class="pw-box">
+      <h2>管理员登录</h2>
+      <p>请输入管理员密码以继续</p>
+      <div id="pwError"></div>
+      <div class="form-group">
+        <label class="form-label">密码</label>
+        <input type="password" class="form-input" id="pwInput" placeholder="输入密码" onkeydown="if(event.key==='Enter') checkPw()">
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="checkPw()" style="flex:1">登录</button>
+      </div>
+      <div style="margin-top:14px; font-size:12px; color:var(--gray); text-align:center;">
+        首次使用默认密码：<strong>admin123</strong>（登录后可修改）
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN DASHBOARD ═══ -->
+<div class="page" id="pageAdmin">
+  <div class="container">
+    <!-- Stats -->
+    <div class="stats-row" id="adminStats"></div>
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchAdminTab('projects')" id="tab-projects">企划书管理</div>
+      <div class="tab" onclick="switchAdminTab('tasks')" id="tab-tasks">任务管理</div>
+      <div class="tab" onclick="switchAdminTab('claims')" id="tab-claims">认领记录</div>
+      <div class="tab" onclick="switchAdminTab('notify')" id="tab-notify">通知中心 <span id="notifyBadge" style="display:none;background:var(--danger);color:white;border-radius:10px;font-size:11px;padding:1px 6px;margin-left:4px;"></span></div>
+      <div class="tab" onclick="switchAdminTab('settings')" id="tab-settings">设置</div>
+    </div>
+    <div id="adminTabContent"></div>
+  </div>
+</div>
+
+<!-- ═══ VOLUNTEER ═══ -->
+<div class="page" id="pageVolunteer">
+  <div class="container">
+    <div id="volContent"></div>
+  </div>
+</div>
+
+<!-- ═══ MODALS ═══ -->
+<div id="modalOverlay" style="display:none"></div>
+
+<script>
+// ══════════════════════════════════════════════════
+// DATA LAYER
+// ══════════════════════════════════════════════════
+
+function load(key, def) {
+  try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; }
+}
+function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+function getProjects() { return load('vt_projects', []); }
+function getTasks() { return load('vt_tasks', []); }
+function getClaims() { return load('vt_claims', []); }
+function getSettings() {
+  return load('vt_settings', { pw: 'admin123', adminEmail: '', adminName: '管理员' });
+}
+function saveProjects(d) { save('vt_projects', d); }
+function saveTasks(d) { save('vt_tasks', d); }
+function saveClaims(d) { save('vt_claims', d); }
+function saveSettings(d) { save('vt_settings', d); }
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+function claimsForTask(taskId) {
+  return getClaims().filter(c => c.task_id === taskId && c.status !== 'cancelled');
+}
+
+function taskStatus(task) {
+  const active = claimsForTask(task.id).length;
+  if (task.status === 'done') return 'done';
+  if (task.status === 'closed') return 'closed';
+  if (active >= task.max_slots) return 'full';
+  if (active > 0) return 'claimed';
+  return 'open';
+}
+
+const STATUS_LABEL = { open:'待认领', claimed:'已认领', full:'名额已满', inprogress:'进行中', done:'已完成', closed:'已关闭' };
+const STATUS_BADGE = { open:'badge-open', claimed:'badge-claimed', full:'badge-full', inprogress:'badge-inprogress', done:'badge-done', closed:'badge-closed' };
+
+// ══════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════
+
+let currentPage = 'landing';
+let adminAuthenticated = false;
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  currentPage = id;
+  document.getElementById('topbarBackBtn').style.display = id === 'pageLanding' ? 'none' : '';
+  document.getElementById('topbarRole').style.display = id === 'pageLanding' ? 'none' : '';
+}
+
+function goHome() {
+  adminAuthenticated = false;
+  showPage('pageLanding');
+  document.getElementById('topbarSub').textContent = '';
+  document.getElementById('topbarRole').style.display = 'none';
+}
+
+function goAdminAuth() {
+  showPage('pageAdminAuth');
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwError').innerHTML = '';
+  document.getElementById('topbarRole').textContent = '管理员';
+  document.getElementById('topbarRole').style.display = '';
+  setTimeout(() => document.getElementById('pwInput').focus(), 100);
+}
+
+function goVolunteer() {
+  showPage('pageVolunteer');
+  document.getElementById('topbarRole').textContent = '义工';
+  document.getElementById('topbarRole').style.display = '';
+  renderVolunteer();
+}
+
+function checkPw() {
+  const input = document.getElementById('pwInput').value;
+  const settings = getSettings();
+  if (input === settings.pw) {
+    adminAuthenticated = true;
+    showPage('pageAdmin');
+    document.getElementById('topbarSub').textContent = '管理后台';
+    renderAdmin('projects');
+  } else {
+    document.getElementById('pwError').innerHTML = '<div class="alert alert-error">密码错误，请重试</div>';
+  }
+}
+
+// ══════════════════════════════════════════════════
+// ADMIN RENDER
+// ══════════════════════════════════════════════════
+
+let adminTab = 'projects';
+
+function switchAdminTab(tab) {
+  adminTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  renderAdminTab(tab);
+}
+
+function renderAdmin(tab) {
+  renderAdminStats();
+  renderAdminTab(tab || adminTab);
+  updateNotifyBadge();
+}
+
+function renderAdminStats() {
+  const projects = getProjects();
+  const tasks = getTasks();
+  const claims = getClaims().filter(c => c.status !== 'cancelled');
+  const done = tasks.filter(t => t.status === 'done').length;
+  document.getElementById('adminStats').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${projects.length}</div><div class="stat-label">企划书</div></div>
+    <div class="stat-box"><div class="stat-num">${tasks.length}</div><div class="stat-label">任务总数</div></div>
+    <div class="stat-box"><div class="stat-num">${claims.length}</div><div class="stat-label">认领记录</div></div>
+    <div class="stat-box"><div class="stat-num">${done}</div><div class="stat-label">已完成</div></div>
+  `;
+}
+
+function updateNotifyBadge() {
+  const unnotified = getClaims().filter(c => !c.notified && c.status !== 'cancelled').length;
+  const badge = document.getElementById('notifyBadge');
+  if (unnotified > 0) {
+    badge.textContent = unnotified;
+    badge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function renderAdminTab(tab) {
+  const el = document.getElementById('adminTabContent');
+  if (tab === 'projects') el.innerHTML = renderProjectsTab();
+  else if (tab === 'tasks') el.innerHTML = renderTasksTab();
+  else if (tab === 'claims') el.innerHTML = renderClaimsTab();
+  else if (tab === 'notify') el.innerHTML = renderNotifyTab();
+  else if (tab === 'settings') el.innerHTML = renderSettingsTab();
+}
+
+// ── PROJECTS TAB ──
+function renderProjectsTab() {
+  const projects = getProjects();
+  let html = `<div class="section-title">企划书列表
+    <button class="btn btn-primary btn-sm" onclick="openProjectModal()">+ 新建企划书</button>
+  </div>`;
+  if (!projects.length) {
+    html += `<div class="empty"><div class="empty-icon">📋</div><p>暂无企划书，点击右上角新建</p></div>`;
+  } else {
+    projects.forEach(p => {
+      const tasks = getTasks().filter(t => t.project_id === p.id);
+      const statusBadge = p.status === 'active' ? '<span class="badge badge-open">进行中</span>' : '<span class="badge badge-closed">已关闭</span>';
+      html += `<div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">${esc(p.title)}</div>
+            <div class="card-meta" style="margin-top:4px">${statusBadge}<span class="meta-item">创建：${p.created_at}</span><span class="meta-item">${tasks.length} 个任务</span></div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-outline btn-sm" onclick="editProject('${p.id}')">编辑</button>
+            <button class="btn btn-outline btn-sm" onclick="toggleProjectStatus('${p.id}')">${p.status==='active'?'关闭':'重开'}</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteProject('${p.id}')">删除</button>
+          </div>
+        </div>
+        <div class="card-desc">${esc(p.desc)}</div>
+        ${p.deadline ? `<div class="card-meta"><span class="meta-item">截止日期：${p.deadline}</span></div>` : ''}
+      </div>`;
+    });
+  }
+  return html;
+}
+
+// ── TASKS TAB ──
+function renderTasksTab() {
+  const projects = getProjects();
+  const tasks = getTasks();
+  let html = `<div class="section-title">任务列表
+    <button class="btn btn-primary btn-sm" onclick="openTaskModal()">+ 新建任务</button>
+  </div>`;
+  if (!projects.length) {
+    html += `<div class="empty"><div class="empty-icon">📌</div><p>请先创建企划书</p></div>`;
+    return html;
+  }
+  if (!tasks.length) {
+    html += `<div class="empty"><div class="empty-icon">📌</div><p>暂无任务，点击右上角新建</p></div>`;
+    return html;
+  }
+  // Group by project
+  projects.forEach(p => {
+    const pts = tasks.filter(t => t.project_id === p.id);
+    if (!pts.length) return;
+    html += `<div style="font-size:13px;font-weight:700;color:var(--gray);margin-bottom:8px;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px">${esc(p.title)}</div>`;
+    pts.forEach(t => {
+      const st = taskStatus(t);
+      const claimed = claimsForTask(t.id).length;
+      const pct = t.max_slots > 0 ? Math.min(100, Math.round(claimed/t.max_slots*100)) : 0;
+      html += `<div class="task-item">
+        <div class="task-item-header">
+          <div>
+            <div class="task-item-title">${esc(t.title)}</div>
+            ${t.deadline ? `<div style="font-size:12px;color:var(--gray);margin-top:3px">截止：${t.deadline}</div>` : ''}
+          </div>
+          <div class="btn-group">
+            <span class="badge ${STATUS_BADGE[st]}">${STATUS_LABEL[st]}</span>
+            <button class="btn btn-outline btn-xs" onclick="editTask('${t.id}')">编辑</button>
+            <button class="btn btn-outline btn-xs" onclick="markTaskDone('${t.id}')" ${st==='done'?'disabled':''}>完成</button>
+            <button class="btn btn-danger btn-xs" onclick="deleteTask('${t.id}')">删除</button>
+          </div>
+        </div>
+        <div class="task-item-desc">${esc(t.desc)}</div>
+        ${t.skills ? `<div style="font-size:12px;color:var(--gray);margin-top:6px">所需技能：${esc(t.skills)}</div>` : ''}
+        <div class="task-slots">
+          ${claimed} / ${t.max_slots} 人已认领
+          <div class="slots-bar"><div class="slots-fill" style="width:${pct}%"></div></div>
+        </div>
+      </div>`;
+    });
+  });
+  return html;
+}
+
+// ── CLAIMS TAB ──
+function renderClaimsTab() {
+  const claims = getClaims();
+  const tasks = getTasks();
+  const projects = getProjects();
+  let html = `<div class="section-title">认领记录（共 ${claims.filter(c=>c.status!=='cancelled').length} 条有效）
+    <button class="btn btn-outline btn-sm" onclick="exportCSV()">导出 CSV</button>
+  </div>`;
+  if (!claims.length) {
+    return html + `<div class="empty"><div class="empty-icon">📝</div><p>暂无认领记录</p></div>`;
+  }
+  // Sort newest first
+  const sorted = [...claims].sort((a,b) => b.claimed_at.localeCompare(a.claimed_at));
+  sorted.forEach(c => {
+    const task = tasks.find(t => t.id === c.task_id);
+    const proj = task ? projects.find(p => p.id === task.project_id) : null;
+    const cancelled = c.status === 'cancelled';
+    html += `<div class="claim-card" style="${cancelled ? 'opacity:0.5' : ''}">
+      <div class="claim-card-header">
+        <div>
+          <div class="claim-task-name">${task ? esc(task.title) : '（任务已删除）'}</div>
+          <div class="claim-project">${proj ? esc(proj.title) : '未知企划书'}</div>
+        </div>
+        <div class="btn-group">
+          ${cancelled ? '<span class="badge badge-closed">已取消</span>' : '<span class="badge badge-open">有效</span>'}
+          ${!cancelled ? `<button class="btn btn-outline btn-xs" onclick="cancelClaim('${c.id}')">取消认领</button>` : ''}
+          <button class="btn btn-danger btn-xs" onclick="deleteClaim('${c.id}')">删除</button>
+        </div>
+      </div>
+      <div class="vol-row" style="padding-bottom:0;border:none;margin-top:2px">
+        <span><span class="vol-name">${esc(c.name)}</span> <span class="vol-wechat">微信：${esc(c.wechat)}</span></span>
+        <span style="font-size:12px;color:var(--gray)">${c.claimed_at.slice(0,16).replace('T',' ')}</span>
+      </div>
+      ${c.note ? `<div style="font-size:13px;color:#666;margin-top:6px">备注：${esc(c.note)}</div>` : ''}
+    </div>`;
+  });
+  return html;
+}
+
+// ── NOTIFY TAB ──
+function renderNotifyTab() {
+  const settings = getSettings();
+  const claims = getClaims().filter(c => !c.notified && c.status !== 'cancelled');
+  const tasks = getTasks();
+  const projects = getProjects();
+
+  let html = `<div class="section-title">通知中心</div>`;
+
+  if (!claims.length) {
+    html += `<div class="empty"><div class="empty-icon">✅</div><p>暂无待通知的认领记录</p></div>`;
+    // Still show mark-all button if there are notified ones
+    const allClaims = getClaims().filter(c => c.notified && c.status !== 'cancelled');
+    if (allClaims.length) {
+      html += `<div style="text-align:center;margin-top:12px"><button class="btn btn-outline btn-sm" onclick="resetNotified()">重置通知状态（重新通知全部）</button></div>`;
+    }
+    return html;
+  }
+
+  html += `<div class="alert alert-info">以下 ${claims.length} 条认领记录尚未发出通知，请选择通知方式：</div>`;
+
+  claims.forEach(c => {
+    const task = tasks.find(t => t.id === c.task_id);
+    const proj = task ? projects.find(p => p.id === task.project_id) : null;
+    const wechatMsg = buildWechatMsg(c, task, proj);
+    const emailSubject = `【义工任务认领确认】${task ? task.title : '任务'}`;
+    const emailBody = buildEmailBody(c, task, proj);
+
+    html += `<div class="card">
+      <div class="card-header" style="margin-bottom:6px">
+        <div>
+          <div class="card-title">${esc(c.name)} 认领了「${task ? esc(task.title) : '（已删）'}」</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:3px">微信：${esc(c.wechat)} · ${c.claimed_at.slice(0,16).replace('T',' ')}</div>
+        </div>
+      </div>
+
+      <div class="notify-box">
+        <div class="notify-label">微信消息（复制后发给义工）</div>
+        <div class="notify-text" id="wechat_${c.id}">${esc(wechatMsg)}</div>
+        <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="copyText('wechat_${c.id}', 'cp_${c.id}')">复制微信消息</button>
+          <span class="copy-success" id="cp_${c.id}">已复制</span>
+        </div>
+      </div>
+
+      <div class="notify-box" style="margin-top:10px">
+        <div class="notify-label">邮件通知</div>
+        ${c.email ? `
+          <div style="font-size:13px;margin-bottom:8px">发送至：<strong>${esc(c.email)}</strong></div>
+          <a class="btn btn-outline btn-sm" href="mailto:${c.email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}" target="_blank">打开邮件</a>
+        ` : `<div style="font-size:13px;color:var(--gray)">义工未提供邮箱，无法发送邮件通知</div>`}
+        ${settings.adminEmail ? `
+          <div style="margin-top:8px">
+            <a class="btn btn-primary btn-sm" href="mailto:${settings.adminEmail}?subject=${encodeURIComponent('【新认领通知】' + (task ? task.title : ''))}&body=${encodeURIComponent(emailBody)}" target="_blank">发送给管理员</a>
+          </div>
+        ` : ''}
+      </div>
+
+      <div style="margin-top:12px">
+        <button class="btn btn-success btn-sm" onclick="markNotified('${c.id}')">标记已通知</button>
+      </div>
+    </div>`;
+  });
+
+  html += `<div style="margin-top:8px"><button class="btn btn-gold" onclick="markAllNotified()">全部标记为已通知</button></div>`;
+  return html;
+}
+
+function buildWechatMsg(c, task, proj) {
+  const settings = getSettings();
+  return `你好 ${c.name}，
+
+感谢你认领任务！以下是确认信息：
+
+企划书：${proj ? proj.title : '（未知）'}
+任务：${task ? task.title : '（未知）'}
+认领时间：${c.claimed_at ? c.claimed_at.slice(0,16).replace('T',' ') : ''}
+${task && task.deadline ? '截止日期：' + task.deadline : ''}
+
+如有问题请随时联系我，期待你的参与！
+
+${settings.adminName || '管理员'}`;
+}
+
+function buildEmailBody(c, task, proj) {
+  const settings = getSettings();
+  return `你好 ${c.name}，
+
+感谢你认领以下任务，我们已收到你的认领申请。
+
+【认领信息】
+企划书：${proj ? proj.title : '（未知）'}
+任务：${task ? task.title : '（未知）'}
+${task && task.desc ? '任务说明：' + task.desc : ''}
+认领时间：${c.claimed_at ? c.claimed_at.slice(0,16).replace('T',' ') : ''}
+${task && task.deadline ? '任务截止：' + task.deadline : ''}
+你的微信：${c.wechat}
+
+如有疑问，请随时与我们联系。
+
+${settings.adminName || '管理员'}`;
+}
+
+// ── SETTINGS TAB ──
+function renderSettingsTab() {
+  const s = getSettings();
+  return `<div class="section-title">系统设置</div>
+  <div class="card">
+    <div class="card-title" style="margin-bottom:16px">账户与通知</div>
+    <div class="form-group">
+      <label class="form-label">管理员姓名（通知署名）</label>
+      <input class="form-input" id="setName" value="${esc(s.adminName||'')}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">管理员邮箱</label>
+      <input class="form-input" id="setEmail" type="email" value="${esc(s.adminEmail||'')}" placeholder="用于接收认领通知邮件">
+    </div>
+    <hr class="divider">
+    <div class="card-title" style="margin-bottom:16px">修改密码</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">新密码</label>
+        <input class="form-input" id="setPw" type="password" placeholder="留空则不修改">
+      </div>
+      <div class="form-group">
+        <label class="form-label">确认新密码</label>
+        <input class="form-input" id="setPw2" type="password">
+      </div>
+    </div>
+    <div id="settingsMsg"></div>
+    <button class="btn btn-primary" onclick="saveSettingsForm()">保存设置</button>
+  </div>
+  <div class="card" style="margin-top:6px">
+    <div class="card-title" style="margin-bottom:12px; color:var(--danger)">危险操作</div>
+    <div class="btn-group">
+      <button class="btn btn-danger btn-sm" onclick="clearAllData()">清空所有数据</button>
+    </div>
+    <div style="font-size:12px;color:var(--gray);margin-top:8px">此操作不可撤销，将删除所有企划书、任务和认领记录</div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════
+// ADMIN ACTIONS
+// ══════════════════════════════════════════════════
+
+function openProjectModal(id) {
+  const projects = getProjects();
+  const p = id ? projects.find(x => x.id === id) : null;
+  showModal(`<div class="modal-title">${p ? '编辑企划书' : '新建企划书'}</div>
+    <div class="form-group"><label class="form-label">标题 *</label><input class="form-input" id="mPTitle" value="${p ? esc(p.title) : ''}"></div>
+    <div class="form-group"><label class="form-label">简介 *</label><textarea class="form-textarea" id="mPDesc">${p ? esc(p.desc) : ''}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">截止日期</label><input class="form-input" id="mPDeadline" type="date" value="${p ? (p.deadline||'') : ''}"></div>
+      <div class="form-group"><label class="form-label">状态</label>
+        <select class="form-select" id="mPStatus">
+          <option value="active" ${(!p||p.status==='active')?'selected':''}>进行中</option>
+          <option value="closed" ${p&&p.status==='closed'?'selected':''}>已关闭</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveProject('${id||''}')">保存</button>
+    </div>`);
+}
+
+function editProject(id) { openProjectModal(id); }
+
+function saveProject(id) {
+  const title = document.getElementById('mPTitle').value.trim();
+  const desc = document.getElementById('mPDesc').value.trim();
+  if (!title || !desc) { alert('请填写标题和简介'); return; }
+  const projects = getProjects();
+  const deadline = document.getElementById('mPDeadline').value;
+  const status = document.getElementById('mPStatus').value;
+  if (id) {
+    const i = projects.findIndex(p => p.id === id);
+    if (i >= 0) projects[i] = { ...projects[i], title, desc, deadline, status };
+  } else {
+    projects.push({ id: uid(), title, desc, deadline, status: 'active', created_at: today() });
+  }
+  saveProjects(projects);
+  closeModal();
+  renderAdmin(adminTab);
+}
+
+function toggleProjectStatus(id) {
+  const projects = getProjects();
+  const i = projects.findIndex(p => p.id === id);
+  if (i < 0) return;
+  projects[i].status = projects[i].status === 'active' ? 'closed' : 'active';
+  saveProjects(projects);
+  renderAdmin(adminTab);
+}
+
+function deleteProject(id) {
+  if (!confirm('确定删除此企划书？相关任务也会被删除')) return;
+  saveProjects(getProjects().filter(p => p.id !== id));
+  saveTasks(getTasks().filter(t => t.project_id !== id));
+  renderAdmin(adminTab);
+}
+
+function openTaskModal(id) {
+  const projects = getProjects();
+  if (!projects.length) { alert('请先创建企划书'); return; }
+  const tasks = getTasks();
+  const t = id ? tasks.find(x => x.id === id) : null;
+  const projOptions = projects.map(p =>
+    `<option value="${p.id}" ${t && t.project_id === p.id ? 'selected' : ''}>${esc(p.title)}</option>`
+  ).join('');
+  showModal(`<div class="modal-title">${t ? '编辑任务' : '新建任务'}</div>
+    <div class="form-group"><label class="form-label">所属企划书 *</label>
+      <select class="form-select" id="mTProj">${projOptions}</select></div>
+    <div class="form-group"><label class="form-label">任务标题 *</label>
+      <input class="form-input" id="mTTitle" value="${t ? esc(t.title) : ''}"></div>
+    <div class="form-group"><label class="form-label">任务说明</label>
+      <textarea class="form-textarea" id="mTDesc">${t ? esc(t.desc) : ''}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">截止日期</label>
+        <input class="form-input" id="mTDeadline" type="date" value="${t ? (t.deadline||'') : ''}"></div>
+      <div class="form-group"><label class="form-label">最多认领人数 *</label>
+        <input class="form-input" id="mTSlots" type="number" min="1" value="${t ? t.max_slots : 1}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">所需技能/条件</label>
+      <input class="form-input" id="mTSkills" value="${t ? esc(t.skills||'') : ''}" placeholder="可选，如：会设计、有车等"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveTask('${id||''}')">保存</button>
+    </div>`);
+}
+
+function editTask(id) { openTaskModal(id); }
+
+function saveTask(id) {
+  const proj = document.getElementById('mTProj').value;
+  const title = document.getElementById('mTTitle').value.trim();
+  const desc = document.getElementById('mTDesc').value.trim();
+  const deadline = document.getElementById('mTDeadline').value;
+  const slots = parseInt(document.getElementById('mTSlots').value) || 1;
+  const skills = document.getElementById('mTSkills').value.trim();
+  if (!title) { alert('请填写任务标题'); return; }
+  const tasks = getTasks();
+  if (id) {
+    const i = tasks.findIndex(t => t.id === id);
+    if (i >= 0) tasks[i] = { ...tasks[i], project_id: proj, title, desc, deadline, max_slots: slots, skills };
+  } else {
+    tasks.push({ id: uid(), project_id: proj, title, desc, deadline, max_slots: slots, skills, status: 'open', created_at: today() });
+  }
+  saveTasks(tasks);
+  closeModal();
+  renderAdmin(adminTab);
+}
+
+function markTaskDone(id) {
+  if (!confirm('确认将此任务标记为完成？')) return;
+  const tasks = getTasks();
+  const i = tasks.findIndex(t => t.id === id);
+  if (i >= 0) tasks[i].status = 'done';
+  saveTasks(tasks);
+  renderAdmin(adminTab);
+}
+
+function deleteTask(id) {
+  if (!confirm('确定删除此任务及其认领记录？')) return;
+  saveTasks(getTasks().filter(t => t.id !== id));
+  saveClaims(getClaims().filter(c => c.task_id !== id));
+  renderAdmin(adminTab);
+}
+
+function cancelClaim(id) {
+  if (!confirm('取消该义工的认领？')) return;
+  const claims = getClaims();
+  const i = claims.findIndex(c => c.id === id);
+  if (i >= 0) claims[i].status = 'cancelled';
+  saveClaims(claims);
+  renderAdmin(adminTab);
+}
+
+function deleteClaim(id) {
+  if (!confirm('永久删除此认领记录？')) return;
+  saveClaims(getClaims().filter(c => c.id !== id));
+  renderAdmin(adminTab);
+}
+
+function markNotified(id) {
+  const claims = getClaims();
+  const i = claims.findIndex(c => c.id === id);
+  if (i >= 0) claims[i].notified = true;
+  saveClaims(claims);
+  renderAdmin('notify');
+  updateNotifyBadge();
+}
+
+function markAllNotified() {
+  const claims = getClaims().map(c => ({ ...c, notified: true }));
+  saveClaims(claims);
+  renderAdmin('notify');
+  updateNotifyBadge();
+}
+
+function resetNotified() {
+  if (!confirm('重置通知状态，所有记录将重新出现在通知列表？')) return;
+  const claims = getClaims().map(c => ({ ...c, notified: false }));
+  saveClaims(claims);
+  renderAdmin('notify');
+  updateNotifyBadge();
+}
+
+function saveSettingsForm() {
+  const s = getSettings();
+  const name = document.getElementById('setName').value.trim();
+  const email = document.getElementById('setEmail').value.trim();
+  const pw = document.getElementById('setPw').value;
+  const pw2 = document.getElementById('setPw2').value;
+  const msg = document.getElementById('settingsMsg');
+  if (pw && pw !== pw2) {
+    msg.innerHTML = '<div class="alert alert-error">两次密码不一致</div>';
+    return;
+  }
+  saveSettings({ ...s, adminName: name, adminEmail: email, pw: pw || s.pw });
+  msg.innerHTML = '<div class="alert alert-success">设置已保存</div>';
+  setTimeout(() => msg.innerHTML = '', 2000);
+}
+
+function clearAllData() {
+  if (!confirm('确定清空所有数据？此操作不可撤销！')) return;
+  if (!confirm('再次确认：所有企划书、任务、认领记录将被永久删除')) return;
+  localStorage.removeItem('vt_projects');
+  localStorage.removeItem('vt_tasks');
+  localStorage.removeItem('vt_claims');
+  renderAdmin('projects');
+}
+
+function exportCSV() {
+  const claims = getClaims();
+  const tasks = getTasks();
+  const projects = getProjects();
+  const rows = [['认领人', '微信号', '邮箱', '任务', '企划书', '认领时间', '状态', '备注']];
+  claims.forEach(c => {
+    const t = tasks.find(x => x.id === c.task_id);
+    const p = t ? projects.find(x => x.id === t.project_id) : null;
+    rows.push([c.name, c.wechat, c.email||'', t ? t.title : '', p ? p.title : '', c.claimed_at, c.status === 'cancelled' ? '已取消' : '有效', c.note||'']);
+  });
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = '认领记录.csv'; a.click();
+}
+
+// ══════════════════════════════════════════════════
+// VOLUNTEER VIEW
+// ══════════════════════════════════════════════════
+
+let volProjectFilter = null;
+
+function renderVolunteer() {
+  const projects = getProjects().filter(p => p.status === 'active');
+  const tasks = getTasks();
+  const el = document.getElementById('volContent');
+
+  if (!projects.length) {
+    el.innerHTML = `<div class="empty" style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div class="empty-icon">📋</div><p>暂无开放中的企划书，请稍后查看</p></div>`;
+    return;
+  }
+
+  let html = `<div style="margin-bottom:20px">
+    <div style="font-size:20px;font-weight:800;color:var(--navy);margin-bottom:4px">开放任务</div>
+    <div style="font-size:13px;color:var(--gray)">选择感兴趣的任务，填写信息即可认领</div>
+  </div>`;
+
+  // Project filter pills
+  html += `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+    <button class="btn btn-sm ${!volProjectFilter ? 'btn-primary' : 'btn-outline'}" onclick="filterVolProject(null)">全部</button>`;
+  projects.forEach(p => {
+    html += `<button class="btn btn-sm ${volProjectFilter===p.id ? 'btn-primary' : 'btn-outline'}" onclick="filterVolProject('${p.id}')">${esc(p.title)}</button>`;
+  });
+  html += '</div>';
+
+  const filtered = volProjectFilter ? projects.filter(p => p.id === volProjectFilter) : projects;
+
+  filtered.forEach(p => {
+    const pts = tasks.filter(t => t.project_id === p.id);
+    html += `<div class="project-detail-header">
+      <h2>${esc(p.title)}</h2>
+      <p>${esc(p.desc)}</p>
+      ${p.deadline ? `<div class="meta">截止日期：${p.deadline}</div>` : ''}
+    </div>`;
+    if (!pts.length) {
+      html += `<div style="font-size:13px;color:var(--gray);padding:12px 0 20px">该企划书暂无任务</div>`;
+    } else {
+      pts.forEach(t => {
+        const st = taskStatus(t);
+        const claimed = claimsForTask(t.id).length;
+        const pct = Math.min(100, Math.round(claimed / t.max_slots * 100));
+        const canClaim = st === 'open' || st === 'claimed';
+        html += `<div class="task-item">
+          <div class="task-item-header">
+            <div style="flex:1">
+              <div class="task-item-title">${esc(t.title)}</div>
+              ${t.deadline ? `<div style="font-size:12px;color:var(--gray);margin-top:3px">截止：${t.deadline}</div>` : ''}
+            </div>
+            <div class="btn-group">
+              <span class="badge ${STATUS_BADGE[st]}">${STATUS_LABEL[st]}</span>
+              ${canClaim ? `<button class="btn btn-gold btn-sm" onclick="openClaimModal('${t.id}')">认领任务</button>` : ''}
+            </div>
+          </div>
+          ${t.desc ? `<div class="task-item-desc">${esc(t.desc)}</div>` : ''}
+          ${t.skills ? `<div style="font-size:12px;color:var(--gray);margin-top:6px">所需：${esc(t.skills)}</div>` : ''}
+          <div class="task-slots">已有 ${claimed} / ${t.max_slots} 人认领
+            <div class="slots-bar"><div class="slots-fill" style="width:${pct}%"></div></div>
+          </div>
+        </div>`;
+      });
+    }
+  });
+
+  el.innerHTML = html;
+}
+
+function filterVolProject(id) {
+  volProjectFilter = id;
+  renderVolunteer();
+}
+
+function openClaimModal(taskId) {
+  const task = getTasks().find(t => t.id === taskId);
+  if (!task) return;
+  const proj = getProjects().find(p => p.id === task.project_id);
+  showModal(`<div class="modal-title">认领任务</div>
+    <div class="alert alert-info" style="margin-bottom:18px">
+      <strong>${esc(task.title)}</strong><br>
+      <span style="font-size:12px;color:#555">${proj ? esc(proj.title) : ''}</span>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">姓名 *</label>
+        <input class="form-input" id="clName" placeholder="真实姓名">
+      </div>
+      <div class="form-group">
+        <label class="form-label">微信号 *</label>
+        <input class="form-input" id="clWechat" placeholder="方便管理员联系">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">邮箱（可选）</label>
+      <input class="form-input" id="clEmail" type="email" placeholder="用于接收确认邮件">
+    </div>
+    <div class="form-group">
+      <label class="form-label">备注（可选）</label>
+      <textarea class="form-textarea" id="clNote" placeholder="如有特殊情况或想说明的内容" style="min-height:60px"></textarea>
+    </div>
+    <div id="claimErr"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">取消</button>
+      <button class="btn btn-gold" onclick="submitClaim('${taskId}')">确认认领</button>
+    </div>`);
+}
+
+function submitClaim(taskId) {
+  const name = document.getElementById('clName').value.trim();
+  const wechat = document.getElementById('clWechat').value.trim();
+  const email = document.getElementById('clEmail').value.trim();
+  const note = document.getElementById('clNote').value.trim();
+  const err = document.getElementById('claimErr');
+  if (!name || !wechat) {
+    err.innerHTML = '<div class="alert alert-error">请填写姓名和微信号</div>';
+    return;
+  }
+  const task = getTasks().find(t => t.id === taskId);
+  if (!task) { err.innerHTML = '<div class="alert alert-error">任务不存在</div>'; return; }
+  const st = taskStatus(task);
+  if (st === 'full' || st === 'done' || st === 'closed') {
+    err.innerHTML = '<div class="alert alert-error">该任务已无法认领</div>'; return;
+  }
+  // Check duplicate
+  const existing = getClaims().find(c => c.task_id === taskId && c.name === name && c.wechat === wechat && c.status !== 'cancelled');
+  if (existing) {
+    err.innerHTML = '<div class="alert alert-error">你已经认领过此任务了</div>'; return;
+  }
+  const claims = getClaims();
+  claims.push({ id: uid(), task_id: taskId, name, wechat, email, note, claimed_at: new Date().toISOString(), status: 'active', notified: false });
+  saveClaims(claims);
+  closeModal();
+  // Show success
+  showModal(`<div class="modal-title" style="color:var(--success)">认领成功</div>
+    <div class="alert alert-success">你已成功认领「${esc(task.title)}」</div>
+    <div style="font-size:14px;color:#444;line-height:1.8;margin-bottom:20px">
+      管理员将通过微信（${esc(wechat)}）与你联系，请保持关注。
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeModal();renderVolunteer()">返回任务列表</button>
+    </div>`);
+}
+
+// ══════════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════════
+
+function showModal(html) {
+  const o = document.getElementById('modalOverlay');
+  o.innerHTML = `<div class="modal-overlay" onclick="maybeCloseModal(event)"><div class="modal">${html}</div></div>`;
+  o.style.display = '';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').style.display = 'none';
+  document.getElementById('modalOverlay').innerHTML = '';
+}
+
+function maybeCloseModal(e) {
+  if (e.target.classList.contains('modal-overlay')) closeModal();
+}
+
+// ══════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function today() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function copyText(elId, feedbackId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  navigator.clipboard.writeText(el.innerText || el.textContent).then(() => {
+    const fb = document.getElementById(feedbackId);
+    if (fb) { fb.classList.add('show'); setTimeout(() => fb.classList.remove('show'), 2000); }
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    const fb = document.getElementById(feedbackId);
+    if (fb) { fb.classList.add('show'); setTimeout(() => fb.classList.remove('show'), 2000); }
+  });
+}
+
+// ══════════════════════════════════════════════════
+// SAMPLE DATA (first run only)
+// ══════════════════════════════════════════════════
+(function seedIfEmpty() {
+  if (getProjects().length) return;
+  const pid = uid();
+  saveProjects([{
+    id: pid, title: '2025年秋季迎新活动', status: 'active',
+    desc: '为新生提供接机、住宿指引和校园引导服务，帮助新生顺利入学。',
+    deadline: '2025-08-31', created_at: today()
+  }]);
+  const t1 = uid(), t2 = uid(), t3 = uid();
+  saveTasks([
+    { id: t1, project_id: pid, title: '机场接机', desc: '携带接机牌在机场迎接新生，协助搬运行李并送至宿舍。', deadline: '2025-08-20', max_slots: 4, skills: '有驾照优先', status: 'open', created_at: today() },
+    { id: t2, project_id: pid, title: '宿舍引导', desc: '帮助新生办理宿舍入住手续，介绍周边设施。', deadline: '2025-08-22', max_slots: 3, skills: '', status: 'open', created_at: today() },
+    { id: t3, project_id: pid, title: '资料包整理', desc: '整理并打印新生资料包，包括地图、联系方式等。', deadline: '2025-08-15', max_slots: 2, skills: '会使用电脑', status: 'open', created_at: today() }
+  ]);
+})();
+</script>
+</body>
+</html>
