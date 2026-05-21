@@ -7,6 +7,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+@font-face {
+  font-family: 'Kaiti';
+  src: url('https://raw.githubusercontent.com/parentsduke/parentsduke/main/fonts/Kaiti.woff2') format('woff2'),
+       url('https://raw.githubusercontent.com/parentsduke/parentsduke/main/fonts/Kaiti.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SimLi';
+  src: url('https://raw.githubusercontent.com/parentsduke/parentsduke/main/fonts/SIMLI.woff2') format('woff2'),
+       url('https://raw.githubusercontent.com/parentsduke/parentsduke/main/fonts/SIMLI.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --navy: #001F5B;
   --duke-blue: #012169;
@@ -23,7 +41,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Kaiti', 'Noto Sans SC', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -83,11 +101,11 @@ body {
   100% { opacity:0; transform: translateY(130px) rotate(400deg) scale(1.1); }
 }
 .page-header h1 {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'SimLi', 'Noto Serif SC', serif;
   font-size: 28px;
-  font-weight: 700;
+  font-weight: normal;
   color: #fff;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   margin-bottom: 6px;
 }
 .page-header .subtitle {
@@ -157,7 +175,7 @@ body {
   border: none;
   cursor: pointer;
   font-size: 16px;
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Kaiti', 'Noto Sans SC', sans-serif;
   font-weight: 500;
   text-align: left;
   transition: background 0.2s;
@@ -215,7 +233,7 @@ body {
   border: none;
   cursor: pointer;
   font-size: 14px;
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Kaiti', 'Noto Sans SC', sans-serif;
   font-weight: 600;
   text-align: left;
   transition: background 0.15s;
@@ -349,7 +367,7 @@ body {
   background: #012169;
   color: #fff;
   font-size: 13px;
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Kaiti', 'Noto Sans SC', sans-serif;
   font-weight: 600;
   border: none;
   border-radius: 6px;
@@ -366,7 +384,7 @@ body {
   border-radius: 6px;
   padding: 6px 12px;
   cursor: pointer;
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Kaiti', 'Noto Sans SC', sans-serif;
   transition: background 0.15s;
 }
 .gallery-sort-btn.active { background: #012169; color: #fff; border-color: #012169; }
@@ -414,7 +432,7 @@ body {
   padding: 3px 6px;
   border-radius: 5px;
   transition: background 0.15s, color 0.15s;
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Kaiti', 'Noto Sans SC', sans-serif;
 }
 .like-btn:hover { background: #fffbf0; color: #C9A84C; }
 .like-btn.liked { color: #C9A84C; font-weight: 700; }
@@ -507,12 +525,12 @@ body {
 .upload-modal-btns { display: flex; gap: 10px; margin-top: 16px; }
 .upload-cancel-btn {
   flex: 1; padding: 10px; border-radius: 7px; border: 1px solid #dde3f0;
-  background: #fff; font-size: 14px; cursor: pointer; font-family: 'Noto Sans SC', sans-serif;
+  background: #fff; font-size: 14px; cursor: pointer; font-family: 'Kaiti', 'Noto Sans SC', sans-serif;
 }
 .upload-confirm-btn {
   flex: 2; padding: 10px; border-radius: 7px; border: none;
   background: #012169; color: #fff; font-size: 14px; font-weight: 700;
-  cursor: pointer; font-family: 'Noto Sans SC', sans-serif; transition: background 0.2s;
+  cursor: pointer; font-family: 'Kaiti', 'Noto Sans SC', sans-serif; transition: background 0.2s;
 }
 .upload-confirm-btn:hover { background: #002D8A; }
 .upload-confirm-btn:disabled { background: #aaa; cursor: not-allowed; }
@@ -550,7 +568,7 @@ body {
   margin-bottom: 12px;
 }
 .gate-title {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'SimLi', 'Noto Serif SC', serif;
   font-size: 20px;
   font-weight: 700;
   color: #fff;
@@ -580,7 +598,7 @@ body {
   background: rgba(255,255,255,0.07);
   color: #fff;
   font-size: 15px;
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Kaiti', 'Noto Sans SC', sans-serif;
   outline: none;
   transition: border-color 0.2s;
   margin-bottom: 16px;
@@ -595,7 +613,7 @@ body {
   color: #fff;
   font-size: 15px;
   font-weight: 700;
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Kaiti', 'Noto Sans SC', sans-serif;
   border: none;
   border-radius: 8px;
   cursor: pointer;
