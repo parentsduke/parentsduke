@@ -1218,8 +1218,52 @@ body {
 
       <div class="sub-accordion">
         <button class="sub-btn" onclick="toggleSub(this)">
-          筹备组人员 <span class="sub-arrow">&#9658;</span>
+          📝 报名参加 <span class="sub-arrow">&#9658;</span>
         </button>
+        <div class="sub-body">
+          <div class="pad">
+            <div id="signup-success" style="display:none" class="info-box" style="color:#166534">
+              ✅ 报名成功！感谢您的参与。
+            </div>
+            <div id="signup-list-summary" style="font-size:12px;color:#888;margin-bottom:12px;"></div>
+
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--duke-blue);display:block;margin-bottom:4px;">家长姓名 *</label>
+                <input id="signup-name" type="text" placeholder="请输入姓名" style="width:100%;padding:9px 12px;border:1px solid #dde3f0;border-radius:7px;font-size:14px;font-family:inherit;outline:none;">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--duke-blue);display:block;margin-bottom:4px;">学生姓名</label>
+                <input id="signup-student" type="text" placeholder="孩子的名字" style="width:100%;padding:9px 12px;border:1px solid #dde3f0;border-radius:7px;font-size:14px;font-family:inherit;outline:none;">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--duke-blue);display:block;margin-bottom:4px;">微信号</label>
+                <input id="signup-wechat" type="text" placeholder="方便联系" style="width:100%;padding:9px 12px;border:1px solid #dde3f0;border-radius:7px;font-size:14px;font-family:inherit;outline:none;">
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--duke-blue);display:block;margin-bottom:4px;">预计参加人数</label>
+                <select id="signup-guests" style="width:100%;padding:9px 12px;border:1px solid #dde3f0;border-radius:7px;font-size:14px;font-family:inherit;outline:none;background:#fff;">
+                  <option value="1">1 人</option>
+                  <option value="2">2 人</option>
+                  <option value="3">3 人</option>
+                  <option value="4">4 人</option>
+                  <option value="5">5 人及以上</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--duke-blue);display:block;margin-bottom:4px;">备注</label>
+                <textarea id="signup-note" placeholder="有什么想说的…" rows="2" style="width:100%;padding:9px 12px;border:1px solid #dde3f0;border-radius:7px;font-size:14px;font-family:inherit;outline:none;resize:vertical;"></textarea>
+              </div>
+              <div id="signup-error" style="font-size:12px;color:#c00;min-height:16px;"></div>
+              <button onclick="submitSignup()" id="signup-btn" style="width:100%;padding:11px;background:var(--duke-blue);color:#fff;font-size:14px;font-weight:700;font-family:inherit;border:none;border-radius:8px;cursor:pointer;transition:background 0.2s;">
+                提交报名
+              </button>
+            </div>
+
+            <div id="signup-list" style="margin-top:16px;"></div>
+          </div>
+        </div>
+      </div>
         <div class="sub-body">
           <div class="pad" style="color:#999;font-size:13px;">待更新</div>
         </div>
@@ -1623,6 +1667,52 @@ async function doUpload() {
   }
 }
 
+// ── Party Signup ──
+async function submitSignup() {
+  const btn = document.getElementById('signup-btn');
+  const errEl = document.getElementById('signup-error');
+  const name = document.getElementById('signup-name').value.trim();
+  const student = document.getElementById('signup-student').value.trim();
+  const wechat = document.getElementById('signup-wechat').value.trim();
+  const guests = parseInt(document.getElementById('signup-guests').value);
+  const note = document.getElementById('signup-note').value.trim();
+
+  errEl.textContent = '';
+  if (!name) { errEl.textContent = '请填写家长姓名'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '提交中…';
+
+  try {
+    const { error } = await db.from('party_signups').insert({ name, student, wechat, guests, note });
+    if (error) throw error;
+    document.getElementById('signup-success').style.display = 'block';
+    btn.style.display = 'none';
+    document.getElementById('signup-name').value = '';
+    document.getElementById('signup-student').value = '';
+    document.getElementById('signup-wechat').value = '';
+    document.getElementById('signup-note').value = '';
+    loadSignupList();
+  } catch(e) {
+    errEl.textContent = '提交失败，请稍后重试';
+    btn.disabled = false;
+    btn.textContent = '提交报名';
+  }
+}
+
+async function loadSignupList() {
+  const { data } = await db.from('party_signups').select('name,student,guests,created_at').order('created_at', { ascending: false });
+  if (!data || !data.length) return;
+  const total = data.reduce((s, r) => s + (r.guests || 1), 0);
+  document.getElementById('signup-list-summary').textContent = `已有 ${data.length} 个家庭报名，共 ${total} 人`;
+  document.getElementById('signup-list').innerHTML = `
+    <div style="font-size:12px;font-weight:700;color:var(--duke-blue);margin-bottom:6px;">报名名单</div>
+    ${data.map(r => `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f3fa;font-size:13px;">
+      <span>${r.name}${r.student ? ' · ' + r.student : ''}</span>
+      <span style="color:#888">${r.guests} 人</span>
+    </div>`).join('')}`;
+}
+
 // ── Floating petals ──
 (function(){
   const petals = ['🌸','🌼','🌺','🌹','🌷','🌻','✿'];
@@ -1665,6 +1755,9 @@ function toggleSub(btn) {
   const body = btn.nextElementSibling;
   body.classList.toggle('sub-open');
   btn.classList.toggle('sub-active');
+  if (body.classList.contains('sub-open') && body.querySelector('#signup-list') !== null) {
+    loadSignupList();
+  }
 }
 </script>
 </body>
