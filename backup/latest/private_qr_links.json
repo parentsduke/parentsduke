@@ -2509,19 +2509,6 @@
     "groupName": null
   },
   {
-    "id": "93acf7b8-880a-43c8-8c57-bca345ba321d",
-    "token": "e21cd49ec976",
-    "image_url": "https://dukeparents.org/q2.png",
-    "label": "Duke 2030 家长群",
-    "used": false,
-    "used_at": null,
-    "created_at": "2026-05-14T23:24:30.353358+00:00",
-    "reserved_for": "zzz85716@hotmail.com",
-    "reserved_at": "2026-05-14T23:24:30.011+00:00",
-    "opened_at": null,
-    "groupName": null
-  },
-  {
     "id": "76769f04-c037-4974-9cb4-e1ae3260a86d",
     "token": "0a794e7144c8",
     "image_url": "https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg",
@@ -2754,5 +2741,44 @@
     "reserved_at": "2026-05-20T13:34:16.787+00:00",
     "opened_at": "2026-05-20T14:14:59.748+00:00",
     "groupName": "Duke Pre-med Track 家长群"
+  },
+  {
+    "id": "93acf7b8-880a-43c8-8c57-bca345ba321d",
+    "token": "e21cd49ec976",
+    "image_url": "https://dukeparents.org/q2.png",
+    "label": "Duke 2030 家长群",
+    "used": true,
+    "used_at": "2026-05-20T19:14:03.64+00:00",
+    "created_at": "2026-05-14T23:24:30.353358+00:00",
+    "reserved_for": "zzz85716@hotmail.com",
+    "reserved_at": "2026-05-14T23:24:30.011+00:00",
+    "opened_at": null,
+    "groupName": null
+  },
+  {
+    "id": "2635a64f-36c7-41d7-a983-5a56c6ac7640",
+    "token": "9b22e9223154",
+    "image_url": "https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg",
+    "label": "扯谈Duke群2.0",
+    "used": false,
+    "used_at": null,
+    "created_at": "2026-05-20T19:06:59.072372+00:00",
+    "reserved_for": "zzz85716@hotmail.com",
+    "reserved_at": "2026-05-20T19:14:04.54+00:00",
+    "opened_at": null,
+    "groupName": null
+  },
+  {
+    "id": "3520521c-91f4-4409-9984-f5def2a34c39",
+    "token": "5efd4d5055a1",
+    "image_url": "https://dukeparents.org/q30d.png",
+    "label": "Duke 2030 家长群",
+    "used": true,
+    "used_at": "2026-05-21T06:10:25.651+00:00",
+    "created_at": "2026-05-21T04:40:11.649567+00:00",
+    "reserved_for": "1046016895@qq.com",
+    "reserved_at": "2026-05-21T04:40:11.004+00:00",
+    "opened_at": "2026-05-21T06:10:25.65+00:00",
+    "groupName": null
   }
 ]
