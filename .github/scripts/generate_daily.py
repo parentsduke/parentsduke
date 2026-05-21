@@ -109,6 +109,7 @@ PREMATRIC_PAGES = [
     'https://students.duke.edu/living/housing/housing-assignments/fall26-housing/',
     'https://alumni.duke.edu/tags/send-party',           # Send-Off Party 活动列表
     'https://alumni.duke.edu/events-programs',           # 校友活动总览
+    'https://students.duke.edu/wellness/student-health/health-insurance/smip-benefits/', # SMIP医疗保险
 ]
 
 # ── 开学前安排：硬编码关键信息（结构化，按日期过滤）──────────────
@@ -265,6 +266,22 @@ PREMATRIC_HARDCODED = [
         'expire': (2026, 9, 1),
         'category': 'Send-Off Party',
         'text': '🎉 香港 / 首尔 / 东京 Send-Off Party — 日期待定(TBA)，注册开放后请留意邮件通知',
+    },
+    # ── 医疗保险（SMIP）──
+    {
+        'expire': (2026, 8, 2),
+        'category': '医疗保险',
+        'text': '【重要】Duke 学生医疗保险（SMIP）保险公司变更：2026年8月1日起由 Blue Cross Blue Shield of NC 切换为 Aetna（2026-2027学年生效）',
+    },
+    {
+        'expire': (2026, 8, 2),
+        'category': '医疗保险',
+        'text': 'SMIP 2026-2027 保险期：Annual Plan 为 2026年8月1日 – 2027年7月31日；春季入学生为 2027年1月1日 – 2027年7月31日',
+    },
+    {
+        'expire': (2026, 8, 2),
+        'category': '医疗保险',
+        'text': 'SMIP 2026-2027 费率与福利详情将于5月初公布，可访问 https://students.duke.edu/wellness/student-health/health-insurance/smip-benefits/ 查看',
     },
         # ── 联系方式（永不过期）──
     {
