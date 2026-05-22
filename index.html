@@ -279,6 +279,14 @@ function toggleBannerMusic() {
 }
 </script>
 <style>
+@font-face {
+  font-family: 'Kaiti';
+  src: url('/fonts/Kaiti.woff2') format('woff2'),
+       url('/fonts/Kaiti.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 @keyframes rd-fadein {
   from { opacity:0; transform:scale(0.9) translateY(20px); }
   to   { opacity:1; transform:scale(1) translateY(0); }
@@ -13037,7 +13045,7 @@ window.showPV();
     border: none;
     cursor: pointer;
     font-size: 13px;
-    font-family: 宋体, sans-serif;
+    font-family: 'Kaiti', KaiTi, 楷体, serif;
     font-weight: 600;
     text-align: left;
     transition: background 0.15s;
@@ -13105,7 +13113,7 @@ window.showPV();
     border: none;
     cursor: pointer;
     font-size: 18px;
-    font-family: 宋体, sans-serif;
+    font-family: 'Kaiti', KaiTi, 楷体, serif;
     text-align: left;
     transition: background 0.2s;
   }
