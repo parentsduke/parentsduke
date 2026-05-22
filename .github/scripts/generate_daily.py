@@ -1189,14 +1189,29 @@ def main():
         BASKETBALL_EXTRA = ""
 
     # 国际生专项补充信息（Passport to Duke & Durham，按日期过滤）
+    # 来源：https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/
     _visa_entries = [
-        (date(2026, 8, 13), '【Passport to Duke & Durham】国际本科新生提前抵校报到：8月12日(Wed)–13日(Thu)（Arrival Process，含签证服务报到、I-20核验）——日期 subject to change，详情：intlstudents@duke.edu'),
-        (date(2026, 8, 15), '【Passport to Duke & Durham】线下活动：8月12日(Wed)–14日(Fri)（含银行开户、手机办理、DISC资源对接、适应时差等）'),
-        (date(2026, 8, 15), '【Passport to Duke & Durham】Resource Fair：8月14日(Fri)——主办：Duke International Student Center (DISC)；咨询：intlstudents@duke.edu'),
+        (date(2026, 8, 13),
+         '【国际本科新生提前抵校】Arrival Process for Passport to Duke & Durham：'
+         '8月12日(Wed) & 8月13日(Thu)——须完成 Duke Visa Services 签证服务报到与I-20/DS-2019核验；'
+         '详情：https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/'),
+        (date(2026, 8, 14),
+         '【Passport to Duke & Durham 线下活动】8月12日(Wed)–14日(Fri)——'
+         '内容包括：银行开户、手机套餐办理、DISC资源对接、适应时差、熟悉美国文化；'
+         '主办：Duke International Student Center (DISC)'),
+        (date(2026, 8, 15),
+         '【Passport to Duke & Durham Resource Fair】8月14日(Fri)——'
+         '提供银行、手机运营商、DISC等多方资源一站式对接；'
+         '注意：以上日期 subject to change，最终安排5月初公布；咨询：intlstudents@duke.edu；'
+         '详情：https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/'),
     ]
     _active_visa = [t for exp, t in _visa_entries if _today <= exp]
     if _active_visa:
-        VISA_EXTRA = "【国际生开学前安排 · Passport to Duke & Durham】\n" + "\n".join(f"- {t}" for t in _active_visa)
+        VISA_EXTRA = (
+            "【国际生开学前专项安排 · Passport to Duke & Durham（Class of 2030）】\n"
+            "（来源：Duke International Student Center，DISC官方页面）\n"
+            + "\n".join(f"- {t}" for t in _active_visa)
+        )
     else:
         VISA_EXTRA = ""
 
