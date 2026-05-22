@@ -1188,6 +1188,18 @@ def main():
     else:
         BASKETBALL_EXTRA = ""
 
+    # 国际生专项补充信息（Passport to Duke & Durham，按日期过滤）
+    _visa_entries = [
+        (date(2026, 8, 13), '【Passport to Duke & Durham】国际本科新生提前抵校报到：8月12日(Wed)–13日(Thu)（Arrival Process，含签证服务报到、I-20核验）——日期 subject to change，详情：intlstudents@duke.edu'),
+        (date(2026, 8, 15), '【Passport to Duke & Durham】线下活动：8月12日(Wed)–14日(Fri)（含银行开户、手机办理、DISC资源对接、适应时差等）'),
+        (date(2026, 8, 15), '【Passport to Duke & Durham】Resource Fair：8月14日(Fri)——主办：Duke International Student Center (DISC)；咨询：intlstudents@duke.edu'),
+    ]
+    _active_visa = [t for exp, t in _visa_entries if _today <= exp]
+    if _active_visa:
+        VISA_EXTRA = "【国际生开学前安排 · Passport to Duke & Durham】\n" + "\n".join(f"- {t}" for t in _active_visa)
+    else:
+        VISA_EXTRA = ""
+
     tasks = {
         'weekly-school':       lambda: generate_section('学校新闻', school_items),
         'weekly-basketball':   lambda: generate_section('篮球/体育动态', basketball_items, extra=BASKETBALL_EXTRA),
@@ -1198,7 +1210,7 @@ def main():
         'weekly-campus':       lambda: generate_section('校园生活', campus_items),
         'weekly-chronicle':    lambda: generate_section('Chronicle学生报', chronicle_items),
         'weekly-research':     lambda: generate_section('科研动态', research_items),
-        'weekly-visa':         lambda: generate_section('签证与国际生动态', visa_items, allow_political=True),
+        'weekly-visa':         lambda: generate_section('签证与国际生动态', visa_items, extra=VISA_EXTRA, allow_political=True),
     }
 
     sections = {}
