@@ -287,6 +287,14 @@ function toggleBannerMusic() {
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: 'KaiShu';
+  src: url('/fonts/KaiShu.woff2') format('woff2'),
+       url('/fonts/KaiShu.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 @keyframes rd-fadein {
   from { opacity:0; transform:scale(0.9) translateY(20px); }
   to   { opacity:1; transform:scale(1) translateY(0); }
@@ -13071,6 +13079,7 @@ window.showPV();
     border-top: 1px solid #c0c8e8;
     background: #fff;
     padding: 2px 0 4px 0;
+    font-family: 'KaiShu', KaiTi, 楷体, serif;
   }
 
   .sub-accordion-body.sub-open {
@@ -13135,6 +13144,7 @@ window.showPV();
     margin: 0;
     background: #fff;
     border-top: 1px solid #ddd;
+    font-family: 'KaiShu', KaiTi, 楷体, serif;
   }
 
   div.accordion-body ul,
