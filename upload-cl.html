@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>上传 Commitment Letter · DukeParents</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:   #001a4d;
+      --blue:   #003087;
+      --gold:   #B8963E;
+      --gold-lt:#f5ecd4;
+      --bg:     #f5f3ef;
+      --card:   #ffffff;
+      --border: #e2ddd6;
+      --text:   #1a1a1a;
+      --muted:  #888070;
+      --red:    #C84B31;
+      --green:  #1a6b3c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); min-height: 100vh; }
+
+    header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; }
+    .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; }
+
+    .page-wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* ── 状态屏 ── */
+    .state-screen {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .state-screen.active { display: block; }
+    .state-icon { font-size: 48px; margin-bottom: 16px; }
+    .state-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .state-sub { font-size: 14px; color: var(--muted); line-height: 1.8; }
+
+    /* ── 上传卡片 ── */
+    .upload-card {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .upload-card.active { display: block; }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .card-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+    .student-info {
+      background: var(--gold-lt);
+      border: 1px solid rgba(184,150,62,0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #6b4c10;
+      line-height: 1.8;
+    }
+
+    .upload-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      background: #faf8f4;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--blue);
+      background: #f0f4fb;
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .upload-icon { font-size: 32px; margin-bottom: 8px; }
+    .upload-hint { font-size: 12px; color: var(--muted); }
+    .upload-hint strong { color: var(--blue); }
+
+    .file-preview {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: #eef2fa;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 8px;
+    }
+    .file-preview.show { display: flex; }
+    .file-preview .fname {
+      font-size: 12px;
+      color: var(--blue);
+      font-family: 'DM Mono', monospace;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-preview .rm {
+      background: none; border: none;
+      color: var(--red); cursor: pointer;
+      font-size: 16px; padding: 0 4px;
+    }
+
+    .upload-progress {
+      display: none;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--blue);
+      font-family: 'DM Mono', monospace;
+    }
+    .upload-progress.show { display: block; }
+    .progress-bar { height: 4px; background: #dde6f5; border-radius: 2px; margin-top: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--blue); border-radius: 2px; transition: width 0.3s; width: 0%; }
+
+    .btn-submit {
+      width: 100%;
+      margin-top: 28px;
+      padding: 16px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover { background: var(--navy); }
+    .btn-submit:disabled { background: #aab4cc; cursor: not-allowed; }
+
+    .msg-error {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #fdecea;
+      color: var(--red);
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .msg-error.show { display: block; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="hd">D</span>
+  <div>
+    <div class="ht">上传 Commitment Letter</div>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <!-- 加载中 -->
+  <div class="state-screen active" id="screenLoading">
+    <div class="state-icon">⏳</div>
+    <div class="state-title">加载中…</div>
+  </div>
+
+  <!-- 错误（链接无效） -->
+  <div class="state-screen" id="screenError">
+    <div class="state-icon">❌</div>
+    <div class="state-title">链接无效</div>
+    <div class="state-sub" id="errorMsg">此链接已失效或记录不存在，请联系管理员重新发送。</div>
+  </div>
+
+  <!-- 已上传过 -->
+  <div class="state-screen" id="screenDone">
+    <div class="state-icon">✅</div>
+    <div class="state-title">已上传成功</div>
+    <div class="state-sub">您的 Commitment Letter 已经上传，无需重复操作。<br/>如有疑问请联系 parentsduke@gmail.com</div>
+  </div>
+
+  <!-- 上传成功（本次） -->
+  <div class="state-screen" id="screenSuccess">
+    <div class="state-icon">🎉</div>
+    <div class="state-title">上传成功！</div>
+    <div class="state-sub">感谢上传 Commitment Letter！<br/>管理员审核后将发送入群链接到您的邮箱，请耐心等待。</div>
+  </div>
+
+  <!-- 上传表单 -->
+  <div class="upload-card" id="uploadCard">
+    <div class="card-title">上传 Commitment Letter</div>
+    <div class="card-sub">请上传您的 Duke Commitment Letter（截图或 PDF 均可）。<br/>上传后管理员将尽快审核并发送入群链接。</div>
+
+    <div class="student-info" id="studentInfo">加载中…</div>
+
+    <label class="upload-label">Commitment Letter <span style="color:var(--red)">*</span></label>
+    <div class="upload-zone" id="uploadZone"
+         ondragover="handleDrag(event)" ondragleave="handleDragLeave()" ondrop="handleDrop(event)">
+      <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFile(event)"/>
+      <div class="upload-icon">📄</div>
+      <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+    </div>
+    <div class="file-preview" id="filePreview">
+      <span class="fname" id="fileName"></span>
+      <button class="rm" onclick="removeFile()">✕</button>
+    </div>
+    <div class="upload-progress" id="uploadProgress">
+      <span id="progressLabel">上传中…</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="msg-error" id="msgError"></div>
+
+    <button class="btn-submit" id="submitBtn" onclick="doSubmit()">提 交</button>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL     = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  const BUCKET = 'admission-letters';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let recordId = null;
+  let selectedFile = null;
+  let preUploadPath = null;
+  let preUploadStatus = null; // null | 'uploading' | 'done' | 'error'
+
+  // ── 初始化：从 URL 读取 id，验证记录 ──
+  async function init() {
+    const params = new URLSearchParams(window.location.search);
+    recordId = params.get('id');
+
+    if (!recordId) {
+      showError('链接缺少记录 ID，请联系管理员重新发送。');
+      return;
+    }
+
+    try {
+      const { data, error } = await db
+        .from('admissions_submissions')
+        .select('id, student_name_cn, student_name_en, class_year, admission_type, committed_letter_path')
+        .eq('id', recordId)
+        .single();
+
+      if (error || !data) {
+        showError('记录不存在，请联系管理员重新发送链接。');
+        return;
+      }
+
+      // 已上传过
+      if (data.committed_letter_path) {
+        showScreen('screenDone');
+        return;
+      }
+
+      // 显示上传表单
+      const name = data.student_name_cn || data.student_name_en || '同学';
+      const year = data.class_year ? `${data.class_year} 届` : '';
+      const type = data.admission_type || '';
+      document.getElementById('studentInfo').innerHTML =
+        `学生姓名：<strong>${name}</strong>　届次：<strong>${year}</strong>　录取类型：<strong>${type}</strong>`;
+
+      showScreen('uploadCard');
+
+    } catch(e) {
+      showError('加载失败，请稍后重试：' + e.message);
+    }
+  }
+
+  function showScreen(id) {
+    ['screenLoading','screenError','screenDone','screenSuccess','uploadCard'].forEach(s => {
+      const el = document.getElementById(s);
+      if (el) { el.classList.remove('active'); el.style.display = ''; }
+    });
+    const target = document.getElementById(id);
+    if (!target) return;
+    if (target.classList.contains('state-screen')) {
+      target.classList.add('active');
+    } else {
+      target.classList.add('active'); // upload-card uses same pattern
+    }
+  }
+
+  function showError(msg) {
+    document.getElementById('errorMsg').textContent = msg;
+    showScreen('screenError');
+  }
+
+  // ── 文件处理 ──
+  function handleFile(e) {
+    const file = e.target.files?.[0];
+    if (file) setFile(file);
+  }
+  function handleDrag(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.add('drag-over');
+  }
+  function handleDragLeave() {
+    document.getElementById('uploadZone').classList.remove('drag-over');
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('uploadZone').classList.remove('drag-over');
+    const file = e.dataTransfer.files?.[0];
+    if (file) setFile(file);
+  }
+
+  function setFile(file) {
+    selectedFile = file;
+    preUploadPath = null;
+    preUploadStatus = 'uploading';
+
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('filePreview').classList.add('show');
+    hideMsg();
+
+    // 立即后台上传
+    const ext  = file.name.split('.').pop();
+    const path = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+    updateProgressUI('uploading', file.name);
+
+    db.storage.from(BUCKET).upload(path, file, { upsert: false }).then(({ error }) => {
+      if (error) {
+        preUploadStatus = 'error';
+        preUploadPath   = null;
+        updateProgressUI('error', file.name);
+      } else {
+        preUploadStatus = 'done';
+        preUploadPath   = path;
+        updateProgressUI('done', file.name);
+      }
+    });
+  }
+
+  function updateProgressUI(status, name) {
+    const prog  = document.getElementById('uploadProgress');
+    const fill  = document.getElementById('progressFill');
+    const label = document.getElementById('progressLabel');
+    const fname = document.getElementById('fileName');
+
+    if (status === 'uploading') {
+      prog.classList.add('show');
+      fill.style.width = '40%';
+      label.textContent = '上传中…';
+      fname.innerHTML = `${name} <span style="color:#b45309;font-size:11px;font-family:'DM Mono',monospace;">⏳ 上传中…</span>`;
+    } else if (status === 'done') {
+      fill.style.width = '100%';
+      label.textContent = '上传完成';
+      fname.innerHTML = `${name} <span style="color:#1a6b3c;font-size:11px;font-family:'DM Mono',monospace;">✅ 已上传</span>`;
+      setTimeout(() => prog.classList.remove('show'), 1500);
+    } else if (status === 'error') {
+      prog.classList.remove('show');
+      fname.innerHTML = `${name} <span style="color:#C84B31;font-size:11px;font-family:'DM Mono',monospace;">❌ 上传失败，提交时重试</span>`;
+    }
+  }
+
+  function removeFile() {
+    selectedFile = null;
+    preUploadPath = null;
+    preUploadStatus = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('filePreview').classList.remove('show');
+    document.getElementById('uploadProgress').classList.remove('show');
+    document.getElementById('fileName').textContent = '';
+  }
+
+  function showMsg(msg) {
+    const el = document.getElementById('msgError');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function hideMsg() {
+    document.getElementById('msgError').classList.remove('show');
+  }
+
+  // ── 提交 ──
+  async function doSubmit() {
+    hideMsg();
+    if (!selectedFile) { showMsg('请先选择文件'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '提交中…';
+
+    try {
+      // 等待后台上传完成（最多30秒）
+      if (preUploadStatus === 'uploading') {
+        btn.textContent = '等待文件上传…';
+        await new Promise((resolve) => {
+          const t = setInterval(() => {
+            if (preUploadStatus !== 'uploading') { clearInterval(t); resolve(); }
+          }, 300);
+          setTimeout(() => { clearInterval(t); resolve(); }, 30000);
+        });
+      }
+
+      // 如果后台上传失败，重试一次
+      let finalPath = preUploadPath;
+      if (!finalPath) {
+        btn.textContent = '重试上传…';
+        const ext  = selectedFile.name.split('.').pop();
+        const path = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error: upErr } = await db.storage.from(BUCKET).upload(path, selectedFile, { upsert: false });
+        if (upErr) throw new Error('文件上传失败：' + upErr.message);
+        finalPath = path;
+      }
+
+      btn.textContent = '保存中…';
+
+      // 再次确认记录没有被其他人抢先上传
+      const { data: check } = await db
+        .from('admissions_submissions')
+        .select('committed_letter_path')
+        .eq('id', recordId)
+        .single();
+
+      if (check?.committed_letter_path) {
+        showScreen('screenDone');
+        return;
+      }
+
+      // UPDATE
+      const { error: updErr } = await db
+        .from('admissions_submissions')
+        .update({ committed_letter_path: finalPath })
+        .eq('id', recordId);
+
+      if (updErr) throw new Error('保存失败：' + updErr.message);
+
+      showScreen('screenSuccess');
+
+    } catch(e) {
+      showMsg('❌ ' + e.message);
+      btn.disabled = false;
+      btn.textContent = '提 交';
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>

@@ -676,6 +676,13 @@
         : `<span class="no-file">—</span>`;
       const clCell = r.committed_letter_path
         ? `<a class="file-link" href="#" onclick="openFile('${r.committed_letter_path}');return false;">查看文件</a>`
+        : (r.admission_type === 'RD' && r.committed === true && r.submitter_email)
+        ? `<button onclick="requestCommittedLetter('${r.id}','${(r.submitter_email||'').replace(/'/g,"\\'")}','${(r.student_name_cn||r.student_name_en||'').replace(/'/g,"\\'")}','${r.class_year||''}')"
+            style="padding:4px 10px;background:#d97706;color:#fff;border:none;border-radius:5px;
+                   font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#b45309'" onmouseout="this.style.background='#d97706'">
+            📩 催信
+          </button>`
         : `<span class="no-file">—</span>`;
 
       return `<tr>
@@ -1250,6 +1257,39 @@
 
       if (!res.ok) throw new Error(await res.text());
       alert(`✅ 已重新发送扯谈Duke群2.0入群链接到 ${email}`);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+  // ── 催交 Committed Letter ──
+  async function requestCommittedLetter(recordId, email, studentName, classYear) {
+    if (!email) { alert('该记录没有邮箱，无法发送催信'); return; }
+    const uploadUrl = `https://dukeparents.org/upload-cl.html?id=${recordId}`;
+    if (!confirm(`向 ${studentName} 发送催交 Commitment Letter 邮件？\n将发送到：${email}\n\n邮件将附上上传链接。`)) return;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          email,
+          studentName,
+          link: uploadUrl,
+          recordId,
+          subject: '请上传您的 Commitment Letter · 扯谈Duke家长群',
+          replyTo: 'parentsduke@gmail.com',
+          bodyLine1: `您好！我们注意到您已 Committed Duke ${classYear || ''} 届，但尚未上传 Commitment Letter。`,
+          bodyLine2: '请点击下方按钮前往 GitHub 上传您的 Commitment Letter 文件（截图或 PDF 均可），以便我们完成审核并邀请您加入家长群。感谢配合！',
+          buttonText: '📎 上传 Commitment Letter',
+        }),
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+      alert(`✅ 已向 ${email} 发送 Commitment Letter 催交邮件`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
     }
