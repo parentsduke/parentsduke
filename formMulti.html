@@ -1278,17 +1278,16 @@ try {
   }
 
   // 读取 URL 参数，自动选中并锁定群组
-  (function() {
+  document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
     const group = params.get('group');
     if (!group) return;
 
-    // group -> fYear option value 映射
     const groupMap = {
       '2029': '2029',
       '2028': '2028',
       '2027': '2027',
-      'grad': 'grad_masters', // 研究生默认选硕士，用户可自行切换
+      'grad': 'grad_masters',
       'premed': 'premed',
       'hub10': 'hub10',
       'hub20': 'hub20',
@@ -1300,28 +1299,22 @@ try {
     const sel = document.getElementById('fYear');
     if (!sel) return;
 
-    // 隐藏不相关选项
     Array.from(sel.options).forEach(opt => {
-      if (!opt.value) return; // 保留"请选择"占位
-      let keep = false;
-      if (group === 'grad') {
-        keep = (opt.value === 'grad_masters' || opt.value === 'grad_phd');
-      } else {
-        keep = (opt.value === targetVal);
-      }
+      if (!opt.value) return;
+      let keep = (group === 'grad')
+        ? (opt.value === 'grad_masters' || opt.value === 'grad_phd')
+        : (opt.value === targetVal);
       opt.hidden = !keep;
       opt.disabled = !keep;
     });
 
-    // 自动选中并触发联动
     sel.value = targetVal;
-    sel.dispatchEvent(new Event('change'));
+    onYearChange(targetVal);
 
-    // 锁定下拉框
     sel.style.pointerEvents = 'none';
     sel.style.background = '#f5f5f5';
     sel.style.color = '#555';
-  })();
+  });
 
 
     document.getElementById('lightboxImg').src = img.src;
