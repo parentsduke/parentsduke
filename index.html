@@ -13598,16 +13598,13 @@ window.showPV();
       <div id="hub-question-text" style="margin-bottom:10px; font-weight:600;"></div>
       <div style="display:flex; gap:10px;">
         <button type="button" id="hub-btn-yes" onclick="handleHubAnswer('yes')"
-          style="flex:1; padding:8px; border:1px solid #c9a84c; border-radius:6px; background:#fff; color:#5a4000; font-size:13px; cursor:pointer;">
-          是，我已在另一个群
-        </button>
+          style="flex:1; padding:8px; border:1px solid #c9a84c; border-radius:6px; background:#fff; color:#5a4000; font-size:13px; cursor:pointer;">是</button>
         <button type="button" id="hub-btn-no" onclick="handleHubAnswer('no')"
-          style="flex:1; padding:8px; border:1px solid #c9a84c; border-radius:6px; background:#fff; color:#5a4000; font-size:13px; cursor:pointer;">
-          否，我未在另一个群
-        </button>
+          style="flex:1; padding:8px; border:1px solid #c9a84c; border-radius:6px; background:#fff; color:#5a4000; font-size:13px; cursor:pointer;">否</button>
       </div>
       <div id="hub-answer-msg" style="margin-top:8px; font-size:12px; min-height:16px;"></div>
     </div>
+    <div id="hub-already-in" data-stage="grade" data-confirmed="" style="display:none;"></div>
     <!-- 年级群：是否已在该群询问框 -->
     <div id="grade-qbox" style="display:none; background:#fff8e1; border:1px solid #ffe082; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:13px; color:#5a4000; line-height:1.7;">
       <div id="grade-question-text" style="margin-bottom:10px; font-weight:600;"></div>
