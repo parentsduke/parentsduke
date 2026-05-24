@@ -13793,7 +13793,9 @@ function goToGroupForm() {
     return;
   }
   msg.textContent = '';
-  if (val.indexOf('grade_') === 0 || val === 'premed' || val === 'multi' || val === 'hub') {
+  if (val === 'grade_2030') {
+    window.location.href = 'https://dukeparents.org/form.html';
+  } else if (val.indexOf('grade_') === 0 || val === 'premed' || val === 'multi' || val === 'hub') {
     window.location.href = 'https://dukeparents.org/formMulti.html';
   } else if (val === 'form') {
     window.location.href = 'https://dukeparents.org/form.html';
