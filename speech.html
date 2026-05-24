@@ -358,9 +358,16 @@
         updateTranscript(inter);
       };
 
-      recognition.onerror = () => stopListening();
+      recognition.onerror = (e) => {
+        if (e.error === 'no-speech') return; // 忽略静音错误，onend 会自动重启
+        stopListening();
+      };
       recognition.onend = () => {
-        listening = false;
+        if (listening) {
+          // 自动重启，保持连续录音
+          try { recognition.start(); } catch(e) {}
+          return;
+        }
         body.classList.remove('listening');
         iconMic.style.display = 'block';
         iconStop.style.display = 'none';
@@ -390,6 +397,7 @@
     }
 
     function stopListening() {
+      listening = false;
       recognition?.stop();
     }
 
