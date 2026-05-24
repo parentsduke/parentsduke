@@ -676,15 +676,15 @@
         : `<span class="no-file">—</span>`;
       const clBtn = (r.admission_type === 'RD' && r.committed === true && r.submitter_email)
         ? `<button onclick="requestCommittedLetter('${r.id}','${(r.submitter_email||'').replace(/'/g,"\\'")}','${(r.student_name_cn||r.student_name_en||'').replace(/'/g,"\\'")}','${r.class_year||''}')"
-            style="padding:3px 8px;background:#d97706;color:#fff;border:none;border-radius:5px;
+            style="padding:3px 8px;background:#003087;color:#fff;border:none;border-radius:5px;
                    font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-            onmouseover="this.style.background='#b45309'" onmouseout="this.style.background='#d97706'">
+            onmouseover="this.style.background='#001a4d'" onmouseout="this.style.background='#003087'">
             📩 催信
           </button>`
         : '';
       const clCell = r.committed_letter_path
-        ? `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:5px;"><a class="file-link" href="#" onclick="openFile('${r.committed_letter_path}');return false;">查看文件</a>${clBtn}</div>`
-        : `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:5px;"><span class="no-file">—</span>${clBtn}</div>`;
+        ? `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:4px 0;"><a class="file-link" href="#" onclick="openFile('${r.committed_letter_path}');return false;">查看文件</a>${clBtn}</div>`
+        : `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:4px 0;"><span class="no-file">—</span>${clBtn}</div>`;
 
       return `<tr>
         <td style="text-align:center;padding:8px 6px;">
