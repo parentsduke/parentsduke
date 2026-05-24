@@ -13574,11 +13574,11 @@ window.showPV();
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none; background:#fff; color:#333;"
         onchange="handleWechatGroupChange(this.value)">
         <option value="">请选择希望申请的群</option>
-        <option value="form">Duke 2030 本科家长群</option>
-        <option value="multi">Duke 2029 本科家长群</option>
-        <option value="multi">Duke 2028 本科家长群</option>
-        <option value="multi">Duke 2027 本科家长群</option>
-        <option value="multi">研究生家长群</option>
+        <option value="grade_2030">Duke 2030 本科家长群</option>
+        <option value="grade_2029">Duke 2029 本科家长群</option>
+        <option value="grade_2028">Duke 2028 本科家长群</option>
+        <option value="grade_2027">Duke 2027 本科家长群</option>
+        <option value="grade_grad">研究生家长群</option>
         <option value="premed">Pre-med Track 群</option>
         <option value="full">扯谈Duke群</option>
         <option value="hub">扯谈Duke群1.0</option>
@@ -13608,7 +13608,17 @@ window.showPV();
       </div>
       <div id="hub-answer-msg" style="margin-top:8px; font-size:12px; min-height:16px;"></div>
     </div>
-    <div id="hub-already-in" style="display:none;"></div>
+    <!-- 年级群：是否已在该群询问框 -->
+    <div id="grade-qbox" style="display:none; background:#fff8e1; border:1px solid #ffe082; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:13px; color:#5a4000; line-height:1.7;">
+      <div id="grade-question-text" style="margin-bottom:10px; font-weight:600;"></div>
+      <div style="display:flex; gap:10px;">
+        <button type="button" id="grade-btn-yes" onclick="handleGradeAnswer('yes')"
+          style="flex:1; padding:8px; border:1px solid #c9a84c; border-radius:6px; background:#fff; color:#5a4000; font-size:13px; cursor:pointer;">是，我已在该群</button>
+        <button type="button" id="grade-btn-no" onclick="handleGradeAnswer('no')"
+          style="flex:1; padding:8px; border:1px solid #c9a84c; border-radius:6px; background:#fff; color:#5a4000; font-size:13px; cursor:pointer;">否，我还未加入</button>
+      </div>
+      <div id="grade-answer-msg" style="margin-top:8px; font-size:12px; min-height:16px;"></div>
+    </div>
     <button id="wechat-group-btn" onclick="goToGroupForm()"
       style="width:100%; padding:10px; background:#012169; color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
       前往申请表单
@@ -13642,6 +13652,26 @@ function handleInviteNameChange(val) {
 
 // invite-name 不触发互斥检查
 
+function handleGradeAnswer(answer) {
+  var btnYes = document.getElementById('grade-btn-yes');
+  var btnNo = document.getElementById('grade-btn-no');
+  var msg = document.getElementById('grade-answer-msg');
+  var btn = document.getElementById('wechat-group-btn');
+  btnYes.style.background = '#fff';
+  btnNo.style.background = '#fff';
+  if (answer === 'yes') {
+    btnYes.style.background = '#ffe0b2';
+    msg.style.color = '#c0392b';
+    msg.textContent = '您已在该群中，无需重复申请，谢谢！';
+    btn.style.display = 'none';
+  } else {
+    btnNo.style.background = '#e8f5e9';
+    msg.style.color = '#0a7c3e';
+    msg.textContent = '确认。请点击下方按钮填写申请。';
+    btn.style.display = 'block';
+  }
+}
+
 function handleHubAnswer(answer) {
   var marker = document.getElementById('hub-already-in');
   var answerMsg = document.getElementById('hub-answer-msg');
@@ -13658,14 +13688,12 @@ function handleHubAnswer(answer) {
   var stage = marker.dataset.stage || 'grade';
 
   if (val === 'hub' && stage === 'grade') {
-    // 第一步：是否已在年级家长群
     if (answer === 'no') {
       btnNo.style.background = '#ffe0b2';
       answerMsg.style.color = '#c0392b';
       answerMsg.innerHTML = '请先申请加入您孩子所在年级的本科家长群，再申请此群。<br>请在上方下拉菜单中选择对应年级群。';
       groupBtn.style.display = 'none';
     } else {
-      // 进入第二步：互斥检查
       marker.dataset.stage = 'mutex';
       btnYes.style.background = '#e8f5e9';
       answerMsg.textContent = '';
@@ -13675,7 +13703,6 @@ function handleHubAnswer(answer) {
       btnNo.textContent = '否，我未在' + other;
     }
   } else if (val === 'hub' && stage === 'mutex') {
-    // 第二步：互斥检查
     var other2 = selText.indexOf('1.0') !== -1 ? '扯谈Duke群2.0' : '扯谈Duke群1.0';
     if (answer === 'yes') {
       btnYes.style.background = '#ffe0b2';
@@ -13689,7 +13716,6 @@ function handleHubAnswer(answer) {
       groupBtn.style.display = 'block';
     }
   } else {
-    // premed：年级群检查
     if (answer === 'yes') {
       btnYes.style.background = '#e8f5e9';
       answerMsg.style.color = '#0a7c3e';
@@ -13708,28 +13734,43 @@ function handleWechatGroupChange(val) {
   var notice = document.getElementById('wechat-full-notice');
   var hubNotice = document.getElementById('wechat-hub-notice');
   var hubBox = document.getElementById('hub-qbox');
+  var gradeBox = document.getElementById('grade-qbox');
   var marker = document.getElementById('hub-already-in');
   var answerMsg = document.getElementById('hub-answer-msg');
+  var gradeMsg = document.getElementById('grade-answer-msg');
   var btnYes = document.getElementById('hub-btn-yes');
   var btnNo = document.getElementById('hub-btn-no');
+  var gradeBtnYes = document.getElementById('grade-btn-yes');
+  var gradeBtnNo = document.getElementById('grade-btn-no');
   var btn = document.getElementById('wechat-group-btn');
   var msg = document.getElementById('wechat-group-msg');
   var qtext = document.getElementById('hub-question-text');
+  var gradeQtext = document.getElementById('grade-question-text');
+  var sel = document.getElementById('wechat-group-select');
+  var selText = sel.options[sel.selectedIndex].text;
 
-  // 重置
+  // 重置全部
   msg.textContent = '';
   notice.style.display = 'none';
   hubNotice.style.display = 'none';
   hubBox.style.display = 'none';
+  gradeBox.style.display = 'none';
   btn.style.display = 'block';
   btn.textContent = '前往申请表单';
   if (marker) { marker.dataset.confirmed = ''; marker.dataset.stage = 'grade'; }
   if (answerMsg) answerMsg.textContent = '';
+  if (gradeMsg) gradeMsg.textContent = '';
   if (btnYes) { btnYes.style.background = '#fff'; btnYes.textContent = '是'; }
   if (btnNo) { btnNo.style.background = '#fff'; btnNo.textContent = '否'; }
+  if (gradeBtnYes) gradeBtnYes.style.background = '#fff';
+  if (gradeBtnNo) gradeBtnNo.style.background = '#fff';
 
   if (val === 'full') {
     notice.style.display = 'block';
+    btn.style.display = 'none';
+  } else if (val.indexOf('grade_') === 0) {
+    if (gradeQtext) gradeQtext.textContent = '请问您目前是否已在' + selText + '中？';
+    gradeBox.style.display = 'block';
     btn.style.display = 'none';
   } else if (val === 'hub') {
     hubNotice.style.display = 'block';
@@ -13748,14 +13789,14 @@ function goToGroupForm() {
   var val = sel.value;
   var msg = document.getElementById('wechat-group-msg');
   if (!val) {
-    msg.textContent = '请先选择您希望申请的家长群。';
+    msg.textContent = '请先选择您希望申请的群。';
     return;
   }
   msg.textContent = '';
-  if (val === 'form') {
-    window.location.href = 'https://dukeparents.org/form.html';
-  } else if (val === 'multi' || val === 'hub' || val === 'premed') {
+  if (val.indexOf('grade_') === 0 || val === 'premed' || val === 'multi' || val === 'hub') {
     window.location.href = 'https://dukeparents.org/formMulti.html';
+  } else if (val === 'form') {
+    window.location.href = 'https://dukeparents.org/form.html';
   }
 }
 </script>
