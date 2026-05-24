@@ -13792,8 +13792,20 @@ function goToGroupForm() {
   msg.textContent = '';
   if (val === 'grade_2030') {
     window.location.href = 'https://dukeparents.org/form.html';
-  } else if (val.indexOf('grade_') === 0 || val === 'premed' || val === 'multi' || val === 'hub') {
-    window.location.href = 'https://dukeparents.org/formMulti.html';
+  } else if (val === 'grade_2029') {
+    window.location.href = 'https://dukeparents.org/formMulti.html?group=2029';
+  } else if (val === 'grade_2028') {
+    window.location.href = 'https://dukeparents.org/formMulti.html?group=2028';
+  } else if (val === 'grade_2027') {
+    window.location.href = 'https://dukeparents.org/formMulti.html?group=2027';
+  } else if (val === 'grade_grad') {
+    window.location.href = 'https://dukeparents.org/formMulti.html?group=grad';
+  } else if (val === 'premed') {
+    window.location.href = 'https://dukeparents.org/formMulti.html?group=premed';
+  } else if (val === 'hub') {
+    var selText = document.getElementById('wechat-group-select').options[document.getElementById('wechat-group-select').selectedIndex].text;
+    var hubParam = selText.indexOf('1.0') !== -1 ? 'hub10' : 'hub20';
+    window.location.href = 'https://dukeparents.org/formMulti.html?group=' + hubParam;
   } else if (val === 'form') {
     window.location.href = 'https://dukeparents.org/form.html';
   }
