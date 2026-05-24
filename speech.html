@@ -349,12 +349,14 @@
       recognition.interimResults = true;
 
       recognition.onresult = (e) => {
-        let fin = '', inter = '';
-        for (let i = 0; i < e.results.length; i++) {
-          if (e.results[i].isFinal) fin += e.results[i][0].transcript;
-          else inter += e.results[i][0].transcript;
+        let inter = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          if (e.results[i].isFinal) {
+            finalText += e.results[i][0].transcript;
+          } else {
+            inter += e.results[i][0].transcript;
+          }
         }
-        if (fin) finalText += fin;
         updateTranscript(inter);
       };
 
