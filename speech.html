@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>语音转文字</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@300;400&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --blue-glow: rgba(60,80,200,0.08);
+      --red-glow: rgba(220,40,40,0.12);
+      --btn-blue-bg: rgba(68,102,255,0.15);
+      --btn-blue-border: #4466ff;
+      --btn-blue-text: #7799ff;
+      --border-idle: #1e1e28;
+      --border-active: rgba(220,40,40,0.3);
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Serif Display', Georgia, serif;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      color: #e8e8e8;
+    }
+
+    /* Background glow */
+    #bg-glow {
+      position: fixed;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      transition: background 0.6s;
+      background: radial-gradient(circle, var(--blue-glow) 0%, transparent 70%);
+      z-index: 0;
+    }
+    body.listening #bg-glow {
+      background: radial-gradient(circle, var(--red-glow) 0%, transparent 70%);
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    /* Title */
+    .title-group {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .title-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 6px;
+      color: #555;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .title-main {
+      font-size: 28px;
+      font-weight: 700;
+      color: #e8e8e8;
+      letter-spacing: -0.5px;
+    }
+
+    /* Unsupported */
+    #unsupported {
+      color: #e06060;
+      font-size: 14px;
+      text-align: center;
+      display: none;
+    }
+    #unsupported span {
+      color: #666;
+      font-size: 12px;
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* Lang selector */
+    .lang-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 40px;
+    }
+    .lang-btn {
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid #2a2a35;
+      background: transparent;
+      color: #555;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Mono', monospace;
+    }
+    .lang-btn.active {
+      border-color: var(--btn-blue-border);
+      background: var(--btn-blue-bg);
+      color: var(--btn-blue-text);
+    }
+    .lang-btn:disabled {
+      cursor: not-allowed;
+    }
+
+    /* Mic button area */
+    .mic-wrap {
+      position: relative;
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 88px;
+      height: 88px;
+    }
+
+    /* Pulse rings */
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      display: none;
+    }
+    body.listening .ring { display: block; }
+    .ring-1 { inset: -18px; border-color: rgba(220,40,40,0.22); animation: ring 1.0s ease-out infinite; animation-delay: 0.2s; }
+    .ring-2 { inset: -36px; border-color: rgba(220,40,40,0.14); animation: ring 1.3s ease-out infinite; animation-delay: 0.4s; }
+    .ring-3 { inset: -54px; border-color: rgba(220,40,40,0.06); animation: ring 1.6s ease-out infinite; animation-delay: 0.6s; }
+
+    @keyframes ring {
+      0%   { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    #mic-btn {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      border: none;
+      background: radial-gradient(circle at 40% 40%, #2a3080, #111530);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 12px rgba(60,80,200,0.2), 0 4px 24px rgba(0,0,0,0.6);
+      position: relative; z-index: 2;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s, box-shadow 0.3s;
+    }
+    body.listening #mic-btn {
+      background: radial-gradient(circle at 40% 40%, #ff4444, #b31010);
+      box-shadow: 0 0 32px rgba(220,40,40,0.4), 0 4px 24px rgba(0,0,0,0.6);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    /* Status */
+    #status {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 32px;
+      transition: color 0.3s;
+      min-height: 18px;
+    }
+    body.listening #status { color: #e05555; }
+
+    /* Transcript box */
+    #transcript-box {
+      width: 100%;
+      min-height: 140px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-idle);
+      border-radius: 16px;
+      padding: 20px 24px;
+      transition: border-color 0.3s;
+    }
+    body.listening #transcript-box { border-color: var(--border-active); }
+
+    #placeholder {
+      color: #333;
+      font-size: 15px;
+      font-style: italic;
+    }
+    #transcript-final {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #d8d8d8;
+      white-space: pre-wrap;
+    }
+    #transcript-interim {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #666;
+      white-space: pre-wrap;
+    }
+
+    /* Actions */
+    #actions {
+      display: none;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .action-btn {
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      transition: all 0.2s;
+    }
+    #copy-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid #2a2a35;
+      color: #aaa;
+    }
+    #copy-btn.copied {
+      background: rgba(40,160,80,0.2);
+      border-color: rgba(40,160,80,0.4);
+      color: #5dcc88;
+    }
+    #clear-btn {
+      background: transparent;
+      border: 1px solid #2a2a35;
+      color: #555;
+    }
+    #clear-btn:hover { color: #888; }
+  </style>
+</head>
+<body>
+  <div id="bg-glow"></div>
+
+  <div class="container">
+    <div class="title-group">
+      <div class="title-sub">Real-time</div>
+      <div class="title-main">语音转文字</div>
+    </div>
+
+    <div id="unsupported">
+      此浏览器不支持语音识别
+      <span>请使用 Chrome 或 Safari</span>
+    </div>
+
+    <div id="main-ui">
+      <!-- Lang selector -->
+      <div class="lang-selector">
+        <button class="lang-btn active" data-lang="zh-CN">普通话</button>
+        <button class="lang-btn" data-lang="en-US">English</button>
+        <button class="lang-btn" data-lang="zh-TW">粤語</button>
+      </div>
+
+      <!-- Mic -->
+      <div class="mic-wrap">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+        <button id="mic-btn" aria-label="开始录音">
+          <svg id="icon-mic" width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="2" width="6" height="11" rx="3" fill="white"/>
+            <path d="M5 10a7 7 0 0014 0" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            <line x1="12" y1="17" x2="12" y2="21" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="9" y1="21" x2="15" y2="21" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <svg id="icon-stop" width="32" height="32" viewBox="0 0 24 24" fill="none" style="display:none">
+            <rect x="7" y="7" width="10" height="10" rx="2" fill="white"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Status -->
+      <div id="status">点击开始</div>
+
+      <!-- Transcript -->
+      <div id="transcript-box">
+        <div id="placeholder">语音内容将显示在此处…</div>
+        <span id="transcript-final" style="display:none"></span><span id="transcript-interim" style="display:none"></span>
+      </div>
+
+      <!-- Actions -->
+      <div id="actions">
+        <button class="action-btn" id="copy-btn">复制</button>
+        <button class="action-btn" id="clear-btn">清空</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      document.getElementById('unsupported').style.display = 'block';
+      document.getElementById('main-ui').style.display = 'none';
+    }
+
+    let recognition = null;
+    let listening = false;
+    let finalText = '';
+    let animFrame = null;
+    let animT = 0;
+    let currentLang = 'zh-CN';
+
+    const body = document.body;
+    const micBtn = document.getElementById('mic-btn');
+    const iconMic = document.getElementById('icon-mic');
+    const iconStop = document.getElementById('icon-stop');
+    const statusEl = document.getElementById('status');
+    const placeholder = document.getElementById('placeholder');
+    const finalEl = document.getElementById('transcript-final');
+    const interimEl = document.getElementById('transcript-interim');
+    const actions = document.getElementById('actions');
+    const copyBtn = document.getElementById('copy-btn');
+
+    // Lang buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (listening) return;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentLang = btn.dataset.lang;
+      });
+    });
+
+    function updateTranscript(interim) {
+      const hasContent = finalText || interim;
+      placeholder.style.display = hasContent ? 'none' : 'block';
+      finalEl.style.display = hasContent ? 'inline' : 'none';
+      interimEl.style.display = interim ? 'inline' : 'none';
+      finalEl.textContent = finalText;
+      interimEl.textContent = interim;
+      actions.style.display = hasContent ? 'flex' : 'none';
+    }
+
+    function startListening() {
+      recognition = new SR();
+      recognition.lang = currentLang;
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      recognition.onresult = (e) => {
+        let fin = '', inter = '';
+        for (let i = 0; i < e.results.length; i++) {
+          if (e.results[i].isFinal) fin += e.results[i][0].transcript;
+          else inter += e.results[i][0].transcript;
+        }
+        if (fin) finalText += fin;
+        updateTranscript(inter);
+      };
+
+      recognition.onerror = () => stopListening();
+      recognition.onend = () => {
+        listening = false;
+        body.classList.remove('listening');
+        iconMic.style.display = 'block';
+        iconStop.style.display = 'none';
+        statusEl.textContent = finalText ? '已停止' : '点击开始';
+        cancelAnimationFrame(animFrame);
+        micBtn.style.transform = 'scale(1)';
+        updateTranscript('');
+        document.querySelectorAll('.lang-btn').forEach(b => b.disabled = false);
+      };
+
+      recognition.start();
+      listening = true;
+      body.classList.add('listening');
+      iconMic.style.display = 'none';
+      iconStop.style.display = 'block';
+      statusEl.textContent = '● 录音中';
+      document.querySelectorAll('.lang-btn').forEach(b => b.disabled = true);
+
+      animT = 0;
+      const animate = () => {
+        animT += 0.08;
+        const s = 1 + Math.sin(animT) * 0.15 + Math.random() * 0.05;
+        micBtn.style.transform = `scale(${s})`;
+        animFrame = requestAnimationFrame(animate);
+      };
+      animFrame = requestAnimationFrame(animate);
+    }
+
+    function stopListening() {
+      recognition?.stop();
+    }
+
+    micBtn.addEventListener('click', () => {
+      if (listening) stopListening();
+      else startListening();
+    });
+
+    copyBtn.addEventListener('click', () => {
+      const text = finalEl.textContent + interimEl.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.classList.add('copied');
+        copyBtn.textContent = '✓ 已复制';
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          copyBtn.textContent = '复制';
+        }, 1500);
+      });
+    });
+
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      finalText = '';
+      updateTranscript('');
+      statusEl.textContent = listening ? '● 录音中' : '点击开始';
+    });
+  </script>
+</body>
+</html>
