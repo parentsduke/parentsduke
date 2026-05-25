@@ -1449,30 +1449,18 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
           <!-- 子手风琴：SMIP保费与覆盖范围 -->
           <div class="sub-accordion">
             <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-              <span>SMIP保费与覆盖范围(2025-2026)<span class="tag tag-key">保费</span></span>
+              <span>SMIP保费与覆盖范围(2026-2027)<span class="tag tag-key">保费</span></span>
               <span class="sub-accordion-arrow">&#9658;</span>
             </button>
             <div class="sub-accordion-body">
               <div class="cal-highlight">
-                <strong>承保方：Blue Cross and Blue Shield of North Carolina(Student Blue)</strong><br>
-                保险年度：2025年8月1日 &#8212; 2026年7月31日
+                <strong>承保方：Aetna</strong>（2026年8月1日起，原承保方BCBS已更换）<br>
+                保险年度：2026年8月1日 &#8212; 2027年7月31日
               </div>
-              <div class="section-title">2025-2026年度保费</div>
+              <div class="section-title">2026-2027年度保费</div>
               <div class="cal-item">
                 <div class="cal-date">学生本人(年度)</div>
-                <div><div class="cal-desc">$3,751.56</div></div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-date">配偶/伴侣(年度附加)</div>
-                <div><div class="cal-desc">$3,577.74</div></div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-date">子女(年度附加)</div>
-                <div><div class="cal-desc">$3,992.15</div></div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-date">配偶+子女(年度附加)</div>
-                <div><div class="cal-desc">$7,625.61</div></div>
+                <div><div class="cal-desc">$4,290.00</div></div>
               </div>
               <div class="section-title">覆盖内容</div>
               <div class="cal-item">
@@ -1844,6 +1832,47 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
             <strong>🇨🇳 国内学生办理建议：</strong>可前往各地<strong>国际旅行卫生保健中心</strong>预约办理。建议提前从Duke官网下载疫苗表格，携带以往疫苗接种记录及I-20一同前往——中心工作人员有丰富的留美学生办理经验，会协助填写表格，缺种疫苗可当场补打。预约成功后中心会提供所需携带材料清单。
           </div>
 
+          <!-- 子手风琴：到校后能否补打疫苗 -->
+          <div class="sub-accordion" style="margin-top:12px;">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>到校后能否补打疫苗？</span>
+              <span class="sub-accordion-arrow">&#9658;</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div class="cal-highlight">
+                <strong>建议尽量在出发前完成所有疫苗接种</strong>，以避免到校后的课程延误或注册中断。
+              </div>
+              <p style="margin:10px 0 6px; font-size:14px; line-height:1.8; color:#333;">
+                Duke Student Health 提供到校后补打疫苗的机会。秋季入学的新生可参加学校8月份专门安排的疫苗接种活动（具体时间将由各项目发送邮件通知）；春季或暑期入学的学生可拨打 <strong>919-681-9355 按2</strong> 预约免疫护士。
+              </p>
+              <div style="font-size:13px; color:#c0392b; margin-top:8px;">
+                ⚠️ 无论在校前还是到校后补打，<strong>务必在开学后第30天前</strong>完成所有要求，否则将被取消注册。
+              </div>
+              <div style="margin-top:12px;">
+                <a href="https://students.duke.edu/wellness/studenthealth/immunizations/immunization-faq/" target="_blank">Duke Student Health 疫苗FAQ官网</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- 子手风琴：第30天截止能否延期 -->
+          <div class="sub-accordion">
+            <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+              <span>开学第30天截止日期能否延期？<span class="tag tag-key">必读</span></span>
+              <span class="sub-accordion-arrow">&#9658;</span>
+            </button>
+            <div class="sub-accordion-body">
+              <div class="cal-highlight" style="color:#c0392b;">
+                <strong>⚠️ 不能延期。</strong>北卡州法律要求不可豁免，开学后第30天未达标将被取消注册并限制访问Duke资源。
+              </div>
+              <p style="margin:10px 0 6px; font-size:14px; line-height:1.8; color:#333;">
+                如果已完成多剂系列疫苗的第一针但暂时无法继续，Student Health 会协助制定完成计划，不会直接退学处理。
+              </p>
+              <p style="margin:10px 0 6px; font-size:14px; line-height:1.8; color:#333;">
+                如有疑问或担心无法按时完成，请发邮件至 <strong>immunizations@duke.edu</strong> 与免疫团队沟通。
+              </p>
+            </div>
+          </div>
+
           <div style="margin-top:10px; font-size:13px;">
             <a href="https://students.duke.edu/wellness/studenthealth/immunizations/" target="_blank">Duke官方疫苗接种要求页面</a>
           </div>
@@ -1853,7 +1882,7 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
 
       <div class="cal-highlight">
         <strong>Duke学生SMIP疫苗覆盖总览</strong><br>
-        Duke SMIP(学生医疗保险计划)是由Blue Cross Blue Shield of NC承保的铂金级ACA合规保险。根据平价医疗法案，所有由ACIP(疫苗接种咨询委员会)推荐的预防性疫苗，在<strong>网络内接种时100%覆盖、无需自付</strong>。BCBS已承诺至少延续此政策至2026年底。<br><br>
+        Duke SMIP(学生医疗保险计划)是铂金级ACA合规保险，自2026年8月1日起由<strong>Aetna</strong>承保（原承保方为Blue Cross Blue Shield of NC）。根据平价医疗法案，所有由ACIP(疫苗接种咨询委员会)推荐的预防性疫苗，在<strong>网络内接种时100%覆盖、无需自付</strong>。<br><br>
         <strong>注意：国际旅行相关疫苗(如霍乱、黄热病等)不在SMIP覆盖范围内。</strong>
       </div>
 
@@ -2032,48 +2061,6 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
             <div class="cal-date">预防性医疗覆盖</div>
             <div><div class="cal-desc">访问bcbsnc.com/preventive查看ACA覆盖预防疫苗完整清单</div></div>
           </div>
-
-      <!-- 子手风琴：到校后能否补打疫苗 -->
-      <div class="sub-accordion">
-        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-          <span>到校后能否补打疫苗？</span>
-          <span class="sub-accordion-arrow">&#9658;</span>
-        </button>
-        <div class="sub-accordion-body">
-          <div class="cal-highlight">
-            <strong>建议尽量在出发前完成所有疫苗接种</strong>，以避免到校后的课程延误或注册中断。
-          </div>
-          <p style="margin:10px 0 6px; font-size:14px; line-height:1.8; color:#333;">
-            Duke Student Health 提供到校后补打疫苗的机会。秋季入学的新生可参加学校8月份专门安排的疫苗接种活动（具体时间将由各项目发送邮件通知）；春季或暑期入学的学生可拨打 <strong>919-681-9355 按2</strong> 预约免疫护士。
-          </p>
-          <div style="font-size:13px; color:#c0392b; margin-top:8px;">
-            ⚠️ 无论在校前还是到校后补打，<strong>务必在开学后第30天前</strong>完成所有要求，否则将被取消注册。
-          </div>
-          <div style="margin-top:12px;">
-            <a href="https://students.duke.edu/wellness/studenthealth/immunizations/immunization-faq/" target="_blank">Duke Student Health 疫苗FAQ官网</a>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- 子手风琴：第30天截止能否延期 -->
-      <div class="sub-accordion">
-        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
-          <span>开学第30天截止日期能否延期？<span class="tag tag-key">必读</span></span>
-          <span class="sub-accordion-arrow">&#9658;</span>
-        </button>
-        <div class="sub-accordion-body">
-          <div class="cal-highlight" style="color:#c0392b;">
-            <strong>⚠️ 不能延期。</strong>北卡州法律要求不可豁免，开学后第30天未达标将被取消注册并限制访问Duke资源。
-          </div>
-          <p style="margin:10px 0 6px; font-size:14px; line-height:1.8; color:#333;">
-            如果已完成多剂系列疫苗的第一针但暂时无法继续，Student Health 会协助制定完成计划，不会直接退学处理。
-          </p>
-          <p style="margin:10px 0 6px; font-size:14px; line-height:1.8; color:#333;">
-            如有疑问或担心无法按时完成，请发邮件至 <strong>immunizations@duke.edu</strong> 与免疫团队沟通。
-          </p>
-        </div>
-      </div>
 
     </div><!-- /accordion-body 疫苗 -->
   </div><!-- /accordion 疫苗与SMIP保险 -->
