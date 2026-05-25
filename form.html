@@ -1527,6 +1527,23 @@
     window.location.href = 'https://dukeparents.org/index.html';
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // 始终锁定2030，隐藏其他选项
+  document.addEventListener('DOMContentLoaded', function() {
+    const sel = document.getElementById('fYear');
+    if (!sel) return;
+    Array.from(sel.options).forEach(opt => {
+      if (opt.value && opt.value !== '2030') {
+        opt.hidden = true;
+        opt.disabled = true;
+      }
+    });
+    sel.value = '2030';
+    onYearChange('2030');
+    sel.style.pointerEvents = 'none';
+    sel.style.background = '#f5f5f5';
+    sel.style.color = '#555';
+  });
 </script>
 
 <!-- Lightbox -->
