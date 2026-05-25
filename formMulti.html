@@ -1294,7 +1294,7 @@ try {
     };
 
     const targetVal = groupMap[group];
-    if (!targetVal) return;
+    if (targetVal === undefined) return;
 
     const sel = document.getElementById('fYear');
     if (!sel) return;
@@ -1311,7 +1311,6 @@ try {
     sel.value = targetVal;
     if (targetVal) onYearChange(targetVal);
 
-    // 研究生保留硕士/博士可切换，不锁定
     if (group !== 'grad') {
       sel.style.pointerEvents = 'none';
       sel.style.background = '#f5f5f5';
