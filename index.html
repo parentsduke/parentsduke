@@ -2032,8 +2032,46 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
             <div class="cal-date">预防性医疗覆盖</div>
             <div><div class="cal-desc">访问bcbsnc.com/preventive查看ACA覆盖预防疫苗完整清单</div></div>
           </div>
-          <a href="https://studenthealth.duke.edu/services/immunizations/" target="_blank">Duke Student Health疫苗服务官网</a>
-          <a href="https://studentaffairs.duke.edu/studenthealth/health-insurance" target="_blank">Duke SMIP保险官网</a>
+
+      <!-- 子手风琴：到校后能否补打疫苗 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>到校后能否补打疫苗？</span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight">
+            <strong>建议尽量在出发前完成所有疫苗接种</strong>，以避免到校后的课程延误或注册中断。
+          </div>
+          <p style="margin:10px 0 6px; font-size:14px; line-height:1.8; color:#333;">
+            Duke Student Health 提供到校后补打疫苗的机会。秋季入学的新生可参加学校8月份专门安排的疫苗接种活动（具体时间将由各项目发送邮件通知）；春季或暑期入学的学生可拨打 <strong>919-681-9355 按2</strong> 预约免疫护士。
+          </p>
+          <div style="font-size:13px; color:#c0392b; margin-top:8px;">
+            ⚠️ 无论在校前还是到校后补打，<strong>务必在开学后第30天前</strong>完成所有要求，否则将被取消注册。
+          </div>
+          <div style="margin-top:12px;">
+            <a href="https://students.duke.edu/wellness/studenthealth/immunizations/immunization-faq/" target="_blank">Duke Student Health 疫苗FAQ官网</a>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 子手风琴：第30天截止能否延期 -->
+      <div class="sub-accordion">
+        <button class="sub-accordion-btn" onclick="toggleSubAccordion(this)">
+          <span>开学第30天截止日期能否延期？<span class="tag tag-key">必读</span></span>
+          <span class="sub-accordion-arrow">&#9658;</span>
+        </button>
+        <div class="sub-accordion-body">
+          <div class="cal-highlight" style="color:#c0392b;">
+            <strong>⚠️ 不能延期。</strong>北卡州法律要求不可豁免，开学后第30天未达标将被取消注册并限制访问Duke资源。
+          </div>
+          <p style="margin:10px 0 6px; font-size:14px; line-height:1.8; color:#333;">
+            如果已完成多剂系列疫苗的第一针但暂时无法继续，Student Health 会协助制定完成计划，不会直接退学处理。
+          </p>
+          <p style="margin:10px 0 6px; font-size:14px; line-height:1.8; color:#333;">
+            如有疑问或担心无法按时完成，请发邮件至 <strong>immunizations@duke.edu</strong> 与免疫团队沟通。
+          </p>
         </div>
       </div>
 
