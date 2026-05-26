@@ -81,6 +81,8 @@ HTML_SOURCES = {
                        'selectors': ['h2 a','h3 a','.event-title a','.views-field-title a',
                                      'article a','.card-title a','.field-content a',
                                      '.views-row a','.item-list a']},
+    'careerhub_outcomes': {'urls': ['https://careerhub.students.duke.edu/resources/senior-class-outcomes-2022-2025/'],
+                           'selectors': ['h3 a','h2 a','.resource-title a','article a','p a']},
 }
 
 REGISTRATION_PAGES = ['https://registrar.duke.edu/registration/']
@@ -1198,6 +1200,7 @@ def main():
                 'focus':           ex.submit(fetch_source, 'focus', 3),
                 'library':         ex.submit(fetch_source, 'library', 3),
                 'alumni_sendoff':  ex.submit(fetch_source, 'alumni_sendoff', 4),
+                'careerhub_outcomes': ex.submit(fetch_source, 'careerhub_outcomes', 4),
                 'chronicle':       ex.submit(fetch_source, 'chronicle', 8),
                 'research':        ex.submit(fetch_source, 'research', 3),
                 'pratt':           ex.submit(fetch_source, 'pratt', 3),
@@ -1228,7 +1231,7 @@ def main():
     ]
     campus_items     = (r['campus'] + r['dsg'] + r['students'] + r['dukeengage'] +
                         r['undergrad'] + r['interdisciplinary'] + r['focus'] +
-                        r['library'] + r['alumni_sendoff'])
+                        r['library'] + r['alumni_sendoff'] + r['careerhub_outcomes'])
     chronicle_items  = r['chronicle']
     research_items   = r['research'] + r['pratt'] + r['trinity']
     visa_items       = r['visa'] + r['visa_site']
