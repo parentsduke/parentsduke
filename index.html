@@ -12212,12 +12212,67 @@ async function approveJingcai(id) {
 }
 
 // ===== 管理员：加载待审核Q&A问题 =====
+// ===== 截图预览 =====
+function onInviteScreenshotChange(input) {
+  var file = input.files[0];
+  var nameEl = document.getElementById('invite-screenshot-name');
+  var preview = document.getElementById('invite-screenshot-preview');
+  var img = document.getElementById('invite-screenshot-img');
+  if (file) {
+    nameEl.textContent = file.name;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      img.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  } else {
+    nameEl.textContent = '点击选择截图（JPG / PNG）';
+    preview.style.display = 'none';
+  }
+}
+
+// ===== 截图上传到 GitHub =====
+async function uploadInviteScreenshot(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = async function(e) {
+      var base64Data = e.target.result.split(',')[1];
+      try {
+        var resp = await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/screenshot-upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8'
+          },
+          body: JSON.stringify({
+            fileName: file.name,
+            base64Data: base64Data,
+            mimeType: file.type
+          })
+        });
+        var data = await resp.json();
+        if (data.ok && data.url) {
+          resolve(data.url);
+        } else {
+          reject(new Error(data.error || '截图上传失败'));
+        }
+      } catch(e) {
+        reject(e);
+      }
+    };
+    reader.onerror = function() { reject(new Error('文件读取失败')); };
+    reader.readAsDataURL(file);
+  });
+}
+
 // ===== 申请入群 =====
 async function submitInviteRequest(btn) {
   var classVal    = (document.getElementById('invite-class')    || {}).value || '';
   var wxgroupVal  = (document.getElementById('invite-name')     || {}).value || '';
   var nicknameVal = (document.getElementById('invite-nickname') || {}).value || '';
   var emailVal    = (document.getElementById('invite-email')    || {}).value || '';
+  var screenshotFile = (document.getElementById('invite-screenshot') || {}).files && document.getElementById('invite-screenshot').files[0];
   var msg         = document.getElementById('invite-msg');
 
   classVal = classVal.trim(); wxgroupVal = wxgroupVal.trim();
@@ -12229,8 +12284,23 @@ async function submitInviteRequest(btn) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
     msg.style.color = 'crimson'; msg.textContent = '请输入有效的电子邮件地址'; return;
   }
+  if (!screenshotFile) {
+    msg.style.color = 'crimson'; msg.textContent = '请上传群昵称截图'; return;
+  }
 
-  btn.disabled = true; btn.textContent = '提交中...';
+  btn.disabled = true; btn.textContent = '上传截图中...';
+
+  // 先上传截图
+  var screenshotUrl = '';
+  try {
+    screenshotUrl = await uploadInviteScreenshot(screenshotFile);
+  } catch(e) {
+    btn.disabled = false; btn.textContent = '提交申请';
+    msg.style.color = 'crimson'; msg.textContent = '截图上传失败：' + e.message;
+    return;
+  }
+
+  btn.textContent = '提交中...';
 
   try {
     // 1. 写入 pending_uploads 数据库（未登录时创建匿名客户端）
@@ -12255,12 +12325,13 @@ async function submitInviteRequest(btn) {
       }
 
       var insertResult = await sbClient.from('pending_uploads').insert({
-        file_path:   emailVal,
-        file_name:   wxgroupVal + ' - ' + nicknameVal,
-        title:       classVal + '届 - ' + wxgroupVal + ' - ' + nicknameVal,
-        uploaded_by: classVal,
-        status:      'pending',
-        file_type:   'invite_request'
+        file_path:      emailVal,
+        file_name:      wxgroupVal + ' - ' + nicknameVal,
+        title:          classVal + '届 - ' + wxgroupVal + ' - ' + nicknameVal,
+        uploaded_by:    classVal,
+        status:         'pending',
+        file_type:      'invite_request',
+        screenshot_url: screenshotUrl
       });
       if (insertResult.error) {
         console.error('DB insert error:', insertResult.error.message);
@@ -12340,6 +12411,7 @@ async function loadInviteRequests() {
           + '<div style="font-size:14px;font-weight:700;color:#012169;margin-bottom:6px;">'
           + (item.uploaded_by || '') + '届 &nbsp;|&nbsp; ' + item.file_name + '</div>'
           + '<div style="font-size:13px;color:#333;margin-bottom:4px;">邮箱：<a href="mailto:' + (item.file_path || '') + '" style="color:#1a6bbf;">' + (item.file_path || '—') + '</a></div>'
+          + (item.screenshot_url ? '<div style="margin:8px 0;"><a href="' + item.screenshot_url + '" target="_blank"><img src="' + item.screenshot_url + '" style="max-width:100%;max-height:120px;border-radius:6px;border:1px solid #ccd;" onerror="this.style.display=\'none\'"></a></div>' : '<div style="font-size:12px;color:#aaa;margin-bottom:4px;">（无截图）</div>')
           + '<button onclick="markInviteDone(' + item.id + ',this)" style="padding:5px 14px;background:#0a7c3e;color:#fff;border:none;border-radius:5px;font-size:12px;cursor:pointer;margin-right:8px;">已处理</button>'
           + '<button onclick="deleteInvite(' + item.id + ',this)" style="padding:5px 14px;background:#c0392b;color:#fff;border:none;border-radius:5px;font-size:12px;cursor:pointer;">删除</button>'
           + '</div>';
@@ -13605,6 +13677,19 @@ window.showPV();
     <div style="margin-bottom:16px;">
       <input id="invite-email" type="email" placeholder="电子邮件地址" maxlength="80"
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none;">
+    </div>
+    <div style="margin-bottom:4px;">
+      <div style="font-size:13px; color:#333; margin-bottom:6px; font-weight:500;">📸 群昵称截图 <span style="color:#c0392b;">*</span></div>
+      <label id="invite-screenshot-label" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; padding:10px 12px; border:1.5px dashed #aac; border-radius:6px; font-size:13px; color:#555; cursor:pointer; background:#f8f8ff;">
+        <span>📁</span><span id="invite-screenshot-name">点击选择截图（JPG / PNG）</span>
+        <input id="invite-screenshot" type="file" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="onInviteScreenshotChange(this)">
+      </label>
+      <div id="invite-screenshot-preview" style="display:none; margin-top:8px; text-align:center;">
+        <img id="invite-screenshot-img" style="max-width:100%; max-height:160px; border-radius:6px; border:1px solid #dde;" />
+      </div>
+    </div>
+    <div style="margin-bottom:16px; font-size:12px; color:#888; line-height:1.5;">
+      请上传您在该微信家长群中的群成员页截图，显示您的群昵称，以便管理员核实身份。
     </div>
         <button onclick="submitInviteRequest(this)"
       style="width:100%; padding:10px; background:#012169; color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
