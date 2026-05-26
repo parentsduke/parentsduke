@@ -8,7 +8,7 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #f4f1eb; font-family: 'Noto Sans SC', sans-serif; color: #1a1208; }
-  .app { min-height: 100vh; padding: 32px 20px 80px; max-width: 960px; margin: 0 auto; }
+  .app { min-height: 100vh; padding: 32px 20px 80px; max-width: 1400px; margin: 0 auto; }
   .title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.25em; color: #8a7a5a; text-transform: uppercase; margin-bottom: 6px; }
   h1 { font-size: 26px; font-weight: 700; color: #1a1208; margin-bottom: 32px; }
   h1 span { color: #003087; }
@@ -54,12 +54,12 @@
   .by { background: #fff8e6; color: #b8963e; }
   .br { background: #fdecea; color: #c84b31; }
   .bx { background: #f0ece4; color: #888; }
-  .nick { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #333; max-width: 180px; word-break: break-all; }
+  .nick { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #333; max-width: 240px; word-break: break-all; }
   .parsed { font-size: 11px; color: #555; line-height: 1.7; }
   .parsed b { color: #003087; }
   select.match-sel {
     font-size: 12px; border: 1px solid #ddd; border-radius: 5px; padding: 4px 6px;
-    background: #fff; color: #1a1208; outline: none; max-width: 200px; font-family: 'Noto Sans SC', sans-serif;
+    background: #fff; color: #1a1208; outline: none; max-width: 320px; font-family: 'Noto Sans SC', sans-serif;
   }
   select.match-sel:focus { border-color: #003087; }
   .score-wrap { display: flex; align-items: center; gap: 5px; }
@@ -355,7 +355,7 @@ async function doMatch() {
     return {
       parsed,
       candidates: scored.slice(0, 6),
-      override: scored[0]?.record?.id || '__none__',
+      override: scored[0]?.record?.id || (scored.length === 0 ? '__new__' : '__none__'),
       skip: false,
     };
   });
@@ -427,10 +427,13 @@ function setSkip(i, val) {
 }
 function updateSummary() {
   const confirmed = matches.filter(m => !m.skip && m.override !== '__none__').length;
+  const newRecs   = matches.filter(m => !m.skip && m.override === '__new__').length;
   const skipped   = matches.filter(m => m.skip).length;
   const noMatch   = matches.filter(m => !m.skip && m.override === '__none__').length;
   document.getElementById('matchSummary').innerHTML =
-    `共 <b>${matches.length}</b> 条昵称，<b>${confirmed}</b> 条将写入，<b>${skipped}</b> 条已跳过，<b>${noMatch}</b> 条无匹配`;
+    `共 <b>${matches.length}</b> 条昵称，<b>${confirmed}</b> 条将写入` +
+    (newRecs ? `（含 <b>${newRecs}</b> 条新建）` : '') +
+    `，<b>${skipped}</b> 条已跳过，<b>${noMatch}</b> 条无匹配`;
   document.getElementById('writeBtn').textContent = `✅ 写入 ${confirmed} 条到数据库`;
   document.getElementById('writeBtn').disabled = confirmed === 0;
 }
@@ -440,23 +443,51 @@ async function doWrite() {
   const btn = document.getElementById('writeBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>写入中…';
-  let ok = 0, skipped = 0, fail = 0, failList = [];
+  let ok = 0, created = 0, skipped = 0, fail = 0, failList = [];
 
   for (const m of matches) {
     if (m.skip || m.override === '__none__') { skipped++; continue; }
+
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/admissions_submissions?id=eq.${m.override}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal',
-        },
-        body: JSON.stringify({ wx_nickname: m.parsed.nickname }),
-      });
-      if (res.ok) ok++;
-      else { fail++; failList.push(m.parsed.nickname); }
+      if (m.override === '__new__') {
+        // 新建记录
+        const p = m.parsed;
+        const newRecord = {
+          wx_nickname:     p.nickname,
+          student_name_en: p.childName  || null,
+          class_year:      p.classYear  || null,
+          college:         p.college    || null,
+          location:        p.location   || null,
+          committed:       p.committed === true ? true : p.committed === false ? false : null,
+          admission_type:  null,
+        };
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/admissions_submissions`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify(newRecord),
+        });
+        if (res.ok) { ok++; created++; }
+        else { fail++; failList.push('新建:' + p.nickname); }
+      } else {
+        // 更新已有记录
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/admissions_submissions?id=eq.${m.override}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({ wx_nickname: m.parsed.nickname }),
+        });
+        if (res.ok) ok++;
+        else { fail++; failList.push(m.parsed.nickname); }
+      }
     } catch(e) { fail++; failList.push(m.parsed.nickname); }
   }
 
@@ -466,6 +497,7 @@ async function doWrite() {
   resultEl.classList.remove('hidden', 'result-ok', 'result-err');
   resultEl.classList.add(fail ? 'result-err' : 'result-ok');
   resultEl.innerHTML = `写入完成：✅ 成功 <b>${ok}</b> 条` +
+    (created ? `（含新建 <b>${created}</b> 条）` : '') +
     (skipped ? `，⏭ 跳过 <b>${skipped}</b> 条` : '') +
     (fail ? `，❌ 失败 <b>${fail}</b> 条：${failList.join('、')}` : '');
 }
