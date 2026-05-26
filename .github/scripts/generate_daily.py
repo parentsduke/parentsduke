@@ -814,6 +814,63 @@ def clean_ai_html(text):
 # ══════════════════════════════════════════════════════════════
 #  生成板块
 # ══════════════════════════════════════════════════════════════
+def filter_expired_text(text, today=None):
+    """
+    对原始抓取文本做轻量预处理：把含有"过期日期"的句子整行移除。
+    策略：检测形如 "Month D, YYYY" / "YYYY年M月D日" 等模式，
+    若日期早于 today，整行丢弃。保留无法解析日期的行（避免误删）。
+    """
+    if today is None:
+        today = datetime.now().date()
+
+    import re as _re
+
+    # 英文月份缩写/全称 -> 月份数字
+    MONTHS = {
+        'jan':1,'feb':2,'mar':3,'apr':4,'may':5,'jun':6,
+        'jul':7,'aug':8,'sep':9,'oct':10,'nov':11,'dec':12,
+        'january':1,'february':2,'march':3,'april':4,'june':6,
+        'july':7,'august':8,'september':9,'october':10,'november':11,'december':12,
+    }
+
+    # 匹配英文日期：Jan 4, 2026 / January 4, 2026 / Apr 16, 17 or 20 等
+    EN_DATE = _re.compile(
+        r'\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|'
+        r'jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)'
+        r'[\s.]+(\d{1,2})(?:[,\s]+(\d{4}))?',
+        _re.IGNORECASE
+    )
+    # 匹配中文日期：2026年1月4日
+    ZH_DATE = _re.compile(r'(\d{4})年(\d{1,2})月(\d{1,2})日')
+
+    def earliest_date_in_line(line):
+        """返回行中最早出现的可识别日期（date对象），找不到返回 None"""
+        dates = []
+        for m in EN_DATE.finditer(line):
+            mon = MONTHS.get(m.group(1).lower())
+            day = int(m.group(2))
+            year = int(m.group(3)) if m.group(3) else today.year
+            try:
+                dates.append(date(year, mon, day))
+            except ValueError:
+                pass
+        for m in ZH_DATE.finditer(line):
+            try:
+                dates.append(date(int(m.group(1)), int(m.group(2)), int(m.group(3))))
+            except ValueError:
+                pass
+        return min(dates) if dates else None
+
+    filtered = []
+    for line in text.splitlines():
+        d = earliest_date_in_line(line)
+        if d is not None and d < today:
+            # 日期已过期 → 丢弃
+            continue
+        filtered.append(line)
+    return '\n'.join(filtered)
+
+
 def generate_section(section_name, items, extra='', allow_political=False):
     today = datetime.now()
     date_hint = f"{today.year}年{today.month}月{today.day}日"
@@ -838,9 +895,12 @@ def generate_section(section_name, items, extra='', allow_political=False):
 
     year_rule = ''
     if '招生' in section_name:
+        today_str = f"{today.year}年{today.month}月{today.day}日"
         year_rule = (
-            f'- 只保留{today.year}年及以后的招生信息，严格过滤{today.year - 1}年以前的旧内容\n'
-            '- 重点提取：入学确认截止日、住房申请、奖学金、成绩单提交、Blue Devil Days、财务援助等信息\n'
+            f'- 【严格日期过滤】今天是{today_str}。任何截止日期/活动日期早于今天的条目，一律不得出现在输出中\n'
+            f'- 只保留今天（{today_str}）及以后的招生信息，过期内容一律排除，包括已过期的Blue Devil Days日期\n'
+            f'- 如果某条信息的日期无法确认是否已过期，也不要输出\n'
+            '- 重点提取：入学确认截止日、住房申请、奖学金、成绩单提交、Blue Devil Days（仅未来场次）、财务援助等信息\n'
         )
 
     prompt = (
@@ -1157,6 +1217,15 @@ def main():
     school_items     = r['today'] + r['news']
     basketball_items = r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_all'] + r['athletics']
     admissions_items = r['admissions'] + r['admissions_site']
+
+    # ── 招生文本：Python层面先过滤过期日期，再交给AI ──────────────
+    _today_date = datetime.now().date()
+    r["admissions_text"] = filter_expired_text(r["admissions_text"], _today_date)
+    # admissions_items 里标题含过期日期的条目也一并过滤
+    admissions_items = [
+        i for i in admissions_items
+        if filter_expired_text(i["title"], _today_date).strip() != ""
+    ]
     campus_items     = (r['campus'] + r['dsg'] + r['students'] + r['dukeengage'] +
                         r['undergrad'] + r['interdisciplinary'] + r['focus'] +
                         r['library'] + r['alumni_sendoff'])
