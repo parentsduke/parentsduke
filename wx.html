@@ -367,37 +367,60 @@ function normalizeLocation(raw) {
 }
 
 // ── 评分 ──
-// 孩子名为主要匹配条件（必须有分才算候选）
-// 地区作为加分项（格式不同也能加分，不强制要求）
-// 届次、学院作为次要加分
+// 匹配优先级：
+// 1. 已有昵称中的孩子名+地区（最准确）
+// 2. 数据库英文名字段
+// 3. 地区标准化匹配
 function matchScore(record, parsed) {
-  const en    = (record.student_name_en || '').toLowerCase();
-  const loc   = (record.location || '').toLowerCase();
-  const child = (parsed.childName || '').toLowerCase();
-  const pLoc  = (parsed.location || '').toLowerCase();
+  const en      = (record.student_name_en || '').toLowerCase();
+  const child   = (parsed.childName || '').toLowerCase();
+  const wxExist = record.wx_nickname || '';
 
-  // 孩子名：必须匹配，否则直接返回0
+  // ── 先从已有昵称里解析孩子名和地区，用于匹配 ──
+  let existParsed = null;
+  if (wxExist) existParsed = parseNickname(wxExist);
+
   let nameScore = 0;
-  if (child && en) {
-    if (en === child) nameScore = 20;                          // 完全一致，高权重
-    else if (en.includes(child) || child.includes(en)) nameScore = 12;
-    else if (en[0] === child[0]) nameScore = 2;               // 首字母，极弱
+
+  // 方式1：和已有昵称里的孩子名比较
+  if (child && existParsed && existParsed.childName) {
+    const ec = existParsed.childName.toLowerCase();
+    if (ec === child) nameScore = Math.max(nameScore, 22);
+    else if (ec.includes(child) || child.includes(ec)) nameScore = Math.max(nameScore, 14);
+    else if (ec[0] === child[0]) nameScore = Math.max(nameScore, 3);
   }
-  if (nameScore === 0) return 0; // 名字对不上，直接淘汰
+
+  // 方式2：和数据库英文名字段比较
+  if (child && en) {
+    if (en === child) nameScore = Math.max(nameScore, 20);
+    else if (en.includes(child) || child.includes(en)) nameScore = Math.max(nameScore, 12);
+    else if (en[0] === child[0]) nameScore = Math.max(nameScore, 2);
+  }
+
+  if (nameScore === 0) return 0; // 名字完全对不上，淘汰
 
   let score = nameScore;
 
-  // 地区：标准化后比较（统一缩写）
-  const normLoc  = normalizeLocation(record.location);
+  // ── 地区匹配（标准化后比较）──
   const normPLoc = normalizeLocation(parsed.location);
+
+  // 方式1：和已有昵称里的地区比较
+  if (normPLoc && existParsed && existParsed.location) {
+    const normExistLoc = normalizeLocation(existParsed.location);
+    if (normExistLoc && normExistLoc === normPLoc) score += 9;
+    else if (normExistLoc && (normExistLoc.includes(normPLoc) || normPLoc.includes(normExistLoc))) score += 5;
+  }
+
+  // 方式2：和数据库地区字段比较
+  const normLoc = normalizeLocation(record.location);
   if (normPLoc && normLoc) {
-    if (normLoc === normPLoc) score += 8;           // 完全一致
+    if (normLoc === normPLoc) score += 8;
     else if (normLoc.includes(normPLoc) || normPLoc.includes(normLoc)) score += 4;
   }
 
-  // 届次匹配加分
+  // 届次加分
   if (parsed.classYear && record.class_year && parseInt(record.class_year) === parsed.classYear) score += 4;
-  // 学院匹配加分
+  // 学院加分
   if (parsed.college && record.college && (record.college || '').toLowerCase().includes(parsed.college.toLowerCase())) score += 2;
 
   return score;
