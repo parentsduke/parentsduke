@@ -182,64 +182,123 @@ function handleDrop(e) {
 
 function handleFile(file) {
   if (!file || !file.type.startsWith('image/')) return;
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const dataUrl = e.target.result;
-    const preview = document.getElementById('preview');
-    preview.src = dataUrl;
-    preview.style.display = 'block';
-    document.getElementById('dropLabel').textContent = '🤖 AI 识别中…';
-    const base64 = dataUrl.split(',')[1];
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: file.type, data: base64 } },
-              { type: 'text', text: '请提取这张微信截图中所有可见的用户昵称，每行一个，不加序号，不加说明，只输出昵称列表：' }
-            ]
-          }]
-        })
-      });
-      const data = await res.json();
-      const text = (data.content || []).map(c => c.text || '').join('').trim();
-      if (text) document.getElementById('nicknameInput').value = text;
-      document.getElementById('dropLabel').textContent = '✓ 识别完成，可继续上传';
-    } catch(e) {
-      document.getElementById('dropLabel').textContent = '❌ 识别失败，请手动粘贴';
+  const preview = document.getElementById('preview');
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = 'block';
+  document.getElementById('dropLabel').textContent = '🔍 OCR 识别中…';
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('apikey', 'K85381757388957');
+  formData.append('language', 'chs');       // 简体中文+英文
+  formData.append('isOverlayRequired', 'false');
+  formData.append('detectOrientation', 'true');
+  formData.append('scale', 'true');
+  formData.append('isTable', 'false');
+
+  fetch('https://api.ocr.space/parse/image', {
+    method: 'POST',
+    body: formData,
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.IsErroredOnProcessing) {
+      document.getElementById('dropLabel').textContent = '❌ OCR 失败：' + (data.ErrorMessage || '未知错误');
+      return;
     }
-  };
-  reader.readAsDataURL(file);
+    // 提取所有识别到的文字行
+    const lines = [];
+    (data.ParsedResults || []).forEach(result => {
+      const text = result.ParsedText || '';
+      text.split(/\r?\n/).forEach(line => {
+        const t = line.trim();
+        if (t.length > 1) lines.push(t);
+      });
+    });
+    if (lines.length) {
+      document.getElementById('nicknameInput').value = lines.join('\n');
+      document.getElementById('dropLabel').textContent = `✓ 识别完成（${lines.length} 行），可继续上传`;
+    } else {
+      document.getElementById('dropLabel').textContent = '⚠ 未识别到文字，请手动粘贴';
+    }
+  })
+  .catch(() => {
+    document.getElementById('dropLabel').textContent = '❌ 网络错误，请手动粘贴';
+  });
 }
 
 // ── 解析昵称 ──
+// 格式：[家长名] 杜爸/杜妈 [孩子名] [届次数字][T/P]-[地区]-[C/U]
+// 孩子名在"杜爸/杜妈"之后，届次数字之前（或届次之后 Alain格式）
 function parseNickname(raw) {
   const nickname = raw.trim();
-  const yearMatch    = nickname.match(/\b(\d{2})[TP]\b/i);
-  const collegeMatch = nickname.match(/\b\d{2}([TP])\b/i);
-  const classYear    = yearMatch    ? 2000 + parseInt(yearMatch[1]) : null;
-  const college      = collegeMatch ? (collegeMatch[1].toUpperCase() === 'T' ? 'Trinity' : 'Pratt') : null;
-  const committedMatch = nickname.match(/-([CU])$/i);
-  const committed    = committedMatch ? committedMatch[1].toUpperCase() === 'C' : null;
+  const committed = /-C$/i.test(nickname) ? true : /-U$/i.test(nickname) ? false : null;
 
-  const beforeYear = yearMatch ? nickname.substring(0, nickname.indexOf(yearMatch[0])).trim() : nickname;
-  const words = beforeYear.split(/[\s\-]+/).filter(Boolean);
+  // 届次：两位数字，前有分隔符，T/P后不能紧跟字母（否则是地区缩写如TC）
+  let yearMatch = null;
+  const yearRe = /(?:^|[\s\-])(\d{2})([TP])?/gi;
+  let m;
+  while ((m = yearRe.exec(nickname)) !== null) {
+    if (m[2]) {
+      const after = nickname[m.index + m[0].length];
+      if (after && /[a-zA-Z]/.test(after)) continue; // TC/BJ等缩写，跳过
+    }
+    yearMatch = m;
+    break;
+  }
+  const classYear = yearMatch ? 2000 + parseInt(yearMatch[1]) : null;
+  const college = (yearMatch && yearMatch[2])
+    ? (yearMatch[2].toUpperCase() === 'T' ? 'Trinity' : 'Pratt') : null;
+
+  const duPos = Math.max(nickname.indexOf('杜爸'), nickname.indexOf('杜妈'));
+  const yearAbsIdx = yearMatch ? yearMatch.index : nickname.length;
+  const yearEndIdx = yearMatch ? yearMatch.index + yearMatch[0].length : nickname.length;
+
   let childName = null;
-  for (let i = words.length - 1; i >= 0; i--) {
-    if (/^[a-zA-Z]+$/.test(words[i]) && words[i].length > 1) { childName = words[i]; break; }
+
+  if (duPos >= 0) {
+    const afterDu = nickname.substring(duPos + 2);
+
+    // 优先：检测粘连格式 Carley30T（英文直接跟数字，无分隔符）
+    const stickyMatch = afterDu.match(/^[\s\-]*([a-zA-Z]{2,})\d{2}/);
+
+    // 杜爸/杜妈 → 届次 之间的英文词
+    const seg1 = nickname.substring(duPos + 2, yearAbsIdx);
+    const w1 = seg1.split(/[\s\-]+/).filter(function(w){ return /^[a-zA-Z]{2,}$/.test(w); });
+
+    if (stickyMatch && (!w1.length || w1[w1.length-1].length < stickyMatch[1].length)) {
+      childName = stickyMatch[1]; // Carley格式
+    } else if (w1.length) {
+      childName = w1[w1.length - 1]; // 正常格式
+    } else {
+      // Alain格式：孩子名在届次之后，取第一个英文词（排除单字母T/P）
+      const afterYear = nickname.substring(yearEndIdx);
+      const w2 = afterYear.split(/[\s\-]+/).filter(function(w){ return /^[a-zA-Z]{2,}$/.test(w) && !/^[TP]$/i.test(w); });
+      if (w2.length) childName = w2[0];
+    }
+  } else {
+    // 无杜爸/杜妈，届次前最后一个英文词
+    const seg = nickname.substring(0, yearAbsIdx);
+    const words = seg.split(/[\s\-]+/).filter(function(w){ return /^[a-zA-Z]{2,}$/.test(w); });
+    if (words.length) childName = words[words.length - 1];
   }
 
+  // 地区：届次后，去学院T/P标记、去孩子名（Alain格式）、去末尾C/U
   let location = null;
   if (yearMatch) {
-    const afterYear = nickname.substring(nickname.indexOf(yearMatch[0]) + yearMatch[0].length);
-    const locRaw = afterYear.replace(/^[\s\-]+/, '').replace(/[\s\-]*[CU]$/i, '').trim();
-    if (locRaw) location = locRaw;
+    let afterYear = nickname.substring(yearEndIdx)
+      .replace(/^[\s\-]+/, '')
+      .replace(/[\s\-]*[CU]$/i, '')
+      .replace(/^([TP])[\s\-]+/i, '')
+      .trim();
+    // Alain格式：afterYear以孩子名开头，需去掉孩子名和学院后缀
+    if (childName && afterYear.toLowerCase().startsWith(childName.toLowerCase())) {
+      afterYear = afterYear.substring(childName.length).replace(/^[\s\-]+/, '');
+      afterYear = afterYear.replace(/^[a-zA-Z]{1,2}[\s\-]+/, '').trim();
+    }
+    if (afterYear) location = afterYear;
   }
+
   return { nickname, childName, classYear, college, location, committed };
 }
 
