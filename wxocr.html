@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>微信昵称批量导入 · DukeParents</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f4f1eb; font-family: 'Noto Sans SC', sans-serif; color: #1a1208; }
+  .app { min-height: 100vh; padding: 32px 20px 80px; max-width: 960px; margin: 0 auto; }
+  .title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.25em; color: #8a7a5a; text-transform: uppercase; margin-bottom: 6px; }
+  h1 { font-size: 26px; font-weight: 700; color: #1a1208; margin-bottom: 32px; }
+  h1 span { color: #003087; }
+  .step { background: #fff; border: 1px solid #e0d8c8; border-radius: 14px; padding: 22px 24px; margin-bottom: 20px; }
+  .step-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: #b8963e; text-transform: uppercase; margin-bottom: 12px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  input[type=email], input[type=password], input[type=text] {
+    padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 8px;
+    font-size: 13px; font-family: 'Noto Sans SC', sans-serif; outline: none; background: #faf8f4;
+  }
+  input:focus { border-color: #003087; }
+  .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; transition: all 0.15s; white-space: nowrap; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary { background: #003087; color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #001a4d; }
+  .btn-gold { background: #b8963e; color: #fff; }
+  .btn-gold:hover:not(:disabled) { background: #9a7a2e; }
+  .btn-green { background: #1a6b3c; color: #fff; }
+  .btn-green:hover:not(:disabled) { background: #145230; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .ok { color: #1a6b3c; font-size: 13px; font-weight: 600; }
+  .err { color: #c84b31; font-size: 13px; margin-top: 8px; }
+  textarea {
+    width: 100%; height: 130px; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; resize: vertical; outline: none;
+    background: #faf8f4; color: #1a1208; line-height: 1.8;
+  }
+  textarea:focus { border-color: #003087; }
+  .upload-zone {
+    border: 1.5px dashed #d0c8b8; border-radius: 10px; padding: 20px;
+    text-align: center; cursor: pointer; background: #faf8f4; transition: all 0.15s; margin-bottom: 12px;
+  }
+  .upload-zone:hover, .upload-zone.over { border-color: #003087; background: #f0f4ff; }
+  .upload-zone p { font-size: 13px; color: #8a7a5a; }
+  img#preview { max-height: 180px; border-radius: 8px; border: 1px solid #ddd; display: none; margin: 10px auto 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 14px; }
+  thead th { background: #001a4d; color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; font-size: 11px; font-family: 'IBM Plex Mono', monospace; }
+  tbody td { padding: 8px 10px; border-bottom: 1px solid #ede8df; vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #f9f6f0; }
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+  .bg { background: #e6f4ed; color: #1a6b3c; }
+  .by { background: #fff8e6; color: #b8963e; }
+  .br { background: #fdecea; color: #c84b31; }
+  .bx { background: #f0ece4; color: #888; }
+  .nick { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #333; max-width: 180px; word-break: break-all; }
+  .parsed { font-size: 11px; color: #555; line-height: 1.7; }
+  .parsed b { color: #003087; }
+  select.match-sel {
+    font-size: 12px; border: 1px solid #ddd; border-radius: 5px; padding: 4px 6px;
+    background: #fff; color: #1a1208; outline: none; max-width: 200px; font-family: 'Noto Sans SC', sans-serif;
+  }
+  select.match-sel:focus { border-color: #003087; }
+  .score-wrap { display: flex; align-items: center; gap: 5px; }
+  .bar { display: inline-block; width: 36px; height: 5px; background: #e8e0d0; border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; background: #b8963e; }
+  .summary { background: #f0f4ff; border: 1px solid #c0d0f0; border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #001a4d; margin-top: 14px; }
+  .summary b { font-weight: 700; }
+  .result-ok { background: #e6f4ed; border-color: #a8d8be; }
+  .result-err { background: #fdecea; border-color: #f0c0b8; }
+  .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+  .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 5px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="title">DukeParents Admin</div>
+  <h1>微信昵称 <span>批量导入</span></h1>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-label">Step 1 · 管理员登录</div>
+    <div id="loginForm">
+      <div class="row">
+        <input type="email" id="loginEmail" placeholder="管理员邮箱" style="flex:1;min-width:180px;"/>
+        <input type="password" id="loginPassword" placeholder="密码" style="width:160px;"/>
+        <button class="btn btn-primary" onclick="doLogin()">登录</button>
+      </div>
+      <div class="err hidden" id="loginErr"></div>
+    </div>
+    <div class="hidden ok" id="loginOk"></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-label">Step 2 · 上传截图或粘贴昵称</div>
+    <div class="upload-zone" id="dropZone" onclick="document.getElementById('imgInput').click()"
+      ondragover="event.preventDefault();this.classList.add('over')"
+      ondragleave="this.classList.remove('over')"
+      ondrop="handleDrop(event)">
+      <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="handleFile(this.files[0])"/>
+      <p id="dropLabel">📱 点击或拖拽上传微信截图，AI 自动提取昵称</p>
+    </div>
+    <img id="preview"/>
+    <div style="margin:12px 0 6px;font-size:12px;color:#8a7a5a;">或手动粘贴昵称列表（每行一个）：</div>
+    <textarea id="nicknameInput" placeholder="Aiye 杜妈-Daniel 30T-SC-C&#10;Alain 杜爸 30 Wendi-TC 上海&#10;..."></textarea>
+    <div class="actions">
+      <button class="btn btn-gold" id="matchBtn" onclick="doMatch()">🔍 匹配数据库记录</button>
+      <span id="matchNote" style="font-size:12px;color:#c84b31;"></span>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step hidden" id="step3">
+    <div class="step-label">Step 3 · 确认匹配结果</div>
+    <div id="matchLoading" class="hidden" style="color:#8a7a5a;font-size:13px;">匹配中…</div>
+    <table id="matchTable">
+      <thead>
+        <tr>
+          <th>微信昵称</th>
+          <th>解析</th>
+          <th>匹配记录</th>
+          <th>置信度</th>
+          <th>跳过</th>
+        </tr>
+      </thead>
+      <tbody id="matchBody"></tbody>
+    </table>
+    <div class="summary" id="matchSummary"></div>
+    <div class="actions">
+      <button class="btn btn-green" id="writeBtn" onclick="doWrite()">✅ 写入数据库</button>
+    </div>
+    <div class="summary hidden" id="writeResult"></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+
+let accessToken = null;
+let dbRecords = [];
+let matches = []; // [{parsed, candidates, override, skip}]
+
+// ── Auth ──
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pwd   = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginErr');
+  errEl.classList.add('hidden');
+  if (!email || !pwd) { showErr(errEl, '请填写邮箱和密码'); return; }
+
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password: pwd }),
+  });
+  const data = await res.json();
+  if (!data.access_token) {
+    showErr(errEl, data.error_description || data.error || '登录失败');
+    return;
+  }
+  accessToken = data.access_token;
+  document.getElementById('loginForm').classList.add('hidden');
+  const okEl = document.getElementById('loginOk');
+  okEl.textContent = '✓ 已登录：' + email;
+  okEl.classList.remove('hidden');
+}
+
+function showErr(el, msg) { el.textContent = msg; el.classList.remove('hidden'); }
+
+// ── OCR ──
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+}
+
+const GEMINI_OCR_URL = `${SUPABASE_URL}/functions/v1/gemini-ocr`;
+
+function handleFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const preview = document.getElementById('preview');
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = 'block';
+  document.getElementById('dropLabel').textContent = '🔍 Gemini 识别中…';
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const base64 = e.target.result.split(',')[1];
+    const mimeType = file.type;
+
+    try {
+      const res = await fetch(GEMINI_OCR_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ base64, mimeType }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        document.getElementById('dropLabel').textContent = '❌ 识别错误：' + data.error;
+        return;
+      }
+      const lines = data.lines || [];
+      if (lines.length) {
+        // 追加到已有内容（支持多张截图）
+        const existing = document.getElementById('nicknameInput').value.trim();
+        document.getElementById('nicknameInput').value = existing ? existing + '\n' + lines.join('\n') : lines.join('\n');
+        document.getElementById('dropLabel').textContent = `✓ 识别完成（${lines.length} 行），可继续上传`;
+      } else {
+        document.getElementById('dropLabel').textContent = '⚠ 未识别到昵称，请手动粘贴';
+      }
+    } catch(err) {
+      document.getElementById('dropLabel').textContent = '❌ 网络错误，请手动粘贴';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── 解析昵称 ──
+// 格式：[家长名] 杜爸/杜妈 [孩子名] [届次数字][T/P]-[地区]-[C/U]
+// 孩子名在"杜爸/杜妈"之后，届次数字之前（或届次之后 Alain格式）
+function parseNickname(raw) {
+  const nickname = raw.trim();
+  const committed = /-C$/i.test(nickname) ? true : /-U$/i.test(nickname) ? false : null;
+
+  // 届次：两位数字，前有分隔符，T/P后不能紧跟字母（否则是地区缩写如TC）
+  let yearMatch = null;
+  const yearRe = /(?:^|[\s\-])(\d{2})([TP])?/gi;
+  let m;
+  while ((m = yearRe.exec(nickname)) !== null) {
+    if (m[2]) {
+      const after = nickname[m.index + m[0].length];
+      if (after && /[a-zA-Z]/.test(after)) continue; // TC/BJ等缩写，跳过
+    }
+    yearMatch = m;
+    break;
+  }
+  const classYear = yearMatch ? 2000 + parseInt(yearMatch[1]) : null;
+  const college = (yearMatch && yearMatch[2])
+    ? (yearMatch[2].toUpperCase() === 'T' ? 'Trinity' : 'Pratt') : null;
+
+  const duPos = Math.max(nickname.indexOf('杜爸'), nickname.indexOf('杜妈'));
+  const yearAbsIdx = yearMatch ? yearMatch.index : nickname.length;
+  const yearEndIdx = yearMatch ? yearMatch.index + yearMatch[0].length : nickname.length;
+
+  let childName = null;
+
+  if (duPos >= 0) {
+    const afterDu = nickname.substring(duPos + 2);
+
+    // 优先：检测粘连格式 Carley30T（英文直接跟数字，无分隔符）
+    const stickyMatch = afterDu.match(/^[\s\-]*([a-zA-Z]{2,})\d{2}/);
+
+    // 杜爸/杜妈 → 届次 之间的英文词
+    const seg1 = nickname.substring(duPos + 2, yearAbsIdx);
+    const w1 = seg1.split(/[\s\-]+/).filter(function(w){ return /^[a-zA-Z]{2,}$/.test(w); });
+
+    if (stickyMatch && (!w1.length || w1[w1.length-1].length < stickyMatch[1].length)) {
+      childName = stickyMatch[1]; // Carley格式
+    } else if (w1.length) {
+      childName = w1[w1.length - 1]; // 正常格式
+    } else {
+      // Alain格式：孩子名在届次之后，取第一个英文词（排除单字母T/P）
+      const afterYear = nickname.substring(yearEndIdx);
+      const w2 = afterYear.split(/[\s\-]+/).filter(function(w){ return /^[a-zA-Z]{2,}$/.test(w) && !/^[TP]$/i.test(w); });
+      if (w2.length) childName = w2[0];
+    }
+  } else {
+    // 无杜爸/杜妈，届次前最后一个英文词
+    const seg = nickname.substring(0, yearAbsIdx);
+    const words = seg.split(/[\s\-]+/).filter(function(w){ return /^[a-zA-Z]{2,}$/.test(w); });
+    if (words.length) childName = words[words.length - 1];
+  }
+
+  // 地区：届次后，去学院T/P标记、去孩子名（Alain格式）、去末尾C/U
+  let location = null;
+  if (yearMatch) {
+    let afterYear = nickname.substring(yearEndIdx)
+      .replace(/^[\s\-]+/, '')
+      .replace(/[\s\-]*[CU]$/i, '')
+      .replace(/^([TP])[\s\-]+/i, '')
+      .trim();
+    // Alain格式：afterYear以孩子名开头，需去掉孩子名和学院后缀
+    if (childName && afterYear.toLowerCase().startsWith(childName.toLowerCase())) {
+      afterYear = afterYear.substring(childName.length).replace(/^[\s\-]+/, '');
+      afterYear = afterYear.replace(/^[a-zA-Z]{1,2}[\s\-]+/, '').trim();
+    }
+    if (afterYear) location = afterYear;
+  }
+
+  return { nickname, childName, classYear, college, location, committed };
+}
+
+// ── 州名标准化 ──
+// 把各种格式（缩写/中文/英文全名）统一成标准缩写
+const STATE_MAP = {
+  // 英文全名 -> 缩写
+  'alabama':'AL','alaska':'AK','arizona':'AZ','arkansas':'AR','california':'CA',
+  'colorado':'CO','connecticut':'CT','delaware':'DE','florida':'FL','georgia':'GA',
+  'hawaii':'HI','idaho':'ID','illinois':'IL','indiana':'IN','iowa':'IA',
+  'kansas':'KS','kentucky':'KY','louisiana':'LA','maine':'ME','maryland':'MD',
+  'massachusetts':'MA','michigan':'MI','minnesota':'MN','mississippi':'MS','missouri':'MO',
+  'montana':'MT','nebraska':'NE','nevada':'NV','new hampshire':'NH','new jersey':'NJ',
+  'new mexico':'NM','new york':'NY','north carolina':'NC','north dakota':'ND','ohio':'OH',
+  'oklahoma':'OK','oregon':'OR','pennsylvania':'PA','rhode island':'RI','south carolina':'SC',
+  'south dakota':'SD','tennessee':'TN','texas':'TX','utah':'UT','vermont':'VT',
+  'virginia':'VA','washington':'WA','west virginia':'WV','wisconsin':'WI','wyoming':'WY',
+  'district of columbia':'DC','washington dc':'DC','washington d.c.':'DC',
+  // 中文 -> 缩写
+  '阿拉巴马':'AL','阿拉斯加':'AK','亚利桑那':'AZ','阿肯色':'AR','加利福尼亚':'CA','加州':'CA',
+  '科罗拉多':'CO','康涅狄格':'CT','特拉华':'DE','佛罗里达':'FL','佛州':'FL','乔治亚':'GA',
+  '夏威夷':'HI','爱达荷':'ID','伊利诺伊':'IL','印第安纳':'IN','爱荷华':'IA',
+  '堪萨斯':'KS','肯塔基':'KY','路易斯安那':'LA','缅因':'ME','马里兰':'MD',
+  '马萨诸塞':'MA','密歇根':'MI','明尼苏达':'MN','密西西比':'MS','密苏里':'MO',
+  '蒙大拿':'MT','内布拉斯加':'NE','内华达':'NV','新罕布什尔':'NH','新泽西':'NJ',
+  '新墨西哥':'NM','纽约':'NY','北卡罗来纳':'NC','北卡':'NC','北达科他':'ND','俄亥俄':'OH',
+  '俄克拉荷马':'OK','俄勒冈':'OR','宾夕法尼亚':'PA','宾州':'PA','罗得岛':'RI',
+  '南卡罗来纳':'SC','南卡':'SC','南达科他':'SD','田纳西':'TN','德克萨斯':'TX','德州':'TX',
+  '犹他':'UT','佛蒙特':'VT','弗吉尼亚':'VA','维吉尼亚':'VA','华盛顿州':'WA','华盛顿':'WA',
+  '西弗吉尼亚':'WV','威斯康星':'WI','怀俄明':'WY','华盛顿特区':'DC','哥伦比亚特区':'DC',
+  // 城市/地区常见映射（取所在州）
+  'chapel hill':'NC','durham':'NC','raleigh':'NC','charlotte':'NC',
+  'new york city':'NY','manhattan':'NY','brooklyn':'NY','queens':'NY',
+  'los angeles':'CA','san francisco':'CA','san diego':'CA','silicon valley':'CA',
+  'chicago':'IL','houston':'TX','dallas':'TX','austin':'TX','boston':'MA',
+  'seattle':'WA','portland':'OR','denver':'CO','atlanta':'GA','miami':'FL',
+  'philadelphia':'PA','pittsburgh':'PA','phoenix':'AZ','las vegas':'NV',
+  'nashville':'TN','memphis':'TN','louisville':'KY','indianapolis':'IN',
+  'columbus':'OH','cleveland':'OH','cincinnati':'OH','detroit':'MI',
+  'minneapolis':'MN','st. louis':'MO','kansas city':'MO','salt lake city':'UT',
+  'richmond':'VA','norfolk':'VA','baltimore':'MD','hartford':'CT',
+  'new haven':'CT','providence':'RI','honolulu':'HI','anchorage':'AK',
+  // 海外
+  '上海':'上海','北京':'北京','香港':'HK','台湾':'TW','新加坡':'SG',
+  'hong kong':'HK','singapore':'SG','beijing':'北京','shanghai':'上海',
+  // 省份缩写直接保留
+};
+
+function normalizeLocation(raw) {
+  if (!raw) return '';
+  // 去掉"美国·"、"中国大陆·"等前缀
+  let s = raw.replace(/^(美国|中国大陆|中国|加拿大|英国)[·\.\s·]*/i, '').trim().toLowerCase();
+  // 查对照表
+  if (STATE_MAP[s]) return STATE_MAP[s];
+  // 尝试去掉城市后取州（如 "Chapel Hill, NC"）
+  const parts = s.split(/[,·\s]+/);
+  for (let i = parts.length - 1; i >= 0; i--) {
+    if (STATE_MAP[parts[i]]) return STATE_MAP[parts[i]];
+    // 拼接剩余词再查（处理"north carolina"这类多词州名）
+    const joined = parts.slice(i).join(' ');
+    if (STATE_MAP[joined]) return STATE_MAP[joined];
+  }
+  // 大写2字母缩写直接返回
+  if (/^[A-Z]{2}$/.test(raw.trim())) return raw.trim().toUpperCase();
+  return s.toUpperCase();
+}
+
+// ── 评分 ──
+// 匹配优先级：
+// 1. 已有昵称中的孩子名+地区（最准确）
+// 2. 数据库英文名字段
+// 3. 地区标准化匹配
+function matchScore(record, parsed) {
+  const en      = (record.student_name_en || '').toLowerCase();
+  const child   = (parsed.childName || '').toLowerCase();
+  const wxExist = record.wx_nickname || '';
+
+  // ── 先从已有昵称里解析孩子名和地区，用于匹配 ──
+  let existParsed = null;
+  if (wxExist) existParsed = parseNickname(wxExist);
+
+  let nameScore = 0;
+
+  // 方式1：和已有昵称里的孩子名比较
+  if (child && existParsed && existParsed.childName) {
+    const ec = existParsed.childName.toLowerCase();
+    if (ec === child) nameScore = Math.max(nameScore, 22);
+    else if (ec.includes(child) || child.includes(ec)) nameScore = Math.max(nameScore, 14);
+    else if (ec[0] === child[0]) nameScore = Math.max(nameScore, 3);
+  }
+
+  // 方式2：和数据库英文名字段比较
+  if (child && en) {
+    if (en === child) nameScore = Math.max(nameScore, 20);
+    else if (en.includes(child) || child.includes(en)) nameScore = Math.max(nameScore, 12);
+    else if (en[0] === child[0]) nameScore = Math.max(nameScore, 2);
+  }
+
+  if (nameScore === 0) return 0; // 名字完全对不上，淘汰
+
+  let score = nameScore;
+
+  // ── 地区匹配（标准化后比较）──
+  const normPLoc = normalizeLocation(parsed.location);
+
+  // 方式1：和已有昵称里的地区比较
+  if (normPLoc && existParsed && existParsed.location) {
+    const normExistLoc = normalizeLocation(existParsed.location);
+    if (normExistLoc && normExistLoc === normPLoc) score += 9;
+    else if (normExistLoc && (normExistLoc.includes(normPLoc) || normPLoc.includes(normExistLoc))) score += 5;
+  }
+
+  // 方式2：和数据库地区字段比较
+  const normLoc = normalizeLocation(record.location);
+  if (normPLoc && normLoc) {
+    if (normLoc === normPLoc) score += 8;
+    else if (normLoc.includes(normPLoc) || normPLoc.includes(normLoc)) score += 4;
+  }
+
+  // 届次加分
+  if (parsed.classYear && record.class_year && parseInt(record.class_year) === parsed.classYear) score += 4;
+  // 学院加分
+  if (parsed.college && record.college && (record.college || '').toLowerCase().includes(parsed.college.toLowerCase())) score += 2;
+
+  return score;
+}
+
+// ── 匹配 ──
+async function doMatch() {
+  if (!accessToken) { document.getElementById('matchNote').textContent = '请先登录'; return; }
+  const lines = document.getElementById('nicknameInput').value.split('\n').map(l => l.trim()).filter(Boolean);
+  if (!lines.length) { document.getElementById('matchNote').textContent = '请先输入昵称'; return; }
+  document.getElementById('matchNote').textContent = '';
+
+  const btn = document.getElementById('matchBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>匹配中…';
+
+  // 拉数据库
+  if (!dbRecords.length) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/admissions_submissions?select=id,student_name_en,student_name_cn,location,class_year,college,wx_nickname&order=created_at.desc&limit=2000`, {
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${accessToken}` }
+    });
+    dbRecords = await res.json();
+  }
+
+  matches = lines.map(line => {
+    const parsed = parseNickname(line);
+    const scored = dbRecords.map(r => ({ record: r, score: matchScore(r, parsed) }))
+      .filter(x => x.score > 0).sort((a, b) => b.score - a.score);
+    return {
+      parsed,
+      candidates: scored.slice(0, 6),
+      override: scored[0]?.record?.id || (scored.length === 0 ? '__new__' : '__none__'),
+      skip: false,
+    };
+  });
+
+  renderTable();
+  document.getElementById('step3').classList.remove('hidden');
+  btn.disabled = false;
+  btn.innerHTML = '🔍 重新匹配';
+}
+
+// ── 渲染表格 ──
+function renderTable() {
+  const tbody = document.getElementById('matchBody');
+  const MAX_SCORE = 21;
+  tbody.innerHTML = matches.map((m, i) => {
+    const pct = m.candidates[0] ? Math.min(100, Math.round((m.candidates[0].score / MAX_SCORE) * 100)) : 0;
+    const confClass = pct >= 70 ? 'bg' : pct >= 40 ? 'by' : m.candidates.length ? 'br' : 'bx';
+    const confLabel = pct >= 70 ? '高' : pct >= 40 ? '中' : m.candidates.length ? '低' : '无';
+    const p = m.parsed;
+    const parsedHtml = [
+      p.childName ? `孩子：<b>${p.childName}</b>` : '',
+      p.classYear ? `届次：<b>${p.classYear}</b>` : '',
+      p.college   ? `学院：<b>${p.college}</b>`   : '',
+      p.location  ? `地区：<b>${p.location}</b>`  : '',
+    ].filter(Boolean).join('<br>');
+
+    const opts = [
+      `<option value="__none__">— 不匹配 —</option>`,
+      ...m.candidates.map(c =>
+        `<option value="${c.record.id}" ${m.override === c.record.id ? 'selected' : ''}>
+          ${c.record.student_name_cn || c.record.student_name_en || c.record.id}
+          ${c.record.location ? ' · ' + c.record.location : ''}
+          ${c.record.wx_nickname ? ' [已有:' + c.record.wx_nickname + ']' : ''}
+        </option>`
+      )
+    ].join('');
+
+    return `<tr id="mrow-${i}" style="${m.skip ? 'opacity:0.4' : ''}">
+      <td class="nick">${escHtml(m.parsed.nickname)}</td>
+      <td class="parsed">${parsedHtml || '—'}</td>
+      <td>
+        <select class="match-sel" onchange="setOverride(${i},this.value)" ${m.skip ? 'disabled' : ''}>
+          ${opts}
+        </select>
+      </td>
+      <td>
+        <div class="score-wrap">
+          <span class="bar"><span class="bar-fill" style="width:${pct}%"></span></span>
+          <span class="badge ${confClass}">${confLabel} ${pct}%</span>
+        </div>
+      </td>
+      <td><input type="checkbox" ${m.skip ? 'checked' : ''} onchange="setSkip(${i},this.checked)"/></td>
+    </tr>`;
+  }).join('');
+  updateSummary();
+}
+
+function setOverride(i, val) {
+  matches[i].override = val;
+  updateSummary();
+}
+function setSkip(i, val) {
+  matches[i].skip = val;
+  const row = document.getElementById('mrow-' + i);
+  if (row) row.style.opacity = val ? '0.4' : '1';
+  const sel = row.querySelector('select');
+  if (sel) sel.disabled = val;
+  updateSummary();
+}
+function updateSummary() {
+  const confirmed = matches.filter(m => !m.skip && m.override !== '__none__').length;
+  const newRecs   = matches.filter(m => !m.skip && m.override === '__new__').length;
+  const skipped   = matches.filter(m => m.skip).length;
+  const noMatch   = matches.filter(m => !m.skip && m.override === '__none__').length;
+  document.getElementById('matchSummary').innerHTML =
+    `共 <b>${matches.length}</b> 条昵称，<b>${confirmed}</b> 条将写入` +
+    (newRecs ? `（含 <b>${newRecs}</b> 条新建）` : '') +
+    `，<b>${skipped}</b> 条已跳过，<b>${noMatch}</b> 条无匹配`;
+  document.getElementById('writeBtn').textContent = `✅ 写入 ${confirmed} 条到数据库`;
+  document.getElementById('writeBtn').disabled = confirmed === 0;
+}
+
+// ── 写入 ──
+async function doWrite() {
+  const btn = document.getElementById('writeBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>写入中…';
+  let ok = 0, created = 0, skipped = 0, fail = 0, failList = [];
+
+  for (const m of matches) {
+    if (m.skip || m.override === '__none__') { skipped++; continue; }
+
+    try {
+      if (m.override === '__new__') {
+        // 新建记录
+        const p = m.parsed;
+        const newRecord = {
+          wx_nickname:     p.nickname,
+          student_name_en: p.childName  || null,
+          class_year:      p.classYear  || null,
+          college:         p.college    || null,
+          location:        p.location   || null,
+          committed:       p.committed === true ? true : p.committed === false ? false : null,
+          admission_type:  null,
+        };
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/admissions_submissions`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify(newRecord),
+        });
+        if (res.ok) { ok++; created++; }
+        else { fail++; failList.push('新建:' + p.nickname); }
+      } else {
+        // 更新已有记录
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/admissions_submissions?id=eq.${m.override}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({ wx_nickname: m.parsed.nickname }),
+        });
+        if (res.ok) ok++;
+        else { fail++; failList.push(m.parsed.nickname); }
+      }
+    } catch(e) { fail++; failList.push(m.parsed.nickname); }
+  }
+
+  btn.disabled = false;
+  updateSummary();
+  const resultEl = document.getElementById('writeResult');
+  resultEl.classList.remove('hidden', 'result-ok', 'result-err');
+  resultEl.classList.add(fail ? 'result-err' : 'result-ok');
+  resultEl.innerHTML = `写入完成：✅ 成功 <b>${ok}</b> 条` +
+    (created ? `（含新建 <b>${created}</b> 条）` : '') +
+    (skipped ? `，⏭ 跳过 <b>${skipped}</b> 条` : '') +
+    (fail ? `，❌ 失败 <b>${fail}</b> 条：${failList.join('、')}` : '');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Enter to login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.activeElement.id === 'loginPassword') doLogin();
+});
+</script>
+</body>
+</html>
