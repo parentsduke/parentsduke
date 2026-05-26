@@ -629,6 +629,24 @@
       你的录取信息已收到，管理员核对后将邀请入群<br/>
       <span style="color:#003087;font-weight:600;">请注意查收邮件，勿忘检查垃圾邮件夹</span>
     </div>
+
+    <!-- 微信昵称提示 -->
+    <div id="nicknameReminder" style="background:linear-gradient(135deg,#001a4d,#003087);border-radius:14px;padding:22px 24px;max-width:400px;margin:0 auto 20px;text-align:left;">
+      <div style="font-size:12px;letter-spacing:2px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;margin-bottom:10px;">📛 YOUR WECHAT NICKNAME</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:8px;">你的微信群昵称为：</div>
+      <div id="nicknameDisplay" style="
+        font-size:17px;font-weight:700;color:#f5ecd4;
+        font-family:'DM Mono',monospace;letter-spacing:0.5px;
+        background:rgba(255,255,255,0.08);border-radius:8px;
+        padding:12px 16px;word-break:break-all;margin-bottom:14px;
+      ">—</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.9;border-top:1px solid rgba(255,255,255,0.12);padding-top:12px;">
+        ⚠️ <strong style="color:#f5ecd4;">进群后请务必将微信昵称改为上方格式</strong><br/>
+        管理员将以此昵称核对身份<br/>
+        Committed 后昵称末尾加 <span style="color:#B8963E;font-family:'DM Mono',monospace;">-C</span>，例如：<span id="nicknameExampleC" style="color:#B8963E;font-family:'DM Mono',monospace;">—</span>
+      </div>
+    </div>
+
     <div style="background:#fff8e6;border:1px solid rgba(184,150,62,0.4);border-radius:12px;padding:20px 28px;max-width:380px;margin:0 auto 28px;">
       <div style="font-size:13px;color:#7a5a10;line-height:1.9;">
         如有疑问或长时间未收到邮件，请联系管理员：<br/>
@@ -1404,6 +1422,13 @@
 
       document.getElementById('formArea').style.display = 'none';
       document.getElementById('pendingScreen').style.display = 'block';
+
+      // 显示生成的微信昵称
+      const _nd = document.getElementById('nicknameDisplay');
+      const _nc = document.getElementById('nicknameExampleC');
+      if (_nd) _nd.textContent = wx_nickname || '—';
+      if (_nc) _nc.textContent = wx_nickname ? wx_nickname + '-C' : '—';
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch(e) {
