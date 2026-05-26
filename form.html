@@ -629,6 +629,24 @@
       你的录取信息已收到，管理员核对后将邀请入群<br/>
       <span style="color:#003087;font-weight:600;">请注意查收邮件，勿忘检查垃圾邮件夹</span>
     </div>
+
+    <!-- 微信昵称提示 -->
+    <div id="nicknameReminder" style="background:linear-gradient(135deg,#001a4d,#003087);border-radius:14px;padding:22px 24px;max-width:400px;margin:0 auto 20px;text-align:left;">
+      <div style="font-size:12px;letter-spacing:2px;color:rgba(255,255,255,0.5);font-family:'DM Mono',monospace;margin-bottom:10px;">📛 YOUR WECHAT NICKNAME</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:8px;">你的微信群昵称为：</div>
+      <div id="nicknameDisplay" style="
+        font-size:17px;font-weight:700;color:#f5ecd4;
+        font-family:'DM Mono',monospace;letter-spacing:0.5px;
+        background:rgba(255,255,255,0.08);border-radius:8px;
+        padding:12px 16px;word-break:break-all;margin-bottom:14px;
+      ">—</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.9;border-top:1px solid rgba(255,255,255,0.12);padding-top:12px;">
+        ⚠️ <strong style="color:#f5ecd4;">进群后请务必将微信昵称改为上方格式</strong><br/>
+        管理员将以此昵称核对身份<br/>
+        Committed 后昵称末尾加 <span style="color:#B8963E;font-family:'DM Mono',monospace;">-C</span>，例如：<span id="nicknameExampleC" style="color:#B8963E;font-family:'DM Mono',monospace;">—</span>
+      </div>
+    </div>
+
     <div style="background:#fff8e6;border:1px solid rgba(184,150,62,0.4);border-radius:12px;padding:20px 28px;max-width:380px;margin:0 auto 28px;">
       <div style="font-size:13px;color:#7a5a10;line-height:1.9;">
         如有疑问或长时间未收到邮件，请联系管理员：<br/>
@@ -707,7 +725,7 @@
         </div>
         <div class="form-group">
           <label>英文名 First Name <span class="req">*</span></label>
-          <input type="text" autocomplete="off" id="fNameEnFirst" placeholder="e.g. Wei"/>
+          <input type="text" autocomplete="off" id="fNameEnFirst" placeholder="e.g. Wei" oninput="updateNicknamePreview()"/>
         </div>
         <div class="form-group">
           <label>高中学校 <span class="req">*</span></label>
@@ -730,7 +748,7 @@
         </div>
         <div class="form-group" id="fLocationSecondGroup" style="display:none">
           <label id="fLocationSecondLabel">省份 / 州 <span class="req">*</span></label>
-          <select id="fLocationSecond">
+          <select id="fLocationSecond" onchange="updateNicknamePreview()">
             <option value="">请选择</option>
           </select>
         </div>
@@ -786,7 +804,7 @@
         </div>
         <div class="form-group">
           <label>学院 <span class="req">*</span></label>
-          <select id="fCollege">
+          <select id="fCollege" onchange="updateNicknamePreview()">
             <option value="">请选择</option>
             <option class="ug-only" value="Trinity College of Arts & Sciences">Trinity College of Arts &amp; Sciences</option>
             <option class="ug-only" value="Pratt School of Engineering">Pratt School of Engineering</option>
@@ -922,8 +940,24 @@
       <div class="section-title"><span>04</span> 提交者信息</div>
       <div class="form-grid">
         <div class="form-group">
-          <label>你的姓名 <span class="req">*</span></label>
-          <input type="text" autocomplete="off" id="fSubmitterName" placeholder="请输入姓名"/>
+          <label>群昵称 <span class="req">*</span></label>
+          <input type="text" autocomplete="off" id="fSubmitterName" placeholder="进群后使用的昵称，如：Lily" oninput="updateNicknamePreview()"/>
+          <div style="margin-top:6px;padding:10px 14px;background:#eef2fa;border:1px solid rgba(0,48,135,0.15);border-radius:7px;font-size:12px;color:#003087;line-height:1.8;">
+            💡 此昵称将显示在家长群中，请填写你愿意公开的昵称
+          </div>
+          <div id="nicknamePreviewBox" style="display:none;margin-top:8px;padding:10px 14px;background:#001a4d;border-radius:7px;">
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:1px;margin-bottom:5px;">群昵称全称预览</div>
+            <div id="nicknamePreviewText" style="font-size:14px;font-weight:700;color:#f5ecd4;font-family:'DM Mono',monospace;word-break:break-all;">—</div>
+          </div>
+        </div>
+        </div>
+        <div class="form-group">
+          <label>家长角色 <span class="req">*</span></label>
+          <select id="fParentRole" onchange="updateNicknamePreview()">
+            <option value="">请选择</option>
+            <option value="杜爸">爸爸</option>
+            <option value="杜妈">妈妈</option>
+          </select>
         </div>
         <div class="form-group">
           <label>微信名称<span class="req">*</span>（非微信号）</label>
@@ -1100,17 +1134,13 @@
     preUploadStatus[type] = 'uploading';
     updatePreUploadUI(type);
 
-    const ext  = file.name.split('.').pop();
-    const path = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-
-    db.storage.from(BUCKET).upload(path, file, { upsert: false }).then(({ error }) => {
-      if (error) {
-        preUploadStatus[type] = 'error';
-        preUploadPaths[type]  = null;
-      } else {
-        preUploadStatus[type] = 'done';
-        preUploadPaths[type]  = path;
-      }
+    uploadToGitHub(file).then(url => {
+      preUploadStatus[type] = 'done';
+      preUploadPaths[type]  = url;
+      updatePreUploadUI(type);
+    }).catch(() => {
+      preUploadStatus[type] = 'error';
+      preUploadPaths[type]  = null;
       updatePreUploadUI(type);
     });
   }
@@ -1165,6 +1195,28 @@
   }
 
   // ── 上传单个文件 ──
+  async function uploadToGitHub(file) {
+    const ext      = file.name.split('.').pop();
+    const filename = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const arrayBuf = await file.arrayBuffer();
+    const base64   = btoa(String.fromCharCode(...new Uint8Array(arrayBuf)));
+
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/upload-to-github`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+      },
+      body: JSON.stringify({ path: filename, content: base64 })
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error('GitHub上传失败：' + err);
+    }
+    const data = await res.json();
+    return data.content?.download_url || data.url || filename;
+  }
+
   async function uploadFile(file, label) {
     const prog = document.getElementById('uploadProgress');
     const fill = document.getElementById('progressFill');
@@ -1173,12 +1225,13 @@
     if (fill) fill.style.width = '20%';
     if (lbl)  lbl.textContent = `上传${label}中…`;
 
-    const ext  = file.name.split('.').pop();
-    const path = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error } = await db.storage.from(BUCKET).upload(path, file, { upsert: false });
-    if (error) throw new Error(`${label}上传失败：` + error.message);
-    if (fill) fill.style.width = '100%';
-    return path;
+    try {
+      const url = await uploadToGitHub(file);
+      if (fill) fill.style.width = '100%';
+      return url;
+    } catch (e) {
+      throw new Error(`${label}上传失败：` + e.message);
+    }
   }
 
   // ── 提交 ──
@@ -1235,7 +1288,8 @@
       if (type === 'RD' && rdCommitted === 'true' && !committedFile) { showError('已Committed必须上传 Committed Letter'); return; }
       if (type === 'RD' && rdCommitted === 'false' && !committedFile) { showError('5月1日截止已过，RD录取必须上传 Committed Letter 方可入群'); return; }
     }
-    if (!document.getElementById('fSubmitterName').value.trim())    { showError('请填写你的姓名或微信昵称'); return; }
+    if (!document.getElementById('fSubmitterName').value.trim())    { showError('请填写群昵称'); return; }
+    if (!document.getElementById('fParentRole').value)               { showError('请选择家长角色（爸爸/妈妈）'); return; }
     if (!document.getElementById('fSubmitterContact').value.trim()) { showError('请填写联系方式'); return; }
     const submitterEmail = document.getElementById('fSubmitterEmail').value.trim();
     if (!submitterEmail) { showError('请填写邮箱'); return; }
@@ -1322,6 +1376,38 @@
 
       const classYearVal = isGrad ? null : parseInt(year);
 
+      // ── 自动生成微信昵称 ──
+      const _submitterName = document.getElementById('fSubmitterName').value.trim();
+      const _parentRole    = document.getElementById('fParentRole').value || '';
+      const _childName     = nameEnFirst || (nameCn.replace(/不适用/g, '') || '');
+      const _yearShort     = (!isGrad && year && !isNaN(parseInt(year))) ? String(parseInt(year)).slice(-2) : '';
+      const _collegeCode   = college.includes('Pratt') ? 'P' : college.includes('Trinity') ? 'T' : '';
+      const _yearCode      = (_yearShort && _collegeCode) ? _yearShort + _collegeCode : _yearShort;
+      const _locCountry    = document.getElementById('fLocationCountry').value;
+      const _locSecond     = document.getElementById('fLocationSecond')?.value || '';
+      const _stateAbbr = {
+        'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
+        'Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA',
+        'Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS',
+        'Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA',
+        'Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT',
+        'Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM',
+        'New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK',
+        'Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC',
+        'South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT',
+        'Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'
+      };
+      let _locationCode = '';
+      if      (_locCountry === 'US' && _locSecond) _locationCode = _stateAbbr[_locSecond] || _locSecond;
+      else if (_locCountry === 'CN' && _locSecond) _locationCode = _locSecond;
+      else if (_locCountry === 'HK') _locationCode = '香港';
+      else if (_locCountry === 'TW') _locationCode = '台湾';
+      else if (_locCountry === 'SG') _locationCode = '新加坡';
+      else if (_locCountry === 'CA' && _locSecond) _locationCode = _locSecond;
+      else if (_locCountry === 'AU' && _locSecond) _locationCode = _locSecond;
+      else _locationCode = document.getElementById('fLocationOther')?.value.trim() || '';
+      const wx_nickname = [_submitterName, _parentRole, _childName, _yearCode, _locationCode].filter(Boolean).join('-');
+
       const payload = {
         student_name_cn:       nameCn || null,
         student_name_en:       nameEn,
@@ -1340,6 +1426,7 @@
         submitter_name:        document.getElementById('fSubmitterName').value.trim() || null,
         submitter_contact:     document.getElementById('fSubmitterContact').value.trim() || null,
         submitter_email:       submitterEmail || null,
+        wx_nickname:           wx_nickname || null,
       };
 
       const { data: insertedData, error } = await db.from('admissions_submissions').insert(payload).select('id').single();
@@ -1362,6 +1449,13 @@
 
       document.getElementById('formArea').style.display = 'none';
       document.getElementById('pendingScreen').style.display = 'block';
+
+      // 显示生成的微信昵称
+      const _nd = document.getElementById('nicknameDisplay');
+      const _nc = document.getElementById('nicknameExampleC');
+      if (_nd) _nd.textContent = wx_nickname || '—';
+      if (_nc) _nc.textContent = wx_nickname ? wx_nickname + '-C' : '—';
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch(e) {
@@ -1445,6 +1539,55 @@
   const CA_PROVINCES = ['Alberta','British Columbia','Manitoba','New Brunswick','Newfoundland','Nova Scotia','Ontario','Prince Edward Island','Quebec','Saskatchewan'];
   const AU_STATES = ['New South Wales','Victoria','Queensland','South Australia','Western Australia','Tasmania','ACT','Northern Territory'];
 
+  // ── 昵称预览 ──
+  function updateNicknamePreview() {
+    const nickname  = document.getElementById('fSubmitterName').value.trim();
+    const role      = document.getElementById('fParentRole').value;
+    const childFirst= document.getElementById('fNameEnFirst').value.trim();
+    const year      = document.getElementById('fYear').value;
+    const college   = (document.getElementById('fCollege').value || '').trim();
+    const locCountry= document.getElementById('fLocationCountry').value;
+    const locSecond = document.getElementById('fLocationSecond')?.value || '';
+
+    const yearShort  = year && !isNaN(parseInt(year)) ? String(parseInt(year)).slice(-2) : '';
+    const collegeCode= college.includes('Pratt') ? 'P' : college.includes('Trinity') ? 'T' : '';
+    const yearCode   = (yearShort && collegeCode) ? yearShort + collegeCode : yearShort;
+
+    const stateAbbr = {
+      'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
+      'Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA',
+      'Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS',
+      'Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA',
+      'Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT',
+      'Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM',
+      'New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK',
+      'Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC',
+      'South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT',
+      'Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'
+    };
+    let loc = '';
+    if      (locCountry === 'US' && locSecond) loc = stateAbbr[locSecond] || locSecond;
+    else if (locCountry === 'CN' && locSecond) loc = locSecond;
+    else if (locCountry === 'HK') loc = '香港';
+    else if (locCountry === 'TW') loc = '台湾';
+    else if (locCountry === 'SG') loc = '新加坡';
+    else if (locCountry === 'CA' && locSecond) loc = locSecond;
+    else if (locCountry === 'AU' && locSecond) loc = locSecond;
+    else loc = document.getElementById('fLocationOther')?.value.trim() || '';
+
+    const parts = [nickname, role, childFirst, yearCode, loc].filter(Boolean);
+    const preview = parts.join('-');
+
+    const box  = document.getElementById('nicknamePreviewBox');
+    const text = document.getElementById('nicknamePreviewText');
+    if (preview && nickname && role) {
+      box.style.display = 'block';
+      text.textContent  = preview;
+    } else {
+      box.style.display = 'none';
+    }
+  }
+
   function onLocationCountryChange(val) {
     const secondGroup = document.getElementById('fLocationSecondGroup');
     const secondLabel = document.getElementById('fLocationSecondLabel');
@@ -1454,6 +1597,7 @@
     secondGroup.style.display = 'none';
     otherGroup.style.display  = 'none';
     secondSel.innerHTML = '<option value="">请选择</option>';
+    updateNicknamePreview();
 
     let list = null;
     if (val === 'CN') { list = CN_PROVINCES; secondLabel.innerHTML = '省份 / 直辖市 <span class="req">*</span>'; }
@@ -1488,6 +1632,7 @@
   function resetForm() {
     ['fNameCnLast','fNameCnFirst','fNameEnLast','fNameEnFirst','fSchool','fLocationOther','fCollege','fMajor','fNotes','fSubmitterName','fSubmitterContact','fSubmitterEmail']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('fParentRole').value = '';
     document.getElementById('fLocationCountry').value = '';
     document.getElementById('fLocationSecond').innerHTML = '<option value="">请选择</option>';
     document.getElementById('fLocationSecondGroup').style.display = 'none';
