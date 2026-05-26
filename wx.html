@@ -303,27 +303,38 @@ function parseNickname(raw) {
 }
 
 // ── 评分 ──
+// 规则：孩子名 + 地区必须同时匹配才算有效，缺一则返回0
 function matchScore(record, parsed) {
-  let score = 0;
   const en    = (record.student_name_en || '').toLowerCase();
   const loc   = (record.location || '').toLowerCase();
   const child = (parsed.childName || '').toLowerCase();
   const pLoc  = (parsed.location || '').toLowerCase();
 
+  // 孩子名匹配度
+  let nameScore = 0;
   if (child && en) {
-    if (en === child) score += 10;
-    else if (en.includes(child) || child.includes(en)) score += 6;
-    else if (en[0] === child[0]) score += 2;
+    if (en === child) nameScore = 10;
+    else if (en.includes(child) || child.includes(en)) nameScore = 6;
+    else if (en[0] === child[0]) nameScore = 1; // 首字母相同，极弱
   }
+
+  // 地区匹配度
+  let locScore = 0;
   if (pLoc && loc) {
-    if (loc === pLoc) score += 6;
-    else if (loc.includes(pLoc) || pLoc.includes(loc)) score += 4;
+    if (loc === pLoc) locScore = 6;
+    else if (loc.includes(pLoc) || pLoc.includes(loc)) locScore = 4;
     else {
       const lw = pLoc.split(/[\s\-,]+/);
       const rw = loc.split(/[\s\-,]+/);
-      if (lw.some(w => w.length > 2 && rw.some(r => r.includes(w) || w.includes(r)))) score += 2;
+      if (lw.some(w => w.length > 2 && rw.some(r => r.includes(w) || w.includes(r)))) locScore = 2;
     }
   }
+
+  // 孩子名和地区都必须有匹配分才算有效
+  if (nameScore === 0 || locScore === 0) return 0;
+
+  let score = nameScore + locScore;
+  // 附加分：届次、学院
   if (parsed.classYear && record.class_year && parseInt(record.class_year) === parsed.classYear) score += 3;
   if (parsed.college && record.college && (record.college || '').toLowerCase().includes(parsed.college.toLowerCase())) score += 2;
   return score;
