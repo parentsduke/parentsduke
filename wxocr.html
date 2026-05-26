@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>微信昵称批量导入 · DukeParents</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f4f1eb; font-family: 'Noto Sans SC', sans-serif; color: #1a1208; }
+  .app { min-height: 100vh; padding: 32px 20px 80px; max-width: 960px; margin: 0 auto; }
+  .title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.25em; color: #8a7a5a; text-transform: uppercase; margin-bottom: 6px; }
+  h1 { font-size: 26px; font-weight: 700; color: #1a1208; margin-bottom: 32px; }
+  h1 span { color: #003087; }
+  .step { background: #fff; border: 1px solid #e0d8c8; border-radius: 14px; padding: 22px 24px; margin-bottom: 20px; }
+  .step-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: #b8963e; text-transform: uppercase; margin-bottom: 12px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  input[type=email], input[type=password], input[type=text] {
+    padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 8px;
+    font-size: 13px; font-family: 'Noto Sans SC', sans-serif; outline: none; background: #faf8f4;
+  }
+  input:focus { border-color: #003087; }
+  .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; transition: all 0.15s; white-space: nowrap; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary { background: #003087; color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #001a4d; }
+  .btn-gold { background: #b8963e; color: #fff; }
+  .btn-gold:hover:not(:disabled) { background: #9a7a2e; }
+  .btn-green { background: #1a6b3c; color: #fff; }
+  .btn-green:hover:not(:disabled) { background: #145230; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .ok { color: #1a6b3c; font-size: 13px; font-weight: 600; }
+  .err { color: #c84b31; font-size: 13px; margin-top: 8px; }
+  textarea {
+    width: 100%; height: 130px; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; resize: vertical; outline: none;
+    background: #faf8f4; color: #1a1208; line-height: 1.8;
+  }
+  textarea:focus { border-color: #003087; }
+  .upload-zone {
+    border: 1.5px dashed #d0c8b8; border-radius: 10px; padding: 20px;
+    text-align: center; cursor: pointer; background: #faf8f4; transition: all 0.15s; margin-bottom: 12px;
+  }
+  .upload-zone:hover, .upload-zone.over { border-color: #003087; background: #f0f4ff; }
+  .upload-zone p { font-size: 13px; color: #8a7a5a; }
+  img#preview { max-height: 180px; border-radius: 8px; border: 1px solid #ddd; display: none; margin: 10px auto 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 14px; }
+  thead th { background: #001a4d; color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; font-size: 11px; font-family: 'IBM Plex Mono', monospace; }
+  tbody td { padding: 8px 10px; border-bottom: 1px solid #ede8df; vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #f9f6f0; }
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+  .bg { background: #e6f4ed; color: #1a6b3c; }
+  .by { background: #fff8e6; color: #b8963e; }
+  .br { background: #fdecea; color: #c84b31; }
+  .bx { background: #f0ece4; color: #888; }
+  .nick { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #333; max-width: 180px; word-break: break-all; }
+  .parsed { font-size: 11px; color: #555; line-height: 1.7; }
+  .parsed b { color: #003087; }
+  select.match-sel {
+    font-size: 12px; border: 1px solid #ddd; border-radius: 5px; padding: 4px 6px;
+    background: #fff; color: #1a1208; outline: none; max-width: 200px; font-family: 'Noto Sans SC', sans-serif;
+  }
+  select.match-sel:focus { border-color: #003087; }
+  .score-wrap { display: flex; align-items: center; gap: 5px; }
+  .bar { display: inline-block; width: 36px; height: 5px; background: #e8e0d0; border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; background: #b8963e; }
+  .summary { background: #f0f4ff; border: 1px solid #c0d0f0; border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #001a4d; margin-top: 14px; }
+  .summary b { font-weight: 700; }
+  .result-ok { background: #e6f4ed; border-color: #a8d8be; }
+  .result-err { background: #fdecea; border-color: #f0c0b8; }
+  .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+  .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 5px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="title">DukeParents Admin</div>
+  <h1>微信昵称 <span>批量导入</span></h1>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-label">Step 1 · 管理员登录</div>
+    <div id="loginForm">
+      <div class="row">
+        <input type="email" id="loginEmail" placeholder="管理员邮箱" style="flex:1;min-width:180px;"/>
+        <input type="password" id="loginPassword" placeholder="密码" style="width:160px;"/>
+        <button class="btn btn-primary" onclick="doLogin()">登录</button>
+      </div>
+      <div class="err hidden" id="loginErr"></div>
+    </div>
+    <div class="hidden ok" id="loginOk"></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-label">Step 2 · 上传截图或粘贴昵称</div>
+    <div class="upload-zone" id="dropZone" onclick="document.getElementById('imgInput').click()"
+      ondragover="event.preventDefault();this.classList.add('over')"
+      ondragleave="this.classList.remove('over')"
+      ondrop="handleDrop(event)">
+      <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="handleFile(this.files[0])"/>
+      <p id="dropLabel">📱 点击或拖拽上传微信截图，AI 自动提取昵称</p>
+    </div>
+    <img id="preview"/>
+    <div style="margin:12px 0 6px;font-size:12px;color:#8a7a5a;">或手动粘贴昵称列表（每行一个）：</div>
+    <textarea id="nicknameInput" placeholder="Aiye 杜妈-Daniel 30T-SC-C&#10;Alain 杜爸 30 Wendi-TC 上海&#10;..."></textarea>
+    <div class="actions">
+      <button class="btn btn-gold" id="matchBtn" onclick="doMatch()">🔍 匹配数据库记录</button>
+      <span id="matchNote" style="font-size:12px;color:#c84b31;"></span>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step hidden" id="step3">
+    <div class="step-label">Step 3 · 确认匹配结果</div>
+    <div id="matchLoading" class="hidden" style="color:#8a7a5a;font-size:13px;">匹配中…</div>
+    <table id="matchTable">
+      <thead>
+        <tr>
+          <th>微信昵称</th>
+          <th>解析</th>
+          <th>匹配记录</th>
+          <th>置信度</th>
+          <th>跳过</th>
+        </tr>
+      </thead>
+      <tbody id="matchBody"></tbody>
+    </table>
+    <div class="summary" id="matchSummary"></div>
+    <div class="actions">
+      <button class="btn btn-green" id="writeBtn" onclick="doWrite()">✅ 写入数据库</button>
+    </div>
+    <div class="summary hidden" id="writeResult"></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+
+let accessToken = null;
+let dbRecords = [];
+let matches = []; // [{parsed, candidates, override, skip}]
+
+// ── Auth ──
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pwd   = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginErr');
+  errEl.classList.add('hidden');
+  if (!email || !pwd) { showErr(errEl, '请填写邮箱和密码'); return; }
+
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password: pwd }),
+  });
+  const data = await res.json();
+  if (!data.access_token) {
+    showErr(errEl, data.error_description || data.error || '登录失败');
+    return;
+  }
+  accessToken = data.access_token;
+  document.getElementById('loginForm').classList.add('hidden');
+  const okEl = document.getElementById('loginOk');
+  okEl.textContent = '✓ 已登录：' + email;
+  okEl.classList.remove('hidden');
+}
+
+function showErr(el, msg) { el.textContent = msg; el.classList.remove('hidden'); }
+
+// ── OCR ──
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+}
+
+function handleFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const preview = document.getElementById('preview');
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = 'block';
+  document.getElementById('dropLabel').textContent = '🔍 OCR 识别中…';
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('apikey', 'K85381757388957');
+  formData.append('language', 'chs');       // 简体中文+英文
+  formData.append('isOverlayRequired', 'false');
+  formData.append('detectOrientation', 'true');
+  formData.append('scale', 'true');
+  formData.append('isTable', 'false');
+
+  fetch('https://api.ocr.space/parse/image', {
+    method: 'POST',
+    body: formData,
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.IsErroredOnProcessing) {
+      document.getElementById('dropLabel').textContent = '❌ OCR 失败：' + (data.ErrorMessage || '未知错误');
+      return;
+    }
+    // 提取所有识别到的文字行
+    const lines = [];
+    (data.ParsedResults || []).forEach(result => {
+      const text = result.ParsedText || '';
+      text.split(/\r?\n/).forEach(line => {
+        const t = line.trim();
+        if (t.length > 1) lines.push(t);
+      });
+    });
+    if (lines.length) {
+      document.getElementById('nicknameInput').value = lines.join('\n');
+      document.getElementById('dropLabel').textContent = `✓ 识别完成（${lines.length} 行），可继续上传`;
+    } else {
+      document.getElementById('dropLabel').textContent = '⚠ 未识别到文字，请手动粘贴';
+    }
+  })
+  .catch(() => {
+    document.getElementById('dropLabel').textContent = '❌ 网络错误，请手动粘贴';
+  });
+}
+
+// ── 解析昵称 ──
+function parseNickname(raw) {
+  const nickname = raw.trim();
+  const yearMatch    = nickname.match(/\b(\d{2})[TP]\b/i);
+  const collegeMatch = nickname.match(/\b\d{2}([TP])\b/i);
+  const classYear    = yearMatch    ? 2000 + parseInt(yearMatch[1]) : null;
+  const college      = collegeMatch ? (collegeMatch[1].toUpperCase() === 'T' ? 'Trinity' : 'Pratt') : null;
+  const committedMatch = nickname.match(/-([CU])$/i);
+  const committed    = committedMatch ? committedMatch[1].toUpperCase() === 'C' : null;
+
+  const beforeYear = yearMatch ? nickname.substring(0, nickname.indexOf(yearMatch[0])).trim() : nickname;
+  const words = beforeYear.split(/[\s\-]+/).filter(Boolean);
+  let childName = null;
+  for (let i = words.length - 1; i >= 0; i--) {
+    if (/^[a-zA-Z]+$/.test(words[i]) && words[i].length > 1) { childName = words[i]; break; }
+  }
+
+  let location = null;
+  if (yearMatch) {
+    const afterYear = nickname.substring(nickname.indexOf(yearMatch[0]) + yearMatch[0].length);
+    const locRaw = afterYear.replace(/^[\s\-]+/, '').replace(/[\s\-]*[CU]$/i, '').trim();
+    if (locRaw) location = locRaw;
+  }
+  return { nickname, childName, classYear, college, location, committed };
+}
+
+// ── 评分 ──
+function matchScore(record, parsed) {
+  let score = 0;
+  const en    = (record.student_name_en || '').toLowerCase();
+  const loc   = (record.location || '').toLowerCase();
+  const child = (parsed.childName || '').toLowerCase();
+  const pLoc  = (parsed.location || '').toLowerCase();
+
+  if (child && en) {
+    if (en === child) score += 10;
+    else if (en.includes(child) || child.includes(en)) score += 6;
+    else if (en[0] === child[0]) score += 2;
+  }
+  if (pLoc && loc) {
+    if (loc === pLoc) score += 6;
+    else if (loc.includes(pLoc) || pLoc.includes(loc)) score += 4;
+    else {
+      const lw = pLoc.split(/[\s\-,]+/);
+      const rw = loc.split(/[\s\-,]+/);
+      if (lw.some(w => w.length > 2 && rw.some(r => r.includes(w) || w.includes(r)))) score += 2;
+    }
+  }
+  if (parsed.classYear && record.class_year && parseInt(record.class_year) === parsed.classYear) score += 3;
+  if (parsed.college && record.college && (record.college || '').toLowerCase().includes(parsed.college.toLowerCase())) score += 2;
+  return score;
+}
+
+// ── 匹配 ──
+async function doMatch() {
+  if (!accessToken) { document.getElementById('matchNote').textContent = '请先登录'; return; }
+  const lines = document.getElementById('nicknameInput').value.split('\n').map(l => l.trim()).filter(Boolean);
+  if (!lines.length) { document.getElementById('matchNote').textContent = '请先输入昵称'; return; }
+  document.getElementById('matchNote').textContent = '';
+
+  const btn = document.getElementById('matchBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>匹配中…';
+
+  // 拉数据库
+  if (!dbRecords.length) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/admissions_submissions?select=id,student_name_en,student_name_cn,location,class_year,college,wx_nickname&order=created_at.desc&limit=2000`, {
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${accessToken}` }
+    });
+    dbRecords = await res.json();
+  }
+
+  matches = lines.map(line => {
+    const parsed = parseNickname(line);
+    const scored = dbRecords.map(r => ({ record: r, score: matchScore(r, parsed) }))
+      .filter(x => x.score > 0).sort((a, b) => b.score - a.score);
+    return {
+      parsed,
+      candidates: scored.slice(0, 6),
+      override: scored[0]?.record?.id || '__none__',
+      skip: false,
+    };
+  });
+
+  renderTable();
+  document.getElementById('step3').classList.remove('hidden');
+  btn.disabled = false;
+  btn.innerHTML = '🔍 重新匹配';
+}
+
+// ── 渲染表格 ──
+function renderTable() {
+  const tbody = document.getElementById('matchBody');
+  const MAX_SCORE = 21;
+  tbody.innerHTML = matches.map((m, i) => {
+    const pct = m.candidates[0] ? Math.min(100, Math.round((m.candidates[0].score / MAX_SCORE) * 100)) : 0;
+    const confClass = pct >= 70 ? 'bg' : pct >= 40 ? 'by' : m.candidates.length ? 'br' : 'bx';
+    const confLabel = pct >= 70 ? '高' : pct >= 40 ? '中' : m.candidates.length ? '低' : '无';
+    const p = m.parsed;
+    const parsedHtml = [
+      p.childName ? `孩子：<b>${p.childName}</b>` : '',
+      p.classYear ? `届次：<b>${p.classYear}</b>` : '',
+      p.college   ? `学院：<b>${p.college}</b>`   : '',
+      p.location  ? `地区：<b>${p.location}</b>`  : '',
+    ].filter(Boolean).join('<br>');
+
+    const opts = [
+      `<option value="__none__">— 不匹配 —</option>`,
+      ...m.candidates.map(c =>
+        `<option value="${c.record.id}" ${m.override === c.record.id ? 'selected' : ''}>
+          ${c.record.student_name_cn || c.record.student_name_en || c.record.id}
+          ${c.record.location ? ' · ' + c.record.location : ''}
+          ${c.record.wx_nickname ? ' [已有:' + c.record.wx_nickname + ']' : ''}
+        </option>`
+      )
+    ].join('');
+
+    return `<tr id="mrow-${i}" style="${m.skip ? 'opacity:0.4' : ''}">
+      <td class="nick">${escHtml(m.parsed.nickname)}</td>
+      <td class="parsed">${parsedHtml || '—'}</td>
+      <td>
+        <select class="match-sel" onchange="setOverride(${i},this.value)" ${m.skip ? 'disabled' : ''}>
+          ${opts}
+        </select>
+      </td>
+      <td>
+        <div class="score-wrap">
+          <span class="bar"><span class="bar-fill" style="width:${pct}%"></span></span>
+          <span class="badge ${confClass}">${confLabel} ${pct}%</span>
+        </div>
+      </td>
+      <td><input type="checkbox" ${m.skip ? 'checked' : ''} onchange="setSkip(${i},this.checked)"/></td>
+    </tr>`;
+  }).join('');
+  updateSummary();
+}
+
+function setOverride(i, val) {
+  matches[i].override = val;
+  updateSummary();
+}
+function setSkip(i, val) {
+  matches[i].skip = val;
+  const row = document.getElementById('mrow-' + i);
+  if (row) row.style.opacity = val ? '0.4' : '1';
+  const sel = row.querySelector('select');
+  if (sel) sel.disabled = val;
+  updateSummary();
+}
+function updateSummary() {
+  const confirmed = matches.filter(m => !m.skip && m.override !== '__none__').length;
+  const skipped   = matches.filter(m => m.skip).length;
+  const noMatch   = matches.filter(m => !m.skip && m.override === '__none__').length;
+  document.getElementById('matchSummary').innerHTML =
+    `共 <b>${matches.length}</b> 条昵称，<b>${confirmed}</b> 条将写入，<b>${skipped}</b> 条已跳过，<b>${noMatch}</b> 条无匹配`;
+  document.getElementById('writeBtn').textContent = `✅ 写入 ${confirmed} 条到数据库`;
+  document.getElementById('writeBtn').disabled = confirmed === 0;
+}
+
+// ── 写入 ──
+async function doWrite() {
+  const btn = document.getElementById('writeBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>写入中…';
+  let ok = 0, skipped = 0, fail = 0, failList = [];
+
+  for (const m of matches) {
+    if (m.skip || m.override === '__none__') { skipped++; continue; }
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/admissions_submissions?id=eq.${m.override}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({ wx_nickname: m.parsed.nickname }),
+      });
+      if (res.ok) ok++;
+      else { fail++; failList.push(m.parsed.nickname); }
+    } catch(e) { fail++; failList.push(m.parsed.nickname); }
+  }
+
+  btn.disabled = false;
+  updateSummary();
+  const resultEl = document.getElementById('writeResult');
+  resultEl.classList.remove('hidden', 'result-ok', 'result-err');
+  resultEl.classList.add(fail ? 'result-err' : 'result-ok');
+  resultEl.innerHTML = `写入完成：✅ 成功 <b>${ok}</b> 条` +
+    (skipped ? `，⏭ 跳过 <b>${skipped}</b> 条` : '') +
+    (fail ? `，❌ 失败 <b>${fail}</b> 条：${failList.join('、')}` : '');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Enter to login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.activeElement.id === 'loginPassword') doLogin();
+});
+</script>
+</body>
+</html>
