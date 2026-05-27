@@ -959,6 +959,33 @@
     URL.revokeObjectURL(url);
   }
 
+  // ── 批准通知管理员 ──
+  async function notifyAdmin(studentName, targetEmail) {
+    try {
+      const { data: { session } } = await db.auth.getSession();
+      const approvedBy = session?.user?.email || '未知管理员';
+      const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
+      await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          email:      'weihong_j@yahoo.com',
+          studentName:'管理员',
+          subject:    `✅ 已批准：${studentName}`,
+          replyTo:    'parentsduke@gmail.com',
+          bodyLine1:  `${studentName} 已批准入群。`,
+          bodyLine2:  `批准人：${approvedBy}\n发送到：${targetEmail}\n时间：${now}（美东）`,
+          noButton:   true,
+        }),
+      });
+    } catch(e) {
+      console.warn('[通知管理员失败]', e.message);
+    }
+  }
+
   // ── 批准入群 ──
   // ── 二维码图片地址（只需改这里）──
   const QR_IMAGE_URL = 'https://dukeparents.org/q30d.png';
@@ -975,8 +1002,10 @@
         if (approveCell) approveCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
         const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
         if (actionCell) actionCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
-      applyFilters();
-      alert('✅ 已标记为批准');
+        applyFilters();
+        // 通知管理员
+        await notifyAdmin(studentName, '（无邮箱）');
+        alert('✅ 已标记为批准');
       } catch(e) {
         alert('❌ 操作失败：' + e.message);
       }
@@ -1031,8 +1060,10 @@
       const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
       if (actionCell) actionCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
 
-    applyFilters();
-    alert(`✅ 已发送入群链接到 ${email}`);
+      applyFilters();
+      // 通知管理员（失败不影响主流程）
+      await notifyAdmin(studentName, email);
+      alert(`✅ 已发送入群链接到 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
     }
