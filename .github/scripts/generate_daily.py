@@ -164,64 +164,64 @@ PREMATRIC_HARDCODED = [
     },
     # ── Summer Engagement 暑期线上讲座系列（来源：students.duke.edu/info-for/students/incoming-students/summer-engagement/）──
     {
-        'expire': (2026, 6, 2),
+        'expire': (2026, 5, 20),
         'category': 'Summer Engagement',
-        'text': 'June 2 (Tue) 5:00 PM ET: Living at Duke - Part 1 — 校园生活概览（需注册）',
+        'text': 'May 19 (Tue) 4:00 PM ET: Living at Duke - Part 1 — Duke Dining与Housing Assignments团队介绍Dining餐饮合同及住房申请流程，解答到校前疑问（需注册）',
     },
     {
         'expire': (2026, 6, 2),
         'category': 'Summer Engagement',
-        'text': 'June 2 (Tue) 5:00 PM ET: Staying Well in Your First Year - Part 1 — Student Health团队介绍疫苗接种、医疗保险、营养（需注册）',
+        'text': 'June 2 (Tue) 5:00 PM ET: Staying Well in Your First Year - Part 1 — Student Health团队介绍疫苗接种、医疗保险、营养，分享秋季到校前须知（需注册）',
     },
     {
-        'expire': (2026, 6, 5),
+        'expire': (2026, 5, 27),
         'category': 'Summer Engagement',
-        'text': 'Pratt Advising — Pratt工程学院新生选课与学业顾问专场（具体时间见官网）',
+        'text': 'May 26 (Tue) 4:00 PM ET: Pratt Advising — Pratt工程学院顾问直接介绍注册与选课流程（需注册）',
     },
     {
         'expire': (2026, 6, 9),
         'category': 'Summer Engagement',
-        'text': 'June 9 (Tue) 4:00 PM ET: Trinity Advising — Academic Advising Center专业顾问介绍Trinity学生选课与注册（需注册）',
+        'text': 'June 9 (Tue) 4:00 PM ET: Trinity Advising — Academic Advising Center专业顾问团队介绍Trinity学生选课与注册，适合文理学院新生（需注册）',
     },
     {
         'expire': (2026, 6, 16),
         'category': 'Summer Engagement',
-        'text': 'June 16 (Tue) 4:00 PM ET: Living at Duke - Part 2 — Dining餐饮、DukeCard校园卡、OIT信息技术与网络安全（需注册）',
+        'text': 'June 16 (Tue) 4:00 PM ET: Living at Duke - Part 2 — Dining餐饮、DukeCard校园卡、OIT信息技术与网络安全各团队介绍Duke生活必备要素（需注册）',
     },
     {
         'expire': (2026, 6, 23),
         'category': 'Summer Engagement',
-        'text': 'June 23 (Tue) 4:00 PM ET: Financial Aid 101 — 财务援助五大要点，已收aid letter后下一步怎么做（需注册）',
+        'text': 'June 23 (Tue) 4:00 PM ET: Financial Aid 101 — 财务援助五大要点；已收到offer letter后下一步怎么做，财务流程详解（需注册）',
     },
     {
         'expire': (2026, 6, 30),
         'category': 'Summer Engagement',
-        'text': 'June 30 (Tue) 4:00 PM ET: Duke 101 — 副教务长Dr. Lee Baker讲授Duke学术格局与一年级成长之路，Trinity & Pratt均适用（需注册）',
+        'text': 'June 30 (Tue) 4:00 PM ET: Duke 101 — 副教务长Dr. Lee Baker讲解Duke学术格局与一年级成长路径，了解博雅教育理念与Duke对学生的支持承诺，Trinity & Pratt均适用（需注册）',
     },
     {
         'expire': (2026, 7, 14),
         'category': 'Summer Engagement',
-        'text': 'July 14 (Tue) 4:00 PM ET: Prehealth Advising — Prehealth顾问解答选课与注册问题，适合有医学/牙医/药学志向的新生（需注册）',
+        'text': 'July 14 (Tue) 4:00 PM ET: Prehealth Advising — Prehealth顾问解答选课与注册问题，适合有志医学/牙医/药学/兽医方向的新生（需注册）',
     },
     {
         'expire': (2026, 7, 21),
         'category': 'Summer Engagement',
-        'text': 'July 21 (Tue) 4:00 PM ET: Staying Well in Your First Year - Part 2 — DuWell、CAPS心理咨询、DukeReach团队介绍Duke全面健康资源（需注册）',
+        'text': 'July 21 (Tue) 4:00 PM ET: Staying Well in Your First Year - Part 2 — DuWell、CAPS心理咨询、DukeReach团队介绍Duke全面健康支持资源，解答秋季到校后问题（需注册）',
     },
     {
         'expire': (2026, 7, 28),
         'category': 'Summer Engagement',
-        'text': '【必看★】July 28 (Tue) 4:00 PM ET: Getting to Know the Duke Community Standard & Residence Life Policies — HRL+OSCCS联合主办；全体新生须在到校前参加直播或观看录像（需注册）',
+        'text': '【必看★】July 28 (Tue) 4:00 PM ET: Getting to Know the Duke Community Standard & Residence Life Policies — HRL+OSCCS联合主办，介绍宿舍政策与社区行为准则；全体新生须在到校前参加直播或观看录像（需注册）',
     },
     {
         'expire': (2026, 8, 4),
         'category': 'Summer Engagement',
-        'text': 'August 4 (Tue) 6:00 PM ET: Preparing for First-Year Move In and Orientation — New Student & Family Programs团队答疑（Registration Coming Soon）',
+        'text': 'August 4 (Tue) 6:00 PM ET: Preparing for First-Year Move In and Orientation — New Student & Family Programs团队解答搬入日、Experiential Orientation及开学后安排的最终问题（Registration Coming Soon）',
     },
     {
         'expire': (2026, 8, 4),
         'category': 'Summer Engagement',
-        'text': 'August 4 (Tue) 5:00 PM ET: Preparing for Transfer Move In and Orientation — 转学生搬入日与Orientation专场答疑（Registration Coming Soon）',
+        'text': 'August 4 (Tue) 5:00 PM ET: Preparing for Transfer Move In and Orientation — 转学生搬入日与Orientation专场，New Student & Family Programs团队答疑（Registration Coming Soon）',
     },
     # ── 开学前 Student Action Items（来源：Duke 2030家长群）──
     {
