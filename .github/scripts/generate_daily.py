@@ -240,6 +240,22 @@ PREMATRIC_HARDCODED = [
         'category': '开学前待办',
         'text': 'June 15: 疫苗接种证明（Immunization Form）须由医生签字并提交至 Duke Student Health——Student Health Gateway 开放上传时间通常为5月中至6月初，开放日期将另行通知',
     },
+    # ── 大一新生（Class of 2030）选课与注册（来源：registrar.duke.edu/registration）──
+    {
+        'expire': (2026, 6, 2),
+        'category': '选课与注册',
+        'text': '【大一新生专属】June 1 (Mon): DukeHub 选课购物车开放（Shopping Cart opens, 12:01 AM）——大一新生可提前浏览并加入课程，但尚不能完成正式注册',
+    },
+    {
+        'expire': (2026, 7, 30),
+        'category': '选课与注册',
+        'text': '【大一新生专属·重要】July 29 (Wed) 12:00 PM ET: 大一新生（Class of 2030）正式选课开始（Registration opens）——须提前与 Quad Advisor 见面以解除 ELI advising hold，否则无法注册；咨询：advising@duke.edu / 919-684-6217',
+    },
+    {
+        'expire': (2026, 7, 31),
+        'category': '选课与注册',
+        'text': '【大一新生专属】July 30 (Thu) 12:01 AM: 大一新生（Class of 2030）Drop/Add 开始——可对已注册课程进行调整',
+    },
     # ── 体验式迎新周 ──
     {
         'expire': (2026, 5, 31),
