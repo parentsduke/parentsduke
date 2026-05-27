@@ -171,7 +171,7 @@ PREMATRIC_HARDCODED = [
     {
         'expire': (2026, 6, 2),
         'category': 'Summer Engagement',
-        'text': 'June 2 (Tue) 5:00 PM ET: Staying Well in Your First Year - Part 1 — Student Health团队介绍疫苗接种、医疗保险、营养，分享秋季到校前须知（需注册）',
+        'text': 'June 2 (Tue) 5:00 PM ET: Staying Well in Your First Year - Part 1 — Student Health团队介绍疫苗接种、医疗保险、营养，分享秋季到校前须知（注册：https://duke.zoom.us/webinar/register/WN_dvTSqZUARtyonAe7FG0Nzw）',
     },
     {
         'expire': (2026, 5, 27),
@@ -181,42 +181,42 @@ PREMATRIC_HARDCODED = [
     {
         'expire': (2026, 6, 9),
         'category': 'Summer Engagement',
-        'text': 'June 9 (Tue) 4:00 PM ET: Trinity Advising — Academic Advising Center专业顾问团队介绍Trinity学生选课与注册，适合文理学院新生（需注册）',
+        'text': 'June 9 (Tue) 4:00 PM ET: Trinity Advising — Academic Advising Center专业顾问团队介绍Trinity学生选课与注册，适合文理学院新生（注册：https://duke.zoom.us/webinar/register/WN_seWZzrdRRpuiL_Z6xQc03Q）',
     },
     {
         'expire': (2026, 6, 16),
         'category': 'Summer Engagement',
-        'text': 'June 16 (Tue) 4:00 PM ET: Living at Duke - Part 2 — Dining餐饮、DukeCard校园卡、OIT信息技术与网络安全各团队介绍Duke生活必备要素（需注册）',
+        'text': 'June 16 (Tue) 4:00 PM ET: Living at Duke - Part 2 — Dining餐饮、DukeCard校园卡、OIT信息技术与网络安全各团队介绍Duke生活必备要素（注册：https://duke.zoom.us/webinar/register/WN_oW0Bo3YJTOK1_VQOLXGo6A）',
     },
     {
         'expire': (2026, 6, 23),
         'category': 'Summer Engagement',
-        'text': 'June 23 (Tue) 4:00 PM ET: Financial Aid 101 — 财务援助五大要点；已收到offer letter后下一步怎么做，财务流程详解（需注册）',
+        'text': 'June 23 (Tue) 4:00 PM ET: Financial Aid 101 — 财务援助五大要点；已收到offer letter后下一步怎么做，财务流程详解（注册：https://duke.zoom.us/webinar/register/WN_-DQa92TtRe-3zNfJ64TVvQ）',
     },
     {
         'expire': (2026, 6, 30),
         'category': 'Summer Engagement',
-        'text': 'June 30 (Tue) 4:00 PM ET: Duke 101 — 副教务长Dr. Lee Baker讲解Duke学术格局与一年级成长路径，了解博雅教育理念与Duke对学生的支持承诺，Trinity & Pratt均适用（需注册）',
+        'text': 'June 30 (Tue) 4:00 PM ET: Duke 101 — 副教务长Dr. Lee Baker讲解Duke学术格局与一年级成长路径，了解博雅教育理念与Duke对学生的支持承诺，Trinity & Pratt均适用（注册：https://duke.zoom.us/webinar/register/WN_IVW-SAuBQGGEW92UeD3NPQ）',
     },
     {
         'expire': (2026, 7, 14),
         'category': 'Summer Engagement',
-        'text': 'July 14 (Tue) 4:00 PM ET: Prehealth Advising — Prehealth顾问解答选课与注册问题，适合有志医学/牙医/药学/兽医方向的新生（需注册）',
+        'text': 'July 14 (Tue) 4:00 PM ET: Prehealth Advising — Prehealth顾问解答选课与注册问题，适合有志医学/牙医/药学/兽医方向的新生（注册：https://duke.zoom.us/webinar/register/WN_DWIldqIRSMmFbNQjePwInA）',
     },
     {
         'expire': (2026, 7, 21),
         'category': 'Summer Engagement',
-        'text': 'July 21 (Tue) 4:00 PM ET: Staying Well in Your First Year - Part 2 — DuWell、CAPS心理咨询、DukeReach团队介绍Duke全面健康支持资源，解答秋季到校后问题（需注册）',
+        'text': 'July 21 (Tue) 4:00 PM ET: Staying Well in Your First Year - Part 2 — DuWell、CAPS心理咨询、DukeReach团队介绍Duke全面健康支持资源，解答秋季到校后问题（注册：https://duke.zoom.us/webinar/register/WN_eZn5jPApQTahbzdesXHwRw）',
     },
     {
         'expire': (2026, 7, 28),
         'category': 'Summer Engagement',
-        'text': '【必看★】July 28 (Tue) 4:00 PM ET: Getting to Know the Duke Community Standard & Residence Life Policies — HRL+OSCCS联合主办，介绍宿舍政策与社区行为准则；全体新生须在到校前参加直播或观看录像（需注册）',
+        'text': '【必看★】July 28 (Tue) 4:00 PM ET: Getting to Know the Duke Community Standard & Residence Life Policies — HRL+OSCCS联合主办，介绍宿舍政策与社区行为准则；全体新生须在到校前参加直播或观看录像（注册：https://duke.zoom.us/webinar/register/WN_2u5Z7RZXTpqeAx2VtyxIUw）',
     },
     {
         'expire': (2026, 8, 4),
         'category': 'Summer Engagement',
-        'text': 'August 4 (Tue) 6:00 PM ET: Preparing for First-Year Move In and Orientation — New Student & Family Programs团队解答搬入日、Experiential Orientation及开学后安排的最终问题（Registration Coming Soon）',
+        'text': 'August 4 (Tue) 6:00 PM ET: Preparing for First-Year Move In and Orientation — New Student & Family Programs团队解答搬入日、Experiential Orientation及开学后安排的最终问题（注册：https://duke.zoom.us/webinar/register/WN_skWQczFEdQv6I75qfFgu3I0）',
     },
     {
         'expire': (2026, 8, 4),
