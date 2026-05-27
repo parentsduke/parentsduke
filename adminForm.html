@@ -587,9 +587,14 @@
 
   const GITHUB_BASE = 'https://raw.githubusercontent.com/parentsduke/parentsduke/main';
 
-  // 智能打开文件：先试 Supabase，404 再试 GitHub
+  // 智能打开文件：已是完整URL直接打开；否则先试 Supabase，404 再试 GitHub
   async function openFile(path) {
     if (!path) return;
+    // 如果存的已经是完整 URL，直接打开
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      window.open(path, '_blank');
+      return;
+    }
     const supaUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
     const ghUrl   = `${GITHUB_BASE}/${path}`;
     try {
@@ -601,6 +606,7 @@
 
   function getFileUrl(path) {
     if (!path) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
     return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
   }
 
