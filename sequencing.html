@@ -2469,6 +2469,416 @@
     </div>
   </div>
 
+  <!-- N5b. Nanopore 实验操作步骤 -->
+  <div class="acc-item" id="nano-5b">
+    <button class="acc-trigger" onclick="toggle('nano-5b')">
+      <div class="acc-icon" style="background:var(--nano-light);">🧪</div>
+      <div style="flex:1">
+        <div class="acc-title">Nanopore 实验操作步骤</div>
+        <div class="acc-subtitle">从 DNA 提取到 MinION 上机 · 全流程 9 步</div>
+      </div>
+      <div class="acc-chevron">▼</div>
+    </button>
+    <div class="acc-panel">
+      <div class="acc-panel-inner">
+        <div class="panel-divider"></div>
+
+        <!-- 流程总览 SVG -->
+        <div class="svg-diagram">
+          <div class="svg-diagram-label">Nanopore 建库与测序流程总览 · Workflow Overview</div>
+          <svg viewBox="0 0 720 110" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+            <line x1="30" y1="42" x2="700" y2="42" stroke="#a855c8" stroke-width="2" opacity="0.3"/>
+            <circle cx="50" cy="42" r="14" fill="#7b2d8b"/>
+            <text x="50" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">1</text>
+            <text x="50" y="66" text-anchor="middle" font-size="7.5" fill="#7b2d8b">HMW DNA</text>
+            <text x="50" y="75" text-anchor="middle" font-size="7.5" fill="#7b2d8b">提取</text>
+            <circle cx="128" cy="42" r="14" fill="#7b2d8b"/>
+            <text x="128" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">2</text>
+            <text x="128" y="66" text-anchor="middle" font-size="7.5" fill="#7b2d8b">DNA 质控</text>
+            <text x="128" y="75" text-anchor="middle" font-size="7.5" fill="#888">Qubit/凝胶</text>
+            <circle cx="206" cy="42" r="14" fill="#7b2d8b"/>
+            <text x="206" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">3</text>
+            <text x="206" y="66" text-anchor="middle" font-size="7.5" fill="#7b2d8b">片段化</text>
+            <text x="206" y="75" text-anchor="middle" font-size="7.5" fill="#888">（可选）</text>
+            <circle cx="284" cy="42" r="14" fill="#c8a84b"/>
+            <text x="284" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">4</text>
+            <text x="284" y="66" text-anchor="middle" font-size="7.5" fill="#c8a84b">末端修复</text>
+            <text x="284" y="75" text-anchor="middle" font-size="7.5" fill="#c8a84b">加 dA 尾</text>
+            <circle cx="362" cy="42" r="14" fill="#c8a84b"/>
+            <text x="362" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">5</text>
+            <text x="362" y="66" text-anchor="middle" font-size="7.5" fill="#c8a84b">接头连接</text>
+            <text x="362" y="75" text-anchor="middle" font-size="7.5" fill="#c8a84b">（AMX）</text>
+            <circle cx="440" cy="42" r="14" fill="#7b2d8b"/>
+            <text x="440" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">6</text>
+            <text x="440" y="66" text-anchor="middle" font-size="7.5" fill="#7b2d8b">文库纯化</text>
+            <text x="440" y="75" text-anchor="middle" font-size="7.5" fill="#7b2d8b">AMPure XP</text>
+            <circle cx="518" cy="42" r="14" fill="#c8a84b"/>
+            <text x="518" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">7</text>
+            <text x="518" y="66" text-anchor="middle" font-size="7.5" fill="#c8a84b">Flow Cell</text>
+            <text x="518" y="75" text-anchor="middle" font-size="7.5" fill="#c8a84b">冲洗上样</text>
+            <circle cx="596" cy="42" r="14" fill="#7b2d8b"/>
+            <text x="596" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">8</text>
+            <text x="596" y="66" text-anchor="middle" font-size="7.5" fill="#7b2d8b">MinKNOW</text>
+            <text x="596" y="75" text-anchor="middle" font-size="7.5" fill="#7b2d8b">实时测序</text>
+            <circle cx="674" cy="42" r="14" fill="#1a6b5a"/>
+            <text x="674" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">9</text>
+            <text x="674" y="66" text-anchor="middle" font-size="7.5" fill="#1a6b5a">Dorado</text>
+            <text x="674" y="75" text-anchor="middle" font-size="7.5" fill="#1a6b5a">碱基识别</text>
+            <rect x="242" y="8" width="84" height="14" rx="4" fill="#c8a84b" opacity="0.15"/>
+            <text x="284" y="19" text-anchor="middle" font-size="7" fill="#c8a84b" font-weight="600">⚠ 建库核心</text>
+            <rect x="320" y="8" width="84" height="14" rx="4" fill="#c8a84b" opacity="0.15"/>
+            <text x="362" y="19" text-anchor="middle" font-size="7" fill="#c8a84b" font-weight="600">⚠ 接头关键</text>
+            <rect x="476" y="8" width="84" height="14" rx="4" fill="#c8a84b" opacity="0.15"/>
+            <text x="518" y="19" text-anchor="middle" font-size="7" fill="#c8a84b" font-weight="600">⚠ 上机关键</text>
+            <rect x="10" y="90" width="700" height="14" rx="4" fill="var(--nano-light)" stroke="var(--nano)" stroke-width="1"/>
+            <text x="360" y="101" text-anchor="middle" font-size="8" fill="#7b2d8b" font-weight="600">总耗时：~4–6 小时（标准 Ligation 建库）| 超长读长（Ultra-Long）模式约 1 天 | Rapid 建库仅需 10 分钟</text>
+          </svg>
+          <div class="svg-caption">紫色节点为常规步骤，金色节点为技术核心步骤（末端修复与接头连接直接决定上机效率），绿色节点为数据输出。相比 PacBio，Nanopore 建库流程更短、更灵活，可当天完成从 DNA 到实时数据。</div>
+        </div>
+
+        <!-- 建库方案选择 -->
+        <div class="section-label" style="margin-top:10px">选择建库方案（试剂盒对比）</div>
+        <table class="mini-table" style="margin-bottom:20px">
+          <thead>
+            <tr><th>试剂盒</th><th>适用场景</th><th>输入 DNA 量</th><th>建库时间</th><th>特点</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="val-n">SQK-LSK114（Ligation）</td>
+              <td>标准基因组 / WGS / 超长读长</td>
+              <td>≥1 µg HMW DNA</td>
+              <td>~60–90 min</td>
+              <td>最高产出，读长最长；推荐首选方案</td>
+            </tr>
+            <tr>
+              <td class="val-n">SQK-RAD114（Rapid）</td>
+              <td>快速诊断 / 现场测序</td>
+              <td>≥400 ng</td>
+              <td>~10 min</td>
+              <td>转座酶随机插入接头，极快；读长略短于 LSK114</td>
+            </tr>
+            <tr>
+              <td class="val-n">SQK-ULK114（Ultra-Long）</td>
+              <td>着丝粒 / 端粒 / T2T 组装</td>
+              <td>≥5 µg，极高 MW</td>
+              <td>~3–4 h</td>
+              <td>目标读长 &gt;100 kb；FFPE 柱纯化，操作严格</td>
+            </tr>
+            <tr>
+              <td class="val-n">SQK-PCB114（PCR-Barcoding）</td>
+              <td>多样本复用 / 扩增子 / 微生物</td>
+              <td>低投入量，可 PCR 扩增</td>
+              <td>~2–3 h（含 PCR）</td>
+              <td>支持 1–96 样本 barcode，适合 16S/ITS 扩增子</td>
+            </tr>
+            <tr>
+              <td class="val-n">SQK-DCS114（Direct cDNA）</td>
+              <td>全长转录组 / 可变剪接</td>
+              <td>总 RNA ≥50 ng</td>
+              <td>~5–6 h（含逆转录）</td>
+              <td>保留链信息；全长 isoform；无扩增偏好</td>
+            </tr>
+            <tr>
+              <td class="val-n">SQK-RNA004（Direct RNA）</td>
+              <td>RNA 修饰检测（m6A 等）</td>
+              <td>polyA RNA ≥500 ng</td>
+              <td>~2 h</td>
+              <td>直接测原生 RNA 链；保留 m6A / pseudouridine 修饰信号</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 各步骤详情 -->
+        <div class="section-label">各步骤详情（以 SQK-LSK114 标准 Ligation 建库为例）</div>
+        <table class="mini-table">
+          <thead>
+            <tr><th style="width:140px">步骤</th><th>操作要点</th><th style="width:80px">耗时</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="val-n">① HMW DNA 提取</td>
+              <td>
+                目标片段 &gt;50 kb（超长读长建库需 &gt;200 kb）。推荐方法：Circulomics Nanobind 磁珠法（动物组织）、NEB Monarch HMW DNA Kit、或 CTAB 法（植物/真菌）。
+                <br/>• <strong>严禁剧烈涡旋</strong>，全程使用宽口剪尖枪头（wide-bore tips）
+                <br/>• 冻融次数 ≤2 次；组织样品从 -80°C 新鲜冻存取材
+                <br/>• FFPE 样品因 DNA 碎片化严重，<strong>不推荐</strong>用于长读长建库
+                <br/>• 血液样品推荐 EDTA 管；唾液/粪便需针对性提取方案
+              </td>
+              <td>2–4 h</td>
+            </tr>
+            <tr>
+              <td class="val-n">② DNA 质控</td>
+              <td>
+                <strong>浓度定量：</strong>Qubit 4（dsDNA HS Assay），目标 ≥50 ng/µL；OD260/280 ≥1.8，OD260/230 ≥2.0（NanoDrop 辅助）
+                <br/>• <strong>片段完整性：</strong>FEMTO Pulse（Agilent）或 Genomic DNA ScreenTape 确认主峰 &gt;30 kb；0.4% 琼脂糖凝胶可快速判断
+                <br/>• <strong>RNA 污染：</strong>若凝胶见明亮 RNA 条带，加 RNase A（0.1 mg/mL）37°C 处理 30 min 后重新纯化
+                <br/>• <strong>不合格处理：</strong>片段 &lt;10 kb 建议重提取，强行建库将显著降低产出且容易堵塞孔道
+              </td>
+              <td>30–60 min</td>
+            </tr>
+            <tr>
+              <td class="val-n">③ 片段化（可选）</td>
+              <td>
+                若目标读长 10–30 kb（临床 WGS、靶向测序），可将 HMW DNA 温和剪切至目标范围以提高孔利用率：
+                <br/>• Covaris g-TUBE：5,000–10,000 rpm × 1 min，可调节转速控制目标片段大小
+                <br/>• Megaruptor 3（Diagenode）：程序化剪切，重复性更好
+                <br/>• <strong>切勿用超声波（Bioruptor）</strong>——片段过小（&lt;1 kb），完全浪费 HMW 提取
+                <br/>• 剪切后 0.4× AMPure XP 筛选去除 &lt;3 kb 小片段
+                <br/>• <strong>超长读长建库（SQK-ULK114）跳过此步</strong>，保持最大完整性
+              </td>
+              <td>1 h（可选）</td>
+            </tr>
+            <tr>
+              <td style="color:#c8a84b;font-weight:600">④ 末端修复 + 加 dA 尾</td>
+              <td>
+                使用 NEBNext FFPE DNA Repair Mix（可选）+ Ultra II End Repair/dA-Tailing Module，或 ONT 试剂盒内含 NEBNext reagents：
+                <br/>• <strong>FFPE 损伤修复（可选）：</strong>37°C 15 min → 65°C 15 min，修复氧化脱嘌呤与交联
+                <br/>• <strong>末端修复：</strong>20°C 5 min → 65°C 5 min（Klenow 补平缺口，T4 PNK 磷酸化 5' 末端）
+                <br/>• <strong>加 dA 尾：</strong>65°C 5 min（Klenow exo- 在 3' 末端添加单个非模板 dA，形成黏性末端供接头 T 尾连接）
+                <br/>• <strong>操作注意：</strong>冰上操作所有酶；轻轻混匀，不涡旋；宽口枪头全程；反应后直接进入接头连接（不建议中途纯化以减少 DNA 损失）
+              </td>
+              <td>~30 min</td>
+            </tr>
+            <tr>
+              <td style="color:#c8a84b;font-weight:600">⑤ 接头连接（AMX）</td>
+              <td>
+                ONT 专用 <strong>Adapter Mix（AMX）</strong>含预组装的马达蛋白（helicase motor protein）接头，连接后马达蛋白直接锚定在 DNA 末端，上机后引导单链穿孔：
+                <br/>• <strong>连接酶：</strong>Quick T4 DNA Ligase（NEB M2200），室温反应 10 min（时间过长产生接头-接头二聚体！）
+                <br/>• <strong>典型反应体系（总 80 µL）：</strong>末端修复产物 + 接头 AMX 5 µL + Quick Ligation Buffer 40 µL + Quick T4 Ligase 20 µL
+                <br/>• 轻轻翻转混匀 8–10 次，不涡旋；室温孵育精确 10 min
+                <br/>• <strong>AMX 储存：</strong>-20°C，单次分装，避免反复冻融（马达蛋白活性降低直接导致上机效率下降）
+                <br/>• Rapid 建库（SQK-RAD114）替换此步为<strong>转座酶反应</strong>：30°C 1 min 即完成随机片段化+接头插入
+              </td>
+              <td>~20 min</td>
+            </tr>
+            <tr>
+              <td class="val-n">⑥ 文库纯化</td>
+              <td>
+                用 <strong>0.4× AMPure XP</strong> 磁珠（关键：不是标准 1×！）进行大片段选择性富集，去除游离接头、接头二聚体和短片段（&lt;3 kb）：
+                <br/>• 加入 0.4 倍体积磁珠 → 混匀 → 室温孵育 5 min → 上磁架静置 5 min
+                <br/>• 弃上清（含小片段和游离接头）→ 加 200 µL <strong>SFB（Short Fragment Buffer）</strong>洗涤，不混匀，直接置磁架弃洗液 × 2 次
+                <br/>• <strong>注意：洗涤用 SFB 不用乙醇！</strong>乙醇会洗脱马达蛋白
+                <br/>• 洗脱：30–50 µL Elution Buffer（EB），65°C 5 min 或室温 5 min
+                <br/>• Qubit 再次定量；推荐上机量：<strong>MinION 50–100 fmol</strong>（按平均文库大小折算 ng：fmol = ng × 1000 / (660 × 平均 bp)）
+                <br/>• 文库可 4°C 短暂存放（&lt;24 h），不建议 -20°C 冻存（马达蛋白失活）
+              </td>
+              <td>~30 min</td>
+            </tr>
+            <tr>
+              <td style="color:#c8a84b;font-weight:600">⑦ Flow Cell 检查与上样</td>
+              <td>
+                <strong>Step 1 — Flow Cell QC：</strong>MinKNOW 执行 Pore Scan（~5 min），记录活跃孔数。MinION R10.4.1 新 flow cell 要求 ≥800 活跃孔（2,048 总孔中）方为质检合格。
+                <br/><br/><strong>Step 2 — 冲洗（Priming）：</strong>
+                <br/>• 配制冲洗液：Flush Buffer（FB）1,170 µL + Flush Tether（FLT）30 µL → 混匀
+                <br/>• 打开 Flow Cell 盖，<strong>撕开 SpotOn 保护膜</strong>（注意：SpotOn 口要打开，否则产生负压）
+                <br/>• 从 Priming 口缓慢推入 800 µL 冲洗液（速度约 5 µL/s），<strong>全程无气泡</strong>
+                <br/>• 等待 5 min 让冲洗液平衡
+                <br/><br/><strong>Step 3 — 上样（Loading）：</strong>
+                <br/>• 配制上样混合物：Sequencing Buffer（SQB）37.5 µL + Loading Beads（LB）25.5 µL（用前涡旋分散 LB！） + 文库（≤12 µL）
+                <br/>• 总体积 75 µL，轻轻翻转混匀
+                <br/>• 从 <strong>SpotOn 口逐滴加入</strong>，靠重力自然扩散（切勿用枪推注！推注会破坏膜）
+                <br/>• 盖上 SpotOn 盖 → 关闭 Flow Cell 盖 → 等待 5 min 让文库扩散
+              </td>
+              <td>~20 min</td>
+            </tr>
+            <tr>
+              <td class="val-n">⑧ MinKNOW 实时测序</td>
+              <td>
+                <strong>实验配置（MinKNOW GUI）：</strong>
+                <br/>• Flow Cell 类型：FLO-MIN114（R10.4.1）
+                <br/>• 测序时长：通常 24–72 h（可随时手动停止）
+                <br/>• Basecalling 模式：HAC（实时，需 GPU）或 Fast（CPU 可运行，准确率较低）
+                <br/>• Duplex 模式：开启后同时分析互补双链，准确率可达 ~Q30（~99.9%）
+                <br/><br/><strong>实时监控指标：</strong>
+                <br/>• 活跃孔衰减曲线（正常前 24 h 保持 &gt;500 活跃孔）
+                <br/>• 累计产出（Gb）、实时读长 N50、Q 值分布（Q15+ 为合格）
+                <br/><br/><strong>Adaptive Sampling（实时靶向富集，可选）：</strong>
+                <br/>• MinKNOW 内置；需上传参考序列 BED 文件；实时判断每条读长是否为目标区域
+                <br/>• 非目标读长触发 Unblock（反向电压驱出分子），释放孔道给下一条 DNA
+                <br/>• 可实现 3–5× 靶向富集，无需任何 PCR 扩增
+                <br/><br/><strong>Flow Cell 再利用：</strong>产出下降时可用 Wash Kit 冲洗重新上样，一个 flow cell 通常可使用 2–3 次
+              </td>
+              <td>1–72 h（实时）</td>
+            </tr>
+            <tr>
+              <td style="color:#1a6b5a;font-weight:600">⑨ Dorado 碱基识别与下游分析</td>
+              <td>
+                <strong>Basecalling（Dorado，GPU 加速）：</strong>
+                <br/>• Fast 模型（~150 Mb/s/GPU）：快速预览，Q15 左右
+                <br/>• HAC 模型（~40 Mb/s）：标准分析，Q18–Q20
+                <br/>• SUP 模型（~15 Mb/s）：最高准确率 ~Q20+（~99%），<strong>推荐生产数据使用</strong>
+                <br/>• Duplex 模型（双链共识）：准确率 ~Q30（~99.9%），需双链读长配对，计算量最大
+                <br/>• 甲基化同步检测：加参数 <code>--modified-bases 5mC_5hmC_context</code> 直接输出甲基化 BAM，无需额外实验步骤
+                <br/><br/><strong>下游分析工具（常用）：</strong>
+                <br/>• 比对参考：minimap2（-ax map-ont）
+                <br/>• 基因组从头组装：Flye（--nano-hq）/ Hifiasm（--ont）/ Verkko
+                <br/>• 结构变异检测：Sniffles2 / CuteSV
+                <br/>• 甲基化分析：modkit / NanoMethPhase（单倍型分相）
+                <br/>• 全长转录组：bambu / FLAIR / IsoQuant
+                <br/>• 实时病原体分类：Kraken2 / EPI2ME Watcher（边测序边分类）
+                <br/>• AMR 耐药基因：ResFinder / AMRFinderPlus
+                <br/><br/><strong>算力建议：</strong>SUP 模式强烈推荐 NVIDIA GPU（≥RTX 3090 / A100）；无 GPU 可使用 ONT 云端 EPI2ME 平台进行离线 basecalling
+              </td>
+              <td>视数据量（GPU 1–4 h）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Flow Cell 上样示意 SVG -->
+        <div class="section-label" style="margin-top:22px">Flow Cell 结构与上样示意</div>
+        <div class="svg-diagram">
+          <div class="svg-diagram-label">MinION R10.4.1 Flow Cell · 冲洗与上样流程</div>
+          <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+            <defs>
+              <marker id="arrnano" markerWidth="7" markerHeight="7" refX="3" refY="3.5" orient="auto">
+                <path d="M0,0 L0,7 L7,3.5 z" fill="#7b2d8b"/>
+              </marker>
+              <marker id="arrgold" markerWidth="7" markerHeight="7" refX="3" refY="3.5" orient="auto">
+                <path d="M0,0 L0,7 L7,3.5 z" fill="#c8a84b"/>
+              </marker>
+            </defs>
+
+            <!-- Flow Cell body -->
+            <rect x="10" y="30" width="190" height="155" rx="12" fill="var(--nano-light)" stroke="var(--nano)" stroke-width="2"/>
+            <text x="105" y="18" text-anchor="middle" font-size="9" fill="#7b2d8b" font-weight="600" letter-spacing="1">MinION Flow Cell（俯视）</text>
+            <!-- Nanopore array area -->
+            <rect x="28" y="48" width="140" height="90" rx="6" fill="white" stroke="#a855c8" stroke-width="1.5"/>
+            <text x="98" y="66" text-anchor="middle" font-size="8" fill="#7b2d8b" font-weight="600">纳米孔阵列</text>
+            <text x="98" y="76" text-anchor="middle" font-size="7" fill="#888">512 通道 × 4 孔 = 2,048 孔</text>
+            <g fill="#a855c8" opacity="0.5">
+              <circle cx="44" cy="90" r="3"/><circle cx="56" cy="90" r="3"/><circle cx="68" cy="90" r="3"/><circle cx="80" cy="90" r="3"/><circle cx="92" cy="90" r="3"/><circle cx="104" cy="90" r="3"/><circle cx="116" cy="90" r="3"/><circle cx="128" cy="90" r="3"/>
+              <circle cx="44" cy="102" r="3"/><circle cx="56" cy="102" r="3"/><circle cx="68" cy="102" r="3"/><circle cx="80" cy="102" r="3"/><circle cx="92" cy="102" r="3"/><circle cx="104" cy="102" r="3"/><circle cx="116" cy="102" r="3"/><circle cx="128" cy="102" r="3"/>
+              <circle cx="44" cy="114" r="3"/><circle cx="56" cy="114" r="3"/><circle cx="68" cy="114" r="3"/><circle cx="80" cy="114" r="3"/><circle cx="92" cy="114" r="3"/><circle cx="104" cy="114" r="3"/><circle cx="116" cy="114" r="3"/><circle cx="128" cy="114" r="3"/>
+              <circle cx="44" cy="126" r="3"/><circle cx="56" cy="126" r="3"/><circle cx="68" cy="126" r="3"/><circle cx="80" cy="126" r="3"/><circle cx="92" cy="126" r="3"/><circle cx="104" cy="126" r="3"/><circle cx="116" cy="126" r="3"/><circle cx="128" cy="126" r="3"/>
+            </g>
+            <!-- SpotOn port -->
+            <circle cx="98" cy="163" r="11" fill="#c8a84b" opacity="0.8" stroke="#c8a84b" stroke-width="1.5"/>
+            <text x="98" y="167" text-anchor="middle" font-size="7" fill="white" font-weight="700">SpotOn</text>
+            <text x="98" y="182" text-anchor="middle" font-size="7.5" fill="#c8a84b">文库加样口</text>
+            <!-- Priming port -->
+            <circle cx="28" cy="163" r="8" fill="#4a6cd4" opacity="0.7" stroke="#4a6cd4" stroke-width="1.5"/>
+            <text x="28" y="166" text-anchor="middle" font-size="6" fill="white">冲洗</text>
+            <text x="28" y="182" text-anchor="middle" font-size="7" fill="#4a6cd4">Priming 口</text>
+
+            <!-- === Step labels === -->
+            <text x="230" y="18" font-size="9" fill="#888" letter-spacing="1">上样三步流程</text>
+
+            <!-- Step A: Priming -->
+            <rect x="220" y="25" width="148" height="52" rx="6" fill="#eaedfa" stroke="#4a6cd4" stroke-width="1"/>
+            <text x="294" y="42" text-anchor="middle" font-size="8.5" fill="#2b3fa0" font-weight="600">① 冲洗（Priming）</text>
+            <text x="294" y="54" text-anchor="middle" font-size="7.5" fill="#555">FB 1170 µL + FLT 30 µL</text>
+            <text x="294" y="65" text-anchor="middle" font-size="7.5" fill="#555">缓慢推入冲洗口，无气泡</text>
+            <line x1="294" y1="77" x2="294" y2="88" stroke="#c8a84b" stroke-width="1.5" marker-end="url(#arrgold)"/>
+
+            <!-- Step B: Mix prep -->
+            <rect x="220" y="90" width="148" height="52" rx="6" fill="var(--nano-light)" stroke="var(--nano)" stroke-width="1"/>
+            <text x="294" y="107" text-anchor="middle" font-size="8.5" fill="#7b2d8b" font-weight="600">② 配制上样液</text>
+            <text x="294" y="119" text-anchor="middle" font-size="7.5" fill="#555">SQB 37.5 µL + LB 25.5 µL</text>
+            <text x="294" y="130" text-anchor="middle" font-size="7.5" fill="#555">+ 文库（≤12 µL），轻翻混匀</text>
+            <line x1="294" y1="142" x2="294" y2="153" stroke="#c8a84b" stroke-width="1.5" marker-end="url(#arrgold)"/>
+
+            <!-- Step C: SpotOn -->
+            <rect x="220" y="155" width="148" height="36" rx="6" fill="var(--nano-light)" stroke="#c8a84b" stroke-width="2"/>
+            <text x="294" y="170" text-anchor="middle" font-size="8.5" fill="#c8a84b" font-weight="600">③ SpotOn 逐滴加入</text>
+            <text x="294" y="182" text-anchor="middle" font-size="7.5" fill="#555">靠重力扩散，不推注，无气泡</text>
+
+            <!-- === Right: Single pore zoom === -->
+            <text x="410" y="18" font-size="9" fill="#888" letter-spacing="1">单个纳米孔截面（放大）</text>
+            <!-- Membrane -->
+            <rect x="400" y="55" width="310" height="10" rx="2" fill="#ddd6c8"/>
+            <text x="390" y="63" text-anchor="end" font-size="7" fill="#888">脂质双层膜</text>
+            <!-- Pore protein -->
+            <ellipse cx="555" cy="60" rx="20" ry="12" fill="#7b2d8b" opacity="0.9"/>
+            <text x="555" y="58" text-anchor="middle" font-size="6.5" fill="white">CsgG</text>
+            <text x="555" y="66" text-anchor="middle" font-size="6" fill="white">R10.4.1</text>
+            <!-- Pore channel -->
+            <rect x="551" y="62" width="8" height="22" rx="2" fill="#f0e6f8"/>
+            <!-- Double strand DNA above -->
+            <path d="M549,22 L549,52" fill="none" stroke="#2b3fa0" stroke-width="2.5"/>
+            <path d="M561,22 L561,52" fill="none" stroke="#1a6b5a" stroke-width="2.5"/>
+            <line x1="549" y1="30" x2="561" y2="30" stroke="#ccc" stroke-width="1.5"/>
+            <line x1="549" y1="38" x2="561" y2="38" stroke="#ccc" stroke-width="1.5"/>
+            <line x1="549" y1="46" x2="561" y2="46" stroke="#ccc" stroke-width="1.5"/>
+            <!-- Helicase motor -->
+            <circle cx="555" cy="48" r="13" fill="#a855c8" opacity="0.9"/>
+            <text x="555" y="46" text-anchor="middle" font-size="6.5" fill="white">解旋酶</text>
+            <text x="555" y="54" text-anchor="middle" font-size="6" fill="white">Motor</text>
+            <!-- Single strand through pore -->
+            <path d="M555,84 L555,145" fill="none" stroke="#7b2d8b" stroke-width="2.5"/>
+            <circle cx="555" cy="92" r="5" fill="#22c55e"/>
+            <text x="555" y="95" text-anchor="middle" font-size="7" fill="white" font-weight="700">A</text>
+            <circle cx="555" cy="104" r="5" fill="#ef4444"/>
+            <text x="555" y="107" text-anchor="middle" font-size="7" fill="white" font-weight="700">T</text>
+            <circle cx="555" cy="116" r="5" fill="#1a1a1a"/>
+            <text x="555" y="119" text-anchor="middle" font-size="7" fill="white" font-weight="700">G</text>
+            <circle cx="555" cy="128" r="5" fill="#3b82f6"/>
+            <text x="555" y="131" text-anchor="middle" font-size="7" fill="white" font-weight="700">C</text>
+            <!-- Ion flow -->
+            <text x="490" y="102" font-size="8" fill="#c8a84b">K⁺ →</text>
+            <text x="610" y="102" font-size="8" fill="#c8a84b">← Cl⁻</text>
+            <text x="412" y="108" font-size="8" fill="#888">−180 mV</text>
+            <text x="680" y="108" font-size="8" fill="#888">0 mV</text>
+            <!-- AMX adapter label -->
+            <text x="582" y="44" font-size="7.5" fill="#c8a84b">← AMX 接头</text>
+            <text x="582" y="54" font-size="7" fill="#888">（含马达蛋白）</text>
+            <!-- Current output -->
+            <rect x="400" y="155" width="310" height="38" rx="6" fill="white" stroke="#e5e0d4" stroke-width="1.5"/>
+            <text x="555" y="168" text-anchor="middle" font-size="8" fill="#7b2d8b" font-weight="600">输出：连续电流波形（pA）→ Dorado 神经网络 → 碱基序列</text>
+            <polyline points="410,185 428,177 446,185 464,170 482,183 500,174 518,185 536,172 554,183 572,168 590,180 608,185 626,174 644,182 662,185 680,171 698,183" fill="none" stroke="#7b2d8b" stroke-width="1.5" opacity="0.8"/>
+          </svg>
+          <div class="svg-caption">MinION R10.4.1 Flow Cell 含 2,048 个可用纳米孔位点。冲洗口（蓝）用于 Priming，SpotOn 口（金）用于文库上样，两个操作口分工明确。单个孔道中，AMX 接头马达蛋白（helicase）以 ~450 nt/s 的可控速率将 DNA 单链送入 CsgG/R10 蛋白孔，产生特征性电流降幅，由 Dorado 神经网络实时解析为碱基序列。</div>
+        </div>
+
+        <!-- 常见问题排查 -->
+        <div class="section-label" style="margin-top:18px">常见问题与排查（Troubleshooting）</div>
+        <table class="mini-table" style="margin-bottom:18px">
+          <thead>
+            <tr><th>问题现象</th><th>可能原因</th><th>解决方案</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#ef4444;font-weight:600">活跃孔数低（&lt;200）</td>
+              <td>Flow Cell 老化；加样产生气泡损坏膜；文库浓度过高堵孔</td>
+              <td>使用新 Flow Cell；加样严格无气泡；上机量严格控制 50–100 fmol</td>
+            </tr>
+            <tr>
+              <td style="color:#ef4444;font-weight:600">读长短（N50 &lt;5 kb）</td>
+              <td>DNA 提取失败（HMW 不足）；操作中涡旋剪切；片段化过度</td>
+              <td>全程宽口枪头；FEMTO Pulse 验证主峰 &gt;30 kb 再建库；避免过多吹打</td>
+            </tr>
+            <tr>
+              <td style="color:#ef4444;font-weight:600">产出低（&lt;5 Gb/MinION）</td>
+              <td>接头连接效率低；文库量不足；Flow Cell 活跃孔太少</td>
+              <td>优化连接时间（精确 10 min）；加大起始 DNA 至 ≥1 µg；更换 Flow Cell</td>
+            </tr>
+            <tr>
+              <td style="color:#ef4444;font-weight:600">Q 值偏低（&lt;Q15）</td>
+              <td>Dorado 版本过旧；使用 Fast 模型；DNA 氧化损伤</td>
+              <td>升级 Dorado 至最新版；改用 SUP 模型；加入 FFPE 修复步骤</td>
+            </tr>
+            <tr>
+              <td style="color:#ef4444;font-weight:600">接头二聚体污染</td>
+              <td>连接时间过长（&gt;15 min）；SFB 洗涤不彻底；AMPure 比例错误</td>
+              <td>严格 10 min 连接；SFB 洗涤 × 2；确认 0.4× AMPure XP 比例</td>
+            </tr>
+            <tr>
+              <td style="color:#ef4444;font-weight:600">RNA 直接测序读长极短</td>
+              <td>RNA 降解（RNase 污染）；逆转录锚引物失效</td>
+              <td>全程 RNase-free 操作台；使用新鲜 RNA 提取物；检查 RIN 值 &gt;7</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="verdict">
+          <div class="v-icon">⚡</div>
+          <div class="v-text">
+            <strong>Nanopore 建库最大优势：</strong>全流程 4–6 小时，当天出数据。Rapid 试剂盒（SQK-RAD114）甚至 <strong>10 分钟建库即可上机</strong>，适合疫区病原体鉴定、野外物种溯源等现场快速场景。核心风险在于 <strong>HMW DNA 的提取质量</strong>——片段长度决定读长天花板，无法通过后续步骤补救。Flow Cell 冲洗上样后应在 <strong>24 小时内开始测序</strong>，否则孔道活性显著下降；马达蛋白（AMX）切勿冻存，始终在 -20°C 分装保存并<strong>仅使用一次</strong>。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- N6. 三代技术总结对比 -->
   <div class="acc-item" id="nano-6">
     <button class="acc-trigger" onclick="toggle('nano-6')">
