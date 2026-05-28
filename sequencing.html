@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sanger vs PacBio 测序对比</title>
+<title>Sanger vs PacBio vs Nanopore 测序对比</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -15,6 +15,9 @@
     --pacbio: #2b3fa0;
     --pacbio-light: #eaedfa;
     --pacbio-mid: #4a6cd4;
+    --nano: #7b2d8b;
+    --nano-light: #f5eaf8;
+    --nano-mid: #a855c8;
     --bg: #f6f5f0;
     --paper: #fdfcf8;
     --ink: #1a1a1a;
@@ -84,9 +87,11 @@
   }
   .legend-pill.s { border-color: var(--sanger); color: var(--sanger); background: var(--sanger-light); }
   .legend-pill.p { border-color: var(--pacbio); color: var(--pacbio); background: var(--pacbio-light); }
+  .legend-pill.n { border-color: var(--nano); color: var(--nano); background: var(--nano-light); }
   .legend-pill .dot { width: 8px; height: 8px; border-radius: 50%; }
   .legend-pill.s .dot { background: var(--sanger); }
   .legend-pill.p .dot { background: var(--pacbio); }
+  .legend-pill.n .dot { background: var(--nano); }
 
   /* ── Accordion wrapper ── */
   .accordion { max-width: 780px; margin: 0 auto; }
@@ -182,6 +187,10 @@
     background: var(--pacbio-light);
     border: 1px solid rgba(43,63,160,.2);
   }
+  .compare-card.nanopore {
+    background: var(--nano-light);
+    border: 1px solid rgba(123,45,139,.2);
+  }
   .compare-card .card-label {
     font-size: 10px; font-weight: 600;
     letter-spacing: .15em; text-transform: uppercase;
@@ -190,6 +199,7 @@
   }
   .compare-card.sanger .card-label { color: var(--sanger); }
   .compare-card.pacbio .card-label { color: var(--pacbio); }
+  .compare-card.nanopore .card-label { color: var(--nano); }
   .compare-card .card-value {
     font-size: 22px; font-weight: 700;
     font-family: 'Noto Serif SC', serif;
@@ -198,6 +208,7 @@
   }
   .compare-card.sanger .card-value { color: var(--sanger); }
   .compare-card.pacbio .card-value { color: var(--pacbio); }
+  .compare-card.nanopore .card-value { color: var(--nano); }
   .compare-card .card-desc {
     font-size: 12.5px; color: var(--ink-soft);
     line-height: 1.55; font-weight: 300;
@@ -221,6 +232,7 @@
   }
   .tag.s { background: var(--sanger-light); border-color: rgba(29,107,90,.3); color: var(--sanger); }
   .tag.p { background: var(--pacbio-light); border-color: rgba(43,63,160,.3); color: var(--pacbio); }
+  .tag.n { background: var(--nano-light); border-color: rgba(123,45,139,.3); color: var(--nano); }
 
   /* ── Table ── */
   .mini-table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -241,6 +253,7 @@
   .mini-table td:first-child { color: var(--ink-muted); font-size: 12px; width: 120px; }
   .mini-table .val-s { color: var(--sanger); font-weight: 500; }
   .mini-table .val-p { color: var(--pacbio); font-weight: 500; }
+  .mini-table .val-n { color: var(--nano); font-weight: 500; }
 
   /* ── Visual bar ── */
   .bar-row { margin-bottom: 14px; }
@@ -329,13 +342,16 @@
     <span class="s">Sanger</span>
     <span class="vs">vs</span>
     <span class="p">PacBio</span>
+    <span class="vs">vs</span>
+    <span style="color:var(--nano)">Nanopore</span>
   </h1>
-  <p class="subtitle">从第一代到第三代——两种测序技术的全面解析</p>
+  <p class="subtitle">从第一代到第三代——三种测序技术的全面解析</p>
 </div>
 
 <div class="legend">
   <div class="legend-pill s"><div class="dot"></div>Sanger 测序</div>
   <div class="legend-pill p"><div class="dot"></div>PacBio 测序</div>
+  <div class="legend-pill n"><div class="dot"></div>Nanopore 测序</div>
 </div>
 
 <div class="accordion">
@@ -1179,6 +1195,198 @@
     </div>
   </div>
 
+  <!-- 5b. PacBio HiFi 实验步骤 -->
+  <div class="acc-item" id="item-5b">
+    <button class="acc-trigger" onclick="toggle('item-5b')">
+      <div class="acc-icon" style="background:#eaedfa;">🧪</div>
+      <div style="flex:1">
+        <div class="acc-title">PacBio HiFi 实验操作步骤</div>
+        <div class="acc-subtitle">从 DNA 提取到 HiFi reads · 全流程 9 步</div>
+      </div>
+      <div class="acc-chevron">▼</div>
+    </button>
+    <div class="acc-panel">
+      <div class="acc-panel-inner">
+        <div class="panel-divider"></div>
+
+        <!-- 步骤时间线 SVG -->
+        <div class="svg-diagram">
+          <div class="svg-diagram-label">实验流程总览 · Workflow Overview</div>
+          <svg viewBox="0 0 720 100" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+            <!-- Timeline bar -->
+            <line x1="30" y1="42" x2="700" y2="42" stroke="#4a6cd4" stroke-width="2" opacity="0.3"/>
+            <!-- Steps -->
+            <!-- Step 1 -->
+            <circle cx="50" cy="42" r="14" fill="#2b3fa0"/>
+            <text x="50" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">1</text>
+            <text x="50" y="66" text-anchor="middle" font-size="7.5" fill="#2b3fa0">DNA</text>
+            <text x="50" y="75" text-anchor="middle" font-size="7.5" fill="#2b3fa0">提取</text>
+            <!-- Step 2 -->
+            <circle cx="128" cy="42" r="14" fill="#2b3fa0"/>
+            <text x="128" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">2</text>
+            <text x="128" y="66" text-anchor="middle" font-size="7.5" fill="#2b3fa0">剪切</text>
+            <text x="128" y="75" text-anchor="middle" font-size="7.5" fill="#888">（可选）</text>
+            <!-- Step 3 -->
+            <circle cx="206" cy="42" r="14" fill="#2b3fa0"/>
+            <text x="206" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">3</text>
+            <text x="206" y="66" text-anchor="middle" font-size="7.5" fill="#2b3fa0">末端修复</text>
+            <text x="206" y="75" text-anchor="middle" font-size="7.5" fill="#2b3fa0">加A尾</text>
+            <!-- Step 4 -->
+            <circle cx="284" cy="42" r="14" fill="#c8a84b"/>
+            <text x="284" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">4</text>
+            <text x="284" y="66" text-anchor="middle" font-size="7.5" fill="#c8a84b">SMRTbell</text>
+            <text x="284" y="75" text-anchor="middle" font-size="7.5" fill="#c8a84b">建库</text>
+            <!-- Step 5 -->
+            <circle cx="362" cy="42" r="14" fill="#2b3fa0"/>
+            <text x="362" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">5</text>
+            <text x="362" y="66" text-anchor="middle" font-size="7.5" fill="#2b3fa0">文库</text>
+            <text x="362" y="75" text-anchor="middle" font-size="7.5" fill="#2b3fa0">质控</text>
+            <!-- Step 6 -->
+            <circle cx="440" cy="42" r="14" fill="#2b3fa0"/>
+            <text x="440" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">6</text>
+            <text x="440" y="66" text-anchor="middle" font-size="7.5" fill="#2b3fa0">聚合酶</text>
+            <text x="440" y="75" text-anchor="middle" font-size="7.5" fill="#2b3fa0">Binding</text>
+            <!-- Step 7 -->
+            <circle cx="518" cy="42" r="14" fill="#c8a84b"/>
+            <text x="518" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">7</text>
+            <text x="518" y="66" text-anchor="middle" font-size="7.5" fill="#c8a84b">SMRT Cell</text>
+            <text x="518" y="75" text-anchor="middle" font-size="7.5" fill="#c8a84b">上机测序</text>
+            <!-- Step 8 -->
+            <circle cx="596" cy="42" r="14" fill="#2b3fa0"/>
+            <text x="596" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">8</text>
+            <text x="596" y="66" text-anchor="middle" font-size="7.5" fill="#2b3fa0">碱基</text>
+            <text x="596" y="75" text-anchor="middle" font-size="7.5" fill="#2b3fa0">识别</text>
+            <!-- Step 9 -->
+            <circle cx="674" cy="42" r="14" fill="#1a6b5a"/>
+            <text x="674" y="46" text-anchor="middle" font-size="9" fill="white" font-weight="700">9</text>
+            <text x="674" y="66" text-anchor="middle" font-size="7.5" fill="#1a6b5a">数据</text>
+            <text x="674" y="75" text-anchor="middle" font-size="7.5" fill="#1a6b5a">分析</text>
+            <!-- 关键步骤标注 -->
+            <rect x="242" y="8" width="84" height="14" rx="4" fill="#c8a84b" opacity="0.15"/>
+            <text x="284" y="19" text-anchor="middle" font-size="7" fill="#c8a84b" font-weight="600">⚠ 建库核心</text>
+            <rect x="476" y="8" width="84" height="14" rx="4" fill="#c8a84b" opacity="0.15"/>
+            <text x="518" y="19" text-anchor="middle" font-size="7" fill="#c8a84b" font-weight="600">⚠ 上机关键</text>
+          </svg>
+          <div class="svg-caption">蓝色节点为常规步骤，金色节点为技术核心步骤，绿色节点为数据输出。整个流程约需 2–3 天（含过夜建库）。</div>
+        </div>
+
+        <!-- 步骤详情 -->
+        <div class="section-label" style="margin-top:6px">各步骤详情</div>
+
+        <table class="mini-table">
+          <thead>
+            <tr><th>步骤</th><th>操作要点</th><th>耗时</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="val-p">① DNA 提取</td>
+              <td>提取高分子量（HMW）DNA，目标片段 &gt;50 kb；使用磁珠法（MagAttract）或 CTAB 法；严禁涡旋剧烈振荡；Qubit 定量 + FEMTO Pulse 确认片段分布；最低投入量 5–10 µg</td>
+              <td>2–4 h</td>
+            </tr>
+            <tr>
+              <td class="val-p">② DNA 剪切</td>
+              <td>可选步骤。若目标文库 15–20 kb，用 Megaruptor 或 Covaris g-TUBE 温和剪切；之后用 AMPure PB 磁珠进行大小筛选，去除过短片段</td>
+              <td>1–2 h</td>
+            </tr>
+            <tr>
+              <td class="val-p">③ 末端修复 + 加A尾</td>
+              <td>使用 SMRTbell Express Template Prep Kit 2.0：核酸酶处理（去RNA污染）→ 损伤修复（减少聚合酶停顿）→ 末端修复（补平 + 5'磷酸化）→ 加 A 尾（为发夹接头连接准备）</td>
+              <td>含于建库</td>
+            </tr>
+            <tr>
+              <td style="color:#c8a84b;font-weight:600">④ SMRTbell 接头连接</td>
+              <td>连接发夹接头（hairpin adapter），形成哑铃形共价闭合环状分子（SMRTbell）——这是 HiFi 多次循环测序的物理基础；连接后用外切核酸酶（Exo III + VII）消化未连接线性片段；再次 AMPure PB 纯化</td>
+              <td rowspan="2" style="vertical-align:middle">6–16 h<br/>（常过夜）</td>
+            </tr>
+            <tr>
+              <td class="val-p">⑤ 文库质控</td>
+              <td>Qubit 定量；FEMTO Pulse / Bioanalyzer 确认峰值在目标范围（15–20 kb）；计算上机浓度（通常 20–50 pM）</td>
+            </tr>
+            <tr>
+              <td class="val-p">⑥ 聚合酶 Binding</td>
+              <td>SMRTbell 文库与 Sequel II / Revio 专用 DNA 聚合酶室温孵育；比例聚合酶 : 文库 = 10:1 ~ 20:1（过量确保结合率）；加磷酸酶处理的 dNTP</td>
+              <td>1–4 h</td>
+            </tr>
+            <tr>
+              <td style="color:#c8a84b;font-weight:600">⑦ SMRT Cell 上机</td>
+              <td>聚合酶-文库复合物加载到含 ZMW 纳米孔阵列的 SMRT Cell；复合物沉降至 ZMW 底部；加入荧光标记 dNTP，聚合酶开始合成；激光倏逝波实时采集荧光脉冲；聚合酶沿环形 SMRTbell 反复循环产生多条 subread（HiFi 需 ≥3 次，通常达 10+ 次）</td>
+              <td>24–30 h</td>
+            </tr>
+            <tr>
+              <td class="val-p">⑧ 碱基识别（CCS）</td>
+              <td>Revio 平台机内 GPU 实时完成 CCS 运算；早期 Sequel II 需离线用 SMRTLink 跑 CCS；随机错误在不同 pass 位置各异，共识后准确率从单 pass ~87% 提升至 &gt;99.9%；输出 .bam + .fastq；可同步提取 IPD 信号用于甲基化分析</td>
+              <td>实时或 1–4 h</td>
+            </tr>
+            <tr>
+              <td style="color:#1a6b5a;font-weight:600">⑨ 数据分析</td>
+              <td>基因组组装（HiFiasm / Verkko）；结构变异（pbsv / Sniffles2）；甲基化（pb-CpG-tools）；全长转录组（IsoSeq3）；比对参考（pbmm2）</td>
+              <td>视项目</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-label" style="margin-top:22px">SMRTbell 文库结构示意</div>
+        <div class="svg-diagram">
+          <div class="svg-diagram-label">SMRTbell 环形文库 · 哑铃形结构</div>
+          <svg viewBox="0 0 720 130" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+            <!-- Left: Linear DNA -->
+            <text x="10" y="16" font-size="9" fill="#888" letter-spacing="1">①  线性 DNA 片段（末端修复后）</text>
+            <rect x="10" y="26" width="260" height="16" rx="4" fill="#eaedfa" stroke="#4a6cd4" stroke-width="1.5"/>
+            <text x="16" y="38" font-size="8" fill="#888">5'— ATGC···GCTA —3'</text>
+            <!-- blunt ends -->
+            <rect x="10" y="22" width="4" height="24" rx="1" fill="#4a6cd4"/>
+            <rect x="266" y="22" width="4" height="24" rx="1" fill="#4a6cd4"/>
+            <text x="140" y="56" text-anchor="middle" font-size="8" fill="#aaa">末端平滑 / 5'磷酸化</text>
+
+            <!-- Arrow -->
+            <text x="286" y="40" font-size="18" fill="#c8a84b">→</text>
+            <text x="279" y="55" font-size="7.5" fill="#c8a84b">接头连接</text>
+
+            <!-- Middle: SMRTbell (dumbbell) -->
+            <text x="314" y="16" font-size="9" fill="#2b3fa0" letter-spacing="1" font-weight="600">② SMRTbell 哑铃形环状文库</text>
+            <!-- main DNA body -->
+            <rect x="340" y="44" width="200" height="18" rx="3" fill="#eaedfa" stroke="#4a6cd4" stroke-width="1.5"/>
+            <text x="440" y="57" text-anchor="middle" font-size="8" fill="#4a6cd4">insert DNA</text>
+            <!-- Left hairpin -->
+            <path d="M340,44 Q318,34 318,53 Q318,72 340,62" fill="none" stroke="#c8a84b" stroke-width="3" stroke-linecap="round"/>
+            <text x="300" y="38" font-size="8" fill="#c8a84b">发夹</text>
+            <text x="300" y="48" font-size="8" fill="#c8a84b">接头</text>
+            <!-- Right hairpin -->
+            <path d="M540,44 Q562,34 562,53 Q562,72 540,62" fill="none" stroke="#c8a84b" stroke-width="3" stroke-linecap="round"/>
+            <text x="565" y="38" font-size="8" fill="#c8a84b">发夹</text>
+            <text x="565" y="48" font-size="8" fill="#c8a84b">接头</text>
+            <!-- closed circle annotation -->
+            <text x="440" y="78" text-anchor="middle" font-size="8" fill="#2b3fa0">共价闭合环状分子</text>
+            <text x="440" y="88" text-anchor="middle" font-size="7.5" fill="#888">（无游离末端，外切酶无法降解）</text>
+
+            <!-- Arrow -->
+            <text x="590" y="40" font-size="18" fill="#c8a84b">→</text>
+            <text x="582" y="55" font-size="7.5" fill="#c8a84b">上机测序</text>
+
+            <!-- Right: Polymerase cycling -->
+            <text x="618" y="16" font-size="9" fill="#888" letter-spacing="1">③ 聚合酶反复循环</text>
+            <!-- circular path -->
+            <ellipse cx="660" cy="62" rx="44" ry="38" fill="none" stroke="#4a6cd4" stroke-width="2" stroke-dasharray="6,3"/>
+            <circle cx="660" cy="62" r="12" fill="#2b3fa0"/>
+            <text x="660" y="65" text-anchor="middle" font-size="7" fill="white" font-weight="700">Pol</text>
+            <!-- rotation arrow -->
+            <path d="M700,48 Q716,62 700,76" fill="none" stroke="#c8a84b" stroke-width="2" stroke-dasharray="3,2"/>
+            <text x="650" y="98" text-anchor="middle" font-size="7.5" fill="#888">多 pass → CCS</text>
+            <text x="650" y="108" text-anchor="middle" font-size="7.5" fill="#1a6b5a">&gt;99.9% 准确率</text>
+          </svg>
+          <div class="svg-caption">发夹接头（金色）将线性 DNA 两端封闭，形成无游离末端的环状 SMRTbell 分子。聚合酶从接头处进入，沿环形分子不断循环，每圈产生一条 subread，多圈共识后得到高准确率 HiFi read。</div>
+        </div>
+
+        <div class="verdict">
+          <div class="v-icon">⚠️</div>
+          <div class="v-text">
+            <strong>最大风险点：DNA 质量。</strong>机械剪切、冻融次数过多会严重缩短读长。全程建议使用宽口枪头（cut tips）；HiFi 文库对片段大小一致性要求较高，过短片段会消耗 SMRT Cell 容量而降低有效产出；甲基化检测无需额外实验步骤，直接从测序数据 IPD 动力学信号中提取。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 6. 特殊能力：表观遗传 -->
   <div class="acc-item" id="item-6">
     <button class="acc-trigger" onclick="toggle('item-6')">
@@ -1493,7 +1701,827 @@
 
 </div><!-- /accordion -->
 
-<div class="footer">DNA SEQUENCING TECHNOLOGIES · COMPARISON GUIDE</div>
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- NANOPORE SECTION                                        -->
+<!-- ══════════════════════════════════════════════════════ -->
+
+<div style="max-width:780px;margin:40px auto 0;text-align:center">
+  <div style="display:inline-flex;align-items:center;gap:10px;background:var(--nano-light);border:1.5px solid var(--nano);border-radius:100px;padding:6px 20px;margin-bottom:24px">
+    <div style="width:8px;height:8px;border-radius:50%;background:var(--nano)"></div>
+    <span style="font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--nano);font-family:'JetBrains Mono',monospace">Nanopore 测序 · 第三代</span>
+  </div>
+  <div style="font-family:'Noto Serif SC',serif;font-size:clamp(20px,4vw,32px);font-weight:700;color:var(--nano);margin-bottom:8px">Oxford Nanopore Technologies</div>
+  <div style="font-size:14px;color:var(--ink-soft);font-weight:300">纳米孔单分子实时测序——U 盘大小，染色体级读长</div>
+</div>
+
+<div class="accordion" style="margin-top:24px">
+
+  <!-- N1. Nanopore 基本原理 -->
+  <div class="acc-item" id="nano-1">
+    <button class="acc-trigger" onclick="toggle('nano-1')">
+      <div class="acc-icon" style="background:var(--nano-light);">🌀</div>
+      <div style="flex:1">
+        <div class="acc-title">纳米孔测序原理</div>
+        <div class="acc-subtitle">电流阻断法 · 单分子穿孔 · 实时碱基识别</div>
+      </div>
+      <div class="acc-chevron">▼</div>
+    </button>
+    <div class="acc-panel">
+      <div class="acc-panel-inner">
+        <div class="panel-divider"></div>
+
+        <div class="compare-grid">
+          <div class="compare-card nanopore">
+            <div class="card-label">核心原理</div>
+            <div class="card-value">电流阻断法</div>
+            <div class="card-desc">DNA/RNA 单链在马达蛋白（helicase）驱动下逐碱基穿过纳米孔蛋白（MspA 或 CsgG 衍生物），每种碱基对离子电流的阻断幅度不同，仪器实时记录电流波形，通过神经网络模型（basecaller）还原碱基序列。</div>
+          </div>
+          <div class="compare-card nanopore" style="background:#fdf6ff">
+            <div class="card-label">与 PacBio 的本质区别</div>
+            <div class="card-value" style="font-size:16px">无荧光，纯电信号</div>
+            <div class="card-desc">PacBio 依赖荧光标记 dNTP 和光学采集；Nanopore 完全基于电化学信号，无需荧光染料、无需 PCR 扩增、无需特殊光学系统，这是设备能做到 U 盘大小的根本原因。</div>
+          </div>
+        </div>
+
+        <!-- SVG: Nanopore 原理图 -->
+        <div class="svg-diagram">
+          <div class="svg-diagram-label">纳米孔测序原理示意图 · Nanopore Principle</div>
+          <svg viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+            <defs>
+              <marker id="arrnano" markerWidth="7" markerHeight="7" refX="3" refY="3.5" orient="auto">
+                <path d="M0,0 L0,7 L7,3.5 z" fill="#7b2d8b"/>
+              </marker>
+            </defs>
+
+            <!-- Membrane -->
+            <rect x="10" y="85" width="420" height="18" rx="3" fill="#c8a84b" opacity="0.25" stroke="#c8a84b" stroke-width="1"/>
+            <text x="12" y="80" font-size="9" fill="#8b6914">脂质双分子层膜</text>
+            <text x="12" y="113" font-size="9" fill="#888">cis 侧（负极）</text>
+            <text x="12" y="75" font-size="9" fill="#888" dy="35">trans 侧（正极）</text>
+
+            <!-- Nanopore protein in membrane -->
+            <ellipse cx="215" cy="94" rx="18" ry="12" fill="#7b2d8b" opacity="0.85"/>
+            <text x="215" y="97" text-anchor="middle" font-size="7.5" fill="white" font-weight="700">孔蛋白</text>
+            <!-- channel -->
+            <rect x="208" y="88" width="14" height="12" fill="#f5eaf8" opacity="0.6"/>
+
+            <!-- DNA strand coming from above -->
+            <!-- double strand above pore -->
+            <path d="M195,20 Q215,10 235,20" fill="none" stroke="#2b3fa0" stroke-width="2"/>
+            <path d="M195,20 L200,88" fill="none" stroke="#2b3fa0" stroke-width="2.5"/>
+            <path d="M235,20 L230,88" fill="none" stroke="#1a6b5a" stroke-width="2.5"/>
+            <!-- base pairs -->
+            <line x1="200" y1="30" x2="230" y2="30" stroke="#ccc" stroke-width="1.5"/>
+            <line x1="201" y1="40" x2="229" y2="40" stroke="#ccc" stroke-width="1.5"/>
+            <line x1="202" y1="50" x2="228" y2="50" stroke="#ccc" stroke-width="1.5"/>
+            <line x1="203" y1="60" x2="227" y2="60" stroke="#ccc" stroke-width="1.5"/>
+            <line x1="204" y1="70" x2="226" y2="70" stroke="#ccc" stroke-width="1.5"/>
+
+            <!-- Helicase motor protein -->
+            <circle cx="215" cy="20" r="13" fill="#a855c8" opacity="0.8"/>
+            <text x="215" y="18" text-anchor="middle" font-size="6.5" fill="white">解旋酶</text>
+            <text x="215" y="26" text-anchor="middle" font-size="6" fill="white">Helicase</text>
+
+            <!-- Single strand through pore -->
+            <path d="M215,100 L215,180" fill="none" stroke="#7b2d8b" stroke-width="2.5"/>
+            <!-- Bases on single strand (in pore and below) -->
+            <circle cx="215" cy="108" r="5" fill="#22c55e"/>
+            <text x="215" y="111" text-anchor="middle" font-size="7" fill="white" font-weight="700">A</text>
+            <circle cx="215" cy="120" r="5" fill="#ef4444"/>
+            <text x="215" y="123" text-anchor="middle" font-size="7" fill="white" font-weight="700">T</text>
+            <circle cx="215" cy="132" r="5" fill="#1a1a1a"/>
+            <text x="215" y="135" text-anchor="middle" font-size="7" fill="white" font-weight="700">G</text>
+            <circle cx="215" cy="144" r="5" fill="#3b82f6"/>
+            <text x="215" y="147" text-anchor="middle" font-size="7" fill="white" font-weight="700">C</text>
+            <circle cx="215" cy="156" r="5" fill="#22c55e"/>
+            <text x="215" y="159" text-anchor="middle" font-size="7" fill="white" font-weight="700">A</text>
+            <circle cx="215" cy="168" r="5" fill="#ef4444"/>
+            <text x="215" y="171" text-anchor="middle" font-size="7" fill="white" font-weight="700">T</text>
+
+            <!-- Ion flow arrows -->
+            <text x="120" y="97" font-size="8" fill="#c8a84b" text-anchor="middle">K⁺ →</text>
+            <text x="310" y="97" font-size="8" fill="#c8a84b" text-anchor="middle">← Cl⁻</text>
+
+            <!-- Electrode connections -->
+            <line x1="10" y1="94" x2="50" y2="94" stroke="#888" stroke-width="1" stroke-dasharray="2,2"/>
+            <line x1="380" y1="94" x2="430" y2="94" stroke="#888" stroke-width="1" stroke-dasharray="2,2"/>
+            <text x="10" y="210" font-size="8" fill="#888">（−）</text>
+            <text x="400" y="210" font-size="8" fill="#888">（+）</text>
+
+            <!-- === Current signal chart === -->
+            <text x="460" y="16" font-size="9" fill="#888" letter-spacing="1">实时电流信号（pA）</text>
+            <rect x="460" y="22" width="250" height="140" rx="6" fill="white" stroke="#e5e0d4" stroke-width="1.5"/>
+
+            <!-- Y axis -->
+            <line x1="480" y1="30" x2="480" y2="152" stroke="#e5e0d4" stroke-width="1"/>
+            <text x="478" y="38" text-anchor="end" font-size="7" fill="#aaa">200</text>
+            <text x="478" y="78" text-anchor="end" font-size="7" fill="#aaa">150</text>
+            <text x="478" y="118" text-anchor="end" font-size="7" fill="#aaa">100</text>
+            <text x="478" y="152" text-anchor="end" font-size="7" fill="#aaa">50</text>
+
+            <!-- Open channel baseline (high current) -->
+            <line x1="480" y1="40" x2="500" y2="40" stroke="#7b2d8b" stroke-width="2"/>
+            <text x="490" y="36" text-anchor="middle" font-size="7" fill="#888">开放电流</text>
+
+            <!-- Base A blockade -->
+            <line x1="500" y1="40" x2="500" y2="88" stroke="#7b2d8b" stroke-width="2"/>
+            <line x1="500" y1="88" x2="524" y2="88" stroke="#22c55e" stroke-width="2.5"/>
+            <text x="512" y="84" text-anchor="middle" font-size="8" fill="#22c55e" font-weight="700">A</text>
+            <line x1="524" y1="88" x2="524" y2="40" stroke="#7b2d8b" stroke-width="2"/>
+
+            <!-- Base T blockade (different level) -->
+            <line x1="524" y1="40" x2="524" y2="105" stroke="#7b2d8b" stroke-width="2"/>
+            <line x1="524" y1="105" x2="548" y2="105" stroke="#ef4444" stroke-width="2.5"/>
+            <text x="536" y="101" text-anchor="middle" font-size="8" fill="#ef4444" font-weight="700">T</text>
+            <line x1="548" y1="105" x2="548" y2="40" stroke="#7b2d8b" stroke-width="2"/>
+
+            <!-- Base G blockade -->
+            <line x1="548" y1="40" x2="548" y2="75" stroke="#7b2d8b" stroke-width="2"/>
+            <line x1="548" y1="75" x2="572" y2="75" stroke="#1a1a1a" stroke-width="2.5"/>
+            <text x="560" y="71" text-anchor="middle" font-size="8" fill="#1a1a1a" font-weight="700">G</text>
+            <line x1="572" y1="75" x2="572" y2="40" stroke="#7b2d8b" stroke-width="2"/>
+
+            <!-- Base C blockade -->
+            <line x1="572" y1="40" x2="572" y2="118" stroke="#7b2d8b" stroke-width="2"/>
+            <line x1="572" y1="118" x2="596" y2="118" stroke="#3b82f6" stroke-width="2.5"/>
+            <text x="584" y="114" text-anchor="middle" font-size="8" fill="#3b82f6" font-weight="700">C</text>
+            <line x1="596" y1="118" x2="596" y2="40" stroke="#7b2d8b" stroke-width="2"/>
+
+            <!-- Base A again -->
+            <line x1="596" y1="40" x2="596" y2="90" stroke="#7b2d8b" stroke-width="2"/>
+            <line x1="596" y1="90" x2="620" y2="90" stroke="#22c55e" stroke-width="2.5"/>
+            <text x="608" y="86" text-anchor="middle" font-size="8" fill="#22c55e" font-weight="700">A</text>
+            <line x1="620" y1="90" x2="620" y2="40" stroke="#7b2d8b" stroke-width="2"/>
+
+            <!-- Base T -->
+            <line x1="620" y1="40" x2="620" y2="107" stroke="#7b2d8b" stroke-width="2"/>
+            <line x1="620" y1="107" x2="644" y2="107" stroke="#ef4444" stroke-width="2.5"/>
+            <text x="632" y="103" text-anchor="middle" font-size="8" fill="#ef4444" font-weight="700">T</text>
+            <line x1="644" y1="107" x2="644" y2="40" stroke="#7b2d8b" stroke-width="2"/>
+            <line x1="644" y1="40" x2="700" y2="40" stroke="#7b2d8b" stroke-width="2"/>
+
+            <!-- Time axis -->
+            <line x1="480" y1="152" x2="700" y2="152" stroke="#e5e0d4" stroke-width="1"/>
+            <text x="590" y="163" text-anchor="middle" font-size="7.5" fill="#aaa">时间 →</text>
+
+            <!-- Annotation: blockade depth -->
+            <line x1="644" y1="40" x2="644" y2="107" stroke="#c8a84b" stroke-width="1" stroke-dasharray="2,2"/>
+            <line x1="646" y1="40" x2="700" y2="40" stroke="none"/>
+            <line x1="644" y1="40" x2="700" y2="40" stroke="none"/>
+            <!-- bracket -->
+            <line x1="660" y1="42" x2="660" y2="105" stroke="#c8a84b" stroke-width="1"/>
+            <line x1="657" y1="42" x2="663" y2="42" stroke="#c8a84b" stroke-width="1"/>
+            <line x1="657" y1="105" x2="663" y2="105" stroke="#c8a84b" stroke-width="1"/>
+            <text x="662" y="72" font-size="7.5" fill="#c8a84b">阻断</text>
+            <text x="662" y="82" font-size="7.5" fill="#c8a84b">深度</text>
+            <text x="662" y="92" font-size="7.5" fill="#c8a84b">= 碱基</text>
+            <text x="662" y="102" font-size="7.5" fill="#c8a84b">身份</text>
+
+            <!-- Sequence output -->
+            <text x="480" y="178" font-size="8" fill="#888">碱基识别（神经网络）→</text>
+            <text x="630" y="178" font-size="9" fill="#7b2d8b" font-weight="700" letter-spacing="2">A T G C A T</text>
+
+            <!-- MinION device hint -->
+            <rect x="460" y="186" width="250" height="26" rx="6" fill="var(--nano-light)" stroke="var(--nano)" stroke-width="1"/>
+            <text x="585" y="198" text-anchor="middle" font-size="8" fill="#7b2d8b" font-weight="600">MinION 设备：90mm × 26mm × 8mm</text>
+            <text x="585" y="208" text-anchor="middle" font-size="7.5" fill="#888">512 个纳米孔通道 · USB 供电 · 实时输出</text>
+          </svg>
+          <div class="svg-caption">DNA 单链在解旋酶驱动下穿过纳米孔蛋白；不同碱基阻断离子电流的幅度各异（电流降低深度 = 碱基身份）；神经网络 basecaller 实时将电流波形转为碱基序列。MinION 仅 USB 供电，可在任何地点使用。</div>
+        </div>
+
+        <div class="prose">
+          <strong>马达蛋白的作用：</strong>原始 DNA 双链穿孔速度过快（约 10⁶ nt/s），电信号无法区分。解旋酶（helicase）附着于孔口，将双链解开并以约 <strong>450 nt/s</strong> 的可控速率送入单链，使每个碱基在孔中停留足够长时间被采样。
+        </div>
+        <div class="verdict">
+          <div class="v-icon">⚡</div>
+          <div class="v-text">Nanopore 的信号本质是<strong>连续模拟波形</strong>，而非离散的荧光脉冲计数。每个时间步（约 1–4 ms）对应 5–6 个碱基上下文（k-mer），现代 basecaller（Dorado）利用深度学习将整段波形映射为序列，准确率已接近 99%。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- N2. Nanopore 读长与通量 -->
+  <div class="acc-item" id="nano-2">
+    <button class="acc-trigger" onclick="toggle('nano-2')">
+      <div class="acc-icon" style="background:var(--nano-light);">📐</div>
+      <div style="flex:1">
+        <div class="acc-title">读长：理论无上限</div>
+        <div class="acc-subtitle">单条 read 记录 2.3 Mb · 染色体级从头组装</div>
+      </div>
+      <div class="acc-chevron">▼</div>
+    </button>
+    <div class="acc-panel">
+      <div class="acc-panel-inner">
+        <div class="panel-divider"></div>
+
+        <div class="compare-grid" style="grid-template-columns:1fr 1fr 1fr">
+          <div class="compare-card sanger">
+            <div class="card-label">Sanger</div>
+            <div class="card-value">~800 bp</div>
+            <div class="card-desc">受毛细管电泳分辨率限制，700–1,000 bp 为实际上限。</div>
+          </div>
+          <div class="compare-card pacbio">
+            <div class="card-label">PacBio HiFi</div>
+            <div class="card-value">~20 kb</div>
+            <div class="card-desc">环形文库结构限制实际可用读长，通常 15–25 kb。</div>
+          </div>
+          <div class="compare-card nanopore">
+            <div class="card-label">Nanopore PromethION</div>
+            <div class="card-value">2 Mb+</div>
+            <div class="card-desc">2023 年记录单条 read 达 2.3 Mb，仅受输入 DNA 完整性限制，无仪器天花板。</div>
+          </div>
+        </div>
+
+        <!-- SVG: Ultra-long read spanning chromosomal features -->
+        <div class="svg-diagram">
+          <div class="svg-diagram-label">超长读长跨越染色体级结构 · Ultra-long Read Advantage</div>
+          <svg viewBox="0 0 720 180" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+            <!-- Chromosome region -->
+            <text x="10" y="14" font-size="9" fill="#888" letter-spacing="1">基因组区段（含着丝粒、端粒重复、倒位）</text>
+            <rect x="10" y="20" width="700" height="16" rx="3" fill="#e5e0d4"/>
+            <!-- centromere -->
+            <rect x="240" y="20" width="100" height="16" rx="0" fill="#c8a84b" opacity="0.6"/>
+            <text x="290" y="32" text-anchor="middle" font-size="8" fill="#8b6914">着丝粒重复</text>
+            <!-- telomere left -->
+            <rect x="10" y="20" width="40" height="16" rx="3" fill="#ef4444" opacity="0.3"/>
+            <text x="30" y="32" text-anchor="middle" font-size="7" fill="#c0392b">端粒</text>
+            <!-- inversion -->
+            <rect x="460" y="20" width="80" height="16" rx="0" fill="#7b2d8b" opacity="0.3"/>
+            <text x="500" y="32" text-anchor="middle" font-size="8" fill="#6a1a7a">倒位区域</text>
+            <!-- telomere right -->
+            <rect x="670" y="20" width="40" height="16" rx="3" fill="#ef4444" opacity="0.3"/>
+            <text x="690" y="32" text-anchor="middle" font-size="7" fill="#c0392b">端粒</text>
+
+            <!-- Sanger reads -->
+            <text x="10" y="54" font-size="9" fill="#1a6b5a" font-weight="600">Sanger (~800 bp)</text>
+            <rect x="10" y="58" width="8" height="6" rx="1" fill="#2d9e80" opacity="0.7"/>
+            <rect x="20" y="58" width="8" height="6" rx="1" fill="#2d9e80" opacity="0.7"/>
+            <rect x="30" y="58" width="8" height="6" rx="1" fill="#2d9e80" opacity="0.7"/>
+            <text x="50" y="63" font-size="7.5" fill="#1a6b5a">…</text>
+            <!-- gap over centromere -->
+            <line x1="240" y1="61" x2="340" y2="61" stroke="#c8a84b" stroke-width="1" stroke-dasharray="3,2"/>
+            <text x="290" y="57" text-anchor="middle" font-size="7" fill="#c8a84b">⚠ 无法组装</text>
+            <!-- gap over inversion -->
+            <line x1="460" y1="61" x2="540" y2="61" stroke="#7b2d8b" stroke-width="1" stroke-dasharray="3,2"/>
+            <text x="500" y="57" text-anchor="middle" font-size="7" fill="#7b2d8b">⚠ 错误拼接</text>
+            <!-- after inversion -->
+            <rect x="550" y="58" width="8" height="6" rx="1" fill="#2d9e80" opacity="0.7"/>
+            <rect x="560" y="58" width="8" height="6" rx="1" fill="#2d9e80" opacity="0.7"/>
+            <text x="580" y="63" font-size="7.5" fill="#1a6b5a">…</text>
+
+            <!-- PacBio HiFi reads -->
+            <text x="10" y="86" font-size="9" fill="#2b3fa0" font-weight="600">PacBio HiFi (~20 kb)</text>
+            <rect x="10" y="90" width="140" height="8" rx="2" fill="#4a6cd4" opacity="0.7"/>
+            <rect x="120" y="90" width="140" height="8" rx="2" fill="#2b3fa0" opacity="0.65"/>
+            <!-- still can't span full centromere -->
+            <line x1="260" y1="94" x2="340" y2="94" stroke="#c8a84b" stroke-width="1.5" stroke-dasharray="4,2"/>
+            <text x="300" y="89" text-anchor="middle" font-size="7" fill="#c8a84b">部分空缺</text>
+            <rect x="340" y="90" width="140" height="8" rx="2" fill="#4a6cd4" opacity="0.7"/>
+            <rect x="440" y="90" width="140" height="8" rx="2" fill="#2b3fa0" opacity="0.65"/>
+            <!-- spans inversion -->
+            <rect x="570" y="90" width="140" height="8" rx="2" fill="#4a6cd4" opacity="0.7"/>
+
+            <!-- Nanopore ultra-long reads -->
+            <text x="10" y="118" font-size="9" fill="#7b2d8b" font-weight="600">Nanopore 超长读长 (~500 kb)</text>
+            <rect x="10" y="122" width="500" height="10" rx="3" fill="#a855c8" opacity="0.6"/>
+            <text x="260" y="131" text-anchor="middle" font-size="7.5" fill="white">read 1 —— 完整跨越着丝粒 ——</text>
+            <rect x="350" y="122" width="360" height="10" rx="3" fill="#7b2d8b" opacity="0.55"/>
+            <text x="530" y="131" text-anchor="middle" font-size="7.5" fill="white">read 2 —— 覆盖倒位全貌 ——</text>
+
+            <!-- Annotations for Nanopore -->
+            <line x1="290" y1="120" x2="290" y2="110" stroke="#c8a84b" stroke-width="1"/>
+            <text x="290" y="108" text-anchor="middle" font-size="8" fill="#a855c8">✓ 完整解析着丝粒</text>
+            <line x1="500" y1="120" x2="500" y2="110" stroke="#7b2d8b" stroke-width="1"/>
+            <text x="500" y="108" text-anchor="middle" font-size="8" fill="#7b2d8b">✓ 完整覆盖倒位</text>
+
+            <!-- Ultra-long context -->
+            <text x="10" y="155" font-size="8.5" fill="#7b2d8b" font-weight="600">Nanopore 独家场景：</text>
+            <text x="140" y="155" font-size="8" fill="#888">端粒长度测量 · 着丝粒从头组装 · 大型串联重复解析 · 染色体级 phasing</text>
+            <text x="10" y="168" font-size="8.5" fill="#2b3fa0" font-weight="600">PacBio HiFi 擅长：</text>
+            <text x="140" y="168" font-size="8" fill="#888">高准确率结构变异 · 全基因组甲基化 · 全长转录组</text>
+          </svg>
+          <div class="svg-caption">Nanopore 超长读长（可达数百 kb 至 Mb 级）可完整覆盖着丝粒重复、端粒和大型倒位区域，这是 Sanger 和 PacBio HiFi 均无法做到的。代价是原始准确率较 HiFi 低，需要高覆盖度纠错。</div>
+        </div>
+
+        <table class="mini-table">
+          <thead>
+            <tr><th>指标</th><th>Sanger</th><th>PacBio HiFi</th><th>Nanopore PromethION</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>典型读长</td>
+              <td class="val-s">700–1,000 bp</td>
+              <td class="val-p">15–25 kb</td>
+              <td class="val-n">10–100 kb（超长模式可达 Mb）</td>
+            </tr>
+            <tr>
+              <td>单次数据产出</td>
+              <td class="val-s">&lt;1 Mb</td>
+              <td class="val-p">~1–2 Tb</td>
+              <td class="val-n">~7 Tb（PromethION 24）</td>
+            </tr>
+            <tr>
+              <td>运行时间</td>
+              <td class="val-s">2–3 小时</td>
+              <td class="val-p">~20 小时</td>
+              <td class="val-n">可 1 小时快跑，或 72 小时超长</td>
+            </tr>
+            <tr>
+              <td>实时输出</td>
+              <td class="val-s">✗（跑完后读数据）</td>
+              <td class="val-p">✗（跑完后）</td>
+              <td class="val-n">✓ 边跑边输出，可随时终止</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- N3. Nanopore 准确率与 Basecalling -->
+  <div class="acc-item" id="nano-3">
+    <button class="acc-trigger" onclick="toggle('nano-3')">
+      <div class="acc-icon" style="background:var(--nano-light);">🎯</div>
+      <div style="flex:1">
+        <div class="acc-title">准确率与 Basecalling 进化</div>
+        <div class="acc-subtitle">从 85% 到 ~99%——算法驱动的准确率革命</div>
+      </div>
+      <div class="acc-chevron">▼</div>
+    </button>
+    <div class="acc-panel">
+      <div class="acc-panel-inner">
+        <div class="panel-divider"></div>
+
+        <div class="prose">
+          Nanopore 的原始信号是连续电流波形，碱基识别完全依赖软件（basecaller）。早期使用隐马尔可夫模型（HMM），准确率约 85%；2020 年后引入深度学习（Guppy → Bonito → Dorado），准确率快速爬升至 99%+。这是<strong>纯软件升级</strong>，不需要换硬件。
+        </div>
+
+        <!-- SVG: Accuracy improvement timeline -->
+        <div class="svg-diagram">
+          <div class="svg-diagram-label">Basecaller 准确率演进 &amp; 错误类型对比</div>
+          <svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+
+            <!-- Left: Timeline chart -->
+            <text x="10" y="14" font-size="9" fill="#888" letter-spacing="1">Nanopore 准确率演进（单读长）</text>
+            <!-- Axes -->
+            <line x1="60" y1="20" x2="60" y2="130" stroke="#ccc" stroke-width="1"/>
+            <line x1="60" y1="130" x2="340" y2="130" stroke="#ccc" stroke-width="1"/>
+            <!-- Y labels -->
+            <text x="58" y="24" text-anchor="end" font-size="7" fill="#aaa">99%</text>
+            <text x="58" y="57" text-anchor="end" font-size="7" fill="#aaa">95%</text>
+            <text x="58" y="90" text-anchor="end" font-size="7" fill="#aaa">90%</text>
+            <text x="58" y="122" text-anchor="end" font-size="7" fill="#aaa">85%</text>
+            <!-- X labels -->
+            <text x="75" y="140" font-size="7" fill="#aaa" text-anchor="middle">2016</text>
+            <text x="130" y="140" font-size="7" fill="#aaa" text-anchor="middle">2018</text>
+            <text x="185" y="140" font-size="7" fill="#aaa" text-anchor="middle">2020</text>
+            <text x="240" y="140" font-size="7" fill="#aaa" text-anchor="middle">2022</text>
+            <text x="320" y="140" font-size="7" fill="#aaa" text-anchor="middle">2024+</text>
+
+            <!-- Grid lines -->
+            <line x1="60" y1="57" x2="340" y2="57" stroke="#f0ede6" stroke-width="0.8"/>
+            <line x1="60" y1="90" x2="340" y2="90" stroke="#f0ede6" stroke-width="0.8"/>
+
+            <!-- Accuracy curve -->
+            <polyline points="75,120 130,112 185,90 240,45 320,26" fill="none" stroke="#a855c8" stroke-width="2.5"/>
+            <!-- data points -->
+            <circle cx="75" cy="120" r="4" fill="#a855c8"/>
+            <text x="75" cy="115" y="116" text-anchor="middle" font-size="7" fill="#7b2d8b">HMM</text>
+            <circle cx="130" cy="112" r="4" fill="#a855c8"/>
+            <text x="130" y="108" text-anchor="middle" font-size="7" fill="#7b2d8b">RNN</text>
+            <circle cx="185" cy="90" r="4" fill="#a855c8"/>
+            <text x="185" y="86" text-anchor="middle" font-size="7" fill="#7b2d8b">Guppy</text>
+            <circle cx="240" cy="45" r="4" fill="#7b2d8b"/>
+            <text x="240" y="41" text-anchor="middle" font-size="7" fill="#7b2d8b">Bonito</text>
+            <circle cx="320" cy="26" r="5" fill="#7b2d8b"/>
+            <text x="320" y="22" text-anchor="middle" font-size="7.5" fill="#7b2d8b" font-weight="700">Dorado</text>
+            <text x="320" y="14" text-anchor="middle" font-size="8" fill="#7b2d8b" font-weight="700">~99%</text>
+
+            <!-- Compare lines -->
+            <line x1="60" y1="24" x2="340" y2="24" stroke="#1a6b5a" stroke-width="1" stroke-dasharray="4,2" opacity="0.5"/>
+            <text x="342" y="27" font-size="7" fill="#1a6b5a">Sanger</text>
+            <line x1="60" y1="22" x2="340" y2="22" stroke="#2b3fa0" stroke-width="1" stroke-dasharray="4,2" opacity="0.5"/>
+            <text x="342" y="20" font-size="7" fill="#2b3fa0">HiFi</text>
+
+            <!-- Right: Error type comparison -->
+            <text x="380" y="14" font-size="9" fill="#888" letter-spacing="1">各平台主要错误类型</text>
+
+            <!-- Error type bars -->
+            <!-- Sanger -->
+            <text x="380" y="38" font-size="9" fill="#1a6b5a" font-weight="600">Sanger</text>
+            <text x="380" y="50" font-size="8" fill="#888">替换（SNP）</text>
+            <rect x="450" y="42" width="20" height="10" rx="2" fill="#2d9e80" opacity="0.7"/>
+            <text x="474" y="51" font-size="8" fill="#1a6b5a">0.1%</text>
+            <text x="380" y="64" font-size="8" fill="#888">插入/缺失</text>
+            <rect x="450" y="56" width="4" height="10" rx="1" fill="#2d9e80" opacity="0.4"/>
+            <text x="458" y="65" font-size="8" fill="#888">极少</text>
+
+            <!-- PacBio HiFi -->
+            <text x="380" y="84" font-size="9" fill="#2b3fa0" font-weight="600">PacBio HiFi</text>
+            <text x="380" y="96" font-size="8" fill="#888">替换</text>
+            <rect x="450" y="88" width="10" height="10" rx="2" fill="#4a6cd4" opacity="0.6"/>
+            <text x="464" y="97" font-size="8" fill="#2b3fa0">&lt;0.05%</text>
+            <text x="380" y="110" font-size="8" fill="#888">插入/缺失</text>
+            <rect x="450" y="102" width="6" height="10" rx="1" fill="#4a6cd4" opacity="0.6"/>
+            <text x="460" y="111" font-size="8" fill="#888">极少</text>
+
+            <!-- Nanopore Dorado -->
+            <text x="380" y="130" font-size="9" fill="#7b2d8b" font-weight="600">Nanopore (Dorado)</text>
+            <text x="380" y="142" font-size="8" fill="#888">替换</text>
+            <rect x="450" y="134" width="30" height="10" rx="2" fill="#a855c8" opacity="0.6"/>
+            <text x="484" y="143" font-size="8" fill="#7b2d8b">~0.3%</text>
+            <text x="380" y="156" font-size="8" fill="#888">插入/缺失</text>
+            <rect x="450" y="148" width="50" height="10" rx="2" fill="#7b2d8b" opacity="0.5"/>
+            <text x="504" y="157" font-size="8" fill="#7b2d8b">~0.5%（同聚物↑）</text>
+
+            <!-- Homopolymer issue annotation -->
+            <rect x="380" y="166" width="330" height="20" rx="4" fill="#fff8e8" stroke="#c8a84b" stroke-width="1"/>
+            <text x="388" y="178" font-size="8" fill="#8b6914">⚠ 同聚物难点：AAAAAAA / TTTTTTT 等重复碱基电流信号差异极小，仍是 Nanopore 的主要弱点</text>
+
+            <!-- Software only upgrade note -->
+            <rect x="60" y="150" width="280" height="32" rx="6" fill="var(--nano-light)" stroke="var(--nano)" stroke-width="1"/>
+            <text x="200" y="163" text-anchor="middle" font-size="8.5" fill="#7b2d8b" font-weight="600">✓ 准确率提升 = 纯软件升级</text>
+            <text x="200" y="175" text-anchor="middle" font-size="7.5" fill="#888">旧仪器下载新 Dorado 即可获得更高准确率</text>
+          </svg>
+          <div class="svg-caption">Nanopore 准确率完全由 basecalling 算法决定，从 2016 年 HMM 的 85% 到 2024 年 Dorado 的 ~99%，仅靠软件升级实现。主要残留错误集中在同聚物重复区（如 polyA/T）。</div>
+        </div>
+
+        <div class="verdict">
+          <div class="v-icon">🧠</div>
+          <div class="v-text">Nanopore 是<strong>"软件定义的测序仪"</strong>：硬件固定，准确率随算法迭代持续提升。这与 PacBio HiFi 通过化学手段（多次测同一分子）保证准确率的策略本质不同——各有优势，视具体需求选择。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- N4. Nanopore 直接测序能力 -->
+  <div class="acc-item" id="nano-4">
+    <button class="acc-trigger" onclick="toggle('nano-4')">
+      <div class="acc-icon" style="background:var(--nano-light);">🧫</div>
+      <div style="flex:1">
+        <div class="acc-title">直接 RNA 测序 &amp; 表观遗传</div>
+        <div class="acc-subtitle">无需逆转录 · 直接读 m6A/5mC · 原生链</div>
+      </div>
+      <div class="acc-chevron">▼</div>
+    </button>
+    <div class="acc-panel">
+      <div class="acc-panel-inner">
+        <div class="panel-divider"></div>
+
+        <div class="compare-grid">
+          <div class="compare-card nanopore">
+            <div class="card-label">Direct RNA Sequencing</div>
+            <div class="card-value">直接读 RNA</div>
+            <div class="card-desc">RNA 链无需逆转录为 cDNA，直接穿孔测序。保留了 polyA 尾巴长度、RNA 修饰（m6A、pseudouridine 等）、剪接信息，以及 RNA 降解状态——这是 PacBio 和 Illumina 均无法做到的。</div>
+          </div>
+          <div class="compare-card nanopore" style="background:#fdf6ff">
+            <div class="card-label">表观遗传修饰检测</div>
+            <div class="card-value">5mC / 6mA / m6A</div>
+            <div class="card-desc">与 PacBio SMRT 类似，Nanopore 通过电流信号的特征性变化直接识别修饰碱基，无需 bisulfite 处理。且 Nanopore 还可检测 RNA 修饰（m6A），这是 PacBio 不具备的。</div>
+          </div>
+        </div>
+
+        <!-- SVG: Direct RNA vs cDNA comparison -->
+        <div class="svg-diagram">
+          <div class="svg-diagram-label">Direct RNA 测序 vs 传统 cDNA 流程</div>
+          <svg viewBox="0 0 720 185" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+            <defs>
+              <marker id="arrr" markerWidth="7" markerHeight="7" refX="3" refY="3.5" orient="auto">
+                <path d="M0,0 L0,7 L7,3.5 z" fill="#888"/>
+              </marker>
+              <marker id="arrnp" markerWidth="7" markerHeight="7" refX="3" refY="3.5" orient="auto">
+                <path d="M0,0 L0,7 L7,3.5 z" fill="#7b2d8b"/>
+              </marker>
+            </defs>
+
+            <!-- Traditional cDNA path (top) -->
+            <text x="10" y="14" font-size="9" fill="#ef4444" letter-spacing="1">传统方法（cDNA → NGS/PacBio Iso-Seq）</text>
+
+            <!-- RNA -->
+            <rect x="10" y="20" width="60" height="22" rx="5" fill="#fce8e8" stroke="#ef4444" stroke-width="1.5"/>
+            <text x="40" y="29" text-anchor="middle" font-size="8" fill="#ef4444" font-weight="600">原始</text>
+            <text x="40" y="39" text-anchor="middle" font-size="8" fill="#ef4444">mRNA</text>
+            <line x1="70" y1="31" x2="100" y2="31" stroke="#888" stroke-width="1.5" marker-end="url(#arrr)"/>
+
+            <!-- Step: RT -->
+            <rect x="102" y="20" width="72" height="22" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="1"/>
+            <text x="138" y="29" text-anchor="middle" font-size="7.5" fill="#555">逆转录</text>
+            <text x="138" y="39" text-anchor="middle" font-size="7" fill="#888">(RT-PCR)</text>
+            <line x1="174" y1="31" x2="200" y2="31" stroke="#888" stroke-width="1.5" marker-end="url(#arrr)"/>
+
+            <!-- cDNA -->
+            <rect x="202" y="20" width="52" height="22" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="1"/>
+            <text x="228" y="29" text-anchor="middle" font-size="8" fill="#555">cDNA</text>
+            <text x="228" y="39" text-anchor="middle" font-size="7.5" fill="#888">双链</text>
+            <line x1="254" y1="31" x2="278" y2="31" stroke="#888" stroke-width="1.5" marker-end="url(#arrr)"/>
+
+            <!-- PCR amplification -->
+            <rect x="280" y="20" width="62" height="22" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="1"/>
+            <text x="311" y="29" text-anchor="middle" font-size="7.5" fill="#555">PCR 扩增</text>
+            <text x="311" y="39" text-anchor="middle" font-size="7" fill="#c47a2b">（引入偏差）</text>
+            <line x1="342" y1="31" x2="366" y2="31" stroke="#888" stroke-width="1.5" marker-end="url(#arrr)"/>
+
+            <!-- Library prep -->
+            <rect x="368" y="20" width="62" height="22" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="1"/>
+            <text x="399" y="29" text-anchor="middle" font-size="7.5" fill="#555">建库</text>
+            <text x="399" y="39" text-anchor="middle" font-size="7" fill="#888">片段化</text>
+            <line x1="430" y1="31" x2="454" y2="31" stroke="#888" stroke-width="1.5" marker-end="url(#arrr)"/>
+
+            <!-- Sequencing -->
+            <rect x="456" y="20" width="62" height="22" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="1"/>
+            <text x="487" y="29" text-anchor="middle" font-size="7.5" fill="#555">测序</text>
+            <text x="487" y="39" text-anchor="middle" font-size="7" fill="#888">读序列</text>
+            <line x1="518" y1="31" x2="540" y2="31" stroke="#888" stroke-width="1.5" marker-end="url(#arrr)"/>
+
+            <!-- Result: loses modifications -->
+            <rect x="542" y="14" width="170" height="34" rx="6" fill="#fce8e8" stroke="#ef4444" stroke-width="1"/>
+            <text x="627" y="27" text-anchor="middle" font-size="8" fill="#ef4444">❌ 丢失 RNA 修饰</text>
+            <text x="627" y="39" text-anchor="middle" font-size="7.5" fill="#888">❌ polyA 长度不准</text>
+
+            <!-- Losses annotation -->
+            <text x="138" y="56" text-anchor="middle" font-size="7" fill="#ef4444">丢失 m6A</text>
+            <text x="311" y="56" text-anchor="middle" font-size="7" fill="#c47a2b">GC 偏差</text>
+
+            <!-- === Nanopore Direct RNA path (bottom) === -->
+            <text x="10" y="78" font-size="9" fill="#7b2d8b" letter-spacing="1">Nanopore Direct RNA 测序</text>
+
+            <!-- RNA -->
+            <rect x="10" y="84" width="60" height="22" rx="5" fill="var(--nano-light)" stroke="var(--nano)" stroke-width="1.5"/>
+            <text x="40" y="93" text-anchor="middle" font-size="8" fill="#7b2d8b" font-weight="600">原始</text>
+            <text x="40" y="103" text-anchor="middle" font-size="8" fill="#7b2d8b">mRNA</text>
+
+            <!-- Direct to sequencing -->
+            <line x1="70" y1="95" x2="200" y2="95" stroke="#7b2d8b" stroke-width="2" marker-end="url(#arrnp)"/>
+            <text x="135" y="91" text-anchor="middle" font-size="8" fill="#7b2d8b">直接上机</text>
+            <text x="135" y="103" text-anchor="middle" font-size="7.5" fill="#888">适配器连接</text>
+
+            <!-- Nanopore sequencing box -->
+            <rect x="202" y="82" width="100" height="26" rx="6" fill="var(--nano-light)" stroke="var(--nano)" stroke-width="2"/>
+            <text x="252" y="93" text-anchor="middle" font-size="8" fill="#7b2d8b" font-weight="700">Nanopore</text>
+            <text x="252" y="103" text-anchor="middle" font-size="7.5" fill="#888">单链穿孔</text>
+            <line x1="302" y1="95" x2="380" y2="95" stroke="#7b2d8b" stroke-width="2" marker-end="url(#arrnp)"/>
+
+            <!-- Results -->
+            <rect x="382" y="80" width="330" height="36" rx="6" fill="#f0fdf4" stroke="#1a6b5a" stroke-width="1"/>
+            <text x="392" y="94" font-size="8" fill="#1a6b5a">✓ 序列 + m6A 修饰图谱</text>
+            <text x="392" y="106" font-size="8" fill="#1a6b5a">✓ 准确 polyA 尾巴长度</text>
+            <text x="570" y="94" font-size="8" fill="#1a6b5a">✓ 完整剪接本</text>
+            <text x="570" y="106" font-size="8" fill="#1a6b5a">✓ RNA 降解状态</text>
+
+            <!-- Modification types -->
+            <text x="10" y="130" font-size="9" fill="#888" letter-spacing="1">可检测修饰类型对比</text>
+            <table>
+            </table>
+            <!-- Table manually as SVG -->
+            <rect x="10" y="136" width="700" height="44" rx="4" fill="white" stroke="#e5e0d4" stroke-width="1"/>
+            <!-- Headers -->
+            <text x="16" y="148" font-size="8" fill="#888">修饰类型</text>
+            <text x="160" y="148" font-size="8" fill="#1a6b5a">Sanger</text>
+            <text x="260" y="148" font-size="8" fill="#2b3fa0">PacBio SMRT</text>
+            <text x="400" y="148" font-size="8" fill="#7b2d8b">Nanopore DNA</text>
+            <text x="560" y="148" font-size="8" fill="#7b2d8b">Nanopore RNA</text>
+            <line x1="10" y1="152" x2="710" y2="152" stroke="#e5e0d4" stroke-width="1"/>
+            <!-- Row 1 -->
+            <text x="16" y="163" font-size="8" fill="#555">DNA 5mC / 5hmC</text>
+            <text x="160" y="163" font-size="8" fill="#ccc">✗</text>
+            <text x="260" y="163" font-size="8" fill="#2b3fa0">✓ 直接</text>
+            <text x="400" y="163" font-size="8" fill="#7b2d8b">✓ 直接</text>
+            <text x="560" y="163" font-size="8" fill="#888">N/A</text>
+            <!-- Row 2 -->
+            <text x="16" y="175" font-size="8" fill="#555">RNA m6A</text>
+            <text x="160" y="175" font-size="8" fill="#ccc">✗</text>
+            <text x="260" y="175" font-size="8" fill="#ccc">✗（仅 DNA）</text>
+            <text x="400" y="175" font-size="8" fill="#ccc">✗（仅 DNA）</text>
+            <text x="560" y="175" font-size="8" fill="#7b2d8b">✓ 直接检测</text>
+          </svg>
+          <div class="svg-caption">传统 cDNA 流程需逆转录 + PCR 扩增，会丢失 RNA 修饰信息并引入 GC 偏差。Nanopore Direct RNA 将原生 mRNA 直接穿孔测序，同时获得序列、m6A 修饰、polyA 长度和剪接信息。</div>
+        </div>
+
+        <div class="verdict">
+          <div class="v-icon">🌟</div>
+          <div class="v-text">Nanopore 的 RNA m6A 直接检测是<strong>全球唯一实现商业化</strong>的方案。m6A 是最丰富的 RNA 修饰，在基因表达调控、癌症发生、神经发育中至关重要。以往需要 m6A-seq（抗体免疫沉淀）才能检测，Nanopore 使其变为测序的"顺带"产出。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- N5. Nanopore 设备生态 -->
+  <div class="acc-item" id="nano-5">
+    <button class="acc-trigger" onclick="toggle('nano-5')">
+      <div class="acc-icon" style="background:var(--nano-light);">📱</div>
+      <div style="flex:1">
+        <div class="acc-title">设备生态：从 U 盘到数据中心</div>
+        <div class="acc-subtitle">MinION · Flongle · GridION · PromethION</div>
+      </div>
+      <div class="acc-chevron">▼</div>
+    </button>
+    <div class="acc-panel">
+      <div class="acc-panel-inner">
+        <div class="panel-divider"></div>
+
+        <!-- SVG: Device lineup -->
+        <div class="svg-diagram">
+          <div class="svg-diagram-label">ONT 设备系列 · Device Lineup</div>
+          <svg viewBox="0 0 720 175" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', monospace">
+
+            <!-- Flongle -->
+            <rect x="10" y="20" width="130" height="130" rx="10" fill="var(--nano-light)" stroke="var(--nano)" stroke-width="1.5"/>
+            <!-- Device icon: tiny chip -->
+            <rect x="40" y="35" width="70" height="50" rx="5" fill="white" stroke="#a855c8" stroke-width="1.5"/>
+            <rect x="52" y="45" width="46" height="30" rx="3" fill="#f5eaf8"/>
+            <text x="75" y="64" text-anchor="middle" font-size="8" fill="#7b2d8b" font-weight="700">Flongle</text>
+            <!-- pore count dots -->
+            <circle cx="58" cy="58" r="2" fill="#a855c8" opacity="0.6"/>
+            <circle cx="65" cy="58" r="2" fill="#a855c8" opacity="0.6"/>
+            <circle cx="72" cy="58" r="2" fill="#a855c8" opacity="0.6"/>
+            <circle cx="79" cy="58" r="2" fill="#a855c8" opacity="0.6"/>
+            <circle cx="86" cy="58" r="2" fill="#a855c8" opacity="0.6"/>
+            <text x="75" y="104" text-anchor="middle" font-size="9.5" fill="#7b2d8b" font-weight="700">Flongle</text>
+            <text x="75" y="116" text-anchor="middle" font-size="8" fill="#888">126 个通道</text>
+            <text x="75" y="128" text-anchor="middle" font-size="8" fill="#888">~1–2 Gb</text>
+            <text x="75" y="140" text-anchor="middle" font-size="7.5" fill="#a855c8">单次实验验证</text>
+
+            <!-- MinION -->
+            <rect x="155" y="20" width="130" height="130" rx="10" fill="var(--nano-light)" stroke="var(--nano)" stroke-width="2"/>
+            <!-- USB device shape -->
+            <rect x="185" y="35" width="70" height="35" rx="6" fill="white" stroke="#7b2d8b" stroke-width="2"/>
+            <rect x="200" y="70" width="14" height="12" rx="2" fill="#888"/>
+            <text x="220" y="57" text-anchor="middle" font-size="7.5" fill="#7b2d8b" font-weight="700">MinION</text>
+            <text x="220" y="68" text-anchor="middle" font-size="7" fill="#888">USB-C</text>
+            <!-- pore grid -->
+            <circle cx="192" cy="47" r="2.5" fill="#7b2d8b" opacity="0.5"/>
+            <circle cx="200" cy="47" r="2.5" fill="#7b2d8b" opacity="0.5"/>
+            <circle cx="208" cy="47" r="2.5" fill="#7b2d8b" opacity="0.5"/>
+            <circle cx="216" cy="47" r="2.5" fill="#7b2d8b" opacity="0.5"/>
+            <circle cx="224" cy="47" r="2.5" fill="#7b2d8b" opacity="0.5"/>
+            <circle cx="232" cy="47" r="2.5" fill="#7b2d8b" opacity="0.5"/>
+            <circle cx="240" cy="47" r="2.5" fill="#7b2d8b" opacity="0.5"/>
+            <text x="220" y="104" text-anchor="middle" font-size="9.5" fill="#7b2d8b" font-weight="700">MinION</text>
+            <text x="220" y="116" text-anchor="middle" font-size="8" fill="#888">512 个通道</text>
+            <text x="220" y="128" text-anchor="middle" font-size="8" fill="#888">~50 Gb</text>
+            <text x="220" y="140" text-anchor="middle" font-size="7.5" fill="#7b2d8b">野外/现场测序</text>
+
+            <!-- GridION -->
+            <rect x="300" y="20" width="130" height="130" rx="10" fill="var(--nano-light)" stroke="var(--nano)" stroke-width="1.5"/>
+            <!-- Rack device icon -->
+            <rect x="322" y="35" width="86" height="50" rx="4" fill="white" stroke="#a855c8" stroke-width="1.5"/>
+            <!-- 5 flow cells represented -->
+            <rect x="328" y="41" width="14" height="38" rx="2" fill="#f5eaf8" stroke="#a855c8" stroke-width="1"/>
+            <rect x="345" y="41" width="14" height="38" rx="2" fill="#f5eaf8" stroke="#a855c8" stroke-width="1"/>
+            <rect x="362" y="41" width="14" height="38" rx="2" fill="#f5eaf8" stroke="#a855c8" stroke-width="1"/>
+            <rect x="379" y="41" width="14" height="38" rx="2" fill="#f5eaf8" stroke="#a855c8" stroke-width="1"/>
+            <rect x="396" y="41" width="8" height="38" rx="2" fill="#f5eaf8" stroke="#a855c8" stroke-width="1"/>
+            <text x="365" y="104" text-anchor="middle" font-size="9.5" fill="#7b2d8b" font-weight="700">GridION</text>
+            <text x="365" y="116" text-anchor="middle" font-size="8" fill="#888">5× MinION 插槽</text>
+            <text x="365" y="128" text-anchor="middle" font-size="8" fill="#888">~250 Gb</text>
+            <text x="365" y="140" text-anchor="middle" font-size="7.5" fill="#a855c8">中型实验室</text>
+
+            <!-- PromethION -->
+            <rect x="445" y="20" width="145" height="130" rx="10" fill="#ede0f5" stroke="#7b2d8b" stroke-width="2.5"/>
+            <!-- Large rack icon -->
+            <rect x="462" y="32" width="112" height="62" rx="5" fill="white" stroke="#7b2d8b" stroke-width="2"/>
+            <!-- 24 flow cells grid -->
+            <g fill="#7b2d8b" opacity="0.5">
+              <rect x="468" y="38" width="8" height="11" rx="1"/>
+              <rect x="479" y="38" width="8" height="11" rx="1"/>
+              <rect x="490" y="38" width="8" height="11" rx="1"/>
+              <rect x="501" y="38" width="8" height="11" rx="1"/>
+              <rect x="512" y="38" width="8" height="11" rx="1"/>
+              <rect x="523" y="38" width="8" height="11" rx="1"/>
+              <rect x="534" y="38" width="8" height="11" rx="1"/>
+              <rect x="545" y="38" width="8" height="11" rx="1"/>
+              <rect x="556" y="38" width="8" height="11" rx="1"/>
+              <rect x="567" y="38" width="0" height="11" rx="1"/>
+              <rect x="468" y="52" width="8" height="11" rx="1" opacity="0.8"/>
+              <rect x="479" y="52" width="8" height="11" rx="1" opacity="0.8"/>
+              <rect x="490" y="52" width="8" height="11" rx="1" opacity="0.8"/>
+              <rect x="501" y="52" width="8" height="11" rx="1" opacity="0.8"/>
+              <rect x="512" y="52" width="8" height="11" rx="1" opacity="0.8"/>
+              <rect x="523" y="52" width="8" height="11" rx="1" opacity="0.8"/>
+              <rect x="534" y="52" width="8" height="11" rx="1" opacity="0.8"/>
+              <rect x="545" y="52" width="8" height="11" rx="1" opacity="0.8"/>
+              <rect x="556" y="52" width="8" height="11" rx="1" opacity="0.8"/>
+              <rect x="468" y="66" width="8" height="11" rx="1" opacity="0.6"/>
+              <rect x="479" y="66" width="8" height="11" rx="1" opacity="0.6"/>
+              <rect x="490" y="66" width="8" height="11" rx="1" opacity="0.6"/>
+              <rect x="501" y="66" width="8" height="11" rx="1" opacity="0.6"/>
+              <rect x="512" y="66" width="8" height="11" rx="1" opacity="0.6"/>
+              <rect x="523" y="66" width="8" height="11" rx="1" opacity="0.6"/>
+              <rect x="534" y="66" width="8" height="11" rx="1" opacity="0.6"/>
+              <rect x="545" y="66" width="8" height="11" rx="1" opacity="0.6"/>
+              <rect x="556" y="66" width="8" height="11" rx="1" opacity="0.6"/>
+            </g>
+            <text x="518" y="104" text-anchor="middle" font-size="9.5" fill="#7b2d8b" font-weight="700">PromethION</text>
+            <text x="518" y="116" text-anchor="middle" font-size="8" fill="#888">24/48 个流通池</text>
+            <text x="518" y="128" text-anchor="middle" font-size="8" fill="#888">~7 Tb 数据</text>
+            <text x="518" y="140" text-anchor="middle" font-size="7.5" fill="#7b2d8b" font-weight="600">大规模基因组项目</text>
+
+            <!-- MinION field use annotation -->
+            <rect x="600" y="20" width="112" height="130" rx="10" fill="white" stroke="#e5e0d4" stroke-width="1.5"/>
+            <text x="656" y="38" text-anchor="middle" font-size="8.5" fill="#1a1a1a" font-weight="600">特殊部署场景</text>
+            <text x="610" y="54" font-size="8" fill="#7b2d8b">🚀 国际空间站</text>
+            <text x="610" y="68" font-size="8" fill="#7b2d8b">🦠 埃博拉疫区</text>
+            <text x="610" y="82" font-size="8" fill="#7b2d8b">🌊 极地科考船</text>
+            <text x="610" y="96" font-size="8" fill="#7b2d8b">🏥 ICU 床边</text>
+            <text x="610" y="110" font-size="8" fill="#7b2d8b">🌿 热带雨林</text>
+            <text x="610" y="125" font-size="7.5" fill="#888">仅需笔记本</text>
+            <text x="610" y="137" font-size="7.5" fill="#888">+ USB 供电</text>
+          </svg>
+          <div class="svg-caption">ONT 设备系列覆盖从单次实验（Flongle）到大型基因组中心（PromethION），同一化学平台、同一流程，按需扩展。MinION 已在国际空间站、疫区现场、极地科考船等极端环境完成实际测序任务。</div>
+        </div>
+
+        <table class="mini-table">
+          <thead>
+            <tr><th>设备</th><th>通道数</th><th>典型产出</th><th>价格参考</th><th>适用场景</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="val-n">Flongle</td>
+              <td>126</td>
+              <td>~1–2 Gb</td>
+              <td>~$90/芯片</td>
+              <td>单次快速验证、靶向测序</td>
+            </tr>
+            <tr>
+              <td class="val-n">MinION</td>
+              <td>512</td>
+              <td>~50 Gb</td>
+              <td>~$500/芯片</td>
+              <td>现场测序、小型实验室</td>
+            </tr>
+            <tr>
+              <td class="val-n">GridION</td>
+              <td>5×512</td>
+              <td>~250 Gb</td>
+              <td>仪器 ~$50K</td>
+              <td>中型核心实验室</td>
+            </tr>
+            <tr>
+              <td class="val-n">PromethION 24</td>
+              <td>24×2,675</td>
+              <td>~7 Tb</td>
+              <td>仪器 ~$200K+</td>
+              <td>大规模基因组项目</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- N6. 三代技术总结对比 -->
+  <div class="acc-item" id="nano-6">
+    <button class="acc-trigger" onclick="toggle('nano-6')">
+      <div class="acc-icon" style="background:#1a1a1a;">⚖️</div>
+      <div style="flex:1">
+        <div class="acc-title">三技术全面对比</div>
+        <div class="acc-subtitle">Sanger · PacBio HiFi · Nanopore 一张表选型</div>
+      </div>
+      <div class="acc-chevron">▼</div>
+    </button>
+    <div class="acc-panel">
+      <div class="acc-panel-inner">
+        <div class="panel-divider"></div>
+        <table class="mini-table">
+          <thead>
+            <tr>
+              <th>维度</th>
+              <th>Sanger</th>
+              <th>PacBio HiFi</th>
+              <th>Nanopore (ONT)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>测序原理</td><td class="val-s">双脱氧链终止 + 电泳</td><td class="val-p">SMRT 荧光脉冲</td><td class="val-n">纳米孔电流阻断</td></tr>
+            <tr><td>典型读长</td><td class="val-s">700–1,000 bp</td><td class="val-p">15–25 kb</td><td class="val-n">10–100 kb（可至 Mb）</td></tr>
+            <tr><td>原始准确率</td><td class="val-s">~99.9%</td><td class="val-p">&gt;99.9%</td><td class="val-n">~97–99%（Dorado）</td></tr>
+            <tr><td>通量</td><td class="val-s">极低（&lt;1 Mb/run）</td><td class="val-p">高（~1–2 Tb）</td><td class="val-n">极高（~7 Tb，PromethION）</td></tr>
+            <tr><td>仪器成本</td><td class="val-s">低（$5–15万）</td><td class="val-p">极高（$45万+）</td><td class="val-n">中（MinION $1K；PromethION $200K+）</td></tr>
+            <tr><td>单样本成本</td><td class="val-s">极低（$3–10）</td><td class="val-p">较高</td><td class="val-n">中（Flongle $90 起）</td></tr>
+            <tr><td>设备便携性</td><td class="val-s">台式（中等）</td><td class="val-p">大型（需实验室）</td><td class="val-n">U 盘级（MinION）</td></tr>
+            <tr><td>实时输出</td><td style="color:#ccc">✗</td><td style="color:#ccc">✗</td><td class="val-n">✓ 随时可停</td></tr>
+            <tr><td>DNA 甲基化</td><td style="color:#ccc">✗</td><td class="val-p">✓ 5mC/6mA</td><td class="val-n">✓ 5mC/5hmC/6mA</td></tr>
+            <tr><td>RNA 修饰(m6A)</td><td style="color:#ccc">✗</td><td style="color:#ccc">✗</td><td class="val-n">✓ Direct RNA</td></tr>
+            <tr><td>直接测 RNA</td><td style="color:#ccc">✗</td><td style="color:#ccc">✗</td><td class="val-n">✓ 无需逆转录</td></tr>
+            <tr><td>建库难度</td><td class="val-s">极简（30 min）</td><td class="val-p">复杂（高 MW DNA）</td><td class="val-n">中等（1–4 小时）</td></tr>
+            <tr><td>分析难度</td><td class="val-s">极低（峰图直读）</td><td class="val-p">高（需 HPC）</td><td class="val-n">高（需 GPU basecalling）</td></tr>
+            <tr><td>最佳场景</td><td class="val-s">靶向验证</td><td class="val-p">精准长读长/表观</td><td class="val-n">超长读长/现场/RNA</td></tr>
+          </tbody>
+        </table>
+
+        <div class="verdict" style="margin-top:20px">
+          <div class="v-icon">🎓</div>
+          <div class="v-text">
+            <strong>三技术定位：</strong>验证几个位点 → Sanger；精准长读长组装/全基因组甲基化/全长转录组 → PacBio HiFi；超长读长/着丝粒组装/现场快速检测/RNA 直接修饰检测 → Nanopore。<strong>现代基因组学中，三者常协同使用</strong>：Nanopore 超长读长构建骨架，PacBio HiFi 精修准确率，Sanger 验证关键位点。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /nano accordion -->
+
+<div class="footer">DNA SEQUENCING TECHNOLOGIES · SANGER · PACBIO · NANOPORE · COMPARISON GUIDE</div>
 
 <script>
 function toggle(id) {
