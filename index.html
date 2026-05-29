@@ -11511,7 +11511,9 @@ function addSlideToShow(imgSrc, altText) {
 }
 
 // 页面加载时从 Supabase 读取已批准的管理员上传照片
+// 【暂时失活：风景线照片显示已标注停用】
 async function loadApprovedAdminPhotos() {
+  return; // 风景线照片显示已停用
   var supabase = window._supabaseClient;
   if (!supabase) return;
 
