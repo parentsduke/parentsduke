@@ -1100,6 +1100,30 @@
     };
   }
 
+  // ── 批准通知管理员 ──
+  async function notifyAdmin(studentName, targetEmail, adminName) {
+    try {
+      const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+        body: JSON.stringify({
+          email:      'weihong_j@yahoo.com',
+          studentName:'管理员',
+          link:       'https://dukeparents.org',
+          subject:    `✅ 已批准：${studentName}`,
+          replyTo:    'parentsduke@gmail.com',
+          bodyLine1:  `${studentName} 已批准入群。`,
+          bodyLine2:  `批准人：${adminName} | 发送到：${targetEmail} | 时间：${now}（美东）`,
+          noButton:   true,
+        }),
+      });
+      if (!res.ok) { const e2 = await res.text(); throw new Error(e2); }
+    } catch(e) {
+      console.error('[通知管理员失败]', e.message);
+    }
+  }
+
   // ── 批准 Modal 状态 ──
   let _approveArgs = null;
 
@@ -1150,6 +1174,7 @@
         if (actionCell) {
           actionCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
         }
+        await notifyAdmin(studentName, '（无邮箱）', adminName);
         alert('✅ 已标记为批准');
       } catch(e) {
         alert('❌ 操作失败：' + e.message);
@@ -1203,6 +1228,7 @@
         </div>`;
       }
 
+      await notifyAdmin(studentName, email, adminName);
       alert(`✅ 已发送入群链接到 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
