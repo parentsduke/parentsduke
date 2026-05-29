@@ -1,0 +1,28 @@
+name: Supabase 数据备份
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # 每天北京时间20:00（UTC 12:00）
+  workflow_dispatch:
+
+jobs:
+  backup-supabase:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 签出代码
+        uses: actions/checkout@v4
+
+      - name: 备份 Supabase 数据
+        env:
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 .github/scripts/backup_supabase.py
+
+      - name: 提交备份
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backup/latest/
+          git diff --staged --quiet || git commit -m "🗄️ Supabase 数据备份 $(date +'%Y-%m-%d')"
+          git pull --rebase origin main
+          git push
