@@ -594,6 +594,7 @@
           <th>Committed Letter</th>
           <th>操作</th>
           <th style="min-width:72px;">取消批准</th>
+          <th style="min-width:72px;">催信</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -826,6 +827,32 @@
     if (rec) rec.admin_notes = val || null;
   }
 
+  // ── 催交材料邮件 ──
+  async function sendReminder(recordId, email, studentName) {
+    if (!confirm(`向 ${studentName}（${email}）发送催交材料邮件？`)) return;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-multi`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ email, studentName, type: 'reminder', id: recordId }),
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+      await db.rpc('append_approval_log', {
+        record_id: recordId,
+        entry: { action: 'reminder_sent', by: adminName, at: new Date().toISOString() }
+      });
+      alert(`✅ 催信已发送至 ${email}`);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
+
   function personCell(recordId, person, records) {
     const col = personCol[person];
     const rec = records.find(r => r.id === recordId);
@@ -976,6 +1003,17 @@
                 取消批准
               </button>`
             : `<span style="color:var(--muted);font-size:12px;">—</span>`
+          }
+        </td>
+        <td style="text-align:center;padding:8px 6px;">
+          ${r.submitter_email
+            ? `<button onclick="sendReminder('${r.id}','${r.submitter_email}','${r.student_name_cn||r.student_name_en||''}')"
+                style="padding:5px 10px;background:#fff;color:#b45309;border:1.5px solid #b45309;border-radius:6px;
+                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#fff8e6'" onmouseout="this.style.background='#fff'">
+                催信
+              </button>`
+            : `<span style="color:var(--muted);font-size:12px;">无邮箱</span>`
           }
         </td>
       </tr>`;

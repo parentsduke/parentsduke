@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>补充上传材料 · DukeParents</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:   #001a4d;
+      --blue:   #003087;
+      --gold:   #B8963E;
+      --gold-lt:#f5ecd4;
+      --bg:     #f5f3ef;
+      --card:   #ffffff;
+      --border: #e2ddd6;
+      --text:   #1a1a1a;
+      --muted:  #888070;
+      --red:    #C84B31;
+      --green:  #1a6b3c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); min-height: 100vh; }
+
+    header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; }
+    .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; }
+
+    .page-wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .state-screen {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .state-screen.active { display: block; }
+    .state-icon { font-size: 48px; margin-bottom: 16px; }
+    .state-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .state-sub { font-size: 14px; color: var(--muted); line-height: 1.8; }
+
+    .upload-card {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .upload-card.active { display: block; }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .card-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+    .student-info {
+      background: var(--gold-lt);
+      border: 1px solid rgba(184,150,62,0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #6b4c10;
+      line-height: 1.8;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 24px 0;
+    }
+
+    .upload-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .upload-label .optional {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 400;
+      margin-left: 6px;
+    }
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      background: #faf8f4;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--blue);
+      background: #f0f4fb;
+    }
+    .upload-zone.has-file {
+      border-color: var(--green);
+      background: #f0faf4;
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .upload-icon { font-size: 28px; margin-bottom: 6px; }
+    .upload-hint { font-size: 12px; color: var(--muted); }
+    .upload-hint strong { color: var(--blue); }
+
+    .file-preview {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: #eef2fa;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 8px;
+    }
+    .file-preview.show { display: flex; }
+    .file-preview .fname {
+      font-size: 12px;
+      color: var(--blue);
+      font-family: 'DM Mono', monospace;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-preview .rm {
+      background: none; border: none;
+      color: var(--red); cursor: pointer;
+      font-size: 16px; padding: 0 4px;
+    }
+
+    .upload-progress {
+      display: none;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--blue);
+      font-family: 'DM Mono', monospace;
+    }
+    .upload-progress.show { display: block; }
+    .progress-bar { height: 4px; background: #dde6f5; border-radius: 2px; margin-top: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--blue); border-radius: 2px; transition: width 0.3s; width: 0%; }
+
+    .upload-block { margin-bottom: 24px; }
+    .upload-block:last-of-type { margin-bottom: 0; }
+
+    .btn-submit {
+      width: 100%;
+      margin-top: 28px;
+      padding: 16px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover { background: var(--navy); }
+    .btn-submit:disabled { background: #aab4cc; cursor: not-allowed; }
+
+    .msg-error {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #fdecea;
+      color: var(--red);
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .msg-error.show { display: block; }
+
+    .hint-box {
+      background: var(--gold-lt);
+      border: 1px solid rgba(184,150,62,0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #7a5a10;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="hd">D</span>
+  <div>
+    <div class="ht">补充上传材料</div>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <!-- 加载中 -->
+  <div class="state-screen active" id="screenLoading">
+    <div class="state-icon">⏳</div>
+    <div class="state-title">加载中…</div>
+  </div>
+
+  <!-- 错误 -->
+  <div class="state-screen" id="screenError">
+    <div class="state-icon">❌</div>
+    <div class="state-title">链接无效</div>
+    <div class="state-sub" id="errorMsg">此链接已失效或记录不存在，请联系管理员重新发送。</div>
+  </div>
+
+  <!-- 上传成功 -->
+  <div class="state-screen" id="screenSuccess">
+    <div class="state-icon">🎉</div>
+    <div class="state-title">上传成功！</div>
+    <div class="state-sub">感谢补充上传材料！<br/>管理员审核后将发送入群链接到您的邮箱，请耐心等待。</div>
+  </div>
+
+  <!-- 上传表单 -->
+  <div class="upload-card" id="uploadCard">
+    <div class="card-title">补充上传材料</div>
+    <div class="card-sub">请上传以下材料以完成审核，至少上传其中一项。</div>
+
+    <div class="student-info" id="studentInfo">加载中…</div>
+
+    <div class="hint-box">
+      📎 <strong>至少上传一项</strong>：Committed Letter 或录取通知书均可
+    </div>
+
+    <!-- Committed Letter -->
+    <div class="upload-block" id="blockCL">
+      <label class="upload-label">
+        Committed Letter
+        <span class="optional">（可选，至少上传一项）</span>
+      </label>
+      <div class="upload-zone" id="zoneCL"
+           ondragover="handleDrag(event,'CL')" ondragleave="handleDragLeave('CL')" ondrop="handleDrop(event,'CL')">
+        <input type="file" id="fileCL" accept="image/*,.pdf" onchange="handleFile(event,'CL')"/>
+        <div class="upload-icon">📄</div>
+        <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+      </div>
+      <div class="file-preview" id="previewCL">
+        <span class="fname" id="nameCL"></span>
+        <button class="rm" onclick="removeFile('CL')">✕</button>
+      </div>
+      <div class="upload-progress" id="progressCL">
+        <span id="progressLabelCL">上传中…</span>
+        <div class="progress-bar"><div class="progress-fill" id="fillCL"></div></div>
+      </div>
+    </div>
+
+    <hr class="section-divider"/>
+
+    <!-- 录取通知书 -->
+    <div class="upload-block" id="blockLetter">
+      <label class="upload-label">
+        录取通知书
+        <span class="optional">（可选，至少上传一项）</span>
+      </label>
+      <div class="upload-zone" id="zoneLetter"
+           ondragover="handleDrag(event,'Letter')" ondragleave="handleDragLeave('Letter')" ondrop="handleDrop(event,'Letter')">
+        <input type="file" id="fileLetter" accept="image/*,.pdf" onchange="handleFile(event,'Letter')"/>
+        <div class="upload-icon">📜</div>
+        <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+      </div>
+      <div class="file-preview" id="previewLetter">
+        <span class="fname" id="nameLetter"></span>
+        <button class="rm" onclick="removeFile('Letter')">✕</button>
+      </div>
+      <div class="upload-progress" id="progressLetter">
+        <span id="progressLabelLetter">上传中…</span>
+        <div class="progress-bar"><div class="progress-fill" id="fillLetter"></div></div>
+      </div>
+    </div>
+
+    <div class="msg-error" id="msgError"></div>
+    <button class="btn-submit" id="submitBtn" onclick="doSubmit()">提 交</button>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL      = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  const BUCKET = 'admission-letters';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let recordId     = null;
+  let isGrad       = false;
+  let admissionType = '';
+
+  // 每个上传区的状态
+  const state = {
+    CL:     { file: null, path: null, status: null },  // status: null|uploading|done|error
+    Letter: { file: null, path: null, status: null },
+  };
+
+  // ── 初始化 ──
+  async function init() {
+    const params = new URLSearchParams(window.location.search);
+    recordId = params.get('id');
+
+    if (!recordId) {
+      showError('链接缺少记录 ID，请联系管理员重新发送。');
+      return;
+    }
+
+    try {
+      const { data, error } = await db
+        .from('admissions_submissionsMulti')
+        .select('id, student_name_cn, student_name_en, class_year, admission_type, committed_letter_path, grad_letter_path')
+        .eq('id', recordId)
+        .single();
+
+      if (error || !data) {
+        showError('记录不存在，请联系管理员重新发送链接。');
+        return;
+      }
+
+      admissionType = data.admission_type || '';
+      isGrad = ['grad_masters','grad_phd','硕士','博士'].includes(admissionType);
+
+      const name = data.student_name_cn || data.student_name_en || '同学';
+      const year = data.class_year ? `${data.class_year} 届` : '';
+      document.getElementById('studentInfo').innerHTML =
+        `学生姓名：<strong>${name}</strong>　届次：<strong>${year}</strong>　录取类型：<strong>${admissionType || '—'}</strong>`;
+
+      // 研究生：录取通知书字段换成 grad_letter_path，隐藏 Committed Letter 区
+      if (isGrad) {
+        document.getElementById('blockCL').style.display = 'none';
+        document.querySelector('#blockLetter .upload-label').innerHTML =
+          '录取通知书 <span style="color:var(--red)">*</span>';
+        document.querySelector('.hint-box').textContent = '📎 请上传录取通知书（Admission Letter）';
+      }
+
+      showScreen('uploadCard');
+
+    } catch(e) {
+      showError('加载失败，请稍后重试：' + e.message);
+    }
+  }
+
+  function showScreen(id) {
+    ['screenLoading','screenError','screenSuccess','uploadCard'].forEach(s => {
+      const el = document.getElementById(s);
+      if (el) { el.classList.remove('active'); }
+    });
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active');
+  }
+
+  function showError(msg) {
+    document.getElementById('errorMsg').textContent = msg;
+    showScreen('screenError');
+  }
+
+  // ── 文件处理 ──
+  function handleFile(e, key) {
+    const file = e.target.files?.[0];
+    if (file) setFile(file, key);
+  }
+  function handleDrag(e, key) {
+    e.preventDefault();
+    document.getElementById(`zone${key}`).classList.add('drag-over');
+  }
+  function handleDragLeave(key) {
+    document.getElementById(`zone${key}`).classList.remove('drag-over');
+  }
+  function handleDrop(e, key) {
+    e.preventDefault();
+    document.getElementById(`zone${key}`).classList.remove('drag-over');
+    const file = e.dataTransfer.files?.[0];
+    if (file) setFile(file, key);
+  }
+
+  function setFile(file, key) {
+    state[key].file   = file;
+    state[key].path   = null;
+    state[key].status = 'uploading';
+
+    document.getElementById(`name${key}`).textContent = file.name;
+    document.getElementById(`preview${key}`).classList.add('show');
+    document.getElementById(`zone${key}`).classList.add('has-file');
+    hideMsg();
+
+    const ext  = file.name.split('.').pop();
+    const path = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+    updateProgressUI(key, 'uploading', file.name);
+
+    db.storage.from(BUCKET).upload(path, file, { upsert: false }).then(({ error }) => {
+      if (error) {
+        state[key].status = 'error';
+        state[key].path   = null;
+        updateProgressUI(key, 'error', file.name);
+      } else {
+        state[key].status = 'done';
+        state[key].path   = path;
+        updateProgressUI(key, 'done', file.name);
+      }
+    });
+  }
+
+  function updateProgressUI(key, status, name) {
+    const prog  = document.getElementById(`progress${key}`);
+    const fill  = document.getElementById(`fill${key}`);
+    const label = document.getElementById(`progressLabel${key}`);
+    const fname = document.getElementById(`name${key}`);
+
+    if (status === 'uploading') {
+      prog.classList.add('show');
+      fill.style.width = '40%';
+      label.textContent = '上传中…';
+      fname.innerHTML = `${name} <span style="color:#b45309;font-size:11px;font-family:'DM Mono',monospace;">⏳ 上传中…</span>`;
+    } else if (status === 'done') {
+      fill.style.width = '100%';
+      label.textContent = '上传完成';
+      fname.innerHTML = `${name} <span style="color:#1a6b3c;font-size:11px;font-family:'DM Mono',monospace;">✅ 已上传</span>`;
+      setTimeout(() => prog.classList.remove('show'), 1500);
+    } else if (status === 'error') {
+      prog.classList.remove('show');
+      fname.innerHTML = `${name} <span style="color:#C84B31;font-size:11px;font-family:'DM Mono',monospace;">❌ 上传失败，提交时重试</span>`;
+    }
+  }
+
+  function removeFile(key) {
+    state[key].file   = null;
+    state[key].path   = null;
+    state[key].status = null;
+    document.getElementById(`file${key}`).value = '';
+    document.getElementById(`preview${key}`).classList.remove('show');
+    document.getElementById(`progress${key}`).classList.remove('show');
+    document.getElementById(`name${key}`).textContent = '';
+    document.getElementById(`zone${key}`).classList.remove('has-file');
+  }
+
+  function showMsg(msg) {
+    const el = document.getElementById('msgError');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function hideMsg() {
+    document.getElementById('msgError').classList.remove('show');
+  }
+
+  // ── 等待上传完成 ──
+  async function waitForUpload(key) {
+    if (state[key].status !== 'uploading') return;
+    await new Promise(resolve => {
+      const t = setInterval(() => {
+        if (state[key].status !== 'uploading') { clearInterval(t); resolve(); }
+      }, 300);
+      setTimeout(() => { clearInterval(t); resolve(); }, 30000);
+    });
+  }
+
+  // ── 重试上传 ──
+  async function retryUpload(key) {
+    if (state[key].path) return state[key].path;
+    if (!state[key].file) return null;
+    const ext  = state[key].file.name.split('.').pop();
+    const path = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error } = await db.storage.from(BUCKET).upload(path, state[key].file, { upsert: false });
+    if (error) throw new Error(`文件上传失败（${key}）：` + error.message);
+    return path;
+  }
+
+  // ── 提交 ──
+  async function doSubmit() {
+    hideMsg();
+
+    const hasCL     = !!state.CL.file;
+    const hasLetter = !!state.Letter.file;
+
+    if (isGrad && !hasLetter) { showMsg('请上传录取通知书'); return; }
+    if (!isGrad && !hasCL && !hasLetter) { showMsg('请至少上传一项材料'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '提交中…';
+
+    try {
+      // 等待后台上传
+      btn.textContent = '等待文件上传…';
+      if (hasCL)     await waitForUpload('CL');
+      if (hasLetter) await waitForUpload('Letter');
+
+      // 重试失败的
+      btn.textContent = '保存中…';
+      const clPath     = hasCL     ? (state.CL.path     || await retryUpload('CL'))     : null;
+      const letterPath = hasLetter ? (state.Letter.path || await retryUpload('Letter')) : null;
+
+      // 组装更新字段
+      const update = {};
+      if (isGrad) {
+        if (letterPath) update.grad_letter_path = letterPath;
+      } else {
+        if (clPath)     update.committed_letter_path = clPath;
+        if (letterPath) update.committed_letter_path = letterPath; // 本科录取通知书也存这里
+      }
+
+      const { error: updErr } = await db
+        .from('admissions_submissionsMulti')
+        .update(update)
+        .eq('id', recordId);
+
+      if (updErr) throw new Error('保存失败：' + updErr.message);
+
+      showScreen('screenSuccess');
+
+    } catch(e) {
+      showMsg('❌ ' + e.message);
+      btn.disabled = false;
+      btn.textContent = '提 交';
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
