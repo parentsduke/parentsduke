@@ -404,6 +404,7 @@
           <th onclick="sortBy('college')">学院</th>
           <th onclick="sortBy('major')">专业</th>
           <th>备注</th>
+          <th>管理员备注</th>
           <th onclick="sortBy('submitter_name')">提交者</th>
           <th onclick="sortBy('submitter_contact')">微信号</th>
           <th>邮箱</th>
@@ -843,18 +844,27 @@
         /></td>
         <td>${committedTag}</td>
         <td style="white-space:nowrap;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${date}</td>
-        <td>${editInput(r.id, 'student_name_cn', r.student_name_cn, '中文姓名', 'font-weight:600;')}</td>
-        <td>${editInput(r.id, 'student_name_en', r.student_name_en, '英文姓名')}</td>
-        <td>${editInput(r.id, 'high_school', r.high_school, '高中学校')}</td>
-        <td>${editInput(r.id, 'location', r.location, '地区', '', 80)}</td>
-        <td>${editSelect(r.id, 'admission_type', r.admission_type, [['','—'],['ED','ED'],['RD','RD']])}</td>
-        <td>${editSelect(r.id, 'class_year', r.class_year, [['','—'],['2028','2028'],['2029','2029'],['2030','2030'],['2031','2031'],['2032','2032']], 'font-family:\'DM Mono\',monospace;')}</td>
-        <td>${editInput(r.id, 'college', r.college, '学院', 'font-size:12px;', 100)}</td>
-        <td>${editInput(r.id, 'major', r.major, '专业', 'font-size:12px;', 100)}</td>
-        <td>${editInput(r.id, 'notes', r.notes, '备注', 'font-size:12px;', 120)}</td>
-        <td>${editInput(r.id, 'submitter_name', r.submitter_name, '提交者')}</td>
-        <td>${editInput(r.id, 'submitter_contact', r.submitter_contact, '微信号', 'font-family:\'DM Mono\',monospace;font-size:12px;')}</td>
-        <td>${editInput(r.id, 'submitter_email', r.submitter_email, '邮箱', 'font-family:\'DM Mono\',monospace;font-size:12px;', 160)}</td>
+        <td>${r.student_name_cn ? `<span style=\"font-weight:600;font-size:13px;\">${r.student_name_cn}</span>` : '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td>${r.student_name_en || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td>${r.high_school || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td>${r.location || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td>${r.admission_type ? `<span class=\"tag tag-${r.admission_type.toLowerCase()}\">${r.admission_type}</span>` : '—'}</td>
+        <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.class_year || '—'}</span></td>
+        <td>${r.college || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td>${r.major || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td style="font-size:12px;color:var(--muted);max-width:140px;word-break:break-all;">${r.notes || '—'}</td>
+        <td><input
+          type="text"
+          value="${r.admin_notes || ''}"
+          placeholder="管理员备注"
+          onblur="saveField('${r.id}', 'admin_notes', this.value, this)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          style="width:120px;font-size:13px;border:1px solid #ddd;border-radius:4px;padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
+          onfocus="this.style.borderColor='#0736a4'"
+        /></td>
+        <td>${r.submitter_name || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_contact || '—'}</span></td>
+        <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_email || '—'}</span></td>
         <td>${letterCell}</td>
         <td>${clCell}</td>
         <td style="white-space:nowrap;text-align:center;">
