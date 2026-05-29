@@ -10832,7 +10832,7 @@ async function loadAlbumPhotosToSlideshow() {
   var loadingSlide = document.getElementById("albumLoadingSlide");
   try {
     var resp = await fetch(
-      "https://api.github.com/repos/parentsduke/parentsduke/contents/images",
+      "https://api.github.com/repos/parentsduke/album/contents/",
       { headers: { "Accept": "application/vnd.github.v3+json" } }
     );
     var files = await resp.json();
@@ -10843,7 +10843,7 @@ async function loadAlbumPhotosToSlideshow() {
     if (loadingSlide) loadingSlide.remove();
     if (!imgs.length) throw new Error("no images");
     imgs.forEach(function(f, idx) {
-      var imgUrl = "https://raw.githubusercontent.com/parentsduke/parentsduke/main/images/" + f.name;
+      var imgUrl = "https://raw.githubusercontent.com/parentsduke/album/main/" + f.name;
       var div = document.createElement("div");
       div.className = "slide" + (idx === 0 ? " active" : "");
       div.setAttribute("data-dynamic", "1");
