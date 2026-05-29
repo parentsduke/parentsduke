@@ -315,8 +315,7 @@ function toggleBannerMusic() {
     max-height: 85vh !important;
   }
   .login-hero {
-    background-size: contain !important;
-    background-color: #001a3a;
+    background-size: cover !important;
     min-height: 480px !important;
   }
 }
@@ -12916,13 +12915,11 @@ window.showPV();
     var dw = document.getElementById("duke-weekly");
     if (dw) dw.style.display = "none";
     document.getElementById("protected-area").innerHTML = `
-      <div style="text-align:center;margin-top:0;padding:0;background-image:url(https://dukeparents.org/chapel.jpg);background-size:cover;background-position:center top;background-repeat:no-repeat;position:relative;min-height:320px;display:flex;align-items:flex-end;justify-content:center;" class="login-hero">
+      <div style="text-align:center;margin-top:0;padding:0;position:relative;" class="login-hero">
+      <img src="https://dukeparents.org/chapel.jpg" style="width:100%;display:block;" alt="Duke Chapel">
       <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0) 40%, rgba(255,255,255,0.85) 100%);"></div>
-      <div style="position:relative;z-index:1;width:100%;padding:20px 20px 32px 20px;">
-    <!--    <h2 style="font-family: SIMLI, serif;">扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群社区</h2>-->
-       <!-- <h4 style="margin:16px 0 24px;color:#555;">请登录后查看内容</h4> -->
-        <a href="login.html" style="display:inline-block;margin-top:32px;background:transparent;color:#001F5B;border:none;text-decoration:none;font-size:16px;letter-spacing:2px;font-weight:500;opacity:0.8;" ">登录</a>
-        <!-- <a href="register.html" style="display:inline-block;padding:12px 32px;background:#c9a84c;color:#003366;border-radius:8px;text-decoration:none;font-size:16px;font-weight:600;">注册</a> -->
+      <div style="position:absolute;bottom:0;width:100%;padding:20px 20px 32px 20px;z-index:1;">
+        <a href="login.html" style="display:inline-block;background:transparent;color:#001F5B;border:none;text-decoration:none;font-size:16px;letter-spacing:2px;font-weight:500;opacity:0.8;">登录</a>
       </div>
       </div>
     `;
