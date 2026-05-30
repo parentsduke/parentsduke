@@ -876,6 +876,94 @@
 
   let _inputArgs = null;
 
+  function closeActionModal() {
+    document.getElementById('actionModal').style.display = 'none';
+    document.getElementById('actionAdminSelect').value = '';
+    document.getElementById('actionConfirmBtn').disabled = true;
+    _actionArgs = null;
+    _inputArgs = null;
+  }
+
+  async function confirmAction() {
+    const adminName = document.getElementById('actionAdminSelect').value;
+    if (!adminName) return;
+
+    // Handle input saves (nickname / admin_notes)
+    if (_inputArgs) {
+      const { type, recordId, val } = _inputArgs;
+      _inputArgs = null;
+      document.getElementById('actionModal').style.display = 'none';
+      document.getElementById('actionAdminSelect').value = '';
+      document.getElementById('actionConfirmBtn').disabled = true;
+      if (type === 'nickname') await saveNickname(recordId, val, adminName);
+      else if (type === 'admin_notes') await saveAdminNotes(recordId, val, adminName);
+      return;
+    }
+
+    // Handle action buttons (shelve/unshelve/reject)
+    if (!_actionArgs) return;
+    const { type, recordId, studentName } = _actionArgs;
+    closeActionModal();
+    try {
+      const now = new Date().toISOString();
+      const rec = allRecords.find(r => r.id === recordId);
+      const sName = studentName;
+
+      if (type === 'shelve') {
+        await db.from('admissions_submissionsMulti').update({ shelved_at: now }).eq('id', recordId);
+        await db.rpc('append_approval_log', { record_id: recordId, entry: { action: 'shelved', by: adminName, at: now } });
+        if (rec) { rec.shelved_at = now; rec.approval_log = rec.approval_log || []; rec.approval_log.push({ action: 'shelved', by: adminName, at: now }); }
+        const shelvedLog = (rec?.approval_log||[]).filter(e=>e.action==='shelved');
+        const cell = document.querySelector(`#row-${recordId} .action-op-cell`);
+        if (cell) cell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
+          <button onclick="openActionModal('unshelve','${recordId}','${sName}')"
+            style="padding:4px 10px;background:#fff;color:#b45309;border:1.5px solid #b45309;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#fff3e0'" onmouseout="this.style.background='#fff'">取消搁置</button>
+          ${shelvedLog.length ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">搁(${shelvedLog.length}):${shelvedLog.map(e=>e.by).join(' ')}</span>` : ''}
+        </div>`;
+        const approveCell = document.getElementById(`cell-approve-${recordId}`);
+        if (approveCell) approveCell.innerHTML = '';
+
+      } else if (type === 'unshelve') {
+        await db.from('admissions_submissionsMulti').update({ shelved_at: null }).eq('id', recordId);
+        await db.rpc('append_approval_log', { record_id: recordId, entry: { action: 'unshelved', by: adminName, at: now } });
+        if (rec) { rec.shelved_at = null; rec.approval_log = rec.approval_log || []; rec.approval_log.push({ action: 'unshelved', by: adminName, at: now }); }
+        const cell = document.querySelector(`#row-${recordId} .action-op-cell`);
+        if (cell) cell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <button onclick="openActionModal('reject','${recordId}','${sName}')"
+            style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">拒绝</button>
+          <button onclick="openActionModal('shelve','${recordId}','${sName}')"
+            style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">搁置</button>
+        </div>`;
+        const approveCell = document.getElementById(`cell-approve-${recordId}`);
+        if (approveCell && rec && !rec.approved_at) {
+          approveCell.innerHTML = `<button onclick="approveRecord('${recordId}','${rec.submitter_email||''}','${sName}','${rec.class_year||''}','${rec.admission_type||''}','${(rec.college||'').replace(/'/g,"\'")}')"
+            style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">批准入群</button>`;
+        }
+
+      } else if (type === 'reject') {
+        await db.from('admissions_submissionsMulti').update({ rejected_at: now }).eq('id', recordId);
+        await db.rpc('append_approval_log', { record_id: recordId, entry: { action: 'rejected', by: adminName, at: now } });
+        if (rec) { rec.rejected_at = now; rec.approval_log = rec.approval_log || []; rec.approval_log.push({ action: 'rejected', by: adminName, at: now }); }
+        const rejectedLog = (rec?.approval_log||[]).filter(e=>e.action==='rejected');
+        const cell = document.querySelector(`#row-${recordId} .action-op-cell`);
+        if (cell) cell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+          <span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>
+          ${rejectedLog.length ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">拒:${rejectedLog.map(e=>e.by).join(' ')}</span>` : ''}
+        </div>`;
+        const approveCell = document.getElementById(`cell-approve-${recordId}`);
+        if (approveCell) approveCell.innerHTML = '';
+      }
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+
   function pendingNickname(recordId, val, inputEl) {
     _inputArgs = { type: 'nickname', recordId, val, inputEl };
     document.getElementById('actionModalTitle').textContent = '修改微信昵称';
