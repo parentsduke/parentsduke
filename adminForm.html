@@ -392,6 +392,7 @@
           <th class="person-th">金</th>
           <th class="person-th">伟</th>
           <th onclick="sortBy('qr_code_no')" style="min-width:60px;">入群码</th>
+          <th>管理员备注</th>
           <th onclick="sortBy('wx_nickname')">微信昵称</th>
           <th onclick="sortBy('committed')">Committed</th>
           <th onclick="sortBy('created_at')">提交时间</th>
@@ -404,7 +405,6 @@
           <th onclick="sortBy('college')">学院</th>
           <th onclick="sortBy('major')">专业</th>
           <th>备注</th>
-          <th>管理员备注</th>
           <th onclick="sortBy('submitter_name')">提交者</th>
           <th onclick="sortBy('submitter_contact')">微信号</th>
           <th>邮箱</th>
@@ -834,6 +834,15 @@
         </td>
         <td><input
           type="text"
+          value="${r.admin_notes || ''}"
+          placeholder="管理员备注"
+          onblur="saveField('${r.id}', 'admin_notes', this.value, this)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          style="width:120px;font-size:13px;border:1px solid #ddd;border-radius:4px;padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
+          onfocus="this.style.borderColor='#0736a4'"
+        /></td>
+        <td><input
+          type="text"
           value="${r.wx_nickname || ''}"
           placeholder="输入昵称"
           onblur="saveNickname('${r.id}', this.value)"
@@ -853,15 +862,6 @@
         <td>${r.college || '<span style=\"color:var(--muted)\">—</span>'}</td>
         <td>${r.major || '<span style=\"color:var(--muted)\">—</span>'}</td>
         <td style="font-size:12px;color:var(--muted);max-width:140px;word-break:break-all;">${r.notes || '—'}</td>
-        <td><input
-          type="text"
-          value="${r.admin_notes || ''}"
-          placeholder="管理员备注"
-          onblur="saveField('${r.id}', 'admin_notes', this.value, this)"
-          onkeydown="if(event.key==='Enter')this.blur()"
-          style="width:120px;font-size:13px;border:1px solid #ddd;border-radius:4px;padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
-          onfocus="this.style.borderColor='#0736a4'"
-        /></td>
         <td>${r.submitter_name || '<span style=\"color:var(--muted)\">—</span>'}</td>
         <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_contact || '—'}</span></td>
         <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_email || '—'}</span></td>
