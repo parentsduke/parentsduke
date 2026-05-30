@@ -1153,8 +1153,8 @@
         <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:${r.qr_code_no ? '#003087' : 'var(--muted)'};">
           ${r.qr_code_no ? String.fromCharCode(65 + (Number(r.qr_code_no) - 1) % 10) : '—'}
         </td>
-        <td style="max-width:200px;min-width:140px;">
-          <div id="notes-log-${r.id}" style="font-size:11px;line-height:1.6;margin-bottom:4px;">
+        <td style="max-width:240px;min-width:160px;">
+          <div id="notes-log-${r.id}" style="font-size:11px;line-height:1.6;margin-bottom:4px;word-break:break-all;white-space:normal;">
             ${(()=>{
               const logNotes = (r.approval_log||[]).filter(e=>e.action==='admin_notes_set' && e.val);
               // Show old admin_notes field if no log entries yet
