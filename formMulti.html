@@ -304,13 +304,6 @@
     .btn-again:hover { background: var(--navy); }
 
     /* ── 二维码区 ── */
-    #qrSection {
-      display: none;
-      opacity: 0;
-      animation: fadeUp 0.6s ease forwards;
-      padding-bottom: 40px;
-    }
-    #qrSection.show { display: block; opacity: 1; }
 
     /* ── 注意事项 ── */
     .notice {
@@ -381,10 +374,6 @@
     </div>
     <button class="btn-again" onclick="resetForm()">再提交一条</button>
   </div>
-
-  <!-- 二维码区 -->
-  <div id="qrSection">
-    <div class="success-icon">🎉</div>
     <div class="success-title">提交成功！感谢分享</div>
     <div class="success-sub">你提交的录取信息已收到，将由管理员核对后收录。</div>
 
@@ -1117,13 +1106,7 @@ try {
 
       document.getElementById('formArea').style.display = 'none';
       document.getElementById('pendingScreen').style.display = 'block';
-      document.getElementById('qrSection').classList.add('show');
-      const qrNo = await fetchAndRotateQR();
-      if (qrNo) {
-        await db.from('admissions_submissionsMulti')
-          .update({ qr_code_no: qrNo })
-          .eq('id', insertedId);
-      }
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch(e) {
@@ -1133,60 +1116,6 @@ try {
     }
   }
 
-  // ── QR Code rotation ──
-  async function fetchAndRotateQR() {
-    try {
-      const { data, error } = await db
-        .from('qr_codes')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true })
-        .limit(1)
-        .single();
-
-      if (error || !data) {
-        console.warn('No active QR found, using default');
-        return null;
-      }
-
-      const imgEl   = document.getElementById('dynamicQR');
-      const labelEl = document.getElementById('dynamicQRLabel');
-      if (imgEl)   imgEl.src          = data.image_url;
-      if (labelEl) labelEl.textContent = data.label || 'Duke 家长入群驿站';
-
-      await db.from('qr_codes')
-        .update({ is_active: false, used_at: new Date().toISOString() })
-        .eq('id', data.id);
-
-      const { data: nextQR } = await db
-        .from('qr_codes')
-        .select('id')
-        .eq('is_active', false)
-        .is('used_at', null)
-        .order('sort_order', { ascending: true })
-        .limit(1)
-        .single();
-
-      if (nextQR) {
-        await db.from('qr_codes')
-          .update({ is_active: true })
-          .eq('id', nextQR.id);
-      } else {
-        await db.from('qr_codes')
-          .update({ is_active: false, used_at: null })
-          .neq('id', 0);
-        await db.from('qr_codes')
-          .update({ is_active: true })
-          .eq('sort_order', 1);
-      }
-
-      return data.sort_order;
-
-    } catch(e) {
-      console.warn('QR rotation error:', e.message);
-      return null;
-    }
-  }
 
   function showError(msg) {
     const el = document.getElementById('formError');
@@ -1271,7 +1200,6 @@ try {
     document.getElementById('formError').className = 'msg';
     document.getElementById('submitBtn').disabled = false;
     document.getElementById('submitBtn').textContent = '提 交';
-    document.getElementById('qrSection').classList.remove('show');
     document.getElementById('pendingScreen').style.display = 'none';
     document.getElementById('formArea').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
