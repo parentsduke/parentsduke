@@ -413,6 +413,54 @@
 <body>
 
 <!-- 重新发送管理员选择 Modal -->
+
+
+<!-- 操作管理员选择 Modal (搁置/取消搁置/拒绝) -->
+<div id="actionModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;align-items:center;justify-content:center;">
+  <div class="modal-box">
+    <div class="modal-title" id="actionModalTitle">操作确认</div>
+    <div class="modal-sub" id="actionModalSubText"></div>
+    <div class="modal-label">操作管理员</div>
+    <select id="actionAdminSelect" onchange="document.getElementById('actionConfirmBtn').disabled=!this.value">
+      <option value="">— 请选择 —</option>
+      <option value="笑">笑</option>
+      <option value="奕">奕</option>
+      <option value="伟">伟</option>
+      <option value="VON">VON</option>
+      <option value="静">静</option>
+      <option value="Sharon">Sharon</option>
+      <option value="Janet">Janet</option>
+    </select>
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" onclick="closeActionModal()">取消</button>
+      <button class="modal-btn-confirm" id="actionConfirmBtn" onclick="confirmAction()" disabled>确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- 催信管理员选择 Modal -->
+<div id="reminderModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;align-items:center;justify-content:center;">
+  <div class="modal-box">
+    <div class="modal-title">发送催信</div>
+    <div class="modal-sub" id="reminderModalSubText"></div>
+    <div class="modal-label">操作管理员</div>
+    <select id="reminderAdminSelect" onchange="document.getElementById('reminderConfirmBtn').disabled=!this.value">
+      <option value="">— 请选择 —</option>
+      <option value="笑">笑</option>
+      <option value="奕">奕</option>
+      <option value="伟">伟</option>
+      <option value="VON">VON</option>
+      <option value="静">静</option>
+      <option value="Sharon">Sharon</option>
+      <option value="Janet">Janet</option>
+    </select>
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" onclick="closeReminderModal()">取消</button>
+      <button class="modal-btn-confirm" id="reminderConfirmBtn" onclick="confirmReminder()" disabled>确认发送</button>
+    </div>
+  </div>
+</div>
+
 <div id="resendModal">
   <div class="modal-box">
     <div class="modal-title">重新发送入群链接</div>
@@ -804,6 +852,10 @@
     const update = {};
     update[col] = val || null;
     await db.from('admissions_submissionsMulti').update(update).eq('id', recordId);
+    await db.rpc('append_approval_log', {
+      record_id: recordId,
+      entry: { action: 'mark_' + person, by: document.getElementById('userEmail').textContent || 'admin', val: val || '', at: new Date().toISOString() }
+    });
     const rec = allRecords.find(r => r.id === recordId);
     if (rec) rec[col] = val || null;
   }
@@ -814,25 +866,88 @@
       committed_at: val === 'true' ? new Date().toISOString() : null
     };
     await db.from('admissions_submissionsMulti').update(update).eq('id', recordId);
+    await db.rpc('append_approval_log', {
+      record_id: recordId,
+      entry: { action: 'committed_' + val, by: document.getElementById('userEmail').textContent || 'admin', at: new Date().toISOString() }
+    });
     const rec = allRecords.find(r => r.id === recordId);
     if (rec) { rec.committed = update.committed; rec.committed_at = update.committed_at; }
   }
 
-  async function saveNickname(recordId, val) {
+  let _inputArgs = null;
+
+  function pendingNickname(recordId, val, inputEl) {
+    _inputArgs = { type: 'nickname', recordId, val, inputEl };
+    document.getElementById('actionModalTitle').textContent = '修改微信昵称';
+    document.getElementById('actionModalSubText').textContent = `新昵称：${val || '（清空）'}`;
+    document.getElementById('actionAdminSelect').value = '';
+    document.getElementById('actionConfirmBtn').disabled = true;
+    document.getElementById('actionModal').style.display = 'flex';
+  }
+
+  function pendingAdminNotes(recordId, val, inputEl) {
+    _inputArgs = { type: 'admin_notes', recordId, val, inputEl };
+    document.getElementById('actionModalTitle').textContent = '修改管理员备注';
+    document.getElementById('actionModalSubText').textContent = `内容：${val || '（清空）'}`;
+    document.getElementById('actionAdminSelect').value = '';
+    document.getElementById('actionConfirmBtn').disabled = true;
+    document.getElementById('actionModal').style.display = 'flex';
+  }
+
+  async function saveNickname(recordId, val, adminName) {
     await db.from('admissions_submissionsMulti').update({ wx_nickname: val || null }).eq('id', recordId);
+    await db.rpc('append_approval_log', {
+      record_id: recordId,
+      entry: { action: 'nickname_set', by: adminName, val: val || '', at: new Date().toISOString() }
+    });
     const rec = allRecords.find(r => r.id === recordId);
     if (rec) rec.wx_nickname = val || null;
   }
 
-  async function saveAdminNotes(recordId, val) {
-    await db.from('admissions_submissionsMulti').update({ admin_notes: val || null }).eq('id', recordId);
+  async function saveAdminNotes(recordId, val, adminName) {
+    const entry = { action: 'admin_notes_set', by: adminName, val: val, at: new Date().toISOString() };
+    await db.rpc('append_approval_log', { record_id: recordId, entry });
     const rec = allRecords.find(r => r.id === recordId);
-    if (rec) rec.admin_notes = val || null;
+    if (rec) {
+      rec.approval_log = rec.approval_log || [];
+      rec.approval_log.push(entry);
+    }
+    // Update DOM log display
+    const logDiv = document.getElementById(`notes-log-${recordId}`);
+    if (logDiv) {
+      const notes = (rec?.approval_log||[]).filter(e=>e.action==='admin_notes_set' && e.val);
+      logDiv.innerHTML = notes.map(e=>`<div style="color:#444;"><span style="color:#003087;font-weight:600;">${e.by}:</span> ${e.val}</div>`).join('');
+    }
+    // Clear input
+    const input = logDiv?.nextElementSibling;
+    if (input) input.value = '';
   }
 
   // ── 催交材料邮件 ──
-  async function sendReminder(recordId, email, studentName) {
-    if (!confirm(`向 ${studentName}（${email}）发送催交材料邮件？`)) return;
+  let _reminderArgs = null;
+
+  function sendReminder(recordId, email, studentName) {
+    if (!email) { alert('该记录没有邮箱，无法发送催信'); return; }
+    _reminderArgs = { recordId, email, studentName };
+    document.getElementById('reminderModalSubText').innerText = `学生：${studentName}\n将发送到：${email}`;
+    document.getElementById('reminderAdminSelect').value = '';
+    document.getElementById('reminderConfirmBtn').disabled = true;
+    document.getElementById('reminderModal').style.display = 'flex';
+  }
+
+  function closeReminderModal() {
+    document.getElementById('reminderModal').style.display = 'none';
+    document.getElementById('reminderAdminSelect').value = '';
+    document.getElementById('reminderConfirmBtn').disabled = true;
+    _reminderArgs = null;
+  }
+
+  async function confirmReminder() {
+    const adminName = document.getElementById('reminderAdminSelect').value;
+    if (!adminName) { alert('请先选择操作管理员'); return; }
+    const { recordId, email, studentName } = _reminderArgs || {};
+    if (!recordId) return;
+    closeReminderModal();
     try {
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-multi`, {
         method: 'POST',
@@ -848,8 +963,27 @@
       }
       await db.rpc('append_approval_log', {
         record_id: recordId,
-        entry: { action: 'reminder_sent', by: document.getElementById('userEmail').textContent || 'admin', at: new Date().toISOString() }
+        entry: { action: 'reminder_sent', by: adminName, at: new Date().toISOString() }
       });
+      // Update button area to show who sent
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) {
+        rec.approval_log = rec.approval_log || [];
+        rec.approval_log.push({ action: 'reminder_sent', by: adminName, at: new Date().toISOString() });
+        const reminders = rec.approval_log.filter(e => e.action === 'reminder_sent');
+        const cell = document.querySelector(`#row-${recordId} td:last-child`);
+        if (cell) {
+          cell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+            <button onclick="sendReminder('${recordId}','${email}','${studentName}')"
+              style="padding:5px 10px;background:#003087;color:#fff;border:none;border-radius:6px;
+                     font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+              onmouseover="this.style.background='#0044b3'" onmouseout="this.style.background='#003087'">
+              催信
+            </button>
+            <span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">催(${reminders.length}):${reminders.map(e=>e.by).join(' ')}</span>
+          </div>`;
+        }
+      }
       alert(`✅ 催信已发送至 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
@@ -931,19 +1065,28 @@
         <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:${r.qr_code_no ? '#003087' : 'var(--muted)'};">
           ${r.qr_code_no ? String.fromCharCode(65 + (Number(r.qr_code_no) - 1) % 10) : '—'}
         </td>
-        <td style="max-width:180px;">
-          <textarea
-            rows="2"
-            style="width:100%;font-size:12px;padding:4px 6px;border:1px solid #ddd;border-radius:5px;resize:vertical;font-family:inherit;"
-            placeholder="管理员备注…"
-            onblur="saveAdminNotes(${r.id}, this.value)"
-          >${r.admin_notes || ''}</textarea>
+        <td style="max-width:200px;min-width:140px;">
+          <div id="notes-log-${r.id}" style="font-size:11px;line-height:1.6;margin-bottom:4px;">
+            ${(()=>{
+              const notes = (r.approval_log||[]).filter(e=>e.action==='admin_notes_set' && e.val);
+              return notes.length
+                ? notes.map(e=>`<div style="color:#444;"><span style="color:#003087;font-weight:600;">${e.by}:</span> ${e.val}</div>`).join('')
+                : '';
+            })()}
+          </div>
+          <input
+            type="text"
+            placeholder="添加备注…"
+            onkeydown="if(event.key==='Enter')this.blur()"
+            onblur="if(this.value.trim())pendingAdminNotes('${r.id}', this.value.trim(), this)"
+            style="width:100%;font-size:12px;padding:3px 6px;border:1px solid #ddd;border-radius:4px;font-family:inherit;box-sizing:border-box;"
+          />
         </td>
         <td><input
           type="text"
           value="${r.wx_nickname || ''}"
           placeholder="输入昵称"
-          onblur="saveNickname('${r.id}', this.value)"
+          onblur="pendingNickname('${r.id}', this.value, this)"
           onkeydown="if(event.key==='Enter')this.blur()"
           style="width:100px;font-size:13px;border:1px solid #ddd;border-radius:4px;
                  padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
@@ -966,36 +1109,32 @@
         <td>${dormCell}</td>
         <td>${letterCell}</td>
         <td>${clCell}</td>
-        <td style="white-space:nowrap;text-align:center;">
-          ${r.rejected_at
-            ? `<span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>`
-            : r.approved_at
-            ? `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`
-            : r.shelved_at
-            ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
-                <button onclick="unshelveRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:4px 10px;background:#fff;color:#b45309;border:1.5px solid #b45309;border-radius:5px;
-                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#fff3e0'" onmouseout="this.style.background='#fff'">
-                  取消搁置
-                </button>
-               </div>`
-            : `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                <button onclick="rejectRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;
-                         font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
-                  拒绝
-                </button>
-                <button onclick="shelveRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;
-                         font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">
-                  搁置
-                </button>
-               </div>`
-          }
+        <td class="action-op-cell" style="white-space:nowrap;text-align:center;">
+          ${(() => {
+            const sName = r.student_name_cn||r.student_name_en||'';
+            const shelvedLog = (r.approval_log||[]).filter(e=>e.action==='shelved');
+            const rejectedLog = (r.approval_log||[]).filter(e=>e.action==='rejected');
+            if (r.rejected_at) return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>
+              ${rejectedLog.length ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">拒:${rejectedLog.map(e=>e.by).join(' ')}</span>` : ''}
+            </div>`;
+            if (r.approved_at) return `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
+            if (r.shelved_at) return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
+              <button onclick="openActionModal('unshelve','${r.id}','${sName}')"
+                style="padding:4px 10px;background:#fff;color:#b45309;border:1.5px solid #b45309;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#fff3e0'" onmouseout="this.style.background='#fff'">取消搁置</button>
+              ${shelvedLog.length ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">搁(${shelvedLog.length}):${shelvedLog.map(e=>e.by).join(' ')}</span>` : ''}
+            </div>`;
+            return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <button onclick="openActionModal('reject','${r.id}','${sName}')"
+                style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">拒绝</button>
+              <button onclick="openActionModal('shelve','${r.id}','${sName}')"
+                style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">搁置</button>
+            </div>`;
+          })()}
         </td>
         <td id="cell-unapprove-${r.id}" style="text-align:center;padding:8px 6px;">
           ${r.approved_at && !r.rejected_at && !r.shelved_at
@@ -1010,12 +1149,15 @@
         </td>
         <td style="text-align:center;padding:8px 6px;">
           ${r.submitter_email
-            ? `<button onclick="sendReminder('${r.id}','${r.submitter_email}','${r.student_name_cn||r.student_name_en||''}')"
-                style="padding:5px 10px;background:#003087;color:#fff;border:none;border-radius:6px;
-                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                onmouseover="this.style.background='#0044b3'" onmouseout="this.style.background='#003087'">
-                催信
-              </button>`
+            ? `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <button onclick="sendReminder('${r.id}','${r.submitter_email}','${r.student_name_cn||r.student_name_en||''}')"
+                  style="padding:5px 10px;background:#003087;color:#fff;border:none;border-radius:6px;
+                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                  onmouseover="this.style.background='#0044b3'" onmouseout="this.style.background='#003087'">
+                  催信
+                </button>
+                ${(() => { const reminders = (r.approval_log||[]).filter(e=>e.action==='reminder_sent'); return reminders.length ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">催(${reminders.length}):${reminders.map(e=>e.by).join(' ')}</span>` : ''; })()}
+              </div>`
             : `<span style="color:var(--muted);font-size:12px;">无邮箱</span>`
           }
         </td>
@@ -1246,6 +1388,10 @@
       await db.from('admissions_submissionsMulti')
         .update({ shelved_at: now })
         .eq('id', recordId);
+      await db.rpc('append_approval_log', {
+        record_id: recordId,
+        entry: { action: 'shelved', by: document.getElementById('userEmail').textContent || 'admin', at: new Date().toISOString() }
+      });
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = now;
       const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
@@ -1274,6 +1420,10 @@
       await db.from('admissions_submissionsMulti')
         .update({ shelved_at: null })
         .eq('id', recordId);
+      await db.rpc('append_approval_log', {
+        record_id: recordId,
+        entry: { action: 'unshelved', by: document.getElementById('userEmail').textContent || 'admin', at: new Date().toISOString() }
+      });
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = null;
       const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
@@ -1334,26 +1484,7 @@
     }
   }
 
-  // ── 拒绝 ──
-  async function rejectRecord(recordId, studentName) {
-    if (!confirm(`确认拒绝 ${studentName} 入群？`)) return;
-    try {
-      const now = new Date().toISOString();
-      await db.from('admissions_submissionsMulti')
-        .update({ rejected_at: now })
-        .eq('id', recordId);
-      const rec = allRecords.find(r => r.id === recordId);
-      if (rec) rec.rejected_at = now;
-      const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
-      if (actionCell) {
-        actionCell.innerHTML = `<span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>`;
-      }
-      const approveCell = document.getElementById(`cell-approve-${recordId}`);
-      if (approveCell) approveCell.innerHTML = '';
-    } catch(e) {
-      alert('❌ 操作失败：' + e.message);
-    }
-  }
+  function rejectRecord(recordId, studentName) { openActionModal('reject', recordId, studentName); }
 
   // ── 重新发送入群链接 ──
   // ── 重新发送 Modal 状态 ──
