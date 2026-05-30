@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAV × nickCas9 — 基因编辑递送系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Sans+SC:wght@300;400;500&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --paper: #faf7f2;
+  --ink: #1a1610;
+  --muted: #7a7060;
+  --aav: #c0392b;
+  --nick: #1a6b8a;
+  --combo: #5b7a3a;
+  --accent: #d4840a;
+  --border: rgba(26,22,16,0.12);
+  --aav-bg: rgba(192,57,43,0.07);
+  --nick-bg: rgba(26,107,138,0.07);
+  --combo-bg: rgba(91,122,58,0.07);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+
+/* grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* ── HEADER ── */
+header {
+  position: relative;
+  padding: 64px 48px 48px;
+  border-bottom: 2px solid var(--ink);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 32px;
+}
+@media(max-width:640px){ header { grid-template-columns:1fr; padding:40px 24px 32px; } }
+
+.header-left {}
+.eyebrow {
+  font-family: 'Courier Prime', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -2px;
+}
+.h-aav { color: var(--aav); }
+.h-x { color: var(--muted); font-weight: 400; margin: 0 8px; }
+.h-nick { color: var(--nick); }
+.tagline {
+  margin-top: 20px;
+  font-size: 15px;
+  color: var(--muted);
+  max-width: 480px;
+  line-height: 1.6;
+}
+.header-stat {
+  text-align: right;
+}
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ── TABS ── */
+.nav {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  overflow-x: auto;
+}
+@media(max-width:640px){ .nav { padding: 0 16px; } }
+.nav-btn {
+  font-family: 'Courier Prime', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 16px 24px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.nav-btn:hover { color: var(--ink); }
+.nav-btn.active { color: var(--ink); border-bottom-color: var(--ink); }
+
+/* ── PANELS ── */
+.panel { display: none; max-width: 1080px; margin: 0 auto; padding: 52px 48px 80px; }
+@media(max-width:640px){ .panel { padding: 32px 20px 60px; } }
+.panel.active { display: block; animation: rise 0.4s ease; }
+@keyframes rise { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform:none; } }
+
+/* Section title */
+.sec-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 32px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sec-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── AAV PANEL ── */
+.aav-hero {
+  background: var(--aav-bg);
+  border: 1px solid rgba(192,57,43,0.2);
+  border-radius: 16px;
+  padding: 36px;
+  margin-bottom: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+@media(max-width:620px){ .aav-hero { grid-template-columns:1fr; } }
+
+/* SVG capsid diagram */
+.capsid-wrap { display: flex; justify-content: center; }
+.capsid-svg { width: 160px; height: 160px; }
+
+.aav-facts { }
+.aav-facts h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--aav);
+  margin-bottom: 16px;
+}
+.fact-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.fact-key {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--aav);
+  background: rgba(192,57,43,0.1);
+  padding: 2px 8px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.serotype-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.serotype-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: default;
+}
+.serotype-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+.s-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--aav);
+  margin-bottom: 8px;
+}
+.s-tissue {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.s-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+/* ── NICKCAS9 PANEL ── */
+.nick-hero {
+  background: var(--nick-bg);
+  border: 1px solid rgba(26,107,138,0.2);
+  border-radius: 16px;
+  padding: 36px;
+  margin-bottom: 40px;
+}
+.nick-hero h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--nick);
+  margin-bottom: 20px;
+}
+.domain-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.domain-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+.domain-card .d-name {
+  font-family: 'Courier Prime', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.d-active { color: var(--combo); }
+.d-inactive { color: var(--aav); text-decoration: line-through; opacity: 0.6; }
+.d-status {
+  font-size: 11px;
+  letter-spacing: 1px;
+  font-family: 'Courier Prime', monospace;
+  margin-bottom: 10px;
+}
+.d-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+/* nick variants */
+.variants-list { display: grid; gap: 12px; margin-bottom: 40px; }
+.variant-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 14px;
+}
+@media(max-width:560px){ .variant-row { grid-template-columns:1fr; } }
+.v-name { font-family: 'Courier Prime', monospace; font-weight: 700; color: var(--nick); }
+.v-cut { color: var(--muted); font-size: 13px; }
+.v-use { font-size: 13px; }
+
+/* ── COMBO PANEL ── */
+.challenge-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+@media(max-width:640px){ .challenge-grid { grid-template-columns:1fr; } }
+.challenge-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+.challenge-card h4 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ch-icon { font-size: 1.2rem; }
+.challenge-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* strategy timeline */
+.strategy-list { display: grid; gap: 20px; }
+.strategy-item {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.s-num {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--combo);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.s-body { padding-top: 8px; }
+.s-body h4 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: var(--combo);
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+.s-body p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.s-body .tag {
+  display: inline-block;
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-top: 8px;
+  background: var(--combo-bg);
+  color: var(--combo);
+}
+
+/* flow diagram */
+.flow {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px;
+  margin-bottom: 40px;
+  overflow-x: auto;
+}
+.flow h4 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  margin-bottom: 28px;
+  font-size: 1rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'Courier Prime', monospace;
+}
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 500px;
+}
+.flow-node {
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.4;
+  min-width: 100px;
+}
+.fn-aav { background: var(--aav-bg); border: 1px solid rgba(192,57,43,0.3); color: var(--aav); }
+.fn-nick { background: var(--nick-bg); border: 1px solid rgba(26,107,138,0.3); color: var(--nick); }
+.fn-cell { background: rgba(212,132,10,0.08); border: 1px solid rgba(212,132,10,0.3); color: var(--accent); }
+.fn-result { background: var(--combo-bg); border: 1px solid rgba(91,122,58,0.3); color: var(--combo); }
+.flow-arrow {
+  font-size: 18px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* comparison table */
+.comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 40px;
+}
+.comp-table th {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--ink);
+  text-align: left;
+  color: var(--muted);
+}
+.comp-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.5;
+  vertical-align: top;
+}
+.comp-table tr:hover td { background: rgba(0,0,0,0.02); }
+.prop-col { font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 1px; color: var(--accent); font-weight: 700; white-space: nowrap; }
+.good { color: var(--combo); }
+.bad { color: var(--aav); }
+.neutral { color: var(--muted); }
+
+/* ── QUIZ ── */
+.quiz-top { margin-bottom: 36px; }
+.quiz-top h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+.quiz-top p { color: var(--muted); font-size: 14px; }
+
+.prog { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 36px; overflow: hidden; }
+.prog-fill { height: 100%; background: var(--ink); border-radius: 2px; transition: width 0.4s; }
+
+.q-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 36px;
+  display: none;
+}
+.q-card.active { display: block; animation: rise 0.3s ease; }
+.q-label { font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-bottom: 16px; }
+.q-text { font-size: 17px; line-height: 1.6; margin-bottom: 28px; font-weight: 400; }
+
+.opts { display: grid; gap: 10px; }
+.opt {
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  color: var(--ink);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.opt::before {
+  content: attr(data-letter);
+  font-family: 'Courier Prime', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 6px;
+  flex-shrink: 0;
+}
+.opt:hover:not([disabled]) { border-color: var(--ink); background: var(--paper); }
+.opt.correct { border-color: var(--combo); background: var(--combo-bg); color: var(--combo); }
+.opt.correct::before { border-color: var(--combo); color: var(--combo); }
+.opt.wrong { border-color: var(--aav); background: var(--aav-bg); color: var(--aav); }
+.opt.wrong::before { border-color: var(--aav); color: var(--aav); }
+
+.expl {
+  display: none;
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: rgba(212,132,10,0.06);
+  border-left: 3px solid var(--accent);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+  border-radius: 0 8px 8px 0;
+}
+.expl.show { display: block; animation: rise 0.3s ease; }
+
+.q-nav { display: flex; justify-content: flex-end; margin-top: 24px; }
+.next-btn {
+  font-family: 'Courier Prime', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 28px;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: none;
+  transition: opacity 0.2s;
+}
+.next-btn:hover { opacity: 0.8; }
+.next-btn.show { display: block; }
+
+.score-box { display: none; text-align: center; padding: 64px 20px; animation: rise 0.5s ease; }
+.score-box.show { display: block; }
+.score-big { font-family: 'Syne', sans-serif; font-size: 6rem; font-weight: 800; color: var(--ink); line-height: 1; margin-bottom: 12px; }
+.score-sub { font-size: 16px; color: var(--muted); margin-bottom: 32px; }
+.retry {
+  font-family: 'Courier Prime', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 12px 32px;
+  border: 1px solid var(--ink);
+  background: none;
+  color: var(--ink);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.retry:hover { background: var(--ink); color: var(--bg); }
+
+footer {
+  padding: 32px 48px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-text { font-family: 'Courier Prime', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="eyebrow">基因编辑递送系统 · Gene Therapy Platform</div>
+    <h1>
+      <span class="h-aav">AAV</span><span class="h-x">×</span><span class="h-nick">nickCas9</span>
+    </h1>
+    <p class="tagline">腺相关病毒（AAV）作为递送载体，与 nickCas9 精准编辑工具的结合——新一代基因治疗的核心范式</p>
+  </div>
+  <div class="header-stat">
+    <div class="stat-num">&lt;5kb</div>
+    <div class="stat-label">AAV 有效装载上限</div>
+    <div class="stat-num" style="margin-top:20px">×1500</div>
+    <div class="stat-label">双 nick 脱靶降低倍数</div>
+  </div>
+</header>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="switchTab('aav')">AAV 病毒</button>
+  <button class="nav-btn" onclick="switchTab('nick')">nickCas9</button>
+  <button class="nav-btn" onclick="switchTab('combo')">联合递送</button>
+  <button class="nav-btn" onclick="switchTab('quiz')">测验</button>
+</nav>
+
+<!-- ═══ AAV PANEL ═══ -->
+<div id="panel-aav" class="panel active">
+
+  <div class="aav-hero">
+    <div class="capsid-wrap">
+      <!-- SVG capsid diagram -->
+      <svg class="capsid-svg" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- outer capsid -->
+        <circle cx="80" cy="80" r="68" stroke="#c0392b" stroke-width="2" stroke-dasharray="4 3" opacity="0.4"/>
+        <!-- icosahedral facets simplified -->
+        <polygon points="80,18 120,42 120,90 80,114 40,90 40,42" fill="rgba(192,57,43,0.08)" stroke="#c0392b" stroke-width="1.5"/>
+        <polygon points="80,18 120,42 80,50" fill="rgba(192,57,43,0.1)" stroke="#c0392b" stroke-width="1"/>
+        <polygon points="120,42 120,90 90,72" fill="rgba(192,57,43,0.06)" stroke="#c0392b" stroke-width="1"/>
+        <polygon points="80,114 40,90 70,72" fill="rgba(192,57,43,0.1)" stroke="#c0392b" stroke-width="1"/>
+        <polygon points="40,42 40,90 70,72" fill="rgba(192,57,43,0.06)" stroke="#c0392b" stroke-width="1"/>
+        <polygon points="80,50 90,72 70,72" fill="rgba(192,57,43,0.15)" stroke="#c0392b" stroke-width="1"/>
+        <!-- ssDNA inside -->
+        <path d="M68,62 Q75,55 80,64 Q85,73 92,66 Q87,72 80,80 Q73,88 68,80 Q75,74 80,82" stroke="#d4840a" stroke-width="1.5" fill="none" opacity="0.7"/>
+        <!-- label -->
+        <text x="80" y="140" text-anchor="middle" font-family="Courier Prime, monospace" font-size="9" fill="#c0392b" letter-spacing="2">CAPSID</text>
+        <text x="80" y="152" text-anchor="middle" font-family="Courier Prime, monospace" font-size="8" fill="#7a7060" letter-spacing="1">~25 nm</text>
+      </svg>
+    </div>
+    <div class="aav-facts">
+      <h3>腺相关病毒（AAV）</h3>
+      <div class="fact-row"><span class="fact-key">类型</span>细小病毒科，无包膜，单链 DNA 病毒</div>
+      <div class="fact-row"><span class="fact-key">大小</span>直径约 25 nm，衣壳由 60 个 VP1/VP2/VP3 亚基组成</div>
+      <div class="fact-row"><span class="fact-key">基因组</span>约 4.7 kb 单链 DNA，两端各含 ITR（反向末端重复序列）</div>
+      <div class="fact-row"><span class="fact-key">装载量</span>有效载荷上限约 4.7–5 kb（天然基因组被替换后）</div>
+      <div class="fact-row"><span class="fact-key">安全性</span>非致病性；重组 rAAV 不整合基因组（主要以附加体形式存在）</div>
+      <div class="fact-row"><span class="fact-key">免疫原性</span>低于腺病毒，但可引发抗体应答，影响重复给药</div>
+    </div>
+  </div>
+
+  <div class="sec-title">
+    <div class="sec-dot" style="background:var(--aav)"></div>
+    常用血清型与靶向组织
+  </div>
+
+  <div class="serotype-grid">
+    <div class="serotype-card">
+      <div class="s-name">AAV2</div>
+      <div class="s-tissue">RETINA · LIVER · CNS</div>
+      <div class="s-desc">最经典血清型，视网膜靶向优异。首个获批的基因治疗产品（Luxturna）所用载体。</div>
+    </div>
+    <div class="serotype-card">
+      <div class="s-name">AAV5</div>
+      <div class="s-tissue">CNS · LUNG · RETINA</div>
+      <div class="s-desc">中枢神经系统效率良好，用于亨廷顿病等 CNS 疾病研究；肺部转导效率较高。</div>
+    </div>
+    <div class="serotype-card">
+      <div class="s-name">AAV8</div>
+      <div class="s-tissue">LIVER · MUSCLE · HEART</div>
+      <div class="s-desc">肝脏靶向首选，用于血友病基因治疗（F8/F9）。心肌转导效率亦佳。</div>
+    </div>
+    <div class="serotype-card">
+      <div class="s-name">AAV9</div>
+      <div class="s-tissue">CNS · MUSCLE · HEART</div>
+      <div class="s-desc">可穿越血脑屏障，用于脊髓性肌萎缩（SMA）治疗（Zolgensma 所用载体）。</div>
+    </div>
+    <div class="serotype-card">
+      <div class="s-name">AAVrh10</div>
+      <div class="s-tissue">CNS · LIVER</div>
+      <div class="s-desc">恒河猴来源，对人类预存免疫较低，CNS 递送效率较好，临床研究积极。</div>
+    </div>
+    <div class="serotype-card">
+      <div class="s-name">AAV-PHP.eB</div>
+      <div class="s-tissue">CNS（全脑）</div>
+      <div class="s-desc">工程化变体，静脉注射后高效全脑转导（小鼠），是 CNS 基因编辑研究热点。</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ NICKCAS9 PANEL ═══ -->
+<div id="panel-nick" class="panel">
+
+  <div class="nick-hero">
+    <h3>nickCas9 核酸酶结构域状态</h3>
+    <div class="domain-cards">
+      <div class="domain-card">
+        <div class="d-name d-active">HNH 结构域</div>
+        <div class="d-status" style="color:var(--combo)">● 活性（nCas9-D10A）</div>
+        <div class="d-desc">切割与 sgRNA 互补的链（非模板链），在 PAM 上游 3 bp 处产生切口。</div>
+      </div>
+      <div class="domain-card">
+        <div class="d-name d-inactive">RuvC 结构域</div>
+        <div class="d-status" style="color:var(--aav)">✕ 灭活（D10A 突变）</div>
+        <div class="d-desc">天冬氨酸第10位突变为丙氨酸（D10A），失去切割能力，另一条链保持完整。</div>
+      </div>
+      <div class="domain-card">
+        <div class="d-name" style="color:var(--nick)">PAM 识别</div>
+        <div class="d-status" style="color:var(--nick)">● 正常识别 NGG</div>
+        <div class="d-desc">识别 PAM（NGG）功能不受影响，靶向特异性与野生型 Cas9 相同。</div>
+      </div>
+      <div class="domain-card">
+        <div class="d-name" style="color:var(--nick)">sgRNA 结合</div>
+        <div class="d-status" style="color:var(--nick)">● 正常结合</div>
+        <div class="d-desc">与单链导向 RNA（sgRNA）的结合能力完整，可精准定位目标序列。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">
+    <div class="sec-dot" style="background:var(--nick)"></div>
+    常用 nickCas9 变体对比
+  </div>
+
+  <div class="variants-list">
+    <div class="variant-row" style="font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);background:none;border:none;padding-bottom:4px">
+      <div>变体名称</div><div>切割行为</div><div>主要应用</div>
+    </div>
+    <div class="variant-row">
+      <div class="v-name">nCas9-D10A</div>
+      <div class="v-cut">HNH 活性，切割非模板链（上链）</div>
+      <div class="v-use">碱基编辑（CBE/ABE）的主要选择；与第二个 sgRNA 配合做双 nick</div>
+    </div>
+    <div class="variant-row">
+      <div class="v-name">nCas9-H840A</div>
+      <div class="v-cut">RuvC 活性，切割模板链（下链）</div>
+      <div class="v-use">先导编辑（Prime Editing）；部分 ABE 版本</div>
+    </div>
+    <div class="variant-row">
+      <div class="v-name">双 nickase</div>
+      <div class="v-cut">两个 nCas9 各切一条链，产生交错 DSB</div>
+      <div class="v-use">高特异性基因敲除/敲入，脱靶率大幅降低</div>
+    </div>
+    <div class="variant-row">
+      <div class="v-name">PE3（先导编辑）</div>
+      <div class="v-cut">nCas9-H840A + 逆转录酶融合，nick + 模板延伸</div>
+      <div class="v-use">单碱基到小片段精确写入，无需 DSB 或供体模板</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ COMBO PANEL ═══ -->
+<div id="panel-combo" class="panel">
+
+  <div class="sec-title">
+    <div class="sec-dot" style="background:var(--aav)"></div>
+    AAV 递送 nickCas9 的核心挑战
+  </div>
+
+  <div class="challenge-grid">
+    <div class="challenge-card">
+      <h4><span class="ch-icon">📦</span> 尺寸瓶颈</h4>
+      <p>SpCas9（含 nickCas9）基因约 <strong>4.2 kb</strong>，加上启动子、sgRNA 表达盒和 ITR 后，总长常超过 AAV <strong>4.7 kb 的装载上限</strong>，无法单载体装载。</p>
+    </div>
+    <div class="challenge-card">
+      <h4><span class="ch-icon">✂️</span> 双 sgRNA 需求</h4>
+      <p>双 nickase 策略需要<strong>两条 sgRNA</strong>，若用单载体需包含两套表达盒，进一步加剧尺寸压力；若拆分双载体则需两者共转染。</p>
+    </div>
+    <div class="challenge-card">
+      <h4><span class="ch-icon">🛡️</span> 免疫原性</h4>
+      <p>人群中对 AAV 衣壳蛋白存在<strong>预存中和抗体</strong>，部分患者不适合 AAV 给药。Cas9 蛋白本身也可引发 T 细胞免疫应答。</p>
+    </div>
+    <div class="challenge-card">
+      <h4><span class="ch-icon">⏱️</span> 持续表达风险</h4>
+      <p>AAV 在分裂细胞中以附加体形式存在，会被稀释；在静止细胞（如神经元）中可长期表达，nickCas9 的<strong>持续存在可能增加脱靶积累</strong>。</p>
+    </div>
+  </div>
+
+  <!-- flow -->
+  <div class="flow">
+    <h4>AAV × nickCas9 递送流程</h4>
+    <div class="flow-row">
+      <div class="flow-node fn-nick">nickCas9 基因<br><small>~4.2 kb</small></div>
+      <div class="flow-arrow">+</div>
+      <div class="flow-node fn-nick">sgRNA 表达盒<br><small>×1 或 ×2</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node fn-aav">AAV 包装<br><small>重组 rAAV</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node fn-cell">靶细胞转导<br><small>组织特异性</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node fn-result">单链 nick<br>精准编辑</div>
+    </div>
+  </div>
+
+  <div class="sec-title">
+    <div class="sec-dot" style="background:var(--combo)"></div>
+    解决方案：主要策略
+  </div>
+
+  <div class="strategy-list">
+    <div class="strategy-item">
+      <div class="s-num">1</div>
+      <div class="s-body">
+        <h4>双 AAV 拆分策略（Split-intein）</h4>
+        <p>将 nickCas9 基因从中部拆分，分装两个 AAV。靶细胞共感染后，借助<strong>内含肽（intein）</strong>将两半蛋白质自剪接拼合为完整功能蛋白。重组效率约 30–60%，已成功递送完整 SpCas9/nickCas9。</p>
+        <span class="tag">SPLIT-INTEIN AAV</span>
+      </div>
+    </div>
+    <div class="strategy-item">
+      <div class="s-num">2</div>
+      <div class="s-body">
+        <h4>换用更小的 Cas9 直系同源物（SaCas9）</h4>
+        <p><em>金黄色葡萄球菌</em>来源的 <strong>SaCas9</strong>（约 3.2 kb）可单载体装入 AAV，同样可引入 D10A 突变成为 Sa-nickCas9。虽然 PAM 识别序列（NNGRRT）与 SpCas9 不同，但适用范围仍广。</p>
+        <span class="tag">SaCas9-D10A · ~3.2 kb</span>
+      </div>
+    </div>
+    <div class="strategy-item">
+      <div class="s-num">3</div>
+      <div class="s-body">
+        <h4>CjCas9 / Cas12f 等超小型核酸酶</h4>
+        <p>近年涌现的超小型 CRISPR 酶（&lt;3 kb）可单 AAV 轻松装载，部分已工程化为 nick 变体。如 <strong>CjCas9</strong>（~2.95 kb）、<strong>Cas12f</strong> 衍生物（&lt;2.5 kb）等，正进入临床前研究。</p>
+        <span class="tag">MINI-CAS · SINGLE AAV</span>
+      </div>
+    </div>
+    <div class="strategy-item">
+      <div class="s-num">4</div>
+      <div class="s-body">
+        <h4>RNP / mRNA 联合 AAV 递送</h4>
+        <p>nickCas9 以<strong>核糖核蛋白（RNP）</strong>或 mRNA 形式递送（LNP/电转），仅用 AAV 递送供体修复模板（ssDNA）。这样 nickCas9 蛋白在细胞内快速降解，减少脱靶积累，同时回避了 AAV 装载尺寸限制。</p>
+        <span class="tag">RNP + AAV DONOR</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title" style="margin-top:48px">
+    <div class="sec-dot" style="background:var(--muted)"></div>
+    递送方式综合对比
+  </div>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>特性</th>
+        <th>单 AAV + SaCas9-nick</th>
+        <th>双 AAV + SpCas9-nick</th>
+        <th>LNP mRNA + AAV 模板</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="prop-col">装载可行性</td>
+        <td class="good">✓ 单载体</td>
+        <td class="neutral">需共转染</td>
+        <td class="good">✓ 分离递送</td>
+      </tr>
+      <tr>
+        <td class="prop-col">编辑精度</td>
+        <td class="neutral">PAM 限制较多</td>
+        <td class="good">灵活，脱靶低</td>
+        <td class="good">瞬时表达，脱靶少</td>
+      </tr>
+      <tr>
+        <td class="prop-col">脱靶风险</td>
+        <td class="neutral">中等</td>
+        <td class="good">低（双 nick）</td>
+        <td class="good">极低</td>
+      </tr>
+      <tr>
+        <td class="prop-col">免疫原性</td>
+        <td class="bad">衣壳抗体风险</td>
+        <td class="bad">衣壳抗体风险</td>
+        <td class="neutral">LNP 炎症可控</td>
+      </tr>
+      <tr>
+        <td class="prop-col">生产难度</td>
+        <td class="good">单批生产</td>
+        <td class="bad">两批，质控复杂</td>
+        <td class="neutral">两种制剂</td>
+      </tr>
+      <tr>
+        <td class="prop-col">临床进度</td>
+        <td class="neutral">临床前为主</td>
+        <td class="neutral">部分进入 I 期</td>
+        <td class="neutral">LNP+AAV 模式兴起</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- ═══ QUIZ PANEL ═══ -->
+<div id="panel-quiz" class="panel">
+  <div class="quiz-top">
+    <h2>知识测验</h2>
+    <p>共 6 题，涵盖 AAV 特性与 nickCas9 递送策略</p>
+  </div>
+  <div class="prog"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+
+  <div id="qbox">
+
+    <div class="q-card active" data-q="0">
+      <div class="q-label">QUESTION 01 / 06</div>
+      <div class="q-text">AAV 的天然基因组大小约为多少，限制了其有效装载量上限？</div>
+      <div class="opts">
+        <button class="opt" data-letter="A" data-correct="false">约 10 kb</button>
+        <button class="opt" data-letter="B" data-correct="true">约 4.7 kb</button>
+        <button class="opt" data-letter="C" data-correct="false">约 2 kb</button>
+        <button class="opt" data-letter="D" data-correct="false">约 8 kb</button>
+      </div>
+      <div class="expl">AAV 天然基因组约 <strong>4.7 kb</strong>，重组 rAAV 将其替换为目的基因后，有效装载量上限同样约为 4.7–5 kb。SpCas9（~4.2 kb）加上调控元件后往往超出此限制。</div>
+      <div class="q-nav"><button class="next-btn" onclick="nextQ()">下一题 →</button></div>
+    </div>
+
+    <div class="q-card" data-q="1">
+      <div class="q-label">QUESTION 02 / 06</div>
+      <div class="q-text">以下哪种血清型 AAV 可穿越血脑屏障，被用于脊髓性肌萎缩（SMA）基因治疗？</div>
+      <div class="opts">
+        <button class="opt" data-letter="A" data-correct="false">AAV2</button>
+        <button class="opt" data-letter="B" data-correct="false">AAV8</button>
+        <button class="opt" data-letter="C" data-correct="true">AAV9</button>
+        <button class="opt" data-letter="D" data-correct="false">AAV5</button>
+      </div>
+      <div class="expl"><strong>AAV9</strong> 可穿越血脑屏障，是 Zolgensma（治疗 SMA 的基因疗法）所用载体，静脉注射后可广泛转导运动神经元和肌肉细胞。</div>
+      <div class="q-nav"><button class="next-btn" onclick="nextQ()">下一题 →</button></div>
+    </div>
+
+    <div class="q-card" data-q="2">
+      <div class="q-label">QUESTION 03 / 06</div>
+      <div class="q-text">为何 SpCas9 nickCas9 难以用单个 AAV 载体递送？</div>
+      <div class="opts">
+        <button class="opt" data-letter="A" data-correct="false">nickCas9 蛋白不稳定，无法在 AAV 中维持</button>
+        <button class="opt" data-letter="B" data-correct="true">SpCas9 基因约 4.2 kb，加上调控元件后超出 AAV ~4.7 kb 的装载上限</button>
+        <button class="opt" data-letter="C" data-correct="false">AAV 不能转导 CRISPR 组件</button>
+        <button class="opt" data-letter="D" data-correct="false">nickCas9 需要 RNA 而非 DNA 递送</button>
+      </div>
+      <div class="expl">SpCas9 编码基因约 <strong>4.2 kb</strong>，加上启动子、polyA 信号、sgRNA 表达盒和 ITR 后，总长常超过 AAV 的 <strong>~4.7 kb 装载上限</strong>，因此难以单载体装载。</div>
+      <div class="q-nav"><button class="next-btn" onclick="nextQ()">下一题 →</button></div>
+    </div>
+
+    <div class="q-card" data-q="3">
+      <div class="q-label">QUESTION 04 / 06</div>
+      <div class="q-text">Split-intein 双 AAV 策略的核心机制是什么？</div>
+      <div class="opts">
+        <button class="opt" data-letter="A" data-correct="false">两个 AAV 携带相同序列，在细胞内随机重组</button>
+        <button class="opt" data-letter="B" data-correct="true">将 Cas9 基因拆分装入两个 AAV，靠内含肽（intein）在蛋白水平自剪接拼合</button>
+        <button class="opt" data-letter="C" data-correct="false">两个 AAV 分别递送 Cas9 蛋白和 sgRNA</button>
+        <button class="opt" data-letter="D" data-correct="false">利用同源重组将两段 DNA 拼合</button>
+      </div>
+      <div class="expl">Split-intein 策略将 nickCas9 基因从中间拆分，分别装入两个 AAV。靶细胞共感染后，两半蛋白质在 N/C 末端各带一段<strong>内含肽（intein）</strong>序列，通过蛋白质剪接自动拼合为完整的功能蛋白。</div>
+      <div class="q-nav"><button class="next-btn" onclick="nextQ()">下一题 →</button></div>
+    </div>
+
+    <div class="q-card" data-q="4">
+      <div class="q-label">QUESTION 05 / 06</div>
+      <div class="q-text">相比 SpCas9，SaCas9 在 AAV 递送上的主要优势是什么？</div>
+      <div class="opts">
+        <button class="opt" data-letter="A" data-correct="false">SaCas9 效率远高于 SpCas9</button>
+        <button class="opt" data-letter="B" data-correct="false">SaCas9 不需要 PAM 序列</button>
+        <button class="opt" data-letter="C" data-correct="true">SaCas9 基因更小（~3.2 kb），可单 AAV 装载</button>
+        <button class="opt" data-letter="D" data-correct="false">SaCas9 没有脱靶效应</button>
+      </div>
+      <div class="expl"><em>金黄色葡萄球菌</em>来源的 <strong>SaCas9</strong> 编码基因约 <strong>3.2 kb</strong>，加上必要的调控元件后仍在 AAV 装载限制以内，可实现单载体递送，是 AAV 基因治疗的热门选择。</div>
+      <div class="q-nav"><button class="next-btn" onclick="nextQ()">下一题 →</button></div>
+    </div>
+
+    <div class="q-card" data-q="5">
+      <div class="q-label">QUESTION 06 / 06</div>
+      <div class="q-text">在"LNP mRNA + AAV 模板"联合策略中，AAV 主要负责递送什么？</div>
+      <div class="opts">
+        <button class="opt" data-letter="A" data-correct="false">nickCas9 蛋白</button>
+        <button class="opt" data-letter="B" data-correct="false">sgRNA</button>
+        <button class="opt" data-letter="C" data-correct="true">DNA 修复供体模板（ssDNA/dsDNA）</button>
+        <button class="opt" data-letter="D" data-correct="false">内含肽序列</button>
+      </div>
+      <div class="expl">在此联合策略中，<strong>LNP</strong> 递送 nickCas9 mRNA（或 RNP），蛋白质表达后快速降解以减少脱靶；<strong>AAV</strong> 则专门递送高效率、长效的 <strong>DNA 修复供体模板</strong>，两者分工协作，兼顾安全性与编辑效率。</div>
+      <div class="q-nav"><button class="next-btn" onclick="nextQ()" id="last-next">查看结果 →</button></div>
+    </div>
+
+  </div>
+
+  <div class="score-box" id="scorebox">
+    <div class="score-big" id="scoreval">0/6</div>
+    <div class="score-sub" id="scoremsg"></div>
+    <button class="retry" onclick="resetQ()">重新作答</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-text">AAV · CRISPR · nickCas9 · Gene Therapy</div>
+  <div class="footer-text">基因编辑递送系统科普 · 2024</div>
+</footer>
+
+<script>
+function switchTab(t) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + t).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// quiz
+let cq = 0, sc = 0;
+const tot = 6;
+
+document.querySelectorAll('.opt').forEach(b => {
+  b.addEventListener('click', function() {
+    const card = this.closest('.q-card');
+    if (card.querySelector('.opt[disabled]')) return;
+    const ok = this.dataset.correct === 'true';
+    if (ok) { sc++; this.classList.add('correct'); }
+    else { this.classList.add('wrong'); card.querySelector('[data-correct="true"]').classList.add('correct'); }
+    card.querySelectorAll('.opt').forEach(x => x.disabled = true);
+    card.querySelector('.expl').classList.add('show');
+    card.querySelector('.next-btn').classList.add('show');
+  });
+});
+
+function nextQ() {
+  cq++;
+  document.querySelectorAll('.q-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('prog').style.width = (cq / tot * 100) + '%';
+  if (cq >= tot) {
+    document.getElementById('qbox').style.display = 'none';
+    const sb = document.getElementById('scorebox');
+    sb.classList.add('show');
+    document.getElementById('scoreval').textContent = sc + '/' + tot;
+    const msgs = ['还需加强，建议重新学习各模块 💪', '继续努力！', '有基础！', '不错！', '很好！', '几乎满分！', '完美满分！掌握得非常扎实 🎉'];
+    document.getElementById('scoremsg').textContent = msgs[sc] || msgs[0];
+  } else {
+    document.querySelector(`[data-q="${cq}"]`).classList.add('active');
+  }
+}
+
+function resetQ() {
+  cq = 0; sc = 0;
+  document.getElementById('prog').style.width = '0%';
+  document.getElementById('qbox').style.display = 'block';
+  document.getElementById('scorebox').classList.remove('show');
+  document.querySelectorAll('.q-card').forEach((c, i) => {
+    c.classList.toggle('active', i === 0);
+    c.querySelectorAll('.opt').forEach(b => { b.disabled = false; b.classList.remove('correct','wrong'); });
+    c.querySelector('.expl').classList.remove('show');
+    c.querySelector('.next-btn').classList.remove('show');
+  });
+}
+</script>
+</body>
+</html>
