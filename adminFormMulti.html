@@ -845,7 +845,7 @@
       }
       await db.rpc('append_approval_log', {
         record_id: recordId,
-        entry: { action: 'reminder_sent', by: adminName, at: new Date().toISOString() }
+        entry: { action: 'reminder_sent', by: document.getElementById('userEmail').textContent || 'admin', at: new Date().toISOString() }
       });
       alert(`✅ 催信已发送至 ${email}`);
     } catch(e) {
