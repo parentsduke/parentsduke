@@ -1156,10 +1156,12 @@
         <td style="max-width:200px;min-width:140px;">
           <div id="notes-log-${r.id}" style="font-size:11px;line-height:1.6;margin-bottom:4px;">
             ${(()=>{
-              const notes = (r.approval_log||[]).filter(e=>e.action==='admin_notes_set' && e.val);
-              return notes.length
-                ? notes.map(e=>`<div style="color:#444;"><span style="color:#003087;font-weight:600;">${e.by}:</span> ${e.val}</div>`).join('')
-                : '';
+              const logNotes = (r.approval_log||[]).filter(e=>e.action==='admin_notes_set' && e.val);
+              // Show old admin_notes field if no log entries yet
+              if (!logNotes.length && r.admin_notes) {
+                return `<div style="color:#444;"><span style="color:#888;font-style:italic;">旧:</span> ${r.admin_notes}</div>`;
+              }
+              return logNotes.map(e=>`<div style="color:#444;"><span style="color:#003087;font-weight:600;">${e.by}:</span> ${e.val}</div>`).join('');
             })()}
           </div>
           <input
