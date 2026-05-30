@@ -20,7 +20,7 @@
       --green:  #1a6b3c;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
 
     /* ── Header ── */
     header {
@@ -122,7 +122,7 @@
     .login-error.show { display: block; }
 
     /* ── Admin Panel ── */
-    #adminPanel { display: none; padding: 32px 16px 16px; flex: 1; overflow: hidden; flex-direction: column; }
+    #adminPanel { display: none; padding: 32px 16px 16px; flex: 1; overflow: hidden; flex-direction: column; min-height: 0; }
 
     @media (min-width: 768px) {
       header { padding: 0 32px; }
@@ -194,7 +194,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       scrollbar-width: thin;
       scrollbar-color: #c9a84c #f0f0f0;
-      padding-bottom: 60px;
+      padding-bottom: 0;
     }
     .table-wrap::-webkit-scrollbar {
       height: 8px;
@@ -392,7 +392,6 @@
           <th class="person-th">金</th>
           <th class="person-th">伟</th>
           <th onclick="sortBy('qr_code_no')" style="min-width:60px;">入群码</th>
-          <th>管理员备注</th>
           <th onclick="sortBy('wx_nickname')">微信昵称</th>
           <th onclick="sortBy('committed')">Committed</th>
           <th onclick="sortBy('created_at')">提交时间</th>
@@ -405,6 +404,7 @@
           <th onclick="sortBy('college')">学院</th>
           <th onclick="sortBy('major')">专业</th>
           <th>备注</th>
+          <th>管理员备注</th>
           <th onclick="sortBy('submitter_name')">提交者</th>
           <th onclick="sortBy('submitter_contact')">微信号</th>
           <th>邮箱</th>
@@ -834,15 +834,6 @@
         </td>
         <td><input
           type="text"
-          value="${r.admin_notes || ''}"
-          placeholder="管理员备注"
-          onblur="saveField('${r.id}', 'admin_notes', this.value, this)"
-          onkeydown="if(event.key==='Enter')this.blur()"
-          style="width:120px;font-size:13px;border:1px solid #ddd;border-radius:4px;padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
-          onfocus="this.style.borderColor='#0736a4'"
-        /></td>
-        <td><input
-          type="text"
           value="${r.wx_nickname || ''}"
           placeholder="输入昵称"
           onblur="saveNickname('${r.id}', this.value)"
@@ -862,6 +853,15 @@
         <td>${r.college || '<span style=\"color:var(--muted)\">—</span>'}</td>
         <td>${r.major || '<span style=\"color:var(--muted)\">—</span>'}</td>
         <td style="font-size:12px;color:var(--muted);max-width:140px;word-break:break-all;">${r.notes || '—'}</td>
+        <td><input
+          type="text"
+          value="${r.admin_notes || ''}"
+          placeholder="管理员备注"
+          onblur="saveField('${r.id}', 'admin_notes', this.value, this)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          style="width:120px;font-size:13px;border:1px solid #ddd;border-radius:4px;padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
+          onfocus="this.style.borderColor='#0736a4'"
+        /></td>
         <td>${r.submitter_name || '<span style=\"color:var(--muted)\">—</span>'}</td>
         <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_contact || '—'}</span></td>
         <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_email || '—'}</span></td>
@@ -975,7 +975,7 @@
       const { data: { session } } = await db.auth.getSession();
       const approvedBy = session?.user?.email || '未知管理员';
       const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+      await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -984,20 +984,15 @@
         body: JSON.stringify({
           email:      'weihong_j@yahoo.com',
           studentName:'管理员',
-          link:       'https://dukeparents.org',
           subject:    `✅ 已批准：${studentName}`,
           replyTo:    'parentsduke@gmail.com',
           bodyLine1:  `${studentName} 已批准入群。`,
-          bodyLine2:  `批准人：${approvedBy} | 发送到：${targetEmail} | 时间：${now}（美东）`,
+          bodyLine2:  `批准人：${approvedBy}\n发送到：${targetEmail}\n时间：${now}（美东）`,
           noButton:   true,
         }),
       });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText);
-      }
     } catch(e) {
-      console.error('[通知管理员失败]', e.message);
+      console.warn('[通知管理员失败]', e.message);
     }
   }
 
