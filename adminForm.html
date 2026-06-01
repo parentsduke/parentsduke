@@ -588,6 +588,122 @@
 
   const GITHUB_BASE = 'https://raw.githubusercontent.com/parentsduke/parentsduke/main';
 
+  // ── 管理员手动上传录取通知书 ──
+  async function adminUploadLetter(recordId, input) {
+    const file = input.files?.[0];
+    if (!file) return;
+    const label = input.closest('label');
+    const span  = label?.querySelector('span');
+    if (span) { span.textContent = '上传中…'; span.style.background = '#888'; }
+
+    try {
+      // 复用 form.html 的 upload-to-github Edge Function
+      const ext      = file.name.split('.').pop();
+      const filename = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const arrayBuf = await file.arrayBuffer();
+      const bytes    = new Uint8Array(arrayBuf);
+      let binary = '';
+      const chunkSize = 8192;
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+      }
+      const base64 = btoa(binary);
+
+      const upRes = await fetch(`${SUPABASE_URL}/functions/v1/upload-to-github`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({ path: filename, content: base64 })
+      });
+      if (!upRes.ok) throw new Error(await upRes.text());
+      const upData = await upRes.json();
+      const url = upData.content?.download_url || upData.url || filename;
+
+      // 写入数据库
+      const { error } = await db.from('admissions_submissions')
+        .update({ letter_path: url })
+        .eq('id', recordId);
+      if (error) throw new Error(error.message);
+
+      // 刷新单元格
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.letter_path = url;
+      const cell = label?.closest('td');
+      if (cell) cell.innerHTML = `<a class="file-link" href="#" onclick="openFile('${url}');return false;">查看文件</a>`;
+    } catch (e) {
+      alert('上传失败：' + e.message);
+      if (span) { span.textContent = '📎 上传通知书'; span.style.background = '#8B4513'; }
+    }
+  }
+
+  // ── 管理员上传/补充 Committed Letter ──
+  async function adminUploadCommitted(recordId, input) {
+    const file = input.files?.[0];
+    if (!file) return;
+    const label = input.closest('label');
+    const span  = label?.querySelector('span');
+    if (span) { span.textContent = '上传中…'; span.style.background = '#888'; }
+
+    try {
+      const ext      = file.name.split('.').pop();
+      const filename = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const arrayBuf = await file.arrayBuffer();
+      const bytes    = new Uint8Array(arrayBuf);
+      let binary = '';
+      const chunkSize = 8192;
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+      }
+      const base64 = btoa(binary);
+
+      const upRes = await fetch(`${SUPABASE_URL}/functions/v1/upload-to-github`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+        body: JSON.stringify({ path: filename, content: base64 })
+      });
+      if (!upRes.ok) throw new Error(await upRes.text());
+      const upData = await upRes.json();
+      const url = upData.content?.download_url || upData.url || filename;
+
+      // 读取现有值，合并为数组
+      const rec = allRecords.find(r => r.id === recordId);
+      let existing = [];
+      if (rec?.committed_letter_path) {
+        try { existing = JSON.parse(rec.committed_letter_path); if (!Array.isArray(existing)) existing = [existing]; }
+        catch(e) { existing = [rec.committed_letter_path]; }
+      }
+      const newPaths = [...existing, url];
+      const newValue = newPaths.length === 1 ? newPaths[0] : JSON.stringify(newPaths);
+
+      const { error } = await db.from('admissions_submissions')
+        .update({ committed_letter_path: newValue })
+        .eq('id', recordId);
+      if (error) throw new Error(error.message);
+
+      if (rec) rec.committed_letter_path = newValue;
+
+      // 刷新单元格
+      const cell = label?.closest('td');
+      if (cell) {
+        const links = newPaths.map((u,i) =>
+          `<a class="file-link" href="#" onclick="openFile('${u}');return false;">文件${newPaths.length>1?i+1:''}</a>`
+        ).join('');
+        const newUploadBtn = `<label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;">
+          <input type="file" accept="image/*,.pdf" style="display:none;"
+            onchange="adminUploadCommitted('${recordId}', this)">
+          <span style="padding:3px 9px;background:#8B4513;color:#fff;border-radius:5px;
+                       font-size:11px;white-space:nowrap;font-family:'Noto Serif SC',serif;">📎 补充材料</span>
+         </label>`;
+        cell.querySelector('div').innerHTML = links + newUploadBtn;
+      }
+    } catch (e) {
+      alert('上传失败：' + e.message);
+      if (span) { span.textContent = '📎 补充材料'; span.style.background = '#8B4513'; }
+    }
+  }
+
   // 智能打开文件：已是完整URL直接打开；否则先试 Supabase，404 再试 GitHub
   async function openFile(path) {
     if (!path) return;
@@ -796,7 +912,14 @@
 
       const letterCell = r.letter_path
         ? `<a class="file-link" href="#" onclick="openFile('${r.letter_path}');return false;">查看文件</a>`
-        : `<span class="no-file">—</span>`;
+        : `<label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;">
+            <input type="file" accept="image/*,.pdf" style="display:none;"
+              onchange="adminUploadLetter('${r.id}', this)">
+            <span style="padding:3px 9px;background:#8B4513;color:#fff;border-radius:5px;
+                         font-size:11px;white-space:nowrap;font-family:'Noto Serif SC',serif;">
+              📎 上传通知书
+            </span>
+           </label>`;
       const clBtn = (r.admission_type === 'RD' && r.committed === true && r.submitter_email)
         ? `<button onclick="requestCommittedLetter('${r.id}','${(r.submitter_email||'').replace(/'/g,"\\'")}','${(r.student_name_cn||r.student_name_en||'').replace(/'/g,"\\'")}','${r.class_year||''}')"
             style="padding:3px 8px;background:#003087;color:#fff;border:none;border-radius:5px;
@@ -805,9 +928,28 @@
             📩 催信
           </button>`
         : '';
-      const clCell = r.committed_letter_path
-        ? `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:4px 0;"><a class="file-link" href="#" onclick="openFile('${r.committed_letter_path}');return false;">查看文件</a>${clBtn}</div>`
-        : `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:4px 0;"><span class="no-file">—</span>${clBtn}</div>`;
+      // committed_letter_path 支持单个URL或JSON数组
+      let clPaths = [];
+      if (r.committed_letter_path) {
+        try { clPaths = JSON.parse(r.committed_letter_path); if (!Array.isArray(clPaths)) clPaths = [clPaths]; }
+        catch(e) { clPaths = [r.committed_letter_path]; }
+      }
+      const clLinks = clPaths.map((u,i) =>
+        `<a class="file-link" href="#" onclick="openFile('${u}');return false;">文件${clPaths.length>1?i+1:''}</a>`
+      ).join('');
+      const clUploadBtn = `<label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;">
+          <input type="file" accept="image/*,.pdf" style="display:none;"
+            onchange="adminUploadCommitted('${r.id}', this)">
+          <span style="padding:3px 9px;background:#8B4513;color:#fff;border-radius:5px;
+                       font-size:11px;white-space:nowrap;font-family:'Noto Serif SC',serif;">
+            📎 ${clPaths.length ? '补充材料' : '上传材料'}
+          </span>
+         </label>`;
+      const clCell = `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:4px 0;">
+        ${clLinks || '<span class="no-file">—</span>'}
+        ${clUploadBtn}
+        ${clBtn}
+      </div>`;
 
       return `<tr id="row-${r.id}">
         <td style="text-align:center;padding:8px 6px;">
@@ -955,7 +1097,7 @@
       r.submitter_contact || '',
       r.submitter_email || '',
       getFileUrl(r.letter_path) || '',
-      getFileUrl(r.committed_letter_path) || '',
+      (() => { let p=r.committed_letter_path; if(!p) return ''; try{const a=JSON.parse(p); if(Array.isArray(a)) return a.map(getFileUrl).join(' | ');} catch(e){} return getFileUrl(p)||''; })(),
       r.rejected_at ? '已拒绝' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '待处理',
     ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
 
