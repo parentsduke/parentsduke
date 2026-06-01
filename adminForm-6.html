@@ -330,6 +330,15 @@
     }
     .catalist-item:hover { background: var(--gold-lt); color: var(--navy); }
     .catalist-item + .catalist-item { border-top: 1px solid var(--border); }
+    .catalist-status {
+      display: block;
+      padding: 7px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'DM Mono', monospace;
+      border-bottom: 1px solid var(--border);
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -419,7 +428,7 @@
     <table id="dataTable" style="display:none;">
       <thead>
         <tr>
-          <th style="min-width:80px;">批准</th>
+          <th style="min-width:80px;">操作</th>
           <th class="person-th">笑</th>
           <th class="person-th">金</th>
           <th class="person-th">伟</th>
@@ -442,8 +451,6 @@
           <th>邮箱</th>
           <th>录取通知书</th>
           <th>Committed Letter</th>
-          <th style="min-width:60px;">催信</th>
-          <th>操作</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -844,42 +851,47 @@
         ? clPaths.map((u,i) => `<a class="file-link" href="#" onclick="openFile('${u}');return false;">文件${clPaths.length>1?i+1:''}</a>`).join(' ')
         : '<span class="no-file">—</span>';
 
-      const catalCell = r.submitter_email
-        ? `<div class="catalist-wrap">
-            <button onclick="toggleCatMenu(event,'catmenu-${r.id}')"
-              style="padding:3px 8px;background:#003087;color:#fff;border:none;border-radius:5px;
-                     font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-              onmouseover="this.style.background='#001a4d'" onmouseout="this.style.background='#003087'">
-              📩 催信 ▾
-            </button>
-            <div class="catalist-menu" id="catmenu-${r.id}">
-              <button class="catalist-item" onclick="closeCatMenu('catmenu-${r.id}');sendCatalogEmail('${r.id}','letter','${safeEmail}','${safeName}','${r.class_year||''}')">
-                📄 催交录取通知书
-              </button>
-              <button class="catalist-item" onclick="closeCatMenu('catmenu-${r.id}');sendCatalogEmail('${r.id}','committed','${safeEmail}','${safeName}','${r.class_year||''}')">
-                📝 催交 Commitment Letter
-              </button>
-            </div>
-          </div>`
-        : '<span class="no-file" title="无邮箱">—</span>';
+      const catalItems = r.submitter_email
+        ? `<button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');sendCatalogEmail('${r.id}','letter','${safeEmail}','${safeName}','${r.class_year||''}')">📄 催交录取通知书</button>
+           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');sendCatalogEmail('${r.id}','committed','${safeEmail}','${safeName}','${r.class_year||''}')">📝 催交 Commitment Letter</button>`
+        : '';
+
+      // ── 操作菜单（按状态生成菜单项）──
+      const safeNameRaw = r.student_name_cn || r.student_name_en || '';
+      const safeEmailRaw = r.submitter_email || '';
+      const esc = s => s.replace(/'/g,"\\'");
+      let actionItems = '';
+      if (r.rejected_at) {
+        actionItems = `<span class="catalist-status" style="color:var(--red);">❌ 已拒绝</span>`;
+      } else if (r.approved_at) {
+        actionItems = `
+          <span class="catalist-status" style="color:var(--green);">✅ 已批准</span>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendApproval('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发1.0入群链接</button>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendQr20('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发2.0链接</button>
+          <button class="catalist-item" style="color:var(--red);" onclick="closeCatMenu('actmenu-${r.id}');unapproveRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消批准</button>`;
+      } else if (r.shelved_at) {
+        actionItems = `
+          <span class="catalist-status" style="color:#b45309;">⏸ 已搁置</span>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');unshelveRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消搁置</button>`;
+      } else {
+        actionItems = `
+          <button class="catalist-item" style="color:var(--green);" onclick="closeCatMenu('actmenu-${r.id}');approveRecord('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">✅ 批准入群</button>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');rejectRecord('${r.id}','${esc(safeNameRaw)}')">❌ 拒绝</button>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');shelveRecord('${r.id}','${esc(safeNameRaw)}')">⏸ 搁置</button>`;
+      }
+      if (catalItems) actionItems += `<div style="border-top:1px solid var(--border);margin:2px 0;"></div>${catalItems}`;
+      const actionCell = `<div class="catalist-wrap">
+        <button onclick="toggleCatMenu(event,'actmenu-${r.id}')"
+          style="padding:3px 8px;background:#444;color:#fff;border:none;border-radius:5px;
+                 font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+          onmouseover="this.style.background='#222'" onmouseout="this.style.background='#444'">
+          操作 ▾
+        </button>
+        <div class="catalist-menu" id="actmenu-${r.id}">${actionItems}</div>
+      </div>`;
 
       return `<tr id="row-${r.id}">
-        <td style="text-align:center;padding:8px 6px;">
-          ${r.rejected_at || r.shelved_at ? '' : r.approved_at
-            ? `<button onclick="resendApproval('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
-                style="padding:6px 10px;background:#6b6b6b;color:#fff;border:none;border-radius:6px;
-                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                onmouseover="this.style.background='#444'" onmouseout="this.style.background='#6b6b6b'">
-                重新发送
-              </button>`
-            : `<button onclick="approveRecord('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
-                style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;
-                       font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">
-                批准入群
-              </button>`
-          }
-        </td>
+        <td style="text-align:center;padding:8px 6px;">${actionCell}</td>
         ${personCell(r.id, '笑', allRecords)}
         ${personCell(r.id, '金', allRecords)}
         ${personCell(r.id, '伟', allRecords)}
@@ -921,52 +933,6 @@
         <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_email || '—'}</span></td>
         <td>${letterCell}</td>
         <td>${clLinks}</td>
-        <td style="text-align:center;padding:8px 6px;">${catalCell}</td>
-        <td style="white-space:nowrap;text-align:center;">
-          ${r.rejected_at
-            ? `<span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>`
-            : r.approved_at
-            ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                <span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>
-                <button onclick="resendQr20('${r.id}','${r.submitter_email||''}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:6px 10px;background:#c07000;color:#fff;border:none;border-radius:6px;
-                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#a05800'" onmouseout="this.style.background='#c07000'">
-                  重发2.0链接
-                </button>
-                <button onclick="unapproveRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;
-                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#fff0ed'" onmouseout="this.style.background='#fff'">
-                  取消批准
-                </button>
-               </div>`
-            : r.shelved_at
-            ? `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
-                <button onclick="unshelveRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:4px 10px;background:#fff;color:#b45309;border:1.5px solid #b45309;border-radius:5px;
-                         font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#fff3e0'" onmouseout="this.style.background='#fff'">
-                  取消搁置
-                </button>
-               </div>`
-            : `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                <button onclick="rejectRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;
-                         font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
-                  拒绝
-                </button>
-                <button onclick="shelveRecord('${r.id}','${r.student_name_cn||r.student_name_en||''}')"
-                  style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;
-                         font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-                  onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">
-                  搁置
-                </button>
-               </div>`
-          }
-        </td>
       </tr>`;
     }).join('');
   }
@@ -1064,12 +1030,7 @@
         await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
         const rec = allRecords.find(r => r.id === recordId);
         if (rec) rec.approved_at = new Date().toISOString();
-        const approveCell = document.getElementById(`cell-approve-${recordId}`);
-        if (approveCell) approveCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
-        const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
-        if (actionCell) actionCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
         applyFilters();
-        // 通知管理员
         await notifyAdmin(studentName, '（无邮箱）');
         alert('✅ 已标记为批准');
       } catch(e) {
@@ -1116,18 +1077,9 @@
       // 标记记录已批准
       await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
 
-      // 更新本地数据
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.approved_at = new Date().toISOString();
-      const approveCell = document.getElementById(`cell-approve-${recordId}`);
-      if (approveCell) {
-        approveCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
-      }
-      const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
-      if (actionCell) actionCell.innerHTML = `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
-
       applyFilters();
-      // 通知管理员（失败不影响主流程）
       await notifyAdmin(studentName, email);
       alert(`✅ 已发送入群链接到 ${email}`);
     } catch(e) {
@@ -1140,25 +1092,10 @@
     if (!confirm(`搁置 ${studentName}？（已在群中，暂不处理）`)) return;
     try {
       const now = new Date().toISOString();
-      await db.from('admissions_submissions')
-        .update({ shelved_at: now })
-        .eq('id', recordId);
+      await db.from('admissions_submissions').update({ shelved_at: now }).eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = now;
-      const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
-      if (actionCell) {
-        actionCell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <span style="font-size:11px;color:#b45309;font-family:'DM Mono',monospace;font-weight:600;">⏸ 已搁置</span>
-          <button onclick="unshelveRecord('${recordId}','${studentName}')"
-            style="padding:4px 10px;background:#fff;color:#b45309;border:1.5px solid #b45309;border-radius:5px;
-                   font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-            onmouseover="this.style.background='#fff3e0'" onmouseout="this.style.background='#fff'">
-            取消搁置
-          </button>
-        </div>`;
-      }
-      const approveCell = document.getElementById(`cell-approve-${recordId}`);
-      if (approveCell) approveCell.innerHTML = '';
+      applyFilters();
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1168,34 +1105,10 @@
   async function unshelveRecord(recordId, studentName) {
     if (!confirm(`取消搁置 ${studentName}，恢复为待处理？`)) return;
     try {
-      await db.from('admissions_submissions')
-        .update({ shelved_at: null })
-        .eq('id', recordId);
+      await db.from('admissions_submissions').update({ shelved_at: null }).eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = null;
-      const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
-      if (actionCell) {
-        actionCell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <button onclick="rejectRecord('${recordId}','${studentName}')"
-            style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;
-                   font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-            onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
-            拒绝
-          </button>
-          <button onclick="shelveRecord('${recordId}','${studentName}')"
-            style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;
-                   font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-            onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">
-            搁置
-          </button>
-        </div>`;
-      }
-      const approveCell = document.getElementById(`cell-approve-${recordId}`);
-      if (approveCell && rec && !rec.approved_at) {
-        approveCell.innerHTML = `<button onclick="approveRecord('${recordId}','${rec.submitter_email||''}','${studentName}')"
-          style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-          onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">批准入群</button>`;
-      }
+      applyFilters();
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1205,34 +1118,10 @@
   async function unapproveRecord(recordId, studentName) {
     if (!confirm(`取消批准 ${studentName}，恢复为待处理？`)) return;
     try {
-      await db.from('admissions_submissions')
-        .update({ approved_at: null })
-        .eq('id', recordId);
+      await db.from('admissions_submissions').update({ approved_at: null }).eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.approved_at = null;
-      const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
-      if (actionCell) {
-        actionCell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <button onclick="rejectRecord('${recordId}','${studentName}')"
-            style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;
-                   font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-            onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
-            拒绝
-          </button>
-          <button onclick="shelveRecord('${recordId}','${studentName}')"
-            style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;
-                   font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-            onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">
-            搁置
-          </button>
-        </div>`;
-      }
-      const approveCell = document.getElementById(`cell-approve-${recordId}`);
-      if (approveCell) {
-        approveCell.innerHTML = `<button onclick="approveRecord('${recordId}','${rec ? rec.submitter_email||'' : ''}','${studentName}')"
-          style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
-          onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">批准入群</button>`;
-      }
+      applyFilters();
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1243,17 +1132,10 @@
     if (!confirm(`确认拒绝 ${studentName} 入群？`)) return;
     try {
       const now = new Date().toISOString();
-      await db.from('admissions_submissions')
-        .update({ rejected_at: now })
-        .eq('id', recordId);
+      await db.from('admissions_submissions').update({ rejected_at: now }).eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.rejected_at = now;
-      const actionCell = document.querySelector(`#row-${recordId} td:last-child`);
-      if (actionCell) {
-        actionCell.innerHTML = `<span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>`;
-      }
-      const approveCell = document.getElementById(`cell-approve-${recordId}`);
-      if (approveCell) approveCell.innerHTML = '';
+      applyFilters();
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }

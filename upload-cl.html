@@ -209,24 +209,17 @@
     <div class="state-sub" id="errorMsg">此链接已失效或记录不存在，请联系管理员重新发送。</div>
   </div>
 
-  <!-- 已上传过 -->
-  <div class="state-screen" id="screenDone">
-    <div class="state-icon">✅</div>
-    <div class="state-title">已上传成功</div>
-    <div class="state-sub">您的 Commitment Letter 已经上传，无需重复操作。<br/>如有疑问请联系 parentsduke@gmail.com</div>
-  </div>
-
   <!-- 上传成功（本次） -->
   <div class="state-screen" id="screenSuccess">
     <div class="state-icon">🎉</div>
     <div class="state-title">上传成功！</div>
-    <div class="state-sub">感谢上传 Commitment Letter！<br/>管理员审核后将发送入群链接到您的邮箱，请耐心等待。</div>
+    <div class="state-sub">感谢上传！<br/>管理员审核后将发送入群链接到您的邮箱，请耐心等待。</div>
   </div>
 
   <!-- 上传表单 -->
   <div class="upload-card" id="uploadCard">
-    <div class="card-title">上传 Commitment Letter</div>
-    <div class="card-sub">请上传您的 Duke Commitment Letter（截图或 PDF 均可）。<br/>上传后管理员将尽快审核并发送入群链接。</div>
+    <div class="card-title">上传材料</div>
+    <div class="card-sub">请上传您的材料（录取通知书 / Commitment Letter，截图或 PDF 均可）。<br/>如已上传过，可继续补充，文件将追加保存。</div>
 
     <div class="student-info" id="studentInfo">加载中…</div>
 
@@ -289,18 +282,14 @@
         return;
       }
 
-      // 已上传过
-      if (data.committed_letter_path) {
-        showScreen('screenDone');
-        return;
-      }
-
-      // 显示上传表单
+      // 显示上传表单（不拦截已上传过的记录，允许追加）
       const name = data.student_name_cn || data.student_name_en || '同学';
       const year = data.class_year ? `${data.class_year} 届` : '';
       const type = data.admission_type || '';
+      const hasExisting = !!data.committed_letter_path;
       document.getElementById('studentInfo').innerHTML =
-        `学生姓名：<strong>${name}</strong>　届次：<strong>${year}</strong>　录取类型：<strong>${type}</strong>`;
+        `学生姓名：<strong>${name}</strong>　届次：<strong>${year}</strong>　录取类型：<strong>${type}</strong>`
+        + (hasExisting ? '<br/><span style="color:#1a6b3c;font-size:12px;">✅ 已有文件，本次上传将追加</span>' : '');
 
       showScreen('uploadCard');
 
@@ -450,22 +439,27 @@
 
       btn.textContent = '保存中…';
 
-      // 再次确认记录没有被其他人抢先上传
-      const { data: check } = await db
+      // 读取现有路径，合并为数组（追加模式）
+      const { data: current } = await db
         .from('admissions_submissions')
         .select('committed_letter_path')
         .eq('id', recordId)
         .single();
 
-      if (check?.committed_letter_path) {
-        showScreen('screenDone');
-        return;
+      let existing = [];
+      if (current?.committed_letter_path) {
+        try {
+          existing = JSON.parse(current.committed_letter_path);
+          if (!Array.isArray(existing)) existing = [existing];
+        } catch(e) { existing = [current.committed_letter_path]; }
       }
+      const newPaths = [...existing, finalPath];
+      const newValue = newPaths.length === 1 ? newPaths[0] : JSON.stringify(newPaths);
 
       // UPDATE
       const { error: updErr } = await db
         .from('admissions_submissions')
-        .update({ committed_letter_path: finalPath })
+        .update({ committed_letter_path: newValue })
         .eq('id', recordId);
 
       if (updErr) throw new Error('保存失败：' + updErr.message);
