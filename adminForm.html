@@ -862,7 +862,9 @@
       const esc = s => s.replace(/'/g,"\\'");
       let actionItems = '';
       if (r.rejected_at) {
-        actionItems = `<span class="catalist-status" style="color:var(--red);">❌ 已拒绝</span>`;
+        actionItems = `
+          <span class="catalist-status" style="color:var(--red);">❌ 已拒绝</span>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');unrejectRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消拒绝</button>`;
       } else if (r.approved_at) {
         actionItems = `
           <span class="catalist-status" style="color:var(--green);">✅ 已批准</span>
@@ -1135,6 +1137,19 @@
       await db.from('admissions_submissions').update({ rejected_at: now }).eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.rejected_at = now;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 取消拒绝 ──
+  async function unrejectRecord(recordId, studentName) {
+    if (!confirm(`取消拒绝 ${studentName}，恢复为待处理？`)) return;
+    try {
+      await db.from('admissions_submissions').update({ rejected_at: null }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.rejected_at = null;
       applyFilters();
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
