@@ -879,8 +879,8 @@
 
   function openActionModal(type, recordId, studentName) {
     _actionArgs = { type, recordId, studentName };
-    const titles = { reject: '确认拒绝', shelve: '确认搁置', unshelve: '确认取消搁置' };
-    const subs   = { reject: `拒绝申请：${studentName}`, shelve: `搁置申请：${studentName}`, unshelve: `取消搁置：${studentName}` };
+    const titles = { reject: '确认拒绝', shelve: '确认搁置', unshelve: '确认取消搁置', unreject: '确认取消拒绝' };
+    const subs   = { reject: `拒绝申请：${studentName}`, shelve: `搁置申请：${studentName}`, unshelve: `取消搁置：${studentName}`, unreject: `恢复为待处理：${studentName}` };
     document.getElementById('actionModalTitle').textContent   = titles[type] || '操作确认';
     document.getElementById('actionModalSubText').textContent = subs[type]   || studentName;
     document.getElementById('actionAdminSelect').value = '';
@@ -965,10 +965,33 @@
         const cell = document.querySelector(`#row-${recordId} .action-op-cell`);
         if (cell) cell.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
           <span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>
+          <button onclick="openActionModal('unreject','${recordId}','${sName}')"
+            style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#fff0ee'" onmouseout="this.style.background='#fff'">取消拒绝</button>
           ${rejectedLog.length ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">拒:${rejectedLog.map(e=>e.by).join(' ')}</span>` : ''}
         </div>`;
         const approveCell = document.getElementById(`cell-approve-${recordId}`);
         if (approveCell) approveCell.innerHTML = '';
+
+      } else if (type === 'unreject') {
+        await db.from('admissions_submissionsMulti').update({ rejected_at: null }).eq('id', recordId);
+        await db.rpc('append_approval_log', { record_id: recordId, entry: { action: 'unrejected', by: adminName, at: now } });
+        if (rec) { rec.rejected_at = null; rec.approval_log = rec.approval_log || []; rec.approval_log.push({ action: 'unrejected', by: adminName, at: now }); }
+        const cellUr = document.querySelector(`#row-${recordId} .action-op-cell`);
+        if (cellUr) cellUr.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <button onclick="openActionModal('reject','${recordId}','${sName}')"
+            style="padding:6px 14px;background:#f59e0b;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">拒绝</button>
+          <button onclick="openActionModal('shelve','${recordId}','${sName}')"
+            style="padding:6px 14px;background:#b45309;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#92400e'" onmouseout="this.style.background='#b45309'">搁置</button>
+        </div>`;
+        const approveCellUr = document.getElementById(`cell-approve-${recordId}`);
+        if (approveCellUr && rec && !rec.approved_at) {
+          approveCellUr.innerHTML = `<button onclick="approveRecord('${recordId}','${rec.submitter_email||''}','${sName}','${rec.class_year||''}','${rec.admission_type||''}','${(rec.college||'').replace(/'/g, "\\'")}')"
+            style="padding:6px 10px;background:#1a6b3c;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+            onmouseover="this.style.background='#145230'" onmouseout="this.style.background='#1a6b3c'">批准入群</button>`;
+        }
       }
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
@@ -1218,6 +1241,9 @@
             const rejectedLog = (r.approval_log||[]).filter(e=>e.action==='rejected');
             if (r.rejected_at) return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
               <span style="font-size:11px;color:#C84B31;font-family:'DM Mono',monospace;font-weight:600;">❌ 已拒绝</span>
+              <button onclick="openActionModal('unreject','${r.id}','${sName}')"
+                style="padding:4px 10px;background:#fff;color:#C84B31;border:1.5px solid #C84B31;border-radius:5px;font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+                onmouseover="this.style.background='#fff0ee'" onmouseout="this.style.background='#fff'">取消拒绝</button>
               ${rejectedLog.length ? `<span style="font-size:11px;color:#5a7fbf;font-family:'DM Mono',monospace;">拒:${rejectedLog.map(e=>e.by).join(' ')}</span>` : ''}
             </div>`;
             if (r.approved_at) return `<span style="font-size:11px;color:#1a6b3c;font-family:'DM Mono',monospace;">✅ 已批准</span>`;
