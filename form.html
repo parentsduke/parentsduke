@@ -1307,9 +1307,10 @@
     try {
       // 检查邮箱或姓名是否已提交过申请（串行，命中即拦截）
       const dupEmail = await db.from('admissions_submissions')
-        .select('id', { count: 'exact', head: true })
-        .eq('submitter_email', submitterEmail);
-      if (dupEmail.count && dupEmail.count > 0) {
+        .select('id')
+        .eq('submitter_email', submitterEmail)
+        .limit(1);
+      if (dupEmail.data && dupEmail.data.length > 0) {
         btn.disabled = false; btn.textContent = '提 交';
         showError('该邮箱已提交过申请，请勿重复提交。如有疑问请联系管理员。');
         return;
@@ -1317,9 +1318,8 @@
       const hasChineseName = nameCn && !nameCn.includes('不适用');
       if (hasChineseName) {
         const dupNameCn = await db.from('admissions_submissions')
-          .select('id', { count: 'exact', head: true })
-          .eq('student_name_cn', nameCn);
-        if (dupNameCn.count && dupNameCn.count > 0) {
+          .select('id').eq('student_name_cn', nameCn).limit(1);
+        if (dupNameCn.data && dupNameCn.data.length > 0) {
           btn.disabled = false; btn.textContent = '提 交';
           showError('该姓名已提交过申请，请勿重复提交。如有疑问请联系管理员。');
           return;
@@ -1327,9 +1327,8 @@
       }
       if (nameEn && nameEn.trim().length > 1) {
         const dupNameEn = await db.from('admissions_submissions')
-          .select('id', { count: 'exact', head: true })
-          .ilike('student_name_en', nameEn.trim());
-        if (dupNameEn.count && dupNameEn.count > 0) {
+          .select('id').ilike('student_name_en', nameEn.trim()).limit(1);
+        if (dupNameEn.data && dupNameEn.data.length > 0) {
           btn.disabled = false; btn.textContent = '提 交';
           showError('该姓名已提交过申请，请勿重复提交。如有疑问请联系管理员。');
           return;
