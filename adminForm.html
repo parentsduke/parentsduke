@@ -234,6 +234,8 @@
     thead th.sort-desc::after { content: ' ▼'; font-size: 10px; }
     tbody tr { border-bottom: 1px solid var(--border); }
     tbody tr:hover { background: #faf9f7; }
+    tbody tr.row-left-group { background: #fff7ed; }
+    tbody tr.row-left-group:hover { background: #feecd6; }
     tbody tr:last-child { border-bottom: none; }
     tbody td { padding: 11px 14px; vertical-align: top; }
     .tag {
@@ -873,11 +875,16 @@
         actionItems = `
           <span class="catalist-status" style="color:var(--red);">❌ 已拒绝</span>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');unrejectRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消拒绝</button>`;
+      } else if (r.left_group_at) {
+        actionItems = `
+          <span class="catalist-status" style="color:#c2610c;">🚪 已退群</span>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');unleaveGroupRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消退群</button>`;
       } else if (r.approved_at) {
         actionItems = `
           <span class="catalist-status" style="color:var(--green);">✅ 已批准</span>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendApproval('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发1.0入群链接</button>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendQr20('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发2.0链接</button>
+          <button class="catalist-item" style="color:#c2610c;" onclick="closeCatMenu('actmenu-${r.id}');leftGroupRecord('${r.id}','${esc(safeNameRaw)}')">🚪 标记已退群</button>
           <button class="catalist-item" style="color:var(--red);" onclick="closeCatMenu('actmenu-${r.id}');unapproveRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消批准</button>`;
       } else if (r.shelved_at) {
         actionItems = `
@@ -890,9 +897,9 @@
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');shelveRecord('${r.id}','${esc(safeNameRaw)}')">⏸ 搁置</button>`;
       }
       if (catalItems) actionItems += `<div style="border-top:1px solid var(--border);margin:2px 0;"></div>${catalItems}`;
-      const btnLabel = r.rejected_at ? '已拒绝' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '操作';
-      const btnBg    = r.rejected_at ? '#7f1d1d' : r.approved_at ? '#14532d' : r.shelved_at ? '#78350f' : '#444';
-      const btnHover = r.rejected_at ? '#991b1b' : r.approved_at ? '#166534' : r.shelved_at ? '#92400e' : '#222';
+      const btnLabel = r.rejected_at ? '已拒绝' : r.left_group_at ? '已退群' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '操作';
+      const btnBg    = r.rejected_at ? '#7f1d1d' : r.left_group_at ? '#c2610c' : r.approved_at ? '#14532d' : r.shelved_at ? '#78350f' : '#444';
+      const btnHover = r.rejected_at ? '#991b1b' : r.left_group_at ? '#d97706' : r.approved_at ? '#166534' : r.shelved_at ? '#92400e' : '#222';
       const actionCell = `<div class="catalist-wrap">
         <button onclick="toggleCatMenu(event,'actmenu-${r.id}')"
           style="padding:3px 8px;background:${btnBg};color:#fff;border:none;border-radius:5px;
@@ -903,7 +910,7 @@
         <div class="catalist-menu" id="actmenu-${r.id}">${actionItems}</div>
       </div>`;
 
-      return `<tr id="row-${r.id}">
+      return `<tr id="row-${r.id}"${r.left_group_at ? ' class="row-left-group"' : ''}>
         <td style="text-align:center;padding:8px 6px;">${actionCell}</td>
         ${personCell(r.id, '笑', allRecords)}
         ${personCell(r.id, '金', allRecords)}
@@ -1121,6 +1128,33 @@
       await db.from('admissions_submissions').update({ shelved_at: null }).eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = null;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 标记已退群 ──
+  async function leftGroupRecord(recordId, studentName) {
+    if (!confirm(`标记 ${studentName} 已退群？`)) return;
+    try {
+      const now = new Date().toISOString();
+      await db.from('admissions_submissions').update({ left_group_at: now }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.left_group_at = now;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 取消退群 ──
+  async function unleaveGroupRecord(recordId, studentName) {
+    if (!confirm(`取消退群标记，${studentName} 恢复为已批准？`)) return;
+    try {
+      await db.from('admissions_submissions').update({ left_group_at: null }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.left_group_at = null;
       applyFilters();
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
