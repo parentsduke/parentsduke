@@ -933,6 +933,9 @@
     }
     if (!year)    { showError('请选择入学届次'); return; }
     const isPremed = (year === 'premed');
+    if (!isNaN(parseInt(year)) && parseInt(year) >= 2030 && !isPremed) {
+      showError('2030届及以上本科生请通过 Pre-med Track 通道提交，其他类型请使用主表单'); return;
+    }
     if (isPremed && !document.getElementById('fPremedYear').value) { showError('请选择 Pre-med Track 来自哪一届'); return; }
     if (isHub && !document.getElementById('fHubYear').value) { showError('请选择来自哪一个年级'); return; }
     // 互斥检查：已在另一个群则拦截
