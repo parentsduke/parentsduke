@@ -36,12 +36,98 @@
   .acc-body strong { font-weight: 600; color: #1a1a1a; }
   .acc-body ul { margin: 0.5rem 0 0.75rem 1.25rem; padding: 0; }
   .acc-body li { margin-bottom: 0.5rem; }
+
+  .sub-acc-item { border-top: 1px solid #e8e8e3; margin-top: 0.75rem; }
+  .sub-acc-item:first-of-type { margin-top: 0.5rem; }
+  .sub-acc-btn {
+    width: 100%; background: none; border: none; padding: 0.65rem 0;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; text-align: left; gap: 10px;
+  }
+  .sub-acc-title { font-size: 14px; font-weight: 500; color: #333; }
+  .sub-acc-icon {
+    font-size: 15px; color: #aaa; flex-shrink: 0;
+    transition: transform 0.22s ease; display: inline-block; line-height: 1;
+  }
+  .sub-acc-icon.open { transform: rotate(180deg); }
+  .sub-acc-body {
+    overflow: hidden; max-height: 0;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    font-size: 13.5px; line-height: 1.8; color: #555; padding: 0;
+    background: #faf9f6; border-radius: 6px; padding-left: 0; padding-right: 0;
+  }
+  .sub-acc-body.open { padding: 0.75rem 0.9rem 0.9rem; max-height: none; }
+  .sub-acc-body p { margin: 0 0 0.6rem; }
+  .sub-acc-body p:last-child { margin: 0; }
+  .sub-acc-body strong { color: #222; }
+  .sub-acc-body ul { margin: 0.3rem 0 0.6rem 1.2rem; }
+  .sub-acc-body li { margin-bottom: 0.35rem; }
 </style>
 </head>
 <body>
 <div class="container">
   <h1>弦理论</h1>
   <p class="subtitle">理论物理学中最宏大的统一框架</p>
+
+  <div class="acc-item">
+    <button class="acc-btn" onclick="toggle(this)">
+      <span class="acc-title">基本粒子：夸克、电子与光子</span>
+      <span class="acc-icon">&#8964;</span>
+    </button>
+    <div class="acc-body">
+      <p>弦理论的出发点，是重新想象这些我们已知的"最小单元"。在标准模型中，基本粒子被视为没有内部结构的零维点。点击下方各粒子深入了解。</p>
+
+      <div class="sub-acc-item">
+        <button class="sub-acc-btn" onclick="toggleSub(this)">
+          <span class="sub-acc-title">🔴 夸克（Quark）——物质最深处的砖块</span>
+          <span class="sub-acc-icon">&#8964;</span>
+        </button>
+        <div class="sub-acc-body">
+          <p><strong>一句话理解：</strong>质子和中子不是最小的——它们里面还有更小的东西，叫做夸克。</p>
+          <p><strong>比喻：</strong>如果原子是一座城市，原子核是市中心的广场，那么夸克就是广场地砖下面的砂粒。</p>
+          <p><strong>奇怪的规则——永远不能单独存在：</strong>夸克有一个诡异的特性：你永远无法把一个夸克单独拿出来。如果你强行把两个夸克拉开，中间的能量会直接变出新的夸克来"填补"——就像你试图撕开一块磁铁，结果撕出来的两段各自又变成了完整的磁铁。这个现象叫做<strong>色禁闭</strong>。</p>
+          <p><strong>夸克有几种？</strong>共6种，分别叫：上、下、奇、魅、底、顶。但日常物质只用到最轻的两种——上夸克和下夸克：</p>
+          <ul>
+            <li>质子 = 上 + 上 + 下（电荷合计 = +1）</li>
+            <li>中子 = 上 + 下 + 下（电荷合计 = 0）</li>
+          </ul>
+          <p><strong>跟弦理论的关系：</strong>弦理论说，夸克并不是"点"，而是一段振动的弦。不同的振动频率，决定了它是上夸克还是下夸克。</p>
+        </div>
+      </div>
+
+      <div class="sub-acc-item">
+        <button class="sub-acc-btn" onclick="toggleSub(this)">
+          <span class="sub-acc-title">🔵 电子（Electron）——化学世界的主角</span>
+          <span class="sub-acc-icon">&#8964;</span>
+        </button>
+        <div class="sub-acc-body">
+          <p><strong>一句话理解：</strong>电子是绕着原子核运动的带负电粒子，整个化学世界都建立在它的行为上。</p>
+          <p><strong>比喻：</strong>如果原子核是太阳，电子就是行星——但这个比喻其实不够准确，因为电子没有固定轨道，它更像是一团"概率云"，随机出现在核周围某处。</p>
+          <p><strong>电子有多小？</strong>质子的质量大约是电子的1836倍。换句话说，电子极其轻，但它占据了原子绝大部分的"空间"（概率云的范围）。</p>
+          <p><strong>化学 = 电子的游戏：</strong>两个原子靠近时，它们的电子云会互相影响。共享电子 → 共价键（比如水分子H₂O）；转移电子 → 离子键（比如食盐NaCl）。燃烧、生锈、光合作用——本质上都是电子在原子之间的重新排列。</p>
+          <p><strong>电流是什么？</strong>就是大量电子在导线里定向移动。你家里的电灯、手机充电，都是电子在流动。</p>
+          <p><strong>跟弦理论的关系：</strong>在弦理论看来，电子也是一根弦，只是它的振动模式赋予了它特定的质量和电荷。</p>
+        </div>
+      </div>
+
+      <div class="sub-acc-item">
+        <button class="sub-acc-btn" onclick="toggleSub(this)">
+          <span class="sub-acc-title">🟡 光子（Photon）——传递力的信使</span>
+          <span class="sub-acc-icon">&#8964;</span>
+        </button>
+        <div class="sub-acc-body">
+          <p><strong>一句话理解：</strong>光子是光的最小单位，也是电磁力的"传递粒子"——两个带电粒子之间的推拉，本质上是在互相抛接光子。</p>
+          <p><strong>比喻：</strong>想象两个人坐在溜冰场上互相扔球。每次扔出和接住，都会产生反作用力——让两人越来越远。电磁排斥力就是这样：两个电子不断交换光子，把彼此推开。吸引力的情况数学上更复杂，但本质相同。</p>
+          <p><strong>光子有质量吗？</strong>没有。光子的静止质量为零，这正是它能以光速运动的原因（有质量的物体永远无法达到光速）。</p>
+          <p><strong>波粒二象性——最烧脑的部分：</strong>光子同时是粒子也是波，这不是比喻，是实验测量到的事实。单个光子打到双缝上，会产生干涉条纹，好像它同时穿过了两条缝——但你一旦去"观测"它走的是哪条缝，条纹就消失了。这是量子力学最核心、也最令人头疼的现象。</p>
+          <p><strong>可见光只是一小部分：</strong>光子的能量由频率决定。无线电波、微波、红外线、可见光、紫外线、X射线、伽马射线——全都是光子，只是频率不同。</p>
+          <p><strong>跟弦理论的关系：</strong>弦理论自然地预言了一种自旋为1的无质量粒子——那正是光子。这是弦理论早期被认为有希望的原因之一。</p>
+        </div>
+      </div>
+
+      <p style="margin-top:1rem;">标准模型将这些粒子分为三类：构成物质的<strong>夸克</strong>与<strong>轻子</strong>，以及传递力的<strong>玻色子</strong>（光子即属此类）。这套框架极为成功，却有一个致命缺口——引力无法被纳入其中。弦理论正是为了填补这一缺口而生。</p>
+    </div>
+  </div>
 
   <div class="acc-item">
     <button class="acc-btn" onclick="toggle(this)">
@@ -133,6 +219,28 @@
 </div>
 
 <script>
+function toggleSub(btn) {
+  const body = btn.nextElementSibling;
+  const icon = btn.querySelector('.sub-acc-icon');
+  const isOpen = body.classList.contains('open');
+  if (isOpen) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      body.style.maxHeight = '0';
+      body.style.padding = '0';
+      body.classList.remove('open');
+      icon.classList.remove('open');
+    });
+  } else {
+    body.classList.add('open');
+    icon.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.addEventListener('transitionend', () => {
+      if (body.classList.contains('open')) body.style.maxHeight = 'none';
+    }, { once: true });
+  }
+}
+
 function toggle(btn) {
   const body = btn.nextElementSibling;
   const icon = btn.querySelector('.acc-icon');
