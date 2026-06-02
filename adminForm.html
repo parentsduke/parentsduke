@@ -903,9 +903,9 @@
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');shelveRecord('${r.id}','${esc(safeNameRaw)}')">⏸ 搁置</button>`;
       }
       if (catalItems) actionItems += `<div style="border-top:1px solid var(--border);margin:2px 0;"></div>${catalItems}`;
-      const btnLabel = r.rejected_at ? '已拒绝' : r.left_group_at ? '已退群' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '操作';
-      const btnBg    = r.rejected_at ? '#7f1d1d' : r.left_group_at ? '#c2610c' : r.approved_at ? '#14532d' : r.shelved_at ? '#78350f' : '#444';
-      const btnHover = r.rejected_at ? '#991b1b' : r.left_group_at ? '#d97706' : r.approved_at ? '#166534' : r.shelved_at ? '#92400e' : '#222';
+      const btnLabel = r.rejected_at ? '已拒绝' : r.left_group_at ? '已退群' : r.not_joined ? '未进群' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '操作';
+      const btnBg    = r.rejected_at ? '#7f1d1d' : r.left_group_at ? '#c2610c' : r.not_joined ? '#b45309' : r.approved_at ? '#14532d' : r.shelved_at ? '#78350f' : '#444';
+      const btnHover = r.rejected_at ? '#991b1b' : r.left_group_at ? '#d97706' : r.not_joined ? '#c2610c' : r.approved_at ? '#166534' : r.shelved_at ? '#92400e' : '#222';
       const actionCell = `<div class="catalist-wrap">
         <button onclick="toggleCatMenu(event,'actmenu-${r.id}')"
           style="padding:3px 8px;background:${btnBg};color:#fff;border:none;border-radius:5px;
