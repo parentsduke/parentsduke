@@ -445,10 +445,10 @@
           <th onclick="sortBy('class_year')">届次</th>
           <th onclick="sortBy('college')">学院</th>
           <th onclick="sortBy('major')">专业</th>
-          <th>备注</th>
+          <th onclick="sortBy('notes')">备注</th>
           <th onclick="sortBy('submitter_name')">提交者</th>
           <th onclick="sortBy('submitter_contact')">微信号</th>
-          <th>邮箱</th>
+          <th onclick="sortBy('submitter_email')">邮箱</th>
           <th>录取通知书</th>
           <th>Committed Letter</th>
         </tr>
@@ -827,6 +827,12 @@
     }
     empty.style.display = 'none';
 
+    // 统计重复邮箱
+    const emailCount = {};
+    records.forEach(r => {
+      if (r.submitter_email) emailCount[r.submitter_email] = (emailCount[r.submitter_email] || 0) + 1;
+    });
+
     tbody.innerHTML = records.map(r => {
       const date = r.created_at ? new Date(r.created_at).toLocaleString('zh-CN', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—';
       const committedVal = r.committed === true ? 'true' : r.committed === false ? 'false' : '';
@@ -934,7 +940,7 @@
         <td style="font-size:12px;color:var(--muted);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><div style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.notes || '—'}</div></td>
         <td>${r.submitter_name || '<span style=\"color:var(--muted)\">—</span>'}</td>
         <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_contact || '—'}</span></td>
-        <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_email || '—'}</span></td>
+        <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_email || '—'}</span>${r.submitter_email && emailCount[r.submitter_email] > 1 ? `<span style="margin-left:4px;background:#C84B31;color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;">×${emailCount[r.submitter_email]}</span>` : ''}</td>
         <td>${letterCell}</td>
         <td>${clLinks}</td>
       </tr>`;
