@@ -959,7 +959,10 @@
 
     } else if (r.shelved_at) {
       items += `<span class="catalist-status" style="color:#b45309;">⏸ 已搁置</span>`;
-      const ss = logStr('shelved','搁'); if (ss) items += histSpan(ss);
+      const ssByField = r.shelved_by ? `搁:${r.shelved_by}` : '';
+      const ssByLog   = logStr('shelved','搁');
+      const ss = ssByField || ssByLog;
+      if (ss) items += histSpan(ss);
       items += `<button class="catalist-item" onclick="closeCatMenu('actmenu-${id}');openActionModal('unshelve','${id}','${sName}')">↩ 取消搁置</button>`;
 
     } else {
@@ -1053,15 +1056,15 @@
       const sName = studentName;
 
       if (type === 'shelve') {
-        await db.from('admissions_submissionsMulti').update({ shelved_at: now }).eq('id', recordId);
+        await db.from('admissions_submissionsMulti').update({ shelved_at: now, shelved_by: adminName }).eq('id', recordId);
         await db.rpc('append_approval_log', { record_id: recordId, entry: { action: 'shelved', by: adminName, at: now } });
-        if (rec) { rec.shelved_at = now; rec.approval_log = rec.approval_log || []; rec.approval_log.push({ action: 'shelved', by: adminName, at: now }); }
+        if (rec) { rec.shelved_at = now; rec.shelved_by = adminName; rec.approval_log = rec.approval_log || []; rec.approval_log.push({ action: 'shelved', by: adminName, at: now }); }
         refreshCatCell(recordId);
 
       } else if (type === 'unshelve') {
-        await db.from('admissions_submissionsMulti').update({ shelved_at: null }).eq('id', recordId);
+        await db.from('admissions_submissionsMulti').update({ shelved_at: null, shelved_by: null }).eq('id', recordId);
         await db.rpc('append_approval_log', { record_id: recordId, entry: { action: 'unshelved', by: adminName, at: now } });
-        if (rec) { rec.shelved_at = null; rec.approval_log = rec.approval_log || []; rec.approval_log.push({ action: 'unshelved', by: adminName, at: now }); }
+        if (rec) { rec.shelved_at = null; rec.shelved_by = null; rec.approval_log = rec.approval_log || []; rec.approval_log.push({ action: 'unshelved', by: adminName, at: now }); }
         refreshCatCell(recordId);
 
       } else if (type === 'reject') {
