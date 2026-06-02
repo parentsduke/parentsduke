@@ -958,7 +958,7 @@
             <option value="杜妈">妈妈</option>
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-group full">
           <label>微信名称<span class="req">*</span>（非微信号）</label>
           <input type="text" autocomplete="off" id="fSubmitterContact" placeholder="管理员核对扫码入群的微信名称"/>
         </div>
@@ -1431,7 +1431,7 @@
         submitter_name:        document.getElementById('fSubmitterName').value.trim() || null,
         submitter_contact:     document.getElementById('fSubmitterContact').value.trim() || null,
         submitter_email:       submitterEmail || null,
-        wx_nickname:           wx_nickname || null,
+        wx_nickname:       wx_nickname || null,
       };
 
       const { data: insertedData, error } = await db.from('admissions_submissions').insert(payload).select('id').single();
