@@ -874,7 +874,19 @@
     if (rec) { rec.committed = update.committed; rec.committed_at = update.committed_at; }
   }
 
+  let _actionArgs = null;
   let _inputArgs = null;
+
+  function openActionModal(type, recordId, studentName) {
+    _actionArgs = { type, recordId, studentName };
+    const titles = { reject: '确认拒绝', shelve: '确认搁置', unshelve: '确认取消搁置' };
+    const subs   = { reject: `拒绝申请：${studentName}`, shelve: `搁置申请：${studentName}`, unshelve: `取消搁置：${studentName}` };
+    document.getElementById('actionModalTitle').textContent   = titles[type] || '操作确认';
+    document.getElementById('actionModalSubText').textContent = subs[type]   || studentName;
+    document.getElementById('actionAdminSelect').value = '';
+    document.getElementById('actionConfirmBtn').disabled = true;
+    document.getElementById('actionModal').style.display = 'flex';
+  }
 
   function closeActionModal() {
     document.getElementById('actionModal').style.display = 'none';
