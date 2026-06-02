@@ -236,6 +236,8 @@
     tbody tr:hover { background: #faf9f7; }
     tbody tr.row-left-group { background: #fff7ed; }
     tbody tr.row-left-group:hover { background: #feecd6; }
+    tbody tr.row-not-joined { background: #fefce8; }
+    tbody tr.row-not-joined:hover { background: #fef9c3; }
     tbody tr:last-child { border-bottom: none; }
     tbody td { padding: 11px 14px; vertical-align: top; }
     .tag {
@@ -884,6 +886,10 @@
           <span class="catalist-status" style="color:var(--green);">✅ 已批准</span>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendApproval('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发1.0入群链接</button>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendQr20('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发2.0链接</button>
+          ${r.not_joined
+            ? `<button class="catalist-item" style="color:#b45309;" onclick="closeCatMenu('actmenu-${r.id}');clearNotJoined('${r.id}','${esc(safeNameRaw)}')">✅ 取消未进群</button>`
+            : `<button class="catalist-item" style="color:#b45309;" onclick="closeCatMenu('actmenu-${r.id}');markNotJoined('${r.id}','${esc(safeNameRaw)}')">⚠️ 标记未进群</button>`
+          }
           <button class="catalist-item" style="color:#c2610c;" onclick="closeCatMenu('actmenu-${r.id}');leftGroupRecord('${r.id}','${esc(safeNameRaw)}')">🚪 标记已退群</button>
           <button class="catalist-item" style="color:var(--red);" onclick="closeCatMenu('actmenu-${r.id}');unapproveRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消批准</button>`;
       } else if (r.shelved_at) {
@@ -910,7 +916,7 @@
         <div class="catalist-menu" id="actmenu-${r.id}">${actionItems}</div>
       </div>`;
 
-      return `<tr id="row-${r.id}"${r.left_group_at ? ' class="row-left-group"' : ''}>
+      return `<tr id="row-${r.id}"${r.left_group_at ? ' class="row-left-group"' : r.not_joined ? ' class="row-not-joined"' : ''}>
         <td style="text-align:center;padding:8px 6px;">${actionCell}</td>
         ${personCell(r.id, '笑', allRecords)}
         ${personCell(r.id, '金', allRecords)}
@@ -1128,6 +1134,32 @@
       await db.from('admissions_submissions').update({ shelved_at: null }).eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = null;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 标记未进群 ──
+  async function markNotJoined(recordId, studentName) {
+    if (!confirm(`标记 ${studentName} 未进群？`)) return;
+    try {
+      await db.from('admissions_submissions').update({ not_joined: true }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.not_joined = true;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 取消未进群 ──
+  async function clearNotJoined(recordId, studentName) {
+    if (!confirm(`取消 ${studentName} 的未进群标记？`)) return;
+    try {
+      await db.from('admissions_submissions').update({ not_joined: null }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.not_joined = null;
       applyFilters();
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
