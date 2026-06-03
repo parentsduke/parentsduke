@@ -707,6 +707,113 @@
       </div>
     </div>
   </div>
+
+  <!-- ── NHEJ vs HDR 修复途径 ── -->
+  <div class="mech-section" style="margin-top:40px">
+    <h3 style="color:var(--accent)">DNA 修复途径：NHEJ 与 HDR</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7">双链断裂（DSB）产生后，细胞通过两条截然不同的途径修复——理解它们的机制差异是选择编辑策略的关键。</p>
+
+    <!-- 两列步骤对比 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px">
+
+      <!-- NHEJ 列 -->
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--cas9);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--cas9)">NHEJ — 非同源末端连接</div>
+        <div class="step-list cas9-steps">
+          <div class="step">
+            <div class="step-num" style="background:var(--cas9-dim);color:var(--cas9)">1</div>
+            <div class="step-body"><strong>Ku 蛋白结合：</strong>Ku70/Ku80 异二聚体迅速识别并结合断裂末端，防止末端降解，募集修复因子。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--cas9-dim);color:var(--cas9)">2</div>
+            <div class="step-body"><strong>末端加工处理：</strong>Artemis 核酸酶等对不齐整的末端进行切除或补充，可能丢失或增加若干碱基。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--cas9-dim);color:var(--cas9)">3</div>
+            <div class="step-body"><strong>DNA 连接酶 IV 连接：</strong>直接将两个末端拼接，不依赖任何同源模板，过程快速但易出错。</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--cas9-dim);border:1px solid rgba(192,57,43,0.2)">
+          <div style="font-size:12px;color:var(--cas9);font-family:'JetBrains Mono',monospace;letter-spacing:1px;margin-bottom:6px">修复结果</div>
+          <div style="font-size:13px;line-height:1.7;color:var(--text)">产生 <strong>indel 突变</strong>（插入或缺失）→ 移码突变 → 基因功能丧失（敲除）。全细胞周期均可发生，是哺乳动物细胞的主要修复方式。</div>
+        </div>
+      </div>
+
+      <!-- HDR 列 -->
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--nick);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--nick)">HDR — 同源定向修复</div>
+        <div class="step-list nick-steps">
+          <div class="step">
+            <div class="step-num" style="background:var(--nick-dim);color:var(--nick)">1</div>
+            <div class="step-body"><strong>5′ 末端切除：</strong>MRN 复合体与 CtIP 协作降解 5′ 末端，暴露出 3′ 单链悬垂，为链侵入做准备。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nick-dim);color:var(--nick)">2</div>
+            <div class="step-body"><strong>Rad51 链侵入：</strong>Rad51 包被 3′ 单链，驱动其侵入同源双链模板（姐妹染色单体或外源供体 DNA），形成 D 环结构。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nick-dim);color:var(--nick)">3</div>
+            <div class="step-body"><strong>模板引导合成：</strong>以同源序列为蓝本，DNA 聚合酶精确复制模板信息，完成修复后拆解 D 环并连接切口。</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--nick-dim);border:1px solid rgba(21,101,192,0.2)">
+          <div style="font-size:12px;color:var(--nick);font-family:'JetBrains Mono',monospace;letter-spacing:1px;margin-bottom:6px">修复结果</div>
+          <div style="font-size:13px;line-height:1.7;color:var(--text)">实现<strong>精准序列修复</strong>，可引入任意突变或外源片段（基因敲入）。仅在 S/G2 期活跃，需提供同源模板，整体效率低于 NHEJ。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 对比汇总表 -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>特性</th>
+            <th style="color:var(--cas9)">NHEJ</th>
+            <th style="color:var(--nick)">HDR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="prop">修复精度</td>
+            <td style="color:var(--cas9)">低（易出错，产生 indel）</td>
+            <td style="color:var(--nick)">高（模板依赖，精确还原）</td>
+          </tr>
+          <tr>
+            <td class="prop">是否需要模板</td>
+            <td>否</td>
+            <td style="color:var(--nick)">是（姐妹染色单体 / 外源供体）</td>
+          </tr>
+          <tr>
+            <td class="prop">活跃细胞周期</td>
+            <td>全周期均可</td>
+            <td style="color:var(--nick)">S / G2 期</td>
+          </tr>
+          <tr>
+            <td class="prop">在哺乳动物中频率</td>
+            <td style="color:var(--cas9)">主导途径（约 70–90%）</td>
+            <td style="color:var(--nick)">次要途径（约 10–30%）</td>
+          </tr>
+          <tr>
+            <td class="prop">编辑应用</td>
+            <td style="color:var(--cas9)">基因敲除（KO）</td>
+            <td style="color:var(--nick)">精准敲入（KI）、点突变修正</td>
+          </tr>
+          <tr>
+            <td class="prop">nickCas9 的影响</td>
+            <td>Nick 不激活 NHEJ，大幅减少竞争</td>
+            <td style="color:var(--nick)">HDR∶indel 比值提升 2.7–53 倍</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:20px;padding:14px 20px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:13px;line-height:1.8;color:var(--muted)">
+      <strong style="color:var(--accent)">关键启示：</strong>
+      野生型 Cas9 产生 DSB 后，NHEJ 与 HDR 形成竞争——NHEJ 速度更快，往往抢先修复，导致精确编辑效率低下。nickCas9 的优势之一在于单链 nick 不触发 NHEJ，从而在需要精确插入时显著提升 HDR 产物的纯净度。
+    </div>
+  </div>
+
 </div>
 
 <!-- ═══ QUIZ PANEL ═══ -->
