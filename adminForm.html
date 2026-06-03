@@ -850,7 +850,7 @@
       const safeName  = (r.student_name_cn||r.student_name_en||'').replace(/'/g,"\\'");
 
       const letterCell = r.letter_path
-        ? `<a class="file-link" href="#" onclick="openFile('${r.letter_path}');return false;">查看文件</a>`
+        ? `<a class="file-link" href="#" onclick="openFile('${r.letter_path}');return false;">文件</a>`
         : '<span class="no-file">—</span>';
 
       // committed_letter_path 支持单个URL或JSON数组
