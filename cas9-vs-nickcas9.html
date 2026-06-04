@@ -449,152 +449,6 @@
   .inactive-domain { color: var(--wrong); }
   .domain-table tr:hover td { background: rgba(0,0,0,0.02); }
 
-
-  /* APPLICATION PANEL */
-  .app-intro {
-    text-align: center;
-    max-width: 720px;
-    margin: 0 auto 36px;
-  }
-  .app-intro .eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-  .app-intro h2 {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.8rem;
-    margin-bottom: 14px;
-  }
-  .app-intro p {
-    color: var(--muted);
-    font-size: 14px;
-    line-height: 1.8;
-  }
-  .application-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-    margin-bottom: 36px;
-  }
-  @media (max-width: 850px) { .application-grid { grid-template-columns: 1fr; } }
-  .application-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 22px;
-  }
-  .application-card h3 {
-    font-family: 'Space Mono', monospace;
-    font-size: 1rem;
-    margin-bottom: 12px;
-  }
-  .application-card.cas h3 { color: var(--cas9); }
-  .application-card.nick h3 { color: var(--nick); }
-  .application-card.mix h3 { color: var(--accent); }
-  .application-card p, .application-card li {
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--muted);
-  }
-  .application-card ul { list-style: none; display: grid; gap: 8px; margin-top: 12px; }
-  .application-card li::before { content: '• '; color: var(--accent); }
-  .workflow-strip {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 28px;
-    margin-bottom: 32px;
-  }
-  .workflow-strip h3 {
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--muted);
-    font-size: 12px;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-  }
-  .workflow-steps {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px;
-  }
-  @media (max-width: 850px) { .workflow-steps { grid-template-columns: 1fr; } }
-  .workflow-step {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-  }
-  .workflow-step .num {
-    font-family: 'Space Mono', monospace;
-    color: var(--accent);
-    font-size: 13px;
-    margin-bottom: 8px;
-  }
-  .workflow-step strong {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 6px;
-  }
-  .workflow-step span {
-    display: block;
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.6;
-  }
-  .hdr-guide {
-    background: var(--bg);
-    border: 1px solid rgba(184,134,11,0.35);
-    border-radius: 12px;
-    padding: 26px;
-    margin-bottom: 32px;
-  }
-  .hdr-guide h3 {
-    font-family: 'Space Mono', monospace;
-    color: var(--accent);
-    font-size: 1.1rem;
-    margin-bottom: 14px;
-  }
-  .hdr-guide p {
-    color: var(--muted);
-    font-size: 14px;
-    line-height: 1.8;
-    margin-bottom: 18px;
-  }
-  .hdr-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-  .hdr-table th {
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--muted);
-    text-align: left;
-    padding: 10px 12px;
-    border-bottom: 2px solid var(--border);
-    font-size: 11px;
-    letter-spacing: 1px;
-  }
-  .hdr-table td {
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-    line-height: 1.6;
-    vertical-align: top;
-  }
-  .hdr-table tr:last-child td { border-bottom: none; }
-  .hdr-table .pick-cas { color: var(--cas9); font-weight: 700; }
-  .hdr-table .pick-nick { color: var(--nick); font-weight: 700; }
-  .note-box {
-    border-left: 3px solid var(--accent);
-    background: rgba(184,134,11,0.08);
-    padding: 18px 20px;
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.8;
-  }
   /* footer */
   footer {
     text-align: center;
@@ -618,7 +472,6 @@
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('compare')">对比展示</button>
   <button class="tab-btn" onclick="switchTab('mechanism')">作用机制</button>
-  <button class="tab-btn" onclick="switchTab('applications')">应用场景</button>
   <button class="tab-btn" onclick="switchTab('quiz')">知识测验</button>
   <button class="tab-btn" onclick="switchTab('whycas9')">为何还用 Cas9？</button>
 </div>
@@ -860,6 +713,104 @@
     <h3 style="color:var(--accent)">DNA 修复途径：NHEJ 与 HDR</h3>
     <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7">双链断裂（DSB）产生后，细胞通过两条截然不同的途径修复——理解它们的机制差异是选择编辑策略的关键。</p>
 
+    <!-- SVG 流程图 -->
+    <div style="margin-bottom:32px;background:var(--surface);border-radius:12px;padding:24px;border:1px solid var(--border);overflow:hidden">
+      <svg width="100%" viewBox="0 0 680 530" role="img" xmlns="http://www.w3.org/2000/svg">
+        <title>NHEJ 与 HDR DNA修复途径对比流程图</title>
+        <desc>展示DNA双链断裂后NHEJ和HDR两条修复路径的步骤与结果</desc>
+        <defs>
+          <marker id="arr-nhej" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#c0392b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arr-hdr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#1565c0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arr-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#6b7a99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- DSB 起始框 -->
+        <rect x="210" y="20" width="260" height="48" rx="8" fill="#f5f7fa" stroke="#b8860b" stroke-width="1.2"/>
+        <text x="340" y="38" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="700" fill="#b8860b">DNA 双链断裂（DSB）</text>
+        <text x="340" y="56" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">CRISPR 切割 / 辐射 / 化学损伤</text>
+
+        <!-- 分叉箭头 -->
+        <line x1="290" y1="68" x2="175" y2="120" stroke="#6b7a99" stroke-width="1.2" marker-end="url(#arr-gray)"/>
+        <line x1="390" y1="68" x2="505" y2="120" stroke="#6b7a99" stroke-width="1.2" marker-end="url(#arr-gray)"/>
+
+        <!-- NHEJ 标题 -->
+        <text x="120" y="118" text-anchor="middle" font-family="'Space Mono',monospace" font-size="12" font-weight="700" fill="#c0392b">NHEJ</text>
+
+        <!-- HDR 标题 -->
+        <text x="560" y="118" text-anchor="middle" font-family="'Space Mono',monospace" font-size="12" font-weight="700" fill="#1565c0">HDR</text>
+
+        <!-- NHEJ Step 1 -->
+        <rect x="30" y="128" width="180" height="48" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="120" y="146" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">Ku 蛋白结合</text>
+        <text x="120" y="163" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">识别并保护断裂末端</text>
+        <line x1="120" y1="176" x2="120" y2="200" stroke="#c0392b" stroke-width="1" marker-end="url(#arr-nhej)"/>
+
+        <!-- NHEJ Step 2 -->
+        <rect x="30" y="200" width="180" height="48" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="120" y="218" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">末端加工处理</text>
+        <text x="120" y="235" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">切除或补充悬垂碱基</text>
+        <line x1="120" y1="248" x2="120" y2="272" stroke="#c0392b" stroke-width="1" marker-end="url(#arr-nhej)"/>
+
+        <!-- NHEJ Step 3 -->
+        <rect x="30" y="272" width="180" height="48" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="120" y="290" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">DNA 连接酶 IV</text>
+        <text x="120" y="307" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">直接连接两个末端</text>
+        <line x1="120" y1="320" x2="120" y2="344" stroke="#c0392b" stroke-width="1" marker-end="url(#arr-nhej)"/>
+
+        <!-- NHEJ 结果 -->
+        <rect x="20" y="344" width="200" height="64" rx="8" fill="rgba(192,57,43,0.13)" stroke="#c0392b" stroke-width="1.2"/>
+        <text x="120" y="364" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing="1" fill="#c0392b">修复结果</text>
+        <text x="120" y="382" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">Indel 突变（插入/缺失）</text>
+        <text x="120" y="398" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">基因敲除 / 功能丧失</text>
+
+        <!-- HDR Step 1 -->
+        <rect x="470" y="128" width="180" height="48" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="560" y="146" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">5′ 末端切除</text>
+        <text x="560" y="163" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">暴露 3′ 单链悬垂</text>
+        <line x1="560" y1="176" x2="560" y2="200" stroke="#1565c0" stroke-width="1" marker-end="url(#arr-hdr)"/>
+
+        <!-- HDR Step 2 -->
+        <rect x="470" y="200" width="180" height="48" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="560" y="218" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">Rad51 链侵入</text>
+        <text x="560" y="235" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">与同源模板配对</text>
+        <line x1="560" y1="248" x2="560" y2="272" stroke="#1565c0" stroke-width="1" marker-end="url(#arr-hdr)"/>
+
+        <!-- HDR Step 3 -->
+        <rect x="470" y="272" width="180" height="48" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="560" y="290" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">模板引导合成</text>
+        <text x="560" y="307" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">精确复制同源序列</text>
+        <line x1="560" y1="320" x2="560" y2="344" stroke="#1565c0" stroke-width="1" marker-end="url(#arr-hdr)"/>
+
+        <!-- HDR 结果 -->
+        <rect x="460" y="344" width="200" height="64" rx="8" fill="rgba(21,101,192,0.13)" stroke="#1565c0" stroke-width="1.2"/>
+        <text x="560" y="364" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing="1" fill="#1565c0">修复结果</text>
+        <text x="560" y="382" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">精准序列修复</text>
+        <text x="560" y="398" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">基因敲入 / 精确编辑</text>
+
+        <!-- 对比汇总行 -->
+        <rect x="40" y="440" width="600" height="28" rx="6" fill="#f5f7fa" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <line x1="340" y1="440" x2="340" y2="468" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <text x="190" y="458" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#c0392b">全周期 · 无需模板 · 主导途径</text>
+        <text x="490" y="458" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#1565c0">S/G2期 · 需同源模板 · 精准</text>
+
+        <rect x="40" y="468" width="600" height="28" rx="0" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <line x1="340" y1="468" x2="340" y2="496" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <text x="190" y="486" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">应用：基因敲除（KO）</text>
+        <text x="490" y="486" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">应用：精准敲入（KI）</text>
+
+        <rect x="40" y="496" width="600" height="28" rx="0" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <line x1="340" y1="496" x2="340" y2="524" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <text x="190" y="514" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#c0392b">nickCas9: 不触发此途径</text>
+        <text x="490" y="514" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#1565c0">nickCas9: HDR∶indel ↑2.7–53×</text>
+      </svg>
+    </div>
+
     <!-- 两列步骤对比 -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px">
 
@@ -961,112 +912,6 @@
     </div>
   </div>
 
-</div>
-
-
-<!-- APPLICATIONS PANEL -->
-<div id="panel-applications" class="panel">
-  <div class="app-intro">
-    <div class="eyebrow">WHEN TO USE WHICH TOOL</div>
-    <h2>应用场景与选择策略</h2>
-    <p>Cas9 和 nickCas9 的差异不只是“切两条链还是一条链”。真正做实验时，需要把编辑目标、效率、脱靶风险、修复路径和载体复杂度一起考虑。</p>
-  </div>
-
-  <div class="application-grid">
-    <div class="application-card cas">
-      <h3>优先选 Cas9</h3>
-      <p>当目标是快速、稳定地产生功能缺失突变时，野生型 Cas9 通常更直接。</p>
-      <ul>
-        <li>基因敲除或大片段删除</li>
-        <li>筛选实验和 pooled library</li>
-        <li>对效率要求高于精准替换的实验</li>
-      </ul>
-    </div>
-    <div class="application-card nick">
-      <h3>优先选 nickCas9</h3>
-      <p>当目标是减少双链断裂带来的 indel 或提高编辑精度时，nickCas9 更有价值。</p>
-      <ul>
-        <li>碱基编辑器和先导编辑器</li>
-        <li>需要降低脱靶损伤的场景</li>
-        <li>希望利用单链 nick 引导修复</li>
-      </ul>
-    </div>
-    <div class="application-card mix">
-      <h3>考虑双 nickase</h3>
-      <p>双 nickase 用两条 sgRNA 在相邻位置制造成对 nick，可以在保留特异性的同时模拟 DSB。</p>
-      <ul>
-        <li>需要更高特异性的靶向切割</li>
-        <li>靶点附近能设计合适 PAM-out gRNA</li>
-        <li>可接受设计和验证成本增加</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="workflow-strip">
-    <h3>实验设计检查流程</h3>
-    <div class="workflow-steps">
-      <div class="workflow-step">
-        <div class="num">01</div>
-        <strong>先定目标</strong>
-        <span>敲除、点突变、插入、替换或调控表达，对应的最佳工具不同。</span>
-      </div>
-      <div class="workflow-step">
-        <div class="num">02</div>
-        <strong>查 PAM 与 gRNA</strong>
-        <span>确认靶点附近是否有合适 PAM，并评估 sgRNA 的唯一性和效率。</span>
-      </div>
-      <div class="workflow-step">
-        <div class="num">03</div>
-        <strong>评估修复路径</strong>
-        <span>NHEJ 更适合敲除；HDR、BE、PE 更适合精准编辑。</span>
-      </div>
-      <div class="workflow-step">
-        <div class="num">04</div>
-        <strong>做验证方案</strong>
-        <span>用测序、脱靶预测和功能实验确认编辑结果，而不只看转染成功。</span>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="hdr-guide">
-    <h3>如果实验目标需要 HDR，怎么选？</h3>
-    <p>需要 HDR 时，关键不是简单地说“Cas9 或 nickCas9 谁更好”，而是看你要得到的是高效率编辑、低 indel 背景，还是更大的精准插入窗口。HDR 还需要同源供体模板，并且更依赖细胞周期，通常在 S/G2 期更活跃。</p>
-    <table class="hdr-table">
-      <thead>
-        <tr>
-          <th>实验需求</th>
-          <th>更合适的选择</th>
-          <th>原因</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>只想快速得到可筛选的精准替换</td>
-          <td class="pick-cas">Cas9 + donor template</td>
-          <td>双链断裂能强烈触发修复，实验体系成熟，绝对编辑效率通常更容易做起来。</td>
-        </tr>
-        <tr>
-          <td>希望 HDR 产物更干净，减少 indel 干扰</td>
-          <td class="pick-nick">nickCas9 或双 nickase</td>
-          <td>单链 nick 不强烈激活 NHEJ，因此 HDR∶indel 比值可能更高，适合追求精准产物比例。</td>
-        </tr>
-        <tr>
-          <td>编辑位点不在 Cas9 切口附近</td>
-          <td class="pick-nick">双 nickase</td>
-          <td>两个 nick 之间可形成更宽的有效 HDR 窗口，但需要两条 sgRNA 的距离和方向合适。</td>
-        </tr>
-        <tr>
-          <td>细胞难转染、HDR 本来很低</td>
-          <td class="pick-cas">先从 Cas9 优化</td>
-          <td>瓶颈常常是供体递送、细胞周期和细胞类型，而不只是核酸酶本身。</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="note-box">
-    <strong>一句话记忆：</strong>Cas9 像“一刀切开”的高效工具，适合快速制造双链断裂；nickCas9 像“轻划一条线”的精细工具，适合把修复方向引到更可控的路径上。
-  </div>
 </div>
 
 <!-- ═══ QUIZ PANEL ═══ -->
