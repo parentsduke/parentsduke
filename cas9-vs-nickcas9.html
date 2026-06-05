@@ -912,6 +912,130 @@
     </div>
   </div>
 
+  <!-- ── gRNA 设计流程 ── -->
+  <div class="mech-section" style="margin-top:40px">
+    <h3 style="color:var(--accent)">gRNA 设计流程</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7">高效且特异的 gRNA 是 CRISPR 实验成功的前提。设计流程需在切割活性与脱靶风险之间取得平衡。</p>
+
+    <!-- SVG 流程图 -->
+    <div style="margin-bottom:32px;background:var(--surface);border-radius:12px;padding:24px;border:1px solid var(--border);overflow:hidden">
+      <svg width="100%" viewBox="0 0 680 780" role="img" xmlns="http://www.w3.org/2000/svg">
+        <title>gRNA 设计流程图</title>
+        <defs>
+          <marker id="arrow-grna" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#6b7a99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- Step 1 -->
+        <rect x="190" y="20" width="300" height="56" rx="8" fill="#f5f7fa" stroke="#b8c0d0" stroke-width="0.8"/>
+        <text x="340" y="44" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#1a2340">① 确定编辑目标区域</text>
+        <text x="340" y="62" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">外显子 / 调控区 / 功能结构域</text>
+        <line x1="340" y1="76" x2="340" y2="104" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 2 -->
+        <rect x="190" y="104" width="300" height="56" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="340" y="128" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#1565c0">② 定位 PAM 序列</text>
+        <text x="340" y="146" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">SpCas9: NGG（非靶链）</text>
+        <rect x="512" y="108" width="150" height="48" rx="6" fill="none" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="587" y="126" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">SaCas9: NNGRRT</text>
+        <text x="587" y="144" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">Cas12a: TTTN</text>
+        <line x1="512" y1="132" x2="490" y2="132" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <line x1="340" y1="160" x2="340" y2="188" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 3 -->
+        <rect x="190" y="188" width="300" height="56" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="340" y="212" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#1565c0">③ 设计 20 nt 间隔序列</text>
+        <text x="340" y="230" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">PAM 上游 20 bp，与靶链互补</text>
+        <rect x="18" y="188" width="152" height="56" rx="6" fill="none" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="94" y="206" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">G/C 含量 40–70%</text>
+        <text x="94" y="222" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">避免 ≥4 个连续 T</text>
+        <text x="94" y="238" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">5′端 G 利于转录</text>
+        <line x1="170" y1="216" x2="190" y2="216" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <line x1="340" y1="244" x2="340" y2="272" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 4 -->
+        <rect x="190" y="272" width="300" height="56" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="340" y="296" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#c0392b">④ 脱靶位点预测</text>
+        <text x="340" y="314" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">Cas-OFFinder / CRISPOR / Benchling</text>
+        <rect x="512" y="276" width="150" height="48" rx="6" fill="none" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="587" y="294" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">允许 ≤3 个错配</text>
+        <text x="587" y="312" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">避开基因编码区</text>
+        <line x1="512" y1="300" x2="490" y2="300" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <line x1="340" y1="328" x2="340" y2="356" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 5 -->
+        <rect x="190" y="356" width="300" height="56" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="340" y="380" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#c0392b">⑤ 活性效率评分</text>
+        <text x="340" y="398" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">Rule Set 2 / DeepCRISPR / CHOPCHOP</text>
+        <line x1="340" y1="412" x2="340" y2="444" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- 决策菱形 -->
+        <polygon points="340,444 404,480 340,516 276,480" fill="#f5f7fa" stroke="#6b7a99" stroke-width="0.8"/>
+        <text x="340" y="476" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" fill="#1a2340">脱靶低且</text>
+        <text x="340" y="494" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" fill="#1a2340">评分高？</text>
+        <!-- 否 返回 -->
+        <line x1="276" y1="480" x2="168" y2="480" stroke="#6b7a99" stroke-width="0.8" marker-end="url(#arrow-grna)"/>
+        <line x1="168" y1="480" x2="168" y2="374" stroke="#6b7a99" stroke-width="0.8"/>
+        <line x1="168" y1="374" x2="190" y2="374" stroke="#6b7a99" stroke-width="0.8" marker-end="url(#arrow-grna)"/>
+        <text x="148" y="472" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">否</text>
+        <text x="120" y="428" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">重新设计</text>
+        <!-- 是 -->
+        <line x1="340" y1="516" x2="340" y2="544" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <text x="358" y="533" text-anchor="start" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">是</text>
+        <!-- Step 6 -->
+        <rect x="190" y="544" width="300" height="56" rx="8" fill="rgba(83,74,183,0.07)" stroke="#534ab7" stroke-width="0.8"/>
+        <text x="340" y="568" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#534ab7">⑥ 化学修饰优化（可选）</text>
+        <text x="340" y="586" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">2′-OMe / PS 键增强稳定性</text>
+        <line x1="340" y1="600" x2="340" y2="628" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 7 -->
+        <rect x="190" y="628" width="300" height="56" rx="8" fill="rgba(83,74,183,0.07)" stroke="#534ab7" stroke-width="0.8"/>
+        <text x="340" y="652" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#534ab7">⑦ 合成 &amp; 递送</text>
+        <text x="340" y="670" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">体外转录 / 化学合成 / 质粒表达</text>
+        <line x1="340" y1="684" x2="340" y2="712" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 8 -->
+        <rect x="190" y="712" width="300" height="52" rx="8" fill="#f5f7fa" stroke="#b8860b" stroke-width="1"/>
+        <text x="340" y="734" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#b8860b">⑧ 实验验证</text>
+        <text x="340" y="752" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">T7E1 / Sanger / 深度测序</text>
+      </svg>
+    </div>
+
+    <!-- 八步详解卡片 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px">① 目标区域</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">优先选择<strong>功能性早期外显子</strong>用于敲除；精确定位突变位点用于敲入。避开重复序列和高度多态区域。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--nick);margin-bottom:8px">② PAM 序列</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">SpCas9 识别非靶链 <code>5′-NGG-3′</code>，切割发生在 PAM 上游 3 bp。靶区 NGG 密度越高，候选 gRNA 越多。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--nick);margin-bottom:8px">③ 间隔序列设计</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">取 PAM 上游 20 bp，G/C 40–70%，5′端带 G 利于 U6 启动子转录。连续 ≥4 个 T 导致 RNA Pol III 提前终止。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--cas9);margin-bottom:8px">④ 脱靶预测</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">扫描全基因组 ≤3 错配位点。<strong>种子区</strong>（PAM 近端 12 bp）错配容忍性极低，是特异性关键。优先排除落在编码区的脱靶。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--cas9);margin-bottom:8px">⑤ 效率评分</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">Doench Rule Set 2、DeepCRISPR 综合评估切割活性；Hsu 分衡量特异性。每靶点设计 3–5 条候选，取综合最优者。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#534ab7;margin-bottom:8px">⑥ 化学修饰</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">5′/3′ 末端 2′-O-甲基（2′-OMe）与硫代磷酸酯（PS）修饰，显著延长胞内半衰期，体内实验尤为关键。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#534ab7;margin-bottom:8px">⑦ 合成与递送</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">质粒稳定表达适合筛库；IVT 快速廉价适合初验；<strong>化学合成 sgRNA + RNP</strong> 纯度高、起效快、脱靶低，是当前主流。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px">⑧ 实验验证</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">T7E1 酶切快速定性 → Sanger 测序确认 indel 类型 → 扩增子深度测序精确定量编辑效率及脱靶频率。</div>
+      </div>
+    </div>
+
+    <div style="padding:14px 20px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:13px;line-height:1.8;color:var(--muted)">
+      <strong style="color:var(--accent)">实践建议：</strong>
+      同一靶点设计至少 3 条 gRNA 并行验证，切勿依赖单一候选。nickCas9 双 gRNA 策略中，两条 gRNA 的间距（17–40 bp）及方向（PAM-out 配置）对成对 nick 效率影响显著，设计时需同步优化。
+    </div>
+  </div>
+
 </div>
 
 <!-- ═══ QUIZ PANEL ═══ -->
