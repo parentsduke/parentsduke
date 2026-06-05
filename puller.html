@@ -628,6 +628,133 @@
   </div>
 </div>
 
+<!-- ═══ SECTION 8b: 三步拉制 ═══ -->
+<div class="section">
+  <div class="section-title" style="color:#8250df">P-2000G · 三步拉制（锥度短 + 前段更细）</div>
+
+  <svg viewBox="0 0 340 110" height="110">
+    <text x="0" y="13" font-family="JetBrains Mono" font-size="8" fill="#cf222e">两步结果：锥度短但前段粗 (Program #17 现状)</text>
+    <path d="M0,18 L200,18 L300,28 L300,32 L200,42 L0,42 Z" fill="#fef2f2" stroke="#cf222e" stroke-width="1"/>
+    <line x1="200" y1="44" x2="300" y2="44" stroke="#cf222e" stroke-width="0.7" stroke-dasharray="2,2"/>
+    <text x="250" y="53" font-family="JetBrains Mono" font-size="7" fill="#cf222e" text-anchor="middle">前段偏粗 ✗</text>
+    <text x="163" y="68" font-family="JetBrains Mono" font-size="14" fill="#d0d7de" text-anchor="middle">↓ 加 Line 2</text>
+    <text x="0" y="82" font-family="JetBrains Mono" font-size="8" fill="#1a7f37">三步结果：锥度短 + 前段细（目标）</text>
+    <path d="M0,87 L190,87 L240,91 L300,94 L240,97 L190,103 L0,103 Z" fill="#f0fdf4" stroke="#1a7f37" stroke-width="1"/>
+    <text x="245" y="112" font-family="JetBrains Mono" font-size="7" fill="#1a7f37" text-anchor="middle">前段逐渐收细 ✓</text>
+  </svg>
+
+  <div style="margin-top:16px">
+
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:8px;">Program #17 当前参数（两步）</div>
+    <table class="param-table" style="margin-bottom:14px">
+      <tr>
+        <th>Line</th>
+        <th>Heat</th>
+        <th>Fil</th>
+        <th>Vel</th>
+        <th>Del</th>
+        <th>Pul</th>
+        <th style="font-size:9px;color:var(--muted)">状态</th>
+      </tr>
+      <tr class="line1">
+        <td>1</td>
+        <td>250</td>
+        <td>4</td>
+        <td>60</td>
+        <td>180</td>
+        <td>空/0</td>
+        <td style="font-size:10px;color:#0969da;text-align:left;padding-left:6px">塑形 ✓</td>
+      </tr>
+      <tr class="line2">
+        <td>2</td>
+        <td>250</td>
+        <td>3</td>
+        <td>40</td>
+        <td>180</td>
+        <td>200</td>
+        <td style="font-size:10px;color:#cf222e;text-align:left;padding-left:6px">拉断，前段偏粗</td>
+      </tr>
+    </table>
+
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8250df;margin-bottom:8px;">▶ 建议改为三步</div>
+    <table class="param-table">
+      <tr>
+        <th>Line</th>
+        <th>Heat</th>
+        <th>Fil</th>
+        <th>Vel</th>
+        <th>Del</th>
+        <th>Pul</th>
+        <th style="font-size:9px;color:var(--muted)">作用</th>
+      </tr>
+      <tr class="line1">
+        <td>1</td>
+        <td>250</td>
+        <td>4</td>
+        <td>60</td>
+        <td>180</td>
+        <td>空/0</td>
+        <td style="font-size:10px;color:#0969da;text-align:left;padding-left:6px">塑形（不变）</td>
+      </tr>
+      <tr style="color:#8250df">
+        <td>2 <span class="tag tag-purple">新增</span></td>
+        <td>248</td>
+        <td>3</td>
+        <td>40</td>
+        <td>180</td>
+        <td style="font-weight:700;color:#8250df">0</td>
+        <td style="font-size:10px;color:#8250df;text-align:left;padding-left:6px">收细前段，不拉断</td>
+      </tr>
+      <tr class="line2">
+        <td>3</td>
+        <td>245</td>
+        <td>3</td>
+        <td>40</td>
+        <td>160</td>
+        <td>200</td>
+        <td style="font-size:10px;color:#cf222e;text-align:left;padding-left:6px">拉断，控开口</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="tip-check" style="margin-top:12px">
+    <strong>操作方法</strong><br>
+    ① 在 Line 1 和原 Line 2 之间插入新行<br>
+    ② 按 <strong>NEXT</strong> 到 Line 2 位置输入新参数（Heat=248, Fil=3, Vel=40, Del=180, Pul=0）<br>
+    ③ 原 Line 2 自动后移为 Line 3，Del 改为 <strong>160</strong>
+  </div>
+
+  <div class="note" style="margin-top:12px">
+    <strong>关键：新 Line 2 的 Pul=0</strong>，只软化收细，不拉断<br>
+    三步分工：Line 1 管锥度形状 → Line 2 管前段细度 → Line 3 管开口大小
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;">三步调参方向</div>
+
+  <div class="arrow-row">
+    <div class="dot" style="background:#0969da"></div>
+    <div>锥度<strong>变长了</strong> → Line 1 <strong style="color:#0969da">Vel ↑</strong>（60→70）</div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#8250df"></div>
+    <div>前段<strong>还是太粗</strong> → Line 2 <strong style="color:#8250df">Heat ↑</strong> 或 <strong style="color:#8250df">Del ↑</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#8250df"></div>
+    <div>前段<strong>太细/断了</strong> → Line 2 <strong style="color:#8250df">Heat ↓</strong> 或 <strong style="color:#8250df">Del ↓</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#cf222e"></div>
+    <div>开口<strong>太大</strong> → Line 3 <strong style="color:#cf222e">Pul ↑</strong> 或 <strong style="color:#cf222e">Del ↓</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#cf222e"></div>
+    <div>开口<strong>太小</strong> → Line 3 <strong style="color:#cf222e">Pul ↓</strong> 或 <strong style="color:#cf222e">Del ↑</strong></div>
+  </div>
+</div>
+
 <!-- ═══ SECTION 9: 调参速查 ═══ -->
 <div class="section">
   <div class="section-title green">调参方向速查（两台机器通用）</div>
