@@ -1036,6 +1036,119 @@
     </div>
   </div>
 
+  <!-- ── Cas-OFFinder 与 CRISPOR 使用指南 ── -->
+  <div class="mech-section" style="margin-top:40px">
+    <h3 style="color:var(--accent)">脱靶扫描工具详解：Cas-OFFinder &amp; CRISPOR</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7">两款工具定位不同：Cas-OFFinder 专注纯脱靶扫描，速度极快，适合已有候选序列时的验证；CRISPOR 是一站式平台，从候选筛选、打分到脱靶预测一体完成，适合从头设计。<strong style="color:var(--text)">两款工具均支持 Windows / macOS / Linux。</strong></p>
+
+    <!-- 工具对比卡片 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px">
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:14px 16px;background:rgba(21,101,192,0.07);border-bottom:1px solid var(--border)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--nick)">Cas-OFFinder</span>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">定位</span><span>纯脱靶扫描引擎</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输入</span><span>已有 spacer 序列</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输出</span><span>全基因组脱靶坐标</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">速度</span><span>GPU 加速，极快</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Windows 版</span><span style="color:#0f6e56;font-weight:600">✓ cas-offinder.exe</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0"><span style="color:var(--muted)">下载</span><span style="color:var(--nick)">sourceforge.net / rgenome.net</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:14px 16px;background:rgba(15,110,86,0.07);border-bottom:1px solid var(--border)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#0f6e56">CRISPOR</span>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">定位</span><span>一站式设计平台</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输入</span><span>靶区域序列（100–2000 bp）</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输出</span><span>候选列表 + 打分 + 脱靶</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">速度</span><span>中等（综合计算）</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Windows 版</span><span style="color:#0f6e56;font-weight:600">✓ 网页版无需安装</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0"><span style="color:var(--muted)">网址</span><span style="color:#0f6e56">crispor.tefor.net</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cas-OFFinder Windows 安装 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">Cas-OFFinder Windows 安装步骤</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+      <div class="card" style="padding:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--nick);letter-spacing:1px;margin-bottom:8px">第一步</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">安装 <strong>OpenCL 驱动</strong>（必须）：Intel GPU 用户装 Intel OpenCL Runtime；NVIDIA 用户装 CUDA Toolkit；AMD 用户装 ROCm 或 Adrenalin 驱动</div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--nick);letter-spacing:1px;margin-bottom:8px">第二步</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">从 SourceForge（<code style="font-size:11px">sourceforge.net/projects/cas-offinder</code>）下载 <strong>cas-offinder.exe</strong>（Win32，约 1 MB）。如提示缺少 dll，额外安装 Visual C++ Redistributable</div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--nick);letter-spacing:1px;margin-bottom:8px">第三步</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">打开命令提示符（cmd），切换到 exe 所在目录，运行：<br><code style="font-size:11px;display:block;margin-top:6px;background:var(--surface);padding:4px 6px;border-radius:4px;border:1px solid var(--border)">cas-offinder.exe input.txt C output.txt</code><code style="font-size:10px;color:var(--muted)">C=CPU，G=GPU，A=全部</code></div>
+      </div>
+    </div>
+
+    <!-- 输入文件格式 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">Cas-OFFinder 输入文件格式</h4>
+    <div class="card" style="padding:16px;margin-bottom:20px">
+      <div style="font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:10px">纯文本文件，三部分顺序严格固定：</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;line-height:2;color:var(--text)">
+        C:\genomes\hg38<span style="color:var(--muted);margin-left:20px">&larr; 基因组 FASTA 文件夹路径</span><br>
+        NNNNNNNNNNNNNNNNNNNNNGG<span style="color:var(--muted);margin-left:20px">&larr; PAM 模式（20N + GG = SpCas9）</span><br>
+        GAGTCCGAGCAGAAGAAGAA<wbr>NNN 3<span style="color:var(--muted);margin-left:20px">&larr; spacer + 允许错配数</span><br>
+        AGTCCGAGCAGAAGAAGAAGNNN 2
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">PAM 模式支持全部 IUPAC 简并碱基：N=任意，R=A/G，Y=C/T，S=G/C，W=A/T</div>
+    </div>
+
+    <!-- CRISPOR 操作步骤 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">CRISPOR 网页版操作步骤</h4>
+    <div class="step-list nick-steps" style="margin-bottom:20px">
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">1</div>
+        <div class="step-body"><strong>提交序列：</strong>打开 crispor.tefor.net，粘贴靶区域序列（100–2000 bp），选择基因组（如 Human hg38），PAM 选 <code>20bp-NGG-SpCas9</code>，点击 Submit。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">2</div>
+        <div class="step-body"><strong>解读评分列：</strong>Doench '16 活性分（&gt;50 优先）、MIT 特异性分（&gt;50 优先）、CFD score（越接近 1 越好）。Off-target 列中 <strong style="color:var(--cas9)">0mm 必须为 0</strong>，否则放弃该 gRNA。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">3</div>
+        <div class="step-body"><strong>查看脱靶详情：</strong>点击候选右侧 Off-targets 链接，重点关注落在外显子或功能区的脱靶。落在基因间区且 CFD 脱靶分 &lt;0.02 通常可接受。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">4</div>
+        <div class="step-body"><strong>nickCas9 成对模式：</strong>PAM 选项改选 <code>20bp-NGG-SpCas9, paired nickases</code>，CRISPOR 自动筛选 PAM-out 方向、间距 17–40 bp 的 gRNA 对，并给出成对特异性估算。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">5</div>
+        <div class="step-body"><strong>导出验证引物：</strong>点击 Primers for off-target sites，直接获得用于扩增子深度测序验证的 PCR 引物列表。</div>
+      </div>
+    </div>
+
+    <!-- 结果筛选标准 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">脱靶结果筛选标准</h4>
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+      <table class="compare-table">
+        <thead>
+          <tr><th>情况</th><th>判断</th><th>处理</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>存在 0 错配脱靶（完全匹配）</td><td style="color:var(--cas9);font-weight:600">一票否决</td><td>直接放弃该 gRNA</td></tr>
+          <tr><td>1 错配脱靶落在其他基因外显子</td><td style="color:#b8860b;font-weight:600">高风险</td><td>换 gRNA 或改用 nickCas9</td></tr>
+          <tr><td>2–3 错配脱靶落在内含子/基因间区，CFD &lt;0.05</td><td style="color:#0f6e56;font-weight:600">可接受</td><td>实验验证后使用</td></tr>
+          <tr><td>Top 3–5 脱靶位点</td><td style="color:var(--nick);font-weight:600">必须验证</td><td>扩增子深度测序确认实际脱靶率</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 联合使用建议 -->
+    <div style="padding:14px 20px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:13px;line-height:1.8;color:var(--muted)">
+      <strong style="color:var(--accent)">联合使用建议：</strong>
+      先用 CRISPOR 从靶区域筛出活性分 &gt;50、MIT 特异性 &gt;50 的候选（3–5 条）→ 再用 Cas-OFFinder 开启凸起检测（允许 1 bp RNA/DNA 凸起 + 3 错配）做更严格全基因组扫描 → 交叉比对两个结果，取一致通过的候选进行实验验证。
+    </div>
+  </div>
+
 </div>
 
 <!-- ═══ QUIZ PANEL ═══ -->
