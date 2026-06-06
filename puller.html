@@ -731,27 +731,184 @@
 
   <div class="divider"></div>
 
-  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;">三步调参方向</div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8250df;margin-bottom:8px;">▶▶ 进阶：四步拉制（整段变细）</div>
+
+  <svg viewBox="0 0 340 60" height="60">
+    <text x="0" y="12" font-family="JetBrains Mono" font-size="7.5" fill="#cf222e">三步结果：后段仍有粗"肩膀"</text>
+    <path d="M0,16 L180,16 L220,20 L300,24 L220,28 L180,32 L0,32 Z" fill="#fef2f2" stroke="#cf222e" stroke-width="1"/>
+    <text x="190" y="40" font-family="JetBrains Mono" font-size="7" fill="#cf222e">粗肩膀</text>
+
+    <text x="0" y="52" font-family="JetBrains Mono" font-size="7.5" fill="#1a7f37">四步结果：整段平滑收细 ✓</text>
+    <path d="M0,54 L160,54 L210,58 L270,61 L300,63 L270,65 L210,68 L160,72 L0,72 Z" fill="#f0fdf4" stroke="#1a7f37" stroke-width="1"/>
+  </svg>
+
+  <table class="param-table" style="margin-top:14px">
+    <tr>
+      <th>Line</th>
+      <th>Heat</th>
+      <th>Fil</th>
+      <th>Vel</th>
+      <th>Del</th>
+      <th>Pul</th>
+      <th style="font-size:9px;color:var(--muted)">作用</th>
+    </tr>
+    <tr class="line1">
+      <td>1</td>
+      <td>250</td>
+      <td>4</td>
+      <td>60</td>
+      <td>180</td>
+      <td>0</td>
+      <td style="font-size:10px;color:#0969da;text-align:left;padding-left:6px">塑形，控锥度长短</td>
+    </tr>
+    <tr style="color:#0969da">
+      <td>2 <span class="tag tag-blue">新增</span></td>
+      <td>252</td>
+      <td>4</td>
+      <td>50</td>
+      <td>190</td>
+      <td style="font-weight:700">0</td>
+      <td style="font-size:10px;color:#0969da;text-align:left;padding-left:6px">拉细整体过渡段</td>
+    </tr>
+    <tr style="color:#8250df">
+      <td>3 <span class="tag tag-purple">收细</span></td>
+      <td>255</td>
+      <td>3</td>
+      <td>40</td>
+      <td>200</td>
+      <td style="font-weight:700">0</td>
+      <td style="font-size:10px;color:#8250df;text-align:left;padding-left:6px">收细前段，不拉断</td>
+    </tr>
+    <tr class="line2">
+      <td>4</td>
+      <td>245</td>
+      <td>3</td>
+      <td>40</td>
+      <td>160</td>
+      <td>200</td>
+      <td style="font-size:10px;color:#cf222e;text-align:left;padding-left:6px">最终拉断，控开口</td>
+    </tr>
+  </table>
+
+  <div class="note" style="margin-top:12px">
+    Line 2 Vel=<strong>50</strong>（比 Line 1 慢）→ 过渡段拉得更均匀<br>
+    Line 2、3 Pul 均为 <strong>0</strong> → 只软化收细，不拉断<br>
+    四步分工：形状 → 过渡段 → 前段细度 → 开口
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;">四步调参方向</div>
 
   <div class="arrow-row">
     <div class="dot" style="background:#0969da"></div>
-    <div>锥度<strong>变长了</strong> → Line 1 <strong style="color:#0969da">Vel ↑</strong>（60→70）</div>
+    <div>锥度<strong>变长</strong> → Line 1 <strong style="color:#0969da">Vel ↑</strong>（60→70）</div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#0969da"></div>
+    <div>过渡段<strong>还是有肩膀</strong> → Line 2 <strong style="color:#0969da">Del ↑</strong> 或 <strong style="color:#0969da">Heat ↑</strong></div>
   </div>
   <div class="arrow-row">
     <div class="dot" style="background:#8250df"></div>
-    <div>前段<strong>还是太粗</strong> → Line 2 <strong style="color:#8250df">Heat ↑</strong> 或 <strong style="color:#8250df">Del ↑</strong></div>
+    <div>前段<strong>还是太粗</strong> → Line 3 <strong style="color:#8250df">Heat ↑</strong> 或 <strong style="color:#8250df">Del ↑</strong></div>
   </div>
   <div class="arrow-row">
     <div class="dot" style="background:#8250df"></div>
-    <div>前段<strong>太细/断了</strong> → Line 2 <strong style="color:#8250df">Heat ↓</strong> 或 <strong style="color:#8250df">Del ↓</strong></div>
+    <div>前段<strong>太细/断</strong> → Line 3 <strong style="color:#8250df">Heat ↓</strong> 或 <strong style="color:#8250df">Del ↓</strong></div>
   </div>
   <div class="arrow-row">
     <div class="dot" style="background:#cf222e"></div>
-    <div>开口<strong>太大</strong> → Line 3 <strong style="color:#cf222e">Pul ↑</strong> 或 <strong style="color:#cf222e">Del ↓</strong></div>
+    <div>开口<strong>太大</strong> → Line 4 <strong style="color:#cf222e">Pul ↑</strong> 或 <strong style="color:#cf222e">Del ↓</strong></div>
   </div>
   <div class="arrow-row">
     <div class="dot" style="background:#cf222e"></div>
-    <div>开口<strong>太小</strong> → Line 3 <strong style="color:#cf222e">Pul ↓</strong> 或 <strong style="color:#cf222e">Del ↑</strong></div>
+    <div>开口<strong>太小</strong> → Line 4 <strong style="color:#cf222e">Pul ↓</strong> 或 <strong style="color:#cf222e">Del ↑</strong></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 8c: Filament 解释 ═══ -->
+<div class="section">
+  <div class="section-title" style="color:#1a7f37">P-2000G · Filament 参数解释</div>
+
+  <svg viewBox="0 0 340 90" height="90">
+    <!-- Glass tube -->
+    <rect x="0" y="30" width="340" height="20" rx="4" fill="#eaeef2" stroke="#d0d7de" stroke-width="1"/>
+    <text x="170" y="43" font-family="JetBrains Mono" font-size="8" fill="#656d76" text-anchor="middle">玻璃管</text>
+
+    <!-- Laser scan narrow (Fil=2) -->
+    <text x="70" y="14" font-family="JetBrains Mono" font-size="7.5" fill="#cf222e" text-anchor="middle">Fil = 2（窄）</text>
+    <line x1="60" y1="18" x2="80" y2="18" stroke="#cf222e" stroke-width="1.5" marker-start="url(#arr2)" marker-end="url(#arr2)"/>
+    <rect x="60" y="19" width="20" height="11" rx="2" fill="rgba(207,34,46,0.15)" stroke="#cf222e" stroke-width="0.8"/>
+    <!-- laser beam dots narrow -->
+    <line x1="65" y1="8" x2="65" y2="19" stroke="#cf222e" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="70" y1="8" x2="70" y2="19" stroke="#cf222e" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="75" y1="8" x2="75" y2="19" stroke="#cf222e" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <text x="70" y="7" font-family="JetBrains Mono" font-size="6" fill="#cf222e" text-anchor="middle">激光束</text>
+
+    <!-- Laser scan wide (Fil=4) -->
+    <text x="250" y="14" font-family="JetBrains Mono" font-size="7.5" fill="#1a7f37" text-anchor="middle">Fil = 4（宽）</text>
+    <line x1="210" y1="18" x2="290" y2="18" stroke="#1a7f37" stroke-width="1.5"/>
+    <rect x="210" y="19" width="80" height="11" rx="2" fill="rgba(26,127,55,0.12)" stroke="#1a7f37" stroke-width="0.8"/>
+    <line x1="220" y1="8" x2="220" y2="19" stroke="#1a7f37" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="235" y1="8" x2="235" y2="19" stroke="#1a7f37" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="250" y1="8" x2="250" y2="19" stroke="#1a7f37" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="265" y1="8" x2="265" y2="19" stroke="#1a7f37" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="280" y1="8" x2="280" y2="19" stroke="#1a7f37" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <text x="250" y="7" font-family="JetBrains Mono" font-size="6" fill="#1a7f37" text-anchor="middle">激光束扫描范围</text>
+
+    <!-- Resulting needle shapes -->
+    <text x="70" y="62" font-family="JetBrains Mono" font-size="7" fill="#cf222e" text-anchor="middle">结果：锥度短</text>
+    <path d="M30,68 L90,68 L115,75 L90,82 L30,82 Z" fill="#fef2f2" stroke="#cf222e" stroke-width="1"/>
+
+    <text x="250" y="62" font-family="JetBrains Mono" font-size="7" fill="#1a7f37" text-anchor="middle">结果：锥度长、过渡平缓</text>
+    <path d="M170,68 L220,68 L290,75 L220,82 L170,82 Z" fill="#f0fdf4" stroke="#1a7f37" stroke-width="1"/>
+
+    <defs>
+      <marker id="arr2" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
+        <path d="M0,0 L4,2 L0,4 Z" fill="#cf222e"/>
+      </marker>
+    </defs>
+  </svg>
+
+  <div style="margin-top:14px">
+    <table class="opening-table">
+      <tr>
+        <th>Fil 值</th>
+        <th>扫描宽度</th>
+        <th>锥度</th>
+        <th>适合</th>
+      </tr>
+      <tr>
+        <td style="font-family:'JetBrains Mono',monospace">1–2</td>
+        <td style="font-size:11px;color:#cf222e">窄</td>
+        <td style="font-size:11px">短、针尖细</td>
+        <td style="font-size:11px;color:var(--muted)">收尖步骤（Line 2/3）</td>
+      </tr>
+      <tr class="highlight-row">
+        <td style="font-family:'JetBrains Mono',monospace">3–4</td>
+        <td style="font-size:11px;color:#1a7f37">中等</td>
+        <td style="font-size:11px">中等、过渡平缓</td>
+        <td style="font-size:11px;color:var(--muted)">塑形步骤（Line 1），常用</td>
+      </tr>
+      <tr>
+        <td style="font-family:'JetBrains Mono',monospace">5+</td>
+        <td style="font-size:11px;color:#0969da">宽</td>
+        <td style="font-size:11px">长、肩膀宽</td>
+        <td style="font-size:11px;color:var(--muted)">特殊用途</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="tip-check" style="margin-top:12px">
+    <strong>为什么叫 Filament？</strong><br>
+    早期 P-87/P-97 用<strong>金属电热丝（filament）</strong>加热，丝的长短决定加热范围。<br>
+    P-2000G 换成激光后保留了这个参数名，含义类比电热丝长度，<br>
+    实际上是<strong>激光扫描宽度</strong>。
+  </div>
+
+  <div class="note" style="margin-top:12px">
+    Program #17 中：Line 1 用 Fil=<strong>4</strong>（宽，塑形），Line 2/3 用 Fil=<strong>3</strong>（稍窄，收细）<br>
+    这是正确的搭配策略。
   </div>
 </div>
 
