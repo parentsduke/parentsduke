@@ -610,21 +610,22 @@
     <div class="modal-section-label">催信类型</div>
     <div style="display:flex;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
       <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
-        <input type="radio" name="cataType" value="letter" style="accent-color:var(--blue);cursor:pointer;"> 📄 催交录取通知书
+        <input type="radio" name="cataType" value="letter" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 📄 催交录取通知书
       </label>
       <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
-        <input type="radio" name="cataType" value="committed" style="accent-color:var(--blue);cursor:pointer;"> 📝 催交 Commitment Letter
+        <input type="radio" name="cataType" value="committed" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 📝 催交 Commitment Letter
       </label>
       <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
-        <input type="radio" name="cataType" value="dorm" style="accent-color:var(--blue);cursor:pointer;"> 🏠 催交宿舍照片
+        <input type="radio" name="cataType" value="dorm" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 🏠 催交宿舍照片
       </label>
       <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
-        <input type="radio" name="cataType" value="portal" style="accent-color:var(--blue);cursor:pointer;"> 🖥️ 催交 Duke Portal 截屏
+        <input type="radio" name="cataType" value="portal" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 🖥️ 催交 Duke Portal 截屏
       </label>
       <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
-        <input type="radio" name="cataType" value="sid" style="accent-color:var(--blue);cursor:pointer;"> 🪪 催交学生证截屏
+        <input type="radio" name="cataType" value="sid" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 🪪 催交学生证截屏
       </label>
     </div>
+    <div id="cataTypeHint" style="display:none;margin:6px 0 12px;padding:9px 12px;background:#f0f4ff;border-left:3px solid var(--blue);border-radius:0 6px 6px 0;font-size:12.5px;color:#334;line-height:1.6;"></div>
 
     <div class="modal-custom-label">自定义附加内容（选填）</div>
     <textarea class="modal-custom-input" id="cataModal-custom" placeholder="输入希望在邮件末尾附加的内容…" oninput="updateCataPreview()"></textarea>
@@ -1701,21 +1702,38 @@
 
   function closeCataModal() {
     document.getElementById('cataModal').classList.remove('open');
+    document.getElementById('cataTypeHint').style.display = 'none';
     _cataParams = null;
   }
 
+  const CATA_TYPE_HINTS = {
+    letter:    '邮件将要求家长上传录取通知书截图或 PDF。',
+    committed: '邮件将要求家长上传 Commitment Letter 截图或 PDF。',
+    dorm:      '邮件将要求家长上传学生本人在 Duke 宿舍门前或者室内的生活照，并填写宿舍楼名。',
+    portal:    '邮件将要求家长上传 Duke Portal 截屏，需显示学生姓名，其他内容可遮挡。',
+    sid:       '邮件将要求家长上传 Duke 学生证截屏，需显示学生姓名，其他内容可遮挡。',
+  };
+
+  function updateCataTypeHint() {
+    const type = document.querySelector('input[name="cataType"]:checked')?.value;
+    const hint = document.getElementById('cataTypeHint');
+    if (type && CATA_TYPE_HINTS[type]) {
+      hint.textContent = CATA_TYPE_HINTS[type];
+      hint.style.display = 'block';
+    } else {
+      hint.style.display = 'none';
+    }
+  }
+
   function updateCataPreview() {
-    const checked = [...document.querySelectorAll('#cataModal-checks input[type=checkbox]:checked')]
-      .map(cb => '• ' + cb.value);
     const custom = (document.getElementById('cataModal-custom').value || '').trim();
-    if (custom) checked.push('• ' + custom);
     const preview = document.getElementById('cataModal-preview');
-    if (checked.length === 0) {
+    if (!custom) {
       preview.classList.remove('show');
       preview.textContent = '';
     } else {
       preview.classList.add('show');
-      preview.textContent = '邮件附加询问内容预览：\n\n' + checked.join('\n');
+      preview.textContent = '邮件附加内容预览：\n\n• ' + custom;
     }
   }
 
