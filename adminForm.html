@@ -607,6 +607,16 @@
     <div class="modal-title">发送催信</div>
     <div class="modal-sub" id="cataModal-sub"></div>
 
+    <div class="modal-section-label">催信类型</div>
+    <div style="display:flex;gap:8px;margin-bottom:4px;">
+      <label style="flex:1;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+        <input type="radio" name="cataType" value="letter" style="accent-color:var(--blue);cursor:pointer;"> 📄 催交录取通知书
+      </label>
+      <label style="flex:1;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+        <input type="radio" name="cataType" value="committed" style="accent-color:var(--blue);cursor:pointer;"> 📝 催交 Commitment Letter
+      </label>
+    </div>
+
     <div class="modal-section-label">附加询问内容（可多选）</div>
     <div class="modal-check-group" id="cataModal-checks">
       <label class="modal-check-item">
@@ -1036,8 +1046,7 @@
         : '<span class="no-file">—</span>';
 
       const catalItems = r.submitter_email
-        ? `<button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');sendCatalogEmail('${r.id}','letter','${safeEmail}','${safeName}','${r.class_year||''}')">📄 催交录取通知书</button>
-           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');sendCatalogEmail('${r.id}','committed','${safeEmail}','${safeName}','${r.class_year||''}')">📝 催交 Commitment Letter</button>`
+        ? `<button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');openCataModal('${r.id}','${safeEmail}','${safeName}','${r.class_year||''}')">📧 催信</button>`
         : '';
 
       // ── 操作菜单（按状态生成菜单项）──
@@ -1647,6 +1656,30 @@
   // ── 催信模态框状态 ──
   let _cataParams = null;
 
+  // ── 打开催信模态框（不预设类型）──
+  function openCataModal(recordId, email, studentName, classYear) {
+    if (!email) { alert('该记录没有邮箱，无法发送催信'); return; }
+    _cataParams = { recordId, email, studentName, classYear };
+
+    document.getElementById('cataModal-sub').textContent = `${studentName}（${email}）`;
+
+    // 清空 radio
+    document.querySelectorAll('input[name="cataType"]').forEach(r => r.checked = false);
+    // 清空勾选和自定义内容
+    document.querySelectorAll('#cataModal-checks input[type=checkbox]').forEach(cb => cb.checked = false);
+    document.getElementById('cataModal-custom').value = '';
+    document.getElementById('cataModal-preview').classList.remove('show');
+    document.getElementById('cataModal-preview').textContent = '';
+    document.getElementById('cataModal-sendBtn').disabled = false;
+    document.getElementById('cataModal-sendBtn').textContent = '发送催信';
+
+    document.querySelectorAll('#cataModal-checks input[type=checkbox]').forEach(cb => {
+      cb.onchange = updateCataPreview;
+    });
+
+    document.getElementById('cataModal').classList.add('open');
+  }
+
   // ── 统一催信入口（打开模态框）──
   function sendCatalogEmail(recordId, type, email, studentName, classYear) {
     if (!email) { alert('该记录没有邮箱，无法发送催信'); return; }
@@ -1695,7 +1728,10 @@
 
   async function confirmSendCatalog() {
     if (!_cataParams) return;
-    const { recordId, type, email, studentName, classYear } = _cataParams;
+    const { recordId, email, studentName, classYear } = _cataParams;
+    // 如果是从旧入口进来已有type，否则从radio读
+    const type = _cataParams.type || (document.querySelector('input[name="cataType"]:checked')?.value);
+    if (!type) { alert('请选择催信类型'); return; }
 
     const checked = [...document.querySelectorAll('#cataModal-checks input[type=checkbox]:checked')]
       .map(cb => cb.value);
