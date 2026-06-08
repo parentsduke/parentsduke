@@ -608,12 +608,15 @@
     <div class="modal-sub" id="cataModal-sub"></div>
 
     <div class="modal-section-label">催信类型</div>
-    <div style="display:flex;gap:8px;margin-bottom:4px;">
-      <label style="flex:1;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+    <div style="display:flex;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
         <input type="radio" name="cataType" value="letter" style="accent-color:var(--blue);cursor:pointer;"> 📄 催交录取通知书
       </label>
-      <label style="flex:1;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
         <input type="radio" name="cataType" value="committed" style="accent-color:var(--blue);cursor:pointer;"> 📝 催交 Commitment Letter
+      </label>
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+        <input type="radio" name="cataType" value="dorm" style="accent-color:var(--blue);cursor:pointer;"> 🏠 催交宿舍照片
       </label>
     </div>
 
@@ -1740,16 +1743,23 @@
 
     const uploadUrl = `https://dukeparents.org/upload-cl.html?id=${recordId}`;
     const isLetter  = type === 'letter';
+    const isDorm    = type === 'dorm';
     const subject   = isLetter
       ? '请上传您的录取通知书 · 扯谈Duke家长群'
+      : isDorm
+      ? '请分享宿舍照片 · 扯谈Duke家长群'
       : '请上传您的 Commitment Letter · 扯谈Duke家长群';
     const line1 = isLetter
       ? `您好！我们注意到您的 Duke ${classYear || ''} 届录取通知书尚未上传。`
+      : isDorm
+      ? `您好！我们希望收集 Duke ${classYear || ''} 届同学的宿舍照片，用于展示在扯谈Duke家长群社区页面。`
       : `您好！我们注意到您已 Committed Duke ${classYear || ''} 届，但尚未上传 Commitment Letter。`;
     const line2 = isLetter
       ? '请点击下方按钮前往上传您的录取通知书文件（截图或 PDF 均可），以便我们完成审核。感谢配合！'
+      : isDorm
+      ? '请回复此邮件并附上宿舍照片，同时注明宿舍楼名。感谢分享！'
       : '请点击下方按钮前往上传您的 Commitment Letter 文件（截图或 PDF 均可），以便我们完成审核并邀请您加入家长群。感谢配合！';
-    const buttonText = isLetter ? '📎 上传录取通知书' : '📎 上传 Commitment Letter';
+    const buttonText = isLetter ? '📎 上传录取通知书' : isDorm ? '📧 回复邮件附上照片' : '📎 上传 Commitment Letter';
 
     // 构建附加询问段落
     const line3 = checked.length > 0
