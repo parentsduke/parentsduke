@@ -618,6 +618,12 @@
       <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
         <input type="radio" name="cataType" value="dorm" style="accent-color:var(--blue);cursor:pointer;"> 🏠 催交宿舍照片
       </label>
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+        <input type="radio" name="cataType" value="portal" style="accent-color:var(--blue);cursor:pointer;"> 🖥️ 催交 Duke Portal 截屏
+      </label>
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+        <input type="radio" name="cataType" value="sid" style="accent-color:var(--blue);cursor:pointer;"> 🪪 催交学生证截屏
+      </label>
     </div>
 
     <div class="modal-section-label">附加询问内容（可多选）</div>
@@ -631,8 +637,16 @@
         <label>提供 Commitment Letter</label>
       </label>
       <label class="modal-check-item">
-        <input type="checkbox" value="请提供您孩子宿舍的照片，并在回复中注明宿舍楼名。"/>
-        <label>提供宿舍照片并注明楼名</label>
+        <input type="checkbox" value="请提供您孩子本人在 Duke 宿舍门前或室内的生活照。"/>
+        <label>提供宿舍生活照</label>
+      </label>
+      <label class="modal-check-item">
+        <input type="checkbox" value="请提供您孩子 Duke Portal 的截屏（需显示学生姓名，其他内容可遮挡）。"/>
+        <label>提供 Duke Portal 截屏（显示姓名）</label>
+      </label>
+      <label class="modal-check-item">
+        <input type="checkbox" value="请提供您孩子 Duke 学生证的截屏（需显示学生姓名，其他内容可遮挡）。"/>
+        <label>提供 Duke 学生证截屏（显示姓名）</label>
       </label>
     </div>
 
@@ -1743,25 +1757,32 @@
 
     const isLetter  = type === 'letter';
     const isDorm    = type === 'dorm';
-    const uploadUrl = isDorm
-      ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=dorm`
-      : `https://dukeparents.org/upload-cl.html?id=${recordId}`;
-    const subject   = isLetter
-      ? '请上传您的录取通知书 · 扯谈Duke家长群'
-      : isDorm
-      ? '请上传宿舍照片 · 扯谈Duke家长群'
-      : '请上传您的 Commitment Letter · 扯谈Duke家长群';
-    const line1 = isLetter
-      ? `您好！我们注意到您的 Duke ${classYear || ''} 届录取通知书尚未上传。`
-      : isDorm
-      ? `您好！我们正在收集 Duke ${classYear || ''} 届同学的宿舍照片，用于展示在扯谈Duke家长群社区页面。`
-      : `您好！我们注意到您已 Committed Duke ${classYear || ''} 届，但尚未上传 Commitment Letter。`;
-    const line2 = isLetter
-      ? '请点击下方按钮前往上传您的录取通知书文件（截图或 PDF 均可），以便我们完成审核。感谢配合！'
-      : isDorm
-      ? '请点击下方按钮前往上传您的宿舍照片，并在页面中填写宿舍楼名。感谢分享！'
-      : '请点击下方按钮前往上传您的 Commitment Letter 文件（截图或 PDF 均可），以便我们完成审核并邀请您加入家长群。感谢配合！';
-    const buttonText = isLetter ? '📎 上传录取通知书' : isDorm ? '📷 上传宿舍照片' : '📎 上传 Commitment Letter';
+    const isPortal  = type === 'portal';
+    const isSid     = type === 'sid';
+    const uploadUrl = isDorm   ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=dorm`
+                    : isPortal ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=portal`
+                    : isSid    ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=sid`
+                    :            `https://dukeparents.org/upload-cl.html?id=${recordId}`;
+    const subject   = isLetter ? '请上传您的录取通知书 · 扯谈Duke家长群'
+                    : isDorm   ? '请上传宿舍照片 · 扯谈Duke家长群'
+                    : isPortal ? '请上传 Duke Portal 截屏 · 扯谈Duke家长群'
+                    : isSid    ? '请上传 Duke 学生证截屏 · 扯谈Duke家长群'
+                    :            '请上传您的 Commitment Letter · 扯谈Duke家长群';
+    const line1 = isLetter ? `您好！我们注意到您的 Duke ${classYear || ''} 届录取通知书尚未上传。`
+                : isDorm   ? `您好！我们正在收集 Duke ${classYear || ''} 届同学本人在宿舍门前或室内的生活照，用于展示在扯谈Duke家长群社区页面。`
+                : isPortal ? `您好！为核实学生身份，我们需要您上传孩子的 Duke Portal 截屏（Duke ${classYear || ''} 届）。`
+                : isSid    ? `您好！为核实学生身份，我们需要您上传孩子的 Duke 学生证截屏（Duke ${classYear || ''} 届）。`
+                :            `您好！我们注意到您已 Committed Duke ${classYear || ''} 届，但尚未上传 Commitment Letter。`;
+    const line2 = isLetter ? '请点击下方按钮前往上传您的录取通知书文件（截图或 PDF 均可），以便我们完成审核。感谢配合！'
+                : isDorm   ? '请点击下方按钮前往上传学生本人在 Duke 宿舍门前或者室内的生活照，并在页面中填写宿舍楼名。感谢分享！'
+                : isPortal ? '请点击下方按钮前往上传 Duke Portal 截屏，需显示学生姓名，其他内容可遮挡。感谢配合！'
+                : isSid    ? '请点击下方按钮前往上传 Duke 学生证截屏，需显示学生姓名，其他内容可遮挡。感谢配合！'
+                :            '请点击下方按钮前往上传您的 Commitment Letter 文件（截图或 PDF 均可），以便我们完成审核并邀请您加入家长群。感谢配合！';
+    const buttonText = isLetter ? '📎 上传录取通知书'
+                     : isDorm   ? '📷 上传宿舍照片'
+                     : isPortal ? '🖥️ 上传 Duke Portal 截屏'
+                     : isSid    ? '🪪 上传学生证截屏'
+                     :            '📎 上传 Commitment Letter';
 
     // 构建附加询问段落
     const line3 = checked.length > 0

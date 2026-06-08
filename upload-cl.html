@@ -290,7 +290,7 @@
     dorm: {
       headerTitle: '上传宿舍照片',
       cardTitle:   '上传宿舍照片',
-      cardSub:     '请上传您的宿舍照片，并填写宿舍楼名。<br/>照片将展示在扯谈Duke家长群社区页面，感谢分享！',
+      cardSub:     '请上传学生本人在 Duke 宿舍门前或者室内的生活照，并填写宿舍楼名。<br/>照片将展示在扯谈Duke家长群社区页面，感谢分享！',
       fileLabel:   '宿舍照片',
       uploadIcon:  '🏠',
       uploadHint:  '拖入或点击上传，支持 <strong>图片格式</strong>（JPG / PNG / HEIC 等）',
@@ -298,13 +298,35 @@
       dbField:     'dorm_photo_path',
       successSub:  '感谢上传宿舍照片！<br/>您的照片将在审核后展示在社区页面。',
     },
+    portal: {
+      headerTitle: '上传 Duke Portal 截屏',
+      cardTitle:   '上传 Duke Portal 截屏',
+      cardSub:     '请上传孩子 Duke Portal 的截屏，需显示学生姓名，其他内容可遮挡。',
+      fileLabel:   'Duke Portal 截屏',
+      uploadIcon:  '🖥️',
+      uploadHint:  '拖入或点击上传，支持 <strong>图片格式</strong>（JPG / PNG / HEIC 等）',
+      accept:      'image/*',
+      dbField:     'portal_screenshot_path',
+      successSub:  '感谢上传！<br/>管理员核实后将与您进一步联系。',
+    },
+    sid: {
+      headerTitle: '上传 Duke 学生证截屏',
+      cardTitle:   '上传 Duke 学生证截屏',
+      cardSub:     '请上传孩子 Duke 学生证的截屏，需显示学生姓名，其他内容可遮挡。',
+      fileLabel:   'Duke 学生证截屏',
+      uploadIcon:  '🪪',
+      uploadHint:  '拖入或点击上传，支持 <strong>图片格式</strong>（JPG / PNG / HEIC 等）',
+      accept:      'image/*',
+      dbField:     'student_id_path',
+      successSub:  '感谢上传！<br/>管理员核实后将与您进一步联系。',
+    },
   };
 
   // ── 初始化：从 URL 读取 id 和 mode，验证记录 ──
   async function init() {
     const params = new URLSearchParams(window.location.search);
     recordId = params.get('id');
-    pageMode = params.get('mode') === 'dorm' ? 'dorm' : 'cl';
+    pageMode = ['dorm','portal','sid'].includes(params.get('mode')) ? params.get('mode') : 'cl';
 
     const cfg = MODE_CONFIG[pageMode];
 
@@ -331,7 +353,7 @@
     try {
       const { data, error } = await db
         .from('admissions_submissions')
-        .select('id, student_name_cn, student_name_en, class_year, admission_type, committed_letter_path, dorm_photo_path, dorm_building')
+        .select('id, student_name_cn, student_name_en, class_year, admission_type, committed_letter_path, dorm_photo_path, dorm_building, portal_screenshot_path, student_id_path')
         .eq('id', recordId)
         .single();
 
@@ -344,7 +366,10 @@
       const year = data.class_year ? `${data.class_year} 届` : '';
       const type = data.admission_type || '';
 
-      const existingPath = pageMode === 'dorm' ? data.dorm_photo_path : data.committed_letter_path;
+      const existingPath = pageMode === 'dorm'   ? data.dorm_photo_path
+                         : pageMode === 'portal' ? data.portal_screenshot_path
+                         : pageMode === 'sid'    ? data.student_id_path
+                         :                        data.committed_letter_path;
       const hasExisting  = !!existingPath;
 
       let existingNote = '';
@@ -417,10 +442,11 @@
     hideMsg();
 
     const ext  = file.name.split('.').pop();
-    const folder = pageMode === 'dorm' ? 'dorm-photos' : 'submissions';
+    const folder = pageMode === 'dorm'   ? 'dorm-photos'
+                 : pageMode === 'portal' ? 'portal-screenshots'
+                 : pageMode === 'sid'    ? 'student-ids'
+                 :                        'submissions';
     const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-
-    updateProgressUI('uploading', file.name);
 
     db.storage.from(BUCKET).upload(path, file, { upsert: false }).then(({ error }) => {
       if (error) {
@@ -508,7 +534,10 @@
       if (!finalPath) {
         btn.textContent = '重试上传…';
         const ext  = selectedFile.name.split('.').pop();
-        const folder = pageMode === 'dorm' ? 'dorm-photos' : 'submissions';
+        const folder = pageMode === 'dorm'   ? 'dorm-photos'
+                     : pageMode === 'portal' ? 'portal-screenshots'
+                     : pageMode === 'sid'    ? 'student-ids'
+                     :                        'submissions';
         const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
         const { error: upErr } = await db.storage.from(BUCKET).upload(path, selectedFile, { upsert: false });
         if (upErr) throw new Error('文件上传失败：' + upErr.message);
