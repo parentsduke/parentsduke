@@ -1741,25 +1741,27 @@
     const custom = (document.getElementById('cataModal-custom').value || '').trim();
     if (custom) checked.push(custom);
 
-    const uploadUrl = `https://dukeparents.org/upload-cl.html?id=${recordId}`;
     const isLetter  = type === 'letter';
     const isDorm    = type === 'dorm';
+    const uploadUrl = isDorm
+      ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=dorm`
+      : `https://dukeparents.org/upload-cl.html?id=${recordId}`;
     const subject   = isLetter
       ? '请上传您的录取通知书 · 扯谈Duke家长群'
       : isDorm
-      ? '请分享宿舍照片 · 扯谈Duke家长群'
+      ? '请上传宿舍照片 · 扯谈Duke家长群'
       : '请上传您的 Commitment Letter · 扯谈Duke家长群';
     const line1 = isLetter
       ? `您好！我们注意到您的 Duke ${classYear || ''} 届录取通知书尚未上传。`
       : isDorm
-      ? `您好！我们希望收集 Duke ${classYear || ''} 届同学的宿舍照片，用于展示在扯谈Duke家长群社区页面。`
+      ? `您好！我们正在收集 Duke ${classYear || ''} 届同学的宿舍照片，用于展示在扯谈Duke家长群社区页面。`
       : `您好！我们注意到您已 Committed Duke ${classYear || ''} 届，但尚未上传 Commitment Letter。`;
     const line2 = isLetter
       ? '请点击下方按钮前往上传您的录取通知书文件（截图或 PDF 均可），以便我们完成审核。感谢配合！'
       : isDorm
-      ? '请回复此邮件并附上宿舍照片，同时注明宿舍楼名。感谢分享！'
+      ? '请点击下方按钮前往上传您的宿舍照片，并在页面中填写宿舍楼名。感谢分享！'
       : '请点击下方按钮前往上传您的 Commitment Letter 文件（截图或 PDF 均可），以便我们完成审核并邀请您加入家长群。感谢配合！';
-    const buttonText = isLetter ? '📎 上传录取通知书' : isDorm ? '📧 回复邮件附上照片' : '📎 上传 Commitment Letter';
+    const buttonText = isLetter ? '📎 上传录取通知书' : isDorm ? '📷 上传宿舍照片' : '📎 上传 Commitment Letter';
 
     // 构建附加询问段落
     const line3 = checked.length > 0

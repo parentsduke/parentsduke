@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>上传 Commitment Letter · DukeParents</title>
+  <title>上传材料 · DukeParents</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -190,7 +190,7 @@
 <header>
   <span class="hd">D</span>
   <div>
-    <div class="ht">上传 Commitment Letter</div>
+    <div class="ht" id="headerTitle">上传材料</div>
   </div>
 </header>
 
@@ -218,17 +218,17 @@
 
   <!-- 上传表单 -->
   <div class="upload-card" id="uploadCard">
-    <div class="card-title">上传材料</div>
-    <div class="card-sub">请上传您的材料（录取通知书 / Commitment Letter，截图或 PDF 均可）。<br/>如已上传过，可继续补充，文件将追加保存。</div>
+    <div class="card-title" id="cardTitle">上传材料</div>
+    <div class="card-sub" id="cardSub"></div>
 
     <div class="student-info" id="studentInfo">加载中…</div>
 
-    <label class="upload-label">Commitment Letter <span style="color:var(--red)">*</span></label>
+    <label class="upload-label" id="fileLabel">文件 <span style="color:var(--red)">*</span></label>
     <div class="upload-zone" id="uploadZone"
          ondragover="handleDrag(event)" ondragleave="handleDragLeave()" ondrop="handleDrop(event)">
       <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFile(event)"/>
-      <div class="upload-icon">📄</div>
-      <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
+      <div class="upload-icon" id="uploadIcon">📄</div>
+      <div class="upload-hint" id="uploadHint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
     </div>
     <div class="file-preview" id="filePreview">
       <span class="fname" id="fileName"></span>
@@ -237,6 +237,19 @@
     <div class="upload-progress" id="uploadProgress">
       <span id="progressLabel">上传中…</span>
       <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <!-- 宿舍楼名（仅 dorm 模式显示） -->
+    <div id="dormBuildingWrap" style="display:none;margin-top:20px;">
+      <label class="upload-label">宿舍楼名 <span style="color:var(--red)">*</span></label>
+      <input type="text" id="dormBuilding"
+        placeholder="例如：Edens Quad、Wilson、Crowell…"
+        style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;
+               font-size:14px;font-family:'Noto Serif SC',serif;background:#faf9f7;
+               color:var(--text);outline:none;box-sizing:border-box;"
+        onfocus="this.style.borderColor='var(--blue)'"
+        onblur="this.style.borderColor='var(--border)'"
+      />
     </div>
 
     <div class="msg-error" id="msgError"></div>
@@ -256,14 +269,59 @@
   const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   let recordId = null;
+  let pageMode = 'cl'; // 'cl' | 'dorm'
   let selectedFile = null;
   let preUploadPath = null;
   let preUploadStatus = null; // null | 'uploading' | 'done' | 'error'
 
-  // ── 初始化：从 URL 读取 id，验证记录 ──
+  // ── 页面文案配置 ──
+  const MODE_CONFIG = {
+    cl: {
+      headerTitle: '上传 Commitment Letter',
+      cardTitle:   '上传材料',
+      cardSub:     '请上传您的材料（录取通知书 / Commitment Letter，截图或 PDF 均可）。<br/>如已上传过，可继续补充，文件将追加保存。',
+      fileLabel:   'Commitment Letter',
+      uploadIcon:  '📄',
+      uploadHint:  '拖入或点击上传，支持 <strong>图片 / PDF</strong>',
+      accept:      'image/*,.pdf',
+      dbField:     'committed_letter_path',
+      successSub:  '感谢上传！<br/>管理员审核后将发送入群链接到您的邮箱，请耐心等待。',
+    },
+    dorm: {
+      headerTitle: '上传宿舍照片',
+      cardTitle:   '上传宿舍照片',
+      cardSub:     '请上传您的宿舍照片，并填写宿舍楼名。<br/>照片将展示在扯谈Duke家长群社区页面，感谢分享！',
+      fileLabel:   '宿舍照片',
+      uploadIcon:  '🏠',
+      uploadHint:  '拖入或点击上传，支持 <strong>图片格式</strong>（JPG / PNG / HEIC 等）',
+      accept:      'image/*',
+      dbField:     'dorm_photo_path',
+      successSub:  '感谢上传宿舍照片！<br/>您的照片将在审核后展示在社区页面。',
+    },
+  };
+
+  // ── 初始化：从 URL 读取 id 和 mode，验证记录 ──
   async function init() {
     const params = new URLSearchParams(window.location.search);
     recordId = params.get('id');
+    pageMode = params.get('mode') === 'dorm' ? 'dorm' : 'cl';
+
+    const cfg = MODE_CONFIG[pageMode];
+
+    // 应用文案
+    document.getElementById('headerTitle').textContent = cfg.headerTitle;
+    document.getElementById('cardTitle').textContent   = cfg.cardTitle;
+    document.getElementById('cardSub').innerHTML       = cfg.cardSub;
+    document.getElementById('fileLabel').innerHTML     = `${cfg.fileLabel} <span style="color:var(--red)">*</span>`;
+    document.getElementById('uploadIcon').textContent  = cfg.uploadIcon;
+    document.getElementById('uploadHint').innerHTML    = cfg.uploadHint;
+    document.getElementById('fileInput').accept        = cfg.accept;
+    document.getElementById('screenSuccess').querySelector('.state-sub').innerHTML = cfg.successSub;
+
+    // 宿舍模式显示楼名输入框
+    if (pageMode === 'dorm') {
+      document.getElementById('dormBuildingWrap').style.display = 'block';
+    }
 
     if (!recordId) {
       showError('链接缺少记录 ID，请联系管理员重新发送。');
@@ -273,7 +331,7 @@
     try {
       const { data, error } = await db
         .from('admissions_submissions')
-        .select('id, student_name_cn, student_name_en, class_year, admission_type, committed_letter_path')
+        .select('id, student_name_cn, student_name_en, class_year, admission_type, committed_letter_path, dorm_photo_path, dorm_building')
         .eq('id', recordId)
         .single();
 
@@ -282,14 +340,27 @@
         return;
       }
 
-      // 显示上传表单（不拦截已上传过的记录，允许追加）
       const name = data.student_name_cn || data.student_name_en || '同学';
       const year = data.class_year ? `${data.class_year} 届` : '';
       const type = data.admission_type || '';
-      const hasExisting = !!data.committed_letter_path;
+
+      const existingPath = pageMode === 'dorm' ? data.dorm_photo_path : data.committed_letter_path;
+      const hasExisting  = !!existingPath;
+
+      let existingNote = '';
+      if (hasExisting) {
+        existingNote = pageMode === 'dorm'
+          ? '<br/><span style="color:#1a6b3c;font-size:12px;">✅ 已有照片，本次上传将追加</span>'
+          : '<br/><span style="color:#1a6b3c;font-size:12px;">✅ 已有文件，本次上传将追加</span>';
+      }
+      if (pageMode === 'dorm' && data.dorm_building) {
+        existingNote += `<br/><span style="color:#1a6b3c;font-size:12px;">🏠 已记录楼名：${data.dorm_building}</span>`;
+        // 预填楼名
+        document.getElementById('dormBuilding').value = data.dorm_building;
+      }
+
       document.getElementById('studentInfo').innerHTML =
-        `学生姓名：<strong>${name}</strong>　届次：<strong>${year}</strong>　录取类型：<strong>${type}</strong>`
-        + (hasExisting ? '<br/><span style="color:#1a6b3c;font-size:12px;">✅ 已有文件，本次上传将追加</span>' : '');
+        `学生姓名：<strong>${name}</strong>　届次：<strong>${year}</strong>　录取类型：<strong>${type}</strong>${existingNote}`;
 
       showScreen('uploadCard');
 
@@ -308,7 +379,7 @@
     if (target.classList.contains('state-screen')) {
       target.classList.add('active');
     } else {
-      target.classList.add('active'); // upload-card uses same pattern
+      target.classList.add('active');
     }
   }
 
@@ -345,9 +416,9 @@
     document.getElementById('filePreview').classList.add('show');
     hideMsg();
 
-    // 立即后台上传
     const ext  = file.name.split('.').pop();
-    const path = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const folder = pageMode === 'dorm' ? 'dorm-photos' : 'submissions';
+    const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
 
     updateProgressUI('uploading', file.name);
 
@@ -410,6 +481,12 @@
     hideMsg();
     if (!selectedFile) { showMsg('请先选择文件'); return; }
 
+    // 宿舍模式必须填楼名
+    if (pageMode === 'dorm') {
+      const building = (document.getElementById('dormBuilding').value || '').trim();
+      if (!building) { showMsg('请填写宿舍楼名'); return; }
+    }
+
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.textContent = '提交中…';
@@ -431,7 +508,8 @@
       if (!finalPath) {
         btn.textContent = '重试上传…';
         const ext  = selectedFile.name.split('.').pop();
-        const path = `submissions/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+        const folder = pageMode === 'dorm' ? 'dorm-photos' : 'submissions';
+        const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
         const { error: upErr } = await db.storage.from(BUCKET).upload(path, selectedFile, { upsert: false });
         if (upErr) throw new Error('文件上传失败：' + upErr.message);
         finalPath = path;
@@ -439,27 +517,37 @@
 
       btn.textContent = '保存中…';
 
+      const dbField = MODE_CONFIG[pageMode].dbField;
+
       // 读取现有路径，合并为数组（追加模式）
       const { data: current } = await db
         .from('admissions_submissions')
-        .select('committed_letter_path')
+        .select(dbField)
         .eq('id', recordId)
         .single();
 
       let existing = [];
-      if (current?.committed_letter_path) {
+      const existingRaw = current?.[dbField];
+      if (existingRaw) {
         try {
-          existing = JSON.parse(current.committed_letter_path);
+          existing = JSON.parse(existingRaw);
           if (!Array.isArray(existing)) existing = [existing];
-        } catch(e) { existing = [current.committed_letter_path]; }
+        } catch(e) { existing = [existingRaw]; }
       }
       const newPaths = [...existing, finalPath];
       const newValue = newPaths.length === 1 ? newPaths[0] : JSON.stringify(newPaths);
 
-      // UPDATE
+      const updatePayload = { [dbField]: newValue };
+
+      // 宿舍模式同时保存楼名
+      if (pageMode === 'dorm') {
+        const building = (document.getElementById('dormBuilding').value || '').trim();
+        if (building) updatePayload.dorm_building = building;
+      }
+
       const { error: updErr } = await db
         .from('admissions_submissions')
-        .update({ committed_letter_path: newValue })
+        .update(updatePayload)
         .eq('id', recordId);
 
       if (updErr) throw new Error('保存失败：' + updErr.message);
