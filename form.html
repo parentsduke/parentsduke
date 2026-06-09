@@ -865,7 +865,7 @@
         </div>
         <div class="form-group full" id="dormPhotoGroup" style="display:none;">
           <label>文件上传（至少上传一项）</label>
-          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;">宿舍照片 / Committed Letter / 录取通知书 / Duke Portal 截屏 / 学生证截屏，均可选，至少上传其中一项</div>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;">宿舍照片 / Committed Letter / 录取通知书，三项均可选，至少上传其中一项</div>
 
           <!-- 宿舍照片 -->
           <div style="margin-bottom:12px;">
@@ -914,38 +914,6 @@
               <button class="rm" onclick="removeFile('oldLetter')">✕</button>
             </div>
           </div>
-
-          <!-- Duke Portal 截屏 -->
-          <div style="margin-bottom:12px;">
-            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;">Duke Portal 截屏（可选）<span style="font-weight:400;color:#888;margin-left:6px;">需显示学生姓名，其他内容可遮挡</span></div>
-            <div class="upload-zone" id="portalZone"
-                 ondragover="handleDrag(event,'portalZone')"
-                 ondragleave="handleDragLeave('portalZone')"
-                 ondrop="handleDrop(event,'portal')">
-              <input type="file" id="fPortalScreenshot" accept="image/*" onchange="handleFile(event,'portal')"/>
-              <div class="upload-hint">拖入或点击上传，支持 <strong>图片</strong></div>
-            </div>
-            <div class="file-preview" id="portalPreview">
-              <span class="fname" id="portalName"></span>
-              <button class="rm" onclick="removeFile('portal')">✕</button>
-            </div>
-          </div>
-
-          <!-- 学生证截屏 -->
-          <div>
-            <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;">Duke 学生证截屏（可选）<span style="font-weight:400;color:#888;margin-left:6px;">需显示学生姓名，其他内容可遮挡</span></div>
-            <div class="upload-zone" id="sidZone"
-                 ondragover="handleDrag(event,'sidZone')"
-                 ondragleave="handleDragLeave('sidZone')"
-                 ondrop="handleDrop(event,'sid')">
-              <input type="file" id="fStudentId" accept="image/*" onchange="handleFile(event,'sid')"/>
-              <div class="upload-hint">拖入或点击上传，支持 <strong>图片</strong></div>
-            </div>
-            <div class="file-preview" id="sidPreview">
-              <span class="fname" id="sidName"></span>
-              <button class="rm" onclick="removeFile('sid')">✕</button>
-            </div>
-          </div>
         </div>
         <!-- 研究生录取通知书（仅研究生届次显示） -->
         <div class="form-group full" id="gradLetterGroup" style="display:none;">
@@ -960,6 +928,39 @@
           <div class="file-preview" id="gradLetterPreview">
             <span class="fname" id="gradLetterName"></span>
             <button class="rm" onclick="removeFile('gradLetter')">✕</button>
+          </div>
+        </div>
+        </div>
+        <!-- Duke Portal 截屏（所有申请者可选） -->
+        <div class="form-group full" id="portalGroup">
+          <label>Duke Portal 截屏（可选）</label>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;">需显示学生姓名，其他内容可遮挡</div>
+          <div class="upload-zone" id="portalZone"
+               ondragover="handleDrag(event,'portalZone')"
+               ondragleave="handleDragLeave('portalZone')"
+               ondrop="handleDrop(event,'portal')">
+            <input type="file" id="fPortalScreenshot" accept="image/*" onchange="handleFile(event,'portal')"/>
+            <div class="upload-hint">拖入或点击上传，支持 <strong>图片</strong></div>
+          </div>
+          <div class="file-preview" id="portalPreview">
+            <span class="fname" id="portalName"></span>
+            <button class="rm" onclick="removeFile('portal')">✕</button>
+          </div>
+        </div>
+        <!-- Duke 学生证截屏（所有申请者可选） -->
+        <div class="form-group full" id="sidGroup">
+          <label>Duke 学生证截屏（可选）</label>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;">需显示学生姓名，其他内容可遮挡</div>
+          <div class="upload-zone" id="sidZone"
+               ondragover="handleDrag(event,'sidZone')"
+               ondragleave="handleDragLeave('sidZone')"
+               ondrop="handleDrop(event,'sid')">
+            <input type="file" id="fStudentId" accept="image/*" onchange="handleFile(event,'sid')"/>
+            <div class="upload-hint">拖入或点击上传，支持 <strong>图片</strong></div>
+          </div>
+          <div class="file-preview" id="sidPreview">
+            <span class="fname" id="sidName"></span>
+            <button class="rm" onclick="removeFile('sid')">✕</button>
           </div>
         </div>
         <span id="progressLabel" style="display:none;">上传中…</span>
