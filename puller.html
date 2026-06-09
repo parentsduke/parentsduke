@@ -247,9 +247,60 @@
 <body>
 
 <div class="header">
-  <h1>Sutter P-1000 · Ramp = 694</h1>
-  <h2>移液管拉制参数示意</h2>
-  <div class="subtitle">小鼠原核注射针 · Borosilicate with filament · OD 1.0mm</div>
+  <h1>Sutter P-1000 · P-2000G</h1>
+  <h2>拉针参数完整手册</h2>
+  <div class="subtitle">小鼠原核显微注射 · CRISPR/Cas9 RNP · P-2000G PROG#56 已验证</div>
+</div>
+
+<!-- ═══ SECTION 0: 毛细管型号 ═══ -->
+<div class="section">
+  <div class="section-title" style="color:#8250df">毛细管 · WPI TW100F-6</div>
+
+  <table class="opening-table">
+    <tr>
+      <th>规格</th>
+      <th>值</th>
+      <th>说明</th>
+    </tr>
+    <tr>
+      <td>品牌/型号</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">TW100F-6</td>
+      <td style="font-size:11px;color:var(--muted)">World Precision Instruments</td>
+    </tr>
+    <tr>
+      <td>材质</td>
+      <td style="font-size:12px;font-weight:600">硼硅酸盐</td>
+      <td style="font-size:11px;color:var(--muted)">Borosilicate（非石英）</td>
+    </tr>
+    <tr>
+      <td>外径 OD</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:12px">1.0 mm</td>
+      <td style="font-size:11px;color:var(--muted)">标准尺寸</td>
+    </tr>
+    <tr>
+      <td>壁厚</td>
+      <td style="font-size:12px;color:#1a7f37;font-weight:600">Thin wall</td>
+      <td style="font-size:11px;color:var(--muted)">ID ~0.75 mm，比厚壁更易软化</td>
+    </tr>
+    <tr class="highlight-row">
+      <td>内置细丝</td>
+      <td style="font-size:12px;color:#0969da;font-weight:700">有（W/FIL）✓</td>
+      <td style="font-size:11px;color:var(--muted)">毛细力自动导液至针尖，无需背充</td>
+    </tr>
+    <tr>
+      <td>长度</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:12px">6"（15 cm）</td>
+      <td style="font-size:11px;color:var(--muted)">适配 P-2000G 夹具</td>
+    </tr>
+  </table>
+
+  <div class="tip-check" style="margin-top:12px;border-color:rgba(9,105,218,0.3);background:#f0f6ff">
+    <strong>内置细丝的优势（对 RNP 注射尤其重要）</strong><br>
+    ① 充液时毛细力自动将液体导向针尖，<strong>无需背充针</strong><br>
+    ② 减少蛋白在管内停留时间 → <strong>降低 Cas9 吸附堵针</strong><br>
+    ③ 针尖充液更完全，气泡少<br>
+    ④ 薄壁 + 有丝 → 与 PROG #56（HEAT=250, PUL=185）匹配良好 ✓
+  </div>
 </div>
 
 <!-- ═══ SECTION 1: 两步原理 ═══ -->
@@ -909,6 +960,116 @@
   <div class="note" style="margin-top:12px">
     Program #17 中：Line 1 用 Fil=<strong>4</strong>（宽，塑形），Line 2/3 用 Fil=<strong>3</strong>（稍窄，收细）<br>
     这是正确的搭配策略。
+  </div>
+</div>
+
+
+<!-- ═══ SECTION P-2000G 参数手册 ═══ -->
+<div class="section">
+  <div class="section-title" style="color:#1a7f37">P-2000G · PROG #56 当前确认参数</div>
+
+  <!-- LCD display -->
+  <div style="background:#1a2400;border:1px solid #3a5a00;border-radius:6px;padding:14px 16px;margin-bottom:14px;box-shadow:0 0 20px rgba(0,200,100,0.06)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a8a40;margin-bottom:4px;letter-spacing:0.05em">SUTTER INSTRUMENT CO.&nbsp; MODEL P-2000G</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#00e070;text-shadow:0 0 6px rgba(0,220,100,0.4);line-height:1.7">
+      HEAT=<span style="color:#fff;font-weight:700">250</span>,FIL=&nbsp;<span style="color:#fff;font-weight:700">4</span>,VEL=<span style="color:#fff;font-weight:700">25</span>,DEL=<span style="color:#fff;font-weight:700">235</span>,PUL=<span style="color:#fff;font-weight:700">185</span>
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a8a40;margin-top:4px">LINE=1,PROG=56,W&nbsp;&nbsp;&nbsp;,JUN 09 2026 &nbsp;·&nbsp; 已验证 ✓</div>
+  </div>
+
+  <!-- 5 param cards -->
+  <table class="param-table" style="margin-bottom:4px">
+    <tr>
+      <th>参数</th>
+      <th>值</th>
+      <th style="text-align:left;padding-left:8px">物理含义</th>
+      <th>调大效果</th>
+    </tr>
+    <tr>
+      <td style="color:#0969da;font-weight:700">HEAT</td>
+      <td>250</td>
+      <td style="text-align:left;padding-left:8px;font-size:11px;color:var(--muted)">CO₂激光功率，控制玻璃软化程度</td>
+      <td style="font-size:10px;color:#1a7f37">针尖更细/长</td>
+    </tr>
+    <tr>
+      <td style="color:#0969da;font-weight:700">FIL</td>
+      <td>4</td>
+      <td style="text-align:left;padding-left:8px;font-size:11px;color:var(--muted)">激光扫描宽度，决定软化区长短</td>
+      <td style="font-size:10px;color:#1a7f37">锥形更长</td>
+    </tr>
+    <tr>
+      <td style="color:#0969da;font-weight:700">VEL</td>
+      <td>25</td>
+      <td style="text-align:left;padding-left:8px;font-size:11px;color:var(--muted)">触发强拉的速度阈值</td>
+      <td style="font-size:10px;color:#cf222e">针尖较粗</td>
+    </tr>
+    <tr>
+      <td style="color:#0969da;font-weight:700">DEL</td>
+      <td>235</td>
+      <td style="text-align:left;padding-left:8px;font-size:11px;color:var(--muted)">激光关闭后到拉制的延迟(ms)，热量继续扩散</td>
+      <td style="font-size:10px;color:#1a7f37">锥形更渐变</td>
+    </tr>
+    <tr>
+      <td style="color:#cf222e;font-weight:700">PUL</td>
+      <td style="font-weight:700">185</td>
+      <td style="text-align:left;padding-left:8px;font-size:11px;color:var(--muted)">第二阶段机械拉力，直接决定针尖粗细</td>
+      <td style="font-size:10px;color:#cf222e">针尖更细(≥190堵针)</td>
+    </tr>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- PUL comparison -->
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">PUL 值选择 · 原核 CRISPR RNP 注射</div>
+
+  <table class="opening-table">
+    <tr>
+      <th>PUL</th>
+      <th>针尖估计</th>
+      <th>评估</th>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace">170</td>
+      <td style="font-size:11px">~0.5–0.8 µm</td>
+      <td style="font-size:11px;color:var(--muted)">稳定，略粗</td>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace">180</td>
+      <td style="font-size:11px">~0.3–0.5 µm</td>
+      <td style="font-size:11px;color:#1a7f37">好</td>
+    </tr>
+    <tr class="highlight-row">
+      <td style="font-family:'JetBrains Mono',monospace;font-weight:700">185</td>
+      <td style="font-size:11px;font-weight:700">~0.3 µm</td>
+      <td style="font-size:11px;color:#0969da;font-weight:700">✓ 当前 · 甜点区间</td>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace">190+</td>
+      <td style="font-size:11px">&lt;0.2 µm</td>
+      <td style="font-size:11px;color:#cf222e">过细，堵针风险高 ✗</td>
+    </tr>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- Tuning rules -->
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">调参速查（P-2000G 单步程序）</div>
+
+  <div class="arrow-row">
+    <div class="dot" style="background:#0969da"></div>
+    <div>针尖更细 → 优先 <strong style="color:#0969da">HEAT ↑</strong>（255→260），其次 <strong style="color:#cf222e">PUL ↑</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#1a7f37"></div>
+    <div>锥形更长渐变 → <strong style="color:#1a7f37">DEL ↑</strong>（235→245）或 <strong style="color:#1a7f37">FIL ↑</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#cf222e"></div>
+    <div>堵针频繁 → <strong style="color:#cf222e">PUL ↓</strong> 到 175–180，注射液离心取上清</div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#8250df"></div>
+    <div>存活率低 → 降低注射量，检查针尖是否过粗或注射压力过高</div>
   </div>
 </div>
 
