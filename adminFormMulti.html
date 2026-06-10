@@ -1298,6 +1298,7 @@
       const sidCell = r.student_id_path
         ? `<a class="file-link" href="#" onclick="openFile('${r.student_id_path}');return false;">查看截屏</a>`
         : `<span class="no-file">—</span>`;
+      return `<tr id="row-${r.id}">
         <td id="cell-cat-${r.id}" style="text-align:center;padding:8px 6px;">${buildCatMenu(r)}</td>
         ${personCell(r.id, '笑', allRecords)}
         ${personCell(r.id, '奕', allRecords)}
