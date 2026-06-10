@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>录取信息管理 · DukeParents</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:   #001a4d;
+      --blue:   #003087;
+      --gold:   #B8963E;
+      --gold-lt:#f5ecd4;
+      --bg:     #f5f3ef;
+      --card:   #ffffff;
+      --border: #e2ddd6;
+      --text:   #1a1a1a;
+      --muted:  #888070;
+      --red:    #C84B31;
+      --green:  #1a6b3c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: 'Noto Serif SC', serif; color: var(--text); height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+
+    /* ── Header ── */
+    header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      padding: 0 16px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; flex-shrink: 0; }
+    .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; white-space: nowrap; }
+    .header-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .btn-logout {
+      padding: 6px 12px;
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Noto Serif SC', serif;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── Login ── */
+    #loginScreen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 63px);
+      padding: 40px 20px;
+    }
+    .login-card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .login-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .login-sub {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Noto Serif SC', serif;
+      background: #faf9f7;
+      color: var(--text);
+      outline: none;
+    }
+    .form-group input:focus { border-color: var(--blue); background: #fff; }
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .btn-login:hover { background: var(--navy); }
+    .btn-login:disabled { background: #aab4cc; cursor: not-allowed; }
+    .login-error {
+      margin-top: 16px;
+      padding: 10px 14px;
+      background: #fdecea;
+      color: var(--red);
+      border-radius: 6px;
+      font-size: 13px;
+      display: none;
+    }
+    .login-error.show { display: block; }
+
+    /* ── Admin Panel ── */
+    #adminPanel { display: none; padding: 32px 16px 16px; flex: 1; overflow: hidden; flex-direction: column; min-height: 0; }
+
+    @media (min-width: 768px) {
+      header { padding: 0 32px; }
+      #adminPanel { padding: 32px 24px 16px; }
+      .btn-export { padding: 10px 20px; font-size: 13px; }
+      .user-email { max-width: none; }
+      .table-wrap { padding-bottom: 16px; }
+    }
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .panel-title { font-size: 20px; font-weight: 700; color: var(--navy); }
+    .panel-meta { font-size: 13px; color: var(--muted); }
+    .btn-export {
+      padding: 10px 14px;
+      background: var(--gold);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-export:hover { background: #a07830; }
+
+    /* ── Filters ── */
+    .filters {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filters select, .filters input {
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'Noto Serif SC', serif;
+      background: #faf9f7;
+      color: var(--text);
+      outline: none;
+    }
+    .filters select:focus, .filters input:focus { border-color: var(--blue); }
+    .filter-label { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow-x: scroll;
+      overflow-y: scroll;
+      flex: 1;
+      min-height: 0;
+      
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      scrollbar-width: thin;
+      scrollbar-color: #c9a84c #f0f0f0;
+      padding-bottom: 0;
+    }
+    .table-wrap::-webkit-scrollbar {
+      height: 8px;
+      width: 6px;
+    }
+    .table-wrap::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: #c9a84c;
+      border-radius: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+      min-width: 1260px;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--navy);
+      color: #fff;
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    thead th:hover { background: #002470; }
+    thead th.sort-asc::after { content: ' ▲'; font-size: 10px; }
+    thead th.sort-desc::after { content: ' ▼'; font-size: 10px; }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:hover { background: #faf9f7; }
+    tbody tr.row-left-group { background: #fff7ed; }
+    tbody tr.row-left-group:hover { background: #feecd6; }
+    tbody tr.row-not-joined { background: #fefce8; }
+    tbody tr.row-not-joined:hover { background: #fef9c3; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 11px 14px; vertical-align: top; }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'DM Mono', monospace;
+    }
+    .tag-ed { background: #e8f0fe; color: #1a3c8f; }
+    .tag-rd { background: #e8f5e9; color: #1a5c2a; }
+    .tag-yes { background: #e8f5e9; color: #1a5c2a; }
+    .tag-no  { background: #fdecea; color: #8b2a1a; }
+    .tag-shelved { background: #fff3e0; color: #b45309; }
+    .file-link {
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .file-link:hover { text-decoration: underline; }
+    .no-file { color: var(--muted); font-size: 12px; }
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .empty {
+      text-align: center;
+      padding: 60px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .user-email {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      font-family: 'DM Mono', monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+    }
+
+    /* ── 人员标记列 ── */
+    .person-select {
+      appearance: none;
+      -webkit-appearance: none;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      text-align: center;
+      width: 36px;
+    }
+    .person-select:hover { background: rgba(0,0,0,0.06); }
+    .person-select:focus { outline: 1px solid var(--blue); border-radius: 4px; }
+    td.person-cell { text-align: center; padding: 8px 6px; }
+    th.person-th { text-align: center; min-width: 48px; }
+
+    /* ── 催信下拉菜单 ── */
+    .catalist-wrap { position: relative; display: inline-block; }
+    .catalist-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      z-index: 100;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      min-width: 170px;
+      overflow: hidden;
+    }
+    .catalist-menu.open { display: block; }
+    .catalist-item {
+      display: block;
+      width: 100%;
+      padding: 9px 14px;
+      background: none;
+      border: none;
+      text-align: left;
+      font-size: 12px;
+      font-family: 'Noto Serif SC', serif;
+      color: var(--text);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .catalist-item:hover { background: var(--gold-lt); color: var(--navy); }
+    .catalist-item + .catalist-item { border-top: 1px solid var(--border); }
+    .catalist-status {
+      display: block;
+      padding: 7px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'DM Mono', monospace;
+      border-bottom: 1px solid var(--border);
+      pointer-events: none;
+    }
+
+    /* ── 催信模态框 ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-card {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 32px 28px 24px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .modal-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .modal-section-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 16px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .modal-check-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .modal-check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .modal-check-item:hover { border-color: var(--blue); background: #f7f9ff; }
+    .modal-check-item input[type=checkbox] {
+      margin-top: 1px;
+      accent-color: var(--blue);
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .modal-check-item label {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+      cursor: pointer;
+    }
+    .modal-custom-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 14px 0 6px;
+    }
+    .modal-custom-input {
+      width: 100%;
+      min-height: 72px;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Noto Serif SC', serif;
+      color: var(--text);
+      background: #faf9f7;
+      outline: none;
+      resize: vertical;
+      line-height: 1.6;
+    }
+    .modal-custom-input:focus { border-color: var(--blue); background: #fff; }
+    .modal-preview {
+      background: var(--gold-lt);
+      border: 1px solid #e8d9b0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #5a4a1a;
+      line-height: 1.7;
+      margin-top: 16px;
+      white-space: pre-wrap;
+      display: none;
+    }
+    .modal-preview.show { display: block; }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+    .modal-btn-cancel {
+      padding: 10px 20px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Noto Serif SC', serif;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .modal-btn-cancel:hover { border-color: #aaa; color: var(--text); }
+    .modal-btn-send {
+      padding: 10px 24px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+    }
+    .modal-btn-send:hover { background: var(--navy); }
+    .modal-btn-send:disabled { background: #aab4cc; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="hd">D</span>
+    <div style="display:flex;flex-direction:column;gap:1px;">
+      <span class="ht">录取信息管理</span>
+      <span class="user-email" id="userEmail"></span>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="btn-logout" id="btnLogout" onclick="logout()" style="display:none;">退出登录</button>
+  </div>
+</header>
+
+<!-- 登录屏 -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-title">管理员登录</div>
+    <div class="login-sub">Duke 录取信息管理后台</div>
+    <div class="form-group">
+      <label>邮箱</label>
+      <input type="email" id="loginEmail" placeholder="管理员邮箱" autocomplete="email"/>
+    </div>
+    <div class="form-group">
+      <label>密码</label>
+      <div style="position:relative;">
+        <input type="password" id="loginPassword" placeholder="密码" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter') doLogin()"
+               style="width:100%;padding:12px 44px 12px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'Noto Serif SC',serif;background:#faf9f7;color:var(--text);outline:none;box-sizing:border-box;"/>
+        <button type="button" onclick="togglePwd()" tabindex="-1"
+                style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;color:var(--muted);">
+          <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <button class="btn-login" id="btnLogin" onclick="doLogin()">登 录</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- 管理面板 -->
+<div id="adminPanel">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title">录取提交记录</div>
+      <div class="panel-meta" id="recordCount">加载中…</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;max-width:100%;">
+      <button class="btn-export" onclick="exportCSV()">导出 CSV</button>
+      <button class="btn-export" onclick="previewCommittedEmails()" style="background:#555;">🔍 群发预览</button>
+      <button class="btn-export" onclick="sendCommittedEmails()" style="background:#1a6b3c;flex-shrink:0;">📧 群发Committed邮件</button>
+    </div>
+  </div>
+
+  <div class="filters">
+    <span class="filter-label">筛选：</span>
+    <select id="filterType" onchange="applyFilters()">
+      <option value="">全部录取类型</option>
+      <option value="ED">ED</option>
+      <option value="RD">RD</option>
+    </select>
+    <select id="filterYear" onchange="applyFilters()">
+      <option value="">全部届次</option>
+    </select>
+    <select id="filterCommitted" onchange="applyFilters()">
+      <option value="">全部Committed状态</option>
+      <option value="true">已Committed</option>
+      <option value="false">未Committed</option>
+    </select>
+    <select id="filterStatus" onchange="applyFilters()">
+      <option value="">全部处理状态</option>
+      <option value="pending">待处理</option>
+      <option value="approved">已批准</option>
+      <option value="rejected">已拒绝</option>
+      <option value="shelved">已搁置</option>
+    </select>
+    <input type="text" id="filterSearch" placeholder="搜索姓名、学校…" oninput="applyFilters()" style="min-width:180px;"/>
+  </div>
+
+  <div class="table-wrap">
+    <div class="loading" id="tableLoading">加载中…</div>
+    <table id="dataTable" style="display:none;">
+      <thead>
+        <tr>
+          <th style="min-width:80px;">操作</th>
+          <th class="person-th">笑</th>
+          <th class="person-th">金</th>
+          <th class="person-th">伟</th>
+          <th onclick="sortBy('qr_code_no')" style="min-width:60px;">入群码</th>
+          <th>管理员备注</th>
+          <th onclick="sortBy('wx_nickname')">微信昵称</th>
+          <th onclick="sortBy('committed')">Committed</th>
+          <th onclick="sortBy('created_at')">提交时间</th>
+          <th onclick="sortBy('student_name_cn')">中文姓名</th>
+          <th onclick="sortBy('student_name_en')">英文姓名</th>
+          <th onclick="sortBy('high_school')">高中学校</th>
+          <th onclick="sortBy('location')">地区</th>
+          <th onclick="sortBy('admission_type')">录取类型</th>
+          <th onclick="sortBy('class_year')">届次</th>
+          <th onclick="sortBy('college')">学院</th>
+          <th onclick="sortBy('major')">专业</th>
+          <th onclick="sortBy('notes')">备注</th>
+          <th onclick="sortBy('submitter_name')">提交者</th>
+          <th onclick="sortBy('submitter_contact')">微信号</th>
+          <th onclick="sortBy('submitter_email')">邮箱</th>
+          <th>宿舍照片</th>
+          <th>录取通知书</th>
+          <th>Committed Letter</th>
+          <th>Portal 截屏</th>
+          <th>学生证截屏</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty" id="tableEmpty" style="display:none;">暂无记录</div>
+  </div>
+</div>
+
+<!-- 催信模态框 -->
+<div class="modal-overlay" id="cataModal" onclick="if(event.target===this)closeCataModal()">
+  <div class="modal-card">
+    <div class="modal-title">发送催信</div>
+    <div class="modal-sub" id="cataModal-sub"></div>
+
+    <div class="modal-section-label">催信类型</div>
+    <div style="display:flex;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--blue);border-radius:8px;cursor:pointer;font-size:13px;background:#f0f4ff;">
+        <input type="radio" name="cataType" value="all" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 📋 让申请者自选
+      </label>
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+        <input type="radio" name="cataType" value="letter" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 📄 催交录取通知书
+      </label>
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+        <input type="radio" name="cataType" value="committed" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 📝 催交 Commitment Letter
+      </label>
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+        <input type="radio" name="cataType" value="dorm" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 🏠 催交宿舍照片
+      </label>
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+        <input type="radio" name="cataType" value="portal" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 🖥️ 催交 Duke Portal 截屏
+      </label>
+      <label style="flex:1;min-width:140px;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;">
+        <input type="radio" name="cataType" value="sid" style="accent-color:var(--blue);cursor:pointer;" onchange="updateCataTypeHint()"> 🪪 催交学生证截屏
+      </label>
+    </div>
+    <div id="cataTypeHint" style="display:none;margin:6px 0 12px;padding:9px 12px;background:#f0f4ff;border-left:3px solid var(--blue);border-radius:0 6px 6px 0;font-size:12.5px;color:#334;line-height:1.6;"></div>
+
+    <div class="modal-custom-label">自定义附加内容（选填）</div>
+    <textarea class="modal-custom-input" id="cataModal-custom" placeholder="输入希望在邮件末尾附加的内容…" oninput="updateCataPreview()"></textarea>
+
+    <div class="modal-preview" id="cataModal-preview"></div>
+
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeCataModal()">取消</button>
+      <button class="modal-btn-send" id="cataModal-sendBtn" onclick="confirmSendCatalog()">发送催信</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  const BUCKET = 'admission-letters';
+  const ALLOWED_EMAILS = ['weihong_j@yahoo.com', 'lixiaobing@gmail.com', 'tianluosuri@gmail.com'];
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let allRecords = [];
+  let sortCol = 'created_at';
+  let sortDir = 'desc';
+
+  // ── Auth ──
+  async function init() {
+    const { data: { session } } = await db.auth.getSession();
+    if (session) {
+      const email = session.user.email;
+      if (!ALLOWED_EMAILS.includes(email)) {
+        await db.auth.signOut();
+        showLoginError('此账号无管理员权限');
+        return;
+      }
+      showPanel(email);
+    }
+  }
+
+  async function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const btn = document.getElementById('btnLogin');
+
+    if (!email || !password) { showLoginError('请填写邮箱和密码'); return; }
+    if (!ALLOWED_EMAILS.includes(email)) { showLoginError('此账号无管理员权限'); return; }
+
+    btn.disabled = true;
+    btn.textContent = '登录中…';
+    hideLoginError();
+
+    const { data, error } = await db.auth.signInWithPassword({ email, password });
+    if (error) {
+      showLoginError('登录失败：' + error.message);
+      btn.disabled = false;
+      btn.textContent = '登 录';
+      return;
+    }
+    showPanel(email);
+  }
+
+  async function logout() {
+    await db.auth.signOut();
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('btnLogout').style.display = 'none';
+    document.getElementById('userEmail').textContent = '';
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPassword').value = '';
+  }
+
+  function showLoginError(msg) {
+    const el = document.getElementById('loginError');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function hideLoginError() {
+    document.getElementById('loginError').classList.remove('show');
+  }
+
+  function showPanel(email) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'flex';
+    document.getElementById('btnLogout').style.display = 'inline-block';
+    document.getElementById('userEmail').textContent = email;
+    loadRecords();
+  }
+
+  // ── Data ──
+  async function loadRecords() {
+    const { data, error } = await db
+      .from('admissions_submissions')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    document.getElementById('tableLoading').style.display = 'none';
+
+    if (error) {
+      document.getElementById('tableEmpty').textContent = '加载失败：' + error.message;
+      document.getElementById('tableEmpty').style.display = 'block';
+      return;
+    }
+
+    allRecords = data || [];
+    populateYearFilter();
+    applyFilters();
+    document.getElementById('dataTable').style.display = 'table';
+  }
+
+  function populateYearFilter() {
+    const years = [...new Set(allRecords.map(r => r.class_year).filter(Boolean))].sort();
+    const sel = document.getElementById('filterYear');
+    years.forEach(y => {
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = y + ' 届';
+      sel.appendChild(opt);
+    });
+  }
+
+  function applyFilters() {
+    const type = document.getElementById('filterType').value;
+    const year = document.getElementById('filterYear').value;
+    const committed = document.getElementById('filterCommitted').value;
+    const status = document.getElementById('filterStatus').value;
+    const search = document.getElementById('filterSearch').value.toLowerCase();
+
+    let filtered = allRecords.filter(r => {
+      if (type && r.admission_type !== type) return false;
+      if (year && String(r.class_year) !== year) return false;
+      if (committed !== '') {
+        if (committed === 'true' && r.committed !== true) return false;
+        if (committed === 'false' && r.committed !== false) return false;
+      }
+      if (status) {
+        if (status === 'approved' && !r.approved_at) return false;
+        if (status === 'rejected' && !r.rejected_at) return false;
+        if (status === 'shelved' && !r.shelved_at) return false;
+        if (status === 'pending' && (r.approved_at || r.rejected_at || r.shelved_at)) return false;
+      }
+      if (search) {
+        const haystack = [r.student_name_cn, r.student_name_en, r.high_school, r.location, r.submitter_name].join(' ').toLowerCase();
+        if (!haystack.includes(search)) return false;
+      }
+      return true;
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      let va = a[sortCol], vb = b[sortCol];
+      if (va === null || va === undefined) va = '';
+      if (vb === null || vb === undefined) vb = '';
+      if (typeof va === 'string') va = va.toLowerCase();
+      if (typeof vb === 'string') vb = vb.toLowerCase();
+      if (va < vb) return sortDir === 'asc' ? -1 : 1;
+      if (va > vb) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    renderTable(filtered);
+    document.getElementById('recordCount').textContent = `共 ${allRecords.length} 条记录，显示 ${filtered.length} 条`;
+  }
+
+  function sortBy(col) {
+    if (sortCol === col) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortCol = col;
+      sortDir = 'asc';
+    }
+    // Update header classes
+    document.querySelectorAll('thead th').forEach(th => {
+      th.classList.remove('sort-asc', 'sort-desc');
+    });
+    event.target.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    applyFilters();
+  }
+
+  const GITHUB_BASE = 'https://raw.githubusercontent.com/parentsduke/parentsduke/main';
+
+  // 智能打开文件：已是完整URL直接打开；否则先试 Supabase，404 再试 GitHub
+  async function openFile(path) {
+    if (!path) return;
+    // 如果存的已经是完整 URL，直接打开
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      window.open(path, '_blank');
+      return;
+    }
+    const supaUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+    const ghUrl   = `${GITHUB_BASE}/${path}`;
+    try {
+      const res = await fetch(supaUrl, { method: 'HEAD' });
+      if (res.ok) { window.open(supaUrl, '_blank'); return; }
+    } catch(e) {}
+    window.open(ghUrl, '_blank');
+  }
+
+  function getFileUrl(path) {
+    if (!path) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+  }
+
+  // ── 人员标记（同步到 Supabase，三人共享） ──
+  const personCol = { '笑': 'mark_xiao', '金': 'mark_jin', '伟': 'mark_wei' };
+
+  async function saveMark(recordId, person, val) {
+    const col = personCol[person];
+    if (!col) return;
+    const update = {};
+    update[col] = val || null;
+    await db.from('admissions_submissions').update(update).eq('id', recordId);
+    const rec = allRecords.find(r => r.id === recordId);
+    if (rec) rec[col] = val || null;
+  }
+
+  async function saveCommitted(recordId, val) {
+    const update = {
+      committed: val === 'true' ? true : val === 'false' ? false : null,
+      committed_at: val === 'true' ? new Date().toISOString() : null
+    };
+
+    // 同步更新昵称后缀 -C / -U
+    const rec = allRecords.find(r => r.id === recordId);
+    if (rec) {
+      const base = (rec.wx_nickname || '').replace(/-[CU]$/, '');
+      const suffix = val === 'true' ? '-C' : val === 'false' ? '-U' : '';
+      const newNickname = base ? base + suffix : null;
+      if (newNickname !== rec.wx_nickname) {
+        update.wx_nickname = newNickname;
+      }
+    }
+
+    await db.from('admissions_submissions').update(update).eq('id', recordId);
+    if (rec) {
+      rec.committed    = update.committed;
+      rec.committed_at = update.committed_at;
+      if ('wx_nickname' in update) rec.wx_nickname = update.wx_nickname;
+    }
+
+    // 刷新昵称输入框显示
+    const nicknameInput = document.querySelector(`#row-${recordId} td input[onblur*="saveNickname"]`);
+    if (nicknameInput && rec) nicknameInput.value = rec.wx_nickname || '';
+  }
+
+  async function saveNickname(recordId, val) {
+    await saveField(recordId, 'wx_nickname', val);
+  }
+
+  // 字段中文名
+  const FIELD_LABELS = {
+    student_name_cn:   '中文姓名',
+    student_name_en:   '英文姓名',
+    high_school:       '高中学校',
+    location:          '地区',
+    admission_type:    '录取类型',
+    class_year:        '届次',
+    college:           '学院',
+    major:             '专业',
+    notes:             '备注',
+    submitter_name:    '提交者',
+    submitter_contact: '微信号',
+    submitter_email:   '邮箱',
+    wx_nickname:       '微信昵称',
+    committed:         'Committed',
+  };
+
+  // ── 通用字段保存（确认后保存，同时写审计表） ──
+  async function saveField(recordId, col, val, inputEl) {
+    const clean = (val || '').trim() || null;
+    const rec = allRecords.find(r => r.id === recordId);
+    const oldValue = rec ? (rec[col] != null ? String(rec[col]) : null) : null;
+
+    // 没有变化则跳过
+    if (oldValue === clean) return;
+
+    // 确认弹窗
+    const label = FIELD_LABELS[col] || col;
+    const oldStr = oldValue != null ? oldValue : '（空）';
+    const newStr = clean    != null ? clean    : '（空）';
+    const ok = confirm(`确认修改【${label}】？
+
+改前：${oldStr}
+改后：${newStr}`);
+    if (!ok) {
+      // 还原输入框显示值
+      if (inputEl) inputEl.value = oldValue != null ? oldValue : '';
+      return;
+    }
+
+    if (inputEl) {
+      inputEl.disabled = true;
+      inputEl.style.opacity = '0.6';
+    }
+
+    // 1. 更新主表
+    const { error } = await db.from('admissions_submissions').update({ [col]: clean }).eq('id', recordId);
+
+    if (!error) {
+      // 2. 写入审计表
+      const { data: { session } } = await db.auth.getSession();
+      const editedBy = session?.user?.email || null;
+      await db.from('admissions_edits').insert({
+        record_id:  recordId,
+        field:      col,
+        old_value:  oldValue,
+        new_value:  clean,
+        edited_by:  editedBy,
+        edited_at:  new Date().toISOString(),
+      });
+      // 更新本地缓存
+      if (rec) rec[col] = clean;
+    }
+
+    if (inputEl) {
+      inputEl.disabled = false;
+      inputEl.style.opacity = '1';
+      if (error) {
+        inputEl.style.borderColor = '#C84B31';
+        inputEl.title = '保存失败：' + error.message;
+      } else {
+        inputEl.style.borderColor = '#1a6b3c';
+        setTimeout(() => { inputEl.style.borderColor = '#ddd'; }, 1200);
+      }
+    }
+  }
+
+  function personCell(recordId, person, records) {
+    const col = personCol[person];
+    const rec = records.find(r => r.id === recordId);
+    const val = (rec && rec[col]) || '';
+    return `<td class="person-cell">
+      <select class="person-select" onchange="saveMark('${recordId}','${person}',this.value)" title="${person}">
+        <option value="" ${val===''?'selected':''}>—</option>
+        <option value="💙" ${val==='💙'?'selected':''}>💙</option>
+        <option value="✈️" ${val==='✈️'?'selected':''}>✈️</option>
+        <option value="⏸" ${val==='⏸'?'selected':''}>⏸</option>
+        <option value="⛔" ${val==='⛔'?'selected':''}>⛔</option>
+      </select>
+    </td>`;
+  }
+
+  // ── 内联编辑控件 ──
+  function editInput(recordId, col, val, placeholder, extraStyle='', width=110) {
+    const safe = (val || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    return `<input type="text"
+      value="${safe}"
+      placeholder="${placeholder}"
+      style="width:${width}px;font-size:13px;border:1px solid #ddd;border-radius:4px;
+             padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;${extraStyle}"
+      onfocus="this.style.borderColor='#0736a4'"
+      onblur="saveField('${recordId}','${col}',this.value,this)"
+      onkeydown="if(event.key==='Enter')this.blur()"
+    />`;
+  }
+
+  function editSelect(recordId, col, val, options, extraStyle='') {
+    const opts = options.map(([v, label]) =>
+      `<option value="${v}" ${String(val||'')==String(v)?'selected':''}>${label}</option>`
+    ).join('');
+    return `<select
+      style="font-size:12px;border:1px solid #ddd;border-radius:4px;padding:4px 6px;
+             background:#fff;color:#1a1a1a;outline:none;cursor:pointer;${extraStyle}"
+      onfocus="this.style.borderColor='#0736a4'"
+      onchange="saveField('${recordId}','${col}',this.value,this)"
+    >${opts}</select>`;
+  }
+
+  function renderTable(records) {
+    const tbody = document.getElementById('tableBody');
+    const empty = document.getElementById('tableEmpty');
+
+    if (records.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    // 统计重复邮箱
+    const emailCount = {};
+    records.forEach(r => {
+      if (r.submitter_email) emailCount[r.submitter_email] = (emailCount[r.submitter_email] || 0) + 1;
+    });
+
+    tbody.innerHTML = records.map(r => {
+      const date = r.created_at ? new Date(r.created_at).toLocaleString('zh-CN', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—';
+      const committedVal = r.committed === true ? 'true' : r.committed === false ? 'false' : '';
+      const committedTag = `<select class="person-select" onchange="saveCommitted('${r.id}',this.value)" style="min-width:110px;font-size:12px;">
+        <option value="" ${committedVal===''?'selected':''}>—</option>
+        <option value="true" ${committedVal==='true'?'selected':''}>✅ 已Committed</option>
+        <option value="false" ${committedVal==='false'?'selected':''}>❌ 未Committed</option>
+      </select>`;
+
+      const safeEmail = (r.submitter_email||'').replace(/'/g,"\\'");
+      const safeName  = (r.student_name_cn||r.student_name_en||'').replace(/'/g,"\\'");
+
+      const letterCell = r.letter_path
+        ? `<a class="file-link" href="#" onclick="openFile('${r.letter_path}');return false;">文件</a>`
+        : '<span class="no-file">—</span>';
+
+      // committed_letter_path 支持单个URL或JSON数组
+      let clPaths = [];
+      if (r.committed_letter_path) {
+        try { clPaths = JSON.parse(r.committed_letter_path); if (!Array.isArray(clPaths)) clPaths = [clPaths]; }
+        catch(e) { clPaths = [r.committed_letter_path]; }
+      }
+      const clLinks = clPaths.length
+        ? clPaths.map((u,i) => `<a class="file-link" href="#" onclick="openFile('${u}');return false;">文件${clPaths.length>1?i+1:''}</a>`).join(' ')
+        : '<span class="no-file">—</span>';
+
+      const dormCell = r.dorm_photo_path
+        ? `<a class="file-link" href="#" onclick="openFile('${r.dorm_photo_path}');return false;">查看照片</a>`
+        : '<span class="no-file">—</span>';
+
+      const portalCell = r.portal_screenshot_path
+        ? `<a class="file-link" href="#" onclick="openFile('${r.portal_screenshot_path}');return false;">查看截屏</a>`
+        : '<span class="no-file">—</span>';
+      const sidCell = r.student_id_path
+        ? `<a class="file-link" href="#" onclick="openFile('${r.student_id_path}');return false;">查看截屏</a>`
+        : '<span class="no-file">—</span>';
+
+      const catalItems = r.submitter_email
+        ? `<button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');openCataModal('${r.id}','${safeEmail}','${safeName}','${r.class_year||''}')">📧 催信</button>`
+        : '';
+
+      // ── 操作菜单（按状态生成菜单项）──
+      const safeNameRaw = r.student_name_cn || r.student_name_en || '';
+      const safeEmailRaw = r.submitter_email || '';
+      const esc = s => s.replace(/'/g,"\\'");
+      let actionItems = '';
+      if (r.rejected_at) {
+        actionItems = `
+          <span class="catalist-status" style="color:var(--red);">❌ 已拒绝</span>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');unrejectRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消拒绝</button>`;
+      } else if (r.left_group_at) {
+        actionItems = `
+          <span class="catalist-status" style="color:#c2610c;">🚪 已退群</span>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');unleaveGroupRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消退群</button>`;
+      } else if (r.approved_at) {
+        actionItems = `
+          <span class="catalist-status" style="color:var(--green);">✅ 已批准</span>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendApproval('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发1.0入群链接</button>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendQr20('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发2.0链接</button>
+          ${r.not_joined
+            ? `<button class="catalist-item" style="color:#b45309;" onclick="closeCatMenu('actmenu-${r.id}');clearNotJoined('${r.id}','${esc(safeNameRaw)}')">✅ 取消未进群</button>`
+            : `<button class="catalist-item" style="color:#b45309;" onclick="closeCatMenu('actmenu-${r.id}');markNotJoined('${r.id}','${esc(safeNameRaw)}')">⚠️ 标记未进群</button>`
+          }
+          <button class="catalist-item" style="color:#c2610c;" onclick="closeCatMenu('actmenu-${r.id}');leftGroupRecord('${r.id}','${esc(safeNameRaw)}')">🚪 标记已退群</button>
+          <button class="catalist-item" style="color:var(--red);" onclick="closeCatMenu('actmenu-${r.id}');unapproveRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消批准</button>`;
+      } else if (r.shelved_at) {
+        actionItems = `
+          <span class="catalist-status" style="color:#b45309;">⏸ 已搁置</span>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');unshelveRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消搁置</button>`;
+      } else {
+        actionItems = `
+          <button class="catalist-item" style="color:var(--green);" onclick="closeCatMenu('actmenu-${r.id}');approveRecord('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">✅ 批准入群</button>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');rejectRecord('${r.id}','${esc(safeNameRaw)}')">❌ 拒绝</button>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');shelveRecord('${r.id}','${esc(safeNameRaw)}')">⏸ 搁置</button>`;
+      }
+      if (catalItems) actionItems += `<div style="border-top:1px solid var(--border);margin:2px 0;"></div>${catalItems}`;
+      const btnLabel = r.rejected_at ? '已拒绝' : r.left_group_at ? '已退群' : r.not_joined ? '未进群' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '操作';
+      const btnBg    = r.rejected_at ? '#7f1d1d' : r.left_group_at ? '#c2610c' : r.not_joined ? '#b45309' : r.approved_at ? '#14532d' : r.shelved_at ? '#78350f' : '#444';
+      const btnHover = r.rejected_at ? '#991b1b' : r.left_group_at ? '#d97706' : r.not_joined ? '#c2610c' : r.approved_at ? '#166534' : r.shelved_at ? '#92400e' : '#222';
+      const actionCell = `<div class="catalist-wrap">
+        <button onclick="toggleCatMenu(event,'actmenu-${r.id}')"
+          style="padding:3px 8px;background:${btnBg};color:#fff;border:none;border-radius:5px;
+                 font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
+          onmouseover="this.style.background='${btnHover}'" onmouseout="this.style.background='${btnBg}'">
+          ${btnLabel} ▾
+        </button>
+        <div class="catalist-menu" id="actmenu-${r.id}">${actionItems}</div>
+      </div>`;
+
+      return `<tr id="row-${r.id}"${r.left_group_at ? ' class="row-left-group"' : r.not_joined ? ' class="row-not-joined"' : ''}>
+        <td style="text-align:center;padding:8px 6px;">${actionCell}</td>
+        ${personCell(r.id, '笑', allRecords)}
+        ${personCell(r.id, '金', allRecords)}
+        ${personCell(r.id, '伟', allRecords)}
+        <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:${r.qr_code_no ? '#003087' : 'var(--muted)'};">
+          ${r.qr_code_no ? String.fromCharCode(65 + (Number(r.qr_code_no) - 1) % 10) : '—'}
+        </td>
+        <td><input
+          type="text"
+          value="${r.admin_notes || ''}"
+          placeholder="管理员备注"
+          onblur="saveField('${r.id}', 'admin_notes', this.value, this)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          style="width:120px;font-size:13px;border:1px solid #ddd;border-radius:4px;padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
+          onfocus="this.style.borderColor='#0736a4'"
+        /></td>
+        <td><input
+          type="text"
+          value="${r.wx_nickname || ''}"
+          placeholder="输入昵称"
+          onblur="saveNickname('${r.id}', this.value)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          style="width:100px;font-size:13px;border:1px solid #ddd;border-radius:4px;
+                 padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
+          onfocus="this.style.borderColor='#0736a4'"
+        /></td>
+        <td>${committedTag}</td>
+        <td style="white-space:nowrap;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${date}</td>
+        <td>${r.student_name_cn ? `<span style=\"font-weight:600;font-size:13px;\">${r.student_name_cn}</span>` : '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td>${r.student_name_en || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td>${r.high_school || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td>${r.location || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td>${r.admission_type ? `<span class=\"tag tag-${r.admission_type.toLowerCase()}\">${r.admission_type}</span>` : '—'}</td>
+        <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.class_year || '—'}</span></td>
+        <td>${r.college || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td>${r.major || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td style="font-size:12px;color:var(--muted);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><div style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.notes || '—'}</div></td>
+        <td>${r.submitter_name || '<span style=\"color:var(--muted)\">—</span>'}</td>
+        <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_contact || '—'}</span></td>
+        <td><span style="font-family:'DM Mono',monospace;font-size:12px;">${r.submitter_email || '—'}</span>${r.submitter_email && emailCount[r.submitter_email] > 1 ? `<span style="margin-left:4px;background:#C84B31;color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;">×${emailCount[r.submitter_email]}</span>` : ''}</td>
+        <td>${dormCell}</td>
+        <td>${letterCell}</td>
+        <td>${clLinks}</td>
+        <td>${portalCell}</td>
+        <td>${sidCell}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── Export CSV ──
+  function exportCSV() {
+    const headers = ['微信昵称','提交时间','中文姓名','英文姓名','高中学校','地区','录取类型','届次','学院','专业','Committed','备注','提交者','微信号','邮箱','宿舍照片链接','录取通知书链接','Committed Letter链接','Portal截屏链接','学生证截屏链接','处理状态'];
+    const type = document.getElementById('filterType').value;
+    const year = document.getElementById('filterYear').value;
+    const committed = document.getElementById('filterCommitted').value;
+    const search = document.getElementById('filterSearch').value.toLowerCase();
+
+    let filtered = allRecords.filter(r => {
+      if (type && r.admission_type !== type) return false;
+      if (year && String(r.class_year) !== year) return false;
+      if (committed !== '') {
+        if (committed === 'true' && r.committed !== true) return false;
+        if (committed === 'false' && r.committed !== false) return false;
+      }
+      if (search) {
+        const haystack = [r.student_name_cn, r.student_name_en, r.high_school, r.location, r.submitter_name].join(' ').toLowerCase();
+        if (!haystack.includes(search)) return false;
+      }
+      return true;
+    });
+
+    const rows = filtered.map(r => [
+      r.wx_nickname || '',
+      r.created_at ? new Date(r.created_at).toLocaleString('zh-CN') : '',
+      r.student_name_cn || '',
+      r.student_name_en || '',
+      r.high_school || '',
+      r.location || '',
+      r.admission_type || '',
+      r.class_year || '',
+      r.college || '',
+      r.major || '',
+      r.committed === true ? '是' : r.committed === false ? '否' : '',
+      r.notes || '',
+      r.submitter_name || '',
+      r.submitter_contact || '',
+      r.submitter_email || '',
+      getFileUrl(r.dorm_photo_path) || '',
+      getFileUrl(r.letter_path) || '',
+      (() => { let p=r.committed_letter_path; if(!p) return ''; try{const a=JSON.parse(p); if(Array.isArray(a)) return a.map(getFileUrl).join(' | ');} catch(e){} return getFileUrl(p)||''; })(),
+      getFileUrl(r.portal_screenshot_path) || '',
+      getFileUrl(r.student_id_path) || '',
+      r.rejected_at ? '已拒绝' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '待处理',
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+
+    const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Duke录取记录_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ── 批准通知管理员 ──
+  async function notifyAdmin(studentName, targetEmail) {
+    try {
+      const { data: { session } } = await db.auth.getSession();
+      const approvedBy = session?.user?.email || '未知管理员';
+      const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
+      await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          email:      'weihong_j@yahoo.com',
+          studentName:'管理员',
+          link:       'https://dukeparents.org',
+          subject:    `✅ 已批准：${studentName}`,
+          replyTo:    'parentsduke@gmail.com',
+          bodyLine1:  `${studentName} 已批准入群。`,
+          bodyLine2:  `批准人：${approvedBy}\n发送到：${targetEmail}\n时间：${now}（美东）`,
+          noButton:   true,
+        }),
+      });
+    } catch(e) {
+      console.warn('[通知管理员失败]', e.message);
+    }
+  }
+
+  // ── 批准入群 ──
+  // ── 二维码图片地址（只需改这里）──
+  const QR_IMAGE_URL = 'https://dukeparents.org/q30d.png';
+
+  async function approveRecord(recordId, email, studentName) {
+    if (!email) {
+      // 没有邮箱，直接标记已批准不发邮件
+      if (!confirm(`${studentName} 没有邮箱，直接标记为已批准（不发送链接）？`)) return;
+      try {
+        await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+        const rec = allRecords.find(r => r.id === recordId);
+        if (rec) rec.approved_at = new Date().toISOString();
+        applyFilters();
+        await notifyAdmin(studentName, '（无邮箱）');
+        alert('✅ 已标记为批准');
+      } catch(e) {
+        alert('❌ 操作失败：' + e.message);
+      }
+      return;
+    }
+    if (!confirm(`确认批准 ${studentName} 入群？\n将发送链接到：${email}`)) return;
+
+    try {
+      // 自动创建一条新的 private_qr_links 记录
+      const { data: qrRow, error: qrErr } = await db
+        .from('private_qr_links')
+        .insert({
+          image_url:    QR_IMAGE_URL,
+          label:        'Duke 2031 家长群',
+          reserved_for: email,
+          reserved_at:  new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (qrErr || !qrRow) {
+        throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
+      }
+
+      const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+
+      // 调用发邮件 Edge Function
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+
+      // 标记记录已批准
+      await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.approved_at = new Date().toISOString();
+      applyFilters();
+      await notifyAdmin(studentName, email);
+      alert(`✅ 已发送入群链接到 ${email}`);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+  // ── 搁置 ──
+  async function shelveRecord(recordId, studentName) {
+    if (!confirm(`搁置 ${studentName}？（已在群中，暂不处理）`)) return;
+    try {
+      const now = new Date().toISOString();
+      await db.from('admissions_submissions').update({ shelved_at: now }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.shelved_at = now;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 取消搁置 ──
+  async function unshelveRecord(recordId, studentName) {
+    if (!confirm(`取消搁置 ${studentName}，恢复为待处理？`)) return;
+    try {
+      await db.from('admissions_submissions').update({ shelved_at: null }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.shelved_at = null;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 标记未进群 ──
+  async function markNotJoined(recordId, studentName) {
+    if (!confirm(`标记 ${studentName} 未进群？`)) return;
+    try {
+      await db.from('admissions_submissions').update({ not_joined: true }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.not_joined = true;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 取消未进群 ──
+  async function clearNotJoined(recordId, studentName) {
+    if (!confirm(`取消 ${studentName} 的未进群标记？`)) return;
+    try {
+      await db.from('admissions_submissions').update({ not_joined: null }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.not_joined = null;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 标记已退群 ──
+  async function leftGroupRecord(recordId, studentName) {
+    if (!confirm(`标记 ${studentName} 已退群？`)) return;
+    try {
+      const now = new Date().toISOString();
+      await db.from('admissions_submissions').update({ left_group_at: now }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.left_group_at = now;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 取消退群 ──
+  async function unleaveGroupRecord(recordId, studentName) {
+    if (!confirm(`取消退群标记，${studentName} 恢复为已批准？`)) return;
+    try {
+      await db.from('admissions_submissions').update({ left_group_at: null }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.left_group_at = null;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 取消批准 ──
+  async function unapproveRecord(recordId, studentName) {
+    if (!confirm(`取消批准 ${studentName}，恢复为待处理？`)) return;
+    try {
+      await db.from('admissions_submissions').update({ approved_at: null }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.approved_at = null;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 拒绝 ──
+  async function rejectRecord(recordId, studentName) {
+    if (!confirm(`确认拒绝 ${studentName} 入群？`)) return;
+    try {
+      const now = new Date().toISOString();
+      await db.from('admissions_submissions').update({ rejected_at: now }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.rejected_at = now;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 取消拒绝 ──
+  async function unrejectRecord(recordId, studentName) {
+    if (!confirm(`取消拒绝 ${studentName}，恢复为待处理？`)) return;
+    try {
+      await db.from('admissions_submissions').update({ rejected_at: null }).eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) rec.rejected_at = null;
+      applyFilters();
+    } catch(e) {
+      alert('❌ 操作失败：' + e.message);
+    }
+  }
+
+  // ── 群发预览（不发邮件）──
+  async function previewCommittedEmails() {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = '查询中…';
+
+    try {
+      const { data: records, error } = await db
+        .from('admissions_submissions')
+        .select('id, submitter_email, student_name_cn, student_name_en, committed')
+        .eq('class_year', 2031)
+        .eq('committed', true)
+        .not('submitter_email', 'is', null);
+
+      if (error) throw new Error(error.message);
+      if (!records || !records.length) {
+        alert('没有找到符合条件的记录（2031届已Committed且有邮箱）');
+        return;
+      }
+
+      const allEmails = records.map(r => r.submitter_email);
+      const { data: sentRows } = await db
+        .from('private_qr_links')
+        .select('reserved_for')
+        .eq('label', '扯谈Duke群2.0')
+        .in('reserved_for', allEmails);
+      const alreadySent = new Set((sentRows || []).map(row => row.reserved_for));
+
+      const toSkip = records.filter(r => alreadySent.has(r.submitter_email));
+      const toSend = records.filter(r => !alreadySent.has(r.submitter_email));
+
+      let msg = `📋 群发预览（共 ${records.length} 条）\n`;
+      msg += `${'─'.repeat(40)}\n`;
+      msg += `✅ 待发送（${toSend.length} 人）：\n`;
+      if (toSend.length) {
+        toSend.forEach(r => {
+          const name = r.student_name_cn || r.student_name_en || '（无姓名）';
+          msg += `  ${name}  ${r.submitter_email}\n`;
+        });
+      } else {
+        msg += '  （无）\n';
+      }
+      msg += `\n⏭ 已发过、将跳过（${toSkip.length} 人）：\n`;
+      if (toSkip.length) {
+        toSkip.forEach(r => {
+          const name = r.student_name_cn || r.student_name_en || '（无姓名）';
+          msg += `  ${name}  ${r.submitter_email}\n`;
+        });
+      } else {
+        msg += '  （无）\n';
+      }
+
+      alert(msg);
+    } catch(e) {
+      alert('❌ 查询失败：' + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🔍 群发预览';
+    }
+  }
+
+  // ── 重新发送入群链接 ──
+  async function sendCommittedEmails() {
+    if (!confirm('将向2031届所有已Committed且有邮箱的家长群发入群邮件（含微信二维码链接）。\n\n确认发送？')) return;
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = '发送中…';
+
+    // 查出2031届所有Committed=true且有邮箱的记录
+    const { data: records, error } = await db
+      .from('admissions_submissions')
+      .select('id, submitter_email, student_name_cn, student_name_en, committed')
+      .eq('class_year', 2031)
+      .eq('committed', true)
+      .not('submitter_email', 'is', null);
+
+    if (error) {
+      alert('查询失败：' + error.message);
+      btn.disabled = false; btn.textContent = '📧 群发Committed邮件'; return;
+    }
+
+    if (!records || !records.length) {
+      alert('没有找到符合条件的记录（2031届已Committed且有邮箱）');
+      btn.disabled = false; btn.textContent = '📧 群发Committed邮件'; return;
+    }
+
+    if (!confirm(`共找到 ${records.length} 条记录，确认逐一发送？`)) {
+      btn.disabled = false; btn.textContent = '📧 群发Committed邮件'; return;
+    }
+
+    // 查出已发过2.0二维码的邮箱（不论token是否已使用）
+    const allEmails = records.map(r => r.submitter_email);
+    const { data: sentRows } = await db
+      .from('private_qr_links')
+      .select('reserved_for')
+      .eq('label', '扯谈Duke群2.0')
+      .in('reserved_for', allEmails);
+    const alreadySent = new Set((sentRows || []).map(row => row.reserved_for));
+
+    let ok = 0, fail = 0, skip = 0, failList = [];
+
+    for (let i = 0; i < records.length; i++) {
+      const r = records[i];
+      const email = r.submitter_email;
+
+      // 已群发过2.0二维码的跳过
+      if (alreadySent.has(email)) {
+        skip++;
+        btn.textContent = `发送中 ${i+1}/${records.length}… (已跳过${skip})`;
+        continue;
+      }
+      const studentName = r.student_name_cn || r.student_name_en || '同学';
+      btn.textContent = `发送中 ${i+1}/${records.length}…`;
+
+      try {
+        // 作废旧token
+        await db.from('private_qr_links')
+          .update({ used: true, used_at: new Date().toISOString() })
+          .eq('reserved_for', email)
+          .eq('used', false);
+
+        // 创建新token（使用get2qr.jpg）
+        const { data: qrRow, error: qrErr } = await db
+          .from('private_qr_links')
+          .insert({
+            image_url:    'https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg',
+            label:        '扯谈Duke群2.0',
+            reserved_for: email,
+            reserved_at:  new Date().toISOString(),
+          })
+          .select()
+          .single();
+
+        if (qrErr || !qrRow) throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知'));
+
+        const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            email, studentName, link,
+            recordId: r.id, qrId: qrRow.id,
+            subject: '扯谈Duke群2.0入群二维码',
+            replyTo: 'parentsduke@gmail.com',
+            bodyLine1: '你的入学承诺 Commitment Letter 信息已经收到。',
+            bodyLine2: '请点击下方按钮扫码加入扯谈Duke家长微信群：',
+          }),
+        });
+
+        if (!res.ok) throw new Error(await res.text());
+        ok++;
+      } catch(e) {
+        fail++;
+        failList.push(email + '：' + e.message);
+        console.error('[群发失败]', email, e.message);
+      }
+    }
+
+    btn.disabled = false;
+    btn.textContent = '📧 群发Committed邮件';
+
+    let msg = `✅ 发送完成！成功 ${ok} 封`;
+    if (skip) msg += `，已跳过（之前已发）${skip} 封`;
+    if (fail) msg += `，失败 ${fail} 封\n\n失败列表：\n` + failList.join('\n');
+    alert(msg);
+  }
+
+
+  async function resendQr20(recordId, email, studentName) {
+    if (!email) { alert('该记录没有邮箱，无法发送'); return; }
+    if (!confirm(`重新发送扯谈Duke群2.0入群链接给 ${studentName}？\n将发送到：${email}`)) return;
+
+    try {
+      // 作废旧token
+      await db.from('private_qr_links')
+        .update({ used: true, used_at: new Date().toISOString() })
+        .eq('reserved_for', email)
+        .eq('used', false);
+
+      // 创建新token（使用2.0群二维码）
+      const { data: qrRow, error: qrErr } = await db
+        .from('private_qr_links')
+        .insert({
+          image_url:    'https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg',
+          label:        '扯谈Duke群2.0',
+          reserved_for: email,
+          reserved_at:  new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (qrErr || !qrRow) throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知'));
+
+      const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          email, studentName, link,
+          recordId, qrId: qrRow.id,
+          subject: '扯谈Duke群2.0入群二维码',
+          replyTo: 'parentsduke@gmail.com',
+          bodyLine1: '你的入学承诺 Commitment Letter 信息已经收到。',
+          bodyLine2: '请点击下方按钮扫码加入扯谈Duke家长微信群：',
+        }),
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+      alert(`✅ 已重新发送扯谈Duke群2.0入群链接到 ${email}`);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+  // ── 催信下拉菜单 ──
+  function toggleCatMenu(e, menuId) {
+    e.stopPropagation();
+    const menu = document.getElementById(menuId);
+    const isOpen = menu.classList.contains('open');
+    // 关闭所有
+    document.querySelectorAll('.catalist-menu.open').forEach(m => m.classList.remove('open'));
+    if (!isOpen) menu.classList.add('open');
+  }
+  function closeCatMenu(menuId) {
+    document.getElementById(menuId)?.classList.remove('open');
+  }
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.catalist-menu.open').forEach(m => m.classList.remove('open'));
+  });
+
+  // ── 催信模态框状态 ──
+  let _cataParams = null;
+
+  // ── 打开催信模态框（不预设类型）──
+  function openCataModal(recordId, email, studentName, classYear) {
+    if (!email) { alert('该记录没有邮箱，无法发送催信'); return; }
+    _cataParams = { recordId, email, studentName, classYear };
+
+    document.getElementById('cataModal-sub').textContent = `${studentName}（${email}）`;
+
+    // 清空 radio
+    document.querySelectorAll('input[name="cataType"]').forEach(r => r.checked = false);
+    // 清空勾选和自定义内容
+    document.querySelectorAll('#cataModal-checks input[type=checkbox]').forEach(cb => cb.checked = false);
+    document.getElementById('cataModal-custom').value = '';
+    document.getElementById('cataModal-preview').classList.remove('show');
+    document.getElementById('cataModal-preview').textContent = '';
+    document.getElementById('cataModal-sendBtn').disabled = false;
+    document.getElementById('cataModal-sendBtn').textContent = '发送催信';
+
+    document.querySelectorAll('#cataModal-checks input[type=checkbox]').forEach(cb => {
+      cb.onchange = updateCataPreview;
+    });
+
+    document.getElementById('cataModal').classList.add('open');
+  }
+
+  // ── 统一催信入口（打开模态框）──
+  function sendCatalogEmail(recordId, type, email, studentName, classYear) {
+    if (!email) { alert('该记录没有邮箱，无法发送催信'); return; }
+    _cataParams = { recordId, type, email, studentName, classYear };
+
+    // 更新副标题
+    const typeLabel = type === 'letter' ? '📄 催交录取通知书' : '📝 催交 Commitment Letter';
+    document.getElementById('cataModal-sub').textContent =
+      `${typeLabel} → ${studentName}（${email}）`;
+
+    // 清空勾选和自定义内容
+    document.querySelectorAll('#cataModal-checks input[type=checkbox]').forEach(cb => cb.checked = false);
+    document.getElementById('cataModal-custom').value = '';
+    document.getElementById('cataModal-preview').classList.remove('show');
+    document.getElementById('cataModal-preview').textContent = '';
+    document.getElementById('cataModal-sendBtn').disabled = false;
+    document.getElementById('cataModal-sendBtn').textContent = '发送催信';
+
+    // 监听勾选变化 → 更新预览
+    document.querySelectorAll('#cataModal-checks input[type=checkbox]').forEach(cb => {
+      cb.onchange = updateCataPreview;
+    });
+
+    document.getElementById('cataModal').classList.add('open');
+  }
+
+  function closeCataModal() {
+    document.getElementById('cataModal').classList.remove('open');
+    document.getElementById('cataTypeHint').style.display = 'none';
+    _cataParams = null;
+  }
+
+  const CATA_TYPE_HINTS = {
+    all:       '邮件将发送通用上传链接，申请者进入页面后自行选择上传类型（录取通知书 / Commitment Letter / 宿舍照片 / Duke Portal 截屏 / 学生证截屏）。',
+    letter:    '邮件将要求家长上传录取通知书截图或 PDF。',
+    committed: '邮件将要求家长上传 Commitment Letter 截图或 PDF。',
+    dorm:      '邮件将要求家长上传学生本人在 Duke 宿舍门前或者室内的生活照，并填写宿舍楼名。',
+    portal:    '邮件将要求家长上传 Duke Portal 截屏，需显示学生姓名，其他内容可遮挡。',
+    sid:       '邮件将要求家长上传 Duke 学生证截屏，需显示学生姓名，其他内容可遮挡。',
+  };
+
+  function updateCataTypeHint() {
+    const type = document.querySelector('input[name="cataType"]:checked')?.value;
+    const hint = document.getElementById('cataTypeHint');
+    if (type && CATA_TYPE_HINTS[type]) {
+      hint.textContent = CATA_TYPE_HINTS[type];
+      hint.style.display = 'block';
+    } else {
+      hint.style.display = 'none';
+    }
+  }
+
+  function updateCataPreview() {
+    const custom = (document.getElementById('cataModal-custom').value || '').trim();
+    const preview = document.getElementById('cataModal-preview');
+    if (!custom) {
+      preview.classList.remove('show');
+      preview.textContent = '';
+    } else {
+      preview.classList.add('show');
+      preview.textContent = '邮件附加内容预览：\n\n• ' + custom;
+    }
+  }
+
+  async function confirmSendCatalog() {
+    if (!_cataParams) return;
+    const { recordId, email, studentName, classYear } = _cataParams;
+    // 如果是从旧入口进来已有type，否则从radio读
+    const type = _cataParams.type || (document.querySelector('input[name="cataType"]:checked')?.value);
+    if (!type) { alert('请选择催信类型'); return; }
+
+    const checked = [];
+    const custom = (document.getElementById('cataModal-custom').value || '').trim();
+    if (custom) checked.push(custom);
+
+    const isLetter  = type === 'letter';
+    const isDorm    = type === 'dorm';
+    const isPortal  = type === 'portal';
+    const isSid     = type === 'sid';
+    const isAll     = type === 'all';
+    const uploadUrl = isDorm   ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=dorm`
+                    : isPortal ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=portal`
+                    : isSid    ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=sid`
+                    : isAll    ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=all`
+                    :            `https://dukeparents.org/upload-cl.html?id=${recordId}`;
+    const subject   = isLetter ? '请上传您的录取通知书 · 扯谈Duke家长群'
+                    : isDorm   ? '请上传宿舍照片 · 扯谈Duke家长群'
+                    : isPortal ? '请上传 Duke Portal 截屏 · 扯谈Duke家长群'
+                    : isSid    ? '请上传 Duke 学生证截屏 · 扯谈Duke家长群'
+                    : isAll    ? '请上传相关材料 · 扯谈Duke家长群'
+                    :            '请上传您的 Commitment Letter · 扯谈Duke家长群';
+    const line1 = isLetter ? `您好！我们注意到您的 Duke ${classYear || ''} 届录取通知书尚未上传。`
+                : isDorm   ? `您好！我们正在收集 Duke ${classYear || ''} 届同学本人在宿舍门前或室内的生活照，用于展示在扯谈Duke家长群社区页面。`
+                : isPortal ? `您好！为核实学生身份，我们需要您上传孩子的 Duke Portal 截屏（Duke ${classYear || ''} 届）。`
+                : isSid    ? `您好！为核实学生身份，我们需要您上传孩子的 Duke 学生证截屏（Duke ${classYear || ''} 届）。`
+                : isAll    ? `您好！我们需要您上传孩子的相关材料（Duke ${classYear || ''} 届），以便完成信息核实。`
+                :            `您好！我们注意到您已 Committed Duke ${classYear || ''} 届，但尚未上传 Commitment Letter。`;
+    const line2 = isLetter ? '请点击下方按钮前往上传您的录取通知书文件（截图或 PDF 均可），以便我们完成审核。感谢配合！'
+                : isDorm   ? '请点击下方按钮前往上传学生本人在 Duke 宿舍门前或者室内的生活照，并在页面中填写宿舍楼名。感谢分享！'
+                : isPortal ? '请点击下方按钮前往上传 Duke Portal 截屏，需显示学生姓名，其他内容可遮挡。感谢配合！'
+                : isSid    ? '请点击下方按钮前往上传 Duke 学生证截屏，需显示学生姓名，其他内容可遮挡。感谢配合！'
+                : isAll    ? '请点击下方按钮前往上传页面，选择您方便提供的材料类型后上传即可。感谢配合！'
+                :            '请点击下方按钮前往上传您的 Commitment Letter 文件（截图或 PDF 均可），以便我们完成审核并邀请您加入家长群。感谢配合！';
+    const buttonText = isLetter ? '📎 上传录取通知书'
+                     : isDorm   ? '📷 上传宿舍照片'
+                     : isPortal ? '🖥️ 上传 Duke Portal 截屏'
+                     : isSid    ? '🪪 上传学生证截屏'
+                     : isAll    ? '📋 前往上传页面'
+                     :            '📎 上传 Commitment Letter';
+
+    // 构建附加询问段落
+    const line3 = checked.length > 0
+      ? '另外，我们还有以下问题想向您确认：\n\n' + checked.map(q => '• ' + q).join('\n')
+      : '';
+
+    const btn = document.getElementById('cataModal-sendBtn');
+    btn.disabled = true;
+    btn.textContent = '发送中…';
+
+    try {
+      const payload = { email, studentName, link: uploadUrl, recordId, subject,
+        replyTo: 'parentsduke@gmail.com', bodyLine1: line1, bodyLine2: line2, buttonText };
+      if (line3) payload.bodyLine3 = line3;
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      closeCataModal();
+      alert(`✅ 已向 ${email} 发送催信${checked.length > 0 ? `（含 ${checked.length} 条附加询问）` : ''}`);
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = '发送催信';
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+
+  async function resendApproval(recordId, email, studentName) {
+    if (!email) { alert('该记录没有邮箱，无法发送链接'); return; }
+    if (!confirm(`重新发送入群链接给 ${studentName}？\n将发送到：${email}`)) return;
+
+    try {
+      // 作废旧的未使用 token（同一邮箱）
+      await db.from('private_qr_links')
+        .update({ used: true, used_at: new Date().toISOString() })
+        .eq('reserved_for', email)
+        .eq('used', false);
+
+      // 创建新 token
+      const { data: qrRow, error: qrErr } = await db
+        .from('private_qr_links')
+        .insert({
+          image_url:    QR_IMAGE_URL,
+          label:        'Duke 2031 家长群',
+          reserved_for: email,
+          reserved_at:  new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (qrErr || !qrRow) {
+        throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
+      }
+
+      const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+
+      alert(`✅ 已重新发送入群链接到 ${email}`);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+  function togglePwd() {
+    const input = document.getElementById('loginPassword');
+    const icon = document.getElementById('eyeIcon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+      input.type = 'password';
+      icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
