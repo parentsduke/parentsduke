@@ -828,14 +828,14 @@
     <div class="form-card">
       <div class="section-title"><span>03</span> 文件上传 <span style="color:#C84B31;font-size:11px;">*</span></div>
       <div class="form-grid">
-        <div class="form-group full" id="letterGroup" style="display:none;">
-          <label>录取通知书 <span class="req">*</span></label>
+        <div class="form-group full" id="letterGroup">
+          <label>录取通知书（可选）</label>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;">ED/RD 录取通知书截图或 PDF</div>
           <div class="upload-zone" id="letterZone"
                ondragover="handleDrag(event,'letterZone')"
                ondragleave="handleDragLeave('letterZone')"
                ondrop="handleDrop(event,'letter')">
             <input type="file" id="fLetter" accept="image/*,.pdf" onchange="handleFile(event,'letter')"/>
-            
             <div class="upload-hint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
           </div>
           <div class="file-preview" id="letterPreview">
@@ -843,14 +843,14 @@
             <button class="rm" onclick="removeFile('letter')">✕</button>
           </div>
         </div>
-        <div class="form-group full" id="committedLetterGroup" style="display:none;">
-          <label id="committedLetterLabel">Committed Letter</label>
+        <div class="form-group full" id="committedLetterGroup">
+          <label id="committedLetterLabel">Committed Letter（可选）</label>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;">已 Committed 的同学请上传 Commitment Letter</div>
           <div class="upload-zone" id="committedZone"
                ondragover="handleDrag(event,'committedZone')"
                ondragleave="handleDragLeave('committedZone')"
                ondrop="handleDrop(event,'committed')">
             <input type="file" id="fCommittedLetter" accept="image/*,.pdf" onchange="handleFile(event,'committed')"/>
-            
             <div class="upload-hint" id="committedLetterHint">拖入或点击上传，支持 <strong>图片 / PDF</strong></div>
           </div>
           <div class="file-preview" id="committedPreview">
@@ -1015,47 +1015,10 @@
     const rdGroup = document.getElementById('committedGroup');
     rdGroup.classList.toggle('show', type === 'RD');
     if (type !== 'RD') document.getElementById('fCommitted').value = '';
-    updateUploadZones(type, document.getElementById('fCommitted').value);
   }
 
   function onCommittedChange(val) {
-    const type = document.getElementById('fType').value;
-    updateUploadZones(type, val);
-  }
-
-  function updateUploadZones(type, committed) {
-    const letterGroup    = document.getElementById('letterGroup');
-    const clLabel        = document.getElementById('committedLetterLabel');
-    const clHint         = document.getElementById('committedLetterHint');
-    const clGroup        = document.getElementById('committedLetterGroup');
-    const committedZone  = document.getElementById('committedZone');
-
-    if (type === 'ED') {
-      letterGroup.style.display = 'none';
-      clGroup.style.display = 'block';
-      clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（ED 必须上传）';
-      clHint.innerHTML  = 'ED录取必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
-      committedZone.style.borderColor = '#C84B31';
-      removeFile('letter');
-    } else if (type === 'RD' && committed === 'true') {
-      letterGroup.style.display = 'none';
-      clGroup.style.display = 'block';
-      clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（已Committed必须上传）';
-      clHint.innerHTML  = '已Committed必须上传 Committed Letter，支持 <strong>图片 / PDF</strong>';
-      committedZone.style.borderColor = '#C84B31';
-      removeFile('letter');
-    } else if (type === 'RD' && committed === 'false') {
-      letterGroup.style.display = 'none';
-      clGroup.style.display = 'block';
-      clLabel.innerHTML = 'Committed Letter <span style="color:#C84B31">*</span>（5月1日截止已过，必须上传）';
-      clHint.innerHTML  = '<span style="color:#C84B31;font-weight:bold;">⚠️ 5月1日 Commitment Deadline 已过，所有 RD 录取须上传 Committed Letter 方可入群。</span><br/>支持 <strong>图片 / PDF</strong>';
-      committedZone.style.borderColor = '#C84B31';
-      removeFile('letter');
-    } else {
-      letterGroup.style.display = 'none';
-      clGroup.style.display = 'none';
-      committedZone.style.borderColor = '';
-    }
+    // 仅保留 committed 状态记录，上传区不联动
   }
 
   // ── 文件处理 ──
@@ -1258,8 +1221,6 @@
     } else {
       if (!type)  { showError('请选择录取类型'); return; }
       if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
-      if (type === 'ED' && !committedFile) { showError('ED录取必须上传 Committed Letter'); return; }
-      if (type === 'RD' && rdCommitted === 'true' && !committedFile) { showError('已Committed必须上传 Committed Letter'); return; }
       if (type === 'RD' && rdCommitted === 'false' && !committedFile) { showError('5月1日截止已过，RD录取必须上传 Committed Letter 方可入群'); return; }
     }
     if (!document.getElementById('fSubmitterName').value.trim())    { showError('请填写群昵称'); return; }
@@ -1619,8 +1580,6 @@
     document.getElementById('fCommitted').value = '';
     document.getElementById('committedGroup').classList.remove('show');
     document.getElementById('gradLetterGroup').style.display    = 'none';
-    document.getElementById('letterGroup').style.display        = 'none';
-    document.getElementById('committedLetterGroup').style.display = 'none';
     // 恢复学院选项
     const sel = document.getElementById('fCollege');
     Array.from(sel.options).forEach(opt => {
