@@ -2,10 +2,25 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>扯谈GPT · 扯谈Duke家长群</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>扯谈群助手 · 扯谈Duke家长群</title>
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A2240">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="扯谈助手">
+<link rel="apple-touch-icon" href="/icons/chedan-icon-192.png">
+<link rel="icon" href="/icons/chedan-icon-192.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+  @font-face {
+    font-family: 'SIMLI';
+    src: url('/fonts/SIMLI.woff2') format('woff2');
+    font-display: swap;
+  }
   :root{
     --paper:#F6F1E7;
     --ink:#2B2620;
@@ -43,8 +58,8 @@
     font-size:20px; flex-shrink:0;
   }
   header .title{
-    font-family:'Noto Serif SC', serif;
-    font-size:18px; font-weight:700; letter-spacing:1px;
+    font-family:'SIMLI', 'Noto Serif SC', serif;
+    font-size:19px; font-weight:400; letter-spacing:2px;
   }
   header .subtitle{
     font-size:11px; opacity:.65; margin-top:2px;
@@ -279,6 +294,13 @@ async function send(){
     btn.disabled = false;
     input.focus();
   }
+}
+
+// ── 注册 Service Worker ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/chedan-sw.js').catch(e => console.warn('SW注册失败', e));
+  });
 }
 </script>
 </body>
