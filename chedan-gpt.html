@@ -234,19 +234,39 @@ async function send(){
     }
     fullPrompt += '家长：' + text + '\n扯谈群助手：';
 
-    const res = await fetch(PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-      body: JSON.stringify({ provider: 'gemini', prompt: fullPrompt, useSearch: true })
-    });
-    const d = await res.json();
-    if (!d.ok) throw new Error(d.error || '请求失败');
+    // 依次尝试，前一个失败再换下一个（gemini不支持useSearch时去掉该参数）
+    const PROVIDERS = [
+      { provider: 'gemini',     useSearch: true  },
+      { provider: 'groq',       useSearch: false },
+      { provider: 'cerebras',   useSearch: false },
+      { provider: 'mistral',    useSearch: false },
+      { provider: 'openrouter', useSearch: false },
+    ];
+
+    let result = null, lastErr = null;
+    for (const p of PROVIDERS) {
+      try {
+        const res = await fetch(PROXY_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+          body: JSON.stringify({ provider: p.provider, prompt: fullPrompt, useSearch: p.useSearch })
+        });
+        const d = await res.json();
+        if (!d.ok) throw new Error(d.error || '请求失败');
+        result = d.result.trim();
+        break;
+      } catch(err) {
+        lastErr = err;
+        console.warn(`[${p.provider}] 失败，尝试下一个：`, err.message);
+      }
+    }
+    if (result === null) throw lastErr || new Error('所有provider均失败');
 
     typingEl.remove();
-    appendMsg('bot', d.result.trim());
+    appendMsg('bot', result);
 
     history.push({ role:'user', text });
-    history.push({ role:'model', text: d.result.trim() });
+    history.push({ role:'model', text: result });
     // 限制历史长度，避免prompt过长
     if (history.length > 20) history = history.slice(-20);
 
