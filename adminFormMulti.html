@@ -1060,6 +1060,7 @@
         await db.rpc('append_approval_log', { record_id: recordId, entry: { action: 'shelved', by: adminName, at: now } });
         if (rec) { rec.shelved_at = now; rec.shelved_by = adminName; rec.approval_log = rec.approval_log || []; rec.approval_log.push({ action: 'shelved', by: adminName, at: now }); }
         refreshCatCell(recordId);
+        notifyAdminStatusChange('搁置', adminName, sName);
 
       } else if (type === 'unshelve') {
         await db.from('admissions_submissionsMulti').update({ shelved_at: null, shelved_by: null }).eq('id', recordId);
@@ -1072,6 +1073,7 @@
         await db.rpc('append_approval_log', { record_id: recordId, entry: { action: 'rejected', by: adminName, at: now } });
         if (rec) { rec.rejected_at = now; rec.approval_log = rec.approval_log || []; rec.approval_log.push({ action: 'rejected', by: adminName, at: now }); }
         refreshCatCell(recordId);
+        notifyAdminStatusChange('拒绝', adminName, sName);
 
       } else if (type === 'unreject') {
         await db.from('admissions_submissionsMulti').update({ rejected_at: null }).eq('id', recordId);
@@ -1148,6 +1150,30 @@
     document.getElementById('reminderAdminSelect').value = '';
     document.getElementById('reminderConfirmBtn').disabled = true;
     _reminderArgs = null;
+  }
+
+  // ── 搁置/拒绝后通知 weihong_j ──
+  async function notifyAdminStatusChange(actionLabel, adminName, studentName) {
+    try {
+      const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
+      await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+        body: JSON.stringify({
+          email:      'weihong_j@yahoo.com',
+          studentName:'管理员',
+          link:       'https://dukeparents.org/adminFormMulti.html',
+          subject:    `⚠️ ${studentName} 已被${actionLabel}`,
+          replyTo:    'parentsduke@gmail.com',
+          bodyLine1:  `${adminName} 已将 ${studentName} 标记为「${actionLabel}」。`,
+          bodyLine2:  `时间：${now}（美东）`,
+          buttonText: '进入审批页面',
+          noButton:   true,
+        }),
+      });
+    } catch(e) {
+      console.warn('[状态通知失败]', e.message);
+    }
   }
 
   // ── 催信发送后通知 weihong_j ──
