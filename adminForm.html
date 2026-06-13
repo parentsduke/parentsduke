@@ -1761,6 +1761,30 @@
     }
   }
 
+  // ── 催信发送后通知 weihong_j ──
+  async function notifyAdminReminderSent(studentName, email, reminderSubject, extraCount) {
+    try {
+      const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
+      await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+        body: JSON.stringify({
+          email:      'weihong_j@yahoo.com',
+          studentName:'管理员',
+          link:       'https://dukeparents.org/adminForm.html',
+          subject:    `📧 催信已发送：${studentName}`,
+          replyTo:    'parentsduke@gmail.com',
+          bodyLine1:  `已向 ${studentName}（${email}）发送催信：「${reminderSubject}」。`,
+          bodyLine2:  extraCount > 0 ? `含 ${extraCount} 条附加询问\n时间：${now}（美东）` : `时间：${now}（美东）`,
+          buttonText: '进入审批页面',
+          noButton:   true,
+        }),
+      });
+    } catch(e) {
+      console.warn('[催信通知失败]', e.message);
+    }
+  }
+
   async function confirmSendCatalog() {
     if (!_cataParams) return;
     const { recordId, email, studentName, classYear } = _cataParams;
@@ -1828,6 +1852,7 @@
       });
       if (!res.ok) throw new Error(await res.text());
       closeCataModal();
+      notifyAdminReminderSent(studentName, email, subject, checked.length);
       alert(`✅ 已向 ${email} 发送催信${checked.length > 0 ? `（含 ${checked.length} 条附加询问）` : ''}`);
     } catch(e) {
       btn.disabled = false;
