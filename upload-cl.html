@@ -666,11 +666,49 @@
       if (updErr) throw new Error('保存失败：' + updErr.message);
 
       showScreen('screenSuccess');
+      notifyAdminUploaded(pageMode, newPaths.length);
 
     } catch(e) {
       showMsg('❌ ' + e.message);
       btn.disabled = false;
       btn.textContent = '提 交';
+    }
+  }
+
+  // ── 上传完成后通知管理员 ──
+  async function notifyAdminUploaded(mode, fileCount) {
+    try {
+      const data = window._uploadData || {};
+      const studentName = data.student_name_cn || data.student_name_en || '同学';
+      const typeLabel = {
+        cl:     'Commitment Letter / 录取材料',
+        dorm:   '宿舍照片',
+        portal: 'Duke Portal 截屏',
+        sid:    'Duke 学生证截屏',
+      }[mode] || mode;
+      const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
+      const adminEmails = ['weihong_j@yahoo.com', 'lixiaobing@gmail.com'];
+
+      await Promise.all(adminEmails.map(email => fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          email,
+          studentName:'管理员',
+          link:       'https://dukeparents.org/adminFormMulti.html',
+          subject:    `📥 已上传催信材料：${studentName}（${typeLabel}）`,
+          replyTo:    'parentsduke@gmail.com',
+          bodyLine1:  `${studentName} 已上传「${typeLabel}」。`,
+          bodyLine2:  `当前共 ${fileCount} 份文件\n时间：${now}（美东）`,
+          buttonText: '进入审批页面',
+          noButton:   true,
+        }),
+      })));
+    } catch(e) {
+      console.warn('[通知管理员失败]', e.message);
     }
   }
 
