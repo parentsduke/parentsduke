@@ -237,6 +237,8 @@ async function send(){
     // 依次尝试，前一个失败再换下一个（gemini不支持useSearch时去掉该参数）
     const PROVIDERS = [
       { provider: 'gemini',     useSearch: true  },
+      { provider: 'claude',     useSearch: false },
+      { provider: 'chatgpt',    useSearch: false },
       { provider: 'groq',       useSearch: false },
       { provider: 'cerebras',   useSearch: false },
       { provider: 'mistral',    useSearch: false },
@@ -249,7 +251,7 @@ async function send(){
         const res = await fetch(PROXY_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-          body: JSON.stringify({ provider: p.provider, prompt: fullPrompt, useSearch: p.useSearch })
+          body: JSON.stringify({ provider: p.provider, prompt: fullPrompt, useSearch: p.useSearch, chat: true })
         });
         const d = await res.json();
         if (!d.ok) throw new Error(d.error || '请求失败');
