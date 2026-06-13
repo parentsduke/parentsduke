@@ -81,7 +81,7 @@
     border-top-right-radius:4px;
   }
   .msg.bot::before{
-    content:"扯谈助手";
+    content:"扯谈群助手";
     display:block;
     font-size:11px;
     font-weight:700;
@@ -95,32 +95,6 @@
   .msg.error{
     background:#fdecea; color:#b3261e; border:1px solid #f5c2bd;
   }
-
-  /* ── 欢迎语 ── */
-  .welcome{
-    text-align:center;
-    color:#8a7f6c;
-    font-size:13px;
-    padding:24px 20px 8px;
-    line-height:1.8;
-  }
-  .welcome b{ color:var(--navy); }
-  .chips{
-    display:flex; flex-wrap:wrap; gap:8px;
-    justify-content:center;
-    padding:8px 16px 16px;
-  }
-  .chip{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:6px 14px;
-    font-size:12.5px;
-    cursor:pointer;
-    color:var(--navy);
-    transition:background .15s;
-  }
-  .chip:active{ background:var(--paper); }
 
   /* ── 输入栏 ── */
   #inputBar{
@@ -169,26 +143,14 @@
   <div class="avatar">🦢</div>
   <div>
     <div class="title">扯谈GPT</div>
-    <div class="subtitle">扯谈Duke家长群 · 扯谈助手在线</div>
+    <div class="subtitle">扯谈Duke家长群 · 扯谈群助手在线</div>
   </div>
 </header>
 
-<div id="chat">
-  <div class="welcome">
-    哈喽哈喽～我是<b>扯谈助手</b>，在群里泡了好几年的老家长。<br>
-    录取流程、Durham吃喝住、选课闲聊都能跟我唠唠，<br>
-    官方信息记得还是找管理员核实哈 😄
-  </div>
-  <div class="chips">
-    <div class="chip" onclick="ask('录取信什么时候能批准？')">录取信多久能批准？</div>
-    <div class="chip" onclick="ask('Durham附近租房怎么样？')">Durham租房怎么样？</div>
-    <div class="chip" onclick="ask('Duke的CS和ECE有什么区别？')">CS和ECE区别？</div>
-    <div class="chip" onclick="ask('开学前应该准备什么？')">开学前要准备啥？</div>
-  </div>
-</div>
+<div id="chat"></div>
 
 <div id="inputBar">
-  <textarea id="input" rows="1" placeholder="跟扯谈助手唠两句…" onkeydown="onKeyDown(event)" oninput="autoGrow(this)"></textarea>
+  <textarea id="input" rows="1" placeholder="跟扯谈群助手唠两句…" onkeydown="onKeyDown(event)" oninput="autoGrow(this)"></textarea>
   <button id="sendBtn" onclick="send()">➤</button>
 </div>
 
@@ -201,7 +163,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 const PROXY_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/ai-proxy';
 
 // ── 人设 system prompt ──
-const SYSTEM_PROMPT = `你是"扯谈Duke家长群"里的一位资深群友，群友们都叫你"扯谈助手"。你不是冷冰冰的AI助手，而是一个混迹群里很久、对Duke 2030届各种事情都门儿清的"老家长"。
+const SYSTEM_PROMPT = `你是"扯谈Duke家长群"里的一位资深群友，群友们都叫你"扯谈群助手"。你不是冷冰冰的AI助手，而是一个混迹群里很久、对Duke 2030届各种事情都门儿清的"老家长"。
 
 性格与语气：
 - 说话像中国家长群里聊天，亲切、接地气，偶尔带点调侃和自嘲
@@ -249,12 +211,6 @@ async function send(){
   const text = input.value.trim();
   if (!text) return;
 
-  // 隐藏欢迎语
-  const welcome = document.querySelector('.welcome');
-  const chips = document.querySelector('.chips');
-  if (welcome) welcome.remove();
-  if (chips) chips.remove();
-
   appendMsg('user', text);
   input.value = '';
   autoGrow(input);
@@ -262,7 +218,7 @@ async function send(){
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
 
-  const typingEl = appendMsg('bot typing', '扯谈助手正在码字…');
+  const typingEl = appendMsg('bot typing', '扯谈群助手正在码字…');
 
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -274,9 +230,9 @@ async function send(){
     // 拼接历史对话为单一prompt（ai-proxy当前只支持单条prompt）
     let fullPrompt = SYSTEM_PROMPT + '\n\n以下是对话记录：\n';
     for (const h of history) {
-      fullPrompt += (h.role === 'user' ? '家长' : '扯谈助手') + '：' + h.text + '\n';
+      fullPrompt += (h.role === 'user' ? '家长' : '扯谈群助手') + '：' + h.text + '\n';
     }
-    fullPrompt += '家长：' + text + '\n扯谈助手：';
+    fullPrompt += '家长：' + text + '\n扯谈群助手：';
 
     const res = await fetch(PROXY_URL, {
       method: 'POST',
