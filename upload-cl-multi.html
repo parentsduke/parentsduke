@@ -396,6 +396,7 @@
 
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let studentNameForNotify = '同学';
 
   let recordId     = null;
   let isGrad       = false;
@@ -436,6 +437,7 @@
       isGrad = ['grad_masters','grad_phd','硕士','博士'].includes(admissionType);
 
       const name = data.student_name_cn || data.student_name_en || '同学';
+      studentNameForNotify = name;
       const year = data.class_year ? `${data.class_year} 届` : '';
       document.getElementById('studentInfo').innerHTML =
         `学生姓名：<strong>${name}</strong>　届次：<strong>${year}</strong>　录取类型：<strong>${admissionType || '—'}</strong>`;
@@ -648,11 +650,57 @@
       if (updErr) throw new Error('保存失败：' + updErr.message);
 
       showScreen('screenSuccess');
+      notifyAdminUploaded(update);
 
     } catch(e) {
       showMsg('❌ ' + e.message);
       btn.disabled = false;
       btn.textContent = '提 交';
+    }
+  }
+
+  // ── 上传完成后通知管理员 ──
+  async function notifyAdminUploaded(update) {
+    try {
+      const typeLabels = {
+        committed_letter_path: 'Commitment Letter',
+        grad_letter_path:      '录取通知书',
+        portal_screenshot_path:'Duke Portal 截屏',
+        student_id_path:       'Duke 学生证截屏',
+        dorm_photo_path:       '宿舍照片',
+      };
+      const uploaded = Object.keys(update)
+        .filter(k => typeLabels[k])
+        .map(k => typeLabels[k]);
+      if (uploaded.length === 0) return;
+
+      const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
+      const adminEmails = [
+        'weihong_j@yahoo.com', 'lixiaobing@gmail.com', 'sws122003@yahoo.com',
+        'sharonzhang92@gmail.com', 'vonnan@gmail.com', 'yyao28@gmail.com',
+        'jing.jane@gmail.com', 'china.snowpea@gmail.com',
+      ];
+
+      await Promise.all(adminEmails.map(email => fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          email,
+          studentName:'管理员',
+          link:       'https://dukeparents.org/adminFormMulti.html',
+          subject:    `📥 已上传催信材料：${studentNameForNotify}（${uploaded.join('、')}）`,
+          replyTo:    'parentsduke@gmail.com',
+          bodyLine1:  `${studentNameForNotify} 已上传：${uploaded.join('、')}。`,
+          bodyLine2:  `时间：${now}（美东）`,
+          buttonText: '进入审批页面',
+          noButton:   true,
+        }),
+      })));
+    } catch(e) {
+      console.warn('[通知管理员失败]', e.message);
     }
   }
 
