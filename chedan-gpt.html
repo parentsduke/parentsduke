@@ -23,6 +23,7 @@
     color:var(--ink);
     display:flex; flex-direction:column;
     height:100vh;
+    height:100dvh;
     overflow:hidden;
   }
 
@@ -51,7 +52,9 @@
 
   /* ── 消息区 ── */
   #chat{
-    flex:1; overflow-y:auto;
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
     padding:16px;
     display:flex; flex-direction:column; gap:12px;
   }
@@ -78,7 +81,7 @@
     border-top-right-radius:4px;
   }
   .msg.bot::before{
-    content:"老炮";
+    content:"扯谈助手";
     display:block;
     font-size:11px;
     font-weight:700;
@@ -121,7 +124,7 @@
 
   /* ── 输入栏 ── */
   #inputBar{
-    flex-shrink:0;
+    flex:0 0 auto;
     display:flex; gap:8px;
     padding:10px 12px;
     padding-bottom:max(10px, env(safe-area-inset-bottom));
@@ -166,13 +169,13 @@
   <div class="avatar">🦢</div>
   <div>
     <div class="title">扯谈GPT</div>
-    <div class="subtitle">扯谈Duke家长群 · 老炮在线</div>
+    <div class="subtitle">扯谈Duke家长群 · 扯谈助手在线</div>
   </div>
 </header>
 
 <div id="chat">
   <div class="welcome">
-    哈喽哈喽～我是<b>扯谈老炮</b>，在群里泡了好几年的老家长。<br>
+    哈喽哈喽～我是<b>扯谈助手</b>，在群里泡了好几年的老家长。<br>
     录取流程、Durham吃喝住、选课闲聊都能跟我唠唠，<br>
     官方信息记得还是找管理员核实哈 😄
   </div>
@@ -185,7 +188,7 @@
 </div>
 
 <div id="inputBar">
-  <textarea id="input" rows="1" placeholder="跟老炮唠两句…" onkeydown="onKeyDown(event)" oninput="autoGrow(this)"></textarea>
+  <textarea id="input" rows="1" placeholder="跟扯谈助手唠两句…" onkeydown="onKeyDown(event)" oninput="autoGrow(this)"></textarea>
   <button id="sendBtn" onclick="send()">➤</button>
 </div>
 
@@ -198,7 +201,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 const PROXY_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/ai-proxy';
 
 // ── 人设 system prompt ──
-const SYSTEM_PROMPT = `你是"扯谈Duke家长群"里的一位资深群友，群友们都叫你"扯谈老炮"。你不是冷冰冰的AI助手，而是一个混迹群里很久、对Duke 2030届各种事情都门儿清的"老家长"。
+const SYSTEM_PROMPT = `你是"扯谈Duke家长群"里的一位资深群友，群友们都叫你"扯谈助手"。你不是冷冰冰的AI助手，而是一个混迹群里很久、对Duke 2030届各种事情都门儿清的"老家长"。
 
 性格与语气：
 - 说话像中国家长群里聊天，亲切、接地气，偶尔带点调侃和自嘲
@@ -259,7 +262,7 @@ async function send(){
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
 
-  const typingEl = appendMsg('bot typing', '老炮正在码字…');
+  const typingEl = appendMsg('bot typing', '扯谈助手正在码字…');
 
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -271,9 +274,9 @@ async function send(){
     // 拼接历史对话为单一prompt（ai-proxy当前只支持单条prompt）
     let fullPrompt = SYSTEM_PROMPT + '\n\n以下是对话记录：\n';
     for (const h of history) {
-      fullPrompt += (h.role === 'user' ? '家长' : '老炮') + '：' + h.text + '\n';
+      fullPrompt += (h.role === 'user' ? '家长' : '扯谈助手') + '：' + h.text + '\n';
     }
-    fullPrompt += '家长：' + text + '\n老炮：';
+    fullPrompt += '家长：' + text + '\n扯谈助手：';
 
     const res = await fetch(PROXY_URL, {
       method: 'POST',
