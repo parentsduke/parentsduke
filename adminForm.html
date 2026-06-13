@@ -1311,6 +1311,30 @@
     }
   }
 
+  // ── 搁置/拒绝后通知 weihong_j ──
+  async function notifyAdminStatusChange(actionLabel, studentName) {
+    try {
+      const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
+      await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+        body: JSON.stringify({
+          email:      'weihong_j@yahoo.com',
+          studentName:'管理员',
+          link:       'https://dukeparents.org/adminForm.html',
+          subject:    `⚠️ ${studentName} 已被${actionLabel}`,
+          replyTo:    'parentsduke@gmail.com',
+          bodyLine1:  `${studentName} 已被标记为「${actionLabel}」。`,
+          bodyLine2:  `时间：${now}（美东）`,
+          buttonText: '进入审批页面',
+          noButton:   true,
+        }),
+      });
+    } catch(e) {
+      console.warn('[状态通知失败]', e.message);
+    }
+  }
+
   // ── 搁置 ──
   async function shelveRecord(recordId, studentName) {
     if (!confirm(`搁置 ${studentName}？（已在群中，暂不处理）`)) return;
@@ -1320,6 +1344,7 @@
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = now;
       applyFilters();
+      notifyAdminStatusChange('搁置', studentName);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1413,6 +1438,7 @@
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.rejected_at = now;
       applyFilters();
+      notifyAdminStatusChange('拒绝', studentName);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
