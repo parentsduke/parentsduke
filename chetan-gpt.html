@@ -155,9 +155,44 @@
   /* ── 滚动条 ── */
   #chat::-webkit-scrollbar{ width:4px; }
   #chat::-webkit-scrollbar-thumb{ background:var(--border); border-radius:2px; }
+
+  /* ── 安装提示横幅 ── */
+  #installBanner{
+    display:none;
+    align-items:center;
+    gap:10px;
+    background:var(--gold);
+    color:var(--navy);
+    font-size:13px;
+    padding:10px 14px;
+    line-height:1.4;
+  }
+  #installBanner span{ flex:1; }
+  #installBanner button{
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    padding:5px 10px;
+    font-size:12px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  #installBanner .close-btn{
+    background:none;
+    color:var(--navy);
+    font-size:16px;
+    padding:0 4px;
+  }
 </style>
 </head>
 <body>
+
+<div id="installBanner">
+  <span id="installText"></span>
+  <button id="installActionBtn" style="display:none"></button>
+  <button class="close-btn" onclick="document.getElementById('installBanner').style.display='none'">✕</button>
+</div>
 
 <header>
   <div>
@@ -304,3 +339,36 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+<script>
+// ── 安装提示横幅 ──
+(function(){
+  const banner = document.getElementById('installBanner');
+  const text   = document.getElementById('installText');
+  const btn    = document.getElementById('installActionBtn');
+  const ua     = navigator.userAgent;
+  const isIOS  = /iphone|ipad|ipod/i.test(ua);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (isStandalone) return;
+  if (isIOS) {
+    text.textContent = '点击底部 分享 按钮 → "添加到主屏幕"，即可像App一样使用扯谈GPT';
+    banner.style.display = 'flex';
+  } else {
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      text.textContent = '安装扯谈GPT到主屏幕，随时快速打开';
+      btn.textContent = '安装';
+      btn.style.display = 'inline-block';
+      btn.onclick = () => { deferredPrompt.prompt(); banner.style.display='none'; };
+      banner.style.display = 'flex';
+    });
+    setTimeout(() => {
+      if (!deferredPrompt && banner.style.display === 'none') {
+        text.textContent = '点击浏览器菜单 → "添加到主屏幕"，即可像App一样使用扯谈GPT';
+        banner.style.display = 'flex';
+      }
+    }, 1200);
+  }
+})();
+</script>
