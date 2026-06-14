@@ -11,8 +11,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="扯谈助手">
-<link rel="apple-touch-icon" href="/icons/chedan-icon-192.png">
-<link rel="icon" href="/icons/chedan-icon-192.png">
+<link rel="apple-touch-icon" href="/icons/chetan-icon-192.png">
+<link rel="icon" href="/icons/chetan-icon-192.png">
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -303,7 +303,7 @@ async function send(){
 // ── 注册 Service Worker ──
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/chedan-sw.js').catch(e => console.warn('SW注册失败', e));
+    navigator.serviceWorker.register('/chetan-sw.js').catch(e => console.warn('SW注册失败', e));
   });
 }
 </script>
