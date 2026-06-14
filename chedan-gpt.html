@@ -21,6 +21,11 @@
     src: url('/fonts/SIMLI.woff2') format('woff2');
     font-display: swap;
   }
+  @font-face {
+    font-family: 'NotoSansBold';
+    src: url('/fonts/NotoSans-Bold-BF.woff2') format('woff2');
+    font-display: swap;
+  }
   :root{
     --paper:#F6F1E7;
     --ink:#2B2620;
@@ -157,7 +162,7 @@
 <header>
   <div class="avatar">🦢</div>
   <div>
-    <div class="title">扯谈GPT</div>
+    <div class="title">扯谈<span style="font-family:'NotoSansBold',sans-serif;font-weight:bold;display:inline-block;transform:scaleY(0.68);transform-origin:bottom;">GPT</span></div>
     <div class="subtitle">扯谈Duke家长群 · 扯谈群助手在线</div>
   </div>
 </header>
