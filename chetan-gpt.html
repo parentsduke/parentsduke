@@ -256,7 +256,10 @@ function ask(text){
   send();
 }
 
+let _sending = false;
 async function send(){
+  if (_sending) return;
+  _sending = true;
   const input = document.getElementById('input');
   const text = input.value.trim();
   if (!text) return;
@@ -326,6 +329,7 @@ async function send(){
     typingEl.remove();
     appendMsg('bot error', '❌ 出错了：' + e.message);
   } finally {
+    _sending = false;
     btn.disabled = false;
     input.focus();
   }
