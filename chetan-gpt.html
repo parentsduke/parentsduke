@@ -259,10 +259,10 @@ function ask(text){
 let _sending = false;
 async function send(){
   if (_sending) return;
-  _sending = true;
   const input = document.getElementById('input');
   const text = input.value.trim();
   if (!text) return;
+  _sending = true;
 
   appendMsg('user', text);
   input.value = '';
