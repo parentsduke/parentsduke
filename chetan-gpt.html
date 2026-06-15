@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>扯谈群助手 · 扯谈Duke家长群</title>
-
-<!-- PWA -->
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0A2240">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,48 +11,90 @@
 <meta name="apple-mobile-web-app-title" content="扯谈助手">
 <link rel="apple-touch-icon" href="/icons/chetan-icon-192.png">
 <link rel="icon" href="/icons/chetan-icon-192.png">
-
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  @font-face {
-    font-family: 'SIMLI';
-    src: url('/fonts/SIMLI.woff2') format('woff2');
-    font-display: swap;
-  }
-  @font-face {
-    font-family: 'NotoSansBold';
-    src: url('/fonts/NotoSans-Bold-BF.woff2') format('woff2');
-    font-display: swap;
-  }
+  @font-face { font-family:'SIMLI'; src:url('/fonts/SIMLI.woff2') format('woff2'); font-display:swap; }
+  @font-face { font-family:'NotoSansBold'; src:url('/fonts/NotoSans-Bold-BF.woff2') format('woff2'); font-display:swap; }
   :root{
-    --paper:#F6F1E7;
-    --ink:#2B2620;
-    --navy:#0A2240;
-    --gold:#C8A35A;
-    --bubble-bot:#FFFFFF;
-    --bubble-user:#0A2240;
-    --border:#E3DACB;
+    --paper:#F6F1E7; --ink:#2B2620; --navy:#0A2240; --gold:#C8A35A;
+    --bubble-bot:#FFFFFF; --bubble-user:#0A2240; --border:#E3DACB;
+    --sidebar-w:260px;
   }
   *{ box-sizing:border-box; }
   html,body{ height:100%; margin:0; }
   body{
     font-family:'Noto Sans SC', sans-serif;
-    background:var(--paper);
-    color:var(--ink);
+    background:var(--paper); color:var(--ink);
     display:flex; flex-direction:column;
-    height:100vh;
-    height:100dvh;
-    overflow:hidden;
+    height:100vh; height:100dvh; overflow:hidden;
+  }
+
+  /* ── 侧边栏遮罩 ── */
+  #overlay{
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.4); z-index:100;
+  }
+  #overlay.open{ display:block; }
+
+  /* ── 侧边栏 ── */
+  #sidebar{
+    position:fixed; top:0; left:0; bottom:0;
+    width:var(--sidebar-w);
+    background:var(--navy); color:#fff;
+    display:flex; flex-direction:column;
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    z-index:101;
+  }
+  #sidebar.open{ transform:translateX(0); }
+  #sidebar-header{
+    padding:18px 16px 12px;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  #sidebar-header span{ font-size:14px; font-weight:700; opacity:.8; }
+  #newChatBtn{
+    background:var(--gold); color:var(--navy);
+    border:none; border-radius:8px;
+    padding:6px 12px; font-size:12px; font-weight:700;
+    cursor:pointer;
+  }
+  #convList{
+    flex:1; overflow-y:auto; padding:8px 0;
+  }
+  .conv-item{
+    padding:10px 16px; cursor:pointer;
+    border-left:3px solid transparent;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:13px; line-height:1.4;
+  }
+  .conv-item:hover{ background:rgba(255,255,255,.08); }
+  .conv-item.active{ border-left-color:var(--gold); background:rgba(200,163,90,.12); }
+  .conv-item .conv-title{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; opacity:.85; }
+  .conv-item .conv-date{ font-size:11px; opacity:.45; margin-left:8px; flex-shrink:0; }
+  .conv-item .del-btn{
+    display:none; background:none; border:none; color:#f88; cursor:pointer;
+    font-size:14px; padding:0 4px; flex-shrink:0;
+  }
+  .conv-item:hover .del-btn{ display:block; }
+  #sidebar-footer{
+    padding:12px 16px;
+    border-top:1px solid rgba(255,255,255,.1);
+    font-size:11px; opacity:.4; text-align:center;
   }
 
   /* ── 顶栏 ── */
   header{
-    background:var(--navy);
-    color:#fff;
+    background:var(--navy); color:#fff;
     padding:14px 18px;
     display:flex; align-items:center; gap:12px;
     box-shadow:0 2px 8px rgba(10,34,64,.15);
     flex-shrink:0;
+  }
+  #menuBtn{
+    background:none; border:none; color:#fff;
+    font-size:20px; cursor:pointer; padding:0; flex-shrink:0;
+    line-height:1;
   }
   .avatar{
     width:40px; height:40px; border-radius:50%;
@@ -63,131 +103,83 @@
     font-size:20px; flex-shrink:0;
   }
   header .title{
-    font-family:'SIMLI', 'Noto Serif SC', serif;
+    font-family:'SIMLI','Noto Serif SC',serif;
     font-size:19px; font-weight:400; letter-spacing:2px;
   }
-  header .subtitle{
-    font-size:11px; opacity:.65; margin-top:2px;
+  header .subtitle{ font-size:11px; opacity:.65; margin-top:2px; }
+
+  /* ── 安装横幅 ── */
+  #installBanner{
+    display:none; align-items:center; gap:10px;
+    background:var(--gold); color:var(--navy);
+    font-size:13px; padding:10px 14px; line-height:1.4;
   }
+  #installBanner span{ flex:1; }
+  #installBanner button{
+    background:var(--navy); color:#fff; border:none;
+    border-radius:6px; padding:5px 10px; font-size:12px; cursor:pointer; white-space:nowrap;
+  }
+  #installBanner .close-btn{ background:none; color:var(--navy); font-size:16px; padding:0 4px; }
 
   /* ── 消息区 ── */
   #chat{
-    flex:1 1 auto;
-    min-height:0;
-    overflow-y:auto;
-    padding:16px;
-    display:flex; flex-direction:column; gap:12px;
+    flex:1 1 auto; min-height:0; overflow-y:auto;
+    padding:16px; display:flex; flex-direction:column; gap:12px;
   }
   .msg{
-    max-width:78%;
-    padding:10px 14px;
-    border-radius:14px;
-    font-size:14.5px;
-    line-height:1.6;
-    white-space:pre-wrap;
-    word-break:break-word;
+    max-width:78%; padding:10px 14px; border-radius:14px;
+    font-size:14.5px; line-height:1.6;
+    white-space:pre-wrap; word-break:break-word;
     box-shadow:0 1px 2px rgba(0,0,0,.04);
   }
-  .msg.bot{
-    align-self:flex-start;
-    background:var(--bubble-bot);
-    border:1px solid var(--border);
-    border-top-left-radius:4px;
-  }
-  .msg.user{
-    align-self:flex-end;
-    background:var(--bubble-user);
-    color:#fff;
-    border-top-right-radius:4px;
-  }
-  .msg.bot::before{
-    content:"扯谈群助手";
-    display:block;
-    font-size:11px;
-    font-weight:700;
-    color:var(--gold);
-    margin-bottom:4px;
-    letter-spacing:1px;
-  }
-  .msg.typing{
-    color:#999; font-style:italic;
-  }
-  .msg.error{
-    background:#fdecea; color:#b3261e; border:1px solid #f5c2bd;
-  }
+  .msg.bot{ align-self:flex-start; background:var(--bubble-bot); border:1px solid var(--border); border-top-left-radius:4px; }
+  .msg.user{ align-self:flex-end; background:var(--bubble-user); color:#fff; border-top-right-radius:4px; }
+  .msg.bot::before{ content:"扯谈群助手"; display:block; font-size:11px; font-weight:700; color:var(--gold); margin-bottom:4px; letter-spacing:1px; }
+  .msg.typing{ color:#999; font-style:italic; }
+  .msg.error{ background:#fdecea; color:#b3261e; border:1px solid #f5c2bd; }
 
   /* ── 输入栏 ── */
   #inputBar{
-    flex:0 0 auto;
-    display:flex; gap:8px;
+    flex:0 0 auto; display:flex; gap:8px;
     padding:10px 12px;
     padding-bottom:max(10px, env(safe-area-inset-bottom));
-    background:#fff;
-    border-top:1px solid var(--border);
+    background:#fff; border-top:1px solid var(--border);
   }
   #inputBar textarea{
-    flex:1;
-    resize:none;
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:10px 16px;
-    font-size:14.5px;
-    font-family:inherit;
-    line-height:1.4;
-    max-height:96px;
-    outline:none;
+    flex:1; resize:none; border:1px solid var(--border);
+    border-radius:18px; padding:10px 16px;
+    font-size:14.5px; font-family:inherit; line-height:1.4;
+    max-height:96px; outline:none;
   }
   #inputBar textarea:focus{ border-color:var(--gold); }
   #sendBtn{
-    flex-shrink:0;
-    width:44px; height:44px;
-    border-radius:50%;
-    border:none;
-    background:var(--navy);
-    color:#fff;
-    font-size:18px;
-    cursor:pointer;
+    flex-shrink:0; width:44px; height:44px; border-radius:50%;
+    border:none; background:var(--navy); color:#fff;
+    font-size:18px; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
     transition:opacity .15s;
   }
   #sendBtn:disabled{ opacity:.4; cursor:default; }
-
-  /* ── 滚动条 ── */
   #chat::-webkit-scrollbar{ width:4px; }
   #chat::-webkit-scrollbar-thumb{ background:var(--border); border-radius:2px; }
-
-  /* ── 安装提示横幅 ── */
-  #installBanner{
-    display:none;
-    align-items:center;
-    gap:10px;
-    background:var(--gold);
-    color:var(--navy);
-    font-size:13px;
-    padding:10px 14px;
-    line-height:1.4;
-  }
-  #installBanner span{ flex:1; }
-  #installBanner button{
-    background:var(--navy);
-    color:#fff;
-    border:none;
-    border-radius:6px;
-    padding:5px 10px;
-    font-size:12px;
-    cursor:pointer;
-    white-space:nowrap;
-  }
-  #installBanner .close-btn{
-    background:none;
-    color:var(--navy);
-    font-size:16px;
-    padding:0 4px;
-  }
 </style>
 </head>
 <body>
 
+<!-- 侧边栏遮罩 -->
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- 侧边栏 -->
+<div id="sidebar">
+  <div id="sidebar-header">
+    <span>历史对话</span>
+    <button id="newChatBtn" onclick="newChat()">＋ 新对话</button>
+  </div>
+  <div id="convList"></div>
+  <div id="sidebar-footer">扯谈Duke家长群</div>
+</div>
+
+<!-- 安装横幅 -->
 <div id="installBanner">
   <span id="installText"></span>
   <button id="installActionBtn" style="display:none"></button>
@@ -195,6 +187,7 @@
 </div>
 
 <header>
+  <button id="menuBtn" onclick="openSidebar()">☰</button>
   <div>
     <div class="title">扯谈<span style="font-family:'NotoSansBold',sans-serif;font-weight:bold;display:inline-block;transform:scaleY(0.68);transform-origin:bottom;">GPT</span></div>
     <div class="subtitle">扯谈Duke家长群 · 扯谈群助手在线</div>
@@ -213,10 +206,8 @@
 const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 const PROXY_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/ai-proxy';
 
-// ── 人设 system prompt ──
 const SYSTEM_PROMPT = `你是"扯谈Duke家长群"的群助手，熟悉Duke大学各届学生事务及校园生活。
 
 规则：
@@ -227,20 +218,104 @@ const SYSTEM_PROMPT = `你是"扯谈Duke家长群"的群助手，熟悉Duke大�
 - 不讨论政治、宗教、色情、暴力等敏感话题，遇到此类问题直接跳过
 - 回答前先搜索查询最新信息，不要凭记忆猜测，尤其是涉及Duke最新动态、日期、政策等`;
 
-let history = []; // {role:'user'|'model', text}
+// ── 对话管理 ──
+// conversations: [{id, title, date, messages:[{role,text}]}]
+let conversations = [];
+let currentId = null;
+let history = [];
 
+function loadStorage() {
+  try {
+    conversations = JSON.parse(localStorage.getItem('chetan_convs') || '[]');
+  } catch(e) { conversations = []; }
+}
+
+function saveStorage() {
+  try {
+    localStorage.setItem('chetan_convs', JSON.stringify(conversations));
+  } catch(e) {}
+}
+
+function getCurrentConv() {
+  return conversations.find(c => c.id === currentId);
+}
+
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+}
+
+function newChat() {
+  const id = genId();
+  conversations.unshift({ id, title:'新对话', date: new Date().toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'}), messages:[] });
+  saveStorage();
+  switchConv(id);
+  closeSidebar();
+  document.getElementById('input').focus();
+}
+
+function switchConv(id) {
+  currentId = id;
+  history = [];
+  const conv = getCurrentConv();
+  if (conv) history = [...conv.messages];
+  renderChat();
+  renderSidebar();
+}
+
+function deleteConv(id, e) {
+  e.stopPropagation();
+  conversations = conversations.filter(c => c.id !== id);
+  saveStorage();
+  if (currentId === id) {
+    if (conversations.length > 0) switchConv(conversations[0].id);
+    else newChat();
+  } else {
+    renderSidebar();
+  }
+}
+
+function renderChat() {
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+  for (const h of history) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + (h.role === 'user' ? 'user' : 'bot');
+    div.textContent = h.text;
+    chat.appendChild(div);
+  }
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function renderSidebar() {
+  const list = document.getElementById('convList');
+  list.innerHTML = '';
+  for (const c of conversations) {
+    const item = document.createElement('div');
+    item.className = 'conv-item' + (c.id === currentId ? ' active' : '');
+    item.innerHTML = `<span class="conv-title">${c.title}</span><span class="conv-date">${c.date}</span><button class="del-btn" title="删除">🗑</button>`;
+    item.querySelector('.del-btn').onclick = (e) => deleteConv(c.id, e);
+    item.onclick = () => { switchConv(c.id); closeSidebar(); };
+    list.appendChild(item);
+  }
+}
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ── UI ──
 function autoGrow(el){
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 96) + 'px';
 }
-
 function onKeyDown(e){
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    send();
-  }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
 }
-
 function appendMsg(role, text){
   const chat = document.getElementById('chat');
   const div = document.createElement('div');
@@ -251,11 +326,7 @@ function appendMsg(role, text){
   return div;
 }
 
-function ask(text){
-  document.getElementById('input').value = text;
-  send();
-}
-
+// ── 发送 ──
 let _sending = false;
 async function send(){
   if (_sending) return;
@@ -267,10 +338,8 @@ async function send(){
   appendMsg('user', text);
   input.value = '';
   autoGrow(input);
-
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
-
   const typingEl = appendMsg('bot typing', '扯谈群助手正在码字…');
 
   try {
@@ -280,7 +349,6 @@ async function send(){
       return;
     }
 
-    // 拼接历史对话为单一prompt（ai-proxy当前只支持单条prompt）
     let fullPrompt = SYSTEM_PROMPT + '\n\n以下是对话记录：\n';
     for (const h of history) {
       fullPrompt += (h.role === 'user' ? '家长' : '扯谈群助手') + '：' + h.text + '\n';
@@ -288,23 +356,23 @@ async function send(){
     fullPrompt += '家长：' + text + '\n扯谈群助手：';
 
     const PROVIDERS = [
-      { provider: 'gemini',     useSearch: true  },
-      { provider: 'gemini-lite', useSearch: true  },
-      { provider: 'groq',       useSearch: false },
-      { provider: 'cerebras',   useSearch: false },
-      { provider: 'mistral',    useSearch: false },
-      { provider: 'claude',     useSearch: false },  // OpenRouter免费Claude
-      { provider: 'chatgpt',    useSearch: false },  // OpenRouter免费模型
-      { provider: 'openrouter', useSearch: false },
+      { provider:'gemini',     useSearch:true  },
+      { provider:'gemini-lite',useSearch:true  },
+      { provider:'groq',       useSearch:false },
+      { provider:'cerebras',   useSearch:false },
+      { provider:'mistral',    useSearch:false },
+      { provider:'claude',     useSearch:false },
+      { provider:'chatgpt',    useSearch:false },
+      { provider:'openrouter', useSearch:false },
     ];
 
     let result = null, lastErr = null;
     for (const p of PROVIDERS) {
       try {
         const res = await fetch(PROXY_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-          body: JSON.stringify({ provider: p.provider, prompt: fullPrompt, useSearch: p.useSearch, chat: true })
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},
+          body:JSON.stringify({provider:p.provider, prompt:fullPrompt, useSearch:p.useSearch, chat:true})
         });
         const d = await res.json();
         if (!d.ok) throw new Error(d.error || '请求失败');
@@ -313,7 +381,7 @@ async function send(){
         break;
       } catch(err) {
         lastErr = err;
-        console.warn(`[${p.provider}] 失败，尝试下一个：`, err.message);
+        console.warn(`[${p.provider}] 失败：`, err.message);
       }
     }
     if (result === null) throw lastErr || new Error('所有provider均失败');
@@ -323,8 +391,17 @@ async function send(){
 
     history.push({ role:'user', text });
     history.push({ role:'model', text: result });
-    // 限制历史长度，避免prompt过长
-    if (history.length > 20) history = history.slice(-20);
+    if (history.length > 40) history = history.slice(-40);
+
+    // 更新当前对话
+    const conv = getCurrentConv();
+    if (conv) {
+      conv.messages = [...history];
+      // 用第一条用户消息作标题
+      if (conv.title === '新对话') conv.title = text.slice(0, 18);
+      saveStorage();
+      renderSidebar();
+    }
 
   } catch(e) {
     typingEl.remove();
@@ -336,23 +413,24 @@ async function send(){
   }
 }
 
-// ── 注册 Service Worker ──
+// ── 初始化 ──
+loadStorage();
+if (conversations.length === 0) newChat();
+else switchConv(conversations[0].id);
+
+// ── Service Worker ──
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/chetan-sw.js').catch(e => console.warn('SW注册失败', e));
   });
 }
-</script>
-</body>
-</html>
-<script>
+
 // ── 安装提示横幅 ──
 (function(){
   const banner = document.getElementById('installBanner');
   const text   = document.getElementById('installText');
   const btn    = document.getElementById('installActionBtn');
-  const ua     = navigator.userAgent;
-  const isIOS  = /iphone|ipad|ipod/i.test(ua);
+  const isIOS  = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
   if (isStandalone) return;
   if (isIOS) {
@@ -361,11 +439,9 @@ if ('serviceWorker' in navigator) {
   } else {
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault();
-      deferredPrompt = e;
+      e.preventDefault(); deferredPrompt = e;
       text.textContent = '安装扯谈GPT到主屏幕，随时快速打开';
-      btn.textContent = '安装';
-      btn.style.display = 'inline-block';
+      btn.textContent = '安装'; btn.style.display = 'inline-block';
       btn.onclick = () => { deferredPrompt.prompt(); banner.style.display='none'; };
       banner.style.display = 'flex';
     });
@@ -378,3 +454,5 @@ if ('serviceWorker' in navigator) {
   }
 })();
 </script>
+</body>
+</html>
