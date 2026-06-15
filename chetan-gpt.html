@@ -309,6 +309,7 @@ async function send(){
         const d = await res.json();
         if (!d.ok) throw new Error(d.error || '请求失败');
         result = d.result.trim();
+        if (!result) throw new Error('空响应');
         break;
       } catch(err) {
         lastErr = err;
