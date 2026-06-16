@@ -8,19 +8,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0e1a;
-    --surface: #111827;
-    --surface2: #1a2235;
-    --cas9: #e05c5c;
-    --nick: #4fc3f7;
-    --cas9-dim: rgba(224,92,92,0.15);
-    --nick-dim: rgba(79,195,247,0.15);
-    --text: #e8eaf0;
+    --bg: #ffffff;
+    --surface: #f5f7fa;
+    --surface2: #eaecf2;
+    --cas9: #c0392b;
+    --nick: #1565c0;
+    --cas9-dim: rgba(192,57,43,0.10);
+    --nick-dim: rgba(21,101,192,0.10);
+    --text: #1a1f2e;
     --muted: #6b7a99;
-    --accent: #ffd166;
-    --correct: #06d6a0;
-    --wrong: #ef476f;
-    --border: rgba(255,255,255,0.07);
+    --accent: #b8860b;
+    --correct: #1a7a5e;
+    --wrong: #c0392b;
+    --border: rgba(0,0,0,0.10);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,8 +46,8 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 20% 50%, rgba(224,92,92,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(79,195,247,0.12) 0%, transparent 70%);
+      radial-gradient(ellipse 60% 50% at 20% 50%, rgba(192,57,43,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(21,101,192,0.07) 0%, transparent 70%);
     pointer-events: none;
   }
   .lab-badge {
@@ -56,7 +56,7 @@
     font-size: 11px;
     letter-spacing: 3px;
     color: var(--accent);
-    border: 1px solid rgba(255,209,102,0.3);
+    border: 1px solid rgba(184,134,11,0.4);
     padding: 4px 14px;
     border-radius: 2px;
     margin-bottom: 24px;
@@ -101,7 +101,7 @@
   .tab-btn.active {
     background: var(--surface);
     color: var(--accent);
-    border-color: rgba(255,209,102,0.4);
+    border-color: rgba(184,134,11,0.5);
   }
 
   /* ── CONTENT AREAS ── */
@@ -250,7 +250,7 @@
     line-height: 1.5;
     vertical-align: top;
   }
-  .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .compare-table tr:hover td { background: rgba(0,0,0,0.02); }
   .compare-table .prop { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap; }
   .compare-table .v-cas9 { color: var(--cas9); }
   .compare-table .v-nick { color: var(--nick); }
@@ -319,8 +319,8 @@
     line-height: 1.5;
   }
   .opt-btn:hover:not([disabled]) {
-    border-color: rgba(255,209,102,0.4);
-    background: rgba(255,209,102,0.05);
+    border-color: rgba(184,134,11,0.4);
+    background: rgba(184,134,11,0.06);
   }
   .opt-btn.correct { background: rgba(6,214,160,0.1); border-color: var(--correct); color: var(--correct); }
   .opt-btn.wrong { background: rgba(239,71,111,0.1); border-color: var(--wrong); color: var(--wrong); }
@@ -330,12 +330,12 @@
     display: none;
     margin-top: 20px;
     padding: 16px 20px;
-    background: rgba(255,209,102,0.05);
+    background: rgba(184,134,11,0.05);
     border-left: 3px solid var(--accent);
     border-radius: 0 8px 8px 0;
     font-size: 14px;
     line-height: 1.7;
-    color: #c8cfe0;
+    color: #3a4260;
   }
   .explanation.show { display: block; animation: fadeIn 0.3s ease; }
 
@@ -350,7 +350,7 @@
     font-size: 13px;
     padding: 10px 28px;
     background: var(--accent);
-    color: #0a0e1a;
+    color: #ffffff;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -388,7 +388,7 @@
     letter-spacing: 1px;
     transition: all 0.2s;
   }
-  .retry-btn:hover { background: var(--accent); color: var(--bg); }
+  .retry-btn:hover { background: var(--accent); color: #ffffff; }
 
   /* ── MECHANISM PANEL ── */
   .mech-section { margin-bottom: 48px; }
@@ -447,7 +447,7 @@
   }
   .active-domain { color: var(--correct); }
   .inactive-domain { color: var(--wrong); }
-  .domain-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .domain-table tr:hover td { background: rgba(0,0,0,0.02); }
 
   /* footer */
   footer {
@@ -473,6 +473,7 @@
   <button class="tab-btn active" onclick="switchTab('compare')">对比展示</button>
   <button class="tab-btn" onclick="switchTab('mechanism')">作用机制</button>
   <button class="tab-btn" onclick="switchTab('quiz')">知识测验</button>
+  <button class="tab-btn" onclick="switchTab('whycas9')">为何还用 Cas9？</button>
 </div>
 
 <!-- ═══ COMPARE PANEL ═══ -->
@@ -577,6 +578,21 @@
           <td>标准</td>
           <td class="v-nick">更高（需双导向 RNA）</td>
         </tr>
+        <tr>
+          <td class="prop">HDR 绝对效率</td>
+          <td class="v-cas9">中等</td>
+          <td class="v-nick">相当或略高（双 nick 扩大有效区间）</td>
+        </tr>
+        <tr>
+          <td class="prop">HDR 有效范围</td>
+          <td class="v-cas9">切割点 ±10 bp 内迅速衰减</td>
+          <td class="v-nick">可覆盖两 nick 位点之间整段区域（可达 51 nt+）</td>
+        </tr>
+        <tr>
+          <td class="prop">HDR∶indel 比值</td>
+          <td class="v-cas9">低（NHEJ 竞争强）</td>
+          <td class="v-nick">显著更高（可达 2.7–53 倍），精确编辑更纯净</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -625,6 +641,28 @@
         <div class="step-num">4</div>
         <div class="step-body">单个 nick 通常由 <strong>BER</strong> 高保真修复；在碱基编辑（BE）和先导编辑（PE）中，nick 为 DNA 修复提供引导，实现单碱基置换或小片段的精确写入。</div>
       </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">当提供同源供体模板（ssODN 或 dsDNA）时，单链 nick <strong>同样可触发 HDR 途径</strong>。双 nickase 产生的交错切口将 HDR 有效范围从野生型 Cas9 的 ±10 bp 扩展至两 nick 之间的整段区域（可达 51 nt 以上），并在该窗口内维持 &gt;20% 的修复效率。</div>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;margin-bottom:28px;background:var(--surface);border-radius:12px;padding:28px 24px;border:1px solid var(--border)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:16px">NICKCAS9 对 HDR 的改善效果</div>
+      <div style="display:grid;gap:14px">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <div style="color:var(--nick);font-family:'Space Mono',monospace;font-size:18px;font-weight:700;flex-shrink:0;width:32px">①</div>
+          <div style="font-size:14px;line-height:1.7"><strong style="color:var(--accent)">HDR 绝对效率相当甚至略有提升：</strong>研究表明 D10A nickase 在目标区域可达到与野生型 Cas9 相近的 HDR 绝对效率（最高 ~27%），且有效插入窗口更大。</div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <div style="color:var(--nick);font-family:'Space Mono',monospace;font-size:18px;font-weight:700;flex-shrink:0;width:32px">②</div>
+          <div style="font-size:14px;line-height:1.7"><strong style="color:var(--accent)">HDR∶indel 比值显著更高：</strong>由于 nick 不激活 NHEJ 竞争通路，精确编辑产物占比大幅提升。将 hRad51 融合到 Cas9(D10A) nickase（RDN 策略）可将 HDR∶indel 比值提高 <strong style="color:var(--nick)">2.7–53 倍</strong>，在多种人类细胞系中均有效。</div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <div style="color:var(--nick);font-family:'Space Mono',monospace;font-size:18px;font-weight:700;flex-shrink:0;width:32px">③</div>
+          <div style="font-size:14px;line-height:1.7"><strong style="color:var(--accent)">注意事项：</strong>HDR 效率仍强烈依赖于<strong>靶位点</strong>和<strong>细胞类型</strong>，nickCas9 并非在所有情境下均优于野生型 Cas9，需按实验条件评估。</div>
+        </div>
+      </div>
     </div>
 
     <div style="margin-top:28px">
@@ -669,6 +707,448 @@
       </div>
     </div>
   </div>
+
+  <!-- ── NHEJ vs HDR 修复途径 ── -->
+  <div class="mech-section" style="margin-top:40px">
+    <h3 style="color:var(--accent)">DNA 修复途径：NHEJ 与 HDR</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7">双链断裂（DSB）产生后，细胞通过两条截然不同的途径修复——理解它们的机制差异是选择编辑策略的关键。</p>
+
+    <!-- SVG 流程图 -->
+    <div style="margin-bottom:32px;background:var(--surface);border-radius:12px;padding:24px;border:1px solid var(--border);overflow:hidden">
+      <svg width="100%" viewBox="0 0 680 530" role="img" xmlns="http://www.w3.org/2000/svg">
+        <title>NHEJ 与 HDR DNA修复途径对比流程图</title>
+        <desc>展示DNA双链断裂后NHEJ和HDR两条修复路径的步骤与结果</desc>
+        <defs>
+          <marker id="arr-nhej" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#c0392b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arr-hdr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#1565c0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arr-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#6b7a99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- DSB 起始框 -->
+        <rect x="210" y="20" width="260" height="48" rx="8" fill="#f5f7fa" stroke="#b8860b" stroke-width="1.2"/>
+        <text x="340" y="38" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="700" fill="#b8860b">DNA 双链断裂（DSB）</text>
+        <text x="340" y="56" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">CRISPR 切割 / 辐射 / 化学损伤</text>
+
+        <!-- 分叉箭头 -->
+        <line x1="290" y1="68" x2="175" y2="120" stroke="#6b7a99" stroke-width="1.2" marker-end="url(#arr-gray)"/>
+        <line x1="390" y1="68" x2="505" y2="120" stroke="#6b7a99" stroke-width="1.2" marker-end="url(#arr-gray)"/>
+
+        <!-- NHEJ 标题 -->
+        <text x="120" y="118" text-anchor="middle" font-family="'Space Mono',monospace" font-size="12" font-weight="700" fill="#c0392b">NHEJ</text>
+
+        <!-- HDR 标题 -->
+        <text x="560" y="118" text-anchor="middle" font-family="'Space Mono',monospace" font-size="12" font-weight="700" fill="#1565c0">HDR</text>
+
+        <!-- NHEJ Step 1 -->
+        <rect x="30" y="128" width="180" height="48" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="120" y="146" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">Ku 蛋白结合</text>
+        <text x="120" y="163" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">识别并保护断裂末端</text>
+        <line x1="120" y1="176" x2="120" y2="200" stroke="#c0392b" stroke-width="1" marker-end="url(#arr-nhej)"/>
+
+        <!-- NHEJ Step 2 -->
+        <rect x="30" y="200" width="180" height="48" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="120" y="218" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">末端加工处理</text>
+        <text x="120" y="235" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">切除或补充悬垂碱基</text>
+        <line x1="120" y1="248" x2="120" y2="272" stroke="#c0392b" stroke-width="1" marker-end="url(#arr-nhej)"/>
+
+        <!-- NHEJ Step 3 -->
+        <rect x="30" y="272" width="180" height="48" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="120" y="290" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">DNA 连接酶 IV</text>
+        <text x="120" y="307" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">直接连接两个末端</text>
+        <line x1="120" y1="320" x2="120" y2="344" stroke="#c0392b" stroke-width="1" marker-end="url(#arr-nhej)"/>
+
+        <!-- NHEJ 结果 -->
+        <rect x="20" y="344" width="200" height="64" rx="8" fill="rgba(192,57,43,0.13)" stroke="#c0392b" stroke-width="1.2"/>
+        <text x="120" y="364" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing="1" fill="#c0392b">修复结果</text>
+        <text x="120" y="382" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">Indel 突变（插入/缺失）</text>
+        <text x="120" y="398" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">基因敲除 / 功能丧失</text>
+
+        <!-- HDR Step 1 -->
+        <rect x="470" y="128" width="180" height="48" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="560" y="146" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">5′ 末端切除</text>
+        <text x="560" y="163" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">暴露 3′ 单链悬垂</text>
+        <line x1="560" y1="176" x2="560" y2="200" stroke="#1565c0" stroke-width="1" marker-end="url(#arr-hdr)"/>
+
+        <!-- HDR Step 2 -->
+        <rect x="470" y="200" width="180" height="48" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="560" y="218" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">Rad51 链侵入</text>
+        <text x="560" y="235" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">与同源模板配对</text>
+        <line x1="560" y1="248" x2="560" y2="272" stroke="#1565c0" stroke-width="1" marker-end="url(#arr-hdr)"/>
+
+        <!-- HDR Step 3 -->
+        <rect x="470" y="272" width="180" height="48" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="560" y="290" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">模板引导合成</text>
+        <text x="560" y="307" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">精确复制同源序列</text>
+        <line x1="560" y1="320" x2="560" y2="344" stroke="#1565c0" stroke-width="1" marker-end="url(#arr-hdr)"/>
+
+        <!-- HDR 结果 -->
+        <rect x="460" y="344" width="200" height="64" rx="8" fill="rgba(21,101,192,0.13)" stroke="#1565c0" stroke-width="1.2"/>
+        <text x="560" y="364" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing="1" fill="#1565c0">修复结果</text>
+        <text x="560" y="382" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">精准序列修复</text>
+        <text x="560" y="398" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">基因敲入 / 精确编辑</text>
+
+        <!-- 对比汇总行 -->
+        <rect x="40" y="440" width="600" height="28" rx="6" fill="#f5f7fa" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <line x1="340" y1="440" x2="340" y2="468" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <text x="190" y="458" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#c0392b">全周期 · 无需模板 · 主导途径</text>
+        <text x="490" y="458" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#1565c0">S/G2期 · 需同源模板 · 精准</text>
+
+        <rect x="40" y="468" width="600" height="28" rx="0" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <line x1="340" y1="468" x2="340" y2="496" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <text x="190" y="486" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">应用：基因敲除（KO）</text>
+        <text x="490" y="486" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">应用：精准敲入（KI）</text>
+
+        <rect x="40" y="496" width="600" height="28" rx="0" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <line x1="340" y1="496" x2="340" y2="524" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <text x="190" y="514" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#c0392b">nickCas9: 不触发此途径</text>
+        <text x="490" y="514" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#1565c0">nickCas9: HDR∶indel ↑2.7–53×</text>
+      </svg>
+    </div>
+
+    <!-- 两列步骤对比 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px">
+
+      <!-- NHEJ 列 -->
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--cas9);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--cas9)">NHEJ — 非同源末端连接</div>
+        <div class="step-list cas9-steps">
+          <div class="step">
+            <div class="step-num" style="background:var(--cas9-dim);color:var(--cas9)">1</div>
+            <div class="step-body"><strong>Ku 蛋白结合：</strong>Ku70/Ku80 异二聚体迅速识别并结合断裂末端，防止末端降解，募集修复因子。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--cas9-dim);color:var(--cas9)">2</div>
+            <div class="step-body"><strong>末端加工处理：</strong>Artemis 核酸酶等对不齐整的末端进行切除或补充，可能丢失或增加若干碱基。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--cas9-dim);color:var(--cas9)">3</div>
+            <div class="step-body"><strong>DNA 连接酶 IV 连接：</strong>直接将两个末端拼接，不依赖任何同源模板，过程快速但易出错。</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--cas9-dim);border:1px solid rgba(192,57,43,0.2)">
+          <div style="font-size:12px;color:var(--cas9);font-family:'JetBrains Mono',monospace;letter-spacing:1px;margin-bottom:6px">修复结果</div>
+          <div style="font-size:13px;line-height:1.7;color:var(--text)">产生 <strong>indel 突变</strong>（插入或缺失）→ 移码突变 → 基因功能丧失（敲除）。全细胞周期均可发生，是哺乳动物细胞的主要修复方式。</div>
+        </div>
+      </div>
+
+      <!-- HDR 列 -->
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--nick);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--nick)">HDR — 同源定向修复</div>
+        <div class="step-list nick-steps">
+          <div class="step">
+            <div class="step-num" style="background:var(--nick-dim);color:var(--nick)">1</div>
+            <div class="step-body"><strong>5′ 末端切除：</strong>MRN 复合体与 CtIP 协作降解 5′ 末端，暴露出 3′ 单链悬垂，为链侵入做准备。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nick-dim);color:var(--nick)">2</div>
+            <div class="step-body"><strong>Rad51 链侵入：</strong>Rad51 包被 3′ 单链，驱动其侵入同源双链模板（姐妹染色单体或外源供体 DNA），形成 D 环结构。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nick-dim);color:var(--nick)">3</div>
+            <div class="step-body"><strong>模板引导合成：</strong>以同源序列为蓝本，DNA 聚合酶精确复制模板信息，完成修复后拆解 D 环并连接切口。</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--nick-dim);border:1px solid rgba(21,101,192,0.2)">
+          <div style="font-size:12px;color:var(--nick);font-family:'JetBrains Mono',monospace;letter-spacing:1px;margin-bottom:6px">修复结果</div>
+          <div style="font-size:13px;line-height:1.7;color:var(--text)">实现<strong>精准序列修复</strong>，可引入任意突变或外源片段（基因敲入）。仅在 S/G2 期活跃，需提供同源模板，整体效率低于 NHEJ。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 对比汇总表 -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>特性</th>
+            <th style="color:var(--cas9)">NHEJ</th>
+            <th style="color:var(--nick)">HDR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="prop">修复精度</td>
+            <td style="color:var(--cas9)">低（易出错，产生 indel）</td>
+            <td style="color:var(--nick)">高（模板依赖，精确还原）</td>
+          </tr>
+          <tr>
+            <td class="prop">是否需要模板</td>
+            <td>否</td>
+            <td style="color:var(--nick)">是（姐妹染色单体 / 外源供体）</td>
+          </tr>
+          <tr>
+            <td class="prop">活跃细胞周期</td>
+            <td>全周期均可</td>
+            <td style="color:var(--nick)">S / G2 期</td>
+          </tr>
+          <tr>
+            <td class="prop">在哺乳动物中频率</td>
+            <td style="color:var(--cas9)">主导途径（约 70–90%）</td>
+            <td style="color:var(--nick)">次要途径（约 10–30%）</td>
+          </tr>
+          <tr>
+            <td class="prop">编辑应用</td>
+            <td style="color:var(--cas9)">基因敲除（KO）</td>
+            <td style="color:var(--nick)">精准敲入（KI）、点突变修正</td>
+          </tr>
+          <tr>
+            <td class="prop">nickCas9 的影响</td>
+            <td>Nick 不激活 NHEJ，大幅减少竞争</td>
+            <td style="color:var(--nick)">HDR∶indel 比值提升 2.7–53 倍</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:20px;padding:14px 20px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:13px;line-height:1.8;color:var(--muted)">
+      <strong style="color:var(--accent)">关键启示：</strong>
+      野生型 Cas9 产生 DSB 后，NHEJ 与 HDR 形成竞争——NHEJ 速度更快，往往抢先修复，导致精确编辑效率低下。nickCas9 的优势之一在于单链 nick 不触发 NHEJ，从而在需要精确插入时显著提升 HDR 产物的纯净度。
+    </div>
+  </div>
+
+  <!-- ── gRNA 设计流程 ── -->
+  <div class="mech-section" style="margin-top:40px">
+    <h3 style="color:var(--accent)">gRNA 设计流程</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7">高效且特异的 gRNA 是 CRISPR 实验成功的前提。设计流程需在切割活性与脱靶风险之间取得平衡。</p>
+
+    <!-- SVG 流程图 -->
+    <div style="margin-bottom:32px;background:var(--surface);border-radius:12px;padding:24px;border:1px solid var(--border);overflow:hidden">
+      <svg width="100%" viewBox="0 0 680 780" role="img" xmlns="http://www.w3.org/2000/svg">
+        <title>gRNA 设计流程图</title>
+        <defs>
+          <marker id="arrow-grna" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#6b7a99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- Step 1 -->
+        <rect x="190" y="20" width="300" height="56" rx="8" fill="#f5f7fa" stroke="#b8c0d0" stroke-width="0.8"/>
+        <text x="340" y="44" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#1a2340">① 确定编辑目标区域</text>
+        <text x="340" y="62" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">外显子 / 调控区 / 功能结构域</text>
+        <line x1="340" y1="76" x2="340" y2="104" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 2 -->
+        <rect x="190" y="104" width="300" height="56" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="340" y="128" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#1565c0">② 定位 PAM 序列</text>
+        <text x="340" y="146" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">SpCas9: NGG（非靶链）</text>
+        <rect x="512" y="108" width="150" height="48" rx="6" fill="none" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="587" y="126" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">SaCas9: NNGRRT</text>
+        <text x="587" y="144" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">Cas12a: TTTN</text>
+        <line x1="512" y1="132" x2="490" y2="132" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <line x1="340" y1="160" x2="340" y2="188" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 3 -->
+        <rect x="190" y="188" width="300" height="56" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="340" y="212" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#1565c0">③ 设计 20 nt 间隔序列</text>
+        <text x="340" y="230" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">PAM 上游 20 bp，与靶链互补</text>
+        <rect x="18" y="188" width="152" height="56" rx="6" fill="none" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="94" y="206" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">G/C 含量 40–70%</text>
+        <text x="94" y="222" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">避免 ≥4 个连续 T</text>
+        <text x="94" y="238" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">5′端 G 利于转录</text>
+        <line x1="170" y1="216" x2="190" y2="216" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <line x1="340" y1="244" x2="340" y2="272" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 4 -->
+        <rect x="190" y="272" width="300" height="56" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="340" y="296" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#c0392b">④ 脱靶位点预测</text>
+        <text x="340" y="314" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">Cas-OFFinder / CRISPOR / Benchling</text>
+        <rect x="512" y="276" width="150" height="48" rx="6" fill="none" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="587" y="294" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">允许 ≤3 个错配</text>
+        <text x="587" y="312" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">避开基因编码区</text>
+        <line x1="512" y1="300" x2="490" y2="300" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <line x1="340" y1="328" x2="340" y2="356" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 5 -->
+        <rect x="190" y="356" width="300" height="56" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="340" y="380" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#c0392b">⑤ 活性效率评分</text>
+        <text x="340" y="398" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">Rule Set 2 / DeepCRISPR / CHOPCHOP</text>
+        <line x1="340" y1="412" x2="340" y2="444" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- 决策菱形 -->
+        <polygon points="340,444 404,480 340,516 276,480" fill="#f5f7fa" stroke="#6b7a99" stroke-width="0.8"/>
+        <text x="340" y="476" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" fill="#1a2340">脱靶低且</text>
+        <text x="340" y="494" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" fill="#1a2340">评分高？</text>
+        <!-- 否 返回 -->
+        <line x1="276" y1="480" x2="168" y2="480" stroke="#6b7a99" stroke-width="0.8" marker-end="url(#arrow-grna)"/>
+        <line x1="168" y1="480" x2="168" y2="374" stroke="#6b7a99" stroke-width="0.8"/>
+        <line x1="168" y1="374" x2="190" y2="374" stroke="#6b7a99" stroke-width="0.8" marker-end="url(#arrow-grna)"/>
+        <text x="148" y="472" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">否</text>
+        <text x="120" y="428" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">重新设计</text>
+        <!-- 是 -->
+        <line x1="340" y1="516" x2="340" y2="544" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <text x="358" y="533" text-anchor="start" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">是</text>
+        <!-- Step 6 -->
+        <rect x="190" y="544" width="300" height="56" rx="8" fill="rgba(83,74,183,0.07)" stroke="#534ab7" stroke-width="0.8"/>
+        <text x="340" y="568" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#534ab7">⑥ 化学修饰优化（可选）</text>
+        <text x="340" y="586" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">2′-OMe / PS 键增强稳定性</text>
+        <line x1="340" y1="600" x2="340" y2="628" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 7 -->
+        <rect x="190" y="628" width="300" height="56" rx="8" fill="rgba(83,74,183,0.07)" stroke="#534ab7" stroke-width="0.8"/>
+        <text x="340" y="652" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#534ab7">⑦ 合成 &amp; 递送</text>
+        <text x="340" y="670" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">体外转录 / 化学合成 / 质粒表达</text>
+        <line x1="340" y1="684" x2="340" y2="712" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 8 -->
+        <rect x="190" y="712" width="300" height="52" rx="8" fill="#f5f7fa" stroke="#b8860b" stroke-width="1"/>
+        <text x="340" y="734" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#b8860b">⑧ 实验验证</text>
+        <text x="340" y="752" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">T7E1 / Sanger / 深度测序</text>
+      </svg>
+    </div>
+
+    <!-- 八步详解卡片 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px">① 目标区域</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">优先选择<strong>功能性早期外显子</strong>用于敲除；精确定位突变位点用于敲入。避开重复序列和高度多态区域。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--nick);margin-bottom:8px">② PAM 序列</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">SpCas9 识别非靶链 <code>5′-NGG-3′</code>，切割发生在 PAM 上游 3 bp。靶区 NGG 密度越高，候选 gRNA 越多。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--nick);margin-bottom:8px">③ 间隔序列设计</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">取 PAM 上游 20 bp，G/C 40–70%，5′端带 G 利于 U6 启动子转录。连续 ≥4 个 T 导致 RNA Pol III 提前终止。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--cas9);margin-bottom:8px">④ 脱靶预测</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">扫描全基因组 ≤3 错配位点。<strong>种子区</strong>（PAM 近端 12 bp）错配容忍性极低，是特异性关键。优先排除落在编码区的脱靶。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--cas9);margin-bottom:8px">⑤ 效率评分</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">Doench Rule Set 2、DeepCRISPR 综合评估切割活性；Hsu 分衡量特异性。每靶点设计 3–5 条候选，取综合最优者。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#534ab7;margin-bottom:8px">⑥ 化学修饰</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">5′/3′ 末端 2′-O-甲基（2′-OMe）与硫代磷酸酯（PS）修饰，显著延长胞内半衰期，体内实验尤为关键。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#534ab7;margin-bottom:8px">⑦ 合成与递送</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">质粒稳定表达适合筛库；IVT 快速廉价适合初验；<strong>化学合成 sgRNA + RNP</strong> 纯度高、起效快、脱靶低，是当前主流。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px">⑧ 实验验证</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">T7E1 酶切快速定性 → Sanger 测序确认 indel 类型 → 扩增子深度测序精确定量编辑效率及脱靶频率。</div>
+      </div>
+    </div>
+
+    <div style="padding:14px 20px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:13px;line-height:1.8;color:var(--muted)">
+      <strong style="color:var(--accent)">实践建议：</strong>
+      同一靶点设计至少 3 条 gRNA 并行验证，切勿依赖单一候选。nickCas9 双 gRNA 策略中，两条 gRNA 的间距（17–40 bp）及方向（PAM-out 配置）对成对 nick 效率影响显著，设计时需同步优化。
+    </div>
+  </div>
+
+  <!-- ── Cas-OFFinder 与 CRISPOR 使用指南 ── -->
+  <div class="mech-section" style="margin-top:40px">
+    <h3 style="color:var(--accent)">脱靶扫描工具详解：Cas-OFFinder &amp; CRISPOR</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7">两款工具定位不同：Cas-OFFinder 专注纯脱靶扫描，速度极快，适合已有候选序列时的验证；CRISPOR 是一站式平台，从候选筛选、打分到脱靶预测一体完成，适合从头设计。<strong style="color:var(--text)">两款工具均支持 Windows / macOS / Linux。</strong></p>
+
+    <!-- 工具对比卡片 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px">
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:14px 16px;background:rgba(21,101,192,0.07);border-bottom:1px solid var(--border)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--nick)">Cas-OFFinder</span>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">定位</span><span>纯脱靶扫描引擎</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输入</span><span>已有 spacer 序列</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输出</span><span>全基因组脱靶坐标</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">速度</span><span>GPU 加速，极快</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Windows 版</span><span style="color:#0f6e56;font-weight:600">✓ cas-offinder.exe</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0"><span style="color:var(--muted)">下载</span><span style="color:var(--nick)">sourceforge.net / rgenome.net</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:14px 16px;background:rgba(15,110,86,0.07);border-bottom:1px solid var(--border)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#0f6e56">CRISPOR</span>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">定位</span><span>一站式设计平台</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输入</span><span>靶区域序列（100–2000 bp）</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输出</span><span>候选列表 + 打分 + 脱靶</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">速度</span><span>中等（综合计算）</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Windows 版</span><span style="color:#0f6e56;font-weight:600">✓ 网页版无需安装</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0"><span style="color:var(--muted)">网址</span><span style="color:#0f6e56">crispor.tefor.net</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cas-OFFinder Windows 安装 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">Cas-OFFinder Windows 安装步骤</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+      <div class="card" style="padding:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--nick);letter-spacing:1px;margin-bottom:8px">第一步</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">安装 <strong>OpenCL 驱动</strong>（必须）：Intel GPU 用户装 Intel OpenCL Runtime；NVIDIA 用户装 CUDA Toolkit；AMD 用户装 ROCm 或 Adrenalin 驱动</div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--nick);letter-spacing:1px;margin-bottom:8px">第二步</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">从 SourceForge（<code style="font-size:11px">sourceforge.net/projects/cas-offinder</code>）下载 <strong>cas-offinder.exe</strong>（Win32，约 1 MB）。如提示缺少 dll，额外安装 Visual C++ Redistributable</div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--nick);letter-spacing:1px;margin-bottom:8px">第三步</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">打开命令提示符（cmd），切换到 exe 所在目录，运行：<br><code style="font-size:11px;display:block;margin-top:6px;background:var(--surface);padding:4px 6px;border-radius:4px;border:1px solid var(--border)">cas-offinder.exe input.txt C output.txt</code><code style="font-size:10px;color:var(--muted)">C=CPU，G=GPU，A=全部</code></div>
+      </div>
+    </div>
+
+    <!-- 输入文件格式 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">Cas-OFFinder 输入文件格式</h4>
+    <div class="card" style="padding:16px;margin-bottom:20px">
+      <div style="font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:10px">纯文本文件，三部分顺序严格固定：</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;line-height:2;color:var(--text)">
+        C:\genomes\hg38<span style="color:var(--muted);margin-left:20px">&larr; 基因组 FASTA 文件夹路径</span><br>
+        NNNNNNNNNNNNNNNNNNNNNGG<span style="color:var(--muted);margin-left:20px">&larr; PAM 模式（20N + GG = SpCas9）</span><br>
+        GAGTCCGAGCAGAAGAAGAA<wbr>NNN 3<span style="color:var(--muted);margin-left:20px">&larr; spacer + 允许错配数</span><br>
+        AGTCCGAGCAGAAGAAGAAGNNN 2
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">PAM 模式支持全部 IUPAC 简并碱基：N=任意，R=A/G，Y=C/T，S=G/C，W=A/T</div>
+    </div>
+
+    <!-- CRISPOR 操作步骤 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">CRISPOR 网页版操作步骤</h4>
+    <div class="step-list nick-steps" style="margin-bottom:20px">
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">1</div>
+        <div class="step-body"><strong>提交序列：</strong>打开 crispor.tefor.net，粘贴靶区域序列（100–2000 bp），选择基因组（如 Human hg38），PAM 选 <code>20bp-NGG-SpCas9</code>，点击 Submit。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">2</div>
+        <div class="step-body"><strong>解读评分列：</strong>Doench '16 活性分（&gt;50 优先）、MIT 特异性分（&gt;50 优先）、CFD score（越接近 1 越好）。Off-target 列中 <strong style="color:var(--cas9)">0mm 必须为 0</strong>，否则放弃该 gRNA。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">3</div>
+        <div class="step-body"><strong>查看脱靶详情：</strong>点击候选右侧 Off-targets 链接，重点关注落在外显子或功能区的脱靶。落在基因间区且 CFD 脱靶分 &lt;0.02 通常可接受。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">4</div>
+        <div class="step-body"><strong>nickCas9 成对模式：</strong>PAM 选项改选 <code>20bp-NGG-SpCas9, paired nickases</code>，CRISPOR 自动筛选 PAM-out 方向、间距 17–40 bp 的 gRNA 对，并给出成对特异性估算。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">5</div>
+        <div class="step-body"><strong>导出验证引物：</strong>点击 Primers for off-target sites，直接获得用于扩增子深度测序验证的 PCR 引物列表。</div>
+      </div>
+    </div>
+
+    <!-- 结果筛选标准 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">脱靶结果筛选标准</h4>
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+      <table class="compare-table">
+        <thead>
+          <tr><th>情况</th><th>判断</th><th>处理</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>存在 0 错配脱靶（完全匹配）</td><td style="color:var(--cas9);font-weight:600">一票否决</td><td>直接放弃该 gRNA</td></tr>
+          <tr><td>1 错配脱靶落在其他基因外显子</td><td style="color:#b8860b;font-weight:600">高风险</td><td>换 gRNA 或改用 nickCas9</td></tr>
+          <tr><td>2–3 错配脱靶落在内含子/基因间区，CFD &lt;0.05</td><td style="color:#0f6e56;font-weight:600">可接受</td><td>实验验证后使用</td></tr>
+          <tr><td>Top 3–5 脱靶位点</td><td style="color:var(--nick);font-weight:600">必须验证</td><td>扩增子深度测序确认实际脱靶率</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 联合使用建议 -->
+    <div style="padding:14px 20px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:13px;line-height:1.8;color:var(--muted)">
+      <strong style="color:var(--accent)">联合使用建议：</strong>
+      先用 CRISPOR 从靶区域筛出活性分 &gt;50、MIT 特异性 &gt;50 的候选（3–5 条）→ 再用 Cas-OFFinder 开启凸起检测（允许 1 bp RNA/DNA 凸起 + 3 错配）做更严格全基因组扫描 → 交叉比对两个结果，取一致通过的候选进行实验验证。
+    </div>
+  </div>
+
 </div>
 
 <!-- ═══ QUIZ PANEL ═══ -->
@@ -785,6 +1265,97 @@
     <div class="score-msg" id="score-msg"></div>
     <button class="retry-btn" onclick="resetQuiz()">重新作答</button>
   </div>
+</div>
+
+<!-- ═══ WHY CAS9 PANEL ═══ -->
+<div id="panel-whycas9" class="panel">
+
+  <div style="text-align:center;margin-bottom:48px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:12px">COMMON QUESTION</div>
+    <h2 style="font-family:'Space Mono',monospace;font-size:1.8rem;color:var(--cas9);margin-bottom:10px">nickCas9 有那么多优势，</h2>
+    <h2 style="font-family:'Space Mono',monospace;font-size:1.8rem;color:var(--text);margin-bottom:16px">为什么人们还是用 Cas9？</h2>
+    <p style="color:var(--muted);font-size:14px;max-width:520px;margin:0 auto;line-height:1.8">工具没有绝对好坏，只有适不适合。以下六个原因解释了野生型 Cas9 至今仍是实验室首选的真正原因。</p>
+  </div>
+
+  <div style="display:grid;gap:20px;margin-bottom:48px">
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">1</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">效率更高、实验更简单</div>
+        野生型 Cas9 只需<strong>一条 sgRNA</strong>。nickCas9 双 nick 策略需要两条 sgRNA 同时设计、同时转染、同时在相邻位置发挥作用——任何一步失败都会大幅降低效率。操作复杂度翻倍，成功率下降。
+      </div>
+    </div>
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">2</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">目的决定工具</div>
+        大多数实验的目标是<strong>基因敲除</strong>（让基因失去功能），只需 NHEJ 产生 indel 即可，根本不需要 HDR。Cas9 做这件事又快又高效，没有理由换 nickCas9。若目标不是精准点编辑，nickCas9 的优势就无从体现。
+      </div>
+    </div>
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">3</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">HDR 低效的根源不在 Cas9</div>
+        HDR 在哺乳动物细胞中天然效率极低（通常 &lt;5%），这是<strong>细胞周期限制</strong>造成的——HDR 只在 S/G2 期活跃。nickCas9 改善的是 HDR∶indel <em>比值</em>，但如果绝对效率依然受细胞周期制约，实际收益有限。Cas9 本身并非瓶颈。
+      </div>
+    </div>
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">4</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">nickCas9 自身的设计限制</div>
+        双 nick 策略对两个 gRNA 的<strong>间距和方向极为敏感</strong>：需要 PAM-out 构型，nick 间距通常限制在 7–100 nt，过近或过远效率都会骤降。D10A（5' 悬端）与 H840A（3' 悬端）的修复偏好也不同，增加了实验不确定性。
+      </div>
+    </div>
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">5</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">效果仍依赖位点和细胞类型</div>
+        nickCas9 并非在所有靶点和细胞系中都优于 Cas9。HDR 效率的高低<strong>强烈依赖于具体的基因组位置和细胞类型</strong>，实验者必须逐一验证，无法保证普适优势。
+      </div>
+    </div>
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">6</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">历史积累与工具链成熟度</div>
+        Cas9 有十余年积累，围绕它建立了完整的<strong>试剂、载体、实验协议和数据库</strong>体系。相关文献数量庞大，审稿人熟悉，结果更易重复和对比。这在实际科研中的价值不可忽视。
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 工具选择速查 -->
+  <div style="background:var(--surface);border-radius:12px;padding:32px;border:1px solid var(--border)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:20px">工具选择速查</div>
+    <div style="display:grid;gap:12px">
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cas9);width:120px;flex-shrink:0">基因敲除</div>
+        <div style="font-size:13px;color:var(--muted)">→</div>
+        <div style="font-size:13px"><strong style="color:var(--cas9)">野生型 Cas9</strong>　简单高效，NHEJ 产生 indel</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--nick);width:120px;flex-shrink:0">精准点突变</div>
+        <div style="font-size:13px;color:var(--muted)">→</div>
+        <div style="font-size:13px"><strong style="color:var(--nick)">nickCas9 + 碱基编辑（BE）</strong>　单碱基精确替换</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--nick);width:120px;flex-shrink:0">复杂序列插入</div>
+        <div style="font-size:13px;color:var(--muted)">→</div>
+        <div style="font-size:13px"><strong style="color:var(--nick)">nickCas9 + 先导编辑（PE）</strong>　小片段精确写入</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);width:120px;flex-shrink:0">高精度 HDR</div>
+        <div style="font-size:13px;color:var(--muted)">→</div>
+        <div style="font-size:13px"><strong style="color:var(--accent)">双 nickase 策略</strong>　扩大有效窗口，提升 HDR∶indel 比值</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <footer>CRISPR · Cas9 · nickCas9 · 分子生物学科普 · Interactive Learning</footer>
