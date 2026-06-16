@@ -1260,6 +1260,153 @@
       插入序列 &gt;8 kb，或需要长期低免疫原性表达 → Gutless（容量大，但生产复杂，成本高 3–5 倍）。
     </div>
   </div>
+
+  <!-- Section 06c: Gutless safety in humans -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06c</span>
+      <span class="section-title">Gutless 对人体的危害程度</span>
+    </div>
+
+    <!-- Safety overview -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">总体评估</div>
+      <div style="color:var(--text2); font-size:13.5px; line-height:1.7; margin-bottom:16px">
+        Gutless 比普通腺病毒安全很多，但<strong style="color:#fff">不是无害</strong>。风险主要来自衣壳本身，与是否有编码基因关系不大。
+      </div>
+      <div class="deletion-grid">
+        <div class="deletion-card" style="border-color:#064e3b44">
+          <div style="font-family:var(--mono); font-size:10px; color:#34d399; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">消除的风险</div>
+          <ul class="wt-list">
+            <li>无病毒编码基因 → 不产生病毒蛋白 → T 细胞介导的细胞毒性大幅减弱</li>
+            <li>不能复制 → 不会在体内扩散</li>
+            <li>不整合 → 插入突变风险极低</li>
+            <li>转基因表达更持久，减少重复给药需求</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:#7f1d1d44">
+          <div style="font-family:var(--mono); font-size:10px; color:#f87171; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">仍然存在的风险</div>
+          <ul class="wt-list">
+            <li>衣壳激活先天免疫（与编码基因无关）</li>
+            <li>高剂量可引发全身炎症反应</li>
+            <li>辅助病毒残留污染（0.1–1%）</li>
+            <li>预存中和抗体加重炎症</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Capsid innate immunity -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--warn); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">⚠ 衣壳引发的先天免疫——核心危险</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--warn); color:var(--warn)">1</div>
+          <div class="step-content">
+            <div class="step-title">Kupffer 细胞快速识别</div>
+            <div class="step-desc">静脉注射后腺病毒颗粒大量富集肝脏，肝脏驻留巨噬细胞（Kupffer 细胞）在数分钟内识别衣壳蛋白，触发先天免疫激活。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--warn); color:var(--warn)">2</div>
+          <div class="step-content">
+            <div class="step-title">炎症因子风暴</div>
+            <div class="step-desc">大量释放 <span style="font-family:var(--mono); color:var(--warn)">IL-6、TNF-α、IL-12、IFN-γ</span>。剂量越高，反应越剧烈。高剂量时可引发全身炎症综合征（SIRS），表现为发热、低血压、多器官损伤。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--warn); color:var(--warn)">3</div>
+          <div class="step-content">
+            <div class="step-title">血小板激活与血栓</div>
+            <div class="step-desc">腺病毒颗粒可直接激活血小板，高剂量时引发血管内凝血（DIC）。这一机制在 Gutless 载体中同样存在。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--danger); color:var(--danger)">!</div>
+          <div class="step-content">
+            <div class="step-title">剂量是核心变量</div>
+            <div class="step-desc">低剂量局部给药（如眼内注射、肌肉注射）风险可控，全身炎症反应轻微。高剂量全身静脉给药风险显著，治疗窗口窄。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jesse Gelsinger -->
+    <div style="background:#1a0a0a; border:1px solid #7f1d1d; border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:#f87171; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">📋 历史警示：Jesse Gelsinger 事件（1999）</div>
+      <div style="color:var(--text2); font-size:13.5px; line-height:1.7; margin-bottom:12px">
+        基因治疗史上第一个死亡案例。18 岁患者因鸟氨酸氨甲酰转移酶缺陷接受肝脏基因治疗，静脉注射高剂量<strong>普通腺病毒</strong>（含 E1 缺失型）后 4 天内因全身炎症风暴死亡。
+      </div>
+      <div class="deletion-grid">
+        <div class="deletion-card" style="border-color:#7f1d1d44; background:#1a0a0a">
+          <div style="font-family:var(--mono); font-size:10px; color:#f87171; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">死亡原因</div>
+          <ul class="wt-list">
+            <li>高剂量衣壳引发全身炎症风暴</li>
+            <li>多器官衰竭（肝、肾、肺）</li>
+            <li>弥散性血管内凝血（DIC）</li>
+            <li>患者已有 Ad 预存抗体，加剧反应</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:#7f1d1d44; background:#1a0a0a">
+          <div style="font-family:var(--mono); font-size:10px; color:#fcd34d; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">对 Gutless 的启示</div>
+          <ul class="wt-list">
+            <li>Gutless 消除了 T 细胞反应，但衣壳引发的先天免疫同样存在</li>
+            <li>高剂量 Gutless 理论上同样可引发类似风暴</li>
+            <li>此事件使腺病毒载体临床研究大幅收紧</li>
+            <li>Gutless 进入人体临床试验案例至今极少</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Helper virus contamination risk -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">辅助病毒污染的实际风险</div>
+      <div style="color:var(--text2); font-size:13.5px; line-height:1.7; margin-bottom:12px">
+        即使污染比例只有 0.1%，体内注射大量病毒颗粒时，残余辅助病毒的绝对数量仍不可忽视。
+      </div>
+      <div style="background:#0f172a; border:1px solid var(--border); border-radius:6px; padding:14px 16px; font-family:var(--mono); font-size:12px; color:var(--text2)">
+        <div style="margin-bottom:8px">典型临床剂量：<span style="color:var(--warn)">10¹² 病毒颗粒（vp）</span></div>
+        <div style="margin-bottom:8px">辅助病毒污染 0.1%：<span style="color:var(--danger)">= 10⁹ 辅助病毒颗粒</span></div>
+        <div>辅助病毒有完整编码基因 → 引发更强 T 细胞反应 → 感染细胞被免疫清除</div>
+      </div>
+    </div>
+
+    <!-- Pre-existing antibody -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">预存中和抗体问题</div>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>Ad 血清型</th><th>人群血清阳性率</th><th>影响</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ad5（最常用）</td>
+            <td class="kb-val" style="color:var(--danger)">40–80%</td>
+            <td style="color:var(--text3)">预存抗体中和载体 + 加剧炎症</td>
+          </tr>
+          <tr>
+            <td>Ad35</td>
+            <td class="kb-val" style="color:var(--success)">~10%</td>
+            <td style="color:var(--text3)">血清阳性率低，临床更安全</td>
+          </tr>
+          <tr>
+            <td>Ad26</td>
+            <td class="kb-val" style="color:var(--warn)">~20–40%</td>
+            <td style="color:var(--text3)">COVID 疫苗用过，部分人群已有抗体</td>
+          </tr>
+          <tr>
+            <td>黑猩猩 AdC68</td>
+            <td class="kb-val" style="color:var(--success)">&lt;5%</td>
+            <td style="color:var(--text3)">人群预存免疫最低，研究热点</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note" style="border-left-color:var(--danger)">
+      <strong>临床现状：</strong>Gutless 腺病毒目前主要停留在动物实验阶段，进入人体临床试验的案例极少。核心障碍是衣壳免疫原性问题尚未解决，监管门槛高。改善方向包括：换用低血清阳性率血清型（Ad35、黑猩猩 Ad）、PEG 化衣壳减少免疫识别、配合短暂免疫抑制给药。
+    </div>
   <div class="section">
     <div class="section-header">
       <span class="section-num">07</span>
