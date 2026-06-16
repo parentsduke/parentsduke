@@ -1080,12 +1080,186 @@
         </div>
       </div>
     </div>
-    <div class="note">
+        <div class="note" style="border-left-color:var(--accent3)">
       <strong>stuffer DNA 的必要性：</strong>衣壳对 DNA 大小有物理依赖，太小会导致包装不稳定。当插入片段小于 ~27 kb 时，需要用中性填充序列（如植物或细菌来源的无功能 DNA）凑够总大小。
     </div>
   </div>
 
-  <!-- Section 7: Comparison -->
+  <!-- Section 6b: Gutless detailed -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06b</span>
+      <span class="section-title">Gutless 腺病毒详解</span>
+    </div>
+
+    <!-- Why called gutless -->
+    <div style="background:var(--surface); border:1px solid #4c1d95; border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">为什么叫 Gutless</div>
+      <div style="color:var(--text2); font-size:13.5px; line-height:1.7; margin-bottom:14px">
+        字面意思"掏空的"——把病毒编码基因几乎全部删除，只剩两端的 <strong style="color:#c4b5fd">ITR</strong> 和包装信号 <strong style="color:#c4b5fd">ψ（psi）</strong>，合计约 500 bp。其余 ~35 kb 全部可用于外源序列。
+      </div>
+      <div class="deletion-grid">
+        <div class="deletion-card" style="border-color:#4c1d9544">
+          <div style="font-family:var(--mono); font-size:10px; color:#a78bfa; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">ITR 的作用</div>
+          <div class="deletion-body">末端反向重复序列，是 DNA 复制的起始位点。两端各一个，缺失则无法复制。约 145 bp × 2。</div>
+        </div>
+        <div class="deletion-card" style="border-color:#4c1d9544">
+          <div style="font-family:var(--mono); font-size:10px; color:#a78bfa; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">ψ 的作用</div>
+          <div class="deletion-body">包装信号，衣壳蛋白识别 ψ 才能将 DNA 装入病毒颗粒。没有 ψ，DNA 再小也不会被包装进衣壳。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Helper virus system -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">辅助病毒（Helper Virus）体系</div>
+      <div style="color:var(--text2); font-size:13.5px; line-height:1.7; margin-bottom:16px">
+        Gutless 载体自己什么都没有，连衣壳蛋白基因都删了，无法产生病毒颗粒。必须共感染辅助病毒来提供所有结构蛋白。辅助病毒本身也是腺病毒，但其 ψ 被 loxP 位点夹住：
+      </div>
+
+      <!-- Helper virus diagram -->
+      <div style="display:flex; height:32px; border-radius:4px; overflow:hidden; border:1px solid var(--border); margin-bottom:4px">
+        <div style="background:#334155; color:#94a3b8; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; width:5%">ITR</div>
+        <div style="background:#7c2d12; color:#fb923c; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; width:5%">loxP</div>
+        <div style="background:#451a03; color:#fcd34d; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; width:8%">ψ</div>
+        <div style="background:#7c2d12; color:#fb923c; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; width:5%">loxP</div>
+        <div style="background:#1e3a5f; color:#7dd3fc; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; width:72%">所有病毒编码基因（E1 E2 E3 E4 + Late genes）</div>
+        <div style="background:#334155; color:#94a3b8; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; width:5%">ITR</div>
+      </div>
+      <div style="font-family:var(--mono); font-size:11px; color:var(--text3); margin-bottom:16px">辅助病毒：ψ 被 loxP-loxP 夹住</div>
+
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--accent3); color:var(--accent3)">1</div>
+          <div class="step-content">
+            <div class="step-title">293-Cre 细胞共感染</div>
+            <div class="step-desc">将辅助病毒和 Gutless 载体质粒同时导入稳定表达 Cre 重组酶的 293 细胞。Cre 识别辅助病毒上的两个 loxP 位点，切除中间的 ψ。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--accent3); color:var(--accent3)">2</div>
+          <div class="step-content">
+            <div class="step-title">辅助病毒失去包装信号</div>
+            <div class="step-desc">Cre 切除 ψ 后，辅助病毒 DNA 无法被衣壳识别，不能被包装。但辅助病毒基因仍在细胞内转录翻译，提供所有结构蛋白。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--accent3); color:var(--accent3)">3</div>
+          <div class="step-content">
+            <div class="step-title">Gutless 载体优先被包装</div>
+            <div class="step-desc">Gutless 载体有完整 ψ，衣壳蛋白优先识别并包装它。最终裂解细胞，收获的病毒颗粒绝大多数是 Gutless 载体。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--danger); color:var(--danger)">!</div>
+          <div class="step-content">
+            <div class="step-title">辅助病毒污染（关键问题）</div>
+            <div class="step-desc">Cre 切除效率不是 100%，少量辅助病毒 ψ 未被切除，仍会被包装。最终产物中辅助病毒污染通常为 <span style="font-family:var(--mono); color:var(--warn)">0.1–1%</span>，这是 HC-Ad 最大的质控难题。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stuffer DNA design -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">Stuffer DNA 设计原则</div>
+      <div style="color:var(--text2); font-size:13.5px; line-height:1.7; margin-bottom:14px">
+        总基因组必须维持在 <strong>27–38 kb</strong> 才能稳定包装。插入片段不足时必须填充 stuffer DNA 凑够大小。
+      </div>
+      <div class="deletion-grid">
+        <div class="deletion-card" style="border-color:#4c1d9544">
+          <div style="font-family:var(--mono); font-size:10px; color:#a78bfa; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">常用 Stuffer 来源</div>
+          <ul class="wt-list">
+            <li>拟南芥（Arabidopsis）基因组非编码区</li>
+            <li>大肠杆菌基因组片段</li>
+            <li>λ 噬菌体 DNA</li>
+            <li>人工合成随机序列</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:#4c1d9544">
+          <div style="font-family:var(--mono); font-size:10px; color:#a78bfa; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">Stuffer 必须满足</div>
+          <ul class="wt-list">
+            <li>无功能性基因，不编码任何蛋白</li>
+            <li>无哺乳动物启动子序列</li>
+            <li>无 CpG 岛（减少先天免疫激活）</li>
+            <li>无重复序列（避免载体不稳定）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Why lower immunogenicity -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">免疫原性为何降低</div>
+      <div class="deletion-grid">
+        <div class="deletion-card" style="border-color:#064e3b44">
+          <div style="font-family:var(--mono); font-size:10px; color:#34d399; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">消除的免疫原性</div>
+          <ul class="wt-list">
+            <li>无病毒编码基因 → 感染细胞不产生病毒蛋白</li>
+            <li>T 细胞无法识别并杀伤感染细胞</li>
+            <li>转基因表达时间从数天延长至数月</li>
+            <li>可重复给药潜力优于普通腺病毒</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:#7f1d1d44">
+          <div style="font-family:var(--mono); font-size:10px; color:#f87171; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">无法消除的免疫原性</div>
+          <ul class="wt-list">
+            <li>衣壳蛋白来自辅助病毒，进入机体仍激活中和抗体</li>
+            <li>先天免疫对病毒颗粒本身的识别无法避免</li>
+            <li>预存抗体（人群中 Ad5 血清阳性率高）仍会阻断感染</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Production workflow -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">规模化生产流程</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--accent3); color:var(--accent3)">1</div>
+          <div class="step-content">
+            <div class="step-title">初始共感染</div>
+            <div class="step-desc">293-Cre 细胞同时感染辅助病毒 + Gutless 载体质粒（或低代次病毒）。Cre 切除辅助病毒 ψ，开始包装循环。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--accent3); color:var(--accent3)">2</div>
+          <div class="step-content">
+            <div class="step-title">多轮扩增</div>
+            <div class="step-desc">裂解细胞收获病毒，再感染新批次 293-Cre 细胞，重复 3–5 轮。每轮扩增同时带入辅助病毒和 Gutless 载体，逐步提高 Gutless 载体比例。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--accent3); color:var(--accent3)">3</div>
+          <div class="step-content">
+            <div class="step-title">CsCl 梯度离心纯化</div>
+            <div class="step-desc">氯化铯密度梯度超速离心，分离病毒颗粒与细胞碎片。Gutless 载体和辅助病毒密度相近，此步无法分离两者。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--accent3); color:var(--accent3)">4</div>
+          <div class="step-content">
+            <div class="step-title">质控：辅助病毒污染检测</div>
+            <div class="step-desc">qPCR 定量 Gutless 载体基因组 vs 辅助病毒基因组比例。合格标准：辅助病毒污染 <span style="font-family:var(--mono); color:var(--success)">&lt;0.1%</span>。超标则需重新生产。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--accent3); color:var(--accent3)">5</div>
+          <div class="step-content">
+            <div class="step-title">滴度测定与功能验证</div>
+            <div class="step-desc">光密度法（OD260）测物理颗粒数，TCID50 或 plaque assay 测感染单位，目的基因表达验证功能活性。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note" style="border-left-color:var(--accent3)">
+      <strong>Gutless vs E1/E3 缺失型：如何选择</strong><br>
+      插入序列 ≤8 kb → E1/E3 缺失型（生产简单，无辅助病毒问题）。
+      插入序列 &gt;8 kb，或需要长期低免疫原性表达 → Gutless（容量大，但生产复杂，成本高 3–5 倍）。
+    </div>
+  </div>
   <div class="section">
     <div class="section-header">
       <span class="section-num">07</span>
