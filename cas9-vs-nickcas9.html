@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cas9 vs nickCas9 — CRISPR 对比学习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --cas9: #e05c5c;
+    --nick: #4fc3f7;
+    --cas9-dim: rgba(224,92,92,0.15);
+    --nick-dim: rgba(79,195,247,0.15);
+    --text: #e8eaf0;
+    --muted: #6b7a99;
+    --accent: #ffd166;
+    --correct: #06d6a0;
+    --wrong: #ef476f;
+    --border: rgba(255,255,255,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Serif SC', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  header {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 50%, rgba(224,92,92,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(79,195,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .lab-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    border: 1px solid rgba(255,209,102,0.3);
+    padding: 4px 14px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+  h1 {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+  h1 .c1 { color: var(--cas9); }
+  h1 .c2 { color: var(--nick); }
+  h1 .vs { color: var(--muted); font-size: 0.6em; margin: 0 12px; }
+  .subtitle {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 15px;
+    letter-spacing: 1px;
+  }
+
+  /* ── NAV TABS ── */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 24px 20px 0;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 8px 22px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .tab-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .tab-btn.active {
+    background: var(--surface);
+    color: var(--accent);
+    border-color: rgba(255,209,102,0.4);
+  }
+
+  /* ── CONTENT AREAS ── */
+  .panel { display: none; padding: 48px 20px 80px; max-width: 1100px; margin: 0 auto; }
+  .panel.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+  /* ── COMPARE PANEL ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 650px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .card.cas9::before { background: var(--cas9); }
+  .card.nick::before { background: var(--nick); }
+
+  .card-icon {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  .cas9 .card-icon { background: var(--cas9-dim); color: var(--cas9); }
+  .nick .card-icon { background: var(--nick-dim); color: var(--nick); }
+
+  .card h2 {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  .cas9 h2 { color: var(--cas9); }
+  .nick h2 { color: var(--nick); }
+
+  .card ul { list-style: none; }
+  .card ul li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.6;
+    display: flex;
+    gap: 10px;
+  }
+  .card ul li:last-child { border-bottom: none; }
+  .card ul li::before { content: '▸'; opacity: 0.5; flex-shrink: 0; }
+
+  /* DNA animation */
+  .dna-demo {
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 36px 24px;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .dna-demo h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .dna-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .dna-item { text-align: center; }
+  .dna-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  .cas9 .dna-label, .dna-item.cas9 .dna-label { color: var(--cas9); }
+  .dna-item.nick .dna-label { color: var(--nick); }
+
+  .strand-wrap { position: relative; width: 220px; height: 56px; margin: 0 auto; }
+  .strand {
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    transition: all 0.6s ease;
+  }
+  .strand.top { top: 8px; background: linear-gradient(90deg, #e05c5c, #ff8a65); }
+  .strand.bot { bottom: 8px; background: linear-gradient(90deg, #4fc3f7, #81d4fa); }
+
+  /* broken styles */
+  .strand.broken-top {
+    clip-path: polygon(0 0, 45% 0, 45% 100%, 0 100%);
+    transform: translateY(-6px);
+  }
+  .strand.broken-top2 {
+    clip-path: polygon(55% 0, 100% 0, 100% 100%, 55% 100%);
+    transform: translateY(-6px);
+  }
+  .strand.nicked { clip-path: polygon(0 0, 42% 0, 42% 100%, 0 100%); }
+  .strand.nicked2 { clip-path: polygon(58% 0, 100% 0, 100% 100%, 58% 100%); }
+
+  .cut-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 10px;
+  }
+
+  /* ── TABLE ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .compare-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+    color: var(--muted);
+  }
+  .compare-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+    vertical-align: top;
+  }
+  .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .compare-table .prop { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap; }
+  .compare-table .v-cas9 { color: var(--cas9); }
+  .compare-table .v-nick { color: var(--nick); }
+
+  /* ── QUIZ PANEL ── */
+  .quiz-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .quiz-header h2 {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.8rem;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .quiz-header p { color: var(--muted); font-size: 14px; }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 36px;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    display: none;
+  }
+  .question-card.active { display: block; animation: fadeIn 0.3s ease; }
+
+  .q-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .q-text {
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .options { display: grid; gap: 12px; }
+  .opt-btn {
+    text-align: left;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 20px;
+    color: var(--text);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1.5;
+  }
+  .opt-btn:hover:not([disabled]) {
+    border-color: rgba(255,209,102,0.4);
+    background: rgba(255,209,102,0.05);
+  }
+  .opt-btn.correct { background: rgba(6,214,160,0.1); border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong { background: rgba(239,71,111,0.1); border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn[disabled] { cursor: default; }
+
+  .explanation {
+    display: none;
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: rgba(255,209,102,0.05);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #c8cfe0;
+  }
+  .explanation.show { display: block; animation: fadeIn 0.3s ease; }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+  }
+  .next-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px 28px;
+    background: var(--accent);
+    color: #0a0e1a;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: none;
+    transition: opacity 0.2s;
+    letter-spacing: 1px;
+  }
+  .next-btn:hover { opacity: 0.85; }
+  .next-btn.show { display: block; }
+
+  .score-box {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    animation: fadeIn 0.5s ease;
+  }
+  .score-box.show { display: block; }
+  .score-big {
+    font-family: 'Space Mono', monospace;
+    font-size: 5rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .score-msg { font-size: 18px; color: var(--muted); margin-bottom: 32px; }
+  .retry-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 12px 32px;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .retry-btn:hover { background: var(--accent); color: var(--bg); }
+
+  /* ── MECHANISM PANEL ── */
+  .mech-section { margin-bottom: 48px; }
+  .mech-section h3 {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mech-section h3.c-cas9 { color: var(--cas9); }
+  .mech-section h3.c-nick { color: var(--nick); }
+
+  .step-list { display: grid; gap: 14px; }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+  }
+  .step-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 36px;
+    line-height: 1;
+  }
+  .c-cas9 .step-num, .cas9-steps .step-num { color: var(--cas9); }
+  .nick-steps .step-num { color: var(--nick); }
+  .step-body { font-size: 14px; line-height: 1.7; }
+  .step-body strong { color: var(--accent); }
+
+  .domain-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 8px;
+  }
+  .domain-table th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    color: var(--muted);
+    letter-spacing: 1px;
+    font-size: 11px;
+    border-bottom: 1px solid var(--border);
+  }
+  .domain-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .active-domain { color: var(--correct); }
+  .inactive-domain { color: var(--wrong); }
+  .domain-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* footer */
+  footer {
+    text-align: center;
+    padding: 32px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lab-badge">CRISPR · MOLECULAR BIOLOGY · 科普学习</div>
+  <h1><span class="c1">Cas9</span><span class="vs">VS</span><span class="c2">nickCas9</span></h1>
+  <p class="subtitle">核酸内切酶的切割方式对比 · 交互学习</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('compare')">对比展示</button>
+  <button class="tab-btn" onclick="switchTab('mechanism')">作用机制</button>
+  <button class="tab-btn" onclick="switchTab('quiz')">知识测验</button>
+</div>
+
+<!-- ═══ COMPARE PANEL ═══ -->
+<div id="panel-compare" class="panel active">
+
+  <!-- DNA动画演示 -->
+  <div class="dna-demo">
+    <h3>DNA 切割方式示意</h3>
+    <div class="dna-row">
+      <div class="dna-item">
+        <div class="dna-label">Cas9 — 双链断裂（DSB）</div>
+        <div class="strand-wrap" id="demo-cas9">
+          <div class="strand top broken-top" id="cas9-t1"></div>
+          <div class="strand top broken-top2" id="cas9-t2" style="background:linear-gradient(90deg,#e05c5c,#ff8a65)"></div>
+          <div class="strand bot broken-top" id="cas9-b1" style="background:linear-gradient(90deg,#4fc3f7,#81d4fa);top:auto;bottom:8px;transform:translateY(6px)"></div>
+          <div class="strand bot broken-top2" id="cas9-b2" style="background:linear-gradient(90deg,#4fc3f7,#81d4fa);top:auto;bottom:8px;transform:translateY(6px)"></div>
+        </div>
+        <div class="cut-label">✂ 两条链均断裂</div>
+      </div>
+      <div style="color:var(--muted);font-family:'Space Mono',monospace;font-size:24px;">≠</div>
+      <div class="dna-item">
+        <div class="dna-label" style="color:var(--nick)">nickCas9 — 单链切口（Nick）</div>
+        <div class="strand-wrap">
+          <div class="strand nicked" style="top:8px;background:linear-gradient(90deg,#e05c5c,#ff8a65)"></div>
+          <div class="strand nicked2" style="top:8px;background:linear-gradient(90deg,#e05c5c,#ff8a65)"></div>
+          <div class="strand bot" style="background:linear-gradient(90deg,#4fc3f7,#81d4fa)"></div>
+        </div>
+        <div class="cut-label" style="color:var(--nick)">✂ 仅上链断裂，下链完整</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 两列卡片 -->
+  <div class="compare-grid">
+    <div class="card cas9">
+      <div class="card-icon">野生型</div>
+      <h2>Cas9</h2>
+      <ul>
+        <li>具有 <strong>RuvC</strong> 和 <strong>HNH</strong> 两个活性核酸酶结构域</li>
+        <li>在 PAM 位点上游 3 bp 处造成 <strong>双链断裂（DSB）</strong></li>
+        <li>主要通过 NHEJ 修复（易出错，可产生 indel 突变）</li>
+        <li>单个脱靶位点即可导致突变，脱靶风险较高</li>
+        <li>基因敲除的标准工具，效率高</li>
+      </ul>
+    </div>
+    <div class="card nick">
+      <div class="card-icon">突变型</div>
+      <h2>nickCas9</h2>
+      <ul>
+        <li>一个核酸酶结构域被突变灭活（D10A 或 H840A）</li>
+        <li>只切割 <strong>一条 DNA 链</strong>，产生单链切口（nick）</li>
+        <li>单 nick 可被碱基切除修复（BER）高保真修复</li>
+        <li>双 nickase 策略将脱靶率降低 50–1500 倍</li>
+        <li>是碱基编辑（BE）和先导编辑（PE）的核心组件</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 对比表格 -->
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>特性</th>
+          <th style="color:var(--cas9)">Cas9</th>
+          <th style="color:var(--nick)">nickCas9</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="prop">切割方式</td>
+          <td class="v-cas9">双链断裂（DSB）</td>
+          <td class="v-nick">单链切口（Nick）</td>
+        </tr>
+        <tr>
+          <td class="prop">活性结构域</td>
+          <td class="v-cas9">RuvC ✓ + HNH ✓</td>
+          <td class="v-nick">仅一个活性（另一个突变）</td>
+        </tr>
+        <tr>
+          <td class="prop">常用突变</td>
+          <td>—（野生型）</td>
+          <td class="v-nick">D10A（灭活 RuvC）或 H840A（灭活 HNH）</td>
+        </tr>
+        <tr>
+          <td class="prop">DNA修复途径</td>
+          <td class="v-cas9">NHEJ（主）/ HDR（需模板）</td>
+          <td class="v-nick">BER（高保真）/ 配合 HDR</td>
+        </tr>
+        <tr>
+          <td class="prop">脱靶风险</td>
+          <td class="v-cas9">相对较高</td>
+          <td class="v-nick">大幅降低（双 nick 策略）</td>
+        </tr>
+        <tr>
+          <td class="prop">典型应用</td>
+          <td class="v-cas9">基因敲除、敲入</td>
+          <td class="v-nick">碱基编辑、先导编辑（PE）</td>
+        </tr>
+        <tr>
+          <td class="prop">编辑精度</td>
+          <td>标准</td>
+          <td class="v-nick">更高（需双导向 RNA）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ MECHANISM PANEL ═══ -->
+<div id="panel-mechanism" class="panel">
+  <div class="mech-section">
+    <h3 class="c-cas9">Cas9 — 作用步骤</h3>
+    <div class="step-list cas9-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">sgRNA 与 Cas9 蛋白结合，形成核糖核蛋白（RNP）复合体。sgRNA 中的间隔序列（spacer）决定靶向特异性。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">RNP 复合体在基因组中扫描，识别 <strong>PAM 序列</strong>（NGG，位于靶序列 3' 端），并在 PAM 处解开双链。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>HNH 结构域</strong> 切割与 sgRNA 互补的链（非模板链），<strong>RuvC 结构域</strong> 切割另一条链，在 PAM 上游 3 bp 处产生平末端双链断裂（blunt-end DSB）。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">细胞通过 <strong>NHEJ</strong>（非同源末端连接）修复 DSB，常引入 indel 导致基因敲除；或通过 <strong>HDR</strong>（同源重组）整合外源模板实现精确编辑。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mech-section">
+    <h3 class="c-nick">nickCas9 — 作用步骤与核酸酶域状态</h3>
+    <div class="step-list nick-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">与 Cas9 相同，nickCas9 与 sgRNA 结合并识别 PAM 序列定位靶点。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">由于一个核酸酶结构域已被氨基酸突变灭活，仅剩一个功能域可切割，因此只产生 <strong>单链切口（nick）</strong>。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">在<strong>双 nickase 策略</strong>中，两个携带不同 sgRNA 的 nickCas9 分别靶向互补链上相邻区域，产生两个相互交错的 nick，等效于一个 DSB，但脱靶 nick 被高保真修复，不致突变。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">单个 nick 通常由 <strong>BER</strong> 高保真修复；在碱基编辑（BE）和先导编辑（PE）中，nick 为 DNA 修复提供引导，实现单碱基置换或小片段的精确写入。</div>
+      </div>
+    </div>
+
+    <div style="margin-top:28px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:12px">核酸酶结构域活性状态</div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="domain-table">
+          <thead>
+            <tr>
+              <th>变体</th>
+              <th>RuvC 结构域</th>
+              <th>HNH 结构域</th>
+              <th>切割结果</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cas9（野生型）</td>
+              <td class="active-domain">● 活性</td>
+              <td class="active-domain">● 活性</td>
+              <td>双链断裂（DSB）</td>
+            </tr>
+            <tr>
+              <td>nCas9-D10A</td>
+              <td class="inactive-domain">✕ 灭活</td>
+              <td class="active-domain">● 活性</td>
+              <td>切割非模板链（nick）</td>
+            </tr>
+            <tr>
+              <td>nCas9-H840A</td>
+              <td class="active-domain">● 活性</td>
+              <td class="inactive-domain">✕ 灭活</td>
+              <td>切割模板链（nick）</td>
+            </tr>
+            <tr>
+              <td>dCas9（死 Cas9）</td>
+              <td class="inactive-domain">✕ 灭活</td>
+              <td class="inactive-domain">✕ 灭活</td>
+              <td>无切割（仅结合）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ QUIZ PANEL ═══ -->
+<div id="panel-quiz" class="panel">
+  <div class="quiz-header">
+    <h2>知识测验</h2>
+    <p>共 6 题 · 测试你对 Cas9 与 nickCas9 的理解</p>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+  <div id="quiz-container">
+
+    <div class="question-card active" data-q="0">
+      <div class="q-num">QUESTION 01 / 06</div>
+      <div class="q-text">野生型 Cas9 蛋白含有哪两个核酸酶结构域？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">RecA 和 HNH</button>
+        <button class="opt-btn" data-correct="true">RuvC 和 HNH</button>
+        <button class="opt-btn" data-correct="false">RuvC 和 RecBCD</button>
+        <button class="opt-btn" data-correct="false">Cas3 和 HNH</button>
+      </div>
+      <div class="explanation">野生型 Cas9 包含 <strong>RuvC</strong> 和 <strong>HNH</strong> 两个核酸酶结构域。RuvC 切割非互补链，HNH 切割与 sgRNA 互补的链，两者协同产生平末端双链断裂。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="1">
+      <div class="q-num">QUESTION 02 / 06</div>
+      <div class="q-text">nickCas9 产生的 DNA 损伤类型是什么？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">平末端双链断裂</button>
+        <button class="opt-btn" data-correct="false">粘末端双链断裂</button>
+        <button class="opt-btn" data-correct="true">单链切口（nick）</button>
+        <button class="opt-btn" data-correct="false">碱基缺失</button>
+      </div>
+      <div class="explanation">nickCas9 只有一个活性核酸酶结构域，因此仅切割 DNA 双链中的<strong>一条链</strong>，产生单链切口（nick），而不产生双链断裂。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="2">
+      <div class="q-num">QUESTION 03 / 06</div>
+      <div class="q-text">使 RuvC 结构域失活的常见氨基酸突变是？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">H840A</button>
+        <button class="opt-btn" data-correct="true">D10A</button>
+        <button class="opt-btn" data-correct="false">K526A</button>
+        <button class="opt-btn" data-correct="false">R661A</button>
+      </div>
+      <div class="explanation"><strong>D10A</strong> 突变将第10位天冬氨酸（Asp）替换为丙氨酸（Ala），灭活 RuvC 结构域；而 <strong>H840A</strong> 则灭活 HNH 结构域。两个突变同时引入则得到 dCas9（死 Cas9）。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="3">
+      <div class="q-num">QUESTION 04 / 06</div>
+      <div class="q-text">与野生型 Cas9 相比，双 nickase 策略可将脱靶率降低约多少倍？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">2–5 倍</button>
+        <button class="opt-btn" data-correct="false">10–20 倍</button>
+        <button class="opt-btn" data-correct="true">50–1500 倍</button>
+        <button class="opt-btn" data-correct="false">不影响脱靶率</button>
+      </div>
+      <div class="explanation">双 nickase 策略中，需要两个 nickCas9 同时在相邻位置产生 nick 才能等效于一个 DSB；单个脱靶 nick 被高保真修复，不致突变。研究表明脱靶率可降低 <strong>50–1500 倍</strong>。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="4">
+      <div class="q-num">QUESTION 05 / 06</div>
+      <div class="q-text">以下哪个工具以 nickCas9 为核心组件？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">TALEN</button>
+        <button class="opt-btn" data-correct="false">ZFN（锌指核酸酶）</button>
+        <button class="opt-btn" data-correct="true">碱基编辑器（Base Editor）</button>
+        <button class="opt-btn" data-correct="false">Cre-lox 重组系统</button>
+      </div>
+      <div class="explanation"><strong>碱基编辑器（BE）</strong> 和<strong>先导编辑（Prime Editing）</strong>都以 nickCas9 为核心。nick 一条链为 DNA 修复提供引导，使脱氨酶或逆转录酶能够精确写入碱基变化，同时保留另一条链的完整性。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="5">
+      <div class="q-num">QUESTION 06 / 06</div>
+      <div class="q-text">单链 nick 通常由哪种修复途径进行高保真修复？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">NHEJ（非同源末端连接）</button>
+        <button class="opt-btn" data-correct="true">BER（碱基切除修复）</button>
+        <button class="opt-btn" data-correct="false">MMR（错配修复）</button>
+        <button class="opt-btn" data-correct="false">NER（核苷酸切除修复）</button>
+      </div>
+      <div class="explanation">单链切口通常由 <strong>BER（碱基切除修复）</strong> 高保真修复，以互补链为模板精确填补缺口，不引入突变。这正是 nickCas9 安全性更高的原因之一。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()" id="last-next">查看结果 →</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="score-box" id="score-box">
+    <div class="score-big" id="score-display">0/6</div>
+    <div class="score-msg" id="score-msg"></div>
+    <button class="retry-btn" onclick="resetQuiz()">重新作答</button>
+  </div>
+</div>
+
+<footer>CRISPR · Cas9 · nickCas9 · 分子生物学科普 · Interactive Learning</footer>
+
+<script>
+  // TAB SWITCHING
+  function switchTab(tab) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // QUIZ LOGIC
+  let currentQ = 0;
+  let score = 0;
+  const total = 6;
+
+  document.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const card = this.closest('.question-card');
+      if (card.querySelector('.opt-btn[disabled]')) return;
+
+      const isCorrect = this.dataset.correct === 'true';
+      if (isCorrect) { score++; this.classList.add('correct'); }
+      else {
+        this.classList.add('wrong');
+        card.querySelector('[data-correct="true"]').classList.add('correct');
+      }
+
+      card.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+      card.querySelector('.explanation').classList.add('show');
+      card.querySelector('.next-btn').classList.add('show');
+    });
+  });
+
+  function nextQ() {
+    currentQ++;
+    document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('progress').style.width = (currentQ / total * 100) + '%';
+
+    if (currentQ >= total) {
+      showScore();
+    } else {
+      document.querySelector(`[data-q="${currentQ}"]`).classList.add('active');
+    }
+  }
+
+  function showScore() {
+    document.getElementById('quiz-container').style.display = 'none';
+    const box = document.getElementById('score-box');
+    box.classList.add('show');
+    document.getElementById('score-display').textContent = score + '/' + total;
+    const msgs = {
+      6: '完美满分！你对 CRISPR 机制掌握得非常扎实 🎉',
+      5: '非常出色！只差一步就满分了 👍',
+      4: '做得不错！再复习一下脱靶修复机制会更好',
+      3: '及格了！建议重新阅读对比展示和作用机制',
+      0: '没关系，回去再看看学习材料，然后重试 💪'
+    };
+    document.getElementById('score-msg').textContent = msgs[score] || msgs[0];
+  }
+
+  function resetQuiz() {
+    currentQ = 0; score = 0;
+    document.getElementById('progress').style.width = '0%';
+    document.getElementById('quiz-container').style.display = 'block';
+    document.getElementById('score-box').classList.remove('show');
+    document.querySelectorAll('.question-card').forEach((c, i) => {
+      c.classList.toggle('active', i === 0);
+      c.querySelectorAll('.opt-btn').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('correct', 'wrong');
+      });
+      c.querySelector('.explanation').classList.remove('show');
+      c.querySelector('.next-btn').classList.remove('show');
+    });
+  }
+</script>
+</body>
+</html>
