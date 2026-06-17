@@ -1720,6 +1720,82 @@
     <div class="note">
       <strong>关键限制：</strong>腺病毒不整合，基因组不能传代。感染受精卵只能做瞬时表达研究，<strong>无法建立稳定转基因品系</strong>。建系需用慢病毒注射卵周隙或电穿孔（TAKE 法）。
     </div>
+
+    <!-- ZP nick subsection -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-top:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent2); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">透明带打孔（ZP Nick）入路</div>
+      <div style="color:var(--text2); font-size:13.5px; line-height:1.7; margin-bottom:16px">
+        在 ZP 上制造贯穿全层、开口足够大的 nick，腺病毒可经开口扩散进入卵周隙，效果接近显微注射。
+      </div>
+
+      <!-- Nick vs other methods -->
+      <div style="font-family:var(--mono); font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">感染效率排序</div>
+      <div style="display:flex; align-items:center; gap:0; margin-bottom:20px; flex-wrap:wrap">
+        <div style="background:#065f46; color:#6ee7b7; padding:8px 14px; border-radius:4px 0 0 4px; font-family:var(--mono); font-size:11px; font-weight:600; white-space:nowrap">显微注射卵周隙</div>
+        <div style="color:var(--text3); font-size:18px; padding:0 4px">≈</div>
+        <div style="background:#0f766e; color:#6ee7b7; padding:8px 14px; font-family:var(--mono); font-size:11px; font-weight:600; white-space:nowrap">贯穿 nick + 高滴度孵育</div>
+        <div style="color:var(--text3); font-size:18px; padding:0 4px">&gt;</div>
+        <div style="background:#1e3a5f; color:#7dd3fc; padding:8px 14px; font-family:var(--mono); font-size:11px; font-weight:600; white-space:nowrap">Acid Tyrode 打薄</div>
+        <div style="color:var(--text3); font-size:18px; padding:0 4px">&gt;</div>
+        <div style="background:#1e293b; color:#94a3b8; padding:8px 14px; border-radius:0 4px 4px 0; font-family:var(--mono); font-size:11px; font-weight:600; white-space:nowrap">表面 nick</div>
+      </div>
+
+      <!-- Why nick works -->
+      <div class="deletion-grid" style="margin-bottom:16px">
+        <div class="deletion-card" style="border-color:#064e3b44">
+          <div style="font-family:var(--mono); font-size:10px; color:#34d399; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">贯穿 nick 为何有效</div>
+          <ul class="wt-list">
+            <li>ZP 厚约 15–20 μm，腺病毒直径 70–90 nm，贯穿缺口提供直通卵周隙的通道</li>
+            <li>卵周隙体积极小（~10–20 pL），病毒进入后浓度迅速平衡</li>
+            <li>卵膜上有 CAR（柯萨奇-腺病毒受体），腺病毒正常结合内吞</li>
+            <li>感染机制与显微注射完全相同</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:#064e3b44">
+          <div style="font-family:var(--mono); font-size:10px; color:#34d399; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">相比其他方法的优势</div>
+          <ul class="wt-list">
+            <li>比显微注射通量高——可批量处理多个卵</li>
+            <li>比 Acid Tyrode 对卵损伤更局部，存活率可能更好</li>
+            <li>避免化学处理的毒性</li>
+            <li>激光打孔（laser-assisted zona drilling）可精确控制开口大小，辅助生殖领域已成熟</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Key variables -->
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">影响效率的关键变量</div>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>变量</th><th>要点</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>开口维持时间</td>
+            <td style="color:var(--text3)">ZP 有弹性，nick 可能部分回缩——打孔后须立即孵育病毒</td>
+          </tr>
+          <tr>
+            <td>开口大小</td>
+            <td style="color:var(--text3)">须贯穿全层且直径远大于 90 nm；激光打孔可精确控制（通常 5–20 μm）</td>
+          </tr>
+          <tr>
+            <td>病毒滴度</td>
+            <td style="color:var(--text3)">建议 10⁹–10¹⁰ vp/mL，高滴度弥补扩散效率不如直接注射</td>
+          </tr>
+          <tr>
+            <td>孵育时间</td>
+            <td style="color:var(--text3)">4–6 小时，37°C；过长影响卵发育</td>
+          </tr>
+          <tr>
+            <td>打孔方式</td>
+            <td style="color:var(--text3)">激光（精确、可重复）> 显微针机械划孔（依赖操作者）> 化学局部处理</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box" style="margin-top:16px; border-left-color:var(--accent2)">
+        <strong>激光辅助透明带打孔（Laser-Assisted Zona Drilling, LAZD）：</strong>在辅助生殖（ART）中已广泛用于辅助孵化（assisted hatching），设备和操作规范成熟。用于腺病毒感染时，可将开口直径精确控制在 5–15 μm，足以让病毒颗粒通过，同时将对卵的损伤降至最低。批量处理效率远高于逐个显微注射。
+      </div>
+    </div>
   </div>
 
   <!-- Section 9: HDR donor only -->
