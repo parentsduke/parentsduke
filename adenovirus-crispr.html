@@ -1407,6 +1407,214 @@
     <div class="note" style="border-left-color:var(--danger)">
       <strong>临床现状：</strong>Gutless 腺病毒目前主要停留在动物实验阶段，进入人体临床试验的案例极少。核心障碍是衣壳免疫原性问题尚未解决，监管门槛高。改善方向包括：换用低血清阳性率血清型（Ad35、黑猩猩 Ad）、PEG 化衣壳减少免疫识别、配合短暂免疫抑制给药。
     </div>
+  </div>
+
+  <!-- Section 06d: Lab safety -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06d</span>
+      <span class="section-title">实验室操作腺病毒的风险</span>
+    </div>
+
+    <!-- BSL classification -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">生物安全等级</div>
+      <div class="card-grid">
+        <div class="card" style="border-color:#1e3a5f44">
+          <div class="card-icon">🔵</div>
+          <div class="card-title">BSL-2（标准）</div>
+          <div class="card-body">E1/E3 缺失型、Gutless 重组腺病毒均按 BSL-2 操作。野生型腺病毒同样是 BSL-2。不需要 BSL-3 设施。</div>
+        </div>
+        <div class="card" style="border-color:#1e3a5f44">
+          <div class="card-icon">🟡</div>
+          <div class="card-title">健康人感染预后</div>
+          <div class="card-body">腺病毒是人类常见病原体（普通感冒常见原因），健康人感染后通常轻度呼吸道症状或结膜炎，1–2 周自愈，几乎不会重症。</div>
+        </div>
+        <div class="card" style="border-color:#1e3a5f44">
+          <div class="card-icon">🟢</div>
+          <div class="card-title">重组载体额外保护</div>
+          <div class="card-body">E1 缺失 → 无法在正常细胞复制。即使意外感染，病毒不能扩增，感染自限。这是与野生型腺病毒的关键区别。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exposure routes -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">主要暴露途径</div>
+      <div class="deletion-grid">
+        <div class="deletion-card">
+          <div class="deletion-tag tag-e1">高风险操作</div>
+          <div class="deletion-body" style="margin-top:8px">
+            <ul class="wt-list">
+              <li><strong>气溶胶吸入</strong>——离心、超声破碎、移液时产生，最常见途径</li>
+              <li><strong>眼睛黏膜接触</strong>——溅液，腺病毒对结膜有强嗜性</li>
+              <li><strong>针刺伤</strong>——动物注射操作时，含毒针头刺入皮肤</li>
+              <li><strong>皮肤破损接触</strong>——高滴度原液接触破损皮肤</li>
+            </ul>
+          </div>
+        </div>
+        <div class="deletion-card">
+          <div class="deletion-tag tag-e3">高风险步骤</div>
+          <div class="deletion-body" style="margin-top:8px">
+            <ul class="wt-list">
+              <li>大体积病毒液离心（>50 mL）</li>
+              <li>超声破碎裂解感染细胞</li>
+              <li>CsCl 梯度超速离心纯化</li>
+              <li>高滴度原液分装（>10¹⁰ vp/mL）</li>
+              <li>动物静脉/腹腔注射</li>
+              <li>感染动物的组织取样和匀浆</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- High risk groups -->
+    <div style="background:#1a0a0a; border:1px solid #7f1d1d; border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:#f87171; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">⚠ 特殊人群——格外注意</div>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>人群</th><th>风险</th><th>建议</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>免疫抑制者<br><span style="font-size:11px; color:var(--text3)">（器官移植、化疗、HIV）</span></td>
+            <td style="color:var(--danger)">普通腺病毒感染可致重症甚至死亡</td>
+            <td style="color:var(--text3)">应回避高风险操作，或全程最严格防护</td>
+          </tr>
+          <tr>
+            <td>孕妇</td>
+            <td style="color:var(--warn)">理论风险，数据有限</td>
+            <td style="color:var(--text3)">向机构生物安全委员会申报，个案评估</td>
+          </tr>
+          <tr>
+            <td>眼科手术后</td>
+            <td style="color:var(--warn)">眼部黏膜屏障受损，腺病毒结膜炎风险高</td>
+            <td style="color:var(--text3)">术后一段时间内避免操作腺病毒</td>
+          </tr>
+          <tr>
+            <td>Ad 血清阴性者</td>
+            <td style="color:var(--warn)">初次感染反应可能更强</td>
+            <td style="color:var(--text3)">无特殊预防手段，注意防护</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PPE and decontamination -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">标准防护与去污</div>
+      <div class="deletion-grid">
+        <div class="deletion-card">
+          <div class="deletion-tag tag-e1">个人防护（PPE）</div>
+          <div class="deletion-body" style="margin-top:8px">
+            <ul class="wt-list">
+              <li>II 级生物安全柜内操作（所有开瓶、移液操作）</li>
+              <li>双层手套，定期更换外层</li>
+              <li>护目镜或面屏（溅液防护）</li>
+              <li>N95 口罩（气溶胶产生操作，如超声破碎）</li>
+              <li>实验服，必要时防护服</li>
+            </ul>
+          </div>
+        </div>
+        <div class="deletion-card">
+          <div class="deletion-tag tag-e3">灭活与废弃物处理</div>
+          <div class="deletion-body" style="margin-top:8px">
+            <ul class="wt-list">
+              <li><strong>1% 次氯酸钠（84消毒液）</strong>——溢洒处理，接触 10 分钟灭活</li>
+              <li>所有接触病毒的耗材高压灭菌（121°C，20 min）后丢弃</li>
+              <li>液体废弃物加次氯酸钠至终浓度 1%，作用 30 分钟后排放</li>
+              <li>感染动物尸体按生物危害废弃物处理</li>
+              <li>针头不回套，直接投入利器盒</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gutless specific -->
+    <div style="background:var(--surface); border:1px solid #4c1d95; border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">Gutless 生产的特殊风险</div>
+      <div style="color:var(--text2); font-size:13.5px; line-height:1.7; margin-bottom:12px">
+        Gutless 生产过程中辅助病毒全程共存。辅助病毒是<strong style="color:#fff">复制能力完整</strong>的腺病毒，操作时实际上同时暴露于有复制能力的病毒，风险高于纯 E1 缺失型。
+      </div>
+      <div class="highlight-box" style="border-left-color:var(--accent3)">
+        生产阶段（多轮扩增期间）：按辅助病毒（复制型腺病毒）的防护标准操作，而非按 Gutless 载体本身的标准。纯化后产品中辅助病毒比例下降，防护级别可适当降低，但需 qPCR 验证污染水平后才能调整。
+      </div>
+    </div>
+
+    <div class="note" style="border-left-color:var(--warn)">
+      <strong>意外暴露处理：</strong>皮肤接触 → 肥皂水彻底冲洗 15 分钟。眼睛接触 → 生理盐水冲洗 15 分钟。针刺伤 → 挤出血液，肥皂水冲洗，向机构生物安全办公室报告，填写暴露记录，由医生评估是否需要随访。免疫正常者通常不需要预防性用药。
+    </div>
+
+    <!-- Purified Gutless product specific -->
+    <div style="background:var(--surface); border:1px solid #1e3a5f; border-radius:8px; padding:20px; margin-top:16px">
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent2); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">纯化制品 Gutless 的操作风险（区别于生产阶段）</div>
+      <div style="color:var(--text2); font-size:13.5px; line-height:1.7; margin-bottom:16px">
+        经 CsCl 梯度纯化、qPCR 验证辅助病毒污染 &lt;0.1% 的 Gutless 制品，风险特征与生产阶段有本质区别。
+      </div>
+
+      <div class="deletion-grid" style="margin-bottom:16px">
+        <div class="deletion-card" style="border-color:#064e3b44">
+          <div style="font-family:var(--mono); font-size:10px; color:#34d399; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">风险大幅降低的方面</div>
+          <ul class="wt-list">
+            <li>无复制能力——E1 已缺失，即使暴露也无法在体内扩增</li>
+            <li>辅助病毒已去除至极低水平（&lt;0.1%），复制型腺病毒暴露量极小</li>
+            <li>无病毒编码基因，不会产生病毒蛋白引发 T 细胞反应</li>
+            <li>与普通 E1/E3 缺失型腺病毒的实验室风险基本相当</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:#7f1d1d44">
+          <div style="font-family:var(--mono); font-size:10px; color:#f87171; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">仍需注意的方面</div>
+          <ul class="wt-list">
+            <li>衣壳蛋白仍在，先天免疫激活风险依然存在</li>
+            <li>高滴度制品（>10¹¹ vp/mL）溅入眼睛或注射伤仍可引起局部炎症</li>
+            <li>残余辅助病毒绝对数量取决于总滴度——高滴度原液即使 0.1% 污染仍可观</li>
+            <li>免疫抑制者即使面对复制缺陷型腺病毒也需格外谨慎</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="font-family:var(--mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">纯化制品操作防护级别</div>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>操作场景</th><th>防护要求</th><th>理由</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>常规分装、移液（低滴度）</td>
+            <td><span class="badge badge-good">BSL-2 标准</span></td>
+            <td style="color:var(--text3)">与普通重组腺病毒相同</td>
+          </tr>
+          <tr>
+            <td>高滴度原液操作（>10¹¹ vp/mL）</td>
+            <td><span class="badge badge-warn">生物安全柜 + 面屏</span></td>
+            <td style="color:var(--text3)">溅液风险高，气溶胶量大</td>
+          </tr>
+          <tr>
+            <td>动物注射</td>
+            <td><span class="badge badge-warn">双层手套 + 护目镜</span></td>
+            <td style="color:var(--text3)">针刺风险，动物挣扎导致溅液</td>
+          </tr>
+          <tr>
+            <td>溢洒处理</td>
+            <td><span class="badge badge-good">1% 次氯酸钠，10 min</span></td>
+            <td style="color:var(--text3)">有效灭活腺病毒衣壳</td>
+          </tr>
+          <tr>
+            <td>qPCR 确认辅助病毒 >0.1%</td>
+            <td><span class="badge badge-bad">升级按生产阶段标准</span></td>
+            <td style="color:var(--text3)">需重新纯化或重新评估风险</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box" style="margin-top:16px; border-left-color:var(--accent2)">
+        <strong>关键判断标准：</strong>qPCR 验证辅助病毒污染水平是决定防护级别的依据。污染 &lt;0.1% → 按复制缺陷型腺病毒（BSL-2）操作。污染 &gt;0.1% 或未经验证 → 按含复制型腺病毒标准操作，重新纯化。
+      </div>
+    </div>
+  </div>
+
   <div class="section">
     <div class="section-header">
       <span class="section-num">07</span>
