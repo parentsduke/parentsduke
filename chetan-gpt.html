@@ -414,9 +414,16 @@ async function send(){
 }
 
 // ── 初始化 ──
-loadStorage();
-if (conversations.length === 0) newChat();
-else switchConv(conversations[0].id);
+(async function init() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+    return;
+  }
+  loadStorage();
+  if (conversations.length === 0) newChat();
+  else switchConv(conversations[0].id);
+})();
 
 // ── Service Worker ──
 if ('serviceWorker' in navigator) {
