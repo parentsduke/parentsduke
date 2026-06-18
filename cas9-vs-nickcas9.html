@@ -596,6 +596,53 @@
       </tbody>
     </table>
   </div>
+
+  <!-- 术语速查：BE vs BER -->
+  <div style="margin-top:32px;background:var(--surface);border-radius:12px;padding:28px 28px 24px;border:1px solid var(--border)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:18px">术语速查 — 容易混淆的缩写</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+      <!-- BE -->
+      <div style="padding:18px;border-radius:10px;background:rgba(21,101,192,0.06);border:1px solid rgba(21,101,192,0.2)">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">
+          <span style="font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--nick)">BE</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">Base Editor · 碱基编辑器</span>
+        </div>
+        <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+          一种<strong>人工基因编辑工具</strong>，由 nickCas9 与脱氨酶融合而成。无需切断双链，直接将 DNA 上的一个碱基化学改写为另一个（如 C→T、A→G），用于修正单碱基遗传突变。
+        </div>
+        <div style="font-size:12px;color:var(--muted);border-top:1px solid rgba(21,101,192,0.15);padding-top:10px">
+          📌 是什么：<strong style="color:var(--nick)">实验者设计的编辑工具</strong><br>
+          作用：主动写入新碱基<br>
+          触发：研究者操控
+        </div>
+      </div>
+
+      <!-- BER -->
+      <div style="padding:18px;border-radius:10px;background:rgba(26,122,94,0.06);border:1px solid rgba(26,122,94,0.25)">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">
+          <span style="font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--correct)">BER</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">Base Excision Repair · 碱基切除修复</span>
+        </div>
+        <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+          细胞<strong>天然的 DNA 修复机制</strong>，专门处理单链切口（nick）或损伤碱基。流程：识别缺口 → 以对侧完整链为模板填补 → 连接酶封口。高保真，不引入突变。
+        </div>
+        <div style="font-size:12px;color:var(--muted);border-top:1px solid rgba(26,122,94,0.2);padding-top:10px">
+          📌 是什么：<strong style="color:var(--correct)">细胞自身修复系统</strong><br>
+          作用：还原原始序列<br>
+          触发：nick / 损伤自动激活
+        </div>
+      </div>
+    </div>
+
+    <!-- 关系说明 -->
+    <div style="margin-top:16px;padding:12px 16px;border-radius:8px;background:rgba(184,134,11,0.06);border:1px solid rgba(184,134,11,0.25);font-size:13px;line-height:1.8">
+      <strong style="color:var(--accent)">两者的关系：</strong>
+      nickCas9 产生的单链切口（nick）→ 细胞自动启动 <strong>BER</strong> 修复，还原序列，无突变。
+      而 <strong>BE</strong>（碱基编辑器）则是<em>利用</em> nickCas9 + 脱氨酶，在 BER 修复之前抢先改写碱基，让修复过程把新碱基"固定"下来——两者是工具与机制的配合，不是同一回事。
+    </div>
+  </div>
+
 </div>
 
 <!-- ═══ MECHANISM PANEL ═══ -->
@@ -636,6 +683,60 @@
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-body">在<strong>双 nickase 策略</strong>中，两个携带不同 sgRNA 的 nickCas9 分别靶向互补链上相邻区域，产生两个相互交错的 nick，等效于一个 DSB，但脱靶 nick 被高保真修复，不致突变。</div>
+      </div>
+
+      <!-- 专题：为什么脱靶 nick 被高保真修复 -->
+      <div style="margin:8px 0 4px 52px;background:var(--surface2);border-radius:10px;padding:22px 22px 20px;border:1px solid var(--border)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--nick);margin-bottom:14px">▸ 深入：为什么脱靶 nick 被高保真修复、不致突变？</div>
+
+        <!-- 关键对比：SSB vs DSB -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
+          <div style="padding:14px;border-radius:8px;background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2)">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--cas9);margin-bottom:8px">Cas9 脱靶 → DSB</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;color:var(--text)">
+              5′──[A T G C]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[T A C G]──3′<br>
+              3′──[T A C G]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[A T G C]──5′
+            </div>
+            <div style="font-size:12px;margin-top:10px;color:var(--cas9)">两条链均断 → 无内建模板<br>→ NHEJ 介入 → <strong>indel 突变</strong></div>
+          </div>
+          <div style="padding:14px;border-radius:8px;background:rgba(21,101,192,0.06);border:1px solid rgba(21,101,192,0.2)">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--nick);margin-bottom:8px">nickCas9 脱靶 → SSB（单链切口）</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;color:var(--text)">
+              5′──[A T G C · · · T A C G]──3′ ← 完整链（天然模板）<br>
+              3′──[T A C G]&nbsp;&nbsp;↑<span style="color:var(--nick)">nick</span>&nbsp;&nbsp;[A T G C]──5′
+            </div>
+            <div style="font-size:12px;margin-top:10px;color:var(--nick)">对侧链完整 = 内建模板<br>→ BER 精确填补 → <strong>无突变</strong></div>
+          </div>
+        </div>
+
+        <!-- 修复机制说明 -->
+        <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:14px">
+          <strong style="color:var(--accent)">核心原理：</strong>单链切口（SSB）与双链断裂（DSB）触发截然不同的修复程序。
+          DSB 两条链均断，细胞进入"紧急状态"，主要依赖 <strong>NHEJ</strong> 快速但易出错地拼接末端，常引入 indel。
+          SSB 则恰恰相反——对侧完整链天然充当模板，细胞直接启动 <strong>BER（碱基切除修复）</strong> 或 <strong>SSBR（单链断裂修复）</strong>：
+        </div>
+        <div style="display:grid;gap:10px;margin-bottom:14px">
+          <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.7">
+            <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">①</div>
+            <div><strong>PARP1 识别切口</strong>，招募修复复合体，无需 Ku70/Ku80（NHEJ 的触发因子），因此 NHEJ 根本不会被激活。</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.7">
+            <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">②</div>
+            <div><strong>DNA 聚合酶 β</strong> 以对侧完整链为模板，精确填补缺口（短片段合成），全程忠实于对侧序列，误差率极低。</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.7">
+            <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">③</div>
+            <div><strong>DNA 连接酶 III / XRCC1</strong> 封闭切口，修复完成，序列与切口前完全一致，不引入任何突变。</div>
+          </div>
+        </div>
+
+        <!-- 双击概率说明 -->
+        <div style="padding:12px 16px;border-radius:8px;background:rgba(184,134,11,0.07);border:1px solid rgba(184,134,11,0.3);font-size:13px;line-height:1.8">
+          <strong style="color:var(--accent)">双 nick 策略的组合保护：</strong>
+          nickCas9 的安全性不仅来自 BER 高保真修复，更来自概率的乘积效应。两个脱靶 nick 同时落在同一脱靶位点（且间距合适、方向正确）的概率
+          ≈ <em>P<sub>脱靶A</sub> × P<sub>脱靶B</sub></em>，相较单 nick 呈<strong>指数级降低</strong>，这也是双 nickase 策略将脱靶率降低 50–1500 倍的根本原因。
+          即便发生单个脱靶 nick，BER 也将其无害化处理，两层保护叠加，安全性大幅优于野生型 Cas9。
+        </div>
       </div>
       <div class="step">
         <div class="step-num">4</div>
