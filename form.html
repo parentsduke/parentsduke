@@ -1222,6 +1222,10 @@
       if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
       if (type === 'RD' && rdCommitted === 'false' && !committedFile) { showError('5月1日截止已过，RD录取必须上传 Committed Letter 方可入群'); return; }
     }
+    // 至少需要上传一个文件
+    const hasAnyFile = letterFile || committedFile || dormFile || gradLetterFile || portalFile || sidFile;
+    if (!hasAnyFile) { showError('请至少上传一个文件（录取通知书、Committed Letter 等）'); return; }
+
     if (!document.getElementById('fSubmitterName').value.trim())    { showError('请填写群昵称'); return; }
     if (!document.getElementById('fParentRole').value)               { showError('请选择家长角色（爸爸/妈妈）'); return; }
     if (!document.getElementById('fSubmitterContact').value.trim()) { showError('请填写联系方式'); return; }
