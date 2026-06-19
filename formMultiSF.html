@@ -471,6 +471,15 @@
             <option value="grad">研究生</option>
           </select>
         </div>
+        <div class="form-group full" id="bayareaReasonGroup" style="display:none;">
+          <label>加入理由 <span class="req">*</span></label>
+          <select id="fBayareaReason">
+            <option value="">请选择</option>
+            <option value="长期居住湾区">长期居住湾区</option>
+            <option value="在湾区实习">在湾区实习</option>
+            <option value="计划搬至湾区">计划搬至湾区</option>
+          </select>
+        </div>
         <div class="form-group full" id="hubYearGroup" style="display:none;">
           <label>来自哪一个年级 <span class="req">*</span></label>
           <select id="fHubYear">
@@ -769,6 +778,7 @@
     if (isHub) {
       document.getElementById('premedYearGroup').style.display    = 'none';
       document.getElementById('bayareaYearGroup').style.display   = 'none';
+      document.getElementById('bayareaReasonGroup').style.display = 'none';
       document.getElementById('bayareaShotGroup').style.display   = 'none';
       document.getElementById('hubYearGroup').style.display       = 'flex';
       document.getElementById('dormPhotoGroup').style.display     = 'none';
@@ -776,6 +786,7 @@
       document.getElementById('uploadPlaceholder').style.display  = 'none';
       document.getElementById('fPremedYear').value = '';
       document.getElementById('fBayareaYear').value = '';
+      document.getElementById('fBayareaReason').value = '';
       document.getElementById('fSchoolLabel').innerHTML = '学生所在学校 <span class="req">*</span>';
       document.getElementById('fSchool').placeholder = '请输入孩子就读学校名称';
       removeFile('dorm'); removeFile('gradLetter'); removeFile('oldCommitted'); removeFile('oldLetter'); removeFile('bayareaShot');
@@ -800,8 +811,10 @@
     if (!isPremed) document.getElementById('fPremedYear').value = '';
     if (isPremed) {
       document.getElementById('bayareaYearGroup').style.display     = 'none';
+      document.getElementById('bayareaReasonGroup').style.display   = 'none';
       document.getElementById('bayareaShotGroup').style.display     = 'none';
       document.getElementById('fBayareaYear').value = '';
+      document.getElementById('fBayareaReason').value = '';
       document.getElementById('dormPhotoGroup').style.display       = 'none';
       document.getElementById('gradLetterGroup').style.display      = 'none';
       document.getElementById('uploadPlaceholder').style.display    = 'none';
@@ -817,10 +830,11 @@
       return;
     }
 
-    // SF Bay Area Duke Families：显示孩子届次选择 + 必填截屏上传，隐藏其他上传区
-    document.getElementById('bayareaYearGroup').style.display = isBayarea ? 'flex' : 'none';
-    document.getElementById('bayareaShotGroup').style.display = isBayarea ? 'block' : 'none';
-    if (!isBayarea) { document.getElementById('fBayareaYear').value = ''; removeFile('bayareaShot'); }
+    // SF Bay Area Duke Families：显示孩子届次选择 + 加入理由 + 必填截屏上传，隐藏其他上传区
+    document.getElementById('bayareaYearGroup').style.display   = isBayarea ? 'flex' : 'none';
+    document.getElementById('bayareaReasonGroup').style.display = isBayarea ? 'flex' : 'none';
+    document.getElementById('bayareaShotGroup').style.display   = isBayarea ? 'block' : 'none';
+    if (!isBayarea) { document.getElementById('fBayareaYear').value = ''; document.getElementById('fBayareaReason').value = ''; removeFile('bayareaShot'); }
     if (isBayarea) {
       document.getElementById('dormPhotoGroup').style.display       = 'none';
       document.getElementById('gradLetterGroup').style.display      = 'none';
@@ -1054,6 +1068,7 @@
     if (isPremed && !document.getElementById('fPremedYear').value) { showError('请选择 Pre-med Track 来自哪一届'); return; }
     if (isHub && !document.getElementById('fHubYear').value) { showError('请选择来自哪一个年级'); return; }
     if (isBayarea && !document.getElementById('fBayareaYear').value) { showError('请选择孩子具体届次'); return; }
+    if (isBayarea && !document.getElementById('fBayareaReason').value) { showError('请选择加入理由'); return; }
     // 互斥检查：已在另一个群则拦截
     if (isHub) {
       var marker = document.getElementById('hub-mutex-marker');
@@ -1167,6 +1182,7 @@
       const hubYear      = isHub      ? parseInt(document.getElementById('fHubYear').value)    : null;
       const bayareaYearRaw = isBayarea ? document.getElementById('fBayareaYear').value : null;
       const bayareaYear  = (bayareaYearRaw && bayareaYearRaw !== 'grad') ? parseInt(bayareaYearRaw) : bayareaYearRaw;
+      const bayareaReason = isBayarea ? document.getElementById('fBayareaReason').value : null;
       const classYearVal = isGrad ? null : (isPremed ? premedYear : (isHub ? hubYear : (isBayarea ? bayareaYear : yearNum)));
       const admissionTypeVal = isGrad ? (year === 'grad_masters' ? '硕士' : '博士')
         : isPremed ? 'Pre-med Track'
@@ -1192,6 +1208,7 @@
         portal_screenshot_path,
         student_id_path,
         bayarea_screenshot_path,
+        bayarea_reason:         bayareaReason || null,
         submitter_name:        document.getElementById('fSubmitterName').value.trim() || null,
         submitter_contact:     document.getElementById('fSubmitterContact').value.trim() || null,
         submitter_email:       submitterEmail || null,
@@ -1296,6 +1313,8 @@ try {
     document.getElementById('premedYearGroup').style.display = 'none';
     document.getElementById('fBayareaYear').value = '';
     document.getElementById('bayareaYearGroup').style.display = 'none';
+    document.getElementById('fBayareaReason').value = '';
+    document.getElementById('bayareaReasonGroup').style.display = 'none';
     document.getElementById('bayareaShotGroup').style.display = 'none';
     document.getElementById('dormPhotoGroup').style.display       = 'none';
     document.getElementById('gradLetterGroup').style.display      = 'none';
