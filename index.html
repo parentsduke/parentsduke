@@ -6,8 +6,9 @@
     <title>扯谈Duke群</title>
     <link rel="stylesheet" href="style.css">
     <style>
-      /* 提前隐藏，避免页面流式解析时这些元素在主样式表加载完成前短暂无样式闪烁显示 */
-      #overlay, #video-overlay, #yuanfenChatModal, #yuanfenInboxModal { display: none; }
+      /* 提前隐藏，避免页面流式解析时这些元素在主样式表加载完成前短暂无样式闪烁显示。
+         用 :not(.show) 限定，避免这条早期 ID 规则的高优先级压制住后面 .show 这个 class 想要的 display:flex */
+      #overlay:not(.show), #video-overlay:not(.show), #yuanfenChatModal:not(.show), #yuanfenInboxModal:not(.show) { display: none; }
       #yuanfenInboxEntryBtn { display: none; }
     </style>
 <script>
