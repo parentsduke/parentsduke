@@ -12911,12 +12911,14 @@ async function loadYuanfenItems() {
     var date = new Date(item.uploaded_at).toLocaleDateString("zh-CN", { year:'numeric', month:'long', day:'numeric' });
     var uploader = item.uploaded_by ? item.uploaded_by.split('@')[0] : '匿名';
     var isOwner = myEmail && item.uploaded_by && myEmail === item.uploaded_by;
-    var titleEsc = item.title.replace(/'/g, "\\'");
+    var titleAttr = escapeHtml(item.title);
+    var uploaderEmailAttr = escapeHtml(item.uploaded_by || '');
+    var pubUrlAttr = escapeHtml(pubUrl);
 
     html += '<div class="yuanfen-card">';
     if (isImg) {
       html += '<div class="yuanfen-card-thumb-wrap">' +
-        '<img src="' + pubUrl + '" class="yuanfen-card-thumb" id="thumb-' + item.id + '" onclick="unlockYuanfenThumb(\'' + item.id + '\', \'' + pubUrl + '\', \'' + titleEsc + '\')" alt="' + item.title + '">' +
+        '<img src="' + pubUrl + '" class="yuanfen-card-thumb yuanfen-thumb-trigger" id="thumb-' + item.id + '" data-id="' + item.id + '" data-url="' + pubUrlAttr + '" data-title="' + titleAttr + '" alt="' + titleAttr + '">' +
         '<div class="yuanfen-card-thumb-hint" id="hint-' + item.id + '">点击查看</div>' +
         '</div>';
     } else {
@@ -12924,19 +12926,46 @@ async function loadYuanfenItems() {
       html += '<div class="yuanfen-card-icon">' + icon + '</div>';
     }
     html += '<div class="yuanfen-card-body">' +
-      '<div class="yuanfen-card-title">' + item.title + '</div>' +
-      '<div class="yuanfen-card-meta">' + uploader + ' · ' + date + '</div>' +
+      '<div class="yuanfen-card-title">' + titleAttr + '</div>' +
+      '<div class="yuanfen-card-meta">' + escapeHtml(uploader) + ' · ' + date + '</div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
       (isImg
-        ? '<a href="javascript:void(0)" onclick="unlockYuanfenThumb(\'' + item.id + '\', \'' + pubUrl + '\', \'' + titleEsc + '\'); openYuanfenOverlay(\'' + pubUrl + '\', \'' + titleEsc + '\')" class="yuanfen-card-btn">查看 →</a>'
+        ? '<a href="javascript:void(0)" class="yuanfen-card-btn yuanfen-view-trigger" data-id="' + item.id + '" data-url="' + pubUrlAttr + '" data-title="' + titleAttr + '">查看 →</a>'
         : '<a href="' + pubUrl + '" target="_blank" class="yuanfen-card-btn">查看 →</a>') +
       (isOwner
         ? ''
-        : '<a href="javascript:void(0)" onclick="openYuanfenChat(\'' + item.id + '\', \'' + (item.uploaded_by || '') + '\', \'' + titleEsc + '\')" class="yuanfen-card-btn" style="background:linear-gradient(135deg, #7b1fa2, #4a148c);">💌 留言</a>') +
+        : '<a href="javascript:void(0)" class="yuanfen-card-btn yuanfen-msg-trigger" data-id="' + item.id + '" data-email="' + uploaderEmailAttr + '" data-title="' + titleAttr + '" style="background:linear-gradient(135deg, #7b1fa2, #4a148c);">💌 留言</a>') +
       '</div></div></div>';
   });
   container.innerHTML = html;
 }
+
+// 事件委托：处理"有缘启示"卡片上的缩略图点击/查看/留言按钮（避免inline onclick拼接特殊字符导致解析失败）
+document.addEventListener('click', function(e) {
+  var thumbEl = e.target.closest && e.target.closest('.yuanfen-thumb-trigger');
+  if (thumbEl) {
+    unlockYuanfenThumb(thumbEl.getAttribute('data-id'), thumbEl.getAttribute('data-url'), thumbEl.getAttribute('data-title'));
+    return;
+  }
+  var viewEl = e.target.closest && e.target.closest('.yuanfen-view-trigger');
+  if (viewEl) {
+    var vid = viewEl.getAttribute('data-id'), vurl = viewEl.getAttribute('data-url'), vtitle = viewEl.getAttribute('data-title');
+    unlockYuanfenThumb(vid, vurl, vtitle);
+    openYuanfenOverlay(vurl, vtitle);
+    return;
+  }
+  var msgEl = e.target.closest && e.target.closest('.yuanfen-msg-trigger');
+  if (msgEl) {
+    openYuanfenChat(msgEl.getAttribute('data-id'), msgEl.getAttribute('data-email'), msgEl.getAttribute('data-title'));
+    return;
+  }
+  var inboxItemEl = e.target.closest && e.target.closest('.yuanfen-inbox-item-trigger');
+  if (inboxItemEl) {
+    closeYuanfenInbox();
+    openYuanfenChat(inboxItemEl.getAttribute('data-id'), inboxItemEl.getAttribute('data-email'), inboxItemEl.getAttribute('data-title'));
+    return;
+  }
+});
 
 // 隐私保护：缩略图默认模糊，首次点击才清晰显示（不直接弹出大图，需再次点击/点"查看"才放大）
 function unlockYuanfenThumb(id, pubUrl, title) {
