@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>扯谈Duke群</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+      /* 提前隐藏，避免页面流式解析时这些元素在主样式表加载完成前短暂无样式闪烁显示 */
+      #overlay, #video-overlay, #yuanfenChatModal, #yuanfenInboxModal { display: none; }
+      #yuanfenInboxEntryBtn { display: none; }
+    </style>
 <script>
 // ===== IMAGE / VIDEO OVERLAY =====
 // openOverlay/closeOverlay defined here in <head> so onclick attributes work immediately
