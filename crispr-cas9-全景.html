@@ -1,0 +1,4123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRISPR-Cas9 全景 — 机制 · AI 前沿 · 病毒载体</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f5f7fa;
+    --surface2: #eaecf2;
+    --cas9: #c0392b;
+    --nick: #1565c0;
+    --cas9-dim: rgba(192,57,43,0.10);
+    --nick-dim: rgba(21,101,192,0.10);
+    --text: #1a1f2e;
+    --muted: #6b7a99;
+    --accent: #b8860b;
+    --correct: #1a7a5e;
+    --wrong: #c0392b;
+    --border: rgba(0,0,0,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Serif SC', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  header {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 50%, rgba(192,57,43,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(21,101,192,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .lab-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    border: 1px solid rgba(184,134,11,0.4);
+    padding: 4px 14px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+  h1 {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+  h1 .c1 { color: var(--cas9); }
+  h1 .c2 { color: var(--nick); }
+  h1 .vs { color: var(--muted); font-size: 0.6em; margin: 0 12px; }
+  .subtitle {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 15px;
+    letter-spacing: 1px;
+  }
+
+  /* ── NAV TABS ── */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 24px 20px 0;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 8px 22px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .tab-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .tab-btn.active {
+    background: var(--surface);
+    color: var(--accent);
+    border-color: rgba(184,134,11,0.5);
+  }
+
+  /* ── CONTENT AREAS ── */
+  .panel { display: none; padding: 48px 20px 80px; max-width: 1100px; margin: 0 auto; }
+  .panel.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+  /* ── COMPARE PANEL ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 650px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .card.cas9::before { background: var(--cas9); }
+  .card.nick::before { background: var(--nick); }
+
+  .card-icon {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  .cas9 .card-icon { background: var(--cas9-dim); color: var(--cas9); }
+  .nick .card-icon { background: var(--nick-dim); color: var(--nick); }
+
+  .card h2 {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  .cas9 h2 { color: var(--cas9); }
+  .nick h2 { color: var(--nick); }
+
+  .card ul { list-style: none; }
+  .card ul li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.6;
+    display: flex;
+    gap: 10px;
+  }
+  .card ul li:last-child { border-bottom: none; }
+  .card ul li::before { content: '▸'; opacity: 0.5; flex-shrink: 0; }
+
+  /* DNA animation */
+  .dna-demo {
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 36px 24px;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .dna-demo h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .dna-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .dna-item { text-align: center; }
+  .dna-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  .cas9 .dna-label, .dna-item.cas9 .dna-label { color: var(--cas9); }
+  .dna-item.nick .dna-label { color: var(--nick); }
+
+  .strand-wrap { position: relative; width: 220px; height: 56px; margin: 0 auto; }
+  .strand {
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    transition: all 0.6s ease;
+  }
+  .strand.top { top: 8px; background: linear-gradient(90deg, #e05c5c, #ff8a65); }
+  .strand.bot { bottom: 8px; background: linear-gradient(90deg, #4fc3f7, #81d4fa); }
+
+  /* broken styles */
+  .strand.broken-top {
+    clip-path: polygon(0 0, 45% 0, 45% 100%, 0 100%);
+    transform: translateY(-6px);
+  }
+  .strand.broken-top2 {
+    clip-path: polygon(55% 0, 100% 0, 100% 100%, 55% 100%);
+    transform: translateY(-6px);
+  }
+  .strand.nicked { clip-path: polygon(0 0, 42% 0, 42% 100%, 0 100%); }
+  .strand.nicked2 { clip-path: polygon(58% 0, 100% 0, 100% 100%, 58% 100%); }
+
+  .cut-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 10px;
+  }
+
+  /* ── TABLE ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .compare-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+    color: var(--muted);
+  }
+  .compare-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+    vertical-align: top;
+  }
+  .compare-table tr:hover td { background: rgba(0,0,0,0.02); }
+  .compare-table .prop { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap; }
+  .compare-table .v-cas9 { color: var(--cas9); }
+  .compare-table .v-nick { color: var(--nick); }
+
+  /* ── QUIZ PANEL ── */
+  .quiz-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .quiz-header h2 {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.8rem;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .quiz-header p { color: var(--muted); font-size: 14px; }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 36px;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    display: none;
+  }
+  .question-card.active { display: block; animation: fadeIn 0.3s ease; }
+
+  .q-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .q-text {
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .options { display: grid; gap: 12px; }
+  .opt-btn {
+    text-align: left;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 20px;
+    color: var(--text);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1.5;
+  }
+  .opt-btn:hover:not([disabled]) {
+    border-color: rgba(184,134,11,0.4);
+    background: rgba(184,134,11,0.06);
+  }
+  .opt-btn.correct { background: rgba(6,214,160,0.1); border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong { background: rgba(239,71,111,0.1); border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn[disabled] { cursor: default; }
+
+  .explanation {
+    display: none;
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: rgba(184,134,11,0.05);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #3a4260;
+  }
+  .explanation.show { display: block; animation: fadeIn 0.3s ease; }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+  }
+  .next-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px 28px;
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: none;
+    transition: opacity 0.2s;
+    letter-spacing: 1px;
+  }
+  .next-btn:hover { opacity: 0.85; }
+  .next-btn.show { display: block; }
+
+  .score-box {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    animation: fadeIn 0.5s ease;
+  }
+  .score-box.show { display: block; }
+  .score-big {
+    font-family: 'Space Mono', monospace;
+    font-size: 5rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .score-msg { font-size: 18px; color: var(--muted); margin-bottom: 32px; }
+  .retry-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 12px 32px;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .retry-btn:hover { background: var(--accent); color: #ffffff; }
+
+  /* ── MECHANISM PANEL ── */
+  .mech-section { margin-bottom: 48px; }
+  .mech-section h3 {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mech-section h3.c-cas9 { color: var(--cas9); }
+  .mech-section h3.c-nick { color: var(--nick); }
+
+  .step-list { display: grid; gap: 14px; }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+  }
+  .step-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 36px;
+    line-height: 1;
+  }
+  .c-cas9 .step-num, .cas9-steps .step-num { color: var(--cas9); }
+  .nick-steps .step-num { color: var(--nick); }
+  .step-body { font-size: 14px; line-height: 1.7; }
+  .step-body strong { color: var(--accent); }
+
+  .domain-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 8px;
+  }
+  .domain-table th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    color: var(--muted);
+    letter-spacing: 1px;
+    font-size: 11px;
+    border-bottom: 1px solid var(--border);
+  }
+  .domain-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .active-domain { color: var(--correct); }
+  .inactive-domain { color: var(--wrong); }
+  .domain-table tr:hover td { background: rgba(0,0,0,0.02); }
+
+  /* footer */
+  footer {
+    text-align: center;
+    padding: 32px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ═══ ADENOVIRUS PANEL STYLES (scoped under #panel-adeno) ═══ */
+
+  #panel-adeno {
+    --ad-bg: #ffffff;
+    --ad-surface: #f5f7fa;
+    --ad-surface2: #eaecf2;
+    --ad-border: #d8dee8;
+    --ad-accent: #1565c0;
+    --ad-accent2: #0891b2;
+    --ad-accent3: #7c3aed;
+    --ad-warn: #b8860b;
+    --ad-danger: #c0392b;
+    --ad-success: #1a7a5e;
+    --ad-text: #1a1f2e;
+    --ad-text2: #6b7a99;
+    --ad-text3: #8b96ad;
+    --ad-mono: 'JetBrains Mono', monospace;
+    --ad-serif: 'Noto Serif SC', serif;
+    --ad-sans: 'Noto Serif SC', serif;
+    background: var(--ad-bg);
+    color: var(--ad-text);
+    font-family: var(--ad-sans);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* Hero */
+  #panel-adeno .hero {
+    padding: 80px 24px 60px;
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  #panel-adeno .hero-eyebrow {
+    font-family: var(--ad-mono);
+    font-size: 11px;
+    color: var(--ad-accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #panel-adeno .hero-eyebrow::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 60px;
+    background: var(--ad-accent);
+    opacity: 0.4;
+  }
+
+  #panel-adeno .hero h1 {
+    font-family: var(--ad-serif);
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 600;
+    line-height: 1.2;
+    color: #1a1f2e;
+    margin-bottom: 16px;
+  }
+
+  #panel-adeno .hero h1 span {
+    color: var(--ad-accent2);
+  }
+
+  #panel-adeno .hero-sub {
+    color: var(--ad-text2);
+    font-size: 15px;
+    max-width: 560px;
+    font-weight: 300;
+  }
+
+  /* Genome diagram */
+  #panel-adeno .genome-diagram {
+    max-width: 860px;
+    margin: 0 auto 48px;
+    padding: 0 24px;
+  }
+
+  #panel-adeno .genome-label {
+    font-family: var(--ad-mono);
+    font-size: 11px;
+    color: var(--ad-text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  #panel-adeno .genome-bar {
+    display: flex;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--ad-border);
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  #panel-adeno .genome-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--ad-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s;
+    cursor: default;
+    position: relative;
+  }
+
+  #panel-adeno .genome-seg:hover { opacity: 0.85; }
+
+  #panel-adeno .seg-itr { background: #6b7a99; color: #ffffff; width: 3%; }
+  #panel-adeno .seg-e1 { background: #1d4ed8; color: #ffffff; width: 10%; }
+  #panel-adeno .seg-e2 { background: #1565c0; color: #ffffff; width: 12%; }
+  #panel-adeno .seg-e3 { background: #1e3a8a; color: #cfe0fb; width: 8%; }
+  #panel-adeno .seg-e4 { background: #1e3a8a; color: #cfe0fb; width: 10%; }
+  #panel-adeno .seg-late { background: #274a78; color: #cfe0fb; width: 54%; }
+  #panel-adeno .seg-itr2 { background: #6b7a99; color: #ffffff; width: 3%; }
+  #panel-adeno .seg-deleted {
+    opacity: 0.25;
+    position: relative;
+  }
+  #panel-adeno .seg-deleted::after {
+    content: '✕';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    color: var(--ad-danger);
+    opacity: 1;
+  }
+
+  #panel-adeno .seg-insert { background: linear-gradient(135deg, #1a7a5e, #0f766e); color: #ffffff; }
+  #panel-adeno .seg-stuffer { background: #f1e9fb; color: #6d28d9; border: 1px dashed rgba(124,58,237,0.3); }
+  /* Gutless card */
+  #panel-adeno .gutless-card {
+    background: var(--ad-surface);
+    border: 1px solid rgba(124,58,237,0.35);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  #panel-adeno .gutless-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ece3fa;
+    color: #6d28d9;
+    border: 1px solid rgba(109,40,217,0.2);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-family: var(--ad-mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  #panel-adeno .gutless-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 560px) {
+    #panel-adeno .gutless-grid { grid-template-columns: 1fr; }
+  }
+
+  #panel-adeno .gutless-col-title {
+    font-family: var(--ad-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--ad-border);
+  }
+
+  #panel-adeno .gutless-col-title.good { color: var(--ad-success); }
+  #panel-adeno .gutless-col-title.bad  { color: var(--ad-danger); }
+
+  #panel-adeno .gutless-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  #panel-adeno .gutless-list li {
+    font-size: 13px;
+    color: var(--ad-text2);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  #panel-adeno .gutless-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--ad-text3);
+    font-size: 11px;
+    top: 2px;
+  }
+
+  #panel-adeno .producer-flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    background: #f5f0fb;
+    border: 1px solid rgba(124,58,237,0.22);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-top: 14px;
+    font-size: 12px;
+    font-family: var(--ad-mono);
+    color: var(--ad-text2);
+  }
+
+  #panel-adeno .pf-node {
+    background: #ece3fa;
+    color: #6d28d9;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(109,40,217,0.2);
+    white-space: nowrap;
+  }
+
+  #panel-adeno .pf-arrow {
+    color: var(--ad-text3);
+    font-size: 14px;
+  }
+
+  #panel-adeno .genome-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    margin-top: 10px;
+  }
+
+  #panel-adeno .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--ad-text2);
+    font-family: var(--ad-mono);
+  }
+
+  #panel-adeno .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  /* Section layout */
+  #panel-adeno .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  #panel-adeno .section {
+    margin-bottom: 56px;
+  }
+
+  #panel-adeno .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--ad-border);
+  }
+
+  #panel-adeno .section-num {
+    font-family: var(--ad-mono);
+    font-size: 11px;
+    color: var(--ad-accent);
+    opacity: 0.6;
+  }
+
+  #panel-adeno .section-title {
+    font-family: var(--ad-serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a1f2e;
+  }
+
+  /* Cards */
+  #panel-adeno .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  #panel-adeno .card {
+    background: var(--ad-surface);
+    border: 1px solid var(--ad-border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  #panel-adeno .card-icon {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  #panel-adeno .card-title {
+    font-family: var(--ad-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ad-accent2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  #panel-adeno .card-body {
+    color: var(--ad-text2);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  /* Deletion logic */
+  #panel-adeno .deletion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 560px) {
+    #panel-adeno .deletion-grid { grid-template-columns: 1fr; }
+  }
+
+  #panel-adeno .deletion-card {
+    background: var(--ad-surface);
+    border: 1px solid var(--ad-border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  #panel-adeno .deletion-tag {
+    display: inline-block;
+    font-family: var(--ad-mono);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  #panel-adeno .tag-e1 { background: rgba(29,58,138,0.16); color: #1565c0; border: 1px solid rgba(29,78,216,0.2); }
+  #panel-adeno .tag-e3 { background: rgba(12,42,85,0.16); color: #0891b2; border: 1px solid rgba(3,105,161,0.2); }
+  #panel-adeno .deletion-purpose {
+    font-family: var(--ad-mono);
+    font-size: 11px;
+    color: var(--ad-text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  #panel-adeno .deletion-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ad-text);
+    margin-bottom: 10px;
+  }
+
+  #panel-adeno .deletion-body {
+    color: var(--ad-text2);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  #panel-adeno .highlight-box {
+    background: #eef3fb;
+    border: 1px solid rgba(21,101,192,0.18);
+    border-left: 3px solid var(--ad-accent);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ad-text2);
+  }
+
+  /* Capacity viz */
+  #panel-adeno .capacity-viz {
+    background: var(--ad-surface);
+    border: 1px solid var(--ad-border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  #panel-adeno .cap-label {
+    font-family: var(--ad-mono);
+    font-size: 11px;
+    color: var(--ad-text3);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  #panel-adeno .cap-bar-wrap {
+    position: relative;
+    background: var(--ad-bg);
+    border-radius: 4px;
+    height: 28px;
+    margin-bottom: 4px;
+    overflow: hidden;
+    border: 1px solid var(--ad-border);
+  }
+
+  #panel-adeno .cap-bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-family: var(--ad-mono);
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  #panel-adeno .cap-spacer { background: #1a7a5e; }
+  #panel-adeno .cap-spare { background: #1d4ed8; }
+  #panel-adeno .cap-limit { background: #7c3aed; }
+  #panel-adeno .cap-meta {
+    font-family: var(--ad-mono);
+    font-size: 11px;
+    color: var(--ad-text3);
+    margin-bottom: 16px;
+  }
+
+  #panel-adeno .breakdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  #panel-adeno .breakdown-table th {
+    text-align: left;
+    font-family: var(--ad-mono);
+    font-size: 10px;
+    color: var(--ad-text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--ad-border);
+  }
+
+  #panel-adeno .breakdown-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e3e7ee;
+    color: var(--ad-text2);
+  }
+
+  #panel-adeno .breakdown-table tr:last-child td { border-bottom: none; }
+
+  #panel-adeno .kb-val {
+    font-family: var(--ad-mono);
+    font-size: 12px;
+    color: var(--ad-text);
+  }
+
+  #panel-adeno .kb-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--ad-accent);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  /* Comparison table */
+  #panel-adeno .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: var(--ad-surface);
+    border: 1px solid var(--ad-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  #panel-adeno .compare-table th {
+    background: var(--ad-surface2);
+    padding: 12px 16px;
+    text-align: center;
+    font-family: var(--ad-mono);
+    font-size: 11px;
+    color: var(--ad-text2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--ad-border);
+  }
+
+  #panel-adeno .compare-table th:first-child { text-align: left; }
+
+  #panel-adeno .compare-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid #e3e7ee;
+    color: var(--ad-text2);
+    text-align: center;
+    font-size: 13px;
+  }
+
+  #panel-adeno .compare-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: var(--ad-text);
+    font-size: 13px;
+  }
+
+  #panel-adeno .compare-table tr:last-child td { border-bottom: none; }
+
+  #panel-adeno .compare-table .highlight-col {
+    background: #eef3fb;
+  }
+
+  #panel-adeno .badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-family: var(--ad-mono);
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  #panel-adeno .badge-good { background: #dcf3ea; color: #1a7a5e; }
+  #panel-adeno .badge-warn { background: #fdf0da; color: #9a6b00; }
+  #panel-adeno .badge-bad { background: #fbe6e3; color: #c0392b; }
+  #panel-adeno .badge-neu { background: #eef0f4; color: #6b7a99; }
+  /* Integration section */
+  #panel-adeno .integration-box {
+    background: var(--ad-surface);
+    border: 1px solid var(--ad-border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  #panel-adeno .flow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  #panel-adeno .flow-step {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    position: relative;
+  }
+
+  #panel-adeno .flow-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 44px;
+    bottom: 0;
+    width: 1px;
+    background: var(--ad-border);
+  }
+
+  #panel-adeno .step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ad-surface2);
+    border: 1px solid var(--ad-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--ad-mono);
+    font-size: 11px;
+    color: var(--ad-accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  #panel-adeno .step-content { flex: 1; }
+  #panel-adeno .step-title {
+    font-weight: 500;
+    color: var(--ad-text);
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+
+  #panel-adeno .step-desc {
+    color: var(--ad-text2);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* Wild type section */
+  #panel-adeno .wt-card {
+    background: var(--ad-surface);
+    border: 1px solid rgba(194,84,38,0.4);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  #panel-adeno .wt-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fdeee0;
+    color: #c2622a;
+    border: 1px solid rgba(194,84,38,0.22);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-family: var(--ad-mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  #panel-adeno .wt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 560px) {
+    #panel-adeno .wt-grid { grid-template-columns: 1fr; }
+  }
+
+  #panel-adeno .wt-col-title {
+    font-family: var(--ad-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--ad-border);
+  }
+
+  #panel-adeno .wt-col-title.good { color: var(--ad-success); }
+  #panel-adeno .wt-col-title.bad  { color: var(--ad-danger); }
+
+  #panel-adeno .wt-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  #panel-adeno .wt-list li {
+    font-size: 13px;
+    color: var(--ad-text2);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  #panel-adeno .wt-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--ad-text3);
+    font-size: 11px;
+    top: 2px;
+  }
+
+  /* Footer note */
+  #panel-adeno .footer-note {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px;
+    border-top: 1px solid var(--ad-border);
+    font-family: var(--ad-mono);
+    font-size: 11px;
+    color: var(--ad-text3);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Tooltip */
+  #panel-adeno [data-tip] {
+    position: relative;
+    cursor: help;
+    border-bottom: 1px dashed var(--ad-text3);
+  }
+
+  #panel-adeno [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #d8dee8;
+    color: var(--ad-text);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--ad-sans);
+    white-space: nowrap;
+    border: 1px solid var(--ad-border);
+    pointer-events: none;
+    z-index: 10;
+    line-height: 1.4;
+  }
+
+  #panel-adeno .note {
+    background: #e3e7ee;
+    border: 1px solid var(--ad-border);
+    border-left: 3px solid var(--ad-accent3);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--ad-text2);
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  #panel-adeno .note strong { color: var(--ad-text); }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lab-badge">CRISPR · MOLECULAR BIOLOGY · 科普学习</div>
+  <h1><span class="c1">Cas9</span><span class="vs">VS</span><span class="c2">nickCas9</span></h1>
+  <p class="subtitle">核酸内切酶的切割方式对比 · 交互学习</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('compare')">对比展示</button>
+  <button class="tab-btn" onclick="switchTab('mechanism')">作用机制</button>
+  <button class="tab-btn" onclick="switchTab('quiz')">知识测验</button>
+  <button class="tab-btn" onclick="switchTab('whycas9')">为何还用 Cas9？</button>
+  <button class="tab-btn" onclick="switchTab('ai')">AI × CRISPR</button>
+  <button class="tab-btn" onclick="switchTab('adeno')">腺病毒载体</button>
+</div>
+
+<!-- ═══ COMPARE PANEL ═══ -->
+<div id="panel-compare" class="panel active">
+
+  <!-- DNA动画演示 -->
+  <div class="dna-demo">
+    <h3>DNA 切割方式示意</h3>
+    <div class="dna-row">
+      <div class="dna-item">
+        <div class="dna-label">Cas9 — 双链断裂（DSB）</div>
+        <div class="strand-wrap" id="demo-cas9">
+          <div class="strand top broken-top" id="cas9-t1"></div>
+          <div class="strand top broken-top2" id="cas9-t2" style="background:linear-gradient(90deg,#e05c5c,#ff8a65)"></div>
+          <div class="strand bot broken-top" id="cas9-b1" style="background:linear-gradient(90deg,#4fc3f7,#81d4fa);top:auto;bottom:8px;transform:translateY(6px)"></div>
+          <div class="strand bot broken-top2" id="cas9-b2" style="background:linear-gradient(90deg,#4fc3f7,#81d4fa);top:auto;bottom:8px;transform:translateY(6px)"></div>
+        </div>
+        <div class="cut-label">✂ 两条链均断裂</div>
+      </div>
+      <div style="color:var(--muted);font-family:'Space Mono',monospace;font-size:24px;">≠</div>
+      <div class="dna-item">
+        <div class="dna-label" style="color:var(--nick)">nickCas9 — 单链切口（Nick）</div>
+        <div class="strand-wrap">
+          <div class="strand nicked" style="top:8px;background:linear-gradient(90deg,#e05c5c,#ff8a65)"></div>
+          <div class="strand nicked2" style="top:8px;background:linear-gradient(90deg,#e05c5c,#ff8a65)"></div>
+          <div class="strand bot" style="background:linear-gradient(90deg,#4fc3f7,#81d4fa)"></div>
+        </div>
+        <div class="cut-label" style="color:var(--nick)">✂ 仅上链断裂，下链完整</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 两列卡片 -->
+  <div class="compare-grid">
+    <div class="card cas9">
+      <div class="card-icon">野生型</div>
+      <h2>Cas9</h2>
+      <ul>
+        <li>具有 <strong>RuvC</strong> 和 <strong>HNH</strong> 两个活性核酸酶结构域</li>
+        <li>在 PAM 位点上游 3 bp 处造成 <strong>双链断裂（DSB）</strong></li>
+        <li>主要通过 NHEJ 修复（易出错，可产生 indel 突变）</li>
+        <li>单个脱靶位点即可导致突变，脱靶风险较高</li>
+        <li>基因敲除的标准工具，效率高</li>
+      </ul>
+    </div>
+    <div class="card nick">
+      <div class="card-icon">突变型</div>
+      <h2>nickCas9</h2>
+      <ul>
+        <li>一个核酸酶结构域被突变灭活（D10A 或 H840A）</li>
+        <li>只切割 <strong>一条 DNA 链</strong>，产生单链切口（nick）</li>
+        <li>单 nick 可被碱基切除修复（BER）高保真修复</li>
+        <li>双 nickase 策略将脱靶率降低 50–1500 倍</li>
+        <li>是碱基编辑（BE）和先导编辑（PE）的核心组件</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 对比表格 -->
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>特性</th>
+          <th style="color:var(--cas9)">Cas9</th>
+          <th style="color:var(--nick)">nickCas9</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="prop">切割方式</td>
+          <td class="v-cas9">双链断裂（DSB）</td>
+          <td class="v-nick">单链切口（Nick）</td>
+        </tr>
+        <tr>
+          <td class="prop">活性结构域</td>
+          <td class="v-cas9">RuvC ✓ + HNH ✓</td>
+          <td class="v-nick">仅一个活性（另一个突变）</td>
+        </tr>
+        <tr>
+          <td class="prop">常用突变</td>
+          <td>—（野生型）</td>
+          <td class="v-nick">D10A（灭活 RuvC）或 H840A（灭活 HNH）</td>
+        </tr>
+        <tr>
+          <td class="prop">DNA修复途径</td>
+          <td class="v-cas9">NHEJ（主）/ HDR（需模板）</td>
+          <td class="v-nick">BER（高保真）/ 配合 HDR</td>
+        </tr>
+        <tr>
+          <td class="prop">脱靶风险</td>
+          <td class="v-cas9">相对较高</td>
+          <td class="v-nick">大幅降低（双 nick 策略）</td>
+        </tr>
+        <tr>
+          <td class="prop">典型应用</td>
+          <td class="v-cas9">基因敲除、敲入</td>
+          <td class="v-nick">碱基编辑、先导编辑（PE）</td>
+        </tr>
+        <tr>
+          <td class="prop">编辑精度</td>
+          <td>标准</td>
+          <td class="v-nick">更高（需双导向 RNA）</td>
+        </tr>
+        <tr>
+          <td class="prop">HDR 绝对效率</td>
+          <td class="v-cas9">中等</td>
+          <td class="v-nick">相当或略高（双 nick 扩大有效区间）</td>
+        </tr>
+        <tr>
+          <td class="prop">HDR 有效范围</td>
+          <td class="v-cas9">切割点 ±10 bp 内迅速衰减</td>
+          <td class="v-nick">可覆盖两 nick 位点之间整段区域（可达 51 nt+）</td>
+        </tr>
+        <tr>
+          <td class="prop">HDR∶indel 比值</td>
+          <td class="v-cas9">低（NHEJ 竞争强）</td>
+          <td class="v-nick">显著更高（可达 2.7–53 倍），精确编辑更纯净</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 术语速查：BE vs BER -->
+  <div style="margin-top:32px;background:var(--surface);border-radius:12px;padding:28px 28px 24px;border:1px solid var(--border)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:18px">术语速查 — 容易混淆的缩写</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+      <!-- BE -->
+      <div style="padding:18px;border-radius:10px;background:rgba(21,101,192,0.06);border:1px solid rgba(21,101,192,0.2)">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">
+          <span style="font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--nick)">BE</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">Base Editor · 碱基编辑器</span>
+        </div>
+        <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+          一种<strong>人工基因编辑工具</strong>，由 nickCas9 与脱氨酶融合而成。无需切断双链，直接将 DNA 上的一个碱基化学改写为另一个（如 C→T、A→G），用于修正单碱基遗传突变。
+        </div>
+        <div style="font-size:12px;color:var(--muted);border-top:1px solid rgba(21,101,192,0.15);padding-top:10px">
+          📌 是什么：<strong style="color:var(--nick)">实验者设计的编辑工具</strong><br>
+          作用：主动写入新碱基<br>
+          触发：研究者操控
+        </div>
+      </div>
+
+      <!-- BER -->
+      <div style="padding:18px;border-radius:10px;background:rgba(26,122,94,0.06);border:1px solid rgba(26,122,94,0.25)">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">
+          <span style="font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--correct)">BER</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">Base Excision Repair · 碱基切除修复</span>
+        </div>
+        <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+          细胞<strong>天然的 DNA 修复机制</strong>，专门处理单链切口（nick）或损伤碱基。流程：识别缺口 → 以对侧完整链为模板填补 → 连接酶封口。高保真，不引入突变。
+        </div>
+        <div style="font-size:12px;color:var(--muted);border-top:1px solid rgba(26,122,94,0.2);padding-top:10px">
+          📌 是什么：<strong style="color:var(--correct)">细胞自身修复系统</strong><br>
+          作用：还原原始序列<br>
+          触发：nick / 损伤自动激活
+        </div>
+      </div>
+    </div>
+
+    <!-- 关系说明 -->
+    <div style="margin-top:16px;padding:12px 16px;border-radius:8px;background:rgba(184,134,11,0.06);border:1px solid rgba(184,134,11,0.25);font-size:13px;line-height:1.8">
+      <strong style="color:var(--accent)">两者的关系：</strong>
+      nickCas9 产生的单链切口（nick）→ 细胞自动启动 <strong>BER</strong> 修复，还原序列，无突变。
+      而 <strong>BE</strong>（碱基编辑器）则是<em>利用</em> nickCas9 + 脱氨酶，在 BER 修复之前抢先改写碱基，让修复过程把新碱基"固定"下来——两者是工具与机制的配合，不是同一回事。
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ MECHANISM PANEL ═══ -->
+<div id="panel-mechanism" class="panel">
+  <div class="mech-section">
+    <h3 class="c-cas9">Cas9 — 作用步骤</h3>
+    <div class="step-list cas9-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">sgRNA 与 Cas9 蛋白结合，形成核糖核蛋白（RNP）复合体。sgRNA 中的间隔序列（spacer）决定靶向特异性。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">RNP 复合体在基因组中扫描，识别 <strong>PAM 序列</strong>（NGG，位于靶序列 3' 端），并在 PAM 处解开双链。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>HNH 结构域</strong> 切割与 sgRNA 互补的链（非模板链），<strong>RuvC 结构域</strong> 切割另一条链，在 PAM 上游 3 bp 处产生平末端双链断裂（blunt-end DSB）。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">细胞通过 <strong>NHEJ</strong>（非同源末端连接）修复 DSB，常引入 indel 导致基因敲除；或通过 <strong>HDR</strong>（同源重组）整合外源模板实现精确编辑。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mech-section">
+    <h3 class="c-nick">nickCas9 — 作用步骤与核酸酶域状态</h3>
+    <div class="step-list nick-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">与 Cas9 相同，nickCas9 与 sgRNA 结合并识别 PAM 序列定位靶点。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">由于一个核酸酶结构域已被氨基酸突变灭活，仅剩一个功能域可切割，因此只产生 <strong>单链切口（nick）</strong>。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">在<strong>双 nickase 策略</strong>中，两个携带不同 sgRNA 的 nickCas9 分别靶向互补链上相邻区域，产生两个相互交错的 nick，等效于一个 DSB，但脱靶 nick 被高保真修复，不致突变。</div>
+      </div>
+
+      <!-- 专题：为什么脱靶 nick 被高保真修复 -->
+      <div style="margin:8px 0 4px 52px;background:var(--surface2);border-radius:10px;padding:22px 22px 20px;border:1px solid var(--border)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--nick);margin-bottom:14px">▸ 深入：为什么脱靶 nick 被高保真修复、不致突变？</div>
+
+        <!-- 关键对比：SSB vs DSB -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
+          <div style="padding:14px;border-radius:8px;background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2)">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--cas9);margin-bottom:8px">Cas9 脱靶 → DSB</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;color:var(--text)">
+              5′──[A T G C]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[T A C G]──3′<br>
+              3′──[T A C G]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[A T G C]──5′
+            </div>
+            <div style="font-size:12px;margin-top:10px;color:var(--cas9)">两条链均断 → 无内建模板<br>→ NHEJ 介入 → <strong>indel 突变</strong></div>
+          </div>
+          <div style="padding:14px;border-radius:8px;background:rgba(21,101,192,0.06);border:1px solid rgba(21,101,192,0.2)">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--nick);margin-bottom:8px">nickCas9 脱靶 → SSB（单链切口）</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;color:var(--text)">
+              5′──[A T G C · · · T A C G]──3′ ← 完整链（天然模板）<br>
+              3′──[T A C G]&nbsp;&nbsp;↑<span style="color:var(--nick)">nick</span>&nbsp;&nbsp;[A T G C]──5′
+            </div>
+            <div style="font-size:12px;margin-top:10px;color:var(--nick)">对侧链完整 = 内建模板<br>→ BER 精确填补 → <strong>无突变</strong></div>
+          </div>
+        </div>
+
+        <!-- 修复机制说明 -->
+        <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:14px">
+          <strong style="color:var(--accent)">核心原理：</strong>单链切口（SSB）与双链断裂（DSB）触发截然不同的修复程序。
+          DSB 两条链均断，细胞进入"紧急状态"，主要依赖 <strong>NHEJ</strong> 快速但易出错地拼接末端，常引入 indel。
+          SSB 则恰恰相反——对侧完整链天然充当模板，细胞直接启动 <strong>BER（碱基切除修复）</strong> 或 <strong>SSBR（单链断裂修复）</strong>：
+        </div>
+        <div style="display:grid;gap:10px;margin-bottom:14px">
+          <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.7">
+            <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">①</div>
+            <div><strong>PARP1 识别切口</strong>，招募修复复合体，无需 Ku70/Ku80（NHEJ 的触发因子），因此 NHEJ 根本不会被激活。</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.7">
+            <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">②</div>
+            <div><strong>DNA 聚合酶 β</strong> 以对侧完整链为模板，精确填补缺口（短片段合成），全程忠实于对侧序列，误差率极低。</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.7">
+            <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">③</div>
+            <div><strong>DNA 连接酶 III / XRCC1</strong> 封闭切口，修复完成，序列与切口前完全一致，不引入任何突变。</div>
+          </div>
+        </div>
+
+        <!-- 双击概率说明 -->
+        <div style="padding:12px 16px;border-radius:8px;background:rgba(184,134,11,0.07);border:1px solid rgba(184,134,11,0.3);font-size:13px;line-height:1.8">
+          <strong style="color:var(--accent)">双 nick 策略的组合保护：</strong>
+          nickCas9 的安全性不仅来自 BER 高保真修复，更来自概率的乘积效应。两个脱靶 nick 同时落在同一脱靶位点（且间距合适、方向正确）的概率
+          ≈ <em>P<sub>脱靶A</sub> × P<sub>脱靶B</sub></em>，相较单 nick 呈<strong>指数级降低</strong>，这也是双 nickase 策略将脱靶率降低 50–1500 倍的根本原因。
+          即便发生单个脱靶 nick，BER 也将其无害化处理，两层保护叠加，安全性大幅优于野生型 Cas9。
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">单个 nick 通常由 <strong>BER</strong> 高保真修复；在碱基编辑（BE）和先导编辑（PE）中，nick 为 DNA 修复提供引导，实现单碱基置换或小片段的精确写入。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">当提供同源供体模板（ssODN 或 dsDNA）时，单链 nick <strong>同样可触发 HDR 途径</strong>。双 nickase 产生的交错切口将 HDR 有效范围从野生型 Cas9 的 ±10 bp 扩展至两 nick 之间的整段区域（可达 51 nt 以上），并在该窗口内维持 &gt;20% 的修复效率。</div>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;margin-bottom:28px;background:var(--surface);border-radius:12px;padding:28px 24px;border:1px solid var(--border)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:16px">NICKCAS9 对 HDR 的改善效果</div>
+      <div style="display:grid;gap:14px">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <div style="color:var(--nick);font-family:'Space Mono',monospace;font-size:18px;font-weight:700;flex-shrink:0;width:32px">①</div>
+          <div style="font-size:14px;line-height:1.7"><strong style="color:var(--accent)">HDR 绝对效率相当甚至略有提升：</strong>研究表明 D10A nickase 在目标区域可达到与野生型 Cas9 相近的 HDR 绝对效率（最高 ~27%），且有效插入窗口更大。</div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <div style="color:var(--nick);font-family:'Space Mono',monospace;font-size:18px;font-weight:700;flex-shrink:0;width:32px">②</div>
+          <div style="font-size:14px;line-height:1.7"><strong style="color:var(--accent)">HDR∶indel 比值显著更高：</strong>由于 nick 不激活 NHEJ 竞争通路，精确编辑产物占比大幅提升。将 hRad51 融合到 Cas9(D10A) nickase（RDN 策略）可将 HDR∶indel 比值提高 <strong style="color:var(--nick)">2.7–53 倍</strong>，在多种人类细胞系中均有效。</div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <div style="color:var(--nick);font-family:'Space Mono',monospace;font-size:18px;font-weight:700;flex-shrink:0;width:32px">③</div>
+          <div style="font-size:14px;line-height:1.7"><strong style="color:var(--accent)">注意事项：</strong>HDR 效率仍强烈依赖于<strong>靶位点</strong>和<strong>细胞类型</strong>，nickCas9 并非在所有情境下均优于野生型 Cas9，需按实验条件评估。</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:28px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:12px">核酸酶结构域活性状态</div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="domain-table">
+          <thead>
+            <tr>
+              <th>变体</th>
+              <th>RuvC 结构域</th>
+              <th>HNH 结构域</th>
+              <th>切割结果</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cas9（野生型）</td>
+              <td class="active-domain">● 活性</td>
+              <td class="active-domain">● 活性</td>
+              <td>双链断裂（DSB）</td>
+            </tr>
+            <tr>
+              <td>nCas9-D10A</td>
+              <td class="inactive-domain">✕ 灭活</td>
+              <td class="active-domain">● 活性</td>
+              <td>切割非模板链（nick）</td>
+            </tr>
+            <tr>
+              <td>nCas9-H840A</td>
+              <td class="active-domain">● 活性</td>
+              <td class="inactive-domain">✕ 灭活</td>
+              <td>切割模板链（nick）</td>
+            </tr>
+            <tr>
+              <td>dCas9（死 Cas9）</td>
+              <td class="inactive-domain">✕ 灭活</td>
+              <td class="inactive-domain">✕ 灭活</td>
+              <td>无切割（仅结合）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NHEJ vs HDR 修复途径 ── -->
+  <div class="mech-section" style="margin-top:40px">
+    <h3 style="color:var(--accent)">DNA 修复途径：NHEJ 与 HDR</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7">双链断裂（DSB）产生后，细胞通过两条截然不同的途径修复——理解它们的机制差异是选择编辑策略的关键。</p>
+
+    <!-- SVG 流程图 -->
+    <div style="margin-bottom:32px;background:var(--surface);border-radius:12px;padding:24px;border:1px solid var(--border);overflow:hidden">
+      <svg width="100%" viewBox="0 0 680 530" role="img" xmlns="http://www.w3.org/2000/svg">
+        <title>NHEJ 与 HDR DNA修复途径对比流程图</title>
+        <desc>展示DNA双链断裂后NHEJ和HDR两条修复路径的步骤与结果</desc>
+        <defs>
+          <marker id="arr-nhej" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#c0392b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arr-hdr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#1565c0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arr-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#6b7a99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- DSB 起始框 -->
+        <rect x="210" y="20" width="260" height="48" rx="8" fill="#f5f7fa" stroke="#b8860b" stroke-width="1.2"/>
+        <text x="340" y="38" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="700" fill="#b8860b">DNA 双链断裂（DSB）</text>
+        <text x="340" y="56" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">CRISPR 切割 / 辐射 / 化学损伤</text>
+
+        <!-- 分叉箭头 -->
+        <line x1="290" y1="68" x2="175" y2="120" stroke="#6b7a99" stroke-width="1.2" marker-end="url(#arr-gray)"/>
+        <line x1="390" y1="68" x2="505" y2="120" stroke="#6b7a99" stroke-width="1.2" marker-end="url(#arr-gray)"/>
+
+        <!-- NHEJ 标题 -->
+        <text x="120" y="118" text-anchor="middle" font-family="'Space Mono',monospace" font-size="12" font-weight="700" fill="#c0392b">NHEJ</text>
+
+        <!-- HDR 标题 -->
+        <text x="560" y="118" text-anchor="middle" font-family="'Space Mono',monospace" font-size="12" font-weight="700" fill="#1565c0">HDR</text>
+
+        <!-- NHEJ Step 1 -->
+        <rect x="30" y="128" width="180" height="48" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="120" y="146" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">Ku 蛋白结合</text>
+        <text x="120" y="163" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">识别并保护断裂末端</text>
+        <line x1="120" y1="176" x2="120" y2="200" stroke="#c0392b" stroke-width="1" marker-end="url(#arr-nhej)"/>
+
+        <!-- NHEJ Step 2 -->
+        <rect x="30" y="200" width="180" height="48" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="120" y="218" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">末端加工处理</text>
+        <text x="120" y="235" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">切除或补充悬垂碱基</text>
+        <line x1="120" y1="248" x2="120" y2="272" stroke="#c0392b" stroke-width="1" marker-end="url(#arr-nhej)"/>
+
+        <!-- NHEJ Step 3 -->
+        <rect x="30" y="272" width="180" height="48" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="120" y="290" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">DNA 连接酶 IV</text>
+        <text x="120" y="307" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">直接连接两个末端</text>
+        <line x1="120" y1="320" x2="120" y2="344" stroke="#c0392b" stroke-width="1" marker-end="url(#arr-nhej)"/>
+
+        <!-- NHEJ 结果 -->
+        <rect x="20" y="344" width="200" height="64" rx="8" fill="rgba(192,57,43,0.13)" stroke="#c0392b" stroke-width="1.2"/>
+        <text x="120" y="364" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing="1" fill="#c0392b">修复结果</text>
+        <text x="120" y="382" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#c0392b">Indel 突变（插入/缺失）</text>
+        <text x="120" y="398" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">基因敲除 / 功能丧失</text>
+
+        <!-- HDR Step 1 -->
+        <rect x="470" y="128" width="180" height="48" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="560" y="146" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">5′ 末端切除</text>
+        <text x="560" y="163" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">暴露 3′ 单链悬垂</text>
+        <line x1="560" y1="176" x2="560" y2="200" stroke="#1565c0" stroke-width="1" marker-end="url(#arr-hdr)"/>
+
+        <!-- HDR Step 2 -->
+        <rect x="470" y="200" width="180" height="48" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="560" y="218" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">Rad51 链侵入</text>
+        <text x="560" y="235" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">与同源模板配对</text>
+        <line x1="560" y1="248" x2="560" y2="272" stroke="#1565c0" stroke-width="1" marker-end="url(#arr-hdr)"/>
+
+        <!-- HDR Step 3 -->
+        <rect x="470" y="272" width="180" height="48" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="560" y="290" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">模板引导合成</text>
+        <text x="560" y="307" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">精确复制同源序列</text>
+        <line x1="560" y1="320" x2="560" y2="344" stroke="#1565c0" stroke-width="1" marker-end="url(#arr-hdr)"/>
+
+        <!-- HDR 结果 -->
+        <rect x="460" y="344" width="200" height="64" rx="8" fill="rgba(21,101,192,0.13)" stroke="#1565c0" stroke-width="1.2"/>
+        <text x="560" y="364" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing="1" fill="#1565c0">修复结果</text>
+        <text x="560" y="382" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" font-weight="700" fill="#1565c0">精准序列修复</text>
+        <text x="560" y="398" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">基因敲入 / 精确编辑</text>
+
+        <!-- 对比汇总行 -->
+        <rect x="40" y="440" width="600" height="28" rx="6" fill="#f5f7fa" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <line x1="340" y1="440" x2="340" y2="468" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <text x="190" y="458" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#c0392b">全周期 · 无需模板 · 主导途径</text>
+        <text x="490" y="458" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#1565c0">S/G2期 · 需同源模板 · 精准</text>
+
+        <rect x="40" y="468" width="600" height="28" rx="0" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <line x1="340" y1="468" x2="340" y2="496" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <text x="190" y="486" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">应用：基因敲除（KO）</text>
+        <text x="490" y="486" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">应用：精准敲入（KI）</text>
+
+        <rect x="40" y="496" width="600" height="28" rx="0" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <line x1="340" y1="496" x2="340" y2="524" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+        <text x="190" y="514" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#c0392b">nickCas9: 不触发此途径</text>
+        <text x="490" y="514" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#1565c0">nickCas9: HDR∶indel ↑2.7–53×</text>
+      </svg>
+    </div>
+
+    <!-- 两列步骤对比 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px">
+
+      <!-- NHEJ 列 -->
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--cas9);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--cas9)">NHEJ — 非同源末端连接</div>
+        <div class="step-list cas9-steps">
+          <div class="step">
+            <div class="step-num" style="background:var(--cas9-dim);color:var(--cas9)">1</div>
+            <div class="step-body"><strong>Ku 蛋白结合：</strong>Ku70/Ku80 异二聚体迅速识别并结合断裂末端，防止末端降解，募集修复因子。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--cas9-dim);color:var(--cas9)">2</div>
+            <div class="step-body"><strong>末端加工处理：</strong>Artemis 核酸酶等对不齐整的末端进行切除或补充，可能丢失或增加若干碱基。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--cas9-dim);color:var(--cas9)">3</div>
+            <div class="step-body"><strong>DNA 连接酶 IV 连接：</strong>直接将两个末端拼接，不依赖任何同源模板，过程快速但易出错。</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--cas9-dim);border:1px solid rgba(192,57,43,0.2)">
+          <div style="font-size:12px;color:var(--cas9);font-family:'JetBrains Mono',monospace;letter-spacing:1px;margin-bottom:6px">修复结果</div>
+          <div style="font-size:13px;line-height:1.7;color:var(--text)">产生 <strong>indel 突变</strong>（插入或缺失）→ 移码突变 → 基因功能丧失（敲除）。全细胞周期均可发生，是哺乳动物细胞的主要修复方式。</div>
+        </div>
+      </div>
+
+      <!-- HDR 列 -->
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--nick);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--nick)">HDR — 同源定向修复</div>
+        <div class="step-list nick-steps">
+          <div class="step">
+            <div class="step-num" style="background:var(--nick-dim);color:var(--nick)">1</div>
+            <div class="step-body"><strong>5′ 末端切除：</strong>MRN 复合体与 CtIP 协作降解 5′ 末端，暴露出 3′ 单链悬垂，为链侵入做准备。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nick-dim);color:var(--nick)">2</div>
+            <div class="step-body"><strong>Rad51 链侵入：</strong>Rad51 包被 3′ 单链，驱动其侵入同源双链模板（姐妹染色单体或外源供体 DNA），形成 D 环结构。</div>
+          </div>
+          <div class="step">
+            <div class="step-num" style="background:var(--nick-dim);color:var(--nick)">3</div>
+            <div class="step-body"><strong>模板引导合成：</strong>以同源序列为蓝本，DNA 聚合酶精确复制模板信息，完成修复后拆解 D 环并连接切口。</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:14px 16px;border-radius:8px;background:var(--nick-dim);border:1px solid rgba(21,101,192,0.2)">
+          <div style="font-size:12px;color:var(--nick);font-family:'JetBrains Mono',monospace;letter-spacing:1px;margin-bottom:6px">修复结果</div>
+          <div style="font-size:13px;line-height:1.7;color:var(--text)">实现<strong>精准序列修复</strong>，可引入任意突变或外源片段（基因敲入）。仅在 S/G2 期活跃，需提供同源模板，整体效率低于 NHEJ。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 对比汇总表 -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>特性</th>
+            <th style="color:var(--cas9)">NHEJ</th>
+            <th style="color:var(--nick)">HDR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="prop">修复精度</td>
+            <td style="color:var(--cas9)">低（易出错，产生 indel）</td>
+            <td style="color:var(--nick)">高（模板依赖，精确还原）</td>
+          </tr>
+          <tr>
+            <td class="prop">是否需要模板</td>
+            <td>否</td>
+            <td style="color:var(--nick)">是（姐妹染色单体 / 外源供体）</td>
+          </tr>
+          <tr>
+            <td class="prop">活跃细胞周期</td>
+            <td>全周期均可</td>
+            <td style="color:var(--nick)">S / G2 期</td>
+          </tr>
+          <tr>
+            <td class="prop">在哺乳动物中频率</td>
+            <td style="color:var(--cas9)">主导途径（约 70–90%）</td>
+            <td style="color:var(--nick)">次要途径（约 10–30%）</td>
+          </tr>
+          <tr>
+            <td class="prop">编辑应用</td>
+            <td style="color:var(--cas9)">基因敲除（KO）</td>
+            <td style="color:var(--nick)">精准敲入（KI）、点突变修正</td>
+          </tr>
+          <tr>
+            <td class="prop">nickCas9 的影响</td>
+            <td>Nick 不激活 NHEJ，大幅减少竞争</td>
+            <td style="color:var(--nick)">HDR∶indel 比值提升 2.7–53 倍</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:20px;padding:14px 20px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:13px;line-height:1.8;color:var(--muted)">
+      <strong style="color:var(--accent)">关键启示：</strong>
+      野生型 Cas9 产生 DSB 后，NHEJ 与 HDR 形成竞争——NHEJ 速度更快，往往抢先修复，导致精确编辑效率低下。nickCas9 的优势之一在于单链 nick 不触发 NHEJ，从而在需要精确插入时显著提升 HDR 产物的纯净度。
+    </div>
+  </div>
+
+  <!-- ── gRNA 设计流程 ── -->
+  <div class="mech-section" style="margin-top:40px">
+    <h3 style="color:var(--accent)">gRNA 设计流程</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7">高效且特异的 gRNA 是 CRISPR 实验成功的前提。设计流程需在切割活性与脱靶风险之间取得平衡。</p>
+
+    <!-- SVG 流程图 -->
+    <div style="margin-bottom:32px;background:var(--surface);border-radius:12px;padding:24px;border:1px solid var(--border);overflow:hidden">
+      <svg width="100%" viewBox="0 0 680 780" role="img" xmlns="http://www.w3.org/2000/svg">
+        <title>gRNA 设计流程图</title>
+        <defs>
+          <marker id="arrow-grna" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#6b7a99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- Step 1 -->
+        <rect x="190" y="20" width="300" height="56" rx="8" fill="#f5f7fa" stroke="#b8c0d0" stroke-width="0.8"/>
+        <text x="340" y="44" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#1a2340">① 确定编辑目标区域</text>
+        <text x="340" y="62" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">外显子 / 调控区 / 功能结构域</text>
+        <line x1="340" y1="76" x2="340" y2="104" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 2 -->
+        <rect x="190" y="104" width="300" height="56" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="340" y="128" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#1565c0">② 定位 PAM 序列</text>
+        <text x="340" y="146" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">SpCas9: NGG（非靶链）</text>
+        <rect x="512" y="108" width="150" height="48" rx="6" fill="none" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="587" y="126" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">SaCas9: NNGRRT</text>
+        <text x="587" y="144" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="11" fill="#6b7a99">Cas12a: TTTN</text>
+        <line x1="512" y1="132" x2="490" y2="132" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <line x1="340" y1="160" x2="340" y2="188" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 3 -->
+        <rect x="190" y="188" width="300" height="56" rx="8" fill="rgba(21,101,192,0.07)" stroke="#1565c0" stroke-width="0.8"/>
+        <text x="340" y="212" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#1565c0">③ 设计 20 nt 间隔序列</text>
+        <text x="340" y="230" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">PAM 上游 20 bp，与靶链互补</text>
+        <rect x="18" y="188" width="152" height="56" rx="6" fill="none" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="94" y="206" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">G/C 含量 40–70%</text>
+        <text x="94" y="222" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">避免 ≥4 个连续 T</text>
+        <text x="94" y="238" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">5′端 G 利于转录</text>
+        <line x1="170" y1="216" x2="190" y2="216" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <line x1="340" y1="244" x2="340" y2="272" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 4 -->
+        <rect x="190" y="272" width="300" height="56" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="340" y="296" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#c0392b">④ 脱靶位点预测</text>
+        <text x="340" y="314" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">Cas-OFFinder / CRISPOR / Benchling</text>
+        <rect x="512" y="276" width="150" height="48" rx="6" fill="none" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="587" y="294" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">允许 ≤3 个错配</text>
+        <text x="587" y="312" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">避开基因编码区</text>
+        <line x1="512" y1="300" x2="490" y2="300" stroke="#b8c0d0" stroke-width="0.5" stroke-dasharray="3 2"/>
+        <line x1="340" y1="328" x2="340" y2="356" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 5 -->
+        <rect x="190" y="356" width="300" height="56" rx="8" fill="rgba(192,57,43,0.07)" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="340" y="380" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#c0392b">⑤ 活性效率评分</text>
+        <text x="340" y="398" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">Rule Set 2 / DeepCRISPR / CHOPCHOP</text>
+        <line x1="340" y1="412" x2="340" y2="444" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- 决策菱形 -->
+        <polygon points="340,444 404,480 340,516 276,480" fill="#f5f7fa" stroke="#6b7a99" stroke-width="0.8"/>
+        <text x="340" y="476" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" fill="#1a2340">脱靶低且</text>
+        <text x="340" y="494" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="12" fill="#1a2340">评分高？</text>
+        <!-- 否 返回 -->
+        <line x1="276" y1="480" x2="168" y2="480" stroke="#6b7a99" stroke-width="0.8" marker-end="url(#arrow-grna)"/>
+        <line x1="168" y1="480" x2="168" y2="374" stroke="#6b7a99" stroke-width="0.8"/>
+        <line x1="168" y1="374" x2="190" y2="374" stroke="#6b7a99" stroke-width="0.8" marker-end="url(#arrow-grna)"/>
+        <text x="148" y="472" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">否</text>
+        <text x="120" y="428" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">重新设计</text>
+        <!-- 是 -->
+        <line x1="340" y1="516" x2="340" y2="544" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <text x="358" y="533" text-anchor="start" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">是</text>
+        <!-- Step 6 -->
+        <rect x="190" y="544" width="300" height="56" rx="8" fill="rgba(83,74,183,0.07)" stroke="#534ab7" stroke-width="0.8"/>
+        <text x="340" y="568" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#534ab7">⑥ 化学修饰优化（可选）</text>
+        <text x="340" y="586" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">2′-OMe / PS 键增强稳定性</text>
+        <line x1="340" y1="600" x2="340" y2="628" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 7 -->
+        <rect x="190" y="628" width="300" height="56" rx="8" fill="rgba(83,74,183,0.07)" stroke="#534ab7" stroke-width="0.8"/>
+        <text x="340" y="652" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#534ab7">⑦ 合成 &amp; 递送</text>
+        <text x="340" y="670" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">体外转录 / 化学合成 / 质粒表达</text>
+        <line x1="340" y1="684" x2="340" y2="712" stroke="#6b7a99" stroke-width="1" marker-end="url(#arrow-grna)"/>
+        <!-- Step 8 -->
+        <rect x="190" y="712" width="300" height="52" rx="8" fill="#f5f7fa" stroke="#b8860b" stroke-width="1"/>
+        <text x="340" y="734" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="13" font-weight="600" fill="#b8860b">⑧ 实验验证</text>
+        <text x="340" y="752" text-anchor="middle" font-family="'Noto Serif SC',serif" font-size="11" fill="#6b7a99">T7E1 / Sanger / 深度测序</text>
+      </svg>
+    </div>
+
+    <!-- 八步详解卡片 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px">① 目标区域</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">优先选择<strong>功能性早期外显子</strong>用于敲除；精确定位突变位点用于敲入。避开重复序列和高度多态区域。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--nick);margin-bottom:8px">② PAM 序列</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">SpCas9 识别非靶链 <code>5′-NGG-3′</code>，切割发生在 PAM 上游 3 bp。靶区 NGG 密度越高，候选 gRNA 越多。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--nick);margin-bottom:8px">③ 间隔序列设计</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">取 PAM 上游 20 bp，G/C 40–70%，5′端带 G 利于 U6 启动子转录。连续 ≥4 个 T 导致 RNA Pol III 提前终止。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--cas9);margin-bottom:8px">④ 脱靶预测</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">扫描全基因组 ≤3 错配位点。<strong>种子区</strong>（PAM 近端 12 bp）错配容忍性极低，是特异性关键。优先排除落在编码区的脱靶。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--cas9);margin-bottom:8px">⑤ 效率评分</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">Doench Rule Set 2、DeepCRISPR 综合评估切割活性；Hsu 分衡量特异性。每靶点设计 3–5 条候选，取综合最优者。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#534ab7;margin-bottom:8px">⑥ 化学修饰</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">5′/3′ 末端 2′-O-甲基（2′-OMe）与硫代磷酸酯（PS）修饰，显著延长胞内半衰期，体内实验尤为关键。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#534ab7;margin-bottom:8px">⑦ 合成与递送</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">质粒稳定表达适合筛库；IVT 快速廉价适合初验；<strong>化学合成 sgRNA + RNP</strong> 纯度高、起效快、脱靶低，是当前主流。</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px">⑧ 实验验证</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">T7E1 酶切快速定性 → Sanger 测序确认 indel 类型 → 扩增子深度测序精确定量编辑效率及脱靶频率。</div>
+      </div>
+    </div>
+
+    <div style="padding:14px 20px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:13px;line-height:1.8;color:var(--muted)">
+      <strong style="color:var(--accent)">实践建议：</strong>
+      同一靶点设计至少 3 条 gRNA 并行验证，切勿依赖单一候选。nickCas9 双 gRNA 策略中，两条 gRNA 的间距（17–40 bp）及方向（PAM-out 配置）对成对 nick 效率影响显著，设计时需同步优化。
+    </div>
+  </div>
+
+  <!-- ── Cas-OFFinder 与 CRISPOR 使用指南 ── -->
+  <div class="mech-section" style="margin-top:40px">
+    <h3 style="color:var(--accent)">脱靶扫描工具详解：Cas-OFFinder &amp; CRISPOR</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.7">两款工具定位不同：Cas-OFFinder 专注纯脱靶扫描，速度极快，适合已有候选序列时的验证；CRISPOR 是一站式平台，从候选筛选、打分到脱靶预测一体完成，适合从头设计。<strong style="color:var(--text)">两款工具均支持 Windows / macOS / Linux。</strong></p>
+
+    <!-- 工具对比卡片 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px">
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:14px 16px;background:rgba(21,101,192,0.07);border-bottom:1px solid var(--border)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--nick)">Cas-OFFinder</span>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">定位</span><span>纯脱靶扫描引擎</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输入</span><span>已有 spacer 序列</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输出</span><span>全基因组脱靶坐标</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">速度</span><span>GPU 加速，极快</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Windows 版</span><span style="color:#0f6e56;font-weight:600">✓ cas-offinder.exe</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0"><span style="color:var(--muted)">下载</span><span style="color:var(--nick)">sourceforge.net / rgenome.net</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:14px 16px;background:rgba(15,110,86,0.07);border-bottom:1px solid var(--border)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#0f6e56">CRISPOR</span>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">定位</span><span>一站式设计平台</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输入</span><span>靶区域序列（100–2000 bp）</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">输出</span><span>候选列表 + 打分 + 脱靶</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">速度</span><span>中等（综合计算）</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Windows 版</span><span style="color:#0f6e56;font-weight:600">✓ 网页版无需安装</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0"><span style="color:var(--muted)">网址</span><span style="color:#0f6e56">crispor.tefor.net</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cas-OFFinder Windows 安装 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">Cas-OFFinder Windows 安装步骤</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+      <div class="card" style="padding:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--nick);letter-spacing:1px;margin-bottom:8px">第一步</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">安装 <strong>OpenCL 驱动</strong>（必须）：Intel GPU 用户装 Intel OpenCL Runtime；NVIDIA 用户装 CUDA Toolkit；AMD 用户装 ROCm 或 Adrenalin 驱动</div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--nick);letter-spacing:1px;margin-bottom:8px">第二步</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">从 SourceForge（<code style="font-size:11px">sourceforge.net/projects/cas-offinder</code>）下载 <strong>cas-offinder.exe</strong>（Win32，约 1 MB）。如提示缺少 dll，额外安装 Visual C++ Redistributable</div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--nick);letter-spacing:1px;margin-bottom:8px">第三步</div>
+        <div style="font-size:13px;line-height:1.7;color:var(--text)">打开命令提示符（cmd），切换到 exe 所在目录，运行：<br><code style="font-size:11px;display:block;margin-top:6px;background:var(--surface);padding:4px 6px;border-radius:4px;border:1px solid var(--border)">cas-offinder.exe input.txt C output.txt</code><code style="font-size:10px;color:var(--muted)">C=CPU，G=GPU，A=全部</code></div>
+      </div>
+    </div>
+
+    <!-- 输入文件格式 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">Cas-OFFinder 输入文件格式</h4>
+    <div class="card" style="padding:16px;margin-bottom:20px">
+      <div style="font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:10px">纯文本文件，三部分顺序严格固定：</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;line-height:2;color:var(--text)">
+        C:\genomes\hg38<span style="color:var(--muted);margin-left:20px">&larr; 基因组 FASTA 文件夹路径</span><br>
+        NNNNNNNNNNNNNNNNNNNNNGG<span style="color:var(--muted);margin-left:20px">&larr; PAM 模式（20N + GG = SpCas9）</span><br>
+        GAGTCCGAGCAGAAGAAGAA<wbr>NNN 3<span style="color:var(--muted);margin-left:20px">&larr; spacer + 允许错配数</span><br>
+        AGTCCGAGCAGAAGAAGAAGNNN 2
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">PAM 模式支持全部 IUPAC 简并碱基：N=任意，R=A/G，Y=C/T，S=G/C，W=A/T</div>
+    </div>
+
+    <!-- CRISPOR 操作步骤 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">CRISPOR 网页版操作步骤</h4>
+    <div class="step-list nick-steps" style="margin-bottom:20px">
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">1</div>
+        <div class="step-body"><strong>提交序列：</strong>打开 crispor.tefor.net，粘贴靶区域序列（100–2000 bp），选择基因组（如 Human hg38），PAM 选 <code>20bp-NGG-SpCas9</code>，点击 Submit。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">2</div>
+        <div class="step-body"><strong>解读评分列：</strong>Doench '16 活性分（&gt;50 优先）、MIT 特异性分（&gt;50 优先）、CFD score（越接近 1 越好）。Off-target 列中 <strong style="color:var(--cas9)">0mm 必须为 0</strong>，否则放弃该 gRNA。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">3</div>
+        <div class="step-body"><strong>查看脱靶详情：</strong>点击候选右侧 Off-targets 链接，重点关注落在外显子或功能区的脱靶。落在基因间区且 CFD 脱靶分 &lt;0.02 通常可接受。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">4</div>
+        <div class="step-body"><strong>nickCas9 成对模式：</strong>PAM 选项改选 <code>20bp-NGG-SpCas9, paired nickases</code>，CRISPOR 自动筛选 PAM-out 方向、间距 17–40 bp 的 gRNA 对，并给出成对特异性估算。</div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(15,110,86,0.1);color:#0f6e56">5</div>
+        <div class="step-body"><strong>导出验证引物：</strong>点击 Primers for off-target sites，直接获得用于扩增子深度测序验证的 PCR 引物列表。</div>
+      </div>
+    </div>
+
+    <!-- 结果筛选标准 -->
+    <h4 style="color:var(--text);font-size:14px;margin:0 0 12px">脱靶结果筛选标准</h4>
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+      <table class="compare-table">
+        <thead>
+          <tr><th>情况</th><th>判断</th><th>处理</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>存在 0 错配脱靶（完全匹配）</td><td style="color:var(--cas9);font-weight:600">一票否决</td><td>直接放弃该 gRNA</td></tr>
+          <tr><td>1 错配脱靶落在其他基因外显子</td><td style="color:#b8860b;font-weight:600">高风险</td><td>换 gRNA 或改用 nickCas9</td></tr>
+          <tr><td>2–3 错配脱靶落在内含子/基因间区，CFD &lt;0.05</td><td style="color:#0f6e56;font-weight:600">可接受</td><td>实验验证后使用</td></tr>
+          <tr><td>Top 3–5 脱靶位点</td><td style="color:var(--nick);font-weight:600">必须验证</td><td>扩增子深度测序确认实际脱靶率</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 联合使用建议 -->
+    <div style="padding:14px 20px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:13px;line-height:1.8;color:var(--muted)">
+      <strong style="color:var(--accent)">联合使用建议：</strong>
+      先用 CRISPOR 从靶区域筛出活性分 &gt;50、MIT 特异性 &gt;50 的候选（3–5 条）→ 再用 Cas-OFFinder 开启凸起检测（允许 1 bp RNA/DNA 凸起 + 3 错配）做更严格全基因组扫描 → 交叉比对两个结果，取一致通过的候选进行实验验证。
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ QUIZ PANEL ═══ -->
+<div id="panel-quiz" class="panel">
+  <div class="quiz-header">
+    <h2>知识测验</h2>
+    <p>共 6 题 · 测试你对 Cas9 与 nickCas9 的理解</p>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+  <div id="quiz-container">
+
+    <div class="question-card active" data-q="0">
+      <div class="q-num">QUESTION 01 / 06</div>
+      <div class="q-text">野生型 Cas9 蛋白含有哪两个核酸酶结构域？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">RecA 和 HNH</button>
+        <button class="opt-btn" data-correct="true">RuvC 和 HNH</button>
+        <button class="opt-btn" data-correct="false">RuvC 和 RecBCD</button>
+        <button class="opt-btn" data-correct="false">Cas3 和 HNH</button>
+      </div>
+      <div class="explanation">野生型 Cas9 包含 <strong>RuvC</strong> 和 <strong>HNH</strong> 两个核酸酶结构域。RuvC 切割非互补链，HNH 切割与 sgRNA 互补的链，两者协同产生平末端双链断裂。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="1">
+      <div class="q-num">QUESTION 02 / 06</div>
+      <div class="q-text">nickCas9 产生的 DNA 损伤类型是什么？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">平末端双链断裂</button>
+        <button class="opt-btn" data-correct="false">粘末端双链断裂</button>
+        <button class="opt-btn" data-correct="true">单链切口（nick）</button>
+        <button class="opt-btn" data-correct="false">碱基缺失</button>
+      </div>
+      <div class="explanation">nickCas9 只有一个活性核酸酶结构域，因此仅切割 DNA 双链中的<strong>一条链</strong>，产生单链切口（nick），而不产生双链断裂。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="2">
+      <div class="q-num">QUESTION 03 / 06</div>
+      <div class="q-text">使 RuvC 结构域失活的常见氨基酸突变是？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">H840A</button>
+        <button class="opt-btn" data-correct="true">D10A</button>
+        <button class="opt-btn" data-correct="false">K526A</button>
+        <button class="opt-btn" data-correct="false">R661A</button>
+      </div>
+      <div class="explanation"><strong>D10A</strong> 突变将第10位天冬氨酸（Asp）替换为丙氨酸（Ala），灭活 RuvC 结构域；而 <strong>H840A</strong> 则灭活 HNH 结构域。两个突变同时引入则得到 dCas9（死 Cas9）。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="3">
+      <div class="q-num">QUESTION 04 / 06</div>
+      <div class="q-text">与野生型 Cas9 相比，双 nickase 策略可将脱靶率降低约多少倍？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">2–5 倍</button>
+        <button class="opt-btn" data-correct="false">10–20 倍</button>
+        <button class="opt-btn" data-correct="true">50–1500 倍</button>
+        <button class="opt-btn" data-correct="false">不影响脱靶率</button>
+      </div>
+      <div class="explanation">双 nickase 策略中，需要两个 nickCas9 同时在相邻位置产生 nick 才能等效于一个 DSB；单个脱靶 nick 被高保真修复，不致突变。研究表明脱靶率可降低 <strong>50–1500 倍</strong>。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="4">
+      <div class="q-num">QUESTION 05 / 06</div>
+      <div class="q-text">以下哪个工具以 nickCas9 为核心组件？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">TALEN</button>
+        <button class="opt-btn" data-correct="false">ZFN（锌指核酸酶）</button>
+        <button class="opt-btn" data-correct="true">碱基编辑器（Base Editor）</button>
+        <button class="opt-btn" data-correct="false">Cre-lox 重组系统</button>
+      </div>
+      <div class="explanation"><strong>碱基编辑器（BE）</strong> 和<strong>先导编辑（Prime Editing）</strong>都以 nickCas9 为核心。nick 一条链为 DNA 修复提供引导，使脱氨酶或逆转录酶能够精确写入碱基变化，同时保留另一条链的完整性。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>
+
+    <div class="question-card" data-q="5">
+      <div class="q-num">QUESTION 06 / 06</div>
+      <div class="q-text">单链 nick 通常由哪种修复途径进行高保真修复？</div>
+      <div class="options">
+        <button class="opt-btn" data-correct="false">NHEJ（非同源末端连接）</button>
+        <button class="opt-btn" data-correct="true">BER（碱基切除修复）</button>
+        <button class="opt-btn" data-correct="false">MMR（错配修复）</button>
+        <button class="opt-btn" data-correct="false">NER（核苷酸切除修复）</button>
+      </div>
+      <div class="explanation">单链切口通常由 <strong>BER（碱基切除修复）</strong> 高保真修复，以互补链为模板精确填补缺口，不引入突变。这正是 nickCas9 安全性更高的原因之一。</div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="next-btn" onclick="nextQ()" id="last-next">查看结果 →</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="score-box" id="score-box">
+    <div class="score-big" id="score-display">0/6</div>
+    <div class="score-msg" id="score-msg"></div>
+    <button class="retry-btn" onclick="resetQuiz()">重新作答</button>
+  </div>
+</div>
+
+<!-- ═══ WHY CAS9 PANEL ═══ -->
+<div id="panel-whycas9" class="panel">
+
+  <div style="text-align:center;margin-bottom:48px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:12px">COMMON QUESTION</div>
+    <h2 style="font-family:'Space Mono',monospace;font-size:1.8rem;color:var(--cas9);margin-bottom:10px">nickCas9 有那么多优势，</h2>
+    <h2 style="font-family:'Space Mono',monospace;font-size:1.8rem;color:var(--text);margin-bottom:16px">为什么人们还是用 Cas9？</h2>
+    <p style="color:var(--muted);font-size:14px;max-width:520px;margin:0 auto;line-height:1.8">工具没有绝对好坏，只有适不适合。以下六个原因解释了野生型 Cas9 至今仍是实验室首选的真正原因。</p>
+  </div>
+
+  <div style="display:grid;gap:20px;margin-bottom:48px">
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">1</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">效率更高、实验更简单</div>
+        野生型 Cas9 只需<strong>一条 sgRNA</strong>。nickCas9 双 nick 策略需要两条 sgRNA 同时设计、同时转染、同时在相邻位置发挥作用——任何一步失败都会大幅降低效率。操作复杂度翻倍，成功率下降。
+      </div>
+    </div>
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">2</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">目的决定工具</div>
+        大多数实验的目标是<strong>基因敲除</strong>（让基因失去功能），只需 NHEJ 产生 indel 即可，根本不需要 HDR。Cas9 做这件事又快又高效，没有理由换 nickCas9。若目标不是精准点编辑，nickCas9 的优势就无从体现。
+      </div>
+    </div>
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">3</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">HDR 低效的根源不在 Cas9</div>
+        HDR 在哺乳动物细胞中天然效率极低（通常 &lt;5%），这是<strong>细胞周期限制</strong>造成的——HDR 只在 S/G2 期活跃。nickCas9 改善的是 HDR∶indel <em>比值</em>，但如果绝对效率依然受细胞周期制约，实际收益有限。Cas9 本身并非瓶颈。
+      </div>
+    </div>
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">4</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">nickCas9 自身的设计限制</div>
+        双 nick 策略对两个 gRNA 的<strong>间距和方向极为敏感</strong>：需要 PAM-out 构型，nick 间距通常限制在 7–100 nt，过近或过远效率都会骤降。D10A（5' 悬端）与 H840A（3' 悬端）的修复偏好也不同，增加了实验不确定性。
+      </div>
+    </div>
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">5</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">效果仍依赖位点和细胞类型</div>
+        nickCas9 并非在所有靶点和细胞系中都优于 Cas9。HDR 效率的高低<strong>强烈依赖于具体的基因组位置和细胞类型</strong>，实验者必须逐一验证，无法保证普适优势。
+      </div>
+    </div>
+
+    <div class="step" style="border-left:3px solid var(--cas9);padding-left:24px">
+      <div class="step-num" style="color:var(--cas9);font-size:2rem">6</div>
+      <div class="step-body">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">历史积累与工具链成熟度</div>
+        Cas9 有十余年积累，围绕它建立了完整的<strong>试剂、载体、实验协议和数据库</strong>体系。相关文献数量庞大，审稿人熟悉，结果更易重复和对比。这在实际科研中的价值不可忽视。
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 工具选择速查 -->
+  <div style="background:var(--surface);border-radius:12px;padding:32px;border:1px solid var(--border)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:20px">工具选择速查</div>
+    <div style="display:grid;gap:12px">
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cas9);width:120px;flex-shrink:0">基因敲除</div>
+        <div style="font-size:13px;color:var(--muted)">→</div>
+        <div style="font-size:13px"><strong style="color:var(--cas9)">野生型 Cas9</strong>　简单高效，NHEJ 产生 indel</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--nick);width:120px;flex-shrink:0">精准点突变</div>
+        <div style="font-size:13px;color:var(--muted)">→</div>
+        <div style="font-size:13px"><strong style="color:var(--nick)">nickCas9 + 碱基编辑（BE）</strong>　单碱基精确替换</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--nick);width:120px;flex-shrink:0">复杂序列插入</div>
+        <div style="font-size:13px;color:var(--muted)">→</div>
+        <div style="font-size:13px"><strong style="color:var(--nick)">nickCas9 + 先导编辑（PE）</strong>　小片段精确写入</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);width:120px;flex-shrink:0">高精度 HDR</div>
+        <div style="font-size:13px;color:var(--muted)">→</div>
+        <div style="font-size:13px"><strong style="color:var(--accent)">双 nickase 策略</strong>　扩大有效窗口，提升 HDR∶indel 比值</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ AI × CRISPR PANEL ═══ -->
+<div id="panel-ai" class="panel">
+
+  <div style="text-align:center;margin-bottom:48px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:12px">2026 RESEARCH FRONTIER</div>
+    <h2 style="font-family:'Space Mono',monospace;font-size:1.8rem;color:var(--accent);margin-bottom:10px">AI 正在如何重塑</h2>
+    <h2 style="font-family:'Space Mono',monospace;font-size:1.8rem;color:var(--text);margin-bottom:16px">CRISPR-Cas9 基因编辑</h2>
+    <p style="color:var(--muted);font-size:14px;max-width:560px;margin:0 auto;line-height:1.8">从辅助设计 sgRNA，到用大语言模型从头生成全新的 Cas 蛋白——AI 正在把基因编辑从"经验试错"变成"可计算优化"的工程学科。</p>
+  </div>
+
+  <!-- 五大方向卡片网格 -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-bottom:48px">
+
+    <div class="card" style="border-top:3px solid var(--accent)">
+      <div class="card-icon" style="background:rgba(184,134,11,0.1);color:var(--accent)">方向 01</div>
+      <h2 style="font-family:'Space Mono',monospace;font-size:1.15rem;margin-bottom:14px;color:var(--accent)">sgRNA 设计与脱靶预测</h2>
+      <p style="font-size:13.5px;line-height:1.7;color:var(--text)">深度学习模型用大规模实验数据训练，预测哪条 gRNA 切割效率高、脱靶风险低，把过去靠经验试错的环节变成可计算优化的问题。</p>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--nick)">
+      <div class="card-icon" style="background:var(--nick-dim);color:var(--nick)">方向 02</div>
+      <h2 style="font-family:'Space Mono',monospace;font-size:1.15rem;margin-bottom:14px;color:var(--nick)">全新 Cas 蛋白从头设计</h2>
+      <p style="font-size:13.5px;line-height:1.7;color:var(--text)">蛋白语言模型在进化尺度序列上预训练、再用 CRISPR/Cas 数据微调，直接"写出"一个全新的、功能保留但序列高度发散的编辑器。</p>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--correct)">
+      <div class="card-icon" style="background:rgba(26,122,94,0.1);color:var(--correct)">方向 03</div>
+      <h2 style="font-family:'Space Mono',monospace;font-size:1.15rem;margin-bottom:14px;color:var(--correct)">AI 指导的定点突变优化</h2>
+      <p style="font-size:13.5px;line-height:1.7;color:var(--text)">零样本预测模型给每个氨基酸位点的突变效果打分，组合出最优突变集，是目前最贴近实用化、可直接提升现有编辑器效率的路径。</p>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--cas9)">
+      <div class="card-icon" style="background:var(--cas9-dim);color:var(--cas9)">方向 04</div>
+      <h2 style="font-family:'Space Mono',monospace;font-size:1.15rem;margin-bottom:14px;color:var(--cas9)">编辑结果预测</h2>
+      <p style="font-size:13.5px;line-height:1.7;color:var(--text)">给定 gRNA 和靶点序列，模型预测最终产生的 indel 模式与效率，提前筛掉低效或高风险设计，减少湿实验的盲目尝试。</p>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--accent)">
+      <div class="card-icon" style="background:rgba(184,134,11,0.1);color:var(--accent)">方向 05</div>
+      <h2 style="font-family:'Space Mono',monospace;font-size:1.15rem;margin-bottom:14px;color:var(--accent)">新天然 Cas 系统挖掘</h2>
+      <p style="font-size:13.5px;line-height:1.7;color:var(--text)">用深度万亿级聚类（deep terascale clustering）从宏基因组数据中"捞"出此前未被注释的天然 CRISPR 系统，扩展可用工具箱。</p>
+    </div>
+
+  </div>
+
+  <!-- OpenCRISPR-1 案例深读 -->
+  <div style="background:var(--surface);border-radius:12px;padding:32px;border:1px solid var(--border);margin-bottom:32px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--nick);margin-bottom:16px">案例深读 — OpenCRISPR-1</div>
+    <p style="font-size:14px;line-height:1.8;color:var(--text);margin-bottom:18px">
+      Profluent 团队的设计思路：大语言模型先在<strong>多样化、进化尺度的蛋白序列</strong>上预训练，学习蛋白进化的一般规律，再用 CRISPR/Cas 核酸酶数据微调。流程是「数据 → 模型 → 生成 → 过滤 → 验证」的完整闭环，同时用 AI 设计配套的 sgRNA，确保新蛋白与新向导 RNA 高效匹配。
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="padding:16px;border-radius:8px;background:var(--nick-dim);border:1px solid rgba(21,101,192,0.2)">
+        <div style="font-family:'Space Mono',monospace;font-size:24px;color:var(--nick);margin-bottom:4px">400+</div>
+        <div style="font-size:12.5px;color:var(--muted)">与 SpCas9 相差的氨基酸突变数——不是变体，是全新设计的编辑器</div>
+      </div>
+      <div style="padding:16px;border-radius:8px;background:rgba(184,134,11,0.06);border:1px solid rgba(184,134,11,0.2)">
+        <div style="font-family:'Space Mono',monospace;font-size:24px;color:var(--accent);margin-bottom:4px">~200</div>
+        <div style="font-size:12.5px;color:var(--muted)">与任何已知天然 CRISPR 相关蛋白的最小突变距离</div>
+      </div>
+    </div>
+    <p style="font-size:13px;line-height:1.7;color:var(--muted);margin-top:16px">潜在好处：特异性更高、对人体免疫原性更低，为下一代基因与细胞治疗提供更"干净"的起点。</p>
+  </div>
+
+  <!-- ProMEP 案例：效率提升数据 -->
+  <div style="background:var(--surface);border-radius:12px;padding:32px;border:1px solid var(--border);margin-bottom:32px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--correct);margin-bottom:16px">案例深读 — ProMEP 指导的碱基编辑器优化</div>
+    <p style="font-size:14px;line-height:1.8;color:var(--text);margin-bottom:18px">
+      中国团队用蛋白突变效应预测器（ProMEP）对 Cas9 做零样本突变效果打分，以 AncBE4max 为原型构建并测试 18 个候选点突变，再预测多突变组合，最终开发出高性能变体 <strong>AncBE4max-AI-8.3</strong>。
+    </p>
+    <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:18px">
+      <div style="text-align:center">
+        <div style="font-family:'Space Mono',monospace;font-size:32px;color:var(--correct)">2–3×</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">平均编辑效率提升</div>
+      </div>
+      <div style="color:var(--muted);font-size:20px">→</div>
+      <div style="text-align:center">
+        <div style="font-family:'Space Mono',monospace;font-size:32px;color:var(--correct)">7+</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">癌细胞系 + hESC 验证有效</div>
+      </div>
+      <div style="color:var(--muted);font-size:20px">→</div>
+      <div style="text-align:center">
+        <div style="font-family:'Space Mono',monospace;font-size:32px;color:var(--correct)">4</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">不同编辑器平台均获改善</div>
+      </div>
+    </div>
+    <p style="font-size:13px;line-height:1.7;color:var(--muted)">这个优化模块被移植到 CGBE、YEE-BE4max、ABE-max 和 ABE-8e 后都改善了编辑性能，说明 AI 设计的增强策略具有跨平台通用性，不只对单一编辑器有效。</p>
+  </div>
+
+  <!-- 展望与挑战 -->
+  <div style="background:var(--surface2);border-radius:12px;padding:32px;border:1px solid var(--border)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:24px">展望与挑战</div>
+
+    <div style="display:grid;gap:18px">
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);flex-shrink:0;width:90px">闭环加速</div>
+        <div style="font-size:13.5px;line-height:1.7;color:var(--text)">CRISPR 编辑正与机器学习/AI、无细胞制造及日益自主化的实验室相融合，未来更可能是"AI 设计 → 自动化实验室验证 → 快速迭代"的闭环，而非单点工具升级。</div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--wrong);flex-shrink:0;width:90px">伦理监管</div>
+        <div style="font-size:13.5px;line-height:1.7;color:var(--text)">AI 驱动的基因组编辑带来数据偏倚、算法透明性和非预期基因改变等伦理问题，需要 AI 研究者、分子生物学家和政策制定者跨学科合作来应对。</div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--nick);flex-shrink:0;width:90px">瓶颈仍在</div>
+        <div style="font-size:13.5px;line-height:1.7;color:var(--text)">无论是从头设计的新 Cas 蛋白还是定点优化，AI 给出的都是候选方案，最终仍要靠湿实验验证功能与安全性——目前的进展更多是压缩了候选库的筛选成本，而非完全替代实验。</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ ADENOVIRUS PANEL ═══ -->
+<div id="panel-adeno" class="panel">
+
+
+<div class="hero">
+  <div class="hero-eyebrow">基因工程 · 病毒载体</div>
+  <h1>腺病毒载体<br><span>递送 CRISPR-Cas9</span></h1>
+  <p class="hero-sub">腺病毒（Adenovirus）作为基因递送工具的核心原理、包装容量限制与安全性设计逻辑。</p>
+</div>
+
+<!-- Genome diagram -->
+<div class="genome-diagram">
+  <div class="genome-label">野生型腺病毒基因组 ≈ 36 kb</div>
+  <div class="genome-bar">
+    <div class="genome-seg seg-itr" title="ITR">ITR</div>
+    <div class="genome-seg seg-e1" style="width:10%">E1</div>
+    <div class="genome-seg seg-e2" style="width:12%">E2</div>
+    <div class="genome-seg seg-e3" style="width:8%">E3</div>
+    <div class="genome-seg seg-e4" style="width:10%">E4</div>
+    <div class="genome-seg seg-late" style="width:54%">Late genes（结构蛋白）</div>
+    <div class="genome-seg seg-itr2">ITR</div>
+  </div>
+
+  <div class="genome-label" style="margin-top:16px">E1/E3 缺失型（最常用重组载体）· 可插入 ~8 kb</div>
+  <div class="genome-bar">
+    <div class="genome-seg seg-itr">ITR</div>
+    <div class="genome-seg seg-e1 seg-deleted" style="width:10%">E1</div>
+    <div class="genome-seg seg-e2" style="width:12%">E2</div>
+    <div class="genome-seg seg-e3 seg-deleted" style="width:8%">E3</div>
+    <div class="genome-seg seg-e4" style="width:10%">E4</div>
+    <div class="genome-seg seg-late" style="width:48%">Late genes</div>
+    <div class="genome-seg seg-insert" style="width:8%">目的基因</div>
+    <div class="genome-seg seg-itr2">ITR</div>
+  </div>
+
+  <div class="genome-label" style="margin-top:16px">Gutless（HC-Ad）· 几乎全删，仅保留 ITR + ψ · 可插入 ~35 kb</div>
+  <div class="genome-bar">
+    <div class="genome-seg seg-itr">ITR</div>
+    <div class="genome-seg" style="background:#f1e9fb; color:#7c3aed; width:4%; font-size:9px">ψ</div>
+    <div class="genome-seg seg-stuffer" style="width:30%">stuffer DNA（填充序列）</div>
+    <div class="genome-seg seg-insert" style="width:60%">目的基因（最大 ~35 kb）</div>
+    <div class="genome-seg seg-itr2">ITR</div>
+  </div>
+
+  <div class="genome-legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#1d4ed8"></div>早期基因（调控）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#274a78"></div>晚期基因（结构蛋白）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#aab4c8"></div>ITR（末端反向重复）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1a7a5e"></div>插入的目的基因</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f1e9fb; border:1px solid rgba(124,58,237,0.25)"></div>填充序列</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#fbe6e3; border: 1px solid rgba(192,57,43,0.4)"></div>缺失区域</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Section 1: Why adenovirus -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">为什么选腺病毒</span>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-title">广谱感染</div>
+        <div class="card-body">感染效率高，几乎可以进入所有哺乳动物细胞类型，包括非分裂细胞。体内递送覆盖面广。</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📦</div>
+        <div class="card-title">包装容量</div>
+        <div class="card-body">E1/E3缺失后可插入 ~6–8 kb 外源序列，勉强容纳 SpCas9 + sgRNA 完整表达盒。</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">不整合基因组</div>
+        <div class="card-body">以游离环状 DNA（episome）形式存在于细胞核，不主动整合，插入突变风险极低。</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">瞬时高表达</div>
+        <div class="card-body">进入细胞后迅速高水平表达，适合需要短期 Cas9 活性的编辑场景，减少持续表达带来的脱靶。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: E1/E3 deletion logic -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">E1 与 E3 缺失的各自逻辑</span>
+    </div>
+    <div class="deletion-grid">
+      <div class="deletion-card">
+        <div class="deletion-tag tag-e1">E1 缺失</div>
+        <div class="deletion-purpose">目的 → 安全性</div>
+        <div class="deletion-title">切断复制开关</div>
+        <div class="deletion-body">
+          E1 区是腺病毒自主复制的"总开关"。缺失 E1 后，病毒<strong>无法在普通细胞内复制</strong>，成为复制缺陷型载体。
+        </div>
+        <div class="highlight-box">
+          在 HEK293 细胞（稳定整合了 E1 基因）中可以正常补充 E1 功能，用于病毒生产扩增。
+        </div>
+      </div>
+      <div class="deletion-card">
+        <div class="deletion-tag tag-e3">E3 缺失</div>
+        <div class="deletion-purpose">目的 → 腾出空间</div>
+        <div class="deletion-title">移除免疫逃逸模块</div>
+        <div class="deletion-body">
+          E3 编码多个蛋白，专门用于<span data-tip="抑制MHC I类分子展示，阻止细胞凋亡信号等">对抗宿主免疫</span>。这些功能对体外生产病毒完全无用。
+        </div>
+        <div class="highlight-box">
+          删除 E3 不影响病毒生产，纯粹释放 ~3 kb 包装空间，同时去掉了免疫逃逸能力。
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      <strong>两者目的不同：</strong>E1 删除是为了<strong>安全</strong>（复制缺陷），E3 删除是为了<strong>空间</strong>（腾容量）。恰好两者都能在 293 细胞体系里实现，所以 E1/E3 双缺失成为标准配置。
+    </div>
+  </div>
+
+  <!-- Section 3: Capacity -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">包装容量的实际限制</span>
+    </div>
+    <div class="capacity-viz">
+      <div class="cap-label">野生型基因组 36 kb → 可插入外源序列上限 ~8 kb</div>
+
+      <div style="margin-bottom:20px">
+        <div class="cap-label">SpCas9 表达盒构成（约 5.8 kb）</div>
+        <div class="cap-bar-wrap">
+          <div class="cap-bar-fill cap-spacer" style="width:72.5%">SpCas9 ORF · 4.2 kb</div>
+        </div>
+        <div class="cap-bar-wrap">
+          <div class="cap-bar-fill" style="width:10%; background:#0369a1;">启动子 · 0.6kb</div>
+        </div>
+        <div class="cap-bar-wrap">
+          <div class="cap-bar-fill" style="width:3.5%; background:#9aa5bb;">pA</div>
+        </div>
+        <div class="cap-bar-wrap">
+          <div class="cap-bar-fill" style="width:5%; background:#1e3a8a;">sgRNA</div>
+        </div>
+        <div class="cap-bar-wrap">
+          <div class="cap-bar-fill" style="width:8.5%; background:#aab4c8;">ITR等</div>
+        </div>
+      </div>
+
+      <table class="breakdown-table">
+        <thead>
+          <tr>
+            <th>元件</th>
+            <th>大小</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SpCas9 编码序列</td>
+            <td class="kb-val"><span class="kb-bar" style="width:42px"></span>~4.2 kb</td>
+            <td style="color:var(--ad-text3)">最大的部分</td>
+          </tr>
+          <tr>
+            <td>启动子（EF1α / CMV）</td>
+            <td class="kb-val"><span class="kb-bar" style="width:6px"></span>~0.6 kb</td>
+            <td style="color:var(--ad-text3)"></td>
+          </tr>
+          <tr>
+            <td>polyA 信号</td>
+            <td class="kb-val"><span class="kb-bar" style="width:2px"></span>~0.2 kb</td>
+            <td style="color:var(--ad-text3)"></td>
+          </tr>
+          <tr>
+            <td>sgRNA 表达盒（U6+sgRNA）</td>
+            <td class="kb-val"><span class="kb-bar" style="width:3px"></span>~0.3 kb</td>
+            <td style="color:var(--ad-text3)"></td>
+          </tr>
+          <tr>
+            <td>腺病毒必要元件（ITR等）</td>
+            <td class="kb-val"><span class="kb-bar" style="width:5px"></span>~0.5 kb</td>
+            <td style="color:var(--ad-text3)"></td>
+          </tr>
+          <tr style="border-top: 1px solid var(--ad-accent)">
+            <td style="color:var(--ad-text); font-weight:500">合计</td>
+            <td class="kb-val" style="color:var(--ad-warn)">~5.8 kb</td>
+            <td style="color:var(--ad-text3)">剩余 ~2 kb，几乎无余量</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <strong>SaCas9（金黄色葡萄球菌 Cas9，~3.2 kb）</strong>因此在腺病毒载体中更受欢迎——比 SpCas9 小 1 kb，工程化空间明显改善。
+    </div>
+  </div>
+
+  <!-- Section 4: Integration -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">会整合进细胞 DNA 吗</span>
+    </div>
+    <div class="integration-box">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div style="font-size:32px">🔬</div>
+        <div>
+          <div style="font-size:16px; font-weight:500; color:#1a1f2e; margin-bottom:4px">基本不整合</div>
+          <div style="font-size:13px; color:var(--ad-text2)">这是腺病毒区别于逆转录病毒（慢病毒）的核心特征</div>
+        </div>
+      </div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot">1</div>
+          <div class="step-content">
+            <div class="step-title">进入细胞核</div>
+            <div class="step-desc">腺病毒 DNA 被运送入核，以<strong>游离环状 DNA（episome）</strong>形式存在，不与染色体结合。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">2</div>
+          <div class="step-content">
+            <div class="step-title">不编码整合酶</div>
+            <div class="step-desc">腺病毒没有逆转录酶或整合酶，没有主动整合的分子机制。偶发随机整合概率约 <span style="font-family:var(--ad-mono); color:var(--ad-accent)">1/10⁴</span>，远低于慢病毒。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">3</div>
+          <div class="step-content">
+            <div class="step-title">分裂细胞中逐渐稀释</div>
+            <div class="step-desc">游离 DNA 不随细胞分裂复制，分裂旺盛的细胞中 Cas9 表达是<strong>瞬时的</strong>，编辑完成后自然消失。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">✓</div>
+          <div class="step-content">
+            <div class="step-title">CRISPR 递送的优势</div>
+            <div class="step-desc">Cas9 表达窗口短 → 编辑完成后 Cas9 消失 → <strong>持续脱靶风险降低</strong>。载体本身不产生插入突变。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Wild type -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">野生型腺病毒（复制型）</span>
+    </div>
+    <div class="wt-card">
+      <div class="wt-badge">⚠ 复制能力型</div>
+      <div style="color:var(--ad-text2); font-size:14px; margin-bottom:4px">
+        保留 E1 的腺病毒可在细胞内自主扩增，主要用于<strong style="color:#c2622a">溶瘤病毒治疗</strong>，而非基因递送。
+      </div>
+      <div style="color:var(--ad-text3); font-size:12px; font-family:var(--ad-mono)">
+        原理：肿瘤细胞 Rb/p53 通路缺陷 → E1A 不受控驱动复制 → 病毒裂解肿瘤细胞
+      </div>
+      <div class="wt-grid">
+        <div>
+          <div class="wt-col-title good">优点</div>
+          <ul class="wt-list">
+            <li>自主复制，溶瘤效果强（一进千出）</li>
+            <li>生产体系相对简单，无需 E1 补充细胞</li>
+            <li>对肿瘤有选择性裂解</li>
+          </ul>
+        </div>
+        <div>
+          <div class="wt-col-title bad">缺点 / 限制</div>
+          <ul class="wt-list">
+            <li>安全风险高，监管要求严格</li>
+            <li>免疫系统快速清除，体内扩增窗口有限</li>
+            <li>难以精确控制复制范围</li>
+            <li><strong>不适合 CRISPR 递送</strong>——需要稳定递送而非杀细胞</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: Gutless -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Gutless 载体（HC-Ad）</span>
+    </div>
+    <div class="gutless-card">
+      <div class="gutless-badge">◈ Helper-Dependent Adenoviral Vector</div>
+      <div style="color:var(--ad-text2); font-size:14px; margin-bottom:4px">
+        删除几乎所有病毒编码序列，仅保留两端 <strong style="color:#6d28d9">ITR</strong> 和包装信号 <strong style="color:#6d28d9">ψ</strong>，腾出高达 <strong style="color:#6d28d9">~35 kb</strong> 的插入空间。
+      </div>
+      <div style="color:var(--ad-text3); font-size:12px; font-family:var(--ad-mono); margin-bottom:16px">
+        总基因组需维持在 27–38 kb 范围内 → 插入片段不足时用 stuffer DNA 填充
+      </div>
+
+      <div class="producer-flow">
+        <span style="color:var(--ad-text3)">生产方式：</span>
+        <span class="pf-node">目标载体质粒</span>
+        <span class="pf-arrow">+</span>
+        <span class="pf-node">辅助病毒（Helper Virus）</span>
+        <span class="pf-arrow">→</span>
+        <span class="pf-node">293 细胞共感染</span>
+        <span class="pf-arrow">→</span>
+        <span class="pf-node">分离纯化（去除辅助病毒污染）</span>
+      </div>
+
+      <div class="gutless-grid">
+        <div>
+          <div class="gutless-col-title good">优点</div>
+          <ul class="gutless-list">
+            <li>容量巨大（~35 kb），可放整个基因座、多基因、长调控序列</li>
+            <li>免疫原性大幅降低——无病毒蛋白编码序列，减少宿主免疫攻击</li>
+            <li>适合需要大 cargo 的治疗场景（如营养不良蛋白全长基因）</li>
+            <li>可重复给药潜力更好（相比普通腺病毒）</li>
+          </ul>
+        </div>
+        <div>
+          <div class="gutless-col-title bad">缺点 / 挑战</div>
+          <ul class="gutless-list">
+            <li>生产流程复杂，必须依赖辅助病毒提供所有结构蛋白</li>
+            <li>辅助病毒污染难以完全去除，需要特殊筛选系统（如 Cre-loxP）</li>
+            <li>制备成本高，批次一致性难以保证</li>
+            <li>规模化生产困难，临床转化进展缓慢</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+        <div class="note" style="border-left-color:var(--ad-accent3)">
+      <strong>stuffer DNA 的必要性：</strong>衣壳对 DNA 大小有物理依赖，太小会导致包装不稳定。当插入片段小于 ~27 kb 时，需要用中性填充序列（如植物或细菌来源的无功能 DNA）凑够总大小。
+    </div>
+  </div>
+
+  <!-- Section 6b: Gutless detailed -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06b</span>
+      <span class="section-title">Gutless 腺病毒详解</span>
+    </div>
+
+    <!-- Why called gutless -->
+    <div style="background:var(--ad-surface); border:1px solid rgba(124,58,237,0.35); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">为什么叫 Gutless</div>
+      <div style="color:var(--ad-text2); font-size:13.5px; line-height:1.7; margin-bottom:14px">
+        字面意思"掏空的"——把病毒编码基因几乎全部删除，只剩两端的 <strong style="color:#6d28d9">ITR</strong> 和包装信号 <strong style="color:#6d28d9">ψ（psi）</strong>，合计约 500 bp。其余 ~35 kb 全部可用于外源序列。
+      </div>
+      <div class="deletion-grid">
+        <div class="deletion-card" style="border-color:rgba(124,58,237,0.22)">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#7c3aed; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">ITR 的作用</div>
+          <div class="deletion-body">末端反向重复序列，是 DNA 复制的起始位点。两端各一个，缺失则无法复制。约 145 bp × 2。</div>
+        </div>
+        <div class="deletion-card" style="border-color:rgba(124,58,237,0.22)">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#7c3aed; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">ψ 的作用</div>
+          <div class="deletion-body">包装信号，衣壳蛋白识别 ψ 才能将 DNA 装入病毒颗粒。没有 ψ，DNA 再小也不会被包装进衣壳。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Helper virus system -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">辅助病毒（Helper Virus）体系</div>
+      <div style="color:var(--ad-text2); font-size:13.5px; line-height:1.7; margin-bottom:16px">
+        Gutless 载体自己什么都没有，连衣壳蛋白基因都删了，无法产生病毒颗粒。必须共感染辅助病毒来提供所有结构蛋白。辅助病毒本身也是腺病毒，但其 ψ 被 loxP 位点夹住：
+      </div>
+
+      <!-- Helper virus diagram -->
+      <div style="display:flex; height:32px; border-radius:4px; overflow:hidden; border:1px solid var(--ad-border); margin-bottom:4px">
+        <div style="background:#7c8aa3; color:#ffffff; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:9px; width:5%">ITR</div>
+        <div style="background:#c2622a; color:#ffffff; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:9px; width:5%">loxP</div>
+        <div style="background:#fdf0da; color:#9a6b00; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:9px; width:8%">ψ</div>
+        <div style="background:#c2622a; color:#ffffff; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:9px; width:5%">loxP</div>
+        <div style="background:#1565c0; color:#ffffff; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:9px; width:72%">所有病毒编码基因（E1 E2 E3 E4 + Late genes）</div>
+        <div style="background:#7c8aa3; color:#ffffff; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:9px; width:5%">ITR</div>
+      </div>
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-text3); margin-bottom:16px">辅助病毒：ψ 被 loxP-loxP 夹住</div>
+
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-accent3); color:var(--ad-accent3)">1</div>
+          <div class="step-content">
+            <div class="step-title">293-Cre 细胞共感染</div>
+            <div class="step-desc">将辅助病毒和 Gutless 载体质粒同时导入稳定表达 Cre 重组酶的 293 细胞。Cre 识别辅助病毒上的两个 loxP 位点，切除中间的 ψ。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-accent3); color:var(--ad-accent3)">2</div>
+          <div class="step-content">
+            <div class="step-title">辅助病毒失去包装信号</div>
+            <div class="step-desc">Cre 切除 ψ 后，辅助病毒 DNA 无法被衣壳识别，不能被包装。但辅助病毒基因仍在细胞内转录翻译，提供所有结构蛋白。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-accent3); color:var(--ad-accent3)">3</div>
+          <div class="step-content">
+            <div class="step-title">Gutless 载体优先被包装</div>
+            <div class="step-desc">Gutless 载体有完整 ψ，衣壳蛋白优先识别并包装它。最终裂解细胞，收获的病毒颗粒绝大多数是 Gutless 载体。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-danger); color:var(--ad-danger)">!</div>
+          <div class="step-content">
+            <div class="step-title">辅助病毒污染（关键问题）</div>
+            <div class="step-desc">Cre 切除效率不是 100%，少量辅助病毒 ψ 未被切除，仍会被包装。最终产物中辅助病毒污染通常为 <span style="font-family:var(--ad-mono); color:var(--ad-warn)">0.1–1%</span>，这是 HC-Ad 最大的质控难题。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stuffer DNA design -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">Stuffer DNA 设计原则</div>
+      <div style="color:var(--ad-text2); font-size:13.5px; line-height:1.7; margin-bottom:14px">
+        总基因组必须维持在 <strong>27–38 kb</strong> 才能稳定包装。插入片段不足时必须填充 stuffer DNA 凑够大小。
+      </div>
+      <div class="deletion-grid">
+        <div class="deletion-card" style="border-color:rgba(124,58,237,0.22)">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#7c3aed; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">常用 Stuffer 来源</div>
+          <ul class="wt-list">
+            <li>拟南芥（Arabidopsis）基因组非编码区</li>
+            <li>大肠杆菌基因组片段</li>
+            <li>λ 噬菌体 DNA</li>
+            <li>人工合成随机序列</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:rgba(124,58,237,0.22)">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#7c3aed; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">Stuffer 必须满足</div>
+          <ul class="wt-list">
+            <li>无功能性基因，不编码任何蛋白</li>
+            <li>无哺乳动物启动子序列</li>
+            <li>无 CpG 岛（减少先天免疫激活）</li>
+            <li>无重复序列（避免载体不稳定）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Why lower immunogenicity -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">免疫原性为何降低</div>
+      <div class="deletion-grid">
+        <div class="deletion-card" style="border-color:#dcf3ea">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#1a7a5e; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">消除的免疫原性</div>
+          <ul class="wt-list">
+            <li>无病毒编码基因 → 感染细胞不产生病毒蛋白</li>
+            <li>T 细胞无法识别并杀伤感染细胞</li>
+            <li>转基因表达时间从数天延长至数月</li>
+            <li>可重复给药潜力优于普通腺病毒</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:rgba(192,57,43,0.22)">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#c0392b; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">无法消除的免疫原性</div>
+          <ul class="wt-list">
+            <li>衣壳蛋白来自辅助病毒，进入机体仍激活中和抗体</li>
+            <li>先天免疫对病毒颗粒本身的识别无法避免</li>
+            <li>预存抗体（人群中 Ad5 血清阳性率高）仍会阻断感染</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Production workflow -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">规模化生产流程</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-accent3); color:var(--ad-accent3)">1</div>
+          <div class="step-content">
+            <div class="step-title">初始共感染</div>
+            <div class="step-desc">293-Cre 细胞同时感染辅助病毒 + Gutless 载体质粒（或低代次病毒）。Cre 切除辅助病毒 ψ，开始包装循环。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-accent3); color:var(--ad-accent3)">2</div>
+          <div class="step-content">
+            <div class="step-title">多轮扩增</div>
+            <div class="step-desc">裂解细胞收获病毒，再感染新批次 293-Cre 细胞，重复 3–5 轮。每轮扩增同时带入辅助病毒和 Gutless 载体，逐步提高 Gutless 载体比例。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-accent3); color:var(--ad-accent3)">3</div>
+          <div class="step-content">
+            <div class="step-title">CsCl 梯度离心纯化</div>
+            <div class="step-desc">氯化铯密度梯度超速离心，分离病毒颗粒与细胞碎片。Gutless 载体和辅助病毒密度相近，此步无法分离两者。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-accent3); color:var(--ad-accent3)">4</div>
+          <div class="step-content">
+            <div class="step-title">质控：辅助病毒污染检测</div>
+            <div class="step-desc">qPCR 定量 Gutless 载体基因组 vs 辅助病毒基因组比例。合格标准：辅助病毒污染 <span style="font-family:var(--ad-mono); color:var(--ad-success)">&lt;0.1%</span>。超标则需重新生产。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-accent3); color:var(--ad-accent3)">5</div>
+          <div class="step-content">
+            <div class="step-title">滴度测定与功能验证</div>
+            <div class="step-desc">光密度法（OD260）测物理颗粒数，TCID50 或 plaque assay 测感染单位，目的基因表达验证功能活性。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note" style="border-left-color:var(--ad-accent3)">
+      <strong>Gutless vs E1/E3 缺失型：如何选择</strong><br>
+      插入序列 ≤8 kb → E1/E3 缺失型（生产简单，无辅助病毒问题）。
+      插入序列 &gt;8 kb，或需要长期低免疫原性表达 → Gutless（容量大，但生产复杂，成本高 3–5 倍）。
+    </div>
+  </div>
+
+  <!-- Section 06c: Gutless safety in humans -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06c</span>
+      <span class="section-title">Gutless 对人体的危害程度</span>
+    </div>
+
+    <!-- Safety overview -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">总体评估</div>
+      <div style="color:var(--ad-text2); font-size:13.5px; line-height:1.7; margin-bottom:16px">
+        Gutless 比普通腺病毒安全很多，但<strong style="color:#1a1f2e">不是无害</strong>。风险主要来自衣壳本身，与是否有编码基因关系不大。
+      </div>
+      <div class="deletion-grid">
+        <div class="deletion-card" style="border-color:#dcf3ea">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#1a7a5e; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">消除的风险</div>
+          <ul class="wt-list">
+            <li>无病毒编码基因 → 不产生病毒蛋白 → T 细胞介导的细胞毒性大幅减弱</li>
+            <li>不能复制 → 不会在体内扩散</li>
+            <li>不整合 → 插入突变风险极低</li>
+            <li>转基因表达更持久，减少重复给药需求</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:rgba(192,57,43,0.22)">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#c0392b; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">仍然存在的风险</div>
+          <ul class="wt-list">
+            <li>衣壳激活先天免疫（与编码基因无关）</li>
+            <li>高剂量可引发全身炎症反应</li>
+            <li>辅助病毒残留污染（0.1–1%）</li>
+            <li>预存中和抗体加重炎症</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Capsid innate immunity -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-warn); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">⚠ 衣壳引发的先天免疫——核心危险</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-warn); color:var(--ad-warn)">1</div>
+          <div class="step-content">
+            <div class="step-title">Kupffer 细胞快速识别</div>
+            <div class="step-desc">静脉注射后腺病毒颗粒大量富集肝脏，肝脏驻留巨噬细胞（Kupffer 细胞）在数分钟内识别衣壳蛋白，触发先天免疫激活。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-warn); color:var(--ad-warn)">2</div>
+          <div class="step-content">
+            <div class="step-title">炎症因子风暴</div>
+            <div class="step-desc">大量释放 <span style="font-family:var(--ad-mono); color:var(--ad-warn)">IL-6、TNF-α、IL-12、IFN-γ</span>。剂量越高，反应越剧烈。高剂量时可引发全身炎症综合征（SIRS），表现为发热、低血压、多器官损伤。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-warn); color:var(--ad-warn)">3</div>
+          <div class="step-content">
+            <div class="step-title">血小板激活与血栓</div>
+            <div class="step-desc">腺病毒颗粒可直接激活血小板，高剂量时引发血管内凝血（DIC）。这一机制在 Gutless 载体中同样存在。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot" style="border-color:var(--ad-danger); color:var(--ad-danger)">!</div>
+          <div class="step-content">
+            <div class="step-title">剂量是核心变量</div>
+            <div class="step-desc">低剂量局部给药（如眼内注射、肌肉注射）风险可控，全身炎症反应轻微。高剂量全身静脉给药风险显著，治疗窗口窄。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jesse Gelsinger -->
+    <div style="background:#fdf1ef; border:1px solid rgba(192,57,43,0.4); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:#c0392b; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">📋 历史警示：Jesse Gelsinger 事件（1999）</div>
+      <div style="color:var(--ad-text2); font-size:13.5px; line-height:1.7; margin-bottom:12px">
+        基因治疗史上第一个死亡案例。18 岁患者因鸟氨酸氨甲酰转移酶缺陷接受肝脏基因治疗，静脉注射高剂量<strong>普通腺病毒</strong>（含 E1 缺失型）后 4 天内因全身炎症风暴死亡。
+      </div>
+      <div class="deletion-grid">
+        <div class="deletion-card" style="border-color:rgba(192,57,43,0.22); background:#fdf1ef">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#c0392b; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">死亡原因</div>
+          <ul class="wt-list">
+            <li>高剂量衣壳引发全身炎症风暴</li>
+            <li>多器官衰竭（肝、肾、肺）</li>
+            <li>弥散性血管内凝血（DIC）</li>
+            <li>患者已有 Ad 预存抗体，加剧反应</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:rgba(192,57,43,0.22); background:#fdf1ef">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#9a6b00; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">对 Gutless 的启示</div>
+          <ul class="wt-list">
+            <li>Gutless 消除了 T 细胞反应，但衣壳引发的先天免疫同样存在</li>
+            <li>高剂量 Gutless 理论上同样可引发类似风暴</li>
+            <li>此事件使腺病毒载体临床研究大幅收紧</li>
+            <li>Gutless 进入人体临床试验案例至今极少</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Helper virus contamination risk -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">辅助病毒污染的实际风险</div>
+      <div style="color:var(--ad-text2); font-size:13.5px; line-height:1.7; margin-bottom:12px">
+        即使污染比例只有 0.1%，体内注射大量病毒颗粒时，残余辅助病毒的绝对数量仍不可忽视。
+      </div>
+      <div style="background:#e3e7ee; border:1px solid var(--ad-border); border-radius:6px; padding:14px 16px; font-family:var(--ad-mono); font-size:12px; color:var(--ad-text2)">
+        <div style="margin-bottom:8px">典型临床剂量：<span style="color:var(--ad-warn)">10¹² 病毒颗粒（vp）</span></div>
+        <div style="margin-bottom:8px">辅助病毒污染 0.1%：<span style="color:var(--ad-danger)">= 10⁹ 辅助病毒颗粒</span></div>
+        <div>辅助病毒有完整编码基因 → 引发更强 T 细胞反应 → 感染细胞被免疫清除</div>
+      </div>
+    </div>
+
+    <!-- Pre-existing antibody -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">预存中和抗体问题</div>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>Ad 血清型</th><th>人群血清阳性率</th><th>影响</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ad5（最常用）</td>
+            <td class="kb-val" style="color:var(--ad-danger)">40–80%</td>
+            <td style="color:var(--ad-text3)">预存抗体中和载体 + 加剧炎症</td>
+          </tr>
+          <tr>
+            <td>Ad35</td>
+            <td class="kb-val" style="color:var(--ad-success)">~10%</td>
+            <td style="color:var(--ad-text3)">血清阳性率低，临床更安全</td>
+          </tr>
+          <tr>
+            <td>Ad26</td>
+            <td class="kb-val" style="color:var(--ad-warn)">~20–40%</td>
+            <td style="color:var(--ad-text3)">COVID 疫苗用过，部分人群已有抗体</td>
+          </tr>
+          <tr>
+            <td>黑猩猩 AdC68</td>
+            <td class="kb-val" style="color:var(--ad-success)">&lt;5%</td>
+            <td style="color:var(--ad-text3)">人群预存免疫最低，研究热点</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note" style="border-left-color:var(--ad-danger)">
+      <strong>临床现状：</strong>Gutless 腺病毒目前主要停留在动物实验阶段，进入人体临床试验的案例极少。核心障碍是衣壳免疫原性问题尚未解决，监管门槛高。改善方向包括：换用低血清阳性率血清型（Ad35、黑猩猩 Ad）、PEG 化衣壳减少免疫识别、配合短暂免疫抑制给药。
+    </div>
+  </div>
+
+  <!-- Section 06d: Lab safety -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06d</span>
+      <span class="section-title">实验室操作腺病毒的风险</span>
+    </div>
+
+    <!-- BSL classification -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">生物安全等级</div>
+      <div class="card-grid">
+        <div class="card" style="border-color:rgba(21,101,192,0.18)">
+          <div class="card-icon">🔵</div>
+          <div class="card-title">BSL-2（标准）</div>
+          <div class="card-body">E1/E3 缺失型、Gutless 重组腺病毒均按 BSL-2 操作。野生型腺病毒同样是 BSL-2。不需要 BSL-3 设施。</div>
+        </div>
+        <div class="card" style="border-color:rgba(21,101,192,0.18)">
+          <div class="card-icon">🟡</div>
+          <div class="card-title">健康人感染预后</div>
+          <div class="card-body">腺病毒是人类常见病原体（普通感冒常见原因），健康人感染后通常轻度呼吸道症状或结膜炎，1–2 周自愈，几乎不会重症。</div>
+        </div>
+        <div class="card" style="border-color:rgba(21,101,192,0.18)">
+          <div class="card-icon">🟢</div>
+          <div class="card-title">重组载体额外保护</div>
+          <div class="card-body">E1 缺失 → 无法在正常细胞复制。即使意外感染，病毒不能扩增，感染自限。这是与野生型腺病毒的关键区别。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exposure routes -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">主要暴露途径</div>
+      <div class="deletion-grid">
+        <div class="deletion-card">
+          <div class="deletion-tag tag-e1">高风险操作</div>
+          <div class="deletion-body" style="margin-top:8px">
+            <ul class="wt-list">
+              <li><strong>气溶胶吸入</strong>——离心、超声破碎、移液时产生，最常见途径</li>
+              <li><strong>眼睛黏膜接触</strong>——溅液，腺病毒对结膜有强嗜性</li>
+              <li><strong>针刺伤</strong>——动物注射操作时，含毒针头刺入皮肤</li>
+              <li><strong>皮肤破损接触</strong>——高滴度原液接触破损皮肤</li>
+            </ul>
+          </div>
+        </div>
+        <div class="deletion-card">
+          <div class="deletion-tag tag-e3">高风险步骤</div>
+          <div class="deletion-body" style="margin-top:8px">
+            <ul class="wt-list">
+              <li>大体积病毒液离心（>50 mL）</li>
+              <li>超声破碎裂解感染细胞</li>
+              <li>CsCl 梯度超速离心纯化</li>
+              <li>高滴度原液分装（>10¹⁰ vp/mL）</li>
+              <li>动物静脉/腹腔注射</li>
+              <li>感染动物的组织取样和匀浆</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- High risk groups -->
+    <div style="background:#fdf1ef; border:1px solid rgba(192,57,43,0.4); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:#c0392b; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">⚠ 特殊人群——格外注意</div>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>人群</th><th>风险</th><th>建议</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>免疫抑制者<br><span style="font-size:11px; color:var(--ad-text3)">（器官移植、化疗、HIV）</span></td>
+            <td style="color:var(--ad-danger)">普通腺病毒感染可致重症甚至死亡</td>
+            <td style="color:var(--ad-text3)">应回避高风险操作，或全程最严格防护</td>
+          </tr>
+          <tr>
+            <td>孕妇</td>
+            <td style="color:var(--ad-warn)">理论风险，数据有限</td>
+            <td style="color:var(--ad-text3)">向机构生物安全委员会申报，个案评估</td>
+          </tr>
+          <tr>
+            <td>眼科手术后</td>
+            <td style="color:var(--ad-warn)">眼部黏膜屏障受损，腺病毒结膜炎风险高</td>
+            <td style="color:var(--ad-text3)">术后一段时间内避免操作腺病毒</td>
+          </tr>
+          <tr>
+            <td>Ad 血清阴性者</td>
+            <td style="color:var(--ad-warn)">初次感染反应可能更强</td>
+            <td style="color:var(--ad-text3)">无特殊预防手段，注意防护</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PPE and decontamination -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">标准防护与去污</div>
+      <div class="deletion-grid">
+        <div class="deletion-card">
+          <div class="deletion-tag tag-e1">个人防护（PPE）</div>
+          <div class="deletion-body" style="margin-top:8px">
+            <ul class="wt-list">
+              <li>II 级生物安全柜内操作（所有开瓶、移液操作）</li>
+              <li>双层手套，定期更换外层</li>
+              <li>护目镜或面屏（溅液防护）</li>
+              <li>N95 口罩（气溶胶产生操作，如超声破碎）</li>
+              <li>实验服，必要时防护服</li>
+            </ul>
+          </div>
+        </div>
+        <div class="deletion-card">
+          <div class="deletion-tag tag-e3">灭活与废弃物处理</div>
+          <div class="deletion-body" style="margin-top:8px">
+            <ul class="wt-list">
+              <li><strong>1% 次氯酸钠（84消毒液）</strong>——溢洒处理，接触 10 分钟灭活</li>
+              <li>所有接触病毒的耗材高压灭菌（121°C，20 min）后丢弃</li>
+              <li>液体废弃物加次氯酸钠至终浓度 1%，作用 30 分钟后排放</li>
+              <li>感染动物尸体按生物危害废弃物处理</li>
+              <li>针头不回套，直接投入利器盒</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gutless specific -->
+    <div style="background:var(--ad-surface); border:1px solid rgba(124,58,237,0.35); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">Gutless 生产的特殊风险</div>
+      <div style="color:var(--ad-text2); font-size:13.5px; line-height:1.7; margin-bottom:12px">
+        Gutless 生产过程中辅助病毒全程共存。辅助病毒是<strong style="color:#1a1f2e">复制能力完整</strong>的腺病毒，操作时实际上同时暴露于有复制能力的病毒，风险高于纯 E1 缺失型。
+      </div>
+      <div class="highlight-box" style="border-left-color:var(--ad-accent3)">
+        生产阶段（多轮扩增期间）：按辅助病毒（复制型腺病毒）的防护标准操作，而非按 Gutless 载体本身的标准。纯化后产品中辅助病毒比例下降，防护级别可适当降低，但需 qPCR 验证污染水平后才能调整。
+      </div>
+    </div>
+
+    <div class="note" style="border-left-color:var(--ad-warn)">
+      <strong>意外暴露处理：</strong>皮肤接触 → 肥皂水彻底冲洗 15 分钟。眼睛接触 → 生理盐水冲洗 15 分钟。针刺伤 → 挤出血液，肥皂水冲洗，向机构生物安全办公室报告，填写暴露记录，由医生评估是否需要随访。免疫正常者通常不需要预防性用药。
+    </div>
+
+    <!-- Purified Gutless product specific -->
+    <div style="background:var(--ad-surface); border:1px solid rgba(21,101,192,0.4); border-radius:8px; padding:20px; margin-top:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent2); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">纯化制品 Gutless 的操作风险（区别于生产阶段）</div>
+      <div style="color:var(--ad-text2); font-size:13.5px; line-height:1.7; margin-bottom:16px">
+        经 CsCl 梯度纯化、qPCR 验证辅助病毒污染 &lt;0.1% 的 Gutless 制品，风险特征与生产阶段有本质区别。
+      </div>
+
+      <div class="deletion-grid" style="margin-bottom:16px">
+        <div class="deletion-card" style="border-color:#dcf3ea">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#1a7a5e; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">风险大幅降低的方面</div>
+          <ul class="wt-list">
+            <li>无复制能力——E1 已缺失，即使暴露也无法在体内扩增</li>
+            <li>辅助病毒已去除至极低水平（&lt;0.1%），复制型腺病毒暴露量极小</li>
+            <li>无病毒编码基因，不会产生病毒蛋白引发 T 细胞反应</li>
+            <li>与普通 E1/E3 缺失型腺病毒的实验室风险基本相当</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:rgba(192,57,43,0.22)">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#c0392b; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">仍需注意的方面</div>
+          <ul class="wt-list">
+            <li>衣壳蛋白仍在，先天免疫激活风险依然存在</li>
+            <li>高滴度制品（>10¹¹ vp/mL）溅入眼睛或注射伤仍可引起局部炎症</li>
+            <li>残余辅助病毒绝对数量取决于总滴度——高滴度原液即使 0.1% 污染仍可观</li>
+            <li>免疫抑制者即使面对复制缺陷型腺病毒也需格外谨慎</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">纯化制品操作防护级别</div>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>操作场景</th><th>防护要求</th><th>理由</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>常规分装、移液（低滴度）</td>
+            <td><span class="badge badge-good">BSL-2 标准</span></td>
+            <td style="color:var(--ad-text3)">与普通重组腺病毒相同</td>
+          </tr>
+          <tr>
+            <td>高滴度原液操作（>10¹¹ vp/mL）</td>
+            <td><span class="badge badge-warn">生物安全柜 + 面屏</span></td>
+            <td style="color:var(--ad-text3)">溅液风险高，气溶胶量大</td>
+          </tr>
+          <tr>
+            <td>动物注射</td>
+            <td><span class="badge badge-warn">双层手套 + 护目镜</span></td>
+            <td style="color:var(--ad-text3)">针刺风险，动物挣扎导致溅液</td>
+          </tr>
+          <tr>
+            <td>溢洒处理</td>
+            <td><span class="badge badge-good">1% 次氯酸钠，10 min</span></td>
+            <td style="color:var(--ad-text3)">有效灭活腺病毒衣壳</td>
+          </tr>
+          <tr>
+            <td>qPCR 确认辅助病毒 >0.1%</td>
+            <td><span class="badge badge-bad">升级按生产阶段标准</span></td>
+            <td style="color:var(--ad-text3)">需重新纯化或重新评估风险</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box" style="margin-top:16px; border-left-color:var(--ad-accent2)">
+        <strong>关键判断标准：</strong>qPCR 验证辅助病毒污染水平是决定防护级别的依据。污染 &lt;0.1% → 按复制缺陷型腺病毒（BSL-2）操作。污染 &gt;0.1% 或未经验证 → 按含复制型腺病毒标准操作，重新纯化。
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">与 AAV、慢病毒的对比</span>
+    </div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>特性</th>
+          <th class="highlight-col">腺病毒 (Ad)</th>
+          <th>AAV</th>
+          <th>慢病毒</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>包装容量（可插入）</td>
+          <td class="highlight-col"><span class="badge badge-good">~8 kb</span></td>
+          <td><span class="badge badge-warn">~4.7 kb</span></td>
+          <td><span class="badge badge-good">~8 kb</span></td>
+        </tr>
+        <tr>
+          <td>整合风险</td>
+          <td class="highlight-col"><span class="badge badge-good">极低</span></td>
+          <td><span class="badge badge-good">极低</span></td>
+          <td><span class="badge badge-bad">主动整合</span></td>
+        </tr>
+        <tr>
+          <td>免疫原性</td>
+          <td class="highlight-col"><span class="badge badge-bad">强</span></td>
+          <td><span class="badge badge-good">弱</span></td>
+          <td><span class="badge badge-warn">中</span></td>
+        </tr>
+        <tr>
+          <td>Cas9 表达持续性</td>
+          <td class="highlight-col"><span class="badge badge-good">瞬时（有利）</span></td>
+          <td><span class="badge badge-neu">长期</span></td>
+          <td><span class="badge badge-neu">长期</span></td>
+        </tr>
+        <tr>
+          <td>SpCas9 单载体递送</td>
+          <td class="highlight-col"><span class="badge badge-good">可以（勉强）</span></td>
+          <td><span class="badge badge-bad">塞不进去</span></td>
+          <td><span class="badge badge-good">可以</span></td>
+        </tr>
+        <tr>
+          <td>感染非分裂细胞</td>
+          <td class="highlight-col"><span class="badge badge-good">是</span></td>
+          <td><span class="badge badge-good">是</span></td>
+          <td><span class="badge badge-bad">否（大多数）</span></td>
+        </tr>
+        <tr>
+          <td>临床应用成熟度</td>
+          <td class="highlight-col"><span class="badge badge-good">高（肿瘤/疫苗）</span></td>
+          <td><span class="badge badge-good">高（遗传病）</span></td>
+          <td><span class="badge badge-good">高（血液病）</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">
+      AAV 包装 SpCas9 必须用 <strong>split-intein 策略</strong>（拆成两个 AAV，依靠 intein 在蛋白水平拼接），复杂度显著增加。腺病毒勉强能单载体装下，这是相对 AAV 的真实优势之一。
+    </div>
+  </div>
+
+  <!-- Section 8: Zygote infection -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">感染小鼠受精卵</span>
+    </div>
+    <div class="integration-box">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div style="font-size:28px">🐭</div>
+        <div>
+          <div style="font-size:15px; font-weight:500; color:#1a1f2e; margin-bottom:4px">透明带是最大障碍</div>
+          <div style="font-size:13px; color:var(--ad-text2)">zona pellucida 会阻挡病毒颗粒，必须先处理才能有效感染</div>
+        </div>
+      </div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot">A</div>
+          <div class="step-content">
+            <div class="step-title">透明带打薄 / 去除</div>
+            <div class="step-desc">短暂酸性台氏液（Acid Tyrode's）处理部分消化透明带，或链霉蛋白酶（Pronase）完全去除。去除后腺病毒感染效率大幅提升，但卵更脆弱，操作难度增加。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">B</div>
+          <div class="step-content">
+            <div class="step-title">显微注射入卵周隙</div>
+            <div class="step-desc">直接将腺病毒液注射进卵周隙（perivitelline space），绕过透明带屏障，感染效率最高。通量低，技术要求高。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">◎</div>
+          <div class="step-content">
+            <div class="step-title">操作参数</div>
+            <div class="step-desc">病毒滴度 <span style="font-family:var(--ad-mono); color:var(--ad-accent)">10⁸–10¹⁰ vp/mL</span>，孵育 4–6 小时，37°C。单细胞期（zygote）效率最高，2-cell 后开始下降。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      <strong>关键限制：</strong>腺病毒不整合，基因组不能传代。感染受精卵只能做瞬时表达研究，<strong>无法建立稳定转基因品系</strong>。建系需用慢病毒注射卵周隙或电穿孔（TAKE 法）。
+    </div>
+
+    <!-- ZP nick subsection -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-top:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent2); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">透明带打孔（ZP Nick）入路</div>
+      <div style="color:var(--ad-text2); font-size:13.5px; line-height:1.7; margin-bottom:16px">
+        在 ZP 上制造贯穿全层、开口足够大的 nick，腺病毒可经开口扩散进入卵周隙，效果接近显微注射。
+      </div>
+
+      <!-- Nick vs other methods -->
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-text3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">感染效率排序</div>
+      <div style="display:flex; align-items:center; gap:0; margin-bottom:20px; flex-wrap:wrap">
+        <div style="background:#1a7a5e; color:#ffffff; padding:8px 14px; border-radius:4px 0 0 4px; font-family:var(--ad-mono); font-size:11px; font-weight:600; white-space:nowrap">显微注射卵周隙</div>
+        <div style="color:var(--ad-text3); font-size:18px; padding:0 4px">≈</div>
+        <div style="background:#0f766e; color:#ffffff; padding:8px 14px; font-family:var(--ad-mono); font-size:11px; font-weight:600; white-space:nowrap">贯穿 nick + 高滴度孵育</div>
+        <div style="color:var(--ad-text3); font-size:18px; padding:0 4px">&gt;</div>
+        <div style="background:#1565c0; color:#ffffff; padding:8px 14px; font-family:var(--ad-mono); font-size:11px; font-weight:600; white-space:nowrap">Acid Tyrode 打薄</div>
+        <div style="color:var(--ad-text3); font-size:18px; padding:0 4px">&gt;</div>
+        <div style="background:#eef0f4; color:#6b7a99; padding:8px 14px; border-radius:0 4px 4px 0; font-family:var(--ad-mono); font-size:11px; font-weight:600; white-space:nowrap">表面 nick</div>
+      </div>
+
+      <!-- Why nick works -->
+      <div class="deletion-grid" style="margin-bottom:16px">
+        <div class="deletion-card" style="border-color:#dcf3ea">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#1a7a5e; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">贯穿 nick 为何有效</div>
+          <ul class="wt-list">
+            <li>ZP 厚约 15–20 μm，腺病毒直径 70–90 nm，贯穿缺口提供直通卵周隙的通道</li>
+            <li>卵周隙体积极小（~10–20 pL），病毒进入后浓度迅速平衡</li>
+            <li>卵膜上有 CAR（柯萨奇-腺病毒受体），腺病毒正常结合内吞</li>
+            <li>感染机制与显微注射完全相同</li>
+          </ul>
+        </div>
+        <div class="deletion-card" style="border-color:#dcf3ea">
+          <div style="font-family:var(--ad-mono); font-size:10px; color:#1a7a5e; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px">相比其他方法的优势</div>
+          <ul class="wt-list">
+            <li>比显微注射通量高——可批量处理多个卵</li>
+            <li>比 Acid Tyrode 对卵损伤更局部，存活率可能更好</li>
+            <li>避免化学处理的毒性</li>
+            <li>激光打孔（laser-assisted zona drilling）可精确控制开口大小，辅助生殖领域已成熟</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Key variables -->
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">影响效率的关键变量</div>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>变量</th><th>要点</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>开口维持时间</td>
+            <td style="color:var(--ad-text3)">ZP 有弹性，nick 可能部分回缩——打孔后须立即孵育病毒</td>
+          </tr>
+          <tr>
+            <td>开口大小</td>
+            <td style="color:var(--ad-text3)">须贯穿全层且直径远大于 90 nm；激光打孔可精确控制（通常 5–20 μm）</td>
+          </tr>
+          <tr>
+            <td>病毒滴度</td>
+            <td style="color:var(--ad-text3)">建议 10⁹–10¹⁰ vp/mL，高滴度弥补扩散效率不如直接注射</td>
+          </tr>
+          <tr>
+            <td>孵育时间</td>
+            <td style="color:var(--ad-text3)">4–6 小时，37°C；过长影响卵发育</td>
+          </tr>
+          <tr>
+            <td>打孔方式</td>
+            <td style="color:var(--ad-text3)">激光（精确、可重复）> 显微针机械划孔（依赖操作者）> 化学局部处理</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box" style="margin-top:16px; border-left-color:var(--ad-accent2)">
+        <strong>激光辅助透明带打孔（Laser-Assisted Zona Drilling, LAZD）：</strong>在辅助生殖（ART）中已广泛用于辅助孵化（assisted hatching），设备和操作规范成熟。用于腺病毒感染时，可将开口直径精确控制在 5–15 μm，足以让病毒颗粒通过，同时将对卵的损伤降至最低。批量处理效率远高于逐个显微注射。
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 9: HDR donor only -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="section-title">腺病毒专用作 HDR 供体模板</span>
+    </div>
+
+    <!-- Core concept -->
+    <div class="wt-card" style="border-color:rgba(21,101,192,0.4); margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent2); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.1em">核心分工</div>
+      <div class="producer-flow">
+        <span class="pf-node" style="background:#1565c0; color:#ffffff; border-color:rgba(21,101,192,0.18)">Cas9 RNP 或 mRNA</span>
+        <span class="pf-arrow">→</span>
+        <span style="color:var(--ad-text3); font-size:11px">单独递送，切断靶位点</span>
+        <span style="color:var(--ad-text3); font-size:16px; margin:0 8px">+</span>
+        <span class="pf-node" style="background:#1a7a5e; color:#ffffff; border-color:#1a7a5e">腺病毒</span>
+        <span class="pf-arrow">→</span>
+        <span style="color:var(--ad-text3); font-size:11px">仅提供 HDR 模板，不携带 Cas9</span>
+      </div>
+      <div style="margin-top:12px; font-size:13px; color:var(--ad-text2); line-height:1.7">
+        腺病毒本身不做任何切割，只是把同源重组模板高效送进细胞核。切割工具（Cas9）另外以 RNP 或 mRNA 形式递送，两者在细胞内协同完成 HDR。
+      </div>
+    </div>
+
+    <!-- Template design -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">HDR 模板结构设计</div>
+
+      <!-- Visual template map -->
+      <div style="display:flex; height:36px; border-radius:4px; overflow:hidden; border:1px solid var(--ad-border); margin-bottom:8px">
+        <div style="background:#1565c0; color:#ffffff; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; font-weight:600; width:20%">左同源臂</div>
+        <div style="background:linear-gradient(135deg,#1a7a5e,#0f766e); color:#1a7a5e; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; font-weight:600; width:30%">插入序列</div>
+        <div style="background:#1565c0; color:#ffffff; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; font-weight:600; width:20%">右同源臂</div>
+        <div style="background:#f1e9fb; color:#7c3aed; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; width:30%">（剩余空间放其他元件）</div>
+      </div>
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-text3); margin-bottom:16px">
+        左右同源臂各 ~0.8–1.5 kb · 插入序列 · 总计须 ≤ 8 kb（E1/E3缺失型）
+      </div>
+
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>元件</th><th>典型大小</th><th>作用</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>左同源臂（Left HA）</td>
+            <td class="kb-val">0.8–1.5 kb</td>
+            <td style="color:var(--ad-text3)">与切割位点上游序列同源，引导重组</td>
+          </tr>
+          <tr>
+            <td>右同源臂（Right HA）</td>
+            <td class="kb-val">0.8–1.5 kb</td>
+            <td style="color:var(--ad-text3)">与切割位点下游序列同源</td>
+          </tr>
+          <tr>
+            <td>插入序列（transgene / tag / loxP 等）</td>
+            <td class="kb-val">0.1–5 kb</td>
+            <td style="color:var(--ad-text3)">需要敲入的外源序列</td>
+          </tr>
+          <tr>
+            <td>选择标记（可选）</td>
+            <td class="kb-val">~1 kb</td>
+            <td style="color:var(--ad-text3)">筛选成功重组细胞，之后可用 Cre 删除</td>
+          </tr>
+          <tr style="border-top:1px solid var(--ad-accent)">
+            <td style="color:var(--ad-text); font-weight:500">合计上限</td>
+            <td class="kb-val" style="color:var(--ad-warn)">~8 kb</td>
+            <td style="color:var(--ad-text3)">E1/E3 缺失型容量上限</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Why adenovirus is good donor -->
+    <div class="deletion-grid" style="margin-bottom:16px">
+      <div class="deletion-card">
+        <div class="deletion-tag" style="background:#dcf3ea; color:#1a7a5e; border:1px solid #dcf3ea">相比 ssODN 的优势</div>
+        <div class="deletion-body" style="margin-top:8px">
+          <ul class="wt-list">
+            <li>dsDNA 模板，适合 &gt;200 bp 的大片段敲入</li>
+            <li>感染效率高，每个细胞模板拷贝数充足（10²–10³ 拷贝）</li>
+            <li>同源臂可以做得更长，重组精确性更高</li>
+            <li>可同时携带选择标记辅助筛选</li>
+          </ul>
+        </div>
+      </div>
+      <div class="deletion-card">
+        <div class="deletion-tag" style="background:#dcf3ea; color:#1a7a5e; border:1px solid #dcf3ea">相比质粒转染的优势</div>
+        <div class="deletion-body" style="margin-top:8px">
+          <ul class="wt-list">
+            <li>感染效率远高于质粒转染，尤其对难转染细胞</li>
+            <li>进入细胞核不依赖细胞分裂（质粒需分裂才能入核）</li>
+            <li>模板以游离 dsDNA 存在，不会自身整合引入背景突变</li>
+            <li>适合原代细胞、神经元等转染困难的类型</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Best use cases -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">最适合的应用场景</div>
+      <div class="card-grid">
+        <div class="card" style="border-color:rgba(21,101,192,0.18)">
+          <div class="card-icon">🧫</div>
+          <div class="card-title">iPSC 基因敲入</div>
+          <div class="card-body">iPSC 转染效率低，腺病毒感染效率高。用 RNP 电穿孔 + 腺病毒模板是 iPSC 大片段敲入的成熟方案。</div>
+        </div>
+        <div class="card" style="border-color:rgba(21,101,192,0.18)">
+          <div class="card-icon">🔬</div>
+          <div class="card-title">原代细胞 / 神经元</div>
+          <div class="card-body">难以转染的细胞类型，腺病毒仍能高效感染。配合 RNP 做精确点突变或报告基因敲入。</div>
+        </div>
+        <div class="card" style="border-color:rgba(21,101,192,0.18)">
+          <div class="card-icon">🏥</div>
+          <div class="card-title">体内肝脏编辑</div>
+          <div class="card-body">腺病毒对肝细胞高度嗜性。静脉注射腺病毒模板 + AAV-Cas9 组合，实现体内 HDR 纠正遗传突变。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Limitations -->
+    <div class="note" style="border-left-color:var(--ad-warn)">
+      <strong>核心限制：</strong>HDR 只在 <strong>S/G2 期</strong>发生。腺病毒模板拷贝数再多，细胞不在正确周期也无法触发 HDR。因此腺病毒作为模板在<strong>分裂活跃的细胞</strong>（iPSC、肿瘤细胞系、肝细胞再生期）效率最高；在静止期细胞（如成熟神经元）效率依然低。受精卵中 HDR 窗口极窄，腺病毒模板在这个场景优势有限。
+    </div>
+  </div>
+
+  <!-- Section 10: Homology arm design -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <span class="section-title">同源臂长度设计原则</span>
+    </div>
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:24px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:16px">同源臂长度 vs HDR 效率</div>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>同源臂长度</th><th>HDR 效率趋势</th><th>适用插入大小</th><th>备注</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="kb-val">~200 bp</td>
+            <td style="color:var(--ad-danger)">很低</td>
+            <td style="color:var(--ad-text3)">点突变</td>
+            <td style="color:var(--ad-text3)">仅 ssODN 场景</td>
+          </tr>
+          <tr>
+            <td class="kb-val">0.5–0.8 kb</td>
+            <td style="color:var(--ad-warn)">低~中</td>
+            <td style="color:var(--ad-text3)">&lt;1 kb 插入</td>
+            <td style="color:var(--ad-text3)">小型标签敲入</td>
+          </tr>
+          <tr>
+            <td class="kb-val" style="color:var(--ad-success)">0.8–1.5 kb ★</td>
+            <td style="color:var(--ad-success)">较高</td>
+            <td style="color:var(--ad-text3)">1–3 kb 插入</td>
+            <td style="color:var(--ad-text3)">腺病毒模板最优区间</td>
+          </tr>
+          <tr>
+            <td class="kb-val">&gt;2 kb</td>
+            <td style="color:var(--ad-warn)">边际递减</td>
+            <td style="color:var(--ad-text3)">大片段</td>
+            <td style="color:var(--ad-text3)">占用太多载体空间</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="deletion-grid">
+      <div class="deletion-card">
+        <div class="deletion-tag tag-e1">设计要点</div>
+        <div class="deletion-body" style="margin-top:8px">
+          <ul class="wt-list">
+            <li>同源臂序列必须与靶位点<strong>完全同源</strong>，避免 SNP 干扰重组</li>
+            <li>切割位点（DSB）尽量靠近同源臂内侧边缘，距离 &lt;50 bp 效率最佳</li>
+            <li>插入序列中若含有 PAM 位点，需同义突变破坏，防止 Cas9 切割已编辑序列</li>
+            <li>左右同源臂长度可不对称，但通常各 ≥800 bp</li>
+          </ul>
+        </div>
+      </div>
+      <div class="deletion-card">
+        <div class="deletion-tag tag-e3">容量约束下的平衡</div>
+        <div class="deletion-body" style="margin-top:8px">
+          <ul class="wt-list">
+            <li>E1/E3 缺失型总插入 ≤8 kb：同源臂 × 2 + 插入序列 + 选择标记</li>
+            <li>插入序列大 → 同源臂需适当缩短，建议各 800 bp 保底</li>
+            <li>插入序列 &gt;5 kb → 考虑换用 Gutless 腺病毒</li>
+            <li>选择标记（~1 kb）可之后用 Cre-loxP 删除</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 11: Gutless as HDR donor -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <span class="section-title">Gutless 腺病毒作大片段 HDR 模板</span>
+    </div>
+    <div class="gutless-card">
+      <div class="gutless-badge">◈ 大片段敲入专用</div>
+      <div style="color:var(--ad-text2); font-size:14px; margin-bottom:16px">
+        当插入序列 &gt;5 kb（如完整 cDNA、荧光蛋白 + 选择标记 + 长同源臂），E1/E3 缺失型容量不够，需要升级到 Gutless 载体。
+      </div>
+
+      <div style="display:flex; height:36px; border-radius:4px; overflow:hidden; border:1px solid var(--ad-border); margin-bottom:8px">
+        <div style="background:#1565c0; color:#ffffff; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; font-weight:600; width:15%">左HA 1.5kb</div>
+        <div style="background:linear-gradient(135deg,#1a7a5e,#0f766e); color:#1a7a5e; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; font-weight:600; width:40%">大片段插入（10–20 kb）</div>
+        <div style="background:#1565c0; color:#ffffff; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; font-weight:600; width:15%">右HA 1.5kb</div>
+        <div style="background:#f1e9fb; color:#7c3aed; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; width:30%">stuffer（凑总大小）</div>
+      </div>
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-text3); margin-bottom:16px">总大小需维持 27–38 kb · 不足部分用 stuffer DNA 填充</div>
+
+      <div class="gutless-grid">
+        <div>
+          <div class="gutless-col-title good">典型应用</div>
+          <ul class="gutless-list">
+            <li>全长基因（含内含子）敲入内源位点</li>
+            <li>条件性敲入（floxed 构建体，含两个 loxP + 选择标记）</li>
+            <li>报告基因系（GFP + 选择标记 + 长调控序列）</li>
+            <li>人源化小鼠基因座替换</li>
+          </ul>
+        </div>
+        <div>
+          <div class="gutless-col-title bad">额外挑战</div>
+          <ul class="gutless-list">
+            <li>辅助病毒污染问题在用于 HDR 时同样存在</li>
+            <li>生产批次质量直接影响模板可用性</li>
+            <li>大片段 HDR 效率本身更低（重组机制限制）</li>
+            <li>需要更严格的克隆筛选和验证</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 12: iPSC workflow -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <span class="section-title">iPSC 敲入完整流程</span>
+    </div>
+    <div class="integration-box">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div style="font-size:28px">🧫</div>
+        <div>
+          <div style="font-size:15px; font-weight:500; color:#1a1f2e; margin-bottom:4px">Cas9 RNP 电穿孔 + 腺病毒模板感染</div>
+          <div style="font-size:13px; color:var(--ad-text2)">iPSC 大片段精确敲入的主流方案</div>
+        </div>
+      </div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot">1</div>
+          <div class="step-content">
+            <div class="step-title">构建腺病毒 HDR 模板</div>
+            <div class="step-desc">设计左右同源臂（各 ~1 kb）+ 插入序列 + 选择标记（如 PuroR-loxP），克隆入腺病毒骨架，293 细胞扩增，CsCl 梯度纯化，测定滴度。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">2</div>
+          <div class="step-content">
+            <div class="step-title">Cas9 RNP 电穿孔</div>
+            <div class="step-desc">SpCas9 蛋白 + sgRNA 预组装成 RNP 复合物，电穿孔进入 iPSC。RNP 在细胞内半衰期短（~24h），脱靶风险低。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">3</div>
+          <div class="step-content">
+            <div class="step-title">腺病毒感染（同步或 +2h）</div>
+            <div class="step-desc">电穿孔后立即或 2h 内加入腺病毒模板（MOI 100–1000）。此时 Cas9 已在细胞内，DSB 产生后模板立即可用。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">4</div>
+          <div class="step-content">
+            <div class="step-title">药物筛选（48h 后）</div>
+            <div class="step-desc">加入嘌呤霉素（Puromycin）筛选含选择标记的克隆。未发生 HDR 的细胞死亡，HDR 成功的细胞存活。筛选 5–7 天。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">5</div>
+          <div class="step-content">
+            <div class="step-title">单克隆挑取与验证</div>
+            <div class="step-desc">单细胞扩增后，PCR 验证敲入（junction PCR），Southern blot 确认单拷贝整合，Sanger 测序确认序列准确性。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">6</div>
+          <div class="step-content">
+            <div class="step-title">Cre 删除选择标记</div>
+            <div class="step-desc">转染 Cre 重组酶，删除两个 loxP 之间的选择标记，仅留下一个 loxP 疤痕（34 bp）。再次验证确认删除成功。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      <strong>典型效率：</strong>HDR 阳性克隆占药物筛选后存活克隆的 20–60%，双等位基因敲入（biallelic）通常 5–15%。不用选择标记时效率低 10 倍以上，需大规模筛选。
+    </div>
+  </div>
+
+  <!-- Section 13: In vivo liver HDR -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <span class="section-title">体内肝脏 HDR</span>
+    </div>
+    <div class="wt-card" style="border-color:rgba(21,101,192,0.4); margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent2); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.1em">为什么肝脏是最佳靶器官</div>
+      <div class="card-grid" style="margin-top:8px">
+        <div class="card" style="border-color:rgba(21,101,192,0.18); background:#eef3fb">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">腺病毒天然嗜肝</div>
+          <div class="card-body">静脉注射后腺病毒大量富集于肝细胞（hepatocyte），感染效率极高，无需特殊靶向修饰。</div>
+        </div>
+        <div class="card" style="border-color:rgba(21,101,192,0.18); background:#eef3fb">
+          <div class="card-icon">🔄</div>
+          <div class="card-title">部分肝切除促 HDR</div>
+          <div class="card-body">2/3 肝切除（PHx）后肝细胞大量增殖，S/G2 期细胞比例大幅上升，HDR 效率提高数倍。</div>
+        </div>
+        <div class="card" style="border-color:rgba(21,101,192,0.18); background:#eef3fb">
+          <div class="card-icon">🏭</div>
+          <div class="card-title">分泌蛋白工厂</div>
+          <div class="card-body">肝细胞是天然蛋白质分泌器官，敲入纠正的基因后可全身性补充缺陷蛋白（如凝血因子、AAT）。</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">体内递送方案对比</div>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>方案</th><th>Cas9 递送</th><th>模板递送</th><th>HDR 效率</th><th>特点</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>腺病毒 + 腺病毒</td>
+            <td style="color:var(--ad-text3)">Ad-Cas9</td>
+            <td style="color:var(--ad-text3)">Ad-模板</td>
+            <td class="kb-val" style="color:var(--ad-warn)">低~中</td>
+            <td style="color:var(--ad-text3)">免疫原性问题，单次给药</td>
+          </tr>
+          <tr>
+            <td style="color:var(--ad-success)">AAV-Cas9 + 腺病毒模板 ★</td>
+            <td style="color:var(--ad-text3)">AAV（低免疫）</td>
+            <td style="color:var(--ad-text3)">Ad（大容量）</td>
+            <td class="kb-val" style="color:var(--ad-success)">较高</td>
+            <td style="color:var(--ad-text3)">优势互补，文献最多</td>
+          </tr>
+          <tr>
+            <td>LNP-mRNA + 腺病毒模板</td>
+            <td style="color:var(--ad-text3)">LNP（Cas9 mRNA）</td>
+            <td style="color:var(--ad-text3)">Ad-模板</td>
+            <td class="kb-val" style="color:var(--ad-warn)">中</td>
+            <td style="color:var(--ad-text3)">Cas9 瞬时，安全性好</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flow-steps" style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:16px">体内流程（PHx + 双载体）</div>
+      <div class="flow-step">
+        <div class="step-dot">1</div>
+        <div class="step-content">
+          <div class="step-title">2/3 部分肝切除（PHx）</div>
+          <div class="step-desc">手术切除大鼠/小鼠 2/3 肝脏，触发剩余肝细胞大规模增殖，HDR 窗口开放。</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-dot">2</div>
+        <div class="step-content">
+          <div class="step-title">尾静脉注射双载体</div>
+          <div class="step-desc">同时或序贯注射 AAV-Cas9（或 LNP-RNP）+ 腺病毒 HDR 模板。腺病毒迅速富集肝脏，模板进入增殖中的肝细胞核。</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-dot">3</div>
+        <div class="step-content">
+          <div class="step-title">HDR 发生（术后 24–72h）</div>
+          <div class="step-desc">增殖期肝细胞 S/G2 比例高，Cas9 切割后模板介导 HDR，精确替换或插入目标序列。</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-dot">4</div>
+        <div class="step-content">
+          <div class="step-title">肝脏再生 + 验证</div>
+          <div class="step-desc">4–6 周后肝脏恢复原体积。取样做 PCR、测序、蛋白检测验证编辑效率，检测血浆中分泌蛋白水平。</div>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      <strong>免疫原性是最大障碍：</strong>腺病毒强烈激活先天免疫，可能在 HDR 发生前就清除感染细胞。部分研究用短暂免疫抑制（环孢素 A）配合给药，但增加了临床转化难度。
+    </div>
+  </div>
+
+  <!-- Section 14: AAV as HDR donor -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">14</span>
+      <span class="section-title">AAV 专用作 HDR 供体模板</span>
+    </div>
+
+    <!-- Core concept -->
+    <div class="wt-card" style="border-color:rgba(21,101,192,0.4); margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent2); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.1em">核心分工（同腺病毒策略）</div>
+      <div class="producer-flow">
+        <span class="pf-node" style="background:#1565c0; color:#ffffff; border-color:rgba(21,101,192,0.18)">Cas9 RNP / mRNA / 质粒</span>
+        <span class="pf-arrow">→</span>
+        <span style="color:var(--ad-text3); font-size:11px">单独递送，切断靶位点</span>
+        <span style="color:var(--ad-text3); font-size:16px; margin:0 8px">+</span>
+        <span class="pf-node" style="background:#e7e6fa; color:#4338ca; border-color:rgba(67,56,202,0.2)">AAV</span>
+        <span class="pf-arrow">→</span>
+        <span style="color:var(--ad-text3); font-size:11px">仅提供 HDR 模板，不携带 Cas9</span>
+      </div>
+      <div style="margin-top:12px; font-size:13px; color:var(--ad-text2); line-height:1.7">
+        AAV 感染效率高、免疫原性低，进入细胞核后以游离 episome 形式长期存在，为 HDR 持续提供模板拷贝。Cas9 另外递送，完成切割后 AAV 模板介导精确修复。
+      </div>
+    </div>
+
+    <!-- ssDNA template mechanism -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">AAV 模板的 ssDNA 机制</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot">①</div>
+          <div class="step-content">
+            <div class="step-title">AAV 携带 ssDNA 进入细胞核</div>
+            <div class="step-desc">AAV 基因组本身是单链 DNA（ssDNA），两端由 ITR 形成发夹结构，进入细胞核后以 episome 存在。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">②</div>
+          <div class="step-content">
+            <div class="step-title">ssDNA → dsDNA 转换（或直接用）</div>
+            <div class="step-desc">细胞内 DNA 聚合酶将 ssDNA 转换成 dsDNA 才能高效参与 HDR。这一步有延迟（数小时）。也有证据表明 ssDNA 本身可直接作为模板，类似超长 ssODN。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">③</div>
+          <div class="step-content">
+            <div class="step-title">持续提供模板</div>
+            <div class="step-desc">AAV episome 在非分裂细胞中可存在数周至数月，为每一次 Cas9 切割事件持续提供修复模板，这是 AAV 模板独特的优势。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template design for AAV -->
+    <div style="background:var(--ad-surface); border:1px solid var(--ad-border); border-radius:8px; padding:20px; margin-bottom:16px">
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px">AAV HDR 模板结构设计</div>
+
+      <div style="display:flex; height:36px; border-radius:4px; overflow:hidden; border:1px solid var(--ad-border); margin-bottom:8px">
+        <div style="background:#f1e9fb; color:#7c3aed; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; width:5%">ITR</div>
+        <div style="background:#e7e6fa; color:#4338ca; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; font-weight:600; width:22%">左同源臂</div>
+        <div style="background:linear-gradient(135deg,#1a7a5e,#0f766e); color:#1a7a5e; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; font-weight:600; width:40%">插入序列</div>
+        <div style="background:#e7e6fa; color:#4338ca; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; font-weight:600; width:22%">右同源臂</div>
+        <div style="background:#f1e9fb; color:#7c3aed; display:flex; align-items:center; justify-content:center; font-family:var(--ad-mono); font-size:10px; width:5%">ITR</div>
+      </div>
+      <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-text3); margin-bottom:16px">
+        ITR 占 ~0.3 kb × 2 · 有效载荷上限 ~4.1 kb · 同源臂必须更短
+      </div>
+
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>元件</th><th>AAV 中典型大小</th><th>vs 腺病毒</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>左同源臂</td>
+            <td class="kb-val">400–800 bp</td>
+            <td style="color:var(--ad-danger)">↓ 更短（容量限制）</td>
+          </tr>
+          <tr>
+            <td>右同源臂</td>
+            <td class="kb-val">400–800 bp</td>
+            <td style="color:var(--ad-danger)">↓ 更短</td>
+          </tr>
+          <tr>
+            <td>插入序列上限</td>
+            <td class="kb-val" style="color:var(--ad-warn)">~2.5 kb</td>
+            <td style="color:var(--ad-danger)">↓ 远小于腺病毒</td>
+          </tr>
+          <tr>
+            <td>ITR（必须保留）</td>
+            <td class="kb-val">~0.6 kb（两端合计）</td>
+            <td style="color:var(--ad-text3)">固定占用</td>
+          </tr>
+          <tr style="border-top:1px solid #4338ca">
+            <td style="color:var(--ad-text); font-weight:500">有效载荷合计</td>
+            <td class="kb-val" style="color:var(--ad-warn)">~4.1 kb</td>
+            <td style="color:var(--ad-text3)">vs 腺病毒 ~8 kb</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Insert size feasibility -->
+      <div style="margin-top:20px">
+        <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px">插入序列大小 → 是否适合 AAV 模板</div>
+        <table class="breakdown-table">
+          <thead>
+            <tr><th>插入序列大小</th><th>AAV 可行性</th><th>典型例子</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="kb-val">&lt;1 kb</td>
+              <td><span class="badge badge-good">✓ 理想</span></td>
+              <td style="color:var(--ad-text3)">点突变纠正、小标签（HA/FLAG）、loxP 位点插入</td>
+            </tr>
+            <tr>
+              <td class="kb-val">1–2 kb</td>
+              <td><span class="badge badge-good">✓ 可行</span></td>
+              <td style="color:var(--ad-text3)">GFP（~0.7 kb）、小型 cDNA、短外显子替换</td>
+            </tr>
+            <tr>
+              <td class="kb-val">2–2.5 kb</td>
+              <td><span class="badge badge-warn">△ 勉强</span></td>
+              <td style="color:var(--ad-text3)">同源臂必须压缩至 400 bp，效率下降</td>
+            </tr>
+            <tr>
+              <td class="kb-val">&gt;2.5 kb</td>
+              <td><span class="badge badge-bad">✗ 不考虑</span></td>
+              <td style="color:var(--ad-text3)">完整 cDNA、带选择标记构建体 → 换腺病毒</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="font-family:var(--ad-mono); font-size:11px; color:var(--ad-text3); margin-top:8px">
+          * 带选择标记（~1 kb）的构建体：标记本身就占掉接近一半可用空间，基本不可行
+        </div>
+      </div>
+    </div>
+
+    <!-- AAV HDR advantages -->
+    <div class="deletion-grid" style="margin-bottom:16px">
+      <div class="deletion-card">
+        <div class="deletion-tag" style="background:#dcf3ea; color:#1a7a5e; border:1px solid #dcf3ea">AAV 模板的真实优势</div>
+        <div class="deletion-body" style="margin-top:8px">
+          <ul class="wt-list">
+            <li>免疫原性极低，体内给药安全，不需要免疫抑制配合</li>
+            <li>无需 PHx，正常肝脏即可高效转导</li>
+            <li>episome 长期存在，持续为 HDR 提供模板（数周）</li>
+            <li>临床转化路径成熟，已有多个体内 HDR 纠正遗传病的概念验证</li>
+            <li>多种血清型可选，靶向不同组织</li>
+          </ul>
+        </div>
+      </div>
+      <div class="deletion-card">
+        <div class="deletion-tag" style="background:#fbe6e3; color:#c0392b; border:1px solid rgba(192,57,43,0.22)">AAV 模板的限制</div>
+        <div class="deletion-body" style="margin-top:8px">
+          <ul class="wt-list">
+            <li>容量只有 ~4.1 kb，大片段敲入基本不可行</li>
+            <li>ssDNA 转换 dsDNA 有时间延迟，与 Cas9 切割时机需配合</li>
+            <li>体内肝细胞多处于 G0，HDR 效率天花板低（通常 &lt;5%）</li>
+            <li>AAV 本身虽低整合，但作为模板时 ITR 介导的随机整合有一定背景</li>
+            <li>生产成本高，规模化较难</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- In vivo HDR with AAV donor -->
+    <div class="integration-box" style="margin-bottom:16px">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div style="font-size:28px">🏥</div>
+        <div>
+          <div style="font-size:15px; font-weight:500; color:#1a1f2e; margin-bottom:4px">体内 HDR：AAV 模板的最佳场景</div>
+          <div style="font-size:13px; color:var(--ad-text2)">小片段点突变纠正 · 遗传病治疗 · 不需 PHx</div>
+        </div>
+      </div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-dot">1</div>
+          <div class="step-content">
+            <div class="step-title">构建 AAV HDR 模板（血清型 AAV8 / AAV9）</div>
+            <div class="step-desc">设计同源臂各 ~600 bp + 纠正序列（破坏 PAM 防二次切割），克隆入 AAV 载体，HEK293 三质粒系统生产，碘克沙醇梯度纯化。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">2</div>
+          <div class="step-content">
+            <div class="step-title">尾静脉注射 AAV 模板（提前 1–3 天）</div>
+            <div class="step-desc">AAV8/9 静脉注射后迅速富集肝脏，1–3 天内 episome 建立，模板拷贝数达峰值。提前给模板确保 Cas9 切割时模板已充足。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">3</div>
+          <div class="step-content">
+            <div class="step-title">递送 Cas9（LNP-mRNA 或 RNP）</div>
+            <div class="step-desc">LNP 包裹 Cas9 mRNA + sgRNA 静脉注射，肝细胞摄取后 Cas9 短暂表达（24–48h）切割靶位点，随后降解。模板介导 HDR 修复。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-dot">4</div>
+          <div class="step-content">
+            <div class="step-title">验证编辑效率</div>
+            <div class="step-desc">4 周后取肝脏活检，深度测序（amplicon-seq）定量 HDR 效率，检测 INDEL 背景，ELISA 检测血浆纠正蛋白水平。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note" style="border-left-color:#4338ca">
+      <strong>ITR 介导整合的隐患：</strong>AAV ITR 序列本身有一定促整合活性。作为 HDR 模板时，少量 AAV 可能通过 ITR 随机整合进基因组，形成背景噪音。体内长期观察时需区分 HDR 整合（精确）和 ITR 随机整合（非精确）。这是 AAV 模板特有的需要注意的问题。
+    </div>
+  </div>
+
+  <!-- Section 15: Ad vs AAV as donor comparison -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">15</span>
+      <span class="section-title">腺病毒 vs AAV：作为 HDR 供体模板的选择</span>
+    </div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>特性</th>
+          <th class="highlight-col">腺病毒（Ad）供体</th>
+          <th>AAV 供体</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>模板容量</td>
+          <td class="highlight-col"><span class="badge badge-good">~8 kb（E1/E3）<br>~35 kb（Gutless）</span></td>
+          <td><span class="badge badge-warn">~4.1 kb 有效载荷</span></td>
+        </tr>
+        <tr>
+          <td>模板 DNA 形式</td>
+          <td class="highlight-col"><span class="badge badge-good">dsDNA（直接可用）</span></td>
+          <td><span class="badge badge-neu">ssDNA（需转换或直接用）</span></td>
+        </tr>
+        <tr>
+          <td>模板持续性</td>
+          <td class="highlight-col"><span class="badge badge-neu">数天（细胞分裂后稀释）</span></td>
+          <td><span class="badge badge-good">数周~数月（episome 稳定）</span></td>
+        </tr>
+        <tr>
+          <td>免疫原性</td>
+          <td class="highlight-col"><span class="badge badge-bad">强</span></td>
+          <td><span class="badge badge-good">极低</span></td>
+        </tr>
+        <tr>
+          <td>体外 iPSC / 细胞系</td>
+          <td class="highlight-col"><span class="badge badge-good">首选（大片段）</span></td>
+          <td><span class="badge badge-good">适用（小片段）</span></td>
+        </tr>
+        <tr>
+          <td>体内肝脏 HDR</td>
+          <td class="highlight-col"><span class="badge badge-warn">需 PHx 或免疫抑制</span></td>
+          <td><span class="badge badge-good">首选，无需 PHx</span></td>
+        </tr>
+        <tr>
+          <td>大片段敲入（&gt;3 kb）</td>
+          <td class="highlight-col"><span class="badge badge-good">可以</span></td>
+          <td><span class="badge badge-bad">不可行</span></td>
+        </tr>
+        <tr>
+          <td>随机整合风险</td>
+          <td class="highlight-col"><span class="badge badge-good">极低</span></td>
+          <td><span class="badge badge-warn">ITR 介导整合有背景</span></td>
+        </tr>
+        <tr>
+          <td>临床转化</td>
+          <td class="highlight-col"><span class="badge badge-warn">免疫问题待解</span></td>
+          <td><span class="badge badge-good">路径最成熟</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">
+      <strong>决策逻辑：</strong>
+      插入片段 &gt;3 kb → <strong>腺病毒</strong>（AAV 装不下）。
+      体内给药 → <strong>AAV</strong>（免疫原性低，无需 PHx）。
+      体外 iPSC 小片段 → 两者均可，AAV 感染更温和。
+      体内大片段体细胞编辑 → 目前无理想方案，Gutless Ad + 免疫抑制是探索方向。
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-note">
+  <span>腺病毒载体 · AAV · HDR 供体模板 · CRISPR-Cas9</span>
+  <span>E1/E3 缺失型 · Gutless · iPSC · 体内肝脏 · 模板选择</span>
+</div>
+
+
+</div>
+
+<footer>CRISPR · Cas9 · nickCas9 · 分子生物学科普 · Interactive Learning</footer>
+
+<script>
+  // TAB SWITCHING
+  function switchTab(tab) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // QUIZ LOGIC
+  let currentQ = 0;
+  let score = 0;
+  const total = 6;
+
+  document.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const card = this.closest('.question-card');
+      if (card.querySelector('.opt-btn[disabled]')) return;
+
+      const isCorrect = this.dataset.correct === 'true';
+      if (isCorrect) { score++; this.classList.add('correct'); }
+      else {
+        this.classList.add('wrong');
+        card.querySelector('[data-correct="true"]').classList.add('correct');
+      }
+
+      card.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+      card.querySelector('.explanation').classList.add('show');
+      card.querySelector('.next-btn').classList.add('show');
+    });
+  });
+
+  function nextQ() {
+    currentQ++;
+    document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('progress').style.width = (currentQ / total * 100) + '%';
+
+    if (currentQ >= total) {
+      showScore();
+    } else {
+      document.querySelector(`[data-q="${currentQ}"]`).classList.add('active');
+    }
+  }
+
+  function showScore() {
+    document.getElementById('quiz-container').style.display = 'none';
+    const box = document.getElementById('score-box');
+    box.classList.add('show');
+    document.getElementById('score-display').textContent = score + '/' + total;
+    const msgs = {
+      6: '完美满分！你对 CRISPR 机制掌握得非常扎实 🎉',
+      5: '非常出色！只差一步就满分了 👍',
+      4: '做得不错！再复习一下脱靶修复机制会更好',
+      3: '及格了！建议重新阅读对比展示和作用机制',
+      0: '没关系，回去再看看学习材料，然后重试 💪'
+    };
+    document.getElementById('score-msg').textContent = msgs[score] || msgs[0];
+  }
+
+  function resetQuiz() {
+    currentQ = 0; score = 0;
+    document.getElementById('progress').style.width = '0%';
+    document.getElementById('quiz-container').style.display = 'block';
+    document.getElementById('score-box').classList.remove('show');
+    document.querySelectorAll('.question-card').forEach((c, i) => {
+      c.classList.toggle('active', i === 0);
+      c.querySelectorAll('.opt-btn').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('correct', 'wrong');
+      });
+      c.querySelector('.explanation').classList.remove('show');
+      c.querySelector('.next-btn').classList.remove('show');
+    });
+  }
+</script>
+</body>
+</html>
