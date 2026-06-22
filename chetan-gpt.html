@@ -615,6 +615,59 @@ function appendMsg(role, text){
 
 // ── 发送 ──
 let _sending = false;
+const CALENDAR_ANSWER = `Duke 2026-2027 学术日历（来源：registrar.duke.edu）
+
+【夏季 2026】
+- 5月13日（周三）：暑期第一学期开课
+- 5月15日（周五）：第一学期加退课截止（11:59 PM）
+- 5月25日（周一）：阵亡将士纪念日，不上课
+- 6月10日（周三）：本科生第一学期带W退课截止
+- 6月19日（周五）：六月节（Juneteenth），不上课
+- 6月22日（周一）：第一学期课程结束
+- 6月25日（周四）：第一学期期末考试结束
+- 6月29日（周一）：暑期第二学期开课
+- 7月3日（周五）：独立日假期，不上课
+- 8月7日（周五）：第二学期课程结束
+- 8月10日（周一）：第二学期期末考试结束
+
+【秋季 2026】
+- 8月15日（周六）：本科新生入住日（Move-in Day）
+- 8月16–21日：本科新生Orientation（新生入学指导周）
+- 8月17日（周一）：转学生入住及Orientation开始
+- 8月18日（周二）：研究生新生Orientation开始
+- 8月23日（周日）：本科新生开学典礼（Convocation）
+- 8月24日（周一）：秋季学期开课（8:30 AM）
+- 9月4日（周五）：加退课截止（11:59 PM）
+- 9月7日（周一）：劳动节，不上课
+- 10月9日（周五）：秋假开始（7PM）
+- 10月14日（周三）：课程恢复（8:30 AM）
+- 11月6日（周五）：本科生带W退课截止
+- 11月24日（周二）：感恩节假期开始（10:30 PM）
+- 11月30日（周一）：本科生课程恢复（8:30 AM）
+- 12月4日（周五）：本科生课程结束
+- 12月9日（周三）：期末考试开始（9:00 AM）
+- 12月14日（周一）：期末考试结束（10:00 PM）
+
+【春季 2027】
+- 1月6日（周三）：春季学期开课（8:30 AM）
+- 1月18日（周一）：马丁·路德·金纪念日，不上课
+- 1月20日（周三）：加退课截止（11:59 PM）
+- 3月5日（周五）：春假开始（7PM）
+- 3月15日（周一）：课程恢复（8:30 AM）
+- 3月24日（周三）：本科生带W退课截止
+- 4月21日（周三）：本科生课程结束
+- 4月26日（周一）：期末考试开始
+- 5月1日（周六）：期末考试结束（10:00 PM）
+- 5月7日（周五）：毕业典礼系列活动开始
+- 5月9日（周日）：毕业典礼暨学位授予仪式
+
+官方链接：https://registrar.duke.edu/2026-2027-academic-calendar/`;
+
+function matchCalendar(text) {
+  const keywords = /日历|校历|学术日历|开学|放假|秋假|春假|感恩节|毕业典礼|毕业|graduation|commencement|期末考试|考试时间|选课|注册时间|move.?in|orientation|convocation|fall break|spring break|thanksgiving|academic calendar|什么时候开学|什么时候放假/i;
+  return keywords.test(text);
+}
+
 async function send(){
   if (_sending) return;
   const input = document.getElementById('input');
@@ -628,6 +681,20 @@ async function send(){
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
   const typingEl = appendMsg('bot typing', '扯谈群助手正在码字…');
+
+  // 日历关键词匹配：直接返回硬编码，不走AI
+  if (matchCalendar(text)) {
+    typingEl.remove();
+    const answer = CALENDAR_ANSWER;
+    appendMsg('bot', answer);
+    history.push({role:'user', text});
+    history.push({role:'bot', text: answer});
+    saveConvHistory();
+    _sending = false;
+    btn.disabled = false;
+    document.getElementById('input').focus();
+    return;
+  }
 
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
