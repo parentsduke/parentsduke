@@ -611,6 +611,43 @@
         <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
           一种<strong>人工基因编辑工具</strong>，由 nickCas9 与脱氨酶融合而成。无需切断双链，直接将 DNA 上的一个碱基化学改写为另一个（如 C→T、A→G），用于修正单碱基遗传突变。
         </div>
+
+        <!-- CBE 展开 -->
+        <div style="margin-bottom:14px;padding:14px;border-radius:8px;background:rgba(21,101,192,0.07);border:1px dashed rgba(21,101,192,0.3)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--nick);margin-bottom:10px">第一代：CBE（Cytosine Base Editor）胞嘧啶碱基编辑器</div>
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            将 DNA 上的 <strong>C（胞嘧啶）→ T（胸腺嘧啶）</strong>，对应互补链 G→A。约 <strong>30%</strong> 的人类遗传病由单碱基点突变引起，其中大量属于此类型，CBE 是修正这类突变的核心工具。
+          </div>
+
+          <!-- 结构示意 -->
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2;background:var(--surface);border-radius:6px;padding:10px 12px;margin-bottom:12px;color:var(--text)">
+            [<span style="color:#e67e22">APOBEC 脱氨酶</span>]──[<span style="color:var(--nick)">nickCas9</span>]──[<span style="color:var(--correct)">UGI</span>]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓ 定位靶 C &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓ 阻止还原
+          </div>
+
+          <!-- 三步流程 -->
+          <div style="display:grid;gap:8px;margin-bottom:12px">
+            <div style="display:flex;gap:10px;font-size:12px;line-height:1.7;align-items:flex-start">
+              <div style="font-family:'Space Mono',monospace;color:#e67e22;flex-shrink:0">①</div>
+              <div><strong>nickCas9 定位</strong>：sgRNA 引导复合体结合靶位点，解开单链，暴露靶 C。</div>
+            </div>
+            <div style="display:flex;gap:10px;font-size:12px;line-height:1.7;align-items:flex-start">
+              <div style="font-family:'Space Mono',monospace;color:#e67e22;flex-shrink:0">②</div>
+              <div><strong>APOBEC 脱氨</strong>：去除 C 的氨基，C → U（尿嘧啶）。U 在 DNA 中读作 T，细胞复制时固定为 T。</div>
+            </div>
+            <div style="display:flex;gap:10px;font-size:12px;line-height:1.7;align-items:flex-start">
+              <div style="font-family:'Space Mono',monospace;color:var(--correct);flex-shrink:0">③</div>
+              <div><strong>UGI 护卫</strong>：尿嘧啶糖基化酶抑制剂（UGI）阻止细胞将 U 切除（否则 BER 会把它还原成 C），确保 T 被固定下来。</div>
+            </div>
+          </div>
+
+          <!-- 碱基变化示意 -->
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2;background:var(--surface);border-radius:6px;padding:10px 12px;color:var(--text)">
+            靶链：… <span style="color:var(--cas9)">C</span> … → APOBEC → … <span style="color:#e67e22">U</span> … → 复制固定 → … <span style="color:var(--correct)">T</span> …<br>
+            对侧：… <span style="color:var(--cas9)">G</span> … → （nick + 修复）→ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;… <span style="color:var(--correct)">A</span> …
+          </div>
+        </div>
+
         <div style="font-size:12px;color:var(--muted);border-top:1px solid rgba(21,101,192,0.15);padding-top:10px">
           📌 是什么：<strong style="color:var(--nick)">实验者设计的编辑工具</strong><br>
           作用：主动写入新碱基<br>
