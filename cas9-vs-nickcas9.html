@@ -648,6 +648,53 @@
           </div>
         </div>
 
+        <!-- 核苷酸 vs 碱基 vs nick -->
+        <div style="margin-bottom:14px;padding:14px;border-radius:8px;background:var(--surface2);border:1px solid var(--border)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-bottom:12px">▸ 深入：碱基、核苷酸、nick 分别是什么？</div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:10px">
+            <strong>核苷酸 = 碱基 + 糖 + 磷酸</strong>，是 DNA 链的完整结构单元：
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2;background:var(--surface);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:var(--text)">
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--nick)">碱基（A / T / G / C）</span>&nbsp;&nbsp;← 携带遗传信息，参与配对<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e67e22">脱氧核糖</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 骨架支撑<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--correct)">磷酸基团</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 连接相邻核苷酸，构成骨架
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:10px">
+            CBE 改的是<strong>碱基</strong>而非整个核苷酸：APOBEC 只对碱基头部动手（去掉 C 的一个氨基），糖和磷酸骨架完全不动，DNA 链完整性保持不变。若要替换整个核苷酸，就必须切断骨架、取出旧的、装入新的，本质上与 Cas9 造成的破坏无异。
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:10px">
+            <strong>nick 切的是骨架上的磷酸二酯键</strong>——即相邻两个核苷酸之间的连接，碱基和糖完全不参与：
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2.2;background:var(--surface);border-radius:6px;padding:10px 14px;margin-bottom:14px;color:var(--text)">
+            &nbsp;&nbsp;<span style="color:var(--nick)">碱基</span>&nbsp;&nbsp;<span style="color:var(--nick)">碱基</span>&nbsp;&nbsp;<span style="color:var(--nick)">碱基</span><br>
+            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+            …—<span style="color:#e67e22">磷酸</span>—<span style="color:#e67e22">糖</span>—<span style="color:#e67e22">磷酸</span>—<span style="color:#e67e22">糖</span>—<span style="color:var(--cas9)">✂</span><span style="color:#e67e22">磷酸</span>—<span style="color:#e67e22">糖</span>—<span style="color:#e67e22">磷酸</span>—…<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--cas9)">↑ nickCas9 切这里</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;产生 3′-OH ＋ 5′-磷酸 切口
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+            <div style="padding:10px;border-radius:6px;background:rgba(230,126,34,0.08);border:1px solid rgba(230,126,34,0.25);font-size:12px;line-height:1.7">
+              <strong style="color:#e67e22">APOBEC（CBE）</strong><br>
+              动：<span style="color:var(--nick)">碱基</span>（去氨基 C→U）<br>
+              不动：糖-磷酸骨架
+            </div>
+            <div style="padding:10px;border-radius:6px;background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.2);font-size:12px;line-height:1.7">
+              <strong style="color:var(--cas9)">nickCas9</strong><br>
+              动：<span style="color:var(--cas9)">磷酸二酯键</span>（切骨架）<br>
+              不动：碱基
+            </div>
+          </div>
+          <div style="font-size:12px;line-height:1.7;color:var(--muted)">
+            两者恰好互补——一个改信息，一个定位切口辅助固定编辑结果——这正是 CBE 将它们融合使用的根本原因。
+          </div>
+        </div>
+
         <div style="font-size:12px;color:var(--muted);border-top:1px solid rgba(21,101,192,0.15);padding-top:10px">
           📌 是什么：<strong style="color:var(--nick)">实验者设计的编辑工具</strong><br>
           作用：主动写入新碱基<br>
