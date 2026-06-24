@@ -796,7 +796,45 @@
     <div class="step-list cas9-steps">
       <div class="step">
         <div class="step-num">1</div>
-        <div class="step-body">sgRNA 与 Cas9 蛋白结合，形成核糖核蛋白（RNP）复合体。sgRNA 中的间隔序列（spacer）决定靶向特异性。</div>
+        <div class="step-body">
+          sgRNA 与 Cas9 蛋白结合，形成核糖核蛋白（RNP）复合体。sgRNA 中的间隔序列（spacer，20 nt）决定靶向特异性。
+          <div style="margin-top:14px;padding:16px 18px;background:rgba(21,101,192,0.05);border-left:3px solid var(--nick);border-radius:0 8px 8px 0;font-size:13px;line-height:1.9">
+            <strong style="color:var(--nick)">sgRNA 究竟结合哪条链？</strong>
+
+            <div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2.4;background:var(--surface);border-radius:6px;padding:10px 14px;margin-bottom:12px;overflow-x:auto">
+              非模板链&nbsp;5'—[<span style="color:var(--nick)">A T C G … 20 nt 靶序列</span>]—[<span style="color:var(--cas9)">NGG</span>]—3'&nbsp;&nbsp;← PAM 在此链<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--nick)">↑↑↑ sgRNA 序列与此链相同（T→U）</span><br>
+              模板链&nbsp;&nbsp;3'—[<span style="color:var(--correct)">T A G C … 互补序列</span>]—[<span style="color:var(--cas9)">NCC</span>]—5'<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--correct)">↑↑↑ sgRNA 与此链碱基配对，形成 R-loop</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+              <div style="padding:10px 12px;border-radius:6px;background:rgba(21,101,192,0.07);border:1px solid rgba(21,101,192,0.2);font-size:12px;line-height:1.7">
+                <strong style="color:var(--nick)">非模板链（PAM 链）</strong><br>
+                序列与 sgRNA <strong>相同</strong>（T↔U）<br>
+                是设计 sgRNA 时的"抄写来源"<br>
+                <span style="color:var(--cas9)">→ 被 RuvC 切割</span>
+              </div>
+              <div style="padding:10px 12px;border-radius:6px;background:rgba(26,122,94,0.07);border:1px solid rgba(26,122,94,0.2);font-size:12px;line-height:1.7">
+                <strong style="color:var(--correct)">模板链（互补链）</strong><br>
+                与 sgRNA <strong>互补配对</strong><br>
+                形成 RNA:DNA 杂合双链（R-loop）<br>
+                <span style="color:var(--correct)">→ 被 HNH 切割</span>
+              </div>
+            </div>
+
+            <div style="font-size:12px;line-height:1.8;color:var(--text);margin-bottom:10px">
+              设计 sgRNA 时直接读取非模板链序列（把 T 写成 U），得到的 sgRNA 与非模板链<strong>序列相同</strong>，因此必然与模板链<strong>互补配对</strong>——这是碱基配对规则的必然推论。
+            </div>
+
+            <div style="padding:10px 14px;border-radius:6px;background:rgba(184,134,11,0.07);border:1px solid rgba(184,134,11,0.25);font-size:12px;line-height:1.8">
+              <strong style="color:var(--accent)">三层证据证明这是对的：</strong><br>
+              <strong>① 单链切割实验（Jinek 2012）：</strong>将靶 DNA 拆成两条单链分别与 Cas9-sgRNA 孵育。HNH 切的那条链是模板链，RuvC 切的是非模板链——因为 HNH 专门攻击与 sgRNA 配对的链。<br>
+              <strong>② 晶体结构（Anders 2014 / Nishimasu 2015）：</strong>Cas9-sgRNA-DNA 三元复合体结构清楚显示，sgRNA spacer 与模板链形成 ~20 bp R-loop，非模板链被置换后悬挂在 Cas9 的专用通道中。<br>
+              <strong>③ 逻辑自洽：</strong>sgRNA 序列来自非模板链 → 两者相同 → 只能与模板链互补 → 必然与模板链配对，碱基配对规则不允许其他结果。
+            </div>
+          </div>
+        </div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
@@ -809,7 +847,7 @@
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <div class="step-body"><strong>HNH 结构域</strong> 切割与 sgRNA 互补的链（非模板链），<strong>RuvC 结构域</strong> 切割另一条链，在 PAM 上游 3 bp 处产生平末端双链断裂（blunt-end DSB）。</div>
+        <div class="step-body"><strong>HNH 结构域</strong> 切割与 sgRNA 互补配对的链（<strong>模板链</strong>），<strong>RuvC 结构域</strong> 切割另一条链（<strong>非模板链</strong>／PAM 链），在 PAM 上游 3 bp 处产生平末端双链断裂（blunt-end DSB）。两个结构域协同工作，缺一则退化为 nickCas9。</div>
       </div>
       <div class="step">
         <div class="step-num">4</div>
