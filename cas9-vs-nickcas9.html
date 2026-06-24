@@ -833,6 +833,17 @@
               <strong>② 晶体结构（Anders 2014 / Nishimasu 2015）：</strong>Cas9-sgRNA-DNA 三元复合体结构清楚显示，sgRNA spacer 与模板链形成 ~20 bp R-loop，非模板链被置换后悬挂在 Cas9 的专用通道中。<br>
               <strong>③ 逻辑自洽：</strong>sgRNA 序列来自非模板链 → 两者相同 → 只能与模板链互补 → 必然与模板链配对，碱基配对规则不允许其他结果。
             </div>
+
+            <div style="margin-top:14px;padding:14px 16px;background:rgba(192,57,43,0.05);border-left:3px solid var(--cas9);border-radius:0 8px 8px 0;font-size:12px;line-height:1.8">
+              <strong style="color:var(--cas9)">辨析：这里的"模板链"≠ 转录意义上的 antisense strand</strong><br><br>
+              这两个"模板"说的是两套不同的事：<br>
+              · <strong>CRISPR 语境</strong>："模板链"只是指与 sgRNA 互补配对的那条 DNA 链，描述的是 sgRNA-DNA 的配对关系，和基因转录方向毫无关系。<br>
+              · <strong>转录语境</strong>：antisense strand（反义链）是相对 mRNA 而言的——RNA 聚合酶以它为模板合成出与 sense strand 序列相同的 mRNA，所以转录模板链 = antisense strand。<br><br>
+              二者是否重合，取决于这条 sgRNA 究竟靶向基因的哪条链：<br>
+              · 若 sgRNA 序列与该基因的 <strong>sense strand</strong>（编码链）相同 → CRISPR 的"模板链"正好就是 <strong>antisense strand</strong>。<br>
+              · 若 sgRNA 序列与该基因的 <strong>antisense strand</strong> 相同 → CRISPR 的"模板链"反而就是 <strong>sense strand</strong>，跟 antisense strand 完全不是一回事。<br><br>
+              结论：CRISPR 里的"模板/非模板"是相对 sgRNA 设计而言的标签，不是基因固定不变的 sense/antisense 属性，不能直接等同。
+            </div>
           </div>
         </div>
       </div>
