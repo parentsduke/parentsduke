@@ -1069,6 +1069,43 @@
             <strong style="color:var(--accent)">这正是"无需沉默突变"的根本原因：</strong>正因为切刻位置和链精确对齐，两个分子解链后的末端能严丝合缝直接配对，重组合成不需要额外的序列调整或修正步骤。传统方法常靠沉默突变"错开" PAM 防止重复切割，而这里靠的是精确的位置/链对齐本身就保证了高效、干净的单向配对，设计上就不需要靠改变序列来解决重复切割或错位问题。
           </div>
         </div>
+
+        <div style="margin-top:14px;padding:14px 16px;border-radius:8px;background:var(--surface);border:1px solid var(--border)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--correct);margin-bottom:10px">▸ 追问：那只要一条 sgRNA 就够了吧？</div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            对，<strong>每个切刻位点确实只需要一条 sgRNA</strong>。sgRNA 识别的是序列、不是"分子"——既然供体质粒的同源臂与基因组对应区域序列一致，同一条 sgRNA 自然能同时引导 nickase 去识别并切割两个分子上的同一位置，不需要为供体和基因组分别设计两条不同的 sgRNA。
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            那"两个 Cas9 切刻酶"指的是什么？更准确的说法是<strong>两次切刻反应</strong>（分别发生在供体和基因组这两个分子上），而不是"两条不同的 sgRNA"——本质是同一套 sgRNA + nickase 系统，在两个不同的 DNA 模板上各执行了一次，是"一套工具，用了两次"，不是"两套不同工具"。
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            那为什么又说"多个切刻位点环绕敲入位点"？这是另一个维度：敲入位点两侧（插入序列的上游和下游）各需要一次同源重组，所以<strong>至少需要两个不同位置的切刻点</strong>（一个在插入位点上游、一个在下游），分别促成两端的重组。但每一个位置依然只需要一条 sgRNA，因为该位置在供体和基因组上序列相同。
+          </div>
+
+          <div style="overflow-x:auto;margin-bottom:8px">
+            <table style="width:100%;border-collapse:collapse;font-size:12px">
+              <tr style="border-bottom:1px solid var(--border)">
+                <th style="text-align:left;padding:8px;color:var(--muted)">维度</th>
+                <th style="text-align:left;padding:8px;color:var(--muted)">需要几条 sgRNA</th>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:8px">单个切刻位点（供体 + 基因组）</td>
+                <td style="padding:8px"><strong style="color:var(--correct)">1 条</strong>（序列相同，两边通用）</td>
+              </tr>
+              <tr>
+                <td style="padding:8px">敲入位点两侧（上游 + 下游各一个位点）</td>
+                <td style="padding:8px">通常 <strong style="color:var(--correct)">2 条</strong>（每侧各一条）</td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text)">
+            简单说：<strong>单个位点确实一条 sgRNA 就够，但因为敲入位点两端都要切，整体设计通常还是需要 2 条（或更多）sgRNA</strong>，只是每一条都能"一打二"，同时服务于供体和基因组两个分子，不需要分别设计。
+          </div>
+        </div>
       </div>
 
     </div>
