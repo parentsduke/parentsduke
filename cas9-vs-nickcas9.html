@@ -510,7 +510,7 @@
   <div class="compare-grid">
     <div class="card cas9">
       <div class="card-icon">野生型</div>
-      <h2>Cas9</h2>
+      <h2>Cas9 <span style="font-size:0.6em;font-weight:400;color:var(--muted);font-family:'JetBrains Mono',monospace">（通常指 spCas9）</span></h2>
       <ul>
         <li>具有 <strong>RuvC</strong> 和 <strong>HNH</strong> 两个活性核酸酶结构域</li>
         <li>在 PAM 位点上游 3 bp 处造成 <strong>双链断裂（DSB）</strong></li>
@@ -518,6 +518,16 @@
         <li>单个脱靶位点即可导致突变，脱靶风险较高</li>
         <li>基因敲除的标准工具，效率高</li>
       </ul>
+      <div style="margin-top:12px;padding:12px;border-radius:8px;background:rgba(192,57,43,0.06);border:1px dashed rgba(192,57,43,0.25);font-size:12px;line-height:1.8">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--cas9);margin-bottom:8px">▸ spCas9 是什么？</div>
+        <strong>sp = <em>Streptococcus pyogenes</em>（化脓性链球菌）</strong>，即来自该菌的 Cas9 蛋白。Cas9 并非只有一种，许多细菌都有自己的变体，前缀为菌种缩写：
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2;background:var(--surface);border-radius:6px;padding:8px 12px;margin:8px 0">
+          <span style="color:var(--cas9)">sp</span>Cas9 — <em>S. pyogenes</em> &nbsp;← 最常用，识别 NGG PAM<br>
+          <span style="color:var(--muted)">Sa</span>Cas9 — <em>S. aureus</em> &nbsp;&nbsp;&nbsp;← 体积更小，易于病毒递送<br>
+          <span style="color:var(--muted)">Cj</span>Cas9 — <em>C. jejuni</em> &nbsp;&nbsp;&nbsp;&nbsp;← 更小，PAM 更复杂
+        </div>
+        不加前缀直接说"Cas9"，默认即指 <strong>spCas9</strong>——Doudna 与 Charpentier 2012 年奠基论文用的就是它，后续绝大多数研究（含 nickCas9、碱基编辑器）均基于此。
+      </div>
     </div>
     <div class="card nick">
       <div class="card-icon">突变型</div>
