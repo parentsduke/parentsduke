@@ -529,6 +529,49 @@
         不加前缀直接说"Cas9"，默认即指 <strong>spCas9</strong>——Doudna 与 Charpentier 2012 年奠基论文用的就是它，后续绝大多数研究（含 nickCas9、碱基编辑器）均基于此。
       </div>
     </div>
+
+    <!-- PAM 专题卡片 -->
+    <div style="background:rgba(184,134,11,0.05);border-radius:12px;padding:28px 28px 22px;border:1px solid rgba(184,134,11,0.3);margin-top:0">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:14px">▸ 关键概念：PAM 是什么？</div>
+
+      <div style="font-size:14px;line-height:1.8;margin-bottom:16px">
+        <strong style="color:var(--accent)">PAM（Protospacer Adjacent Motif，原间隔序列邻近基序）</strong>是位于 Cas9 目标切割位点旁边的一小段特定 DNA 序列，是 Cas9 识别并结合靶点的"通行证"。
+      </div>
+
+      <!-- PAM 序列示意 -->
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2.2;background:var(--surface);border-radius:8px;padding:14px 16px;margin-bottom:16px;color:var(--text);overflow-x:auto">
+        5'—[<span style="color:var(--nick)">…sgRNA 结合的 20 nt 靶序列…</span>]—[<span style="color:var(--cas9)">N</span><span style="color:var(--cas9)">G</span><span style="color:var(--cas9)">G</span>]—3'&nbsp;&nbsp;← 非模板链<br>
+        3'—[<span style="color:var(--nick)">…互补序列…</span>]—————————[<span style="color:var(--cas9)">N</span><span style="color:var(--cas9)">C</span><span style="color:var(--cas9)">C</span>]—5'&nbsp;&nbsp;← 模板链<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--cas9)">↑ PAM</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--accent)">✂ 切割点（PAM 上游 3 bp）</span>
+      </div>
+
+      <!-- 三点说明 -->
+      <div style="display:grid;gap:10px;margin-bottom:16px">
+        <div style="display:flex;gap:12px;font-size:13px;line-height:1.7;align-items:flex-start">
+          <div style="font-family:'Space Mono',monospace;color:var(--accent);flex-shrink:0;font-size:15px">①</div>
+          <div><strong>识别门票</strong>：Cas9 必须先在 DNA 上找到 PAM（对 spCas9 而言是 <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace">5'-NGG-3'</code>，N 为任意碱基），才会解链并让 sgRNA 检查相邻序列是否匹配。<strong>没有 PAM，Cas9 不会停下扫描</strong>，无论 sgRNA 序列多么完美。</div>
+        </div>
+        <div style="display:flex;gap:12px;font-size:13px;line-height:1.7;align-items:flex-start">
+          <div style="font-family:'Space Mono',monospace;color:var(--accent);flex-shrink:0;font-size:15px">②</div>
+          <div><strong>防止自我切割</strong>：在细菌中，CRISPR 阵列自身记录的间隔序列旁<em>没有</em> PAM——这让 Cas9 只攻击"有 PAM 的外来病毒 DNA"，而不切割自身基因组，是天然的自我保护机制。</div>
+        </div>
+        <div style="display:flex;gap:12px;font-size:13px;line-height:1.7;align-items:flex-start">
+          <div style="font-family:'Space Mono',monospace;color:var(--accent);flex-shrink:0;font-size:15px">③</div>
+          <div><strong>限制靶点选择</strong>：目标序列下游必须紧接 NGG，才能被 spCas9 编辑。NGG 在基因组中约每 8 bp 出现一次，覆盖度尚可；但若目标位点附近恰好没有 NGG，就需换用 PAM 要求不同的 Cas9 变体（如 <span style="color:var(--muted)">Cas9-NG</span> 识别 NG、<span style="color:var(--muted)">xCas9</span> 识别 NG/GAA/GAT）。</div>
+        </div>
+      </div>
+
+      <!-- Cas9变体PAM速查 -->
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2;background:var(--surface);border-radius:6px;padding:10px 14px;color:var(--text)">
+        <span style="color:var(--accent);letter-spacing:1px">常见变体 PAM 速查</span><br>
+        <span style="color:var(--cas9)">sp</span>Cas9 &nbsp;&nbsp;&nbsp;&nbsp;← <strong>NGG</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最常用，约每 8 bp 一个位点<br>
+        <span style="color:var(--muted)">Sa</span>Cas9 &nbsp;&nbsp;&nbsp;&nbsp;← <strong>NNGRRT</strong> &nbsp;&nbsp;更小体积，适合 AAV 递送<br>
+        <span style="color:var(--muted)">Cas9-NG</span> &nbsp;← <strong>NG</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PAM 要求最宽松，覆盖更广<br>
+        <span style="color:var(--muted)">Cas12a</span> &nbsp;&nbsp;← <strong>TTTV</strong> &nbsp;&nbsp;&nbsp;&nbsp;识别 T 富集区，PAM 在 5' 侧
+      </div>
+    </div>
+
     <div class="card nick">
       <div class="card-icon">突变型</div>
       <h2>nickCas9</h2>
@@ -757,7 +800,12 @@
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <div class="step-body">RNP 复合体在基因组中扫描，识别 <strong>PAM 序列</strong>（NGG，位于靶序列 3' 端），并在 PAM 处解开双链。</div>
+        <div class="step-body">
+          RNP 复合体在基因组中扫描，识别 <strong>PAM 序列</strong>（spCas9 为 <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace">5'-NGG-3'</code>，位于靶序列 3' 端），并在 PAM 处解开双链，让 sgRNA 检查相邻的 20 nt 是否匹配。
+          <div style="margin-top:12px;padding:12px 14px;background:rgba(184,134,11,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:13px;line-height:1.8">
+            <strong style="color:var(--accent)">PAM 是识别的"门票"，不是切割的目标：</strong>Cas9 先认 PAM 停下，再用 sgRNA 比对相邻序列——两者均符合才真正切割。<strong>没有 NGG，无论 sgRNA 多完美，Cas9 都不会在此停留。</strong>这也是双 nick 策略对 PAM-out 构型敏感的原因：两个 gRNA 均需各自找到合法 PAM，nick 位点才能形成交错缺口。
+          </div>
+        </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
@@ -1509,7 +1557,7 @@
       <div class="step-num" style="color:var(--cas9);font-size:2rem">4</div>
       <div class="step-body">
         <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">nickCas9 自身的设计限制</div>
-        双 nick 策略对两个 gRNA 的<strong>间距和方向极为敏感</strong>：需要 PAM-out 构型，nick 间距通常限制在 7–100 nt，过近或过远效率都会骤降。D10A（5' 悬端）与 H840A（3' 悬端）的修复偏好也不同，增加了实验不确定性。
+        双 nick 策略对两个 gRNA 的<strong>间距和方向极为敏感</strong>：需要 PAM-out 构型（两个 PAM 分别位于两个靶序列外侧，使切口朝向彼此），nick 间距通常限制在 7–100 nt，过近或过远效率都会骤降。D10A（5' 悬端）与 H840A（3' 悬端）的修复偏好也不同，增加了实验不确定性。
       </div>
     </div>
 
