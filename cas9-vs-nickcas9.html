@@ -1607,6 +1607,14 @@
       <div class="step-body">
         <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">nickCas9 自身的设计限制</div>
         双 nick 策略对两个 gRNA 的<strong>间距和方向极为敏感</strong>：需要 PAM-out 构型（两个 PAM 分别位于两个靶序列外侧，使切口朝向彼此），nick 间距通常限制在 7–100 nt，过近或过远效率都会骤降。D10A（5' 悬端）与 H840A（3' 悬端）的修复偏好也不同，增加了实验不确定性。
+
+        <div style="margin-top:14px;padding:14px 16px;background:rgba(192,57,43,0.05);border-left:3px solid var(--cas9);border-radius:0 8px 8px 0;font-size:12px;line-height:1.8">
+          <strong style="color:var(--cas9)">两个 nick 间距最大能到多少？</strong><br><br>
+          文献中有两个不完全一致、但并不矛盾的数字，分别对应理论上限和实操推荐：<br><br>
+          · <strong>理论 / 文献报道的最大上限：约 100 nt</strong>——超过这个距离，两个 nick 很难被细胞当作"等效 DSB"处理，HDR 与敲除效率会骤降。<br>
+          · <strong>实际设计时推荐窗口：17–40 bp</strong>——CRISPOR、Zhang lab 等成对 nickase 设计工具默认筛选的范围，效率与特异性最稳健，是目前大多数双 nickase 协议采用的标准窗口。<br><br>
+          简单说：<strong>理论上限 ~100 nt，但实操建议不超过 40 bp</strong>，超出该范围效率会明显下降。
+        </div>
       </div>
     </div>
 
