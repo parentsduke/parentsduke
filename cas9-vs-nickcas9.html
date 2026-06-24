@@ -995,6 +995,26 @@
       <div style="padding:12px 16px;border-radius:8px;background:rgba(184,134,11,0.07);border:1px solid rgba(184,134,11,0.3);font-size:13px;line-height:1.8">
         <strong style="color:var(--accent)">机制小结：</strong>在靶基因组 DNA（第一个分子）上打一个 nick，暴露出可供链侵入的游离末端；在配对的同源 DNA（第二个分子——供体模板 / 姐妹染色单体 / 同源染色体）上打另一个 nick，同样暴露对应末端。两个分子各自只有一处单链缺口，独立存在时都能被 BER 安全修复；但当两者通过同源序列发生<strong>链侵入（strand invasion）/ D-loop</strong> 配对时，这两个预先打开的 nick 恰好提供了重组所需的 3′ 端，HR 由此启动——<strong>整个过程中没有任何一个分子真正断成两段</strong>，从根本上绕开了 DSB 修复通路及其伴随的风险。
       </div>
+
+      <div style="margin-top:18px;padding:14px 16px;border-radius:8px;background:rgba(192,57,43,0.05);border-left:3px solid var(--cas9);font-size:13px;line-height:1.8">
+        <strong style="color:var(--cas9)">追问：每个分子只有一个 nick，怎么会发生重组？</strong><br><br>
+        关键在于：<strong>nick 本身不会自动变成重组</strong>，它要先被加工成可侵入对方的游离末端，再靠两个分子各出一端、互相侵入配对，才能完成整套交换。
+        <div style="display:grid;gap:10px;margin-top:12px;margin-bottom:12px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">①</div>
+            <div><strong>nick → 游离 3′单链尾：</strong>核酸酶（如 EXO1）或解旋酶从 nick 处切除/解开一小段单链，把"被动缺口"转化成一段裸露 ssDNA，并由 <strong>Rad51</strong>（真核）/RecA（原核）包被——这一步是必需的，否则 nick 只会被 PARP1 识别走 BER 直接补平，根本不会进入重组程序。</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">②</div>
+            <div><strong>单端侵入 → D-loop：</strong>Rad51 包被的单链尾去侵入另一分子的双链区域，局部打开并配对，形成位移环（D-loop）。DNA 聚合酶以对方链为模板，从这个 3′端开始合成——理论上一个游离端就足以启动这一步（即 BIR 的核心逻辑）。</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">③</div>
+            <div><strong>为什么要两个分子各出一端：</strong>若只有一端侵入，过程类似 SDSA（合成依赖链退火），效率低、容易半途终止，且对方分子完全未被"标记"，交换缺乏对称性。两个分子各暴露一个游离末端，可分别向对方发起链侵入，各形成一个 D-loop，构成双向链交换的结构基础（双霍利迪连接 dHJ 模型的简化版）：配对更稳定、修复合成可双向互补，最终通过分支迁移与连接结构解离，完成精确交换。</div>
+          </div>
+        </div>
+        <strong style="color:var(--accent)">一句话：</strong>nick 不是直接拿来重组的，而是先被加工成可侵入的游离末端；两个分子各出一端、互相侵入配对，才构成完整的 HR 反应——如果配对没发生，nick 就只是被 BER 默默补好，什么都不会发生，这是一个概率性、需要双方协同的事件。
+
     </div>
 
     <div style="margin-top:28px;margin-bottom:28px;background:var(--surface);border-radius:12px;padding:28px 24px;border:1px solid var(--border)">
