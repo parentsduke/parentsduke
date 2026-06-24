@@ -946,6 +946,57 @@
       </div>
     </div>
 
+    <!-- 专题：进阶思路 —— 两个分子各打一个 nick -->
+    <div style="margin:8px 0 4px 0;background:var(--surface2);border-radius:10px;padding:22px 22px 20px;border:1px solid var(--border)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cas9);margin-bottom:14px">▸ 进阶思路：要 nick，不要"两刀拼出来的 DSB"</div>
+
+      <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:16px">
+        前面讲的双 nickase 策略，本质上仍是在<strong>同一条 DNA 双链</strong>上紧邻切两刀（间距 17–40 bp，PAM-out 方向），制造出一个带<strong>粘性末端（overhang）的"等效 DSB"</strong>。它仍会被细胞当作双链断裂处理，只是因为末端不是平的、风险比 Cas9 直接切平末端 DSB 更低而已——本质上仍走的是 DSB 修复逻辑。
+      </div>
+
+      <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:16px">
+        一种更新的思路是：<strong style="color:var(--cas9)">完全不制造任何形式的 DSB（连带悬突的也不要）</strong>，只用真正干净的单链 nick。但要做到这一点，不能把两个 nick 都打在同一条 DNA 分子上——而要分别打在<strong>两个参与同源重组（HR）、彼此配对的不同 DNA 分子</strong>上。
+      </div>
+
+      <!-- 对比：同一分子两刀 vs 两个分子各一刀 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
+        <div style="padding:14px;border-radius:8px;background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2)">
+          <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--cas9);margin-bottom:8px">旧思路：同一分子上两刀</div>
+          <div style="font-size:12px;line-height:1.8;color:var(--text)">
+            两个 sgRNA 紧邻靶向<strong>同一条 DNA 双链</strong>的两条单链 → 产生交错 nick → 等效于带 overhang 的 DSB → 仍可能激活 NHEJ 类通路
+          </div>
+        </div>
+        <div style="padding:14px;border-radius:8px;background:rgba(21,101,192,0.06);border:1px solid rgba(21,101,192,0.2)">
+          <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--nick);margin-bottom:8px">新思路：两个分子各一刀</div>
+          <div style="font-size:12px;line-height:1.8;color:var(--text)">
+            在<strong>两条互为同源、参与重组的 DNA 分子</strong>上各打一个 nick → 每个分子各自只有一处 SSB，单独存在时由 BER 安全修复 → 两者配对时驱动 HR，全程不出现 DSB
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:14px">
+        <strong style="color:var(--accent)">"两个不同的 DNA 分子"具体指什么？</strong>指的是这次同源重组事件里实际配对、互为模板的那一对同源 DNA，常见组合包括：
+      </div>
+      <div style="display:grid;gap:10px;margin-bottom:14px">
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.7">
+          <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">①</div>
+          <div><strong>姐妹染色单体（sister chromatids）</strong>——DNA 复制后同一条染色体产生的两条几乎完全相同的拷贝，是细胞天然 HR 修复（多在 S/G2 期）最常用的模板来源。</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.7">
+          <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">②</div>
+          <div><strong>同源染色体（homologous chromosomes）</strong>——父源、母源各一条，序列高度相似但可能带不同等位基因，两者间也可发生重组。</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.7">
+          <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">③</div>
+          <div><strong>外源供体模板（exogenous donor DNA）</strong>——做基因编辑时人工提供、与目标位点同源的 DNA，可以是单链 ssODN，也可以是双链质粒或线状 DNA。这是 CRISPR 实验里最常见的"第二个分子"。</div>
+        </div>
+      </div>
+
+      <div style="padding:12px 16px;border-radius:8px;background:rgba(184,134,11,0.07);border:1px solid rgba(184,134,11,0.3);font-size:13px;line-height:1.8">
+        <strong style="color:var(--accent)">机制小结：</strong>在靶基因组 DNA（第一个分子）上打一个 nick，暴露出可供链侵入的游离末端；在配对的同源 DNA（第二个分子——供体模板 / 姐妹染色单体 / 同源染色体）上打另一个 nick，同样暴露对应末端。两个分子各自只有一处单链缺口，独立存在时都能被 BER 安全修复；但当两者通过同源序列发生<strong>链侵入（strand invasion）/ D-loop</strong> 配对时，这两个预先打开的 nick 恰好提供了重组所需的 3′ 端，HR 由此启动——<strong>整个过程中没有任何一个分子真正断成两段</strong>，从根本上绕开了 DSB 修复通路及其伴随的风险。
+      </div>
+    </div>
+
     <div style="margin-top:28px;margin-bottom:28px;background:var(--surface);border-radius:12px;padding:28px 24px;border:1px solid var(--border)">
       <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:16px">NICKCAS9 对 HDR 的改善效果</div>
       <div style="display:grid;gap:14px">
