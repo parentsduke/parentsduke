@@ -1015,7 +1015,29 @@
         </div>
         <strong style="color:var(--accent)">一句话：</strong>nick 不是直接拿来重组的，而是先被加工成可侵入的游离末端；两个分子各出一端、互相侵入配对，才构成完整的 HR 反应——如果配对没发生，nick 就只是被 BER 默默补好，什么都不会发生，这是一个概率性、需要双方协同的事件。
 
+      </div>
+
+      <div style="margin-top:18px;padding:14px 16px;border-radius:8px;background:rgba(26,122,94,0.05);border-left:3px solid var(--correct);font-size:13px;line-height:1.8">
+        <strong style="color:var(--correct)">实例：串联配对切刻（tandem paired nicking）</strong><br><br>
+        这正是"两个分子各打一个 nick"思路的真实落地案例：<strong>两个 Cas9 切刻酶（nickase）</strong>分别作用于<strong>供体质粒</strong>和<strong>基因组</strong>这两个不同的 DNA 分子，且切刻位置经过精心设计——落在两者<strong>同源区域的同一条链、同一相对位置</strong>上，多个切刻位点环绕在敲入位点（knock-in site）的两侧。
+        <div style="margin-top:12px;margin-bottom:12px;display:grid;gap:10px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="color:var(--correct);font-family:'Space Mono',monospace;flex-shrink:0">▸</div>
+            <div><strong>同一链、同一位置：</strong>供体质粒与基因组上的同源序列分别被切刻，且切口落在"对应"的位置上——这保证了两个分子暴露出来的游离末端彼此精确匹配，能够直接配对进行链交换，而不需要额外加工对齐。</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="color:var(--correct);font-family:'Space Mono',monospace;flex-shrink:0">▸</div>
+            <div><strong>切刻位点环绕敲入位点：</strong>多对切刻分布在目标敲入序列的两侧，分别促成两端的同源重组，从而把供体上的目的片段精确"嵌入"到基因组的敲入位点中。</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="color:var(--correct);font-family:'Space Mono',monospace;flex-shrink:0">▸</div>
+            <div><strong>核心优势：无需引入沉默突变。</strong>传统 HDR 设计常需要在供体上引入沉默突变（silent mutation）以破坏 PAM 或防止 Cas9 重新切割已编辑产物，但这类突变会改变最终序列。串联配对切刻巧妙利用 nick（而非 DSB）驱动重组，<strong>不依赖 PAM 破坏来阻止重复切割</strong>，因此可以实现"零额外突变"的精确敲入——编辑后的序列与设计完全一致，不带任何人为引入的痕迹。</div>
+          </div>
+        </div>
+      </div>
+
     </div>
+
 
     <div style="margin-top:28px;margin-bottom:28px;background:var(--surface);border-radius:12px;padding:28px 24px;border:1px solid var(--border)">
       <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:16px">NICKCAS9 对 HDR 的改善效果</div>
