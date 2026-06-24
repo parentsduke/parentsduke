@@ -1034,6 +1034,41 @@
             <div><strong>核心优势：无需引入沉默突变。</strong>传统 HDR 设计常需要在供体上引入沉默突变（silent mutation）以破坏 PAM 或防止 Cas9 重新切割已编辑产物，但这类突变会改变最终序列。串联配对切刻巧妙利用 nick（而非 DSB）驱动重组，<strong>不依赖 PAM 破坏来阻止重复切割</strong>，因此可以实现"零额外突变"的精确敲入——编辑后的序列与设计完全一致，不带任何人为引入的痕迹。</div>
           </div>
         </div>
+
+        <div style="margin-top:14px;padding:14px 16px;border-radius:8px;background:var(--surface);border:1px solid var(--border)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--correct);margin-bottom:10px">▸ 细节展开："同一链、同一位置"具体指什么</div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            供体质粒上含有与基因组同源的序列（同源臂，homology arm），这段序列在两个分子上<strong>几乎完全相同</strong>，可以理解为两段一模一样的"地址条"，敲入位点就夹在其中。
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            <strong>"同一位置"：</strong>两个 sgRNA 识别这段同源序列里完全相同的靶序列（因为序列本身相同，理论上同一条 sgRNA 即可同时识别基因组和供体上的这段区域）。基因组上的 nick 打在同源序列第 N 位，供体上的 nick 也打在对应的第 N 位——不是"随便切在附近"，而是切在完全镶嵌对齐的同一相对坐标上。
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            <strong>"同一链"：</strong>要求两个 nick 都打在方向一致的那条链上（比如都在"上链"，而非一个上链一个下链）。这决定了后续核酸酶从 nick 处解出的游离单链尾，序列走向是否互补匹配：
+          </div>
+
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2.2;background:var(--surface2);border-radius:6px;padding:12px 14px;margin-bottom:12px;overflow-x:auto">
+            基因组&nbsp;&nbsp;5'─────[同源区]────────3'&nbsp;&nbsp;<span style="color:var(--correct)">← nick 在上链第 N 位</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3'─────[同源区]────────5'<br><br>
+            供体质粒&nbsp;5'─────[同源区]────────3'&nbsp;&nbsp;<span style="color:var(--correct)">← nick 也在上链第 N 位</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3'─────[同源区]────────5'
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            由于两边 nick 的链和位置都对齐，从两个 nick 处分别解出的单链尾，序列上<strong>互为反向互补</strong>——天生就能直接配对，不需要任何错位调整。
+          </div>
+
+          <div style="padding:10px 14px;border-radius:6px;background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2);font-size:12px;line-height:1.8;margin-bottom:12px">
+            <strong style="color:var(--cas9)">若链或位置不对齐会怎样：</strong>若供体的 nick 打在"下链"而基因组打在"上链"，或两者位置错开几个碱基，解出的单链尾配对时会出现<strong>错位（offset）</strong>——一边多出一段、一边少一段，形成不匹配的"瓣（flap）"，需额外的 flap 内切酶切除，过程更复杂、更易出错；若链选错，两条单链尾可能根本不互补，无法直接退火，重组效率大打折扣甚至失败。
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text)">
+            <strong style="color:var(--accent)">这正是"无需沉默突变"的根本原因：</strong>正因为切刻位置和链精确对齐，两个分子解链后的末端能严丝合缝直接配对，重组合成不需要额外的序列调整或修正步骤。传统方法常靠沉默突变"错开" PAM 防止重复切割，而这里靠的是精确的位置/链对齐本身就保证了高效、干净的单向配对，设计上就不需要靠改变序列来解决重复切割或错位问题。
+          </div>
+        </div>
       </div>
 
     </div>
