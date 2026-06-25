@@ -1171,6 +1171,46 @@
             总共<strong>2 条 sgRNA、4 次切刻</strong>，但因为每条 sgRNA 都能"一打二"（同时服务供体和基因组），所以不需要 4 条不同的 sgRNA，只需要 2 条，分别对应插入位点的两侧边界。
           </div>
         </div>
+
+        <div style="margin-top:14px;padding:14px 16px;border-radius:8px;background:var(--surface);border:1px solid var(--border)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--correct);margin-bottom:10px">▸ 追问：两个 nick 会产生片段的游离吗</div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            会，但要分清两个 nick 是<strong>同链还是异链</strong>，结果完全不同。
+          </div>
+
+          <div style="display:grid;gap:14px;margin-bottom:12px">
+            <div style="padding:12px 14px;border-radius:8px;background:rgba(21,101,192,0.06);border:1px solid rgba(21,101,192,0.2)">
+              <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--nick);margin-bottom:8px">情况一：两个 nick 在同一条链上（对应"环绕敲入位点"的切刻设计）</div>
+              <div style="font-size:13px;line-height:1.8;color:var(--text)">
+                上游、下游两个 nick 若都打在同一条链上，夹在中间的这段单链两端都已断开磷酸二酯键——在那条链上已经"游离"了，但仍靠碱基配对挂在对面互补链上，没有真正飘走。核酸外切酶/解旋酶（如具链置换活性的酶、类似 FEN1 机制）可以把这段已断裂的单链<strong>剥离、置换掉</strong>，使其真正游离成自由 ssDNA 片段并被降解清除。剥离后，对面互补链上就裸露出一段<strong>单链缺口（ssDNA gap）</strong>——这正是供体序列发生链侵入、配对、合成所需要的"开口"。
+              </div>
+            </div>
+            <div style="padding:12px 14px;border-radius:8px;background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2)">
+              <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--cas9);margin-bottom:8px">情况二：两个 nick 在不同链上、间距很近（对应"双 nickase 配对策略"）</div>
+              <div style="font-size:13px;line-height:1.8;color:var(--text)">
+                若两个 nick 分别打在两条不同链上、间距约 17–40 bp，则不是释放中间片段，而是制造出带粘性末端（overhang）的<strong>等效双链断裂（DSB）</strong>——两条链各自只断一处、错位排列，结果是把 DNA 整体切断成两段，而不是从中间游离出一小片段。
+              </div>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto;margin-bottom:4px">
+            <table style="width:100%;border-collapse:collapse;font-size:12px">
+              <tr style="border-bottom:1px solid var(--border)">
+                <th style="text-align:left;padding:8px;color:var(--muted)">情形</th>
+                <th style="text-align:left;padding:8px;color:var(--muted)">结果</th>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:8px">同链两个 nick，间距较大（环绕敲入位点）</td>
+                <td style="padding:8px">中间单链被剥离游离，暴露互补链 ssDNA 缺口，供重组配对</td>
+              </tr>
+              <tr>
+                <td style="padding:8px">异链两个 nick，间距很近（双 nickase 策略）</td>
+                <td style="padding:8px">形成带 overhang 的等效 DSB，双链整体断裂为两段</td>
+              </tr>
+            </table>
+          </div>
+        </div>
       </div>
 
     </div>
