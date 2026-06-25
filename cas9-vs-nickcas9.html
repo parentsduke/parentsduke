@@ -1106,6 +1106,71 @@
             简单说：<strong>单个位点确实一条 sgRNA 就够，但因为敲入位点两端都要切，整体设计通常还是需要 2 条（或更多）sgRNA</strong>，只是每一条都能"一打二"，同时服务于供体和基因组两个分子，不需要分别设计。
           </div>
         </div>
+
+        <div style="margin-top:14px;padding:14px 16px;border-radius:8px;background:var(--surface);border:1px solid var(--border)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--correct);margin-bottom:10px">▸ 细节展开：为什么两端各需要一条独立的 sgRNA</div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            敲入(knock-in)的目标是把供体上的一段新序列精确"嫁接"进基因组的某个位置，相当于把一段 DNA"剪切粘贴"进去。要让新序列两头都和基因组正确连接（而不是只接上一头、另一头悬空或残留原序列），必须在<strong>插入序列的上游边界</strong>和<strong>下游边界</strong>各完成一次同源重组：
+          </div>
+          <div style="display:grid;gap:10px;margin-bottom:12px">
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="color:var(--correct);font-family:'Space Mono',monospace;flex-shrink:0">▸</div>
+              <div><strong>上游重组：</strong>把供体序列的左端与基因组插入点左侧的序列正确连接。</div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="color:var(--correct);font-family:'Space Mono',monospace;flex-shrink:0">▸</div>
+              <div><strong>下游重组：</strong>把供体序列的右端与基因组插入点右侧的序列正确连接。</div>
+            </div>
+          </div>
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            只做一端的话，新序列只有一头被"焊"进基因组，另一头依然是断裂或游离状态，插入不完整。
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            每一端的重组都是"串联配对切刻"机制——供体和基因组在该端的同源序列上、同一条链、同一相对位置各打一个 nick，这一个 nick 由<strong>一条 sgRNA</strong>（在供体和基因组上各执行一次）实现。因为上游边界和下游边界的同源序列在染色体上的位置不同、碱基序列也不同，所以：
+          </div>
+          <div style="display:grid;gap:10px;margin-bottom:12px">
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">①</div>
+              <div><strong>sgRNA #1</strong> 负责识别上游边界的序列，在供体和基因组的上游同源区各打一个 nick；</div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="color:var(--nick);font-family:'Space Mono',monospace;flex-shrink:0">②</div>
+              <div><strong>sgRNA #2</strong> 负责识别下游边界的序列，在供体和基因组的下游同源区各打一个 nick。</div>
+            </div>
+          </div>
+          <div style="font-size:13px;line-height:1.8;color:var(--text);margin-bottom:12px">
+            这两条 sgRNA 序列必然不同，因为它们要匹配的是基因组上两个<strong>不同位置</strong>的序列——不能用同一条 sgRNA 去同时识别两个序列不同的位置。
+          </div>
+
+          <div style="overflow-x:auto;margin-bottom:8px">
+            <table style="width:100%;border-collapse:collapse;font-size:12px">
+              <tr style="border-bottom:1px solid var(--border)">
+                <th style="text-align:left;padding:8px;color:var(--muted)">位置</th>
+                <th style="text-align:left;padding:8px;color:var(--muted)">sgRNA</th>
+                <th style="text-align:left;padding:8px;color:var(--muted)">作用的分子</th>
+                <th style="text-align:left;padding:8px;color:var(--muted)">nick 次数</th>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:8px">上游边界</td>
+                <td style="padding:8px">sgRNA #1</td>
+                <td style="padding:8px">供体 + 基因组</td>
+                <td style="padding:8px">2 次（各一刀）</td>
+              </tr>
+              <tr>
+                <td style="padding:8px">下游边界</td>
+                <td style="padding:8px">sgRNA #2</td>
+                <td style="padding:8px">供体 + 基因组</td>
+                <td style="padding:8px">2 次（各一刀）</td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="font-size:13px;line-height:1.8;color:var(--text)">
+            总共<strong>2 条 sgRNA、4 次切刻</strong>，但因为每条 sgRNA 都能"一打二"（同时服务供体和基因组），所以不需要 4 条不同的 sgRNA，只需要 2 条，分别对应插入位点的两侧边界。
+          </div>
+        </div>
       </div>
 
     </div>
