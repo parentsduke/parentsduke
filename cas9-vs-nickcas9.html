@@ -2041,6 +2041,81 @@
 
   </div>
 
+  <!-- TPN 专题 -->
+  <div style="margin-top:8px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:20px;text-align:center">SPOTLIGHT · 2020 重要文献</div>
+
+    <div style="background:var(--surface);border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:16px">
+      <!-- 标题栏 -->
+      <div style="background:linear-gradient(90deg,rgba(21,101,192,0.10),rgba(184,134,11,0.08));padding:20px 24px;border-bottom:1px solid var(--border)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:6px">Cell Reports · 2020-01-28 · DOI 10.1016/j.celrep.2019.12.064</div>
+        <div style="font-family:'Space Mono',monospace;font-size:16px;color:var(--nick);line-height:1.4">串联配对切刻（Tandem Paired Nicking，TPN）</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:4px">Hyodo et al. · 爱知医科大学</div>
+      </div>
+
+      <div style="padding:24px">
+
+        <!-- 与经典双nickase的关键区别 -->
+        <div style="background:rgba(184,134,11,0.06);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:20px;font-size:13px;line-height:1.8">
+          <strong style="color:var(--accent)">⚠ 与经典双 nickase 的根本区别</strong><br>
+          经典双 nickase：两条链<strong>各切一刀</strong>（上链＋下链），模拟 DSB<br>
+          TPN：两个 nickase 均作用于<strong>同一条链</strong>，同时切基因组和供体质粒的同源区域
+        </div>
+
+        <!-- 机制图示 -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">作用机制</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;line-height:1.8">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--nick);margin-bottom:8px">基因组侧</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:2">
+              5'──[nick₁]──敲入位点──[nick₂]──3'　← 同一条链<br>
+              3'────────────────────────────5'　← 互补链完整
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-top:8px">两个 nick 环绕敲入位点，位于同源区域内</div>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;line-height:1.8">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:8px">供体质粒侧</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:2">
+              5'──[nick₁]──插入序列──[nick₂]──3'　← 同一条链<br>
+              3'────────────────────────────5'　← 互补链完整
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-top:8px">相同 sgRNA 在供体质粒同源区的对应位置切刻</div>
+          </div>
+
+        </div>
+
+        <!-- 重组模型 -->
+        <div style="background:var(--surface2);border-radius:8px;padding:14px 16px;margin-bottom:20px;font-size:13px;line-height:1.8">
+          <strong style="color:var(--nick)">Holliday 重组模型</strong>：基因组与供体各有两个同链 nick → 产生可互换的单链末端 → 类 Holliday 连接体介导同源重组 → 精准敲入，不经过 DSB
+        </div>
+
+        <!-- 四大优势 -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">TPN 的核心优势</div>
+        <div style="display:grid;gap:10px">
+          <div style="display:flex;gap:12px;padding:12px 14px;background:rgba(21,101,192,0.05);border-radius:8px;font-size:13px;line-height:1.7">
+            <div style="color:var(--nick);font-weight:bold;flex-shrink:0">①</div>
+            <div><strong>几乎不产生 indel</strong>——无 DSB，不触发 NHEJ，靶点和脱靶位点的 indel 率极低</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:12px 14px;background:rgba(21,101,192,0.05);border-radius:8px;font-size:13px;line-height:1.7">
+            <div style="color:var(--nick);font-weight:bold;flex-shrink:0">②</div>
+            <div><strong>敲入效率与 Cas9 核酸酶相当</strong>——弥补了传统单 nick HDR 效率低的缺陷</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:12px 14px;background:rgba(21,101,192,0.05);border-radius:8px;font-size:13px;line-height:1.7">
+            <div style="color:var(--nick);font-weight:bold;flex-shrink:0">③</div>
+            <div><strong>不激活 p53 / 不受 p53 抑制</strong>——DSB 会激活 p53 通路导致细胞凋亡或周期停滞，TPN 避免了这一问题，在 p53 野生型细胞中同样高效</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:12px 14px;background:rgba(21,101,192,0.05);border-radius:8px;font-size:13px;line-height:1.7">
+            <div style="color:var(--nick);font-weight:bold;flex-shrink:0">④</div>
+            <div><strong>无需引入沉默突变</strong>——切刻位点在同源臂内而非敲入序列中，不需要额外的核苷酸变化来破坏重新切割位点</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <footer>CRISPR · Cas9 · nickCas9 · 分子生物学科普 · Interactive Learning</footer>
