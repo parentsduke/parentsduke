@@ -4385,6 +4385,217 @@
     </div>
   </div>
 
+  <!-- Kocher 2019 专题 -->
+  <div style="margin-top:32px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:20px;text-align:center">SPOTLIGHT · 2019 重要文献</div>
+
+    <div style="background:var(--surface);border-radius:12px;border:1px solid var(--border);overflow:hidden">
+      <!-- 标题栏 -->
+      <div style="background:linear-gradient(90deg,rgba(192,57,43,0.08),rgba(21,101,192,0.06));padding:20px 24px;border-bottom:1px solid var(--border)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:6px">Molecular Therapy: Nucleic Acids · 2019-12 · DOI 10.1016/j.omtn.2019.09.011</div>
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);line-height:1.4">改进的双切刻策略用于COL7A1同源重组基因编辑</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:4px">Kocher et al. · 奥地利萨尔茨堡医科大学 · EB House Austria</div>
+      </div>
+
+      <div style="padding:24px">
+
+        <!-- 背景 -->
+        <div style="font-size:13px;line-height:1.9;margin-bottom:20px;color:var(--text)">
+          隐性营养不良型大疱性表皮松解症（RDEB）由<strong>COL7A1基因突变</strong>导致，患者皮肤和黏膜在轻微摩擦下即发生严重水疱，目前无根治手段。本文系统比较了三种切割策略在患者角质形成细胞中介导精准基因修复的效率，是双切刻策略目前<strong>临床前数据最好的文献之一</strong>。
+        </div>
+
+        <!-- 核心数据对比 -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">核心数据 · 患者角质形成细胞（RDEB het.）</div>
+        <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px;font-size:13px">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;background:var(--surface2);padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">
+            <span>策略</span><span style="text-align:center">HR效率</span><span style="text-align:center">NHEJ</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 14px;border-top:1px solid var(--border)">
+            <span>Cas9/sgRNA1（DSB）</span><span style="text-align:center;color:var(--muted)">6.3%</span><span style="text-align:center;color:var(--cas9)">62%</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 14px;border-top:1px solid var(--border)">
+            <span>Cas9/sgRNA2（DSB）</span><span style="text-align:center;color:var(--muted)">53%</span><span style="text-align:center;color:var(--cas9)">30%</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 14px;border-top:1px solid var(--border)">
+            <span>Cas9n/sgRNA1（单切刻）</span><span style="text-align:center;color:var(--muted)">6%</span><span style="text-align:center;color:var(--correct)">0%</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 14px;border-top:1px solid var(--border)">
+            <span>Cas9n/sgRNA2（单切刻）</span><span style="text-align:center;color:var(--muted)">53%</span><span style="text-align:center;color:var(--correct)">0%</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 14px;border-top:1px solid var(--border);background:rgba(21,101,192,0.05)">
+            <strong style="color:var(--nick)">Cas9n/sgRNA1+2（双切刻）</strong><strong style="text-align:center;color:var(--nick)">89%</strong><strong style="text-align:center;color:var(--correct)">11%</strong>
+          </div>
+        </div>
+
+        <!-- 三个新发现 -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">本文新增的三个关键发现</div>
+        <div style="display:grid;gap:12px;margin-bottom:20px">
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:16px 18px;border-left:3px solid var(--cas9)">
+            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cas9);margin-bottom:8px">① 供体质粒PAM必须灭活</div>
+            <div style="font-size:13px;line-height:1.8">供体质粒保留完整PAM时，Cas9n会反复切割已整合进基因组的供体序列，破坏HR产物。将供体上的PAM突变灭活后，HR效率从<strong>27%跃升至66%</strong>。这是双切刻实验设计中容易忽视的关键细节。</div>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:16px 18px;border-left:3px solid var(--nick)">
+            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--nick);margin-bottom:8px">② 配对双切刻（Paired Double-Nicking）</div>
+            <div style="font-size:13px;line-height:1.8">在供体质粒两端额外添加sgRNA靶序列，让Cas9n同时切割供体质粒两端，释放线性化供体片段，进一步促进HR。与TPN"切供体+切基因组"的思路相似，但机制不同——这里是供体两端各一刀产生线性末端，双切刻+配对供体切刻联合可将HR提升至<strong>25.5%</strong>（外显子3方案）。</div>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:16px 18px;border-left:3px solid var(--accent)">
+            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);margin-bottom:8px">③ 内含子靶向优于外显子靶向</div>
+            <div style="font-size:13px;line-height:1.8">内含子靶向和外显子靶向HR效率相近（89% vs 80%），但内含子靶向不会在编码区引入任何序列变化，安全性更高，推荐优先选择。注意：内含子的SNP多态性较高，设计sgRNA时需仔细考量患者个体差异。</div>
+          </div>
+
+        </div>
+
+        <!-- 临床验证 -->
+        <div style="background:rgba(26,122,94,0.06);border-radius:8px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.8;border-left:3px solid var(--correct)">
+          <strong style="color:var(--correct)">蛋白水平验证</strong>：在纯合子RDEB患者细胞中，双切刻策略选择2周后77%细胞恢复C7蛋白表达，蛋白量达野生型的81%，分泌到细胞外的C7也同步恢复。理论上只需35%以上的细胞修复即可实现表型恢复，77%远超治疗阈值。
+        </div>
+
+        <!-- 脱靶 -->
+        <div style="background:rgba(21,101,192,0.05);border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.8">
+          <strong style="color:var(--nick)">脱靶安全性</strong>：对26个预测脱靶位点进行NGS深度测序，Cas9在OT9位点造成54%等位基因修饰；<strong>Cas9n双切刻在全部位点均无可检测脱靶活性</strong>，进一步确认了双切刻的临床安全性优势。
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- NICER 2023 专题 -->
+  <div style="margin-top:32px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:20px;text-align:center">SPOTLIGHT · 2023 重要文献</div>
+
+    <div style="background:var(--surface);border-radius:12px;border:1px solid var(--border);overflow:hidden">
+      <!-- 标题栏 -->
+      <div style="background:linear-gradient(90deg,rgba(26,122,94,0.10),rgba(21,101,192,0.06));padding:20px 24px;border-bottom:1px solid var(--border)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:6px">Nature Communications · 2023-09-15 · DOI 10.1038/s41467-023-41048-5</div>
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--correct);line-height:1.4">NICER：多重切刻诱导同源染色体间重组，修正体细胞杂合突变</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:4px">Tomita, Nakada et al. · 大阪大学 · 名古屋大学</div>
+      </div>
+
+      <div style="padding:24px">
+
+        <!-- 核心创新警示框 -->
+        <div style="background:rgba(26,122,94,0.07);border-left:3px solid var(--correct);border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:20px;font-size:13px;line-height:1.8">
+          <strong style="color:var(--correct)">根本性创新：完全不需要外源供体模板</strong><br>
+          之前所有策略（经典双nickase、TPN、Kocher 2019）都依赖外源供体DNA。NICER用<strong>同源染色体上的野生型等位基因</strong>作为内源修复模板，通过<strong>同源染色体间同源重组（IH-HR）</strong>纠正杂合突变，彻底消除外源DNA随机整合的风险。
+        </div>
+
+        <!-- 策略设计 -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">策略设计</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;font-size:13px">
+          <div style="padding:14px 16px;background:rgba(192,57,43,0.05);border-radius:8px;line-height:1.8">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--cas9);margin-bottom:6px">主sgRNA（Primary）</div>
+            特异性靶向<strong>突变等位基因</strong>，紧邻突变位点制造nick，等位基因特异性识别
+          </div>
+          <div style="padding:14px 16px;background:rgba(21,101,192,0.05);border-radius:8px;line-height:1.8">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--nick);margin-bottom:6px">次级sgRNA（Secondary）</div>
+            在<strong>两条同源染色体上</strong>额外制造多个nick（偏移量24–8675 bp均有效），激活IH-HR
+          </div>
+        </div>
+
+        <!-- 关键规则 -->
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px;line-height:1.8">
+          <strong style="color:var(--accent)">关键规则</strong>：两条同源染色体上<strong>都必须有nick</strong>才能高效触发IH-HR。同一条染色体上的串联nick不能增强IH-HR；供体等位基因上的nick是增效的必要条件。
+        </div>
+
+        <!-- 核心数据 -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">核心数据（TK1基因修正，人淋巴母细胞）</div>
+        <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px;font-size:13px">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;background:var(--surface2);padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">
+            <span>策略</span><span style="text-align:center">修正效率</span><span style="text-align:center">indel</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 14px;border-top:1px solid var(--border)">
+            <span>Cas9 DSB + ssODN</span><span style="text-align:center;color:var(--muted)">有效</span><span style="text-align:center;color:var(--cas9)">高</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 14px;border-top:1px solid var(--border)">
+            <span>单nick（一条染色体）</span><span style="text-align:center;color:var(--muted)">极低</span><span style="text-align:center;color:var(--correct)">极低</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 14px;border-top:1px solid var(--border)">
+            <span>NICER 单次电转（无选择）</span><span style="text-align:center;color:var(--nick)">3–6%</span><span style="text-align:center;color:var(--correct)">≤0.3%</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 14px;border-top:1px solid var(--border);background:rgba(26,122,94,0.05)">
+            <strong style="color:var(--correct)">NICER 三次重复电转</strong><strong style="text-align:center;color:var(--correct)">18.5%</strong><strong style="text-align:center;color:var(--correct)">≤0.3%</strong>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:9px 14px;border-top:1px solid var(--border)">
+            <span>修正克隆中WT序列比例</span><span style="text-align:center;color:var(--correct)" colspan="2">96–99.5%</span><span></span>
+          </div>
+        </div>
+
+        <!-- 四大特性 -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">NICER独有的四大特性</div>
+        <div style="display:grid;gap:10px;margin-bottom:20px">
+          <div style="display:flex;gap:12px;padding:12px 14px;background:rgba(26,122,94,0.05);border-radius:8px;font-size:13px;line-height:1.7">
+            <div style="color:var(--correct);font-weight:bold;flex-shrink:0">①</div>
+            <div><strong>无外源DNA</strong>——用同源染色体作模板，彻底消除供体随机整合风险，也无需设计和制备供体质粒</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:12px 14px;background:rgba(26,122,94,0.05);border-radius:8px;font-size:13px;line-height:1.7">
+            <div style="color:var(--correct);font-weight:bold;flex-shrink:0">②</div>
+            <div><strong>可修正大片段缺失（>600 bp）</strong>——Base Editing和Prime Editing均无法处理大片段缺失，NICER可以，且无DSB，修正后序列完整</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:12px 14px;background:rgba(26,122,94,0.05);border-radius:8px;font-size:13px;line-height:1.7">
+            <div style="color:var(--correct);font-weight:bold;flex-shrink:0">③</div>
+            <div><strong>G1期也能发生</strong>——传统HR被认为局限于S/G2期（需要姐妹染色单体），NICER的IH-HR在G1阻滞细胞中仍有效，机制部分独立于CtIP，提示存在nick直接驱动的HR通路</div>
+          </div>
+          <div style="display:flex;gap:12px;padding:12px 14px;background:rgba(26,122,94,0.05);border-radius:8px;font-size:13px;line-height:1.7">
+            <div style="color:var(--correct);font-weight:bold;flex-shrink:0">④</div>
+            <div><strong>全基因组零脱靶</strong>——WGS分析显示基因修正克隆在99个预测脱靶位点±50bp内SNV和结构变异均为零；Cas9 ssODN对照：2.53×10⁻²/位点/克隆</div>
+          </div>
+        </div>
+
+        <!-- 机制 -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">机制要点</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;font-size:13px;line-height:1.8">
+          <div style="padding:12px 14px;background:var(--surface2);border-radius:8px">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px">依赖</div>
+            BRCA1/BRCA2（约50%）、EXO1、RAD51；多nick暴露长ssDNA，跨越两nick间整个区域
+          </div>
+          <div style="padding:12px 14px;background:var(--surface2);border-radius:8px">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px">不依赖</div>
+            CtIP（与DSB修复不同）、BLM、MUS81、POLQ；SMARCAL1敲除反而<strong>提升</strong>效率
+          </div>
+        </div>
+
+        <!-- 患者细胞验证 -->
+        <div style="background:rgba(26,122,94,0.06);border-radius:8px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.8;border-left:3px solid var(--correct)">
+          <strong style="color:var(--correct)">真实患者细胞验证</strong><br>
+          · ADH5基因（再生障碍性贫血/AMeD综合征，复合杂合突变）：NICER成功恢复ADH5蛋白表达<br>
+          · FANCA基因（范可尼贫血，复合杂合突变）：成功修正外显子20突变，恢复FANCD2单泛素化功能；即使在FANCA缺陷细胞中效率仍达75%以上
+        </div>
+
+        <!-- 局限性 -->
+        <div style="background:rgba(192,57,43,0.05);border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.8;border-left:3px solid var(--cas9)">
+          <strong style="color:var(--cas9)">核心局限</strong>：仅适用于<strong>杂合突变</strong>——必须有一条野生型（或功能正常）等位基因作为内源模板。纯合突变、两条等位基因均有缺陷的复合杂合突变（两个不同位点）需要额外策略配合。另需注意LOH（杂合性丢失）风险，可通过Sanger测序筛查。
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 策略总对比 -->
+  <div style="margin-top:40px;margin-bottom:8px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:16px;text-align:center">SUMMARY · 四大策略横向对比</div>
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;font-size:12px">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;background:var(--surface2);padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);gap:4px">
+        <span>策略</span><span style="text-align:center">需要供体</span><span style="text-align:center">indel风险</span><span style="text-align:center">可修正大缺失</span><span style="text-align:center">p53影响</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;padding:8px 12px;border-top:1px solid var(--border);gap:4px;line-height:1.6">
+        <span style="color:var(--cas9)">经典双nickase（Kocher 2019）</span><span style="text-align:center">是</span><span style="text-align:center;color:var(--correct)">极低</span><span style="text-align:center;color:var(--muted)">否</span><span style="text-align:center;color:var(--muted)">较小</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;padding:8px 12px;border-top:1px solid var(--border);background:rgba(21,101,192,0.03);gap:4px;line-height:1.6">
+        <span style="color:var(--nick)">TPN（Hyodo 2020）</span><span style="text-align:center">是</span><span style="text-align:center;color:var(--correct)">极低</span><span style="text-align:center;color:var(--muted)">否</span><span style="text-align:center;color:var(--correct)">极小</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;padding:8px 12px;border-top:1px solid var(--border);gap:4px;line-height:1.6">
+        <span style="color:var(--accent)">Prime Editing（2019→）</span><span style="text-align:center">pegRNA</span><span style="text-align:center;color:var(--correct)">极低</span><span style="text-align:center;color:var(--muted)">否（&lt;50bp）</span><span style="text-align:center;color:var(--correct)">极小</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;padding:8px 12px;border-top:1px solid var(--border);background:rgba(26,122,94,0.04);gap:4px;line-height:1.6">
+        <strong style="color:var(--correct)">NICER（Tomita 2023）</strong><span style="text-align:center;color:var(--correct)"><strong>否</strong></span><span style="text-align:center;color:var(--correct)">≤0.3%</span><span style="text-align:center;color:var(--correct)"><strong>是（>600bp）</strong></span><span style="text-align:center;color:var(--correct)">极小</span>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-top:8px;text-align:center">NICER仅适用于杂合突变；其余策略适用范围更广</div>
+  </div>
+
 </div>
 
 <footer>CRISPR · Cas9 · nickCas9 · 分子生物学科普 · Interactive Learning</footer>
