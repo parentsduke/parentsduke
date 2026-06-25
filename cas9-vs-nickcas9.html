@@ -474,6 +474,7 @@
   <button class="tab-btn" onclick="switchTab('mechanism')">作用机制</button>
   <button class="tab-btn" onclick="switchTab('quiz')">知识测验</button>
   <button class="tab-btn" onclick="switchTab('whycas9')">为何还用 Cas9？</button>
+  <button class="tab-btn" onclick="switchTab('history')">发展历程</button>
 </div>
 
 <!-- ═══ COMPARE PANEL ═══ -->
@@ -1931,6 +1932,113 @@
         <div style="font-size:13px"><strong style="color:var(--accent)">双 nickase 策略</strong>　扩大有效窗口，提升 HDR∶indel 比值</div>
       </div>
     </div>
+  </div>
+
+</div>
+
+<!-- ═══ HISTORY PANEL ═══ -->
+<div id="panel-history" class="panel">
+
+  <div style="text-align:center;margin-bottom:48px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:12px">TIMELINE</div>
+    <h2 style="font-family:'Space Mono',monospace;font-size:1.8rem;color:var(--nick);margin-bottom:10px">CRISPR-Cas9 工具发展历程</h2>
+    <p style="color:var(--muted);font-size:14px;max-width:560px;margin:0 auto;line-height:1.8">从 nickase 热潮到 Prime Editing，技术迭代背后的逻辑脉络</p>
+  </div>
+
+  <!-- 先解释双nick在哪 -->
+  <div style="background:var(--surface);border-radius:12px;padding:28px 32px;border:1px solid var(--border);margin-bottom:40px;border-left:4px solid var(--nick)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--nick);margin-bottom:14px">KEY CONCEPT · 双 nick 在哪条链？</div>
+    <p style="font-size:15px;line-height:1.9;margin-bottom:14px">
+      双 nickase 策略的两个 nick <strong>分别在两条链上</strong>，各一个——上链一刀、下链一刀，错开 17–40 bp，合力模拟一个 DSB。
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px;line-height:1.7">
+      <div style="padding:14px 16px;background:rgba(21,101,192,0.06);border-radius:8px">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--nick);margin-bottom:6px">✓ 正确理解</div>
+        两条链各切一次 → 错位缺口 → 等效 DSB → 触发 HDR
+      </div>
+      <div style="padding:14px 16px;background:rgba(192,57,43,0.06);border-radius:8px">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cas9);margin-bottom:6px">✗ 常见误解</div>
+        同一条链切两刀 → 互补链完整 → 缺口被 BER 修复 → 不会产生 DSB
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-top:14px;line-height:1.7">
+      两个 sgRNA 须采用 <strong>PAM-out 构型</strong>（两个 PAM 各自朝外），使切口相向；间距理论上限约 100 nt，实操推荐 17–40 bp，超出范围效率骤降。
+    </p>
+  </div>
+
+  <!-- 时间线 -->
+  <div style="position:relative;padding-left:32px;margin-bottom:48px">
+    <!-- 竖线 -->
+    <div style="position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--cas9),var(--nick),var(--accent));border-radius:2px"></div>
+
+    <!-- 2012 -->
+    <div style="position:relative;margin-bottom:40px">
+      <div style="position:absolute;left:-27px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--cas9);border:2px solid #fff;box-shadow:0 0 0 2px var(--cas9)"></div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--cas9);margin-bottom:6px">2012–2013　起点</div>
+      <div style="background:var(--surface);border-radius:10px;padding:18px 20px;border:1px solid var(--border);font-size:14px;line-height:1.8">
+        Charpentier &amp; Doudna 发表 Cas9 体外剪切论文（2012），Zhang lab 随即实现哺乳动物基因组编辑（2013）。野生型 Cas9 产生 <strong>DSB</strong>，主要依赖 NHEJ 修复，indel 效率高，但脱靶率也高。
+      </div>
+    </div>
+
+    <!-- 2013-2016 -->
+    <div style="position:relative;margin-bottom:40px">
+      <div style="position:absolute;left:-27px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--nick);border:2px solid #fff;box-shadow:0 0 0 2px var(--nick)"></div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--nick);margin-bottom:6px">2013–2016　nickase 热潮</div>
+      <div style="background:var(--surface);border-radius:10px;padding:18px 20px;border:1px solid var(--border);font-size:14px;line-height:1.8">
+        <strong>nickCas9（D10A / H840A）双切策略</strong>兴起：两条 sgRNA 分别在上下链各切一刀，脱靶率大幅下降（脱靶需同时在两处 nick，概率呈乘积关系），HDR∶indel 比值也有改善。Zhang lab、Church lab 等发表了大量相关文章，成为追求高精度编辑的主流方案之一。
+      </div>
+    </div>
+
+    <!-- 2017-2020 -->
+    <div style="position:relative;margin-bottom:40px">
+      <div style="position:absolute;left:-27px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--cas9);border:2px solid #fff;box-shadow:0 0 0 2px var(--cas9)"></div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--cas9);margin-bottom:6px">2017–2020　高保真 Cas9 兴起</div>
+      <div style="background:var(--surface);border-radius:10px;padding:18px 20px;border:1px solid var(--border);font-size:14px;line-height:1.8">
+        <strong>eSpCas9、SpCas9-HF1、HypaCas9</strong> 等高保真变体相继发表。通过点突变削弱非特异性 DNA 结合，在保留切割效率的同时大幅降低脱靶率。相比需要两条 sgRNA 的双 nickase，只需一条 sgRNA 的高保真 Cas9 操作更简单，逐渐成为精准编辑的首选替代方案。
+        <div style="margin-top:10px;padding:10px 14px;background:rgba(192,57,43,0.05);border-radius:6px;font-size:13px;color:var(--muted)">
+          ※ nickase 并未消失，而是开始被整合进下一代工具
+        </div>
+      </div>
+    </div>
+
+    <!-- 2016/2019 Base/Prime Editing -->
+    <div style="position:relative;margin-bottom:40px">
+      <div style="position:absolute;left:-27px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 2px var(--accent)"></div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);margin-bottom:6px">2016 / 2019　Base Editing &amp; Prime Editing 诞生</div>
+      <div style="background:var(--surface);border-radius:10px;padding:18px 20px;border:1px solid var(--border);font-size:14px;line-height:1.8">
+        <strong>Base Editing（BE3，2016，David Liu lab）</strong>：nickCas9-D10A 融合脱氨酶，在单链 nick 基础上直接对碱基化学修饰，实现 C→T 或 A→G 精准替换，完全绕开 DSB 和 HDR。<br><br>
+        <strong>Prime Editing（PE2/PE3，2019，David Liu lab）</strong>：nickCas9 融合逆转录酶，通过 pegRNA 模板写入新序列，可实现所有 12 种碱基替换及小片段插入缺失，同样不需要 DSB。PE3 版本同时用第二条 sgRNA 在另一条链再切一刀（即双 nick），进一步提升效率。<br><br>
+        <div style="padding:10px 14px;background:rgba(184,134,11,0.06);border-radius:6px;font-size:13px;color:var(--muted)">
+          nickCas9 以"组件"形式延续：它是 BE 和 PE 的核心模块，并非被淘汰，而是升华为更强大工具的基础
+        </div>
+      </div>
+    </div>
+
+    <!-- 2020+ -->
+    <div style="position:relative;margin-bottom:8px">
+      <div style="position:absolute;left:-27px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 2px var(--accent)"></div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);margin-bottom:6px">2020 至今　多线并行格局</div>
+      <div style="background:var(--surface);border-radius:10px;padding:18px 20px;border:1px solid var(--border);font-size:14px;line-height:1.8">
+        <div style="display:grid;gap:10px">
+          <div style="padding:10px 14px;background:var(--surface2);border-radius:8px">
+            <strong style="color:var(--cas9)">基因敲除</strong>：野生型 Cas9 + NHEJ 仍是首选，简单高效
+          </div>
+          <div style="padding:10px 14px;background:var(--surface2);border-radius:8px">
+            <strong style="color:var(--nick)">单碱基替换</strong>：nickCas9-Base Editing（CBE/ABE）成主流，无需 DSB
+          </div>
+          <div style="padding:10px 14px;background:var(--surface2);border-radius:8px">
+            <strong style="color:var(--nick)">复杂插入 / 小缺失</strong>：Prime Editing（PE3 含双 nick）逐渐成熟
+          </div>
+          <div style="padding:10px 14px;background:var(--surface2);border-radius:8px">
+            <strong style="color:var(--accent)">大片段 HDR</strong>：高保真 Cas9 + HDR 模板；但 HDR 受细胞周期限制，效率天花板仍低，临床应用更多转向 BE/PE
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:12px 16px;background:rgba(184,134,11,0.06);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;font-size:13px;color:var(--muted);line-height:1.7">
+          你的时间线大体准确，有一处细化：Base Editing 诞生于 2016 年，Prime Editing 诞生于 2019 年，两者 2020 年后才真正被广泛采用——"2020 以后成为主流"的说法符合实际。
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </div>
