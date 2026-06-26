@@ -4163,7 +4163,28 @@
         <div style="background:rgba(184,134,11,0.06);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:20px;font-size:13px;line-height:1.8">
           <strong style="color:var(--accent)">⚠ 与经典双 nickase 的根本区别</strong><br>
           经典双 nickase：两条链<strong>各切一刀</strong>（上链＋下链），模拟 DSB<br>
-          TPN：两个 nickase 均作用于<strong>同一条链</strong>，同时切基因组和供体质粒的同源区域
+          TPN：两个 nickase 均作用于<strong>同侧链</strong>（same strand），即两刀同向——基因组和供体质粒各自在同一链方向上被切两次，互补链始终完整<br>
+          <span style="font-size:12px;color:var(--muted)">※ 原文："two Cas9 nickases that create nicks at the homologous regions of the donor DNA and the genome <em>in the same strand</em>"（Hyodo et al., Cell Reports 2020）——"same strand"指同侧链方向，并非两者共用一条物理单链</span>
+        </div>
+
+        <!-- 经典双nickase vs TPN 对比表 -->
+        <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px;font-size:13px">
+          <div style="display:grid;grid-template-columns:1fr 2fr 2fr;background:var(--surface2);padding:9px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);gap:4px">
+            <span></span><span style="text-align:center;color:var(--cas9)">经典双 nickase</span><span style="text-align:center;color:var(--nick)">TPN</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 2fr 2fr;padding:10px 14px;border-top:1px solid var(--border);gap:4px;line-height:1.7">
+            <span style="color:var(--muted);font-size:12px">基因组</span>
+            <span style="text-align:center">上链一刀＋下链一刀 → 等效 DSB</span>
+            <span style="text-align:center;color:var(--nick)">同侧链两刀，互补链完整</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 2fr 2fr;padding:10px 14px;border-top:1px solid var(--border);background:rgba(0,0,0,0.02);gap:4px;line-height:1.7">
+            <span style="color:var(--muted);font-size:12px">供体 DNA</span>
+            <span style="text-align:center">通常不切</span>
+            <span style="text-align:center;color:var(--nick)">同侧链也打两刀</span>
+          </div>
+        </div>
+
+
         </div>
 
         <!-- 机制图示 -->
