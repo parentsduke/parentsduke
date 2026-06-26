@@ -1216,6 +1216,7 @@
   <button class="tab-btn" onclick="switchTab('ai')">AI × CRISPR</button>
   <button class="tab-btn" onclick="switchTab('adeno')">腺病毒载体</button>
   <button class="tab-btn" onclick="switchTab('history')">发展历程</button>
+  <button class="tab-btn" onclick="switchTab('sngd')">SNGD精准编辑</button>
 </div>
 
 <!-- ═══ COMPARE PANEL ═══ -->
@@ -4615,6 +4616,210 @@
       </div>
     </div>
     <div style="font-size:12px;color:var(--muted);margin-top:8px;text-align:center">NICER仅适用于杂合突变；其余策略适用范围更广</div>
+  </div>
+
+</div>
+
+<div id="panel-sngd" class="panel">
+
+  <!-- 标题区 -->
+  <div style="text-align:center;margin-bottom:48px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:12px">NAKAJIMA ET AL. · GENOME RESEARCH 2017</div>
+    <h2 style="font-family:'Space Mono',monospace;font-size:clamp(1.4rem,3vw,2.2rem);line-height:1.2;margin-bottom:12px">
+      <span style="color:var(--nick)">SNGD</span> — 单缺口 + 供体质粒缺口<br>
+      <span style="font-size:0.6em;color:var(--muted)">精准核苷酸替换，无双链断裂</span>
+    </h2>
+    <div style="max-width:620px;margin:0 auto;color:var(--muted);font-size:14px;line-height:1.8">
+      传统 Cas9 在靶位产生双链断裂（DSB），NHEJ 修复极易引入插入/缺失（indel）。
+      本研究提出 <strong style="color:var(--nick)">SNGD（Single Nick in Genome + Donor plasmid）</strong> 策略：
+      用 Cas9D10A nickase 在基因组目标位置切一条链，同时在供体质粒骨架切一条链，
+      通过非经典同源定向修复（noncanonical HDR）实现高效精准的碱基替换。
+    </div>
+  </div>
+
+  <!-- 核心创新 vs 传统 -->
+  <div class="compare-grid" style="margin-bottom:40px">
+    <div class="card cas9">
+      <div class="card-icon">传统 DSB 策略</div>
+      <h2>Cas9 双链断裂</h2>
+      <ul>
+        <li>HNH + RuvC 两个结构域同时切割，产生 DSB</li>
+        <li>主要修复通路为 NHEJ → 高频 indel</li>
+        <li>HDR 效率低，尤其在体细胞中</li>
+        <li>依赖 CtIP → BRCA2 → RAD51 经典重组路径</li>
+        <li>脱靶 DSB 可致染色体重排</li>
+      </ul>
+    </div>
+    <div class="card nick">
+      <div class="card-icon">SNGD 单缺口策略</div>
+      <h2>Cas9D10A Nickase</h2>
+      <ul>
+        <li>RuvC D10A 突变失活 → 只有 HNH 切一条链，产生单链缺口（nick）</li>
+        <li>基因组 nick + 供体质粒 nick 协同触发非经典 HDR</li>
+        <li>indel 频率从 &gt;90% 降至 <strong style="color:var(--correct)">≤3.57%</strong></li>
+        <li>效率比传统 DSB 高：14.3% vs 5.77%（双报告基因同时修正）</li>
+        <li>不需要 CtIP / RAD51 / RAD52</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 实验设计可视化 -->
+  <div class="dna-demo" style="margin-bottom:40px">
+    <h3>SNGD 实验设计示意</h3>
+    <div style="display:flex;flex-direction:column;gap:28px;max-width:780px;margin:0 auto;text-align:left">
+
+      <!-- Step 1 -->
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="background:var(--nick);color:#fff;font-family:'Space Mono',monospace;font-size:16px;font-weight:700;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--nick);margin-bottom:6px">基因组靶位缺口</div>
+          <div style="font-size:13px;line-height:1.7;color:var(--text)">
+            Cas9D10A + sgEGFP332s → 在 EGFPcC&gt;G 报告基因 sense strand 第 332 位引入单链缺口。
+            靶序列为含无义突变（c.321C&gt;G，Y107*）的 EGFP，细胞只表达 mCherry，EGFP 荧光被关闭。
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="background:var(--nick);color:#fff;font-family:'Space Mono',monospace;font-size:16px;font-weight:700;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--nick);margin-bottom:6px">供体质粒骨架缺口</div>
+          <div style="font-size:13px;line-height:1.7;color:var(--text)">
+            第二个 Cas9D10A + sgUC57（共 7 种可选）→ 在 pUC57 骨架上引入缺口，
+            <em>不在修复模板区域内</em>。m332PD 在 sgEGFP332s PAM 区有沉默突变防止被再次切割。
+            骨架缺口位置灵活，任何链均有效。
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="background:var(--correct);color:#fff;font-family:'Space Mono',monospace;font-size:16px;font-weight:700;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--correct);margin-bottom:6px">非经典 HDR 修复 → EGFP 荧光恢复</div>
+          <div style="font-size:13px;line-height:1.7;color:var(--text)">
+            两个缺口协同激活非经典 HDR：c.321G 回复为 C，EGFP 荧光恢复。
+            流式细胞仪检测 EGFP+ 细胞比例：单次 SNGD ~14%，三次循环可达 <strong style="color:var(--correct)">34–41%</strong>。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 关键数据对比表 -->
+  <div style="margin-bottom:40px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:14px">关键实验数据（293T EGFPcC&gt;G 双报告基因细胞系）</div>
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;font-size:13px">
+      <div style="display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.5fr;background:var(--surface2);padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">
+        <span>策略</span><span style="text-align:center">双等位修正率</span><span style="text-align:center">indel 克隆率</span><span style="text-align:center">备注</span>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.5fr;padding:10px 16px;border-top:1px solid var(--border)">
+        <span>Cas9 DSB（野生型 Cas9）</span>
+        <span style="text-align:center;color:var(--cas9)">5.77%</span>
+        <span style="text-align:center;color:var(--cas9)">92.3%</span>
+        <span style="color:var(--muted);font-size:12px">几乎所有克隆有 indel</span>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.5fr;padding:10px 16px;border-top:1px solid var(--border)">
+        <span>单 nick（SN，无供体缺口）</span>
+        <span style="text-align:center;color:var(--muted)">~1–2%</span>
+        <span style="text-align:center;color:var(--correct)">低</span>
+        <span style="color:var(--muted);font-size:12px">效率不足</span>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.5fr;padding:10px 16px;border-top:1px solid var(--border);background:rgba(21,101,192,0.04)">
+        <strong style="color:var(--nick)">SNGD（单次）</strong>
+        <strong style="text-align:center;color:var(--correct)">14.3%</strong>
+        <strong style="text-align:center;color:var(--correct)">3.57%</strong>
+        <span style="color:var(--muted);font-size:12px">效率与精度双提升</span>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1.2fr 1.2fr 1.5fr;padding:10px 16px;border-top:1px solid var(--border);background:rgba(26,122,94,0.05)">
+        <strong style="color:var(--correct)">SNGD（三轮循环）</strong>
+        <strong style="text-align:center;color:var(--correct)">37.5%</strong>
+        <strong style="text-align:center;color:var(--correct)">5.36%</strong>
+        <span style="color:var(--muted);font-size:12px">反复电转累积效率</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 机制解析 -->
+  <div class="mech-section">
+    <h3 class="c-nick">非经典 HDR 的机制要点</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+      <div style="padding:16px 18px;background:var(--surface);border-radius:10px;border:1px solid var(--border);font-size:13px;line-height:1.8">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--correct);margin-bottom:8px">✓ 不需要</div>
+        <div>· <strong>CtIP</strong>（DSB 修复的 DNA 末端切除起始因子）</div>
+        <div>· <strong>RAD51</strong>（链侵入重组酶）</div>
+        <div>· <strong>RAD52</strong>（单链退火因子）</div>
+      </div>
+      <div style="padding:16px 18px;background:var(--surface);border-radius:10px;border:1px solid var(--border);font-size:13px;line-height:1.8">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:8px">△ 部分依赖</div>
+        <div>· <strong>BRCA2</strong>（约 50%，推测不通过 RAD51 成核发挥作用）</div>
+        <div>· <strong>长同源序列</strong>（修复模板越长效率越高，&gt;700 bp 最优）</div>
+        <div>· <strong>sense strand nick</strong>（反义链缺口效率低）</div>
+      </div>
+    </div>
+    <div style="background:var(--surface2);border-radius:10px;padding:18px 20px;font-size:13px;line-height:1.9;border-left:3px solid var(--nick)">
+      <strong style="color:var(--nick)">提出机制（Supplemental Fig. S9）：</strong><br>
+      缺口处 DNA 解旋暴露 3′ ssDNA 尾（可能由 R-loop 形成或解旋酶介导）→ 
+      供体质粒缺口使其局部单链化，结构开放性大幅提高 →
+      两者互补序列直接退火（无需 RAD51 链侵入）→ 以供体为模板合成修复新链 →
+      最终实现精准核苷酸替换，模板利用长度 &gt;100–178 bp（远超 ssODN 策略）。
+    </div>
+  </div>
+
+  <!-- 内源基因验证 -->
+  <div class="mech-section">
+    <h3 class="c-nick">内源基因编辑验证</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div style="background:var(--surface);border-radius:10px;padding:16px 18px;border:1px solid var(--border);font-size:13px;line-height:1.8">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:8px">EMX1 · HEK293 基因座</div>
+        <div>· SNGD 在 <strong>EMX1.13</strong>（缺口位于目标下游 20 bp）和 <strong>HEK293 site 3</strong>（下游 30 bp）成功引入限制性酶切位点</div>
+        <div>· 效率约 <strong>4%</strong>（半定量 HiDi PCR）</div>
+        <div>· 与 DSB 方法相当或更优</div>
+      </div>
+      <div style="background:rgba(26,122,94,0.06);border-radius:10px;padding:16px 18px;border:1px solid rgba(26,122,94,0.2);font-size:13px;line-height:1.8">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--correct);margin-bottom:8px">TK1 基因修正（疾病相关突变）</div>
+        <div>· TSCER2 细胞：TK1 外显子 4 含 1 bp 插入移码突变</div>
+        <div>· SNGD 修正效率 <strong>9.6%</strong>（CHAT 培养基抗性），DSB 为 45%</div>
+        <div>· SNGD 修正克隆 <strong style="color:var(--correct)">100% 序列正确</strong>（92/92）</div>
+        <div>· DSB 对照：18/92 克隆（19.6%）出现 1 bp 错误缺失</div>
+      </div>
+    </div>
+    <div style="background:rgba(184,134,11,0.06);border-radius:10px;padding:14px 18px;font-size:13px;line-height:1.8;border-left:3px solid var(--accent)">
+      <strong style="color:var(--accent)">与其他 DSB-free 策略的比较：</strong>
+      碱基编辑（Base Editing，Komor 2016 / Nishida 2016）仅能做 C:G→T:A 转换；HITI（Suzuki 2016）依赖 DSB、接头含冗余序列。
+      SNGD 可纠正任意核苷酸组合，也可修正 <strong>1 bp 插入/缺失</strong>，且无 DSB，indel 率极低。
+    </div>
+  </div>
+
+  <!-- 与 NICER 的关联 -->
+  <div style="background:var(--surface2);border-radius:12px;padding:24px 28px;margin-bottom:20px;border:1px solid var(--border)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:12px">SNGD → NICER 的概念谱系</div>
+    <div style="font-size:13px;line-height:1.9">
+      Nakajima 2017 的 SNGD（<em>外源供体质粒缺口</em>）与面板中介绍的 NICER（Tomita 2023，<em>内源同源染色体作模板</em>）共享"nick 触发 HDR"的核心思路，但模板来源截然不同：
+      <br>
+      <br>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="padding:12px 14px;background:var(--surface);border-radius:8px">
+          <div style="color:var(--nick);font-weight:bold;margin-bottom:6px">SNGD（2017）</div>
+          外源质粒提供修复模板 → 可引入任意序列变化 → 适合体外细胞系编辑和基因治疗
+        </div>
+        <div style="padding:12px 14px;background:var(--surface);border-radius:8px">
+          <div style="color:var(--correct);font-weight:bold;margin-bottom:6px">NICER（2023）</div>
+          野生型等位基因作内源模板 → 无外源 DNA 整合风险 → 适合修复杂合突变，更接近基因治疗终极目标
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 文献信息 -->
+  <div style="background:var(--surface);border-radius:10px;padding:16px 20px;font-size:12px;color:var(--muted);line-height:1.8;border:1px solid var(--border)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;margin-bottom:8px">PRIMARY SOURCE</div>
+    <strong style="color:var(--text)">Nakajima K, Zhou Y, Tomita A, et al.</strong>
+    Precise and efficient nucleotide substitution near genomic nick via noncanonical homology-directed repair.
+    <em>Genome Research.</em> 2017;28:1–8. doi:10.1101/gr.226027.117
+    <br>
+    <span style="font-size:11px">Osaka University · University of Nebraska Medical Center</span>
   </div>
 
 </div>
