@@ -7873,7 +7873,7 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
 .yuanfen-inbox-entry-btn {
   position: fixed;
   top: 20px;
-  right: 96px;
+  right: 116px;
   z-index: 99999;
   padding: 8px 14px;
   background: linear-gradient(135deg, #c2185b, #880e4f);
@@ -7882,9 +7882,18 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
+  white-space: nowrap;
 }
 .yuanfen-inbox-entry-btn:hover {
   opacity: 0.88;
+}
+@media (max-width: 480px) {
+  .yuanfen-inbox-entry-btn {
+    top: 64px;
+    right: 12px;
+    font-size: 12px;
+    padding: 6px 10px;
+  }
 }
 .yuanfen-inbox-entry-badge {
   position: absolute;
@@ -13734,6 +13743,14 @@ window.showPV();
   }
   .logout-btn-fixed:hover {
     background: #00509e;
+  }
+  @media (max-width: 480px) {
+    .logout-btn-fixed {
+      top: 20px;
+      right: 12px;
+      font-size: 12px;
+      padding: 6px 10px;
+    }
   }
 
   /* Image overlay — self-contained, no CSS file dependency */
