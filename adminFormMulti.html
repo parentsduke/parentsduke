@@ -469,7 +469,6 @@
       <option value="VON">VON</option>
       <option value="静">静</option>
       <option value="Sharon">Sharon</option>
-      <option value="Janet">Janet</option>
     </select>
     <div class="modal-btns">
       <button class="modal-btn-cancel" onclick="closeActionModal()">取消</button>
@@ -492,7 +491,6 @@
       <option value="VON">VON</option>
       <option value="静">静</option>
       <option value="Sharon">Sharon</option>
-      <option value="Janet">Janet</option>
     </select>
     <div class="modal-btns">
       <button class="modal-btn-cancel" onclick="closeReminderModal()">取消</button>
@@ -514,7 +512,6 @@
       <option value="VON">VON</option>
       <option value="静">静</option>
       <option value="Sharon">Sharon</option>
-      <option value="Janet">Janet</option>
     </select>
     <div class="modal-btns">
       <button class="modal-btn-cancel" onclick="closeResendModal()">取消</button>
@@ -537,7 +534,6 @@
       <option value="VON">VON</option>
       <option value="静">静</option>
       <option value="Sharon">Sharon</option>
-      <option value="Janet">Janet</option>
     </select>
     <div class="modal-btns">
       <button class="modal-btn-cancel" onclick="closeApproveModal()">取消</button>
@@ -895,7 +891,7 @@
   }
 
   // ── 人员标记（同步到 Supabase，三人共享） ──
-  const personCol = { '笑': 'mark_xiao', '奕': 'mark_yi', '伟': 'mark_wei', 'VON': 'mark_von', '静': 'mark_jing', 'Sharon': 'mark_sharon', 'Janet': 'mark_janet' };
+  const personCol = { '笑': 'mark_xiao', '奕': 'mark_yi', '伟': 'mark_wei', 'VON': 'mark_von', '静': 'mark_jing', 'Sharon': 'mark_sharon' };
 
   async function saveMark(recordId, person, val) {
     const col = personCol[person];
@@ -1311,7 +1307,6 @@
         ${personCell(r.id, 'VON', allRecords)}
         ${personCell(r.id, '静', allRecords)}
         ${personCell(r.id, 'Sharon', allRecords)}
-        ${personCell(r.id, 'Janet', allRecords)}
         <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:${r.qr_code_no ? '#003087' : 'var(--muted)'};">
           ${r.qr_code_no ? String.fromCharCode(65 + (Number(r.qr_code_no) - 1) % 10) : '—'}
         </td>
