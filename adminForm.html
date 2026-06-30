@@ -1077,7 +1077,7 @@
         actionItems = `
           <span class="catalist-status" style="color:var(--green);">✅ 已批准</span>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendApprovalLink('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发批准链接</button>
-          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendApproval('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发1.0入群链接</button>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendApproval('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发1.0链接</button>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendQr20('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发2.0链接</button>
           ${r.not_joined
             ? `<button class="catalist-item" style="color:#b45309;" onclick="closeCatMenu('actmenu-${r.id}');clearNotJoined('${r.id}','${esc(safeNameRaw)}')">✅ 取消未进群</button>`
