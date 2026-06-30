@@ -1076,6 +1076,7 @@
       } else if (r.approved_at) {
         actionItems = `
           <span class="catalist-status" style="color:var(--green);">✅ 已批准</span>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendApprovalLink('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发批准链接</button>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendApproval('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发1.0入群链接</button>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendQr20('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发2.0链接</button>
           ${r.not_joined
@@ -1629,6 +1630,50 @@
     alert(msg);
   }
 
+
+  // ── 重发批准链接（超时/未使用即失效，需生成新token）──
+  async function resendApprovalLink(recordId, email, studentName) {
+    if (!email) { alert('该记录没有邮箱，无法发送'); return; }
+    if (!confirm(`重新发送${studentName}的批准入群链接？\n将发送到：${email}\n（原链接打开即失效，将自动生成新链接）`)) return;
+
+    try {
+      // 作废该邮箱所有未使用的旧token（已打开的不会再被复用，无需处理）
+      await db.from('private_qr_links')
+        .update({ used: true, used_at: new Date().toISOString() })
+        .eq('reserved_for', email)
+        .eq('used', false);
+
+      // 创建新token（与最初批准时使用的二维码一致）
+      const { data: qrRow, error: qrErr } = await db
+        .from('private_qr_links')
+        .insert({
+          image_url:    QR_IMAGE_URL,
+          label:        'Duke 2030 家长群',
+          reserved_for: email,
+          reserved_at:  new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (qrErr || !qrRow) throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
+
+      const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id }),
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+      alert(`✅ 已重新发送批准链接到 ${email}`);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
 
   async function resendQr20(recordId, email, studentName) {
     if (!email) { alert('该记录没有邮箱，无法发送'); return; }
