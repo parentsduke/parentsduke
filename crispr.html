@@ -4147,6 +4147,111 @@
 
   </div>
 
+  <!-- Cas9 改进种类全览 -->
+  <div style="margin-top:48px;margin-bottom:48px">
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:12px">OVERVIEW</div>
+      <h2 style="font-family:'Space Mono',monospace;font-size:1.8rem;color:var(--cas9);margin-bottom:10px">Cas9 改进种类全览</h2>
+      <p style="color:var(--muted);font-size:14px;max-width:600px;margin:0 auto;line-height:1.8">按改造目的分类的八大方向，理解各类工具之间的关系</p>
+    </div>
+
+    <div style="display:grid;gap:16px">
+
+      <!-- 1 特异性 -->
+      <div style="background:var(--surface);border-radius:10px;padding:20px 24px;border:1px solid var(--border);border-left:4px solid var(--cas9)">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">① 提高特异性 / 降低脱靶</div>
+        <p style="font-size:14px;line-height:1.8">
+          <strong>eSpCas9、SpCas9-HF1、HiFi Cas9、HypaCas9</strong> 等高保真突变体。通过减弱 Cas9 与 DNA 骨架的非特异性结合，让酶"更挑剔"，不改变切割机制本身，仍产生 DSB。
+        </p>
+      </div>
+
+      <!-- 2 nickase -->
+      <div style="background:var(--surface);border-radius:10px;padding:20px 24px;border:1px solid var(--border);border-left:4px solid var(--nick)">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--nick);margin-bottom:8px">② 切割活性改造 — Nickase（单链切口酶）</div>
+        <p style="font-size:14px;line-height:1.8">
+          RuvC 或 HNH 二选一失活：<strong>D10A</strong>（HNH 保留）、<strong>H840A</strong>（RuvC 保留），只切单链。常用于双 nickase 配对策略，需两个相邻位点同时被切才形成等效 DSB，特异性显著提升。
+        </p>
+      </div>
+
+      <!-- 3 dCas9 -->
+      <div style="background:var(--surface);border-radius:10px;padding:20px 24px;border:1px solid var(--border);border-left:4px solid var(--accent)">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--accent);margin-bottom:8px">③ 完全失活 — dCas9（死 Cas9）</div>
+        <p style="font-size:14px;line-height:1.8">
+          两个结构域同时失活（D10A + H840A），不再切割，仅保留 DNA 结合能力，成为"运输工具"，融合不同效应域：
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:10px;font-size:13px">
+          <div style="padding:8px 12px;background:var(--surface2);border-radius:6px">CRISPRi（融合 KRAB）— 转录抑制</div>
+          <div style="padding:8px 12px;background:var(--surface2);border-radius:6px">CRISPRa（融合 VP64 / p300）— 转录激活</div>
+          <div style="padding:8px 12px;background:var(--surface2);border-radius:6px">表观编辑（融合甲基转移酶等）</div>
+          <div style="padding:8px 12px;background:var(--surface2);border-radius:6px">染色质可视化（融合荧光蛋白）</div>
+        </div>
+      </div>
+
+      <!-- 4 BE -->
+      <div style="background:var(--surface);border-radius:10px;padding:20px 24px;border:1px solid var(--border);border-left:4px solid var(--nick)">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--nick);margin-bottom:8px">④ 碱基编辑器（Base Editor）</div>
+        <p style="font-size:14px;line-height:1.8">
+          nickase 融合脱氨酶，不依赖 DSB 实现单碱基精准替换：<strong>CBE</strong>（胞嘧啶碱基编辑器，C→T）、<strong>ABE</strong>（腺嘌呤碱基编辑器，A→G）。
+        </p>
+      </div>
+
+      <!-- 5 PE -->
+      <div style="background:var(--surface);border-radius:10px;padding:20px 24px;border:1px solid var(--border);border-left:4px solid var(--accent)">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--accent);margin-bottom:8px">⑤ 先导编辑器（Prime Editor）</div>
+        <p style="font-size:14px;line-height:1.8">
+          nickase 融合逆转录酶，配合 pegRNA 实现插入、删除、任意碱基替换，被称为"基因编辑的 word 处理器"，精度与灵活性进一步提升。
+        </p>
+      </div>
+
+      <!-- 6 PAM -->
+      <div style="background:var(--surface);border-radius:10px;padding:20px 24px;border:1px solid var(--border);border-left:4px solid var(--cas9)">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--cas9);margin-bottom:8px">⑥ PAM 识别范围拓展</div>
+        <p style="font-size:14px;line-height:1.8">
+          野生型 SpCas9 依赖 NGG PAM，限制可编辑位点。<strong>xCas9、SpCas9-NG、SpRY</strong> 等放宽甚至几乎消除 PAM 限制，大幅扩大可靶向的基因组范围。
+        </p>
+      </div>
+
+      <!-- 7 体积 -->
+      <div style="background:var(--surface);border-radius:10px;padding:20px 24px;border:1px solid var(--border);border-left:4px solid var(--nick)">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--nick);margin-bottom:8px">⑦ 体积缩小型</div>
+        <p style="font-size:14px;line-height:1.8">
+          如 <strong>SaCas9</strong>（金黄色葡萄球菌来源）、<strong>CasMINI</strong> 等微型化版本，便于 AAV 载体包装，利于体内递送。
+        </p>
+      </div>
+
+      <!-- 8 其他 -->
+      <div style="background:var(--surface);border-radius:10px;padding:20px 24px;border:1px solid var(--border);border-left:4px solid var(--accent)">
+        <div style="font-family:'Space Mono',monospace;font-size:15px;color:var(--accent);margin-bottom:8px">⑧ 其他工程化方向</div>
+        <p style="font-size:14px;line-height:1.8">
+          温控 / 光控 / 小分子诱导的可控 Cas9（提高时空精确性）、自我失活系统（降低脱靶累积）、融合 UGI（尿嘧啶糖基化酶抑制剂）提高碱基编辑效率等。
+        </p>
+      </div>
+
+    </div>
+
+    <!-- 边缘补充：正交Cas9 与 Cas13 -->
+    <div style="margin-top:24px;background:rgba(184,134,11,0.05);border:1px dashed var(--border);border-radius:10px;padding:20px 24px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:14px">附 · 两个容易混淆的边缘概念</div>
+
+      <div style="margin-bottom:16px">
+        <div style="font-size:14px;color:var(--nick);margin-bottom:6px"><strong>正交 Cas9（Orthogonal Cas9）</strong> — 不是独立大类，是 ⑦ 体积缩小 / 多来源 Cas9 的应用衍生</div>
+        <p style="font-size:13px;line-height:1.8;color:var(--text)">
+          利用不同细菌来源、识别不同 PAM 和 sgRNA 骨架的 Cas9（如 SpCas9 + SaCas9，或 SpCas9 + St1Cas9）<strong>在同一细胞内并行执行不同任务</strong>——例如一个做切割、另一个做 dCas9 转录调控，两者互不干扰（"正交"即互不串扰之意）。本质仍是已有 Cas9 变体的组合使用，不构成新的改造方向。
+        </p>
+      </div>
+
+      <div>
+        <div style="font-size:14px;color:var(--cas9);margin-bottom:6px"><strong>Cas13 系列</strong> — 不属于 Cas9 改造，是完全不同的蛋白家族</div>
+        <p style="font-size:13px;line-height:1.8;color:var(--text)">
+          Cas13（如 Cas13a/d）来自 VI 型 CRISPR 系统，靶向对象是 <strong>RNA 而非 DNA</strong>，依赖 crRNA 识别并降解目标 RNA，常用于 RNA 敲低、RNA 编辑（如 REPAIR/RESCUE 系统）、病毒 RNA 检测（SHERLOCK）等场景。它与 Cas9 是平行的两条技术路线，并非"Cas9 的改进版"。
+        </p>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted)">
+          一句话区分：<strong>Cas9 家族</strong>＝改 DNA（切割 / 碱基编辑 / 先导编辑 / 转录调控全部基于 DNA 结合）；<strong>Cas13 家族</strong>＝改 RNA，目标分子层面完全不同。
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TPN 专题 -->
   <div style="margin-top:8px">
     <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);margin-bottom:20px;text-align:center">SPOTLIGHT · 2020 重要文献</div>
