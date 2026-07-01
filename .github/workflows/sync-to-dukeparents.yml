@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 18 * * *'   # 每天UTC 18:00（北京时间凌晨2点）也同步一次，防止漏推
-  workflow_dispatch:        # 允许手动点击运行
+    - cron: '0 18 * * *'
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Push mirror to backup repo
         run: |
