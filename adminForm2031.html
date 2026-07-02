@@ -571,8 +571,6 @@
       <thead>
         <tr>
           <th style="min-width:80px;">操作</th>
-          <th class="person-th">笑</th>
-          <th class="person-th">金</th>
           <th class="person-th">伟</th>
           <th onclick="sortBy('qr_code_no')" style="min-width:60px;">入群码</th>
           <th>管理员备注</th>
@@ -1111,8 +1109,6 @@
 
       return `<tr id="row-${r.id}"${r.left_group_at ? ' class="row-left-group"' : r.not_joined ? ' class="row-not-joined"' : ''}>
         <td style="text-align:center;padding:8px 6px;">${actionCell}</td>
-        ${personCell(r.id, '笑', allRecords)}
-        ${personCell(r.id, '金', allRecords)}
         ${personCell(r.id, '伟', allRecords)}
         <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:${r.qr_code_no ? '#003087' : 'var(--muted)'};">
           ${r.qr_code_no ? String.fromCharCode(65 + (Number(r.qr_code_no) - 1) % 10) : '—'}
