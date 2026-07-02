@@ -727,6 +727,7 @@
     const { data, error } = await db
       .from('admissions_submissions')
       .select('*')
+      .eq('class_year', 2031)
       .order('created_at', { ascending: false });
 
     document.getElementById('tableLoading').style.display = 'none';
