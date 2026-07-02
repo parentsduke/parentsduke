@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>线性代数 · 通俗讲义</title>
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" id="MathJax-script" async></script>
+<style>
+  :root {
+    --navy: #0b1f3a;
+    --navy-deep: #071527;
+    --gold: #c9a84c;
+    --gold-soft: #e6d6a3;
+    --paper: #faf7ef;
+    --ink: #1c2430;
+    --rule: #d8cfa9;
+    --sidebar-w: 260px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+    line-height: 1.75;
+  }
+
+  /* ---------- Layout shell ---------- */
+  .shell {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color: var(--gold-soft);
+    padding: 30px 0 30px;
+    overflow-y: auto;
+  }
+
+  .sidebar .brand {
+    padding: 0 26px 22px;
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+    margin-bottom: 14px;
+  }
+
+  .sidebar .brand .eyebrow {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 8px;
+  }
+
+  .sidebar .brand h1 {
+    font-size: 19px;
+    margin: 0;
+    color: #fdf9ec;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .sidebar nav {
+    padding: 6px 14px;
+  }
+
+  .sidebar .part-label {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(230,214,163,0.55);
+    margin: 20px 12px 8px;
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 3px;
+    color: #d7ddea;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .sidebar a .num {
+    display: inline-block;
+    width: 22px;
+    color: var(--gold);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+  }
+
+  .sidebar a:hover {
+    background: rgba(201,168,76,0.12);
+    color: #fdf9ec;
+  }
+
+  .sidebar a.active {
+    background: rgba(201,168,76,0.18);
+    color: #fdf9ec;
+    box-shadow: inset 3px 0 0 var(--gold);
+  }
+
+  .sidebar-toggle {
+    display: none;
+  }
+
+  /* ---------- Main content ---------- */
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 0 0 100px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color: var(--gold-soft);
+    padding: 64px 56px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 240px;
+    height: 240px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 50%;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    right: 40px;
+    bottom: -80px;
+    width: 160px;
+    height: 160px;
+    border: 1px solid rgba(201,168,76,0.18);
+    border-radius: 50%;
+  }
+
+  .hero .eyebrow {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 14px;
+  }
+
+  .hero h1 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 600;
+    color: #fdf9ec;
+    max-width: 620px;
+  }
+
+  .hero .sub {
+    margin-top: 14px;
+    font-size: 16px;
+    color: #c7d0e0;
+    max-width: 560px;
+  }
+
+  .hero .edited-by {
+    margin-top: 22px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 2px;
+  }
+
+  .exercises {
+    margin-top: 26px;
+    border: 1px solid var(--rule);
+    background: #fffdf8;
+  }
+  .exercises .ex-head {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fdf9ec;
+    background: var(--navy);
+    padding: 8px 20px;
+  }
+  .exercises details {
+    padding: 14px 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+  }
+  .exercises details:first-of-type { border-top: none; }
+  .exercises summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--ink);
+    list-style: none;
+  }
+  .exercises summary::-webkit-details-marker { display: none; }
+  .exercises summary::before {
+    content: "▸ ";
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .exercises details[open] summary::before { content: "▾ "; }
+  .exercises .ans {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f4efdf;
+    border-left: 3px solid var(--gold);
+    font-size: 14.5px;
+  }
+
+  .deepdive {
+    background: #eef1f6;
+    border-left: 3px solid #4a6da8;
+    padding: 16px 22px;
+    font-size: 15px;
+    margin: 22px 0;
+    color: #26324a;
+  }
+  .deepdive .dd-label {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #4a6da8;
+    margin-bottom: 8px;
+  }
+
+  .chapter {
+    max-width: 760px;
+    margin: 56px auto 0;
+    padding: 0 40px;
+    scroll-margin-top: 20px;
+    position: relative;
+  }
+
+  .chapter .kicker {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 6px;
+  }
+
+  .chapter h2.chapter-title {
+    font-size: 25px;
+    margin: 0 0 6px;
+    color: var(--navy);
+  }
+
+  .chapter .chapter-tagline {
+    font-size: 15px;
+    color: #6b6555;
+    margin: 0 0 26px;
+    font-style: italic;
+  }
+
+  .life {
+    font-size: 15.5px;
+    padding: 18px 22px;
+    background: #f1efe6;
+    border-left: 3px solid #8a9bb0;
+    margin-bottom: 26px;
+    color: #33402f;
+  }
+  .life strong { color: var(--navy); }
+
+  .statement {
+    font-size: 16px;
+    padding: 18px 22px;
+    background: #f4efdf;
+    border-left: 3px solid var(--gold);
+    margin-bottom: 30px;
+  }
+
+  .statement .center-eq {
+    display: block;
+    text-align: center;
+    margin: 10px 0 0;
+  }
+
+  h3.part {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--navy);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 8px;
+    margin: 32px 0 16px;
+  }
+
+  h3.part span.tag {
+    display: inline-block;
+    background: var(--navy);
+    color: var(--gold-soft);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 3px 9px;
+    border-radius: 2px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  .step {
+    margin: 14px 0;
+    font-size: 15.5px;
+  }
+
+  .center-block {
+    text-align: center;
+    margin: 18px 0;
+    overflow-x: auto;
+  }
+
+  .note {
+    background: #eef2ea;
+    border-left: 3px solid #6b8f6b;
+    padding: 14px 20px;
+    font-size: 14.5px;
+    color: #33402f;
+    margin-top: 24px;
+  }
+  .note strong { color: #24361f; }
+
+  .example {
+    background: #fbf9f1;
+    border: 1px solid var(--rule);
+    padding: 18px 22px;
+    margin: 22px 0;
+  }
+  .example .ex-label {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  table.matrix-table {
+    border-collapse: collapse;
+    margin: 14px auto;
+    font-size: 14.5px;
+  }
+  table.matrix-table th, table.matrix-table td {
+    border: 1px solid var(--rule);
+    padding: 6px 14px;
+    text-align: center;
+  }
+  table.matrix-table th {
+    background: #f1ece0;
+    color: var(--navy);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 600;
+    font-size: 12.5px;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rule), transparent);
+    margin: 60px 0 0;
+  }
+
+  .nextlink {
+    margin-top: 40px;
+    padding-top: 20px;
+    text-align: right;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+  }
+  .nextlink a {
+    color: var(--navy);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 2px;
+  }
+
+  footer.book-footer {
+    text-align: center;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+    color: #9a9078;
+    letter-spacing: 0.05em;
+    padding: 50px 0 0;
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 900px) {
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 40;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      box-shadow: 8px 0 30px rgba(0,0,0,0.3);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-toggle {
+      display: block;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 50;
+      background: var(--navy);
+      color: var(--gold-soft);
+      border: 1px solid var(--gold);
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .hero { padding: 70px 24px 40px; }
+    .chapter { padding: 0 22px; }
+  }
+</style>
+</head>
+<body>
+
+<button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰ 目录</button>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <p class="eyebrow">通俗讲义 · 完整篇</p>
+      <h1>线性代数<br>从向量到对角化</h1>
+    </div>
+    <nav id="toc">
+      <p class="part-label">第一部 · 空间的语言</p>
+      <a href="#ch1"><span class="num">01</span>向量与向量空间</a>
+      <a href="#ch2"><span class="num">02</span>线性组合与张成</a>
+      <a href="#ch3"><span class="num">03</span>基与维数</a>
+
+      <p class="part-label">第二部 · 方程与矩阵</p>
+      <a href="#ch4"><span class="num">04</span>线性方程组与消元</a>
+      <a href="#ch5"><span class="num">05</span>矩阵及其运算</a>
+
+      <p class="part-label">第三部 · 变换的账本</p>
+      <a href="#ch6"><span class="num">06</span>线性变换与矩阵表示</a>
+      <a href="#ch7"><span class="num">07</span>基变换</a>
+      <a href="#ch8"><span class="num">08</span>行列式</a>
+
+      <p class="part-label">第四部 · 变换的骨架</p>
+      <a href="#ch9"><span class="num">09</span>特征值与特征向量</a>
+      <a href="#ch10"><span class="num">10</span>正交性与正交基</a>
+      <a href="#ch11"><span class="num">11</span>对角化</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <div class="hero">
+      <p class="eyebrow">线性代数 · 通俗讲义</p>
+      <h1>从一根箭头，到整个空间的骨架</h1>
+      <p class="sub">这本讲义用生活里的比喻打底，再落到严谨的定义与例题——目标不是让你背公式，而是让你看懂每一个符号背后，究竟在描述一件什么样的事情。</p>
+      <p class="edited-by">本书由扯谈Duke群编辑</p>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 第一部 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ch1">
+      <p class="kicker">第一部 · 空间的语言 / 01</p>
+      <h2 class="chapter-title">向量与向量空间</h2>
+      <p class="chapter-tagline">一支箭，一个方向，一种可以"加"与"缩放"的东西</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>你给朋友指路，会说"往东走300米，再往北走400米"。这句话里藏着两个信息——<strong>方向</strong>和<strong>大小</strong>。这正是"向量"最朴素的样子：不是一个孤立的数，而是一次"带方向的移动"。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>什么是向量</h3>
+      <div class="step">在平面 $\mathbb{R}^2$ 中，一个向量可以写成一对有序数 $\xi=(x,y)$，几何上表示从原点出发、指向点 $(x,y)$ 的一支箭。向量有两个基本运算：</div>
+      <div class="center-block">
+        $$\text{加法：}\ (x_1,y_1)+(x_2,y_2)=(x_1+x_2,\ y_1+y_2)$$
+        $$\text{数乘：}\ k(x,y)=(kx,\ ky)$$
+      </div>
+      <div class="step">加法对应"依次走两段路"（首尾相接），数乘对应"把这段路按比例放大或缩短（$k<0$ 则反向）"。</div>
+
+      <h3 class="part"><span class="tag">抽象</span>向量空间</h3>
+      <div class="step">把"箭头"这个具体形象抽掉，只保留"能加、能数乘，并且满足一组自然规律（结合律、交换律、分配律、存在零向量与负向量等）"这套结构，就得到<strong>线性空间</strong>（也叫向量空间）$V$ 的定义。任何满足这套规律的集合，不管其中的元素是箭头、多项式还是矩阵，都可以称作线性空间。</div>
+
+      <div class="example">
+        <div class="ex-label">例1</div>
+        次数不超过 2 的多项式全体 $\{a_0+a_1x+a_2x^2\}$，在通常的多项式加法与数乘下，也构成一个线性空间——你可以把 $1+2x-x^2$ 想象成"坐标"为 $(1,2,-1)$ 的一个"向量"，尽管它看起来完全不像一支箭。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">例2</div>
+        所有 $2\times 2$ 实矩阵 $\begin{pmatrix}a&b\\c&d\end{pmatrix}$ 全体，在矩阵加法与数乘下也构成线性空间，可以把它看成"坐标"为 $(a,b,c,d)$ 的四维向量。同样，区间 $[0,1]$ 上所有连续函数全体，在函数加法与数乘下也构成一个（无穷维的）线性空间。
+      </div>
+
+      <h3 class="part"><span class="tag">辨析</span>为什么一定要验证"公理"</h3>
+      <div class="step">一个集合光有"加法"和"数乘"两个运算符号还不够，还必须逐条核对以下八条公理才能称为线性空间：加法交换律、结合律、存在零向量、存在负向量、数乘对向量加法的分配律 $k(\xi+\eta)=k\xi+k\eta$、数乘对数的加法的分配律 $(k+l)\xi=k\xi+l\xi$、数乘结合律 $(kl)\xi=k(l\xi)$、以及 $1\cdot\xi=\xi$。</div>
+
+      <div class="deepdive">
+        <div class="dd-label">辨析：反例</div>
+        考虑"第一象限所有向量" $\{(x,y): x\geq 0, y\geq 0\}$，配上通常的加法和数乘。加法没问题（两个第一象限向量相加还在第一象限），但数乘不满足：取 $k=-1$，$(1,1)$ 乘 $-1$ 得到 $(-1,-1)$，已经跑出了这个集合。所以它<strong>不是</strong>一个线性空间——直观地说，一个"扇形区域"不满足"能任意缩放（包括反向）"这个要求。
+      </div>
+
+      <div class="note">
+        <strong>说明：</strong> 这一步"抽象"是线性代数真正的起点——一旦规律被剥离出来，凡是符合这组规律的东西，之前学到的所有关于向量的结论（基、维数、线性变换……）都可以原封不动地套用上去。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. 判断：所有满足 $2x-3y=0$ 的向量 $(x,y)$ 全体，是否构成 $\mathbb{R}^2$ 的一个线性空间（子空间）？</summary>
+          <div class="ans">是。这是一条过原点的直线，验证加法、数乘封闭即可：若 $(x_1,y_1),(x_2,y_2)$ 都满足 $2x-3y=0$，则它们的和也满足；数乘同理。关键点在于"过原点"——不过原点的直线（比如 $2x-3y=1$）就不满足，因为零向量不在其中。</div>
+        </details>
+        <details>
+          <summary>2. 判断：所有满足 $x^2+y^2=1$ 的向量 $(x,y)$（单位圆上的点）全体，是否构成线性空间？</summary>
+          <div class="ans">不是。取圆上一点 $(1,0)$，数乘 $2\cdot(1,0)=(2,0)$ 不再满足 $x^2+y^2=1$，数乘不封闭；而且这个集合根本不包含零向量 $(0,0)$。</div>
+        </details>
+        <details>
+          <summary>3. 次数恰好等于 2（最高次项系数不为零）的多项式全体，是否构成线性空间？</summary>
+          <div class="ans">不是。取 $x^2+x$ 和 $-x^2+x$，两者次数都恰好是2，但相加得到 $2x$，次数降为1，不再属于这个集合——加法不封闭。这提醒我们"次数不超过2"（含常数、一次、零多项式）才是线性空间，"次数恰好2"不是。</div>
+        </details>
+      </div>
+
+      <div class="nextlink"><a href="#ch2">下一节：线性组合与张成 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="chapter" id="ch2">
+      <p class="kicker">第一部 · 空间的语言 / 02</p>
+      <h2 class="chapter-title">线性组合、张成与线性相关</h2>
+      <p class="chapter-tagline">用一小撮"配料"，能不能配出空间里的任意一点？</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>调色时，你手上只有红、黄、蓝三种颜料。把它们按不同比例混合，理论上能调出很大一片颜色范围——这片"能调出来的颜色"，就是三种颜料的<strong>张成</strong>。如果某种颜料本身就能被另外两种混出来（比如"紫色"能用红+蓝调出），那这种颜料就是多余的，术语叫<strong>线性相关</strong>。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>线性组合与张成</h3>
+      <div class="step">给定向量 $\alpha_1,\dots,\alpha_n$，形如</div>
+      <div class="center-block">$$k_1\alpha_1+k_2\alpha_2+\cdots+k_n\alpha_n$$</div>
+      <div class="step">的表达式称为它们的一个<strong>线性组合</strong>。所有这样的组合构成的集合，称为 $\alpha_1,\dots,\alpha_n$ 的<strong>张成</strong>，记作 $\text{span}(\alpha_1,\dots,\alpha_n)$。</div>
+
+      <h3 class="part"><span class="tag">定义</span>线性相关与线性无关</h3>
+      <div class="step">如果存在一组<strong>不全为零</strong>的系数 $k_1,\dots,k_n$，使得</div>
+      <div class="center-block">$$k_1\alpha_1+\cdots+k_n\alpha_n=0$$</div>
+      <div class="step">则称 $\alpha_1,\dots,\alpha_n$ <strong>线性相关</strong>——直观地说，其中至少有一个向量是多余的，能被其余向量线性表出。反之，如果只有 $k_1=\cdots=k_n=0$ 才能使上式成立，则称它们<strong>线性无关</strong>：每一个都"各司其职"，谁也替代不了谁。</div>
+
+      <div class="example">
+        <div class="ex-label">例1</div>
+        $\mathbb{R}^2$ 中，$(1,0)$ 与 $(0,1)$ 线性无关（谁也表示不出对方）；而 $(1,0)$、$(0,1)$、$(2,3)$ 三个向量线性相关，因为 $(2,3)=2(1,0)+3(0,1)$——第三个向量是"多余的颜料"。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">例2</div>
+        判断 $(1,2,1),(2,1,0),(1,-1,-1)$ 是否线性相关：设 $k_1(1,2,1)+k_2(2,1,0)+k_3(1,-1,-1)=0$，展开得方程组
+        $$k_1+2k_2+k_3=0,\quad 2k_1+k_2-k_3=0,\quad k_1-k_3=0$$
+        由第三式 $k_1=k_3$，代入第一式得 $2k_1+2k_2=0$ 即 $k_2=-k_1$，代入第二式验证：$2k_1-k_1-k_1=0$ 恒成立。取 $k_1=1$ 得非零解 $(1,-1,1)$，说明这三个向量<strong>线性相关</strong>，且 $(1,2,1)-(2,1,0)+(1,-1,-1)=0$。
+      </div>
+
+      <h3 class="part"><span class="tag">方法</span>用矩阵秩判定线性相关性</h3>
+      <div class="step">把 $n$ 个向量按行（或列）排成矩阵，用高斯消元化成阶梯形——阶梯形中非零行的个数就是这组向量的<strong>秩</strong>。若秩等于向量个数，线性无关；若秩小于向量个数，线性相关。这比逐一列方程组更直接，本质上是同一件事的两种做法。</div>
+
+      <div class="note">
+        <strong>说明：</strong> "线性无关"是"不浪费"的数学表达——一组线性无关的向量，张成同样大的空间所用的"配料种类"是最少的，这为下一节"基"的概念做好了铺垫。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. $(1,1)$ 与 $(2,2)$ 是否线性相关？</summary>
+          <div class="ans">相关。因为 $(2,2)=2(1,0)+2(0,1)$……更直接地说 $(2,2)=2(1,1)$，两个向量共线（方向相同），一定线性相关——平面上任意两个共线向量都线性相关。</div>
+        </details>
+        <details>
+          <summary>2. $\mathbb{R}^2$ 中任意三个向量，是否一定线性相关？为什么？</summary>
+          <div class="ans">一定相关。因为 $\mathbb{R}^2$ 是二维空间，最多能容纳2个线性无关的向量；第三个向量必然可以用前两个（若它们无关）线性表出。一般地，$n$ 维空间中任意 $n+1$ 个向量都线性相关。</div>
+        </details>
+        <details>
+          <summary>3. 若 $\alpha_1,\alpha_2,\alpha_3$ 线性无关，判断 $\alpha_1+\alpha_2,\ \alpha_2+\alpha_3,\ \alpha_1+\alpha_3$ 是否线性无关。</summary>
+          <div class="ans">无关。设 $k_1(\alpha_1+\alpha_2)+k_2(\alpha_2+\alpha_3)+k_3(\alpha_1+\alpha_3)=0$，整理得 $(k_1+k_3)\alpha_1+(k_1+k_2)\alpha_2+(k_2+k_3)\alpha_3=0$。因为 $\alpha_1,\alpha_2,\alpha_3$ 无关，所以 $k_1+k_3=0,k_1+k_2=0,k_2+k_3=0$，联立解得 $k_1=k_2=k_3=0$，故线性无关。</div>
+        </details>
+      </div>
+
+      <div class="nextlink"><a href="#ch3">下一节：基与维数 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="chapter" id="ch3">
+      <p class="kicker">第一部 · 空间的语言 / 03</p>
+      <h2 class="chapter-title">基与维数</h2>
+      <p class="chapter-tagline">最省钱的一套"参照方向"</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>回到调色的例子——如果红、黄、蓝三种颜料已经能调出你想要的所有颜色，而且没有一种是多余的（谁也调不出另一种），这三种颜料就是这片"颜色空间"的一套<strong>基</strong>：既足够（能张成整个空间），又不浪费（线性无关）。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>基与坐标</h3>
+      <div class="step">线性空间 $V$ 中一组向量 $\alpha_1,\dots,\alpha_n$ 称为 $V$ 的一组<strong>基</strong>，如果同时满足：</div>
+      <div class="center-block">
+        <table class="matrix-table">
+          <tr><th>条件</th><th>含义</th></tr>
+          <tr><td>线性无关</td><td>没有一个是多余的</td></tr>
+          <tr><td>张成 $V$</td><td>$V$ 中任意向量都能被它们线性表出</td></tr>
+        </table>
+      </div>
+      <div class="step">这时，$V$ 中任意向量 $\xi$ 都能<strong>唯一地</strong>写成 $\xi=x_1\alpha_1+\cdots+x_n\alpha_n$，这组系数 $(x_1,\dots,x_n)$ 就是 $\xi$ 在这组基下的<strong>坐标</strong>。</div>
+
+      <h3 class="part"><span class="tag">定义</span>维数</h3>
+      <div class="step">可以证明：同一个线性空间的任意两组基，所含向量个数总是相同的。这个共同的个数，称为 $V$ 的<strong>维数</strong>，记作 $\dim V$。它回答的是一个很朴素的问题——描述这个空间里的一个点，最少需要几个独立的数字？</div>
+
+      <div class="example">
+        <div class="ex-label">例1</div>
+        $\mathbb{R}^3$（三维空间）中，$(1,0,0),(0,1,0),(0,0,1)$ 是一组基（称为<strong>标准基</strong>），维数是 3。但 $(1,1,0),(0,1,1),(1,0,1)$ 也是一组基——同一个空间可以有很多套不同的基，就像"东、北"和"东北、西北"都能作为平面上的参照方向一样。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">例2</div>
+        求向量 $\xi=(3,5,2)$ 在基 $\alpha_1=(1,1,0),\alpha_2=(0,1,1),\alpha_3=(1,0,1)$ 下的坐标：设 $\xi=x_1\alpha_1+x_2\alpha_2+x_3\alpha_3$，列方程组
+        $$x_1+x_3=3,\quad x_1+x_2=5,\quad x_2+x_3=2$$
+        三式相加得 $2(x_1+x_2+x_3)=10$，即 $x_1+x_2+x_3=5$。分别与三个原方程作差，解得 $x_1=3,x_2=2,x_3=0$。也就是说 $\xi$ 在这组基下的坐标是 $(3,2,0)$——同一个向量，换一套基，坐标就完全不同了（在标准基下它的"坐标"就是 $(3,5,2)$ 本身）。
+      </div>
+
+      <h3 class="part"><span class="tag">方法</span>怎样验证/构造一组基</h3>
+      <div class="step">要验证 $n$ 个向量是 $n$ 维空间的一组基，只需验证它们<strong>线性无关</strong>即可（个数已经等于维数，线性无关自动保证张成整个空间，不必再单独验证张成性）。反过来，若只有 $k<n$ 个线性无关的向量，总可以从任意基中再挑几个补充进来，凑满 $n$ 个仍保持无关——这称为"基的扩充"。</div>
+
+      <div class="note">
+        <strong>说明：</strong> "基不唯一，但维数唯一"，这是整章的核心结论——你可以自由选择参照方向（基），但空间本身"有多少个自由度"（维数）是客观不变的。这也是我们之前讨论"调换基顺序"时反复强调的一点：<strong>换基改变的是描述方式，不改变空间和向量本身。</strong>
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. $\mathbb{R}^2$ 中，$(1,2)$ 与 $(2,4)$ 能否构成一组基？</summary>
+          <div class="ans">不能。两者共线（$(2,4)=2(1,2)$），线性相关，不满足"基"要求的线性无关条件——即便凑够了2个向量，也张不成整个二维平面，只能张成一条直线。</div>
+        </details>
+        <details>
+          <summary>2. 求 $(4,6)$ 在基 $\alpha_1=(1,1),\alpha_2=(1,-1)$ 下的坐标。</summary>
+          <div class="ans">设 $(4,6)=x_1(1,1)+x_2(1,-1)$，列方程组 $x_1+x_2=4,\ x_1-x_2=6$，解得 $x_1=5,x_2=-1$。坐标为 $(5,-1)$。</div>
+        </details>
+        <details>
+          <summary>3. 次数不超过2的多项式空间 $\dim=3$，一组自然的基是 $1,x,x^2$。多项式 $2+3x-x^2$ 在这组基下的坐标是什么？</summary>
+          <div class="ans">坐标就是系数本身：$(2,3,-1)$，因为 $2+3x-x^2=2\cdot 1+3\cdot x+(-1)\cdot x^2$。这也说明"坐标"这个概念，本质上就是"用给定的一组'配料'（基），精确复刻出这个向量所需要的配比"。</div>
+        </details>
+      </div>
+
+      <div class="nextlink"><a href="#ch4">下一节：线性方程组与消元 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ========================================================= -->
+    <!-- 第二部 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ch4">
+      <p class="kicker">第二部 · 方程与矩阵 / 04</p>
+      <h2 class="chapter-title">线性方程组与高斯消元</h2>
+      <p class="chapter-tagline">把"未知数的联立条件"整理成一张清晰的表格</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>三个人合伙买菜，只知道"三人一共花了多少钱"和几条零散的分摊关系，要还原每个人具体花了多少——这就是在解一个线性方程组。高斯消元法做的事情，本质上就是"每次用一条关系去消掉一个未知数"，像升级打怪一样一步步简化，直到能直接读出答案。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>线性方程组</h3>
+      <div class="step">形如</div>
+      <div class="center-block">
+        $$\begin{cases}a_{11}x_1+a_{12}x_2+\cdots+a_{1n}x_n=b_1\\a_{21}x_1+a_{22}x_2+\cdots+a_{2n}x_n=b_2\\\quad\vdots\\a_{m1}x_1+a_{m2}x_2+\cdots+a_{mn}x_n=b_m\end{cases}$$
+      </div>
+      <div class="step">的方程组称为<strong>线性方程组</strong>。可以把系数抽出来，写成增广矩阵，用它来"记账"所有信息：</div>
+      <div class="center-block">
+        $$\left(\begin{array}{ccc|c}a_{11}&\cdots&a_{1n}&b_1\\\vdots&&\vdots&\vdots\\a_{m1}&\cdots&a_{mn}&b_m\end{array}\right)$$
+      </div>
+
+      <h3 class="part"><span class="tag">方法</span>高斯消元</h3>
+      <div class="step">通过三种"行初等变换"（交换两行、某行乘非零常数、某行加上另一行的倍数——这些操作都不改变方程组的解），把增广矩阵化为<strong>阶梯形</strong>，再从最后一行开始，逐步回代求出每个未知数。</div>
+
+      <div class="example">
+        <div class="ex-label">例1</div>
+        方程组 $x+y=3,\ 2x-y=0$，第二行减去第一行的2倍得 $-3y=-6$，即 $y=2$，回代得 $x=1$。这个"用一行消掉另一行里的某个未知数"的操作，正是高斯消元最基本的一步。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">例2（三元方程组，完整消元过程）</div>
+        $$\begin{cases}x+y+z=6\\2x-y+z=3\\x+2y-z=2\end{cases}$$
+        增广矩阵消元：第二行减去第一行的2倍，第三行减去第一行：
+        $$\left(\begin{array}{ccc|c}1&1&1&6\\0&-3&-1&-9\\0&1&-2&-4\end{array}\right)$$
+        再把第二、三行互换后消元（或直接用第三行 $y-2z=-4$ 与 $-3y-z=-9$ 联立），可解得 $z=2,y=0,x=4$。三元及以上方程组的消元过程本质相同，只是行数更多，需要更有条理地逐列消元。
+      </div>
+
+      <h3 class="part"><span class="tag">定理</span>解的三种情况与秩</h3>
+      <div class="step">设系数矩阵秩为 $r_1$，增广矩阵秩为 $r_2$，未知数个数为 $n$，则：</div>
+      <div class="center-block">
+        <table class="matrix-table">
+          <tr><th>条件</th><th>解的情况</th></tr>
+          <tr><td>$r_1 \neq r_2$</td><td>无解</td></tr>
+          <tr><td>$r_1=r_2=n$</td><td>唯一解</td></tr>
+          <tr><td>$r_1=r_2<n$</td><td>无穷多解（含 $n-r_1$ 个自由未知量）</td></tr>
+        </table>
+      </div>
+      <div class="step">直观理解：$r_1\neq r_2$ 意味着某一行消元后变成"$0=$非零数"，出现矛盾；$r_1=r_2<n$ 意味着有效方程数比未知数少，剩下的自由度需要用参数表示。</div>
+
+      <div class="note">
+        <strong>说明：</strong> 方程组的解的情况（无解 / 唯一解 / 无穷多解），完全由系数矩阵与增广矩阵的<strong>秩</strong>决定——这一结论把"解方程"和"矩阵的结构"第一次联系了起来，也是后面章节反复出现的主线。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. 方程组 $x+y=2,\ 2x+2y=5$ 是否有解？</summary>
+          <div class="ans">无解。第二行减去第一行的2倍得 $0=1$，矛盾——两条方程对应的直线平行但不重合（系数矩阵秩为1，增广矩阵秩为2），符合"$r_1\neq r_2$ 无解"的判据。</div>
+        </details>
+        <details>
+          <summary>2. 方程组 $x+y+z=3,\ 2x+2y+2z=6$ 有多少个解？</summary>
+          <div class="ans">无穷多解。第二个方程是第一个的2倍，本质上只有一个有效方程（$r_1=r_2=1$），而未知数有3个，所以有 $3-1=2$ 个自由未知量，解集是一个平面。</div>
+        </details>
+        <details>
+          <summary>3. 用消元法解 $2x+y=5,\ x-y=1$。</summary>
+          <div class="ans">两式相加得 $3x=6$，$x=2$，代入 $x-y=1$ 得 $y=1$。唯一解 $(x,y)=(2,1)$。</div>
+        </details>
+      </div>
+
+      <div class="nextlink"><a href="#ch5">下一节：矩阵及其运算 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="chapter" id="ch5">
+      <p class="kicker">第二部 · 方程与矩阵 / 05</p>
+      <h2 class="chapter-title">矩阵及其运算</h2>
+      <p class="chapter-tagline">一张表格，为什么能像数字一样"相乘"</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>工厂里，"配方表"告诉你每种产品要用多少原料；"产量表"告诉你每天生产多少产品。想知道每天一共用了多少原料，就是把这两张表按特定规则"乘"起来——矩阵乘法正是这种"批量套用配方"的数学表达，而不是简单的逐项相乘。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>矩阵乘法</h3>
+      <div class="step">设 $A$ 是 $m\times n$ 矩阵，$B$ 是 $n\times p$ 矩阵，乘积 $C=AB$ 是 $m\times p$ 矩阵，其中每一项</div>
+      <div class="center-block">$$c_{ij}=\sum_{k=1}^{n}a_{ik}b_{kj}$$</div>
+      <div class="step">即"$A$ 的第 $i$ 行"与"$B$ 的第 $j$ 列"对应相乘再求和——这也是为什么矩阵乘法要求"左边矩阵的列数 = 右边矩阵的行数"，就像配方表里原料的种类要对得上。</div>
+
+      <div class="example">
+        <div class="ex-label">例：具体算一遍矩阵乘法</div>
+        $$\begin{pmatrix}1&2\\3&4\end{pmatrix}\begin{pmatrix}5&6\\7&8\end{pmatrix}=\begin{pmatrix}1\cdot5+2\cdot7&1\cdot6+2\cdot8\\3\cdot5+4\cdot7&3\cdot6+4\cdot8\end{pmatrix}=\begin{pmatrix}19&22\\43&50\end{pmatrix}$$
+        对照上面的公式：结果矩阵第 1 行第 2 列的元素 $22=1\times6+2\times8$，正是第一个矩阵的第1行 $(1,2)$ 与第二个矩阵的第2列 $(6,8)$ 对应相乘再相加。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>逆矩阵与转置</h3>
+      <div class="step">若存在矩阵 $A^{-1}$ 使得 $AA^{-1}=A^{-1}A=E$（单位矩阵），则称 $A$<strong>可逆</strong>，$A^{-1}$ 为其<strong>逆矩阵</strong>——直观地说，$A^{-1}$ 就是能把 $A$ 这次变换"完全撤销"的那个变换。对于二阶矩阵：</div>
+      <div class="center-block">
+        $$A=\begin{pmatrix}a&b\\c&d\end{pmatrix},\qquad A^{-1}=\frac{1}{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}\quad(ad-bc\neq 0)$$
+      </div>
+      <div class="step">另外，把矩阵的行和列互换得到<strong>转置矩阵</strong> $A^T$，满足 $(AB)^T=B^TA^T$（注意顺序也翻转了）。</div>
+
+      <div class="note">
+        <strong>说明：</strong> 矩阵乘法一般<strong>不满足交换律</strong>（$AB\neq BA$）——这不是数学上刻意设计的"陷阱"，而是因为矩阵乘法的真正身份是"两个变换的先后复合"，先做哪个变换、后做哪个变换，结果本来就可能不同，就像"先穿袜子再穿鞋"和"先穿鞋再穿袜子"是两回事。这一点会在第六节讲"线性变换"时看得更清楚。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. 计算 $\begin{pmatrix}1&0\\2&1\end{pmatrix}\begin{pmatrix}0&1\\1&0\end{pmatrix}$ 与 $\begin{pmatrix}0&1\\1&0\end{pmatrix}\begin{pmatrix}1&0\\2&1\end{pmatrix}$，验证乘法不满足交换律。</summary>
+          <div class="ans">前者 $=\begin{pmatrix}0&1\\1&2\end{pmatrix}$，后者 $=\begin{pmatrix}2&1\\1&0\end{pmatrix}$，两者不相等——顺序不同，结果确实不同。</div>
+        </details>
+        <details>
+          <summary>2. 求 $A=\begin{pmatrix}2&1\\1&1\end{pmatrix}$ 的逆矩阵。</summary>
+          <div class="ans">$ad-bc=2\times1-1\times1=1\neq0$，可逆。$A^{-1}=\dfrac{1}{1}\begin{pmatrix}1&-1\\-1&2\end{pmatrix}=\begin{pmatrix}1&-1\\-1&2\end{pmatrix}$。可以验算 $AA^{-1}=E$。</div>
+        </details>
+        <details>
+          <summary>3. 为什么 $\begin{pmatrix}1&2\\2&4\end{pmatrix}$ 没有逆矩阵？</summary>
+          <div class="ans">因为 $ad-bc=1\times4-2\times2=0$，公式中的分母为零。几何上，这个矩阵把整个平面"压扁"成了一条直线（两行成比例，本质是同一个方向），这个压扁的过程丢失了信息，无法通过任何变换"复原"，所以不可逆。</div>
+        </details>
+      </div>
+
+      <div class="nextlink"><a href="#ch6">下一节：线性变换与矩阵表示 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ========================================================= -->
+    <!-- 第三部 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ch6">
+      <p class="kicker">第三部 · 变换的账本 / 06</p>
+      <h2 class="chapter-title">线性变换与矩阵表示</h2>
+      <p class="chapter-tagline">矩阵不是主角，它只是变换在某套基下的说明书</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>想象一块面团，你把它往一个方向拉长、往另一个方向压扁，但面团中心不动。这个"揉面"动作本身是固定的，但如果要用文字或数字把它<strong>记录</strong>下来，你需要先选定两个参照方向（比如"经线"和"纬线"），才能写出"往这个方向拉伸了多少、往那个方向压缩了多少"——这份记录，就是矩阵。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>线性变换</h3>
+      <div class="step">$V$ 上的一个映射 $T:V\to V$，若对任意 $\xi,\eta\in V$ 和数 $k$ 满足</div>
+      <div class="center-block">$$T(\xi+\eta)=T(\xi)+T(\eta),\qquad T(k\xi)=kT(\xi)$$</div>
+      <div class="step">则称 $T$ 为 $V$ 上的<strong>线性变换</strong>——先合成再变换，与先变换再合成，结果一致。</div>
+
+      <h3 class="part"><span class="tag">定义</span>变换在给定基下的矩阵</h3>
+      <div class="step">取定基 $\alpha_1,\dots,\alpha_n$，把 $T$ 作用在每个基向量上的结果，用同一组基展开：</div>
+      <div class="center-block">$$T(\alpha_j)=a_{1j}\alpha_1+\cdots+a_{nj}\alpha_n,\quad j=1,\dots,n$$</div>
+      <div class="step">把这些系数按<strong>第 $j$ 列</strong>排列，就得到 $T$ 在这组基下的矩阵 $A=(a_{ij})$。这是一个<strong>约定</strong>，而非需要证明的定理——矩阵的每一列，记录的正是"某个基向量被变换后，用原基怎样重新配出来"。</div>
+
+      <div class="example">
+        <div class="ex-label">例1</div>
+        $\mathbb{R}^2$ 上把每个向量绕原点逆时针旋转 90° 的变换 $T$，在标准基下：$T(1,0)=(0,1)$，$T(0,1)=(-1,0)$，对应矩阵 $\begin{pmatrix}0&-1\\1&0\end{pmatrix}$——第一列是 $T(1,0)$ 的坐标，第二列是 $T(0,1)$ 的坐标。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">例2（沿 $x$ 轴投影）</div>
+        变换 $T(x,y)=(x,0)$（把每个点垂直投影到 $x$ 轴上），标准基下 $T(1,0)=(1,0)$，$T(0,1)=(0,0)$，矩阵为 $\begin{pmatrix}1&0\\0&0\end{pmatrix}$。注意这个矩阵的行列式是 $0$——正对应第五节提到的"把平面压扁成一条直线，不可逆"。
+      </div>
+
+      <h3 class="part"><span class="tag">验证</span>矩阵乘法 = 变换复合</h3>
+      <div class="step">设 $T_1$ 是"逆时针旋转90°"（矩阵 $A=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$），$T_2$ 是"沿 $x$ 轴投影"（矩阵 $B=\begin{pmatrix}1&0\\0&0\end{pmatrix}$）。先投影再旋转，对向量 $(1,1)$：先得 $T_2(1,1)=(1,0)$，再 $T_1(1,0)=(0,1)$。用矩阵直接算 $AB(1,1)^T$：</div>
+      <div class="center-block">
+        $$AB=\begin{pmatrix}0&-1\\1&0\end{pmatrix}\begin{pmatrix}1&0\\0&0\end{pmatrix}=\begin{pmatrix}0&0\\1&0\end{pmatrix},\qquad AB\binom{1}{1}=\binom{0}{1}$$
+      </div>
+      <div class="step">结果一致——这证实了"先做 $T_2$ 再做 $T_1$"对应的矩阵，正是 $AB$（$T_1$ 的矩阵在左）。这也是为什么"矩阵乘法顺序"要特别小心：$AB$ 与 $BA$ 代表的是完全不同的操作先后顺序。</div>
+
+      <div class="note">
+        <strong>说明：</strong> 一旦确认"矩阵的每一列 = 某个基向量的变换结果"，矩阵乘法为什么不满足交换律就不难理解了：$AB$ 表示"先做变换 $B$，再做变换 $A$"，调换顺序自然可能得到不同的复合结果。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. 求 $\mathbb{R}^2$ 上"关于 $x$ 轴镜像对称"变换 $T(x,y)=(x,-y)$ 在标准基下的矩阵。</summary>
+          <div class="ans">$T(1,0)=(1,0)$，$T(0,1)=(0,-1)$，矩阵为 $\begin{pmatrix}1&0\\0&-1\end{pmatrix}$。</div>
+        </details>
+        <details>
+          <summary>2. 求把每个向量放大2倍的变换 $T(\xi)=2\xi$ 在标准基下的矩阵。</summary>
+          <div class="ans">$\begin{pmatrix}2&0\\0&2\end{pmatrix}=2E$——这类"纯缩放"变换对应的矩阵总是数量矩阵，不管选哪组基，矩阵都不会变（这一点会在第七节的"基变换"里看到：因为 $P^{-1}(2E)P=2E$，恒成立）。</div>
+        </details>
+        <details>
+          <summary>3. 恒等变换 $T(\xi)=\xi$（什么都不做）在任意基下的矩阵是什么？</summary>
+          <div class="ans">单位矩阵 $E$。因为 $T(\alpha_j)=\alpha_j=0\cdot\alpha_1+\cdots+1\cdot\alpha_j+\cdots+0\cdot\alpha_n$，第 $j$ 列除了第 $j$ 行是1，其余都是0。</div>
+        </details>
+      </div>
+
+      <div class="nextlink"><a href="#ch7">下一节：基变换 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="chapter" id="ch7">
+      <p class="kicker">第三部 · 变换的账本 / 07</p>
+      <h2 class="chapter-title">基变换</h2>
+      <p class="chapter-tagline">换一套参照方向，账本会变，但账本记的那件事没变</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>描述地图上一个点，你可以用"东、北"作参照，也可以换成"北、东"，甚至换成一套斜着的方向。点的<strong>位置</strong>没有变，但你报出来的<strong>坐标数字</strong>会跟着参照方向的选择而变化。基变换研究的正是：换一套参照（基），坐标、矩阵会如何随之改变。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>过渡矩阵</h3>
+      <div class="step">设 $\alpha_1,\dots,\alpha_n$ 与 $\beta_1,\dots,\beta_n$ 是同一空间 $V$ 的两组基，且</div>
+      <div class="center-block">$$\beta_j=\sum_{i=1}^{n}p_{ij}\alpha_i,\quad j=1,\dots,n$$</div>
+      <div class="step">矩阵 $P=(p_{ij})$ 称为由基 $\{\alpha_i\}$ 到基 $\{\beta_j\}$ 的<strong>过渡矩阵</strong>。同一向量 $\xi$ 在两组基下的坐标 $x$（旧）、$y$（新）满足 $x=Py$。</div>
+
+      <h3 class="part"><span class="tag">定理</span>矩阵随基变换的规律</h3>
+      <div class="step">若线性变换 $T$ 在基 $\{\alpha_i\}$ 下的矩阵为 $A$，在基 $\{\beta_j\}$ 下的矩阵为 $B$，过渡矩阵为 $P$，则</div>
+      <div class="center-block">$$B=P^{-1}AP$$</div>
+
+      <div class="example">
+        <div class="ex-label">例（对应之前讨论过的"调换基顺序"）</div>
+        取新基为 $\beta_1=\alpha_2,\beta_2=\alpha_1$（顺序调换），过渡矩阵 $P=\begin{pmatrix}0&1\\1&0\end{pmatrix}$，且 $P^{-1}=P$。若原矩阵 $A=\begin{pmatrix}a_{11}&a_{12}\\a_{21}&a_{22}\end{pmatrix}$，代入可得新矩阵</div>
+      <div class="center-block">$$B=P^{-1}AP=\begin{pmatrix}a_{22}&a_{21}\\a_{12}&a_{11}\end{pmatrix}$$</div>
+      <div class="step">——恰好是把 $A$ 的行、列顺序同时颠倒，与直接计算 $T(\beta_1),T(\beta_2)$ 得到的结果完全一致。</div>
+
+      <h3 class="part"><span class="tag">推导</span>为什么坐标满足 $x=Py$</h3>
+      <div class="step">设向量 $\xi$ 在旧基下坐标为 $x=(x_1,\dots,x_n)$，在新基下坐标为 $y=(y_1,\dots,y_n)$，即 $\xi=\sum_i x_i\alpha_i=\sum_j y_j\beta_j$。把 $\beta_j=\sum_i p_{ij}\alpha_i$ 代入右边：</div>
+      <div class="center-block">
+        $$\xi=\sum_j y_j\sum_i p_{ij}\alpha_i=\sum_i\Big(\sum_j p_{ij}y_j\Big)\alpha_i$$
+      </div>
+      <div class="step">与 $\xi=\sum_i x_i\alpha_i$ 比较系数（基的表示唯一），得 $x_i=\sum_j p_{ij}y_j$，写成矩阵形式正是 $x=Py$——这也解释了为什么"过渡矩阵"和"坐标变换"用的是同一个 $P$，但作用方向相反：<strong>基是从旧到新（$\beta=P\alpha$ 形式的系数），坐标却是从新到旧（$x=Py$）。</strong></div>
+
+      <div class="example">
+        <div class="ex-label">例：数值验证</div>
+        沿用例题中 $\alpha_1,\alpha_2,\alpha_3$ 与 $\xi=(3,5,2)$（第三节例2），已求得 $\xi$ 在 $\alpha_1,\alpha2,\alpha_3$ 下坐标为 $(3,2,0)$。若换到新基 $\beta_1=\alpha_2,\beta_2=\alpha_1,\beta_3=\alpha_3$（前两个调换），过渡矩阵 $P=\begin{pmatrix}0&1&0\\1&0&0\\0&0&1\end{pmatrix}$，用 $x=Py$ 反解 $y=P^{-1}x=Px$（这里 $P^{-1}=P$），代入 $x=(3,2,0)$ 得 $y=(2,3,0)$——坐标的前两个分量确实互换了，与直觉一致。
+      </div>
+
+      <div class="note">
+        <strong>说明：</strong> $B=P^{-1}AP$ 这个关系式在后面讲"对角化"时会再次出现——"对角化"要问的问题，本质上正是：能不能找到一组特别的基，让变换在这组基下的矩阵 $B$ 变成最简单的对角形式？
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. 若新基就是旧基本身（$\beta_i=\alpha_i$），过渡矩阵 $P$ 是什么？</summary>
+          <div class="ans">单位矩阵 $E$。此时 $B=E^{-1}AE=A$，矩阵自然不变——没有真正"换基"，账本当然不会变。</div>
+        </details>
+        <details>
+          <summary>2. 若新基是旧基整体放大2倍（$\beta_i=2\alpha_i$），过渡矩阵 $P=2E$，求 $B$ 与 $A$ 的关系。</summary>
+          <div class="ans">$B=(2E)^{-1}A(2E)=\frac12 E\cdot A\cdot 2E=A$。矩阵依然不变——因为"整体放大参照方向"这种换基方式，不会改变变换本身"相对于参照方向"的描述方式，这是一个不太直觉但可以严格验证的结论。</div>
+        </details>
+        <details>
+          <summary>3. 结合第六节练习2的结论（$T(\xi)=2\xi$ 在任意基下矩阵都是 $2E$），说说数量矩阵 $kE$ 在换基公式 $B=P^{-1}AP$ 下有什么特殊之处。</summary>
+          <div class="ans">$B=P^{-1}(kE)P=k P^{-1}P=kE=A$，对任意可逆 $P$ 都成立——数量矩阵是换基公式的"不动点"，这也是为什么"纯缩放"这个操作，不管你用哪套参照方向去描述，写出来的账本永远长得一样。</div>
+        </details>
+      </div>
+
+      <div class="nextlink"><a href="#ch8">下一节：行列式 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="chapter" id="ch8">
+      <p class="kicker">第三部 · 变换的账本 / 08</p>
+      <h2 class="chapter-title">行列式</h2>
+      <p class="chapter-tagline">一个数字，告诉你变换把面积（体积）放大了多少倍</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>把一块边长1米的方形地毯放到"变换"的机器里压一压、拉一拉，出来的地毯变成了平行四边形。这块新地毯的面积，相对原来放大或缩小了多少倍？这个倍数（如果变换让图形翻转了方向就取负值）就是行列式。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>二阶、三阶行列式</h3>
+      <div class="center-block">
+        $$\begin{vmatrix}a&b\\c&d\end{vmatrix}=ad-bc$$
+      </div>
+      <div class="step">几何意义：以 $(a,c)$ 与 $(b,d)$ 为邻边的平行四边形的<strong>有向面积</strong>。三阶行列式同理对应平行六面体的<strong>有向体积</strong>，可按第一行展开为三个二阶行列式的代数和。</div>
+
+      <h3 class="part"><span class="tag">性质</span>行列式与矩阵</h3>
+      <div class="step">行列式的几个关键性质：</div>
+      <div class="center-block">
+        <table class="matrix-table">
+          <tr><th>性质</th><th>含义</th></tr>
+          <tr><td>$\det(AB)=\det A\cdot\det B$</td><td>两次变换的放大倍数相乘</td></tr>
+          <tr><td>$\det A=0$</td><td>变换把空间"压扁"了（降维），不可逆</td></tr>
+          <tr><td>$\det A\neq 0$</td><td>$A$ 可逆，方程组 $Ax=b$ 有唯一解</td></tr>
+        </table>
+      </div>
+
+      <div class="example">
+        <div class="ex-label">例：三阶行列式按第一行展开</div>
+        $$\begin{vmatrix}1&2&3\\0&1&4\\5&6&0\end{vmatrix}=1\begin{vmatrix}1&4\\6&0\end{vmatrix}-2\begin{vmatrix}0&4\\5&0\end{vmatrix}+3\begin{vmatrix}0&1\\5&6\end{vmatrix}$$
+        $$=1(0-24)-2(0-20)+3(0-5)=-24+40-15=1$$
+        每一项前面的符号按"棋盘式"正负交替（$+,-,+$），去掉当前行、当前列后剩下的二阶行列式称为<strong>余子式</strong>。
+
+      </div>
+
+      <h3 class="part"><span class="tag">应用</span>克拉默法则</h3>
+      <div class="step">对于 $n$ 元方程组 $Ax=b$，若系数矩阵行列式 $\det A\neq 0$，则方程组有唯一解，且</div>
+      <div class="center-block">$$x_i=\frac{\det A_i}{\det A}$$</div>
+      <div class="step">其中 $A_i$ 是把 $A$ 的第 $i$ 列替换成 $b$ 后得到的矩阵。比如方程组 $x+y=3,\ 2x-y=0$，$\det A=\begin{vmatrix}1&1\\2&-1\end{vmatrix}=-3$，$\det A_1=\begin{vmatrix}3&1\\0&-1\end{vmatrix}=-3$，故 $x=\dfrac{-3}{-3}=1$，与第四节例1的消元结果一致。</div>
+
+      <div class="note">
+        <strong>说明：</strong> "行列式是否为零"是贯穿线性代数的一条判据——它同时回答了"方程组有没有唯一解"（第四节）、"矩阵能不能求逆"、"这组向量是否线性相关"（第二节）这几个看似不同的问题，因为它们本质上都在问同一件事：这个变换有没有把空间"压扁"。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. 计算 $\begin{vmatrix}3&1\\2&4\end{vmatrix}$。</summary>
+          <div class="ans">$3\times4-1\times2=12-2=10$。</div>
+        </details>
+        <details>
+          <summary>2. 不计算，直接判断 $\begin{vmatrix}1&2&3\\2&4&6\\0&1&1\end{vmatrix}$ 是否为零。</summary>
+          <div class="ans">为零。第二行是第一行的2倍，两行成比例——对应的三个行向量线性相关，根据第二节的结论，行列式必为0（几何上，这意味着变换把三维空间压扁到了更低维）。</div>
+        </details>
+        <details>
+          <summary>3. 用克拉默法则求解 $2x-y=3,\ x+y=3$ 中的 $x$。</summary>
+          <div class="ans">$\det A=\begin{vmatrix}2&-1\\1&1\end{vmatrix}=3$，$\det A_1=\begin{vmatrix}3&-1\\3&1\end{vmatrix}=6$，所以 $x=6/3=2$（可验证 $y=1$ 满足两式）。</div>
+        </details>
+      </div>
+
+      <div class="nextlink"><a href="#ch9">下一节：特征值与特征向量 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ========================================================= -->
+    <!-- 第四部 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ch9">
+      <p class="kicker">第四部 · 变换的骨架 / 09</p>
+      <h2 class="chapter-title">特征值与特征向量</h2>
+      <p class="chapter-tagline">在变换中"方向不变、只被拉伸"的那几根特殊的轴</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>拉伸一块橡皮膜时，大多数标记点的方向都会被扭转，唯独沿着某几条特定方向画的直线，拉伸后依然落在原来的直线上——只是变长或变短了。这几条"方向不变"的特殊方向，就是这个变换的<strong>特征向量</strong>方向；对应的伸缩倍数，就是<strong>特征值</strong>。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>特征值与特征向量</h3>
+      <div class="step">设 $A$ 是 $n$ 阶矩阵，若存在数 $\lambda$ 和非零向量 $\xi$ 满足</div>
+      <div class="center-block">$$A\xi=\lambda\xi$$</div>
+      <div class="step">则称 $\lambda$ 为 $A$ 的<strong>特征值</strong>，$\xi$ 为对应的<strong>特征向量</strong>。这个式子的含义是：向量 $\xi$ 经过变换 $A$ 后，方向没有改变，只是被拉伸（或压缩、反向）了 $\lambda$ 倍。</div>
+
+      <h3 class="part"><span class="tag">方法</span>如何求特征值</h3>
+      <div class="step">把 $A\xi=\lambda\xi$ 改写为 $(A-\lambda E)\xi=0$。这是一个齐次线性方程组，要有非零解 $\xi$，系数矩阵必须不可逆，即</div>
+      <div class="center-block">$$\det(A-\lambda E)=0$$</div>
+      <div class="step">这就是<strong>特征方程</strong>，解出的 $\lambda$ 即为特征值；把每个 $\lambda$ 代回 $(A-\lambda E)\xi=0$，解出的 $\xi$ 即为对应的特征向量。</div>
+
+      <div class="example">
+        <div class="ex-label">例1（对角矩阵，一眼看出）</div>
+        $A=\begin{pmatrix}2&0\\0&3\end{pmatrix}$，特征方程 $(2-\lambda)(3-\lambda)=0$，解得 $\lambda_1=2,\lambda_2=3$，对应特征向量分别是 $(1,0)$ 和 $(0,1)$——这类对角矩阵的特征值和特征向量可以"一眼看出"，因为它本身已经是沿坐标轴方向的纯拉伸。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">例2（一般矩阵，完整求解过程）</div>
+        $A=\begin{pmatrix}3&1\\2&2\end{pmatrix}$。特征方程：
+        $$\det(A-\lambda E)=\begin{vmatrix}3-\lambda&1\\2&2-\lambda\end{vmatrix}=(3-\lambda)(2-\lambda)-2=\lambda^2-5\lambda+4=0$$
+        解得 $\lambda_1=1,\lambda_2=4$。代入 $\lambda_1=1$：$(A-E)\xi=0$ 即 $\begin{pmatrix}2&1\\2&1\end{pmatrix}\xi=0$，得 $2x+y=0$，取特征向量 $\xi_1=(1,-2)$。代入 $\lambda_2=4$：$\begin{pmatrix}-1&1\\2&-2\end{pmatrix}\xi=0$，得 $x=y$，取 $\xi_2=(1,1)$。
+      </div>
+
+      <h3 class="part"><span class="tag">性质</span>特征值的两条捷径</h3>
+      <div class="step">不必每次都解特征方程，以下两条性质可以快速验算结果：</div>
+      <div class="center-block">
+        $$\lambda_1+\lambda_2+\cdots+\lambda_n=a_{11}+a_{22}+\cdots+a_{nn}\ (\text{矩阵的迹})$$
+        $$\lambda_1\lambda_2\cdots\lambda_n=\det A$$
+      </div>
+      <div class="step">用例2验算：迹 $=3+2=5=1+4$ ✓；行列式 $=3\times2-1\times2=4=1\times4$ ✓。</div>
+
+      <div class="note">
+        <strong>说明：</strong> 特征向量给出了一个变换"最诚实"的观察角度——沿着特征向量方向去看，一个可能看起来很复杂的变换（旋转+拉伸+切变混在一起），会简化成"就是把这个方向拉伸了 $\lambda$ 倍"这么简单的一句话。这正是下一节"对角化"想要达成的目标。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. 求 $A=\begin{pmatrix}1&0\\0&1\end{pmatrix}$（单位矩阵）的特征值与特征向量。</summary>
+          <div class="ans">特征方程 $(1-\lambda)^2=0$，$\lambda=1$（二重）。此时任意非零向量都满足 $A\xi=\xi=1\cdot\xi$，所以整个平面上每一个方向都是特征向量——这是"恒等变换不改变任何方向"的直接体现。</div>
+        </details>
+        <details>
+          <summary>2. 用"迹=特征值之和，行列式=特征值之积"快速求 $A=\begin{pmatrix}5&0\\0&-2\end{pmatrix}$ 的特征值（不用解方程）。</summary>
+          <div class="ans">对角矩阵的特征值就是对角线元素本身：$\lambda_1=5,\lambda_2=-2$。验证：迹 $=5+(-2)=3=5-2$ ✓，行列式 $=-10=5\times(-2)$ ✓。</div>
+        </details>
+        <details>
+          <summary>3. 若 $A\xi=\lambda\xi$，证明 $A^2\xi=\lambda^2\xi$（即 $\xi$ 也是 $A^2$ 对应特征值 $\lambda^2$ 的特征向量）。</summary>
+          <div class="ans">$A^2\xi=A(A\xi)=A(\lambda\xi)=\lambda(A\xi)=\lambda(\lambda\xi)=\lambda^2\xi$。这个性质在计算矩阵的高次幂（比如求 $A^{100}$）时非常有用——只需要对角化一次，之后每次取幂只需把对角线上的特征值分别取幂即可。</div>
+        </details>
+      </div>
+
+      <div class="nextlink"><a href="#ch10">下一节：正交性与正交基 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="chapter" id="ch10">
+      <p class="kicker">第四部 · 变换的骨架 / 10</p>
+      <h2 class="chapter-title">正交性与正交基</h2>
+      <p class="chapter-tagline">彼此"互不干扰"的一组方向，量起来最省心</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>量身高只需要一把竖直的尺子，量肩宽只需要一把水平的尺子——两把尺子互相垂直，量出来的两个数字互不干扰，谁也不会"污染"谁的读数。如果两把尺子斜着摆，量出来的数字就会掺杂在一起，很难直接看出"身高"和"肩宽"各是多少。这就是"正交基"比一般的基更好用的原因。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>内积与正交</h3>
+      <div class="step">$\mathbb{R}^n$ 中向量 $\xi=(x_1,\dots,x_n)$、$\eta=(y_1,\dots,y_n)$ 的内积定义为</div>
+      <div class="center-block">$$\langle\xi,\eta\rangle=x_1y_1+x_2y_2+\cdots+x_ny_n$$</div>
+      <div class="step">若 $\langle\xi,\eta\rangle=0$，则称 $\xi$ 与 $\eta$ <strong>正交</strong>（几何上即互相垂直）。若一组基中任意两个向量都正交，且每个向量长度为1，则称为<strong>标准正交基</strong>。</div>
+
+      <h3 class="part"><span class="tag">方法</span>施密特正交化</h3>
+      <div class="step">任意一组线性无关的向量 $\alpha_1,\alpha_2,\dots$，都可以通过<strong>施密特正交化</strong>过程，逐个"扣除"与前面方向重合的分量，改造成一组互相正交的向量：</div>
+      <div class="center-block">
+        $$\beta_1=\alpha_1,\qquad \beta_2=\alpha_2-\frac{\langle\alpha_2,\beta_1\rangle}{\langle\beta_1,\beta_1\rangle}\beta_1,\qquad \cdots$$
+      </div>
+      <div class="step">每一步都是"用 $\alpha_k$ 减去它在已有正交方向上的投影"，剩下的部分自然与之前的方向都垂直。</div>
+
+      <div class="example">
+        <div class="ex-label">例：施密特正交化的完整数值过程</div>
+        对 $\alpha_1=(1,1,0),\alpha_2=(1,0,1)$ 正交化：
+        $$\beta_1=\alpha_1=(1,1,0)$$
+        $$\beta_2=\alpha_2-\frac{\langle\alpha_2,\beta_1\rangle}{\langle\beta_1,\beta_1\rangle}\beta_1=(1,0,1)-\frac{1}{2}(1,1,0)=\left(\frac12,-\frac12,1\right)$$
+        验证正交：$\langle\beta_1,\beta_2\rangle=\frac12-\frac12+0=0$ ✓。若还需要<strong>标准</strong>正交基，再把每个 $\beta_i$ 除以自身长度 $\|\beta_i\|=\sqrt{\langle\beta_i,\beta_i\rangle}$ 即可（$\beta_1$ 长度 $\sqrt2$，$\beta_2$ 长度 $\sqrt{3/2}$）。
+      </div>
+
+      <h3 class="part"><span class="tag">辨析</span>为什么要"减去投影"</h3>
+      <div class="step">$\dfrac{\langle\alpha_2,\beta_1\rangle}{\langle\beta_1,\beta_1\rangle}\beta_1$ 正是 $\alpha_2$ 在 $\beta_1$ 方向上的<strong>投影</strong>——把 $\alpha_2$ 减去这部分"与 $\beta_1$ 平行的分量"，剩下的部分自然只包含"垂直于 $\beta_1$"的信息，这就是为什么 $\beta_2$ 一定与 $\beta_1$ 正交。这个操作可以形象地理解为：把手电筒沿 $\beta_1$ 方向照向 $\alpha_2$，投影就是墙上的影子，减去影子剩下的，正是"影子之外"（垂直方向）的部分。</div>
+
+      <div class="note">
+        <strong>说明：</strong> 在标准正交基下，向量的坐标可以直接用内积"读出来"（$x_i=\langle\xi,\alpha_i\rangle$），不需要解方程组——这也是为什么在对角化对称矩阵时（下一节），我们总是优先选用正交的特征向量作为新基。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. 判断 $(1,2,-1)$ 与 $(3,1,5)$ 是否正交。</summary>
+          <div class="ans">$\langle\xi,\eta\rangle=1\times3+2\times1+(-1)\times5=3+2-5=0$，正交。</div>
+        </details>
+        <details>
+          <summary>2. 把 $(3,4)$ 标准化（化成单位向量）。</summary>
+          <div class="ans">长度 $\sqrt{3^2+4^2}=5$，标准化后得 $\left(\dfrac35,\dfrac45\right)$。</div>
+        </details>
+        <details>
+          <summary>3. 已知标准正交基 $\alpha_1=(1,0),\alpha_2=(0,1)$，用"内积直接读坐标"求 $\xi=(3,-2)$ 的坐标，并说明为什么不用解方程组。</summary>
+          <div class="ans">$x_1=\langle\xi,\alpha_1\rangle=3,\ x_2=\langle\xi,\alpha_2\rangle=-2$，坐标为 $(3,-2)$。因为标准正交基下"交叉项"全部为零（$\langle\alpha_i,\alpha_j\rangle=0,i\neq j$），用内积展开 $\xi=\sum x_i\alpha_i$ 后逐项内积，其余项都自动消失，只剩下 $x_i$ 一项，所以能"直接读出"。</div>
+        </details>
+      </div>
+
+      <div class="nextlink"><a href="#ch11">下一节：对角化 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="chapter" id="ch11">
+      <p class="kicker">第四部 · 变换的骨架 / 11</p>
+      <h2 class="chapter-title">对角化</h2>
+      <p class="chapter-tagline">换一套最合适的基，把复杂的账本简化成一条对角线</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>还是那块被拉伸、压扁又略微旋转的面团。如果你固执地用最初随便选的"经纬线"去描述这个变换，写出来的矩阵会又乱又复杂。但如果你换一套参照方向——正好沿着面团"真正被拉伸的方向"（也就是特征向量方向）去测量——你会发现，这个复杂的变换其实只是"沿这个方向拉伸2倍，沿那个方向压缩0.5倍"，写出来的矩阵瞬间变成了只有对角线上有数字的最简形式。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>矩阵的对角化</h3>
+      <div class="step">若存在可逆矩阵 $P$，使得</div>
+      <div class="center-block">$$P^{-1}AP=\Lambda=\begin{pmatrix}\lambda_1&&\\&\ddots&\\&&\lambda_n\end{pmatrix}$$</div>
+      <div class="step">则称 $A$ 可<strong>对角化</strong>。结合第七节的结论 $B=P^{-1}AP$ 可以看出：对角化本质上就是一次基变换——把过渡矩阵 $P$ 的每一列取为 $A$ 的一个特征向量，新基下的矩阵就自动变成了对角矩阵，对角线上正是各个特征值。</div>
+
+      <h3 class="part"><span class="tag">定理</span>可对角化的条件</h3>
+      <div class="step">$n$ 阶矩阵 $A$ 可对角化，当且仅当 $A$ 拥有 $n$ 个线性无关的特征向量。特别地，若 $A$ 是<strong>实对称矩阵</strong>，则一定可以对角化，并且总能找到一组<strong>正交</strong>的特征向量作为过渡矩阵 $P$ 的列（此时 $P$ 是正交矩阵，$P^{-1}=P^{T}$）——这正好接上第十节"正交基"的结论。</div>
+
+      <div class="example">
+        <div class="ex-label">例：把第九节例2的矩阵完整对角化</div>
+        沿用第九节例2：$A=\begin{pmatrix}3&1\\2&2\end{pmatrix}$，特征值 $\lambda_1=1,\lambda_2=4$，特征向量 $\xi_1=(1,-2),\xi_2=(1,1)$。取 $P=(\xi_1,\xi_2)=\begin{pmatrix}1&1\\-2&1\end{pmatrix}$（两列分别是两个特征向量），则
+        $$P^{-1}AP=\begin{pmatrix}1&0\\0&4\end{pmatrix}$$
+        可以直接验算：$AP=\begin{pmatrix}3&1\\2&2\end{pmatrix}\begin{pmatrix}1&1\\-2&1\end{pmatrix}=\begin{pmatrix}1&4\\-2&4\end{pmatrix}$，而 $P\begin{pmatrix}1&0\\0&4\end{pmatrix}=\begin{pmatrix}1&4\\-2&4\end{pmatrix}$，两者相等，说明 $AP=P\Lambda$，即 $P^{-1}AP=\Lambda$ 成立。
+      </div>
+
+      <h3 class="part"><span class="tag">应用</span>对角化的实际用途：快速求矩阵幂</h3>
+      <div class="step">结合第九节练习3的结论，若 $A=P\Lambda P^{-1}$，则</div>
+      <div class="center-block">$$A^n=(P\Lambda P^{-1})(P\Lambda P^{-1})\cdots(P\Lambda P^{-1})=P\Lambda^n P^{-1}$$</div>
+      <div class="step">中间的 $P^{-1}P$ 每次都会抵消成 $E$，只剩下首尾各一个 $P,P^{-1}$，而 $\Lambda^n$ 只需要把对角线上每个特征值分别取 $n$ 次幂——把一个原本需要连乘 $n$ 次矩阵的问题，变成了只需对角化一次、幂运算变成标量幂的问题。这个技巧在求解斐波那契数列通项、马尔可夫链的长期状态等实际问题中非常常用。</div>
+
+      <div class="note">
+        <strong>说明：</strong> 对角化把整本讲义的几条主线收束到了一起：<strong>基变换</strong>（第七节）提供了"换一套参照方向"的工具，<strong>特征值/特征向量</strong>（第九节）指出了"该往哪个方向换"，<strong>正交基</strong>（第十节）保证了这套新方向"量起来互不干扰"——三者合力，把一个看起来复杂的线性变换，还原成了它最朴素的样子：沿着几个特定方向，各自拉伸了多少倍。这也是为什么"对角化"常被视为一学期线性代数课程的收尾章节。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. 为什么"$A$ 有重复的特征值"时，不一定能对角化？</summary>
+          <div class="ans">对角化要求凑够 $n$ 个<strong>线性无关</strong>的特征向量。如果某个特征值是重根，但对应的特征向量方向却只有一个自由度（不够凑出重根的重数那么多个无关方向），就无法凑齐 $n$ 个无关的特征向量。经典反例是 $\begin{pmatrix}1&1\\0&1\end{pmatrix}$：特征值 $\lambda=1$（二重），但只能找到一个方向 $(1,0)$ 的特征向量，无法对角化。</div>
+        </details>
+        <details>
+          <summary>2. 用第九节练习2中 $A=\begin{pmatrix}5&0\\0&-2\end{pmatrix}$ 举例：这种矩阵本身已经是对角矩阵，它的 $P$ 是什么？</summary>
+          <div class="ans">$P=E$（单位矩阵）——因为它的特征向量就是标准基本身 $(1,0),(0,1)$，不需要"换基"就已经是对角形式了。这也提醒我们：对角化的本质不是"计算出一个新矩阵"，而是"找到一套更合适的参照方向去看待同一个变换"。</div>
+        </details>
+        <details>
+          <summary>3. 若 $A$ 是实对称矩阵，为什么它的对角化过程会比一般矩阵更"省心"？</summary>
+          <div class="ans">因为实对称矩阵的特征向量天然可以选到互相正交（第十节+第十一节定理），这意味着过渡矩阵 $P$ 可以直接取成正交矩阵，此时 $P^{-1}=P^T$——求逆变成了转置，比一般矩阵求逆容易得多。这也是为什么大量实际应用（协方差矩阵、惯量张量等，它们大多是对称矩阵）都特别偏爱"实对称矩阵可正交对角化"这条定理。</div>
+        </details>
+      </div>
+
+    </section>
+
+    <footer class="book-footer">线性代数 · 通俗讲义 · 全十一章完</footer>
+
+  </main>
+</div>
+
+<script>
+  // 高亮当前所在章节 & 移动端点击目录后自动收起
+  const links = document.querySelectorAll('#toc a');
+  const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')));
+
+  function updateActive() {
+    let idx = 0;
+    const y = window.scrollY + 140;
+    sections.forEach((sec, i) => {
+      if (sec && sec.offsetTop <= y) idx = i;
+    });
+    links.forEach((a, i) => a.classList.toggle('active', i === idx));
+  }
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+
+  links.forEach(a => a.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  }));
+</script>
+
+</body>
+</html>
