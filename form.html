@@ -173,6 +173,7 @@
     /* committed 联动 */
     #committedGroup { display: none; }
     #committedGroup.show { display: flex; }
+    #committedLetterGroup { display: none; }
 
     /* ── 上传区 ── */
     .upload-zone {
@@ -869,7 +870,6 @@
             <button class="rm" onclick="removeFile('dorm')">✕</button>
           </div>
         </div>
-        </div>
         <!-- Duke Portal 截屏（所有申请者可选） -->
         <div class="form-group full" id="portalGroup">
           <label>Duke Portal 截屏（可选）</label>
@@ -998,7 +998,8 @@
     const falseOpt = document.getElementById('fCommittedFalseOpt');
     if (pastRdDeadline) {
       warn.style.display = '';
-      falseOpt.textContent = '❌ 否（截止日期已过）';
+      // 5/1 截止后不存在"未 Committed"的合法状态，移除该选项
+      falseOpt.remove();
     } else {
       warn.style.display = 'none';
       falseOpt.textContent = '❌ 否，还未 Commit';
@@ -1006,25 +1007,45 @@
   })();
 
   // ── 录取类型 & Committed 联动 ──
+  function updateOptionalUploads(type, val) {
+    // 宿舍照片/Portal截屏/学生证截屏：仅 RD+否 时隐藏，其余情况都显示
+    const hide = (type === 'RD' && val === 'false');
+    const display = hide ? 'none' : '';
+    document.getElementById('dormPhotoGroup').style.display = display;
+    document.getElementById('portalGroup').style.display    = display;
+    document.getElementById('sidGroup').style.display       = display;
+  }
+
   function toggleCommitted(type) {
     const rdGroup = document.getElementById('committedGroup');
     rdGroup.classList.toggle('show', type === 'RD');
     if (type !== 'RD') {
       document.getElementById('fCommitted').value = '';
       document.getElementById('letterGroup').style.display = '';
+      document.getElementById('committedLetterGroup').style.display = 'none';
     }
+    updateOptionalUploads(type, document.getElementById('fCommitted').value);
   }
 
   function onCommittedChange(val) {
     const type = document.getElementById('fType').value;
     const letterGroup = document.getElementById('letterGroup');
-    // RD + 已 Committed：隐藏录取通知书上传区，只保留 Committed Letter（不论是否已过 5/1）
+    const committedLetterGroup = document.getElementById('committedLetterGroup');
+    const committedLetterLabel = document.getElementById('committedLetterLabel');
+    // RD + 已 Committed：隐藏录取通知书上传区，显示 Committed Letter（必填）
+    // RD + 未 Committed 或未选：隐藏 Committed Letter 上传区，显示录取通知书
     if (type === 'RD' && val === 'true') {
       letterGroup.style.display = 'none';
       removeFile('letter');
+      committedLetterGroup.style.display = '';
+      committedLetterLabel.innerHTML = 'Committed Letter <span class="req">*</span>';
     } else {
       letterGroup.style.display = '';
+      committedLetterGroup.style.display = 'none';
+      committedLetterLabel.textContent = 'Committed Letter（可选）';
+      if (val !== 'true') removeFile('committed');
     }
+    updateOptionalUploads(type, val);
   }
 
   // ── 文件处理 ──
@@ -1219,7 +1240,6 @@
     if (!type)  { showError('请选择录取类型'); return; }
     if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
     if (type === 'RD' && rdCommitted === 'true' && !committedFile) { showError('已 Committed 需上传 Committed Letter 作为凭证'); return; }
-    if (type === 'RD' && rdCommitted === 'false' && pastRdDeadline && !committedFile) { showError('5月1日截止已过，RD录取必须上传 Committed Letter 方可入群'); return; }
     // 至少需要上传一个文件
     const hasAnyFile = letterFile || committedFile || dormFile || portalFile || sidFile;
     if (!hasAnyFile) { showError('请至少上传一个文件（录取通知书、Committed Letter 等）'); return; }
@@ -1576,6 +1596,12 @@
     document.getElementById('fYear').value = '';
     document.getElementById('fCommitted').value = '';
     document.getElementById('committedGroup').classList.remove('show');
+    document.getElementById('letterGroup').style.display = '';
+    document.getElementById('committedLetterGroup').style.display = 'none';
+    document.getElementById('committedLetterLabel').textContent = 'Committed Letter（可选）';
+    document.getElementById('dormPhotoGroup').style.display = '';
+    document.getElementById('portalGroup').style.display = '';
+    document.getElementById('sidGroup').style.display = '';
     // 恢复录取类型显示
     document.getElementById('fType').closest('.form-group').style.display = '';
     removeFile('letter'); removeFile('committed'); removeFile('dorm'); removeFile('portal'); removeFile('sid');
