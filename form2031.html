@@ -532,27 +532,36 @@
         </div>
         <div class="form-group full" id="committedGroup">
           <label>是否已 Committed（仅 RD 适用）<span class="req">*</span></label>
-          <div id="rdDeadlineWarning" style="display:none;"></div>
+          <div id="rdDeadlineWarning" style="
+            display:none;
+            background:#fdecea;
+            border:1.5px solid #C84B31;
+            border-radius:8px;
+            padding:10px 14px;
+            margin-bottom:8px;
+            font-size:12.5px;
+            color:#C84B31;
+            font-family:'DM Mono',monospace;
+            line-height:1.8;
+          ">
+            ⚠️ <strong>注意：5月1日 Commitment Deadline 已过。</strong><br/>
+            RD 录取须上传 <strong>Committed Letter</strong> 作为入群凭证。
+          </div>
           <select id="fCommitted" onchange="onCommittedChange(this.value)">
             <option value="">请选择</option>
             <option value="true">✅ 是，已 Committed</option>
-            <option value="false">❌ 否，尚未 Committed</option>
+            <option value="false" id="fCommittedFalseOpt">❌ 否，尚未 Committed</option>
           </select>
+          <div style="font-size:12px;color:#888070;margin-top:6px;">
+            选择"已 Committed"需在下方上传 <strong>Committed Letter</strong> 作为凭证（不论是否已过 5/1 截止日期）。
+          </div>
         </div>
         <div class="form-group">
           <label>学院 <span class="req">*</span></label>
           <select id="fCollege" onchange="updateNicknamePreview()">
             <option value="">请选择</option>
-            <option class="ug-only" value="Trinity College of Arts & Sciences">Trinity College of Arts &amp; Sciences</option>
-            <option class="ug-only" value="Pratt School of Engineering">Pratt School of Engineering</option>
-            <option class="grad-only" disabled hidden value="Graduate School (Master's)">Graduate School · 硕士</option>
-            <option class="grad-only" disabled hidden value="Graduate School (PhD)">Graduate School · 博士</option>
-            <option class="grad-only" disabled hidden value="Fuqua School of Business">Fuqua School of Business</option>
-            <option class="grad-only" disabled hidden value="School of Medicine">School of Medicine</option>
-            <option class="grad-only" disabled hidden value="School of Law">School of Law</option>
-            <option class="grad-only" disabled hidden value="Nicholas School of the Environment">Nicholas School of the Environment</option>
-            <option class="grad-only" disabled hidden value="Sanford School of Public Policy">Sanford School of Public Policy</option>
-            <option class="grad-only" disabled hidden value="School of Nursing">School of Nursing</option>
+            <option value="Trinity College of Arts & Sciences">Trinity College of Arts &amp; Sciences</option>
+            <option value="Pratt School of Engineering">Pratt School of Engineering</option>
           </select>
         </div>
         <div class="form-group">
@@ -729,15 +738,42 @@
   let preUploadPaths  = { letter: null, committed: null, dorm: null, portal: null, sid: null };
   let preUploadStatus = { letter: null, committed: null, dorm: null, portal: null, sid: null };
 
+  // ── RD Commitment Deadline（Class of 2031：2027-05-01 23:59 ET）──
+  const RD_COMMIT_DEADLINE = new Date('2027-05-02T03:59:59Z'); // 2027-05-01 23:59 美东
+  const pastRdDeadline = new Date() > RD_COMMIT_DEADLINE;
+
+  (function initDeadlineUI() {
+    const warn = document.getElementById('rdDeadlineWarning');
+    const falseOpt = document.getElementById('fCommittedFalseOpt');
+    if (pastRdDeadline) {
+      warn.style.display = '';
+      falseOpt.textContent = '❌ 否（截止日期已过）';
+    } else {
+      warn.style.display = 'none';
+      falseOpt.textContent = '❌ 否，尚未 Committed';
+    }
+  })();
+
   // ── 录取类型 & Committed 联动 ──
   function toggleCommitted(type) {
     const rdGroup = document.getElementById('committedGroup');
     rdGroup.classList.toggle('show', type === 'RD');
-    if (type !== 'RD') document.getElementById('fCommitted').value = '';
+    if (type !== 'RD') {
+      document.getElementById('fCommitted').value = '';
+      document.getElementById('letterGroup').style.display = '';
+    }
   }
 
   function onCommittedChange(val) {
-    // 仅保留 committed 状态记录，上传区不联动
+    const type = document.getElementById('fType').value;
+    const letterGroup = document.getElementById('letterGroup');
+    // RD + 已 Committed：隐藏录取通知书上传区，只保留 Committed Letter（不论是否已过 5/1）
+    if (type === 'RD' && val === 'true') {
+      letterGroup.style.display = 'none';
+      removeFile('letter');
+    } else {
+      letterGroup.style.display = '';
+    }
   }
 
   // ── 文件处理 ──
@@ -930,7 +966,9 @@
     if (!college)  { showError('请选择学院'); return; }
 
     if (!type)  { showError('请选择录取类型'); return; }
-      if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
+    if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
+    if (type === 'RD' && rdCommitted === 'true' && !committedFile) { showError('已 Committed 需上传 Committed Letter 作为凭证'); return; }
+    if (type === 'RD' && rdCommitted === 'false' && pastRdDeadline && !committedFile) { showError('5月1日截止已过，RD录取必须上传 Committed Letter 方可入群'); return; }
     if (!document.getElementById('fSubmitterName').value.trim())    { showError('请填写群昵称'); return; }
     if (!document.getElementById('fParentRole').value)               { showError('请选择家长角色（爸爸/妈妈）'); return; }
     if (!document.getElementById('fSubmitterContact').value.trim()) { showError('请填写联系方式'); return; }
@@ -1280,12 +1318,7 @@
     document.getElementById('fYear').value = '';
     document.getElementById('fCommitted').value = '';
     document.getElementById('committedGroup').classList.remove('show');
-    // 恢复学院选项
-    const sel = document.getElementById('fCollege');
-    Array.from(sel.options).forEach(opt => {
-      if (opt.classList.contains('grad-only')) { opt.disabled = true;  opt.hidden = true;  }
-      if (opt.classList.contains('ug-only'))   { opt.disabled = false; opt.hidden = false; }
-    });
+    document.getElementById('letterGroup').style.display = '';
     // 恢复录取类型显示
     document.getElementById('fType').closest('.form-group').style.display = '';
     removeFile('letter'); removeFile('committed'); removeFile('dorm'); removeFile('portal'); removeFile('sid');
