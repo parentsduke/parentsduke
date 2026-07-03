@@ -777,6 +777,7 @@
         <div class="form-group full" id="committedGroup">
           <label>是否已 Committed（仅 RD 适用）<span class="req">*</span></label>
           <div id="rdDeadlineWarning" style="
+            display:none;
             background:#fdecea;
             border:1.5px solid #C84B31;
             border-radius:8px;
@@ -793,23 +794,18 @@
           <select id="fCommitted" onchange="onCommittedChange(this.value)">
             <option value="">请选择</option>
             <option value="true">✅ 是，已 Committed</option>
-            <option value="false">❌ 否（截止日期已过）</option>
+            <option value="false" id="fCommittedFalseOpt">❌ 否</option>
           </select>
+          <div style="font-size:12px;color:#888070;margin-top:6px;">
+            选择"已 Committed"需在下方上传 <strong>Committed Letter</strong> 作为凭证（不论是否已过 5/1 截止日期）。
+          </div>
         </div>
         <div class="form-group">
           <label>学院 <span class="req">*</span></label>
           <select id="fCollege" onchange="updateNicknamePreview()">
             <option value="">请选择</option>
-            <option class="ug-only" value="Trinity College of Arts & Sciences">Trinity College of Arts &amp; Sciences</option>
-            <option class="ug-only" value="Pratt School of Engineering">Pratt School of Engineering</option>
-            <option class="grad-only" disabled hidden value="Graduate School (Master's)">Graduate School · 硕士</option>
-            <option class="grad-only" disabled hidden value="Graduate School (PhD)">Graduate School · 博士</option>
-            <option class="grad-only" disabled hidden value="Fuqua School of Business">Fuqua School of Business</option>
-            <option class="grad-only" disabled hidden value="School of Medicine">School of Medicine</option>
-            <option class="grad-only" disabled hidden value="School of Law">School of Law</option>
-            <option class="grad-only" disabled hidden value="Nicholas School of the Environment">Nicholas School of the Environment</option>
-            <option class="grad-only" disabled hidden value="Sanford School of Public Policy">Sanford School of Public Policy</option>
-            <option class="grad-only" disabled hidden value="School of Nursing">School of Nursing</option>
+            <option value="Trinity College of Arts & Sciences">Trinity College of Arts &amp; Sciences</option>
+            <option value="Pratt School of Engineering">Pratt School of Engineering</option>
           </select>
         </div>
         <div class="form-group">
@@ -871,21 +867,6 @@
           <div class="file-preview" id="dormPreview">
             <span class="fname" id="dormPhotoName"></span>
             <button class="rm" onclick="removeFile('dorm')">✕</button>
-          </div>
-        </div>
-        <!-- 研究生录取通知书（仅研究生届次显示） -->
-        <div class="form-group full" id="gradLetterGroup" style="display:none;">
-          <label>录取通知书 <span class="req">*</span></label>
-          <div class="upload-zone" id="gradLetterZone"
-               ondragover="handleDrag(event,'gradLetterZone')"
-               ondragleave="handleDragLeave('gradLetterZone')"
-               ondrop="handleDrop(event,'gradLetter')">
-            <input type="file" id="fGradLetter" accept="image/*,.pdf" onchange="handleFile(event,'gradLetter')"/>
-            <div class="upload-hint">拖入或点击上传录取通知书，支持 <strong>图片 / PDF</strong></div>
-          </div>
-          <div class="file-preview" id="gradLetterPreview">
-            <span class="fname" id="gradLetterName"></span>
-            <button class="rm" onclick="removeFile('gradLetter')">✕</button>
           </div>
         </div>
         </div>
@@ -995,29 +976,55 @@
   let letterFile = null;
   let committedFile = null;
   let dormFile = null;
-  let gradLetterFile = null;
   let portalFile = null;
   let sidFile = null;
 
   // 预上传路径（文件选好后立即上传，存路径备用）
   let preUploadPaths = {
     letter: null, committed: null, dorm: null,
-    gradLetter: null, portal: null, sid: null
+    portal: null, sid: null
   };
   let preUploadStatus = {
     letter: null, committed: null, dorm: null,
-    gradLetter: null, portal: null, sid: null
+    portal: null, sid: null
   }; // null | 'uploading' | 'done' | 'error'
+
+  // ── RD Commitment Deadline（Class of 2030：2026-05-01 23:59 ET）──
+  const RD_COMMIT_DEADLINE = new Date('2026-05-02T03:59:59Z'); // 2026-05-01 23:59 US Eastern
+  const pastRdDeadline = new Date() > RD_COMMIT_DEADLINE;
+
+  (function initDeadlineUI() {
+    const warn = document.getElementById('rdDeadlineWarning');
+    const falseOpt = document.getElementById('fCommittedFalseOpt');
+    if (pastRdDeadline) {
+      warn.style.display = '';
+      falseOpt.textContent = '❌ 否（截止日期已过）';
+    } else {
+      warn.style.display = 'none';
+      falseOpt.textContent = '❌ 否，还未 Commit';
+    }
+  })();
 
   // ── 录取类型 & Committed 联动 ──
   function toggleCommitted(type) {
     const rdGroup = document.getElementById('committedGroup');
     rdGroup.classList.toggle('show', type === 'RD');
-    if (type !== 'RD') document.getElementById('fCommitted').value = '';
+    if (type !== 'RD') {
+      document.getElementById('fCommitted').value = '';
+      document.getElementById('letterGroup').style.display = '';
+    }
   }
 
   function onCommittedChange(val) {
-    // 仅保留 committed 状态记录，上传区不联动
+    const type = document.getElementById('fType').value;
+    const letterGroup = document.getElementById('letterGroup');
+    // RD + 已 Committed：隐藏录取通知书上传区，只保留 Committed Letter（不论是否已过 5/1）
+    if (type === 'RD' && val === 'true') {
+      letterGroup.style.display = 'none';
+      removeFile('letter');
+    } else {
+      letterGroup.style.display = '';
+    }
   }
 
   // ── 文件处理 ──
@@ -1034,7 +1041,7 @@
   }
   function handleDrop(e, type) {
     e.preventDefault();
-    const zoneMap = { letter: 'letterZone', committed: 'committedZone', dorm: 'dormZone', gradLetter: 'gradLetterZone', portal: 'portalZone', sid: 'sidZone' };
+    const zoneMap = { letter: 'letterZone', committed: 'committedZone', dorm: 'dormZone', portal: 'portalZone', sid: 'sidZone' };
     document.getElementById(zoneMap[type]).classList.remove('drag-over');
     const file = e.dataTransfer.files?.[0];
     if (file) setFile(type, file);
@@ -1044,17 +1051,16 @@
     preUploadStatus[type] = null;
 
     const nameMap = {
-      letter: 'letterName', committed: 'committedLetterName', gradLetter: 'gradLetterName',
+      letter: 'letterName', committed: 'committedLetterName',
       dorm: 'dormPhotoName', portal: 'portalName', sid: 'sidName'
     };
     const previewMap = {
-      letter: 'letterPreview', committed: 'committedPreview', gradLetter: 'gradLetterPreview',
+      letter: 'letterPreview', committed: 'committedPreview',
       dorm: 'dormPreview', portal: 'portalPreview', sid: 'sidPreview'
     };
 
     if (type === 'letter')          letterFile    = file;
     else if (type === 'committed')  committedFile = file;
-    else if (type === 'gradLetter') gradLetterFile = file;
     else if (type === 'portal')     portalFile    = file;
     else if (type === 'sid')        sidFile       = file;
     else                            dormFile      = file;
@@ -1081,12 +1087,12 @@
 
   function updatePreUploadUI(type) {
     const nameMap = {
-      letter: 'letterName', committed: 'committedLetterName', gradLetter: 'gradLetterName',
+      letter: 'letterName', committed: 'committedLetterName',
       dorm: 'dormPhotoName', portal: 'portalName', sid: 'sidName'
     };
     const el = document.getElementById(nameMap[type]);
     if (!el) return;
-    const fileObj = { letter: letterFile, committed: committedFile, gradLetter: gradLetterFile,
+    const fileObj = { letter: letterFile, committed: committedFile,
                       dorm: dormFile, portal: portalFile, sid: sidFile }[type];
     const name = fileObj ? fileObj.name : '';
     const status = preUploadStatus[type];
@@ -1109,10 +1115,6 @@
       committedFile = null;
       document.getElementById('fCommittedLetter').value = '';
       document.getElementById('committedPreview').classList.remove('show');
-    } else if (type === 'gradLetter') {
-      gradLetterFile = null;
-      document.getElementById('fGradLetter').value = '';
-      document.getElementById('gradLetterPreview').classList.remove('show');
     } else if (type === 'portal') {
       portalFile = null;
       document.getElementById('fPortalScreenshot').value = '';
@@ -1190,9 +1192,8 @@
     const year     = document.getElementById('fYear').value;
     const college  = (document.getElementById('fCollege').value || '').trim();
     const notes    = document.getElementById('fNotes').value.trim();
-    const isGrad   = (year === 'grad_masters' || year === 'grad_phd');
-    const type     = isGrad ? null : document.getElementById('fType').value;
-    const rdCommitted = isGrad ? null : document.getElementById('fCommitted').value;
+    const type     = document.getElementById('fType').value;
+    const rdCommitted = document.getElementById('fCommitted').value;
 
     if (!nameCnLast)  { showError('请填写中文姓'); return; }
     if (!nameCnFirst) { showError('请填写中文名'); return; }
@@ -1215,15 +1216,12 @@
     if (!year)     { showError('请选择入学届次'); return; }
     if (!college)  { showError('请选择学院'); return; }
 
-    if (isGrad) {
-      if (!gradLetterFile) { showError('请上传研究生录取通知书'); return; }
-    } else {
-      if (!type)  { showError('请选择录取类型'); return; }
-      if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
-      if (type === 'RD' && rdCommitted === 'false' && !committedFile) { showError('5月1日截止已过，RD录取必须上传 Committed Letter 方可入群'); return; }
-    }
+    if (!type)  { showError('请选择录取类型'); return; }
+    if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
+    if (type === 'RD' && rdCommitted === 'true' && !committedFile) { showError('已 Committed 需上传 Committed Letter 作为凭证'); return; }
+    if (type === 'RD' && rdCommitted === 'false' && pastRdDeadline && !committedFile) { showError('5月1日截止已过，RD录取必须上传 Committed Letter 方可入群'); return; }
     // 至少需要上传一个文件
-    const hasAnyFile = letterFile || committedFile || dormFile || gradLetterFile || portalFile || sidFile;
+    const hasAnyFile = letterFile || committedFile || dormFile || portalFile || sidFile;
     if (!hasAnyFile) { showError('请至少上传一个文件（录取通知书、Committed Letter 等）'); return; }
 
     if (!document.getElementById('fSubmitterName').value.trim())    { showError('请填写群昵称'); return; }
@@ -1280,7 +1278,6 @@
       if (letterFile)       activeTypes.push('letter');
       if (committedFile)    activeTypes.push('committed');
       if (dormFile)         activeTypes.push('dorm');
-      if (gradLetterFile)   activeTypes.push('gradLetter');
       if (portalFile)       activeTypes.push('portal');
       if (sidFile)          activeTypes.push('sid');
 
@@ -1295,31 +1292,29 @@
       let letter_path           = null;
       let committed_letter_path = null;
       let dorm_photo_path       = null;
-      let grad_letter_path      = null;
       let portal_screenshot_path = null;
       let student_id_path        = null;
 
       if (letterFile)       letter_path            = preUploadPaths['letter']       || await uploadFile(letterFile,       '录取通知书');
       if (committedFile)    committed_letter_path  = preUploadPaths['committed']    || await uploadFile(committedFile,    'Committed Letter');
       if (dormFile)         dorm_photo_path        = preUploadPaths['dorm']         || await uploadFile(dormFile,         '宿舍照片');
-      if (gradLetterFile)   grad_letter_path       = preUploadPaths['gradLetter']   || await uploadFile(gradLetterFile,   '研究生录取通知书');
       if (portalFile)       portal_screenshot_path = preUploadPaths['portal']       || await uploadFile(portalFile,       'Duke Portal 截屏');
       if (sidFile)          student_id_path        = preUploadPaths['sid']          || await uploadFile(sidFile,          '学生证截屏');
 
       const upProg = document.getElementById('uploadProgress');
       if (upProg) upProg.classList.remove('show');
 
-      const committed_val = (!isGrad && type === 'RD')
+      const committed_val = (type === 'RD')
         ? (rdCommitted === 'true' ? true : rdCommitted === 'false' ? false : null)
         : null;
 
-      const classYearVal = isGrad ? null : parseInt(year);
+      const classYearVal = parseInt(year);
 
       // ── 自动生成微信昵称 ──
       const _submitterName = document.getElementById('fSubmitterName').value.trim();
       const _parentRole    = document.getElementById('fParentRole').value || '';
       const _childName     = nameEnFirst || (nameCn.replace(/不适用/g, '') || '');
-      const _yearShort     = (!isGrad && year && !isNaN(parseInt(year))) ? String(parseInt(year)).slice(-2) : '';
+      const _yearShort     = (year && !isNaN(parseInt(year))) ? String(parseInt(year)).slice(-2) : '';
       const _collegeCode   = college.includes('Pratt') ? 'P' : college.includes('Trinity') ? 'T' : '';
       const _yearCode      = (_yearShort && _collegeCode) ? _yearShort + _collegeCode : _yearShort;
       const _locCountry    = document.getElementById('fLocationCountry').value;
@@ -1352,7 +1347,7 @@
         student_name_en:       nameEn,
         high_school:           school || null,
         location:              location || null,
-        admission_type:        isGrad ? year : type,
+        admission_type:        type,
         class_year:            classYearVal,
         college:               college || null,
         major:                 document.getElementById('fMajor').value.trim() || null,
@@ -1361,7 +1356,6 @@
         letter_path,
         committed_letter_path,
         dorm_photo_path,
-        grad_letter_path,
         portal_screenshot_path,
         student_id_path,
         submitter_name:        document.getElementById('fSubmitterName').value.trim() || null,
@@ -1582,16 +1576,9 @@
     document.getElementById('fYear').value = '';
     document.getElementById('fCommitted').value = '';
     document.getElementById('committedGroup').classList.remove('show');
-    document.getElementById('gradLetterGroup').style.display    = 'none';
-    // 恢复学院选项
-    const sel = document.getElementById('fCollege');
-    Array.from(sel.options).forEach(opt => {
-      if (opt.classList.contains('grad-only')) { opt.disabled = true;  opt.hidden = true;  }
-      if (opt.classList.contains('ug-only'))   { opt.disabled = false; opt.hidden = false; }
-    });
     // 恢复录取类型显示
     document.getElementById('fType').closest('.form-group').style.display = '';
-    removeFile('letter'); removeFile('committed'); removeFile('dorm'); removeFile('gradLetter'); removeFile('portal'); removeFile('sid');
+    removeFile('letter'); removeFile('committed'); removeFile('dorm'); removeFile('portal'); removeFile('sid');
     document.getElementById('formError').className = 'msg';
     document.getElementById('submitBtn').disabled = false;
     document.getElementById('submitBtn').textContent = '提 交';
