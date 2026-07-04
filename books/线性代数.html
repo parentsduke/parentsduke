@@ -531,6 +531,42 @@
         <strong>说明：</strong> 既然矩阵和四维向量作为线性空间是同构的，为什么教材、应用里仍然坚持把它摆成"矩阵"这个方阵形状，而不是索性拉直成一行向量？因为矩阵除了"能加、能数乘"这一层线性空间结构之外，还额外承载了<strong>乘法</strong>这层结构：两个矩阵可以相乘，这对应着"线性变换的复合"（见第五、六节）；而矩阵的秩、行列式（第八节）、特征值（第九节）等重要概念，都依赖"行、列"这种二维排列方式，一旦拉直成一行向量就无从谈起了。也就是说，<strong>线性空间这一层只关心加法和数乘</strong>，矩阵长什么样并不影响它是不是线性空间、维数是多少；但矩阵的"方阵形状"在乘法、变换、特征值等运算里是不可或缺的额外结构，不能因为"同构"就随意丢弃。
       </div>
 
+      <h3 class="part"><span class="tag">辨析</span>$2\times2$ 矩阵、$2\times1$ 矩阵与 $\mathbb{R}^2$ 的区别</h3>
+      <div class="step">"维数"看的是需要几个独立数字才能确定一个元素，跟名字里的数字（比如"2×2"里的"2"）没有直接关系，容易在这里搞混：</div>
+      <div class="center-block">
+        $$\underbrace{2}_{\text{行数}}\times\underbrace{2}_{\text{列数}}=\underbrace{4}_{\text{维数}}\qquad\Longrightarrow\qquad \{2\times2\text{ 矩阵}\}\cong\mathbb{R}^4\ (\text{不是 }\mathbb{R}^2)$$
+      </div>
+      <div class="step"><strong>$2\times2$ 实矩阵</strong> $\begin{pmatrix}a&b\\c&d\end{pmatrix}$ 需要 $a,b,c,d$ 共 4 个独立数字，维数是 4，同构于 $\mathbb{R}^4$——跟 $\mathbb{R}^2$ 完全不是一回事，只是名字里都带着"2"容易让人误以为有关系。</div>
+      <div class="step">而<strong>$2\times1$ 实矩阵</strong> $\begin{pmatrix}a\\b\end{pmatrix}$ 只需要 $a,b$ 两个独立数字，维数是 2，跟 $\mathbb{R}^2$ 不仅维数相同，写法也几乎一致——这正是"列向量"的定义本身：</div>
+      <div class="center-block">$$\xi=(x_1,x_2,\dots,x_n)\in\mathbb{R}^n\quad\Longleftrightarrow\quad \xi=\begin{pmatrix}x_1\\x_2\\\vdots\\x_n\end{pmatrix}\ (n\times1\text{ 矩阵})$$</div>
+      <div class="step">三者对比如下：</div>
+      <div class="center-block">
+        $$\mathbb{R}^2:\ 2\text{ 个数}\to\dim=2$$
+        $$2\times1\text{ 矩阵}:\ 2\text{ 个数}\to\dim=2\to\text{本身就是 }\mathbb{R}^2\text{ 的另一种写法（列向量）}$$
+        $$2\times2\text{ 矩阵}:\ 4\text{ 个数}\to\dim=4\to\text{同构于 }\mathbb{R}^4,\text{形状与 }\mathbb{R}^2\text{ 完全不同}$$
+      </div>
+      <div class="step">这里的关键是"格子数必须对上"：$\mathbb{R}^2$ 里的一个元素 $(x,y)$ 需要恰好 2 个独立数字，能对应它的矩阵形状，格子总数也必须恰好是 2：</div>
+      <div class="center-block">
+        $$\underbrace{2}_{\text{行}}\times\underbrace{1}_{\text{列}}=2\ \checkmark\ (\text{正好对上})\qquad\qquad \underbrace{2}_{\text{行}}\times\underbrace{2}_{\text{列}}=4\ \times\ (\text{多了2个，装不下})$$
+      </div>
+      <div class="step">若硬要把 $(x,y)$ 塞进 $2\times2$ 矩阵的 4 个格子里，会发现根本装不满——多出来的两个格子该填什么？这正是矩阵和 $\mathbb{R}^n$ 对应关系的一般规律：$m\times n$ 矩阵的格子总数必须<strong>恰好等于</strong>要表示的空间维数，即 $m\times n$ 矩阵 $\cong\mathbb{R}^{m\times n}$——$\mathbb{R}^2$ 能对应的矩阵形状（$2\times1$、$1\times2$……）格子数都必须是 2，不可能是格子数为 4 的 $2\times2$。</div>
+
+      <div class="note">
+        <strong>说明：</strong> 这也解释了为什么线性代数教材里经常把向量直接写成竖着的一列——因为 $n\times1$ 矩阵和 $\mathbb{R}^n$ 的向量根本不需要"翻译"，两者本来就是同一件事的两种写法。而 $A\xi$（矩阵乘向量）这个式子能够直接运算，正是因为 $\xi$ 被当成了 $n\times1$ 矩阵，套用矩阵乘法的规则去乘。至于矩阵和向量另一层更常用的关系——矩阵可以<strong>作用</strong>在向量上（$A\xi$，代表一个线性变换），而不是"谁同构于谁"——见第五、六节。
+      </div>
+
+      <h3 class="part"><span class="tag">辨析</span>两个"二维"列向量拼起来，为什么是四维而不是二维</h3>
+      <div class="step">一个 $2\times2$ 矩阵也可以看成两个列向量拼在一起：</div>
+      <div class="center-block">$$\begin{pmatrix}a&b\\c&d\end{pmatrix}=\Big(\underbrace{\begin{pmatrix}a\\c\end{pmatrix}}_{\text{向量1，在}\mathbb{R}^2},\ \underbrace{\begin{pmatrix}b\\d\end{pmatrix}}_{\text{向量2，在}\mathbb{R}^2}\Big)$$</div>
+      <div class="step">容易产生的直觉是："两个向量都在二维空间里，合起来应该还是二维"——但这里混淆了两个不同层次的"维数"：<strong>单个列向量所在空间的维数</strong>（每个都是2）和<strong>整个矩阵这个集合需要几个自由参数</strong>（这才是矩阵空间的维数）是两件不同的事。</div>
+      <div class="step">要确定这一整个矩阵，向量1需要 $a,c$ 两个独立数字，向量2需要 $b,d$ 两个独立数字，且两个向量互相独立、谁也推不出谁，所以合起来是：</div>
+      <div class="center-block">$$\underbrace{2}_{\text{向量1}}+\underbrace{2}_{\text{向量2}}=\underbrace{4}_{\text{矩阵空间的维数}}$$</div>
+      <div class="step">也就是说，"两个向量各自活在2维空间里"和"这两个向量拼起来构成的矩阵空间是几维"并不矛盾——恰恰是 $2+2=4$，与前面结论一致。可以类比：身高是1个独立数字（1维），体重也是1个独立数字（1维），但"身高+体重"合起来描述一个人需要 2 个独立数字，不是"1维"；同理，两个独立的2维向量拼在一起，自然需要 $2+2=4$ 个数字，即4维。</div>
+
+      <div class="note">
+        <strong>说明：</strong> 这里的"4维"，说的不是"能画出4个互相垂直的空间方向"，而是"需要4个独立参数才能唯一确定一个矩阵"。在 $\mathbb{R}^2$、$\mathbb{R}^3$ 这种熟悉的例子里，"维数"恰好等于"能画出几个互相垂直的方向"，容易让人误以为维数本来就是指方向个数。但"维数"更本质、更抽象的含义是<strong>自由度</strong>：要写出一个具体的矩阵，必须给定 $a,b,c,d$ 四个独立的数，少一个不够、多一个是重复，这就是"4维"。同样，"$[0,1]$ 上所有连续函数构成无穷维空间"，也不是说这个空间有"无穷多个方向"这种直观画面，而是说一个连续函数没法只用有限个数字完全描述——每一点的取值都是相对独立的信息。
+      </div>
+
       <h3 class="part"><span class="tag">辨析</span>为什么一定要验证"公理"</h3>
       <div class="step">一个集合光有"加法"和"数乘"两个运算符号还不够，还必须逐条核对以下八条公理才能称为线性空间：加法交换律、结合律、存在零向量、存在负向量、数乘对向量加法的分配律 $k(\xi+\eta)=k\xi+k\eta$、数乘对数的加法的分配律 $(k+l)\xi=k\xi+l\xi$、数乘结合律 $(kl)\xi=k(l\xi)$、以及 $1\cdot\xi=\xi$。</div>
 
