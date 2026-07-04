@@ -1007,13 +1007,52 @@
   })();
 
   // ── 录取类型 & Committed 联动 ──
-  function updateOptionalUploads(type, val) {
-    // 宿舍照片/Portal截屏/学生证截屏：仅 RD+否 时隐藏，其余情况都显示
-    const hide = (type === 'RD' && val === 'false');
-    const display = hide ? 'none' : '';
-    document.getElementById('dormPhotoGroup').style.display = display;
-    document.getElementById('portalGroup').style.display    = display;
-    document.getElementById('sidGroup').style.display       = display;
+  // 规则：
+  // 一、RD 必须选择 Committed 状态（未选择时不展示任何上传区，逼迫先做选择；提交时也会拦截）
+  // 二、5/1 前：ED→只传录取通知书；RD+Committed→只传Committed Letter；RD+未Committed→只传录取通知书
+  // 三、5/1 后：ED→录取通知书+宿舍/Portal/学生证；RD 不再有"未Committed"选项；RD+Committed→录取通知书+Committed Letter+宿舍/Portal/学生证
+  function updateUploadVisibility(type, committedVal) {
+    const letterGroup           = document.getElementById('letterGroup');
+    const committedLetterGroup  = document.getElementById('committedLetterGroup');
+    const committedLetterLabel  = document.getElementById('committedLetterLabel');
+
+    let showLetter = false, showCommittedLetter = false, showExtras = false;
+
+    if (type === 'ED') {
+      showLetter          = true;
+      showCommittedLetter = false;
+      showExtras          = pastRdDeadline; // 5/1 后才展示宿舍/Portal/学生证
+    } else if (type === 'RD') {
+      if (!committedVal) {
+        // 未选择 Committed 状态：全部隐藏，禁止在选择前上传任何文件
+        showLetter = false; showCommittedLetter = false; showExtras = false;
+      } else if (committedVal === 'true') {
+        showCommittedLetter = true;
+        showLetter = false;            // RD+已Committed 任何时候都不展示录取通知书
+        showExtras = pastRdDeadline;   // 5/1 前不展示附加材料，5/1 后展示
+      } else if (committedVal === 'false') {
+        // 未 Committed（仅 5/1 前可选）：只展示录取通知书
+        showLetter = true; showCommittedLetter = false; showExtras = false;
+      }
+    }
+    // 未选择录取类型：全部保持隐藏
+
+    letterGroup.style.display = showLetter ? '' : 'none';
+    if (!showLetter) removeFile('letter');
+
+    committedLetterGroup.style.display = showCommittedLetter ? 'flex' : 'none';
+    if (!showCommittedLetter) {
+      removeFile('committed');
+      committedLetterLabel.textContent = 'Committed Letter（可选）';
+    } else {
+      committedLetterLabel.innerHTML = 'Committed Letter <span class="req">*</span>';
+    }
+
+    const extraDisplay = showExtras ? '' : 'none';
+    document.getElementById('dormPhotoGroup').style.display = extraDisplay;
+    document.getElementById('portalGroup').style.display    = extraDisplay;
+    document.getElementById('sidGroup').style.display       = extraDisplay;
+    if (!showExtras) { removeFile('dorm'); removeFile('portal'); removeFile('sid'); }
   }
 
   function toggleCommitted(type) {
@@ -1021,32 +1060,17 @@
     rdGroup.classList.toggle('show', type === 'RD');
     if (type !== 'RD') {
       document.getElementById('fCommitted').value = '';
-      document.getElementById('letterGroup').style.display = '';
-      document.getElementById('committedLetterGroup').style.display = 'none';
     }
-    updateOptionalUploads(type, document.getElementById('fCommitted').value);
+    updateUploadVisibility(type, document.getElementById('fCommitted').value);
   }
 
   function onCommittedChange(val) {
     const type = document.getElementById('fType').value;
-    const letterGroup = document.getElementById('letterGroup');
-    const committedLetterGroup = document.getElementById('committedLetterGroup');
-    const committedLetterLabel = document.getElementById('committedLetterLabel');
-    // RD + 已 Committed：隐藏录取通知书上传区，显示 Committed Letter（必填）
-    // RD + 未 Committed 或未选：隐藏 Committed Letter 上传区，显示录取通知书
-    if (type === 'RD' && val === 'true') {
-      letterGroup.style.display = 'none';
-      removeFile('letter');
-      committedLetterGroup.style.display = '';
-      committedLetterLabel.innerHTML = 'Committed Letter <span class="req">*</span>';
-    } else {
-      letterGroup.style.display = '';
-      committedLetterGroup.style.display = 'none';
-      committedLetterLabel.textContent = 'Committed Letter（可选）';
-      if (val !== 'true') removeFile('committed');
-    }
-    updateOptionalUploads(type, val);
+    updateUploadVisibility(type, val);
   }
+
+  // 初始化：页面刚加载、尚未选择录取类型时，所有上传区默认隐藏
+  updateUploadVisibility(document.getElementById('fType').value, document.getElementById('fCommitted').value);
 
   // ── 文件处理 ──
   function handleFile(e, type) {
@@ -1596,12 +1620,7 @@
     document.getElementById('fYear').value = '';
     document.getElementById('fCommitted').value = '';
     document.getElementById('committedGroup').classList.remove('show');
-    document.getElementById('letterGroup').style.display = '';
-    document.getElementById('committedLetterGroup').style.display = 'none';
-    document.getElementById('committedLetterLabel').textContent = 'Committed Letter（可选）';
-    document.getElementById('dormPhotoGroup').style.display = '';
-    document.getElementById('portalGroup').style.display = '';
-    document.getElementById('sidGroup').style.display = '';
+    updateUploadVisibility('', '');
     // 恢复录取类型显示
     document.getElementById('fType').closest('.form-group').style.display = '';
     removeFile('letter'); removeFile('committed'); removeFile('dorm'); removeFile('portal'); removeFile('sid');
