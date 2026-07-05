@@ -167,6 +167,14 @@
     display:flex; align-items:center; justify-content:center;
   }
   #imgBtn:active{ background:var(--paper); }
+  #imgGenBtn{
+    flex-shrink:0; width:44px; height:44px; border-radius:50%;
+    border:1px solid var(--border); background:#fff; color:var(--navy);
+    font-size:18px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s, border-color .15s;
+  }
+  #imgGenBtn.active{ background:var(--gold); border-color:var(--gold); }
   #imagePreviewBar{
     display:none; align-items:center; gap:10px;
     padding:8px 12px 0; background:#fff;
@@ -223,6 +231,7 @@
   <button class="remove-img" onclick="clearPendingImage()">✕ 移除图片</button>
 </div>
 <div id="inputBar">
+  <button id="imgGenBtn" onclick="toggleImageGenMode()" title="AI画图">🎨</button>
   <button id="imgBtn" onclick="document.getElementById('imageInput').click()" title="发送图片">📷</button>
   <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="onImageSelected(event)">
   <textarea id="input" rows="1" placeholder="与扯谈群助手聊天" onkeydown="onKeyDown(event)" oninput="autoGrow(this)"></textarea>
@@ -550,6 +559,7 @@ let conversations = [];
 let currentId = null;
 let history = [];
 let pendingImage = null; // { mimeType, data(base64,不含前缀), previewUrl(完整dataURL) }
+let imageGenMode = false; // 是否处于AI画图模式（一次性，发送后自动关闭）
 
 function loadStorage() {
   try {
@@ -685,6 +695,9 @@ function onImageSelected(e){
   if (!file) return;
   if (!file.type.startsWith('image/')) { alert('请选择图片文件'); return; }
 
+  // 上传图片和AI画图模式互斥
+  if (imageGenMode) toggleImageGenMode();
+
   const reader = new FileReader();
   reader.onload = (ev) => {
     const img = new Image();
@@ -712,6 +725,19 @@ function clearPendingImage(){
   pendingImage = null;
   document.getElementById('imagePreviewBar').classList.remove('show');
   document.getElementById('previewImg').src = '';
+}
+function toggleImageGenMode(){
+  imageGenMode = !imageGenMode;
+  const genBtn = document.getElementById('imgGenBtn');
+  const input = document.getElementById('input');
+  genBtn.classList.toggle('active', imageGenMode);
+  if (imageGenMode) {
+    clearPendingImage();
+    input.placeholder = '描述你想要AI生成的图片…';
+  } else {
+    input.placeholder = '与扯谈群助手聊天';
+  }
+  input.focus();
 }
 
 // ── 发送 ──
@@ -774,7 +800,9 @@ async function send(){
   const input = document.getElementById('input');
   const text = input.value.trim();
   const imageToSend = pendingImage;
+  const genMode = imageGenMode;
   if (!text && !imageToSend) return;
+  if (genMode && !text) { alert('请输入你想要AI生成的图片描述'); return; }
   _sending = true;
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
@@ -786,7 +814,47 @@ async function send(){
     input.value = '';
     autoGrow(input);
     clearPendingImage();
-    typingEl = appendMsg('bot typing', '扯谈群助手正在码字…');
+    if (genMode) {
+      imageGenMode = false;
+      document.getElementById('imgGenBtn').classList.remove('active');
+      input.placeholder = '与扯谈群助手聊天';
+    }
+    typingEl = appendMsg('bot typing', genMode ? '扯谈群助手正在画图…' : '扯谈群助手正在码字…');
+
+    // ── AI画图模式：单独走生图provider，不进入普通对话fallback链 ──
+    if (genMode) {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+        return;
+      }
+      const res = await fetch(PROXY_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},
+        body:JSON.stringify({ provider:'gemini-image', prompt:text, chat:true })
+      });
+      const d = await res.json();
+      if (!d.ok) throw new Error(d.error || '请求失败');
+      if (!d.image) throw new Error('未能生成图片，请换个描述重试');
+      const imgUrl = `data:${d.image.mimeType};base64,${d.image.data}`;
+      const caption = (d.result || '').trim() || '已生成图片';
+
+      typingEl.remove();
+      appendMsg('bot', caption, imgUrl);
+
+      history.push({ role:'user', text: userText });
+      history.push({ role:'model', text: caption, image: imgUrl });
+      if (history.length > 40) history = history.slice(-40);
+
+      const conv = getCurrentConv();
+      if (conv) {
+        conv.messages = [...history];
+        if (conv.title === '新对话') conv.title = userText.slice(0, 18);
+        saveStorage();
+        renderSidebar();
+      }
+      return;
+    }
 
     // 日历关键词匹配：直接返回硬编码，不走AI（仅限纯文字提问，带图片时走AI识图）
     if (!imageToSend && matchCalendar(text)) {
