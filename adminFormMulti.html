@@ -482,6 +482,15 @@
   <div class="modal-box">
     <div class="modal-title">发送催信</div>
     <div class="modal-sub" id="reminderModalSubText"></div>
+    <div class="modal-label">缺少的材料（可多选）</div>
+    <div id="reminderMissingItems" style="display:flex;flex-direction:column;gap:6px;margin:6px 0 10px;font-size:14px;">
+      <label><input type="checkbox" value="宿舍照片" class="reminder-missing-cb"> 宿舍照片</label>
+      <label><input type="checkbox" value="Committed Letter" class="reminder-missing-cb"> Committed Letter</label>
+      <label><input type="checkbox" value="录取通知书" class="reminder-missing-cb"> 录取通知书</label>
+      <label><input type="checkbox" value="其他信息" class="reminder-missing-cb"> 其他信息（见备注）</label>
+    </div>
+    <div class="modal-label">备注 / 具体说明（选填）</div>
+    <textarea id="reminderNote" placeholder="例如：照片模糊看不清宿舍门牌号，请重新拍摄" style="width:100%;min-height:60px;box-sizing:border-box;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px;resize:vertical;"></textarea>
     <div class="modal-label">操作管理员</div>
     <select id="reminderAdminSelect" onchange="document.getElementById('reminderConfirmBtn').disabled=!this.value">
       <option value="">— 请选择 —</option>
@@ -1152,6 +1161,18 @@
     document.getElementById('reminderModalSubText').innerText = `学生：${studentName}\n将发送到：${email}`;
     document.getElementById('reminderAdminSelect').value = '';
     document.getElementById('reminderConfirmBtn').disabled = true;
+    document.getElementById('reminderNote').value = '';
+    // 根据记录里已有的文件情况，自动预勾选缺失项
+    const rec = allRecords.find(r => r.id === recordId) || {};
+    const missingMap = {
+      '宿舍照片': !rec.dorm_photo_path,
+      'Committed Letter': !rec.committed_letter_path,
+      '录取通知书': !rec.grad_letter_path && !rec.committed_letter_path,
+      '其他信息': false,
+    };
+    document.querySelectorAll('.reminder-missing-cb').forEach(cb => {
+      cb.checked = !!missingMap[cb.value];
+    });
     document.getElementById('reminderModal').style.display = 'flex';
   }
 
@@ -1159,6 +1180,8 @@
     document.getElementById('reminderModal').style.display = 'none';
     document.getElementById('reminderAdminSelect').value = '';
     document.getElementById('reminderConfirmBtn').disabled = true;
+    document.getElementById('reminderNote').value = '';
+    document.querySelectorAll('.reminder-missing-cb').forEach(cb => cb.checked = false);
     _reminderArgs = null;
   }
 
@@ -1187,9 +1210,13 @@
   }
 
   // ── 催信发送后通知 weihong_j ──
-  async function notifyAdminReminderSent(adminName, studentName, email) {
+  async function notifyAdminReminderSent(adminName, studentName, email, missingItems, note) {
     try {
       const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
+      const missingText = missingItems.length ? missingItems.join('、') : '（未指定具体材料）';
+      let bodyLine2 = `缺少材料：${missingText}`;
+      if (note) bodyLine2 += `\n备注：${note}`;
+      bodyLine2 += `\n时间：${now}（美东）`;
       await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
         method: 'POST',
         headers: {
@@ -1203,7 +1230,7 @@
           subject:    `📧 催信已发送：${studentName}`,
           replyTo:    'parentsduke@gmail.com',
           bodyLine1:  `${adminName} 已向 ${studentName}（${email}）发送催信。`,
-          bodyLine2:  `时间：${now}（美东）`,
+          bodyLine2,
           buttonText: '进入审批页面',
           noButton:   true,
         }),
@@ -1218,6 +1245,11 @@
     if (!adminName) { alert('请先选择操作管理员'); return; }
     const { recordId, email, studentName } = _reminderArgs || {};
     if (!recordId) return;
+    const missingItems = Array.from(document.querySelectorAll('.reminder-missing-cb:checked')).map(cb => cb.value);
+    const note = document.getElementById('reminderNote').value.trim();
+    if (!missingItems.length && !note) {
+      if (!confirm('未勾选缺少材料也未填写备注，将发送一封不带具体内容的通用催信，确定继续吗？')) return;
+    }
     closeReminderModal();
     try {
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-multi`, {
@@ -1226,7 +1258,7 @@
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         },
-        body: JSON.stringify({ email, studentName, type: 'reminder', id: recordId }),
+        body: JSON.stringify({ email, studentName, type: 'reminder', id: recordId, missingItems, note }),
       });
       if (!res.ok) {
         const err = await res.text();
@@ -1234,15 +1266,15 @@
       }
       await db.rpc('append_approval_log', {
         record_id: recordId,
-        entry: { action: 'reminder_sent', by: adminName, at: new Date().toISOString() }
+        entry: { action: 'reminder_sent', by: adminName, at: new Date().toISOString(), missing_items: missingItems, note: note || null }
       });
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) {
         rec.approval_log = rec.approval_log || [];
-        rec.approval_log.push({ action: 'reminder_sent', by: adminName, at: new Date().toISOString() });
+        rec.approval_log.push({ action: 'reminder_sent', by: adminName, at: new Date().toISOString(), missing_items: missingItems, note: note || null });
       }
       refreshCatCell(recordId);
-      notifyAdminReminderSent(adminName, studentName, email);
+      notifyAdminReminderSent(adminName, studentName, email, missingItems, note);
       alert(`✅ 催信已发送至 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
