@@ -401,6 +401,7 @@
   let recordId     = null;
   let isGrad       = false;
   let admissionType = '';
+  let alreadyHasLetter = false; // 数据库里是否已经交过录取通知书（研究生用）
 
   // 每个上传区的状态
   const state = {
@@ -435,6 +436,7 @@
 
       admissionType = data.admission_type || '';
       isGrad = ['grad_masters','grad_phd','硕士','博士'].includes(admissionType);
+      alreadyHasLetter = isGrad && !!data.grad_letter_path;
 
       const name = data.student_name_cn || data.student_name_en || '同学';
       studentNameForNotify = name;
@@ -446,8 +448,11 @@
       if (isGrad) {
         document.getElementById('blockCL').style.display = 'none';
         document.querySelector('#blockLetter .upload-label').innerHTML =
-          '录取通知书 <span style="color:var(--red)">*</span>';
-        document.querySelector('.hint-box').textContent = '📎 请上传录取通知书（Admission Letter）';
+          '录取通知书 <span style="color:var(--red)">*</span>'
+          + (alreadyHasLetter ? ' <span style="color:var(--green);font-size:12px;font-weight:400;">（已收到，如需更新可重新上传替换）</span>' : '');
+        document.querySelector('.hint-box').textContent = alreadyHasLetter
+          ? '📎 您已提交过录取通知书；如本次催信只是要求补充其他材料，无需重新上传'
+          : '📎 请上传录取通知书（Admission Letter）';
       }
 
       // 预填宿舍楼名
@@ -601,7 +606,10 @@
     const hasSid    = !!state.Sid.file;
     const hasDorm   = !!state.Dorm.file;
 
-    if (isGrad && !hasLetter) { showMsg('请上传录取通知书'); return; }
+    if (isGrad && !hasLetter && !alreadyHasLetter) { showMsg('请上传录取通知书'); return; }
+    if (isGrad && !hasLetter && !hasPortal && !hasSid && !hasDorm) {
+      showMsg('没有可保存的内容，请至少上传一项材料'); return;
+    }
     if (!isGrad && !hasCL && !hasLetter && !hasPortal && !hasSid && !hasDorm) {
       showMsg('请至少上传一项材料'); return;
     }
