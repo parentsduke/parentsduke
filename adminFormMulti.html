@@ -1163,37 +1163,17 @@
     document.getElementById('reminderAdminSelect').value = '';
     document.getElementById('reminderConfirmBtn').disabled = true;
     document.getElementById('reminderNote').value = '';
-    // 根据记录里已有的文件情况，自动预勾选缺失项
     const rec = allRecords.find(r => r.id === recordId) || {};
-    // 2027-2029届本科是"三选一"，缺哪个不代表必须补哪个，不做自动预勾选，交给管理员自己判断催哪一项
-    const isThreeChoice = /届本科$/.test(rec.admission_type || '');
     // 研究生只认录取通知书，宿舍照片/Committed Letter 对研究生不适用，隐藏这两项避免误催
     const isGradRec = ['grad_masters','grad_phd','硕士','博士'].includes(rec.admission_type || '');
     document.querySelectorAll('.reminder-item-dorm, .reminder-item-cl').forEach(el => {
       el.style.display = isGradRec ? 'none' : '';
     });
-    const missingMap = isThreeChoice ? {
-      '宿舍照片': false,
-      'Committed Letter': false,
-      '录取通知书': false,
-      '其他信息': false,
-    } : isGradRec ? {
-      '宿舍照片': false,
-      'Committed Letter': false,
-      '录取通知书': !rec.grad_letter_path,
-      '其他信息': false,
-    } : {
-      '宿舍照片': !rec.dorm_photo_path,
-      'Committed Letter': !rec.committed_letter_path,
-      '录取通知书': !rec.grad_letter_path && !rec.committed_letter_path,
-      '其他信息': false,
-    };
+    // 不再自动预勾选，交给管理员自己判断要催哪些材料
     document.querySelectorAll('.reminder-missing-cb').forEach(cb => {
-      cb.checked = !!missingMap[cb.value];
+      cb.checked = false;
     });
-    document.getElementById('reminderMissingHint').innerText = isThreeChoice
-      ? '该届次为「三选一」，未自动预勾选，请手动选择要催的具体材料'
-      : '';
+    document.getElementById('reminderMissingHint').innerText = '请手动选择要催的具体材料';
     document.getElementById('reminderModal').style.display = 'flex';
   }
 
