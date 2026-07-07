@@ -483,6 +483,7 @@
     <div class="modal-title">发送催信</div>
     <div class="modal-sub" id="reminderModalSubText"></div>
     <div class="modal-label">缺少的材料（可多选）</div>
+    <div id="reminderMissingHint" style="font-size:12px;color:#888;margin-bottom:6px;"></div>
     <div id="reminderMissingItems" style="display:flex;flex-direction:column;gap:6px;margin:6px 0 10px;font-size:14px;">
       <label><input type="checkbox" value="宿舍照片" class="reminder-missing-cb"> 宿舍照片</label>
       <label><input type="checkbox" value="Committed Letter" class="reminder-missing-cb"> Committed Letter</label>
@@ -1164,7 +1165,14 @@
     document.getElementById('reminderNote').value = '';
     // 根据记录里已有的文件情况，自动预勾选缺失项
     const rec = allRecords.find(r => r.id === recordId) || {};
-    const missingMap = {
+    // 2027-2029届本科是"三选一"，缺哪个不代表必须补哪个，不做自动预勾选，交给管理员自己判断催哪一项
+    const isThreeChoice = /届本科$/.test(rec.admission_type || '');
+    const missingMap = isThreeChoice ? {
+      '宿舍照片': false,
+      'Committed Letter': false,
+      '录取通知书': false,
+      '其他信息': false,
+    } : {
       '宿舍照片': !rec.dorm_photo_path,
       'Committed Letter': !rec.committed_letter_path,
       '录取通知书': !rec.grad_letter_path && !rec.committed_letter_path,
@@ -1173,6 +1181,9 @@
     document.querySelectorAll('.reminder-missing-cb').forEach(cb => {
       cb.checked = !!missingMap[cb.value];
     });
+    document.getElementById('reminderMissingHint').innerText = isThreeChoice
+      ? '该届次为「三选一」，未自动预勾选，请手动选择要催的具体材料'
+      : '';
     document.getElementById('reminderModal').style.display = 'flex';
   }
 
@@ -1181,6 +1192,7 @@
     document.getElementById('reminderAdminSelect').value = '';
     document.getElementById('reminderConfirmBtn').disabled = true;
     document.getElementById('reminderNote').value = '';
+    document.getElementById('reminderMissingHint').innerText = '';
     document.querySelectorAll('.reminder-missing-cb').forEach(cb => cb.checked = false);
     _reminderArgs = null;
   }
