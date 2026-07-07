@@ -1260,6 +1260,21 @@
         直观理解：向量 $\xi$ 本身不变，如果新基比旧基"变大"了（比如整体放大2倍），那么同一个向量在新基下的坐标就必须"变小"（缩小一半）才能表示同一个向量——基和坐标的变化方向天然相反，这正是矩阵乘的位置也左右相反的原因（数学上称为坐标相对于基的<strong>逆变</strong>关系）。可以直接验证：$\xi=(\alpha_1,\dots,\alpha_n)x=(\beta_1,\dots,\beta_n)y=(\alpha_1,\dots,\alpha_n)Py$，两边比较系数即得 $x=Py$，与基变换公式中的 $P$ 完全是同一个矩阵。
       </div>
 
+      <div class="note">
+        <strong>追问：$\beta_j$ 到底是什么？它是坐标吗？</strong>
+        <p style="margin:10px 0">不是。$\beta_j$ 是一个<strong>向量</strong>（一根有方向、有大小的箭头），和 $\alpha_i$ 类型完全相同，只是恰好被选作了"新基"里的第 $j$ 个成员。真正的"坐标"是数字，而 $\beta_j$ 是几何对象本身——两者不在同一个层次上，不能混为一谈。</p>
+
+        <p style="margin:10px 0"><strong>$\beta_j$ 本身是有坐标的，但要问"相对哪个基"：</strong></p>
+        <ul style="margin:0 0 10px;padding-left:22px">
+          <li>在旧基 $\{\alpha_i\}$ 下：坐标是 $(p_{1j},\dots,p_{nj})^T$，即过渡矩阵 $P$ 的<strong>第 $j$ 列</strong>；</li>
+          <li>在新基 $\{\beta_i\}$（它自己所在的基）下：坐标是标准单位向量 $e_j=(0,\dots,1,\dots,0)^T$（第 $j$ 位是1，其余为0）——这是"基向量在自己所在的基下坐标最简单"这一事实决定的，不需要计算。</li>
+        </ul>
+
+        <p style="margin:10px 0"><strong>定义式 $\beta_j=\sum_i p_{ij}\alpha_i$ 的意义</strong>：因为 $\{\alpha_i\}$ 是 $V$ 的一组基，空间里任何向量（包括新基向量 $\beta_j$）都能被它线性表示——这是基"能生成整个空间"这条性质保证的。这个式子把 $\beta_j$ 用旧基"翻译"出来，翻译得到的系数 $(p_{1j},\dots,p_{nj})$ 就是 $\beta_j$ 在旧基下的坐标；把 $n$ 个 $\beta_j$ 的坐标当作 $n$ 列拼起来，就是整个过渡矩阵 $P$。</p>
+
+        <p style="margin:0"><strong>为什么要把 $\beta_j$ 表示出来？</strong>因为这是唯一能把"新基"和"旧基"联系起来、变成可计算对象（矩阵 $P$）的办法——否则"换一套参照方向"只是个空想法，没法推出坐标怎么变（$x=Py$）、矩阵怎么变（$B=P^{-1}AP$）。这一步是后面"对角化"（换一组基让矩阵变简单）等所有换基应用的前提：先把新旧基的关系写成 $P$，才能精确计算换基之后一切量会如何变化。</p>
+      </div>
+
       <h3 class="part"><span class="tag">定理</span>矩阵随基变换的规律</h3>
       <div class="step">若线性变换 $T$ 在基 $\{\alpha_i\}$ 下的矩阵为 $A$，在基 $\{\beta_j\}$ 下的矩阵为 $B$，过渡矩阵为 $P$，则</div>
       <div class="center-block">$$B=P^{-1}AP$$</div>
