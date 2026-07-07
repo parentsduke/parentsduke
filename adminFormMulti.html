@@ -1010,6 +1010,7 @@
     }
 
     const hasReminder = reminderLog.length > 0;
+    const reminderBy = hasReminder ? [...new Set(reminderLog.map(e => e.by))].join(' ') : '';
     const btnLabel = r.rejected_at ? '已拒绝' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : hasReminder ? `催信×${reminderLog.length}` : '操作';
     const btnBg    = r.rejected_at ? '#7f1d1d' : r.approved_at ? '#14532d' : r.shelved_at ? '#78350f' : hasReminder ? 'var(--navy)' : '#444';
     const btnHover = r.rejected_at ? '#991b1b' : r.approved_at ? '#166534' : r.shelved_at ? '#92400e' : hasReminder ? '#002060' : '#222';
@@ -1021,6 +1022,7 @@
         onmouseover="this.style.background='${btnHover}'" onmouseout="this.style.background='${btnBg}'">
         ${btnLabel} ▾
       </button>
+      ${hasReminder ? `<div style="font-size:9px;color:#8a95ad;margin-top:2px;white-space:nowrap;">by ${reminderBy}</div>` : ''}
       <div class="catalist-menu" id="actmenu-${id}">${items}</div>
     </div>`;
   }
