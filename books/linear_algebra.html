@@ -1249,6 +1249,17 @@
       <div class="center-block">$$\beta_j=\sum_{i=1}^{n}p_{ij}\alpha_i,\quad j=1,\dots,n$$</div>
       <div class="step">矩阵 $P=(p_{ij})$ 称为由基 $\{\alpha_i\}$ 到基 $\{\beta_j\}$ 的<strong>过渡矩阵</strong>。同一向量 $\xi$ 在两组基下的坐标 $x$（旧）、$y$（新）满足 $x=Py$。</div>
 
+      <div class="note">
+        <strong>追问：基变换里 P 到底在左边还是右边？</strong> 把 $\beta_j=\sum_i p_{ij}\alpha_i$ 这 $n$ 条式子写成矩阵形式，会发现 $P$ 其实在<strong>右边</strong>：
+        $$(\beta_1,\dots,\beta_n)=(\alpha_1,\dots,\alpha_n)P$$
+        这里把基向量组看成一个"由向量组成的行"，$P$ 乘在右边。而坐标变换公式 $x=Py$ 里 $P$ 却在<strong>左边</strong>——因为 $x,y$ 是竖着排的列向量。同一个 $P$，在两种写法里位置不同，并不矛盾：
+        <ul style="margin:10px 0 0;padding-left:22px">
+          <li>基变换：新基 = 旧基 $\times P$（$P$ 在右）</li>
+          <li>坐标变换：旧坐标 = $P\times$ 新坐标（$P$ 在左）</li>
+        </ul>
+        直观理解：向量 $\xi$ 本身不变，如果新基比旧基"变大"了（比如整体放大2倍），那么同一个向量在新基下的坐标就必须"变小"（缩小一半）才能表示同一个向量——基和坐标的变化方向天然相反，这正是矩阵乘的位置也左右相反的原因（数学上称为坐标相对于基的<strong>逆变</strong>关系）。可以直接验证：$\xi=(\alpha_1,\dots,\alpha_n)x=(\beta_1,\dots,\beta_n)y=(\alpha_1,\dots,\alpha_n)Py$，两边比较系数即得 $x=Py$，与基变换公式中的 $P$ 完全是同一个矩阵。
+      </div>
+
       <h3 class="part"><span class="tag">定理</span>矩阵随基变换的规律</h3>
       <div class="step">若线性变换 $T$ 在基 $\{\alpha_i\}$ 下的矩阵为 $A$，在基 $\{\beta_j\}$ 下的矩阵为 $B$，过渡矩阵为 $P$，则</div>
       <div class="center-block">$$B=P^{-1}AP$$</div>
