@@ -389,90 +389,101 @@ function toggleBannerMusic() {
         <h2 style="color:#B8963E;font-size:18px;font-weight:700;margin:0;"> 每日Duke动态</h2>
         <button onclick="openSubscribeModal()" style="background:transparent;border:1px solid #B8963E;color:#B8963E;font-size:11px;padding:3px 10px;border-radius:12px;cursor:pointer;white-space:nowrap;"> 订阅</button>
       </div>
-      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;">2026年7月11日</span>
+      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;">2026年7月12日</span>
     </div>
     <div id="weekly-sections">
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 学校新闻</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-school"><ul>
-<li>[2026年7月8日] 杜克大学最新科研进展，展望即将到来的关于爆炸恒星和遥远星系的研究。了解更多：<a href="https://news.google.com/rss/articles/CBMihwFBVV95cUxPMllLQk92c3plQUp0ZWlsOVp0N2gwR01jeHVQTnRGcnRtMWx1MVJZbEVjNmw3WnB5c29kdjAyLVk4MXdhMmY5eTZBdGNtWGlzczk4X3dKS0VNZFhRcWdLWVl0RVE4cThBZFZkTEY1a2dCOG93TUh0U0V3OHY2UFI3N2pQTmpySlk?oc=5" target="_blank">即将到来的：爆炸恒星与遥远星系</a></li>
-<li>[2026年7月7日] 杜克大学提供高温天气应对指南，帮助师生了解危险高温下的防护措施。了解更多：<a href="https://news.google.com/rss/articles/CBMicEFVX3lxTE9XY1JrYnN2WlZjNkl0ZW9YQmhlM1VEalA0dEt5dUFfLTBlSlVqV3h5R3FqU3FPSE1GcnhGcl9Hb0x5WTU3Wko4U2xnV1FIb01fY1Bkbl9NNVRwNjlDVTJIb2pNaWcyOTJSbjAxTE90dDQ?oc=5" target="_blank">危险高温下如何应对</a></li>
-<li>[2026年7月6日] 面对持续干旱，杜克大学正在采取节水措施并为未来情况做准备。了解更多：<a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxOMnA1OWNPX3NVMlFsajcxQk4yNUFfRnhfeUlOdzhXZ0hIVVh0aXBuMWhzdHFzSlBkd1hrYk85aGZrYWsyUmtVWHhZS3lmc2MtSzAtSmN4QkYweE1Rdy0wWFJVTmxhblVGMEJpUkw3SFV2ZV83LWVzV3ppVkZGTTdJTU9OUktWSmNIODM3Nnc5UnVCOGxXdkYtc1BRZWFXeHhz?oc=5" target="_blank">干旱持续，杜克大学节约用水并为未来做准备</a></li>
-<li>[2026年6月29日] 杜克大学分享如何在数学（数学建模）竞赛中取胜的经验。了解更多：<a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE9QZDhWRzFxdUZqRUpBeXhqMlJBdFZ0aXl0MUpTRGg2SjNjVVNqTVhuaFJUajdOdWlud0pTOFpaYW92NkJzQ3RocTVjVW9GeklkMGUwQUxUZXpNVzIyRlh2OXpjUFdNQVloWWE2dQ?oc=5" target="_blank">如何在数学（数学建模）中取胜</a></li>
-<li>[2026年5月26日] 杜克大学研究发现一种新型减肥药物表现优于现有竞争产品。了解更多：<a href="https://news.duke.edu/stories/2026/05/26/new-weight-loss-drug-appears-to-out-perform-others/" target="_blank">新型减肥药物表现优于竞争产品</a></li>
+<li>2026年7月8日：<a href="https://news.google.com/rss/articles/CBMihwFBVV95cUxPMllLQk92c3plQUp0ZWlsOVp0N2gwR01jeHVQTnRGcnRtMWx1MVJZbEVjNmw3WnB5c29kdjAyLVk4MXdhMmY5eTZBdGNtWGlzczk4X3dKS0VNZFhRcWdLWVl0RVE4cThBZFZkTEY1a2dCOG93TUh0U0V3OHY2UFI3N2pQTmpySlk?oc=5" target="_blank">即将推出：爆炸的恒星与遥远的星系</a></li>
+<li>2026年7月7日：<a href="https://news.google.com/rss/articles/CBMicEFVX3lxTE9XY1JrYnN2WlZjNkl0ZW9YQmhlM1VEalA0dEt5dUFfLTBlSlVqV3h5R3FqU3FPSE1GcnhGcl9Hb0x5WTU3Wko4U2xnV1FIb01fY1Bkbl9NNVRwNjlDVTJIb2pNaWcyOTJSbjAxTE90dDQ?oc=5" target="_blank">高温危险时如何应对</a></li>
+<li>2026年7月6日：<a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxOMnA1OWNPX3NVMlFsajcxQk4yNUFfRnhfeUlOdzhXZ0hIVVh0aXBuMWhzdHFzSlBkd1hrYk85aGZrYWsyUmtVWHhZS3lmc2MtSzAtSmN4QkYweE1Rdy0wWFJVTmxhblVGMEJpUkw3SFV2ZV83LWVzV3ppVkZGTTdJTU9OUktWSmNIODM3Nnc5UnVCOGxXdkYtc1BRZWFXeHhz?oc=5" target="_blank">持续干旱，杜克大学节约用水并应对未来挑战</a></li>
+<li>2026年6月29日：<a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE9QZDhWRzFxdUZqRUpBeXhqMlJBdFZ0aXl0MUpTRGg2SjNjVVNqTVhuaFJUajdOdWlud0pTOFpaYW92NkJzQ3RocTVjVW9GeklkMGUwQUxUZXpNVzIyZlh2OXpjUFdNQVloWWE2dQ?oc=5" target="_blank">如何在数学建模中取得成功</a></li>
+<li>2026年5月26日：<a href="https://news.duke.edu/stories/2026/05/26/new-weight-loss-drug-appears-to-out-perform-others/" target="_blank">杜克大学研究：新型减肥药有望超越竞争产品</a></li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 篮球动态</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-basketball"><ul>
-<li>2026年7月1日：杜克大学场地专家斯科特·汤普森（Scott Thompson）与国际足球联合会（FIFA）合作，评估世界杯比赛场地的情况，确保比赛场地完美。详见<a href="https://today.duke.edu/2026/07/behind-world-cup-duke-grounds-expert-helps-keep-pitch-perfect" target="_blank">杜克大学场地专家为世界杯保驾护航</a>。</li>
-<li>2026年5月6日：杜克大学校内将进行道路维修和公用设施升级工程，涉及东、西校区。详见<a href="https://today.duke.edu/2026/05/campus-road-and-utility-projects-summer-2026" target="_blank">2026年夏季校内道路维修和公用设施升级计划</a>。</li>
-<li>2026年4月27日：杜克大学体育团队组织了一周的服务社区活动，包括辅导、食品分发和锻炼，共吸引了111名志愿者。详见<a href="https://today.duke.edu/2026/04/duke-athletics-enjoys-week-giving-back-community" target="_blank">杜克大学体育团队服务社区活动圆满举行</a>。</li>
+<li>7月1日，一位杜克大学的场地专家斯科特·汤普森正在与国际足球联合会合作，评估世界杯期间的场地设施，世界杯将于7月19日结束，更多信息见<a href="https://today.duke.edu/2026/07/behind-world-cup-duke-grounds-expert-helps-keep-pitch-perfect" target="_blank">杜克大学专家帮助保持完美的比赛场地</a>。</li>
+<li>5月6日，杜克大学宣布了2026年夏季的校园道路和公共设施项目，包括东校区和西校区的建筑更新和公用设施升级，详见<a href="https://today.duke.edu/2026/05/campus-road-and-utility-projects-summer-2026" target="_blank">2026年夏季校园项目</a>。</li>
+<li>4月27日，杜克大学体育部开展了一周的社区服务活动，包括辅导、食品分发和锻炼，共吸引了111名志愿者，了解更多见<a href="https://today.duke.edu/2026/04/duke-athletics-enjoys-week-giving-back-community" target="_blank">杜克大学体育部为社区服务</a>。</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 招生信息</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-admissions"><ul>
-<li>杜克大学财务支持申请指南（2026年7月更新）：<a href="https://admissions.duke.edu/financial-support" target="_blank">https://admissions.duke.edu/financial-support</a></li>
-<li>大一新生申请材料要求（2026年秋季入学适用）：<a href="https://admissions.duke.edu/apply/#requirements" target="_blank">https://admissions.duke.edu/apply/#requirements</a></li>
-<li>转学申请入口（2026年秋季入学申请开放）：<a href="https://admiss.ugrad.duke.edu/apply/" target="_blank">https://admiss.ugrad.duke.edu/apply/</a></li>
-<li>杜克大学校园参观预约（线上/线下均可）：<a href="https://admissions.duke.edu/visit/" target="_blank">https://admissions.duke.edu/visit/</a></li>
-<li>杜克大学官方申请平台汇总（含Common App、QuestBridge等）：<a href="https://admissions.duke.edu/apply/" target="_blank">https://admissions.duke.edu/apply/</a></li>
+<li>杜克大学财务支持说明（2026年7月12日更新）：<a href="https://admissions.duke.edu/financial-support" target="_blank">查看详情</a></li>
+<li>杜克大学大一新生申请要求（2026年7月12日更新）：<a href="https://admissions.duke.edu/apply/#requirements" target="_blank">查看详情</a></li>
+<li>Common Application通用申请系统（适用于大一新生申请）：<a href="https://www.commonapp.org/" target="_blank">前往申请</a></li>
+<li>QuestBridge项目申请（针对低收入家庭优秀学生）：<a href="https://www.questbridge.org/college-partners/duke-university" target="_blank">了解详情</a></li>
+<li>杜克大学转学申请（2026年7月12日更新）：<a href="https://admiss.ugrad.duke.edu/apply/" target="_blank">前往申请</a></li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 学期日历</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-calendar"><ul>
-<li>📅 7月11日 (周五) — 暑期学期Term 2 Drop/Add结束（11:59 PM）</li>
-<li>📅 7月14日 (周一) — 暑期学期Term 2最后一天退课（W标记截止，本科生）</li>
-<li>📅 7月15日 (周二) — 暑期学期Term 2课程结束</li>
-<li>📅 7月16日 (周三) — 暑期学期Term 2阅读期与期末考试开始（至7月17日）</li>
-<li>🏥 7月15日 (周二) — PREview Window 5考试日</li>
-<li>🏥 7月16日 (周三) — PREview Window 6考试日</li>
+<li>📅 7月12日 — 今日</li>
+<li>📅 7月14日（周一）— 夏季学期Term 2期末考试结束（10:00 PM）</li>
+<li>📅 7月15日（周二）— 夏季学期Term 2阅读期与期末考试开始（7:00 PM）</li>
+<li>📅 7月16日（周三）— 夏季学期Term 2期末考试结束</li>
+<li>🏥 7月15日（周二）— PREview Window 5考试日（情境判断测试，SJT）</li>
+<li>🏥 7月16日（周三）— PREview Window 6考试日（情境判断测试，SJT）</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 选课 &amp; 宿舍</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-registration"><ul>
-  <li>📌 2026年7月11日 — <a href="https://students.duke.edu/living/housing/housing-assignments/fall26-housing/" target="_blank">2026-2027住宿申请重新开放</a>（截止日期待确认）</li>
-  <li>📌 2026年6月1日 — <a href="https://students.duke.edu/living/housing/housing-assignments/fall26-housing/" target="_blank">2026-2027住宿申请开放</a></li>
-  <li>📌 2026年4月8日 — <a href="https://registrar.duke.edu/registration/" target="_blank">Drop/Add注册开始</a>（需先完成注册购物车阶段）</li>
-  <li>📌 2026年4月7日 — 大二学生注册购物车开放（ID末两位00-49）</li>
-  <li>📌 2026年4月6日 — 大二学生注册购物车开放（ID末两位50-99）</li>
-  <li>📌 2026年4月3日 — 大三学生注册购物车开放</li>
-  <li>📌 2026年4月2日 — 大四学生注册购物车开放</li>
-  <li>📌 2026年4月1日 — 研究生/专业学生注册购物车开放</li>
+<li>📌 2026年7月12日 — <a href="https://students.duke.edu/living/housing/housing-assignments/fall26-housing/" target="_blank">2026-2027住宿申请重新开放</a>（截止日期待公布）</li>
+<li>📌 2026年7月12日 — <a href="https://registrar.duke.edu/registration/" target="_blank">Fall 2026选课购物车开放</a>（所有学生，3月23日起分批开放）</li>
+<li>📌 2026年8月8日 — Fall 2026选课Drop/Add开始</li>
+<li>📌 2026年9月 — 2026-2027学年宿舍入住（具体日期待HRL公布）</li>
+<li>📌 2026年9月 — 2026-2027学年宿舍申请截止（预计8月）</li>
+<li>📌 2026年10月 — 秋季学期宿舍抽签结果公布（具体日期待公布）</li>
+<li>📌 2026年12月 — 秋季学期宿舍退房截止（学期结束）</li>
+<li>📌 2027年1月 — 春季学期宿舍申请开放（具体日期待公布）</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 开学前安排</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-prematric"><ul>
-  <li>📌 7月14日（周二）下午4:00 ET — <a href="https://duke.zoom.us/webinar/register/WN_eZn5jPApQTahbzdesXHwRw" target="_blank">Prehealth Advising</a>（医学/牙医/药学/兽医方向新生选课咨询）</li>
-  <li>📌 7月21日（周二）下午4:00 ET — <a href="https://duke.zoom.us/webinar/register/WN_2w5Z7RZXTpqeAx2VtyxIUw" target="_blank">Staying Well in Your First Year - Part 2</a>（Duke全面健康支持资源介绍）</li>
-  <li>📌 7月25日（周六）下午3:00-5:00 PM — 台北 Send-Off Party（地点：Xinyi District）</li>
-  <li>📌 7月28日（周二）下午4:00 ET — <a href="https://duke.zoom.us/webinar/register/WN_sWQczFEdQv6I75qfFgu31Q" target="_blank">Duke Community Standard & Residence Life Policies</a>（全体新生必看，介绍宿舍政策与社区行为准则）</li>
-  <li>📌 7月29日（周三）中午12:00 PM ET — <a href="https://students.duke.edu/info-for/students/incoming-students/" target="_blank">大一新生（Class of 2030）正式选课开始</a>（须提前与Quad Advisor见面解除ELI advising hold）</li>
-  <li>📌 7月30日（周四）00:01 AM ET — 大一新生（Class of 2030）Drop/Add开始（可调整已注册课程）</li>
-  <li>📌 8月4日（周二）下午6:00 PM ET — <a href="https://students.duke.edu/info-for/students/incoming-students/summer-engagement/" target="_blank">Preparing for First-Year Move In and Orientation</a>（搬入日、Experiential Orientation及开学后安排最终问题解答）</li>
-  <li>📌 8月12日（周三）–8月13日（周四）— 国际生专项：<a href="https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/" target="_blank">Passport to Duke & Durham</a>提前抵校报到（含签证服务报到、I-20核验）</li>
-  <li>📌 8月14日（周五）— 国际生专项：<a href="https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/" target="_blank">Passport to Duke & Durham Resource Fair</a>（Duke International Student Center主办）</li>
-  <li>📌 8月15日（周六）— <a href="https://students.duke.edu/info-for/students/incoming-students/move-in-day/" target="_blank">新生搬入日（First-Year Move-In Day）</a>（按宿舍分配时间窗口入住）</li>
-  <li>📅 7月或高中毕业时 — 提交最终成绩单（Final School Report）</li>
-  <li>📅 8月16日（周日）–8月21日（周五）— <a href="https://students.duke.edu/info-for/students/incoming-students/experiential-orientation/first-year-students/" target="_blank">Experiential Orientation Week</a>（体验式迎新周，全程覆盖食宿）</li>
-  <li>📅 8月17日（周一）或8月18日（周二）— 转学生搬入日（Transfer Move-In Day）</li>
-  <li>📅 8月24日（周一）— 正式开学</li>
-  <li>📅 待定（TBA）— 香港/首尔/东京 Send-Off Party（注册开放后请留意邮件通知）</li>
+  <li>📌 7月14日（周二）下午4:00 ET — Prehealth顾问在线解答医学/牙医/药学/兽医方向选课问题，需<a href="https://duke.zoom.us/webinar/register/WN_eZn5jPApQTahbzdesXHwRw" target="_blank">注册</a></li>
+  <li>📌 7月21日（周二）下午4:00 ET — DukeWell、CAPS心理咨询团队介绍健康支持资源，需<a href="https://duke.zoom.us/webinar/register/WN_2w5Z7RZXTpqeAx2VtyxIUw" target="_blank">注册</a></li>
+  <li>📌 7月25日（周六）下午3:00-5:00 PM — 台北Send-Off Party（地点：Xinyi District），由Owen Chung & Ying Qi B.S.17主办</li>
+  <li>📌 7月28日（周二）下午4:00 ET — 全体新生必看：Duke社区行为准则与宿舍政策说明会，需<a href="https://duke.zoom.us/webinar/register/WN_sWQczFEdQv6I75qfFgu31Q" target="_blank">注册</a></li>
+  <li>📌 7月29日（周三）中午12:00 PM ET — Class of 2030大一新生正式选课开始，需提前联系Quad Advisor解除ELI advising hold（咨询：advising@duke.edu / 919-684-6217）</li>
+  <li>📌 7月30日（周四）凌晨12:01 AM — Class of 2030大一新生Drop/Add课程调整开始</li>
+  <li>📅 8月4日（周二）下午6:00 PM ET — 搬入日与迎新周最终问题说明会（注册链接待公布）</li>
+  <li>📌 8月12日-13日（周三-周四） — 国际生专项：Passport to Duke & Durham提前抵校报到（含签证服务、I-20核验），详情：intlstudents@duke.edu</li>
+  <li>📌 8月14日（周五） — 国际生专项：Passport to Duke & Durham线下活动（银行开户、手机办理、DISC资源对接等）</li>
+  <li>📌 8月15日（周六） — Class of 2030新生搬入日（按宿舍分配时间窗口入住）</li>
+  <li>📌 8月16日-21日（周日-周五） — Experiential Orientation Week（体验式迎新周，全程覆盖食宿）</li>
+  <li>📌 8月17日或18日（周一或周二） — 转学生搬入日</li>
+  <li>📌 8月24日（周一） — 2026年秋季学期正式开学</li>
+  <li>📌 Send-Off Party（亚洲地区） — 香港/首尔/东京Send-Off Party日期待定(TBA)，注册开放后请留意邮件通知</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 校园生活</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-campus"><ul>
-    <li>[2026年7月10日] 杜克大学社区现已免费开放ChatGPT Edu。<a href="https://today.duke.edu/2026/07/chatgpt-edu-now-available-no-cost-duke-university-community" target="_blank">了解详情</a></li>
-    <li>[2026年7月6日] MaryAnn Black暑期实习项目迎来第11届学生，庆祝成立10周年，旨在连接达勒姆当地学生与杜克大学的职业机会。<a href="https://today.duke.edu/2026/07/10-years-connecting-durham-students-careers-duke" target="_blank">了解详情</a></li>
-    <li>[2026年6月24日] Manoj Mohanan被任命为杜克大学跨学科项目副教务长。<a href="https://today.duke.edu/2026/06/manoj-mohanan-named-vice-provost-interdisciplinary-programs" target="_blank">了解详情</a></li>
-    <li>[2026年6月16日] 杜克大学博士生荣获竞争激烈的DAAD奖学金。<a href="https://news.google.com/rss/articles/CBMijAFBVV95cUxNNGloS3EteUtWN3Zpa1V6Z09DV2tyZlIxVGxPS3o0QnF5cTY2NTVFeDFQVFNIQ3dQZnhxT18zQmt2Y0t0R2RVWHlRU01ncGFVYk5uWFhLNHg3bG44V3YzUEhMN3BoY1hNR3NzYlhBNU9ONXEzeWhWQkZ6VDBUdTFZS3ZkVkJyWjNleg?oc=5" target="_blank">了解详情</a></li>
-    <li>[2026年5月27日] 杜克大学研究人员开发出早期自闭症数字筛查工具，目前正等待美国食品药品监督管理局（FDA）的批准。<a href="https://today.duke.edu/2026/05/detecting-autism-early" target="_blank">了解详情</a></li>
+    <li>[2026年7月10日] 杜克大学社区成员可免费使用<a href="https://today.duke.edu/2026/07/chatgpt-edu-now-available-no-cost-duke-university-community" target="_blank">ChatGPT Edu</a>。</li>
+    <li>[2026年7月10日] 杜克大学护理学院校友运营<a href="https://today.duke.edu/2026/07/bringing-baby" target="_blank">社区产前教育项目</a>。</li>
+    <li>[2026年7月6日] <a href="https://today.duke.edu/2026/07/10-years-connecting-durham-students-careers-duke" target="_blank">MaryAnn Black暑期实习项目</a>迎来成立10周年，旨在为达勒姆学生提供杜克大学的职业机会。</li>
+    <li>[2026年6月24日] <a href="https://today.duke.edu/2026/06/manoj-mohanan-named-vice-provost-interdisciplinary-programs" target="_blank">Manoj Mohanan被任命</a>为跨学科项目副教务长。</li>
+    <li>[2026年5月27日] 杜克大学研究人员开发的数字筛查工具可<a href="https://today.duke.edu/2026/05/detecting-autism-early" target="_blank">早期检测自闭症</a>，目前正等待FDA批准。</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> Chronicle学生报</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-chronicle"><ul>
-<li>2026年7月6日：杜克大学录取了创纪录的转学班，录取率为6%，主要针对退伍军人和人文社科学生<a href="https://news.google.com/rss/articles/CBMi-AFBVV95cUxOT3NHb3p4UF9WV2NUM3FCb2VBeVR3Si1IUHpieldWMU1nYkE2RnNJdE1MOVdjTS1EMUkybXlsRURhRjNuMzkwMlJQTUNtUnZFMHhDNnJ6Yno4YkpoOTZYQm5iajc0bWQ4aS0tdWlyTXU0MkZBUnJsOFVhcHQzNmh6ZGJmOUpLOW5ZTEFFZnhfMUlZb3lMSVVYcUdxdERGN0trUTdPMEFkWnM4ZVYxUEd5alh0Sk5mcllTS0NYeHcxaUg4dWRPelpHTjFVMnc0NDRDLXJabHI5d19NU2ttQ29KdEdXVDlkbGhMV3JNUzRveU5uQmNNOERDTg?oc=5" target="_blank">杜克大学转学班</a>。</li>
-<li>2026年7月7日：杜克大学学报发表文章，讨论好莱坞熟面孔的过度曝光问题<a href="https://news.google.com/rss/articles/CBMiowFBVV95cUxNTURDdkhleHBmSzMwMExEbUlwNDJhNXdtQ0hOc2FfRXA2TXd2cGVTemxBMUNraThxYk9Zek4zU1pwWUJRM2Q5YWItZFFpWTR4OVRUa2QwcV9XdkJnT1g5RnJFeFNZRjdiNmo2RmVKTVZtT0d5TXI3SjdnM0RoZjRwcHZ4Nlp2Qzd0MzJ3R3VEcnNmYzVTUUttNEstMTQ5UC15VTdJ?oc=5" target="_blank">好莱坞熟面孔</a>。</li>
-<li>2026年6月19日：杜克大学宣布对大一新生课程进行小幅调整<a href="https://news.google.com/rss/articles/CBMi2wFBVV95cUxNZjlXWG85N3FnaUhMdm96bnNkZVdObXZSVHdrdmwxVHY0X2ZiMXF1UXFEVjBZUWJiM1paTDMtQU01XzlwV3EzNzlDeTcyMWVjellMVnFxeE9TVVM3Zm1sMzFJekpMN0R3Q09lN3RNdnNxUERRVlBJc3BfYlFldlZUZVpNci15bjlGbUFFa1JoMWI1dGduMWpoZVlobHp4b2JIVVVTaFROYnJTakRfMVF2ZWZua1c5UDVkVXJyVzJPUE1IQmlLQzJOOUdLcmNXVHcxTEVKdFdKOWhBaFE?oc=5" target="_blank">大一新生课程</a>。</li>
-<li>2026年6月11日：杜克大学学生事务部门宣布进行重大重组，并恢复学生院长职位<a href="https://news.google.com/rss/articles/CBMi_gFBVV95cUxQZW5kVXBUdVl3WFJhSVJUaDFpUkZnS2pOWDdwTkZnWk5WV1NWUnVFM0lPYzBLWUJzQWJOSEJ2Y2JkT2V5UzEyTEw4UmxZWG1SUHNEZHhyYlpud1RaN01xUVM2aXRUcW8tNWluS0tyMHloWXNXUmtKM2FRQkUwV2gtQUcwcUlGQzViUno5WmFSMDg1UTNTSE1nazM1SmV0YnBKOWpBWldQOXZ0eTllMVFqc0FjRWw5a3F4MkNLX3ZRZHdxMTlnODZnZ3d6TmZNXzhDMEdIb0RYamJkZURia0FvRm1YZ0ZMbngzMXJtNXkyanIyMjlUU1l6T0NsRkQ2dw?oc=5" target="_blank">学生事务部门</a>。</li>
-<li>2026年6月19日：杜克大学学报发表文章，讨论Scott Dyreng的AI课堂实验<a href="https://news.google.com/rss/articles/CBMimgFBVV95cUxOSTVBdW5WaHVlNkVOb2haMENudVNvZVIyZmo4ZzJWTTk1ejdXc0NfcWYxcVMxbG5pWDludHFyVmVlSEdfWWxiQ1JwR0c1SE13YmNPOHlVQ1pUT0h1VHNiaS02NUppMXp4TFM1NHI4cmxHSDBmeXlxYlRselpMcDVHMnJmaktvWEdHMDZyd2JsckNpM19yQ3hzWHZB?oc=5" target="_blank">AI课堂实验</a>。</li>
+<li>2026年7月7日：<a href="https://news.google.com/rss/articles/CBMiowFBVV95cUxNTURDdkhleHBmSzMwMExEbUlwNDJhNXdtQ0hOc2FfRXA2TXd2cGVTemxBMUNraThxYk9Zek4zU1pwWUJRM2Q5YWItZFFpWTR4OVRUa2QwcV9XdkJnT1g5RnJFeFNZRjdiNmo2RmVKTVZtT0d5TXI3SjdnM0RoZjRwcHZ4Nlp2Qzd0MzJ3R3VEcnNmYzVTUUttNEstMTQ5UC15VTdJ?oc=5" target="_blank">杜克大学</a>学生报评论：<a href="https://news.google.com/rss/articles/CBMiowFBVV95cUxNTURDdkhleHBmSzMwMExEbUlwNDJhNXdtQ0hOc2FfRXA2TXd2cGVTemxBMUNraThxYk9Zek4zU1pwWUJRM2Q5YWItZFFpWTR4OVRUa2QwcV9XdkJnT1g5RnJFeFNZRjdiNmo2RmVKTVZtT0d5TXI3SjdnM0RoZjRwcHZ4Nlp2Qzd0MzJ3R3VEcnNmYzVTUUttNEstMTQ5UC15VTdJ?oc=5" target="_blank">好莱坞</a>明星的过度曝光</li>
+<li>2026年6月19日：<a href="https://news.google.com/rss/articles/CBMi2wFBVV95cUxNZjlXWG85N3FnaUhMdm96bnNkZVdObXZSVHdrdmwxVHY0X2ZiMXF1UXFEVjBZUWJiM1paTDMtQU01XzlwV3EzNzlDeTcyMWVjellMVnFxeE9TVVM3Zm1sMzFJekpMN0R3Q09lN3RNdnNxUERRVlBJc3BfYlFldlZUZVpNci15bjlGbUFFa1JoMWI1dGduMWpoZVlobHp4b2JIVVVTaFROYnJTakRfMVF2ZWZua1c5UDVkVXJyVzJPUE1IQmlLQzJOOUdLcmNXVHcxTEVKdFdKOWhBaFE?oc=5" target="_blank">星光计划</a>对大一新生的调整</li>
+<li>2026年6月19日：<a href="https://news.google.com/rss/articles/CBMimgFBVV95cUxOSTVBdW5WaHVlNkVOb2haMENudVNvZVIyZmo4ZzJWTTk1ejdXc0NfcWYxcVMxbG5pWDludHFyVmVlSEdfWWxiQ1JwR0c1SE13YmNPOHlVQ1pUT0h1VHNiaS02NUppMXp4TFM1NHI4cmxHSDBmeXlxYlRselpMcDVHMnJmaktvWEdHMDZyd2JsckNpM19yQ3hzWHZB?oc=5" target="_blank">斯科特·德伦</a>的AI课堂得到了积极的评价</li>
+<li>2026年5月25日：<a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxNX1M3QVRkX180ZzduMU4wVUJGWmxlaWpGQms1T2xCTDV2ajR3MXVIRFMzam1CRG1RSWNHN1UzLW5oTlAtTzZOTGdUUThKNW1uckZGSkJwdGFfdkp4ZFFVTVA4Sy1vemRXVUF4c3RMVE1JOGg5NkhUZXN5SFVvNENOelpqT2NFMG4yVExhdDhIR1hLOXFiTUxZNmZFUUFLaURa?oc=5" target="_blank">杜克大学</a>2025-26年的标志性人物和领导者</li>
+<li>2026年4月1日：<a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxPSFFCR2VPWWpLYWs5SEJpV0R1M2V3ZTRpa2gyblNNV2FfNkVpdVVfWHpKbnBId2NfVDVZeHFiZ1ZWSUo3Ul93WHF3Mk5jMWI2WDFTNzJBS3M4Zjk4a21ZNkpVcTFwMzl5WV9UR1RPd2tLWnJVeXpDckw3WTQ1SVZMRkVQQlFrMkstN0FGelItdElhVGplRGVFbHhxUXpQd2xxT3JNVVZtem1qNzhlOFFjQg?oc=5" target="_blank">杜克大学</a>男子篮球队进入四强</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 科研动态</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-research"><ul>
-<li><strong>2026年7月8日</strong>：<a href="https://today.duke.edu/2026/07/coming-soon-exploding-stars-and-far-away-galaxies" target="_blank">智利天文台新项目将收集超新星与遥远星系数据</a>，为全球科学家提供大量研究素材。</li>
-<li><strong>2026年7月3日</strong>：<a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxPT1g4YW1oaHY0QlZNYzg4S3dMTXZSU01xZXVFUDdLSWhjb3Y1aUZYMkhQOHpHYkg2ay0xUlc5c3l4RTA3eUYtdl9UM2dkWXdoSi1IaGNRSlBWSjJYSXRISlNUQTc3WVJWWWVfa1c0Nm11U2d4ZVlXUFFzRURqWHA2ZVJ4RXV0dlZscXdyUjQyLWZQelk?oc=5" target="_blank">杜克大学医学院将于7月举办信息交流会</a>，为大一新生及家长介绍学院最新资源与项目。</li>
-<li><strong>2026年6月22日</strong>：<a href="https://today.duke.edu/2026/06/eighteen-duke-students-and-alumni-offered-fulbright-2026-2027" target="_blank">18名杜克学子获2026-2027年度富布赖特奖学金</a>，将赴12国开展研究或教学助理项目。</li>
-<li><strong>2026年6月15日</strong>：<a href="https://today.duke.edu/2026/06/blake-wilson-and-cochlear-implant-team-win-2026-merkin-prize" target="_blank">生物医学工程师Blake Wilson及团队获2026年Merkin奖</a>，表彰其在人工耳蜗技术领域的突破。</li>
-<li><strong>2026年6月3日</strong>：<a href="https://today.duke.edu/2026/06/new-drug-delivery-approach-glp-1-drugs" target="_blank">杜克大学研发新型GLP-1类药物口服递送技术</a>，有望提升糖尿病与减重药物的普及性。</li>
+<li><strong>2026年7月8日</strong>：<a href="https://today.duke.edu/2026/07/coming-soon-exploding-stars-and-far-away-galaxies" target="_blank">"遥远星系与超新星"项目启动</a>——智利天文台新项目将为全球科学家提供海量天文数据。</li>
+<li><strong>2026年7月3日</strong>：<a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxPT1g4YW1oaHY0QlZNYzg4S3dMTXZSU01xZXVFUDdLSWhjb3Y1aUZYMkhQOHpHYkg2ay0xUlc5c3l4RTA3eUYtdl9UM2dkWXdoSi1IaGNRSlBWSjJYSXRISlNUQTc3WVJWWWVfa1c0Nm11U2d4ZVlXUFFzRURqWHA2ZVJ4RXV0dlZscXdyUjQyLWZQelk?oc=5" target="_blank">杜克大学医学院信息分享会（7月）</a>——面向大一新生及家长，解读医学院学术资源与申请要点。</li>
+<li><strong>2026年6月22日</strong>：18名杜克大学学生/校友获2026-2027年"富布赖特奖学金"——将赴12国开展研究、攻读研究生或担任英语助教。</li>
+<li><strong>2026年6月15日</strong>：生物医学工程师Blake Wilson及团队获2026年Merkin奖——因研发人工耳蜗技术（助听器核心技术）获殊荣。</li>
+<li><strong>2026年6月3日</strong>：GLP-1类药物新型口服给药系统问世——为糖尿病及减重药物提供更便捷的服用方式。</li>
 </ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 签证与国际生动态</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-visa"><ul>
-<li>2026年8月12日(周三) & 8月13日(周四)：大一新生提前抵校，须完成杜克大学签证服务报到并核验I-20/DS-2019表格。详情见<a href="https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/" target="_blank">杜克大学国际学生中心官方页面</a></li>
-<li>2026年8月12日(周三)–14日(周五)：Passport to Duke & Durham 线下活动，包含银行开户、手机套餐办理、适应时差及美国文化熟悉等环节。主办方：杜克大学国际学生中心(DISC)。</li>
-<li>2026年8月14日(周五)：Passport to Duke & Durham 资源交流会，提供银行、手机运营商、DISC等一站式对接服务。最终安排将于2026年5月初公布，咨询邮箱：intlstudents@duke.edu。</li>
-<li>杜克大学签证服务官网：<a href="https://visaservices.duke.edu/" target="_blank">Duke Visa Services</a></li>
-<li>如需了解更多国际生动态，可联系杜克大学国际学生中心：intlstudents@duke.edu。</li>
+<li>2026年8月12日（周三）& 8月13日（周四）：<br>
+大一新生提前抵校，须完成杜克大学签证服务报到并核验I-20/DS-2019表格。<br>
+详情：<a href="https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/" target="_blank">国际本科新生提前抵校安排</a></li>
+
+<li>2026年8月12日（周三）至8月14日（周五）：<br>
+Passport to Duke & Durham 线下活动，包含银行开户、手机套餐办理、杜克大学国际学生中心（DISC）资源对接、时差适应及美国文化介绍。<br>
+主办：杜克大学国际学生中心（DISC）</li>
+
+<li>2026年8月14日（周五）：<br>
+Passport to Duke & Durham 资源交流会，提供银行、手机运营商、DISC等一站式资源对接。<br>
+注意：以上日期可能调整，最终安排将于2026年5月初公布；咨询邮箱：intlstudents@duke.edu</li>
+
+<li>杜克大学签证服务官网：<br>
+<a href="https://visaservices.duke.edu/" target="_blank">Duke Visa Services</a></li>
+
+<li>杜克大学国际学生中心（DISC）官方页面：<br>
+<a href="https://students.duke.edu/belonging/icr/disc/" target="_blank">国际学生资源</a></li>
 </ul></div></div>
     </div>
   </div>
