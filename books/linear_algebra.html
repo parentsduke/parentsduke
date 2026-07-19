@@ -246,6 +246,8 @@
     font-size: 15px;
     margin: 22px 0;
     color: #26324a;
+    max-width: 100%;
+    overflow-x: auto;
   }
   .deepdive .dd-label {
     font-family: "Helvetica Neue", Arial, sans-serif;
@@ -351,6 +353,8 @@
     font-size: 14.5px;
     color: #33402f;
     margin-top: 24px;
+    max-width: 100%;
+    overflow-x: auto;
   }
   .note strong { color: #24361f; }
 
@@ -624,6 +628,12 @@
     padding:18px 22px;
     margin:20px 0;
     font-size:15px;
+    max-width:100%;
+    overflow-x:auto;
+  }
+  .ex6-scope .box p {
+    max-width:100%;
+    overflow-x:auto;
   }
   .ex6-scope .box.basis {
     background:var(--accent-teal-bg);
@@ -830,9 +840,38 @@
         次数不超过 2 的多项式全体 $\{a_0+a_1x+a_2x^2\}$，在通常的多项式加法与数乘下，也构成一个线性空间——你可以把 $1+2x-x^2$ 想象成"坐标"为 $(1,2,-1)$ 的一个"向量"，尽管它看起来完全不像一支箭。
       </div>
 
+      <div class="deepdive">
+        <div class="dd-label">辨析：这个空间的基是什么</div>
+        这个空间最自然的一组基就是 $\{1,\ x,\ x^2\}$。
+        <div class="step" style="margin-top:14px"><strong>线性无关：</strong>若 $c_0\cdot 1+c_1\cdot x+c_2\cdot x^2=0$（对所有 $x$ 恒成立的零多项式），则必有 $c_0=c_1=c_2=0$——一个非零多项式最多只有有限个根，不可能恒为零，除非系数全为零。</div>
+        <div class="step"><strong>张成：</strong>任意 $a_0+a_1x+a_2x^2$ 本身就是 $1,x,x^2$ 的线性组合，系数正好是 $(a_0,a_1,a_2)$。</div>
+        <div class="step">这正好呼应前面说的"坐标"：$1+2x-x^2$ 在基 $\{1,x,x^2\}$ 下的坐标就是 $(1,2,-1)$，因为基里 3 个元素，所以 $\dim=3$，与 $\mathbb{R}^3$ 同构。</div>
+        <div class="note" style="margin-top:14px">
+          <strong>说明：</strong> 基不是唯一的——比如 $\{1,\ (x-1),\ (x-1)^2\}$（以 $x=1$ 为中心展开）也是一组合法的基，泰勒展开用的就是这个思路。只要三个多项式两两线性无关、又能张成整个空间，就都可以当基，就像 $\mathbb{R}^3$ 里基不一定非要是标准正交基一样。
+        </div>
+        <h3 class="sub" style="margin-top:24px"><span class="tag">追问</span>为什么这个基恰好是 3 个向量，不多不少？</h3>
+        <div class="step"><strong>不能少（比如只用 $\{1,x\}$ 两个）：</strong>这两个只能张成所有 $a_0+a_1x$（一次以下的多项式），$x^2$ 没法写成 $c_0\cdot1+c_1\cdot x$ 的形式——不存在这样的常数让它等于 $x^2$。少了一个基向量，就漏掉了一整块含 $x^2$ 项的元素，张不成整个空间。</div>
+        <div class="step"><strong>不能多（比如凑成 $\{1,x,x^2,x^2+1\}$ 四个）：</strong>因为 $x^2+1=1\cdot1+0\cdot x+1\cdot x^2$，第四个向量已经能由前三个线性表示，于是存在非平凡组合 $1\cdot(x^2+1)-1\cdot1-0\cdot x-1\cdot x^2=0$——这就是线性相关，第四个是多余的，只能算生成组，不再是基。</div>
+        <div class="step">根本原因是：$a_0+a_1x+a_2x^2$ 本身带着 $a_0,a_1,a_2$ 三个<strong>互相独立</strong>的自由参数，谁也替代不了谁——这 3 个独立自由度，天然对应基里 3 个线性无关的向量：$1$ 对应常数项、$x$ 对应一次项、$x^2$ 对应二次项，缺一不可，也不需要更多。</div>
+      </div>
+
       <div class="example">
         <div class="ex-label">例2</div>
         所有 $2\times 2$ 实矩阵 $\begin{pmatrix}a&b\\c&d\end{pmatrix}$ 全体，在矩阵加法与数乘下也构成线性空间，可以把它看成"坐标"为 $(a,b,c,d)$ 的四维向量。同样，区间 $[0,1]$ 上所有连续函数全体，在函数加法与数乘下也构成一个（无穷维的）线性空间。
+      </div>
+
+      <div class="deepdive">
+        <div class="dd-label">辨析：连续函数空间为什么是"无穷维"</div>
+        <div class="step"><strong>先说清楚"区间 $[0,1]$ 上所有连续函数"是什么：</strong>$[0,1]$ 是自变量 $x$ 的取值范围（从 0 到 1，包含两个端点）；函数 $f$ 是把每个 $x$ 对应到一个实数 $f(x)$ 的规则；"连续"直观地说就是图像不间断、不跳跃——可以用笔不离开纸面，从 $x=0$ 一路画到 $x=1$。像 $f(x)=x$、$f(x)=x^2$、$f(x)=\sin x$、常函数 $f(x)=3$ 都属于这个集合；而 $f(x)=\frac{1}{x-0.5}$ 在 $x=0.5$ 处趋于无穷，或者阶梯函数在某点突然跳变，都不连续，不在这个集合里。"全体"指的是把所有满足这个条件的函数打包成一个集合，记作 $C[0,1]$，其中每一个连续函数都被看成这个线性空间里的"一个向量"。</div>
+        <div class="step" style="margin-top:14px">加法、数乘按最自然的方式定义：</div>
+        <div class="center-block">
+          $$\text{加法：}\ (f+g)(x)=f(x)+g(x)\qquad\text{数乘：}\ (kf)(x)=k\cdot f(x)$$
+        </div>
+        <div class="step">两个连续函数逐点相加、整体数乘之后仍然连续，运算封闭，也满足加法交换律、结合律、存在零向量（恒等于 0 的函数）等全部公理——只是这里的"向量"不再是数组或多项式，而是一整条曲线。</div>
+        <div class="step" style="margin-top:14px"><strong>为什么是无穷维：</strong>维数问的是——要唯一确定空间里的一个元素，最少需要几个独立的数字？多项式 $a_0+a_1x+a_2x^2$ 只需 3 个数就能完全确定；但一个任意的连续函数呢？$[0,1]$ 上有无穷多个点，每一点 $f(x)$ 的取值原则上都是相对独立的信息，没法只用有限个数字把整条曲线的形状完全复刻出来。找不到一组有限个函数能张成整个 $C[0,1]$，这个空间的维数就是无穷。</div>
+        <div class="note" style="margin-top:14px">
+          <strong>说明：</strong> 一个直观类比——$\mathbb{R}^3$ 里的向量是"3 个格子"，多项式空间是"3 种配料"，连续函数则像是"每一个点都是一个独立的格子"，而 $[0,1]$ 上有无穷多个点，格子数自然是无穷多个。
+        </div>
       </div>
 
       <h3 class="part"><span class="tag">辨析</span>矩阵为什么"本质上"是四维向量</h3>
@@ -842,6 +881,27 @@
 
       <div class="note">
         <strong>说明：</strong> 既然矩阵和四维向量作为线性空间是同构的，为什么教材、应用里仍然坚持把它摆成"矩阵"这个方阵形状，而不是索性拉直成一行向量？因为矩阵除了"能加、能数乘"这一层线性空间结构之外，还额外承载了<strong>乘法</strong>这层结构：两个矩阵可以相乘，这对应着"线性变换的复合"（见第五、六节）；而矩阵的秩、行列式（第八节）、特征值（第九节）等重要概念，都依赖"行、列"这种二维排列方式，一旦拉直成一行向量就无从谈起了。也就是说，<strong>线性空间这一层只关心加法和数乘</strong>，矩阵长什么样并不影响它是不是线性空间、维数是多少；但矩阵的"方阵形状"在乘法、变换、特征值等运算里是不可或缺的额外结构，不能因为"同构"就随意丢弃。
+      </div>
+
+      <div class="deepdive">
+        <div class="dd-label">辨析：$(a,b,c,d)$ 是"一个向量的坐标"，不是"基"</div>
+        <div class="step">容易把 $(a,b,c,d)$ 误认为是基的表示形式，但其实它是<strong>某一个具体矩阵</strong> $\begin{pmatrix}a&b\\c&d\end{pmatrix}$（空间里的一个元素）在某组基下的<strong>坐标</strong>——向量和基是两个不同层面的东西：</div>
+        <div class="center-block">
+          <table class="matrix-table">
+            <tr><th>概念</th><th>是什么</th></tr>
+            <tr><td>向量</td><td>空间里的一个具体元素，比如矩阵 $\begin{pmatrix}a&b\\c&d\end{pmatrix}$ 本身</td></tr>
+            <tr><td>坐标 $(a,b,c,d)$</td><td>这一个向量在某组基下，用来描述它的一组数字</td></tr>
+            <tr><td>基</td><td>另外几个（这里是 4 个）线性无关、能张成整个空间的"参照向量"</td></tr>
+          </table>
+        </div>
+        <div class="step">这个空间真正的一组基，是四个矩阵：</div>
+        \[E_{11}=\begin{pmatrix}1&0\\0&0\end{pmatrix},\quad E_{12}=\begin{pmatrix}0&1\\0&0\end{pmatrix},\quad E_{21}=\begin{pmatrix}0&0\\1&0\end{pmatrix},\quad E_{22}=\begin{pmatrix}0&0\\0&1\end{pmatrix}\]
+        <div class="step">它们线性无关，且任意矩阵都能表示成它们的线性组合：</div>
+        \[\begin{pmatrix}a&b\\c&d\end{pmatrix}=a\cdot E_{11}+b\cdot E_{12}+c\cdot E_{21}+d\cdot E_{22}\]
+        <div class="step">这里的 $a,b,c,d$，正是矩阵 $\begin{pmatrix}a&b\\c&d\end{pmatrix}$（这<strong>一个</strong>向量）在基 $\{E_{11},E_{12},E_{21},E_{22}\}$ 下的坐标。</div>
+        <div class="note" style="margin-top:14px">
+          <strong>类比：</strong> 就像多项式空间里，$1,x,x^2$ 是基（3 个东西），而 $(a_0,a_1,a_2)$ 是某一个具体多项式 $a_0+a_1x+a_2x^2$ 的坐标——道理完全一样，"基"和"某个向量的坐标"是两个不同层面的概念，不要混在一起。
+        </div>
       </div>
 
       <h3 class="part"><span class="tag">辨析</span>$2\times2$ 矩阵、$2\times1$ 矩阵与 $\mathbb{R}^2$ 的区别</h3>
@@ -897,6 +957,28 @@
 
       <div class="note">
         <strong>说明：</strong> 这一步"抽象"是线性代数真正的起点——一旦规律被剥离出来，凡是符合这组规律的东西，之前学到的所有关于向量的结论（基、维数、线性变换……）都可以原封不动地套用上去。
+      </div>
+
+      <div class="deepdive">
+        <div class="dd-label">辨析：为什么要研究这么多不同类型的线性空间——只是数学研究吗</div>
+        <div class="step"><strong>核心原因是"省力"，专业说法叫"公理化"：</strong>如果一条定理（比如"任意线性无关向量组都能扩充成一组基"）在证明过程中，只用到了加法、数乘满足的那八条公理，这条定理就自动对<strong>所有</strong>满足这些公理的对象成立——不管它是箭头、多项式、矩阵还是函数，都不需要重新证一遍。这就是为什么教材总是先讲抽象的线性空间公理，再举一堆五花八门的例子：例子越多样，越说明这套理论"划算"，一次证明能覆盖无数种看似毫不相干的对象。</div>
+
+        <div class="step" style="margin-top:14px"><strong>一个类比：</strong>这就像发明"变量 $x$"代替具体数字一样——一旦学会解 $ax+b=0$，不需要对每一个具体的 $a,b$ 重新想办法，公式直接套用。线性空间的公理化做的是同一件事，只不过对象从"数字"换成了"能加、能数乘的任何东西"。</div>
+
+        <div class="step" style="margin-top:14px"><strong>这绝不只是数学自娱自乐，几乎每一种线性空间的例子背后都对应着实际应用：</strong></div>
+        <div class="center-block">
+          <table class="matrix-table">
+            <tr><th>空间类型</th><th>实际应用</th></tr>
+            <tr><td>函数空间（如 $C[0,1]$）</td><td>傅里叶级数、信号处理；量子力学里波函数本身就是无穷维空间里的"向量"</td></tr>
+            <tr><td>多项式空间</td><td>数值分析、插值算法、有限元方法（工程仿真背后的数学）</td></tr>
+            <tr><td>矩阵空间</td><td>图形学变换、机器学习里的权重矩阵</td></tr>
+            <tr><td>高维 $\mathbb{R}^n$</td><td>把一段文本、一张图片"嵌入"成高维空间里的一个点，再用内积、投影、正交等工具衡量相似度</td></tr>
+          </table>
+        </div>
+
+        <div class="note" style="margin-top:14px">
+          <strong>一句话总结：</strong> 研究多样的线性空间，既是数学内部追求简洁和统一的产物（一次证明、处处适用），也直接落地到物理、工程、计算机科学里解决实际问题——这两者并不矛盾，恰恰是同一件事的两面。
+        </div>
       </div>
 
       <div class="exercises">
@@ -1757,6 +1839,64 @@
     </div>
     <p><strong>坐标为 \((1,-2,6)^T\)。</strong></p>
   </section>
+
+  <!-- ===================== FOLLOW-UP: WHICH BASIS IS WHICH ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>\(\alpha\) 一开始是标准基坐标，最后求出的 \((1,-2,6)\) 是新基坐标，不是"换算回标准基"</h2>
+
+    <p>题目给出的 \(\alpha=(7,3,1)^T\)，这组数字本身就是 \(\alpha\) 在<strong>标准基</strong> \(\{e_1,e_2,e_3\}\) 下的坐标——只是因为标准基太自然，题目通常不会特意点出来，直接写成 \((7,3,1)^T\)。</p>
+
+    <h3 class="sub"><span class="tag">方向</span> 计算过程做的是"标准基坐标 → 新基坐标"的翻译</h3>
+    <p style="margin:0 0 20px">解方程组 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\alpha\) 求出的 \((x_1,x_2,x_3)=(1,-2,6)\)，正是 \(\alpha\) 在<strong>新基</strong> \(\{\alpha_1,\alpha_2,\alpha_3\}\) 下的坐标——不是把 \(\alpha\) "换算成"标准基（它本来就是标准基坐标），而是从标准基坐标反过来求出新基坐标。整个计算之所以要"借助"标准基，只是因为在标准基下向量的坐标就是它自身的分量，写方程组、解方程组都方便——这只是<strong>计算手段</strong>，不是最终结果的含义。</p>
+
+    <table class="compare">
+      <tr><th>阶段</th><th>含义</th></tr>
+      <tr><td>\(\alpha=(7,3,1)^T\)</td><td>起点：\(\alpha\) 在标准基下的坐标</td></tr>
+      <tr><td>解 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\alpha\)</td><td>过程：用标准基作为中间通道列方程、求解</td></tr>
+      <tr><td>\((1,-2,6)^T\)</td><td>终点：同一个 \(\alpha\)，在新基 \(\{\alpha_1,\alpha_2,\alpha_3\}\) 下的坐标</td></tr>
+    </table>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">方向是"标准基坐标 → （解方程组）→ 新基坐标"，不是反过来。验证时把 \((1,-2,6)\) 代回 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3\) 能还原出 \(\alpha=(7,3,1)^T\)，这正是"坐标"的定义：在新基下，\(\alpha\) 是这几个基向量的线性组合，组合系数就是坐标——而不是又把 \(\alpha\) 换算回了标准基。</p>
+    </div>
+
+    <h3 class="sub" style="margin-top:24px"><span class="tag">追问</span> 新基向量 \(\alpha_1,\alpha_2,\alpha_3\) 本身的坐标是在哪个基下的？</h3>
+    <p style="margin:0 0 20px">同样是<strong>标准基</strong>下的。题目里 \(\alpha_1=(1,3,5)^T,\ \alpha_2=(6,3,2)^T,\ \alpha_3=(3,1,0)^T\) 这几行数字，本身就是这几个向量在标准基 \(\{e_1,e_2,e_3\}\) 下的坐标——只是它们在这道题里被选来充当"新基"的角色。一道题目通常同时给出两类对象：要求坐标的 \(\alpha\)，和新基的各个基向量 \(\alpha_1,\alpha_2,\alpha_3\)，这两类坐标默认都是标准基坐标。正因为 \(\alpha\)、\(\alpha_1\)、\(\alpha_2\)、\(\alpha_3\) 全都用的是同一套标准基坐标写出来，等式 \(\alpha=x_1\alpha_1+x_2\alpha_2+x_3\alpha_3\) 才能按分量拆成方程组去解——如果它们用的不是同一套参照系，等式两边根本没法逐分量比较。</p>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">\(\alpha_1,\alpha_2,\alpha_3\) 同时扮演两个角色：作为"标准基下的坐标"是它们的<strong>输入形式</strong>；作为"新基的基向量"是它们在这道题里的<strong>身份</strong>——两者不矛盾，只是看待它们的角度不同。</p>
+    </div>
+
+    <h3 class="sub" style="margin-top:24px"><span class="tag">核心</span> 向量本身（那个"点"）是固定的，变的只是描述它的坐标</h3>
+    <p style="margin:0 0 20px">想象空间里真的有一个固定的点 \(Q\)。你可以用<strong>标准基</strong>这套"语言"描述它，说它在 \((7,3,1)\) 这个位置；也可以换一套<strong>新基</strong> \(\{\alpha_1,\alpha_2,\alpha_3\}\) 去描述同一个点 \(Q\)，这时会用另一组数字 \((1,-2,6)\) 去描述它。点 \(Q\) 自己从来没有移动过——移动的只是"表述它的数字"，因为换了一套参照系（换了基）。这跟换算单位是一回事：同一段路程，可以说"3 千米"，也可以说"3000 米"，路的长度没变，变的只是用什么单位去描述它。</p>
+
+    <table class="compare">
+      <tr><th>写法</th><th>说的是</th></tr>
+      <tr><td>\(\alpha=7e_1+3e_2+1e_3\)</td><td>用标准基的"语言"描述同一个向量 \(\alpha\)</td></tr>
+      <tr><td>\(\alpha=1\cdot\alpha_1+(-2)\cdot\alpha_2+6\cdot\alpha_3\)</td><td>用新基的"语言"描述同一个向量 \(\alpha\)</td></tr>
+    </table>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">等号两边说的是<strong>同一个向量</strong> \(\alpha\)（同一支箭、同一个点），只不过左边用标准基的"语言"写，右边用新基的"语言"写——写法不同，但箭头指向的地方，完全是同一个位置，没有任何变化。</p>
+    </div>
+
+    <h3 class="sub" style="margin-top:24px"><span class="tag">追问</span> 求解过程里的可逆矩阵 \(P\) 是什么？</h3>
+    <p style="margin:0 0 20px">\(P\) 就是把新基的各个基向量，按标准基坐标依次排成<strong>列</strong>拼出来的矩阵。沿用这道题的新基 \(\alpha_1=(1,3,5)^T,\alpha_2=(6,3,2)^T,\alpha_3=(3,1,0)^T\)：</p>
+    <div class="center-block">
+      $$P=(\alpha_1,\ \alpha_2,\ \alpha_3)=\begin{pmatrix}1&6&3\\3&3&1\\5&2&0\end{pmatrix}$$
+    </div>
+    <p style="margin:0 0 20px">回忆等式 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\alpha\)——把 \(\alpha_1,\alpha_2,\alpha_3\) 当作矩阵的列、\(x_1,x_2,x_3\) 当作待求未知数，这个线性组合正好等价于矩阵乘法 \(Px=\alpha\)，解得 \(x=P^{-1}\alpha\)，这里的 \(x\) 就是 \(\alpha\) 在新基下的坐标。</p>
+    <p style="margin:0 0 20px">\(P\) 一定可逆，是因为"\(\alpha_1,\alpha_2,\alpha_3\) 线性无关"正是它们能构成一组<strong>基</strong>的必要条件：若线性相关，\(\det(P)=0\)，方程要么无解要么有无穷多解，这时它们根本不配叫"基"；只有线性无关、\(\det(P)\neq0\) 时 \(P\) 才可逆，坐标才是唯一确定的。</p>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">这个 \(P\) 在后面换基理论里有个正式名字——<strong>过渡矩阵</strong>（从标准基到新基的过渡矩阵），它的列就是新基向量在旧基下的坐标（详见第七节"过渡矩阵"）。</p>
+    </div>
+  </div>
 
   <!-- ===================== FOLLOW-UP: WHY ADDITION ===================== -->
   <div class="followup">
