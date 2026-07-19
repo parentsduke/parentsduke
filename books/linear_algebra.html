@@ -1316,6 +1316,15 @@
       </div>
 
       <div class="example">
+        <div class="ex-label">举例：下标 $i,j$ 具体是什么</div>
+        <p style="margin:0 0 12px">设 $V=\mathbb{R}^2$，基是 $\alpha_1,\alpha_2$（抽象基，不一定是标准基）。假设变换 $T$ 满足：</p>
+        $$T(\alpha_1)=2\alpha_1+5\alpha_2,\qquad T(\alpha_2)=3\alpha_1+7\alpha_2$$
+        <p style="margin:12px 0">按定义式 $T(\alpha_j)=a_{1j}\alpha_1+a_{2j}\alpha_2$ 一一对应系数：$j=1$ 时 $T(\alpha_1)=2\alpha_1+5\alpha_2$，所以 $a_{11}=2$、$a_{21}=5$；$j=2$ 时 $T(\alpha_2)=3\alpha_1+7\alpha_2$，所以 $a_{12}=3$、$a_{22}=7$。排成矩阵（按第 $j$ 列排）：</p>
+        $$A=\begin{pmatrix}a_{11}&a_{12}\\a_{21}&a_{22}\end{pmatrix}=\begin{pmatrix}2&3\\5&7\end{pmatrix}$$
+        <p style="margin:12px 0 0">对着看下标含义：$a_{21}=5$，下标 $i=2,j=1$——意思是"在 $T(\alpha_1)$ 的展开式里，$\alpha_2$ 前面的系数"，对应 $T(\alpha_1)=2\alpha_1+\underline{5}\alpha_2$；$a_{12}=3$，下标 $i=1,j=2$——意思是"在 $T(\alpha_2)$ 的展开式里，$\alpha_1$ 前面的系数"，对应 $T(\alpha_2)=\underline{3}\alpha_1+7\alpha_2$。矩阵第1列 $\begin{pmatrix}2\\5\end{pmatrix}$ 整体来自 $T(\alpha_1)$ 展开的系数，第2列来自 $T(\alpha_2)$——行号永远对应"原基里第几个向量"，列号永远对应"变换的是第几个基向量"。</p>
+      </div>
+
+      <div class="example">
         <div class="ex-label">追问：$T(\alpha_j)$ 本身也是坐标表示，这是哪个基下的坐标？</div>
         <p style="margin:0 0 12px">没有唯一答案，要看你怎么"写出"这个向量。$T(\alpha_j)$ 本身是一个<strong>抽象的向量</strong>（$V$ 里的一个元素），它自己并不天然带着坐标——只有<strong>选定一组基去展开它</strong>，才会得到一串具体的数字（坐标）。换一组基展开，坐标就会不一样，这正是"同一向量、不同基下坐标不同"。</p>
         <p style="margin:0 0 12px">回到公式 $T(\alpha_j)=a_{1j}\alpha_1+\cdots+a_{nj}\alpha_n$，这里选的展开基就是<strong>旧基</strong> $\{\alpha_1,\ldots,\alpha_n\}$ 本身，所以 $(a_{1j},\ldots,a_{nj})$ 是 $T(\alpha_j)$ <strong>在旧基下</strong>的坐标。但如果换个角度，比如 $V=\mathbb{R}^n$ 且直接用具体运算算出 $T(\alpha_j)$ 等于某个数字元组（如 $(5,2,9)^T$），那这组数字其实是 $T(\alpha_j)$ <strong>在标准基下</strong>的坐标——因为在 $\mathbb{R}^n$ 里"直接写成一列数"这个习惯，默认用的就是标准基。</p>
