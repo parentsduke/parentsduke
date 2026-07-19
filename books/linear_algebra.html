@@ -1296,6 +1296,10 @@
       <div class="center-block">$$T(\xi+\eta)=T(\xi)+T(\eta),\qquad T(k\xi)=kT(\xi)$$</div>
       <div class="step">则称 $T$ 为 $V$ 上的<strong>线性变换</strong>——先合成再变换，与先变换再合成，结果一致。</div>
 
+      <div class="note">
+        <strong>说明：</strong>$\xi,\eta$ 都是 $V$ 中的向量，所以 $T(\xi+\eta)=T(\xi)+T(\eta)$ 里出现的两次"$+$"都是<strong>向量加法</strong>，只是发生的时机不同：左边是先把 $\xi,\eta$ 相加（向量加法）再做变换 $T$；右边是先分别对 $\xi,\eta$ 做变换，再把变换后的两个向量相加（同样是向量加法，因为 $T:V\to V$，变换结果仍在 $V$ 里）。"线性变换"的核心要求，就是这两种做法——先加后变、先变后加——结果必须一致。另一半 $T(k\xi)=kT(\xi)$ 是同样的道理，只不过针对的是<strong>数乘</strong>：先放大 $k$ 倍再变换，与先变换再放大 $k$ 倍，结果也要一致。
+      </div>
+
       <h3 class="part"><span class="tag">定义</span>变换在给定基下的矩阵</h3>
       <div class="step">取定基 $\alpha_1,\dots,\alpha_n$，把 $T$ 作用在每个基向量上的结果，用同一组基展开：</div>
       <div class="center-block">$$T(\alpha_j)=a_{1j}\alpha_1+\cdots+a_{nj}\alpha_n,\quad j=1,\dots,n$$</div>
