@@ -1152,6 +1152,13 @@
         $$\left(\begin{array}{ccc|c}a_{11}&\cdots&a_{1n}&b_1\\\vdots&&\vdots&\vdots\\a_{m1}&\cdots&a_{mn}&b_m\end{array}\right)$$
       </div>
 
+      <div class="note">
+        <strong>追问：</strong>为什么系数 $a_{ij}$（或后面基向量 $\alpha_i$）写在左边，未知数 $x_i$ 写在右边，而不是反过来？<br><br>
+        在 $a_{ij}x_j$ 或 $x_i\alpha_i$ 这类"标量乘标量""标量乘向量"的写法里，乘法是<strong>可交换</strong>的，写在左边右边结果完全一样——这里"系数在前、未知数在后"只是沿用了 $3x$ 而不写 $x3$ 的书写习惯，没有数学含义。<br><br>
+        真正有顺序讲究的是把它们打包成<strong>矩阵形式</strong> $Ax=b$ 之后：这时候 $A=(a_{ij})$ 是矩阵，$x=(x_1,\ldots,x_n)^T$ 是列向量，矩阵乘法要求"左边矩阵的列数 = 右边向量的行数"，所以只能写成 $Ax$（$m\times n$ 乘 $n\times1$）而不能写成 $xA$（维度对不上）。这一点会在下一节"矩阵及其运算"里展开。<br><br>
+        <strong>注意：这里的系数 $a_{ij}$ 不是"基"。</strong>系数就是一堆普通<strong>数字</strong>，只表示每个未知数前面乘了多少倍，和"基"没有任何关系；而后面"基与维数"一节里的 $\alpha_i$ 是<strong>向量</strong>，它们张成一个空间，空间里任何向量都能写成 $x_1\alpha_1+x_2\alpha_2+\cdots$，这时候 $x_i$ 才叫"坐标"。两者只是写法结构相似（数×数 vs 数×向量，都可交换、顺序无所谓），系数本身并不是基向量。
+      </div>
+
       <h3 class="part"><span class="tag">方法</span>高斯消元</h3>
       <div class="step">通过三种"行初等变换"（交换两行、某行乘非零常数、某行加上另一行的倍数——这些操作都不改变方程组的解），把增广矩阵化为<strong>阶梯形</strong>，再从最后一行开始，逐步回代求出每个未知数。</div>
 
