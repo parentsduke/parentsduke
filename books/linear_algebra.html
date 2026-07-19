@@ -1237,6 +1237,20 @@
       <div class="center-block">
         $$A=\begin{pmatrix}a&b\\c&d\end{pmatrix},\qquad A^{-1}=\frac{1}{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}\quad(ad-bc\neq 0)$$
       </div>
+
+      <div class="example">
+        <div class="ex-label">这个公式怎么来的：用消元法推导</div>
+        <p style="margin:0 0 12px">逆矩阵的定义是 $AX=E$。把 $A$ 和单位矩阵 $E$ 拼成增广矩阵，用行变换把左边消成 $E$，右边自然就变成 $A^{-1}$（和解方程组用的是同一套消元手法）：</p>
+        $$\left(\begin{array}{cc|cc}a&b&1&0\\c&d&0&1\end{array}\right)$$
+        <p style="margin:12px 0">第一步，用 $R_2-\frac{c}{a}R_1$ 消掉左下角（设 $a\neq0$）：</p>
+        $$\left(\begin{array}{cc|cc}a&b&1&0\\0&\frac{ad-bc}{a}&-\frac{c}{a}&1\end{array}\right)$$
+        <p style="margin:12px 0">右下角出现了 $ad-bc$——这正是行列式的来历，它能不能继续往下消，就取决于这个量是否为零。第二步把第二行除以 $\frac{ad-bc}{a}$，让主元变成1：</p>
+        $$\left(\begin{array}{cc|cc}a&b&1&0\\0&1&-\frac{c}{ad-bc}&\frac{a}{ad-bc}\end{array}\right)$$
+        <p style="margin:12px 0">第三步用 $R_1-bR_2$ 消掉右上角，再把第一行除以 $a$，左边就变成了 $E$：</p>
+        $$\left(\begin{array}{cc|cc}1&0&\frac{d}{ad-bc}&-\frac{b}{ad-bc}\\0&1&-\frac{c}{ad-bc}&\frac{a}{ad-bc}\end{array}\right)$$
+        <p style="margin:12px 0 0">右边正好读出 $A^{-1}=\dfrac{1}{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}$。每一步分母都出现 $ad-bc$，这就是为什么必须 $ad-bc\neq0$——一旦它是0，第二步就没法除，消元根本进行不下去，逆矩阵自然也不存在。</p>
+      </div>
+
       <div class="step">另外，把矩阵的行和列互换得到<strong>转置矩阵</strong> $A^T$，满足 $(AB)^T=B^TA^T$（注意顺序也翻转了）。</div>
 
       <div class="note">
