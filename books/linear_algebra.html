@@ -1305,6 +1305,17 @@
       <div class="center-block">$$T(\alpha_j)=a_{1j}\alpha_1+\cdots+a_{nj}\alpha_n,\quad j=1,\dots,n$$</div>
       <div class="step">把这些系数按<strong>第 $j$ 列</strong>排列，就得到 $T$ 在这组基下的矩阵 $A=(a_{ij})$。这是一个<strong>约定</strong>，而非需要证明的定理——矩阵的每一列，记录的正是"某个基向量被变换后，用原基怎样重新配出来"。</div>
 
+      <div class="note">
+        <strong>说明：</strong>$T(\alpha_j)$ 是把变换 $T$ <strong>作用在</strong>基向量 $\alpha_j$ 上之后得到的结果——这一步变换已经做完了，$T(\alpha_j)$ 是 $V$ 中一个具体的新向量。等号右边 $a_{1j}\alpha_1+\cdots+a_{nj}\alpha_n$ 做的是另一件事：既然 $T(\alpha_j)$ 也是 $V$ 里的向量，而 $\{\alpha_1,\ldots,\alpha_n\}$ 是一组基，它自然也能被这组基<strong>唯一地线性表出</strong>——这一步是"分解"，不是"变换"。所以整条式子其实是两步：先变换（$\alpha_j\xrightarrow{T}T(\alpha_j)$），再把变换后的结果用原来的基重新展开，展开系数 $a_{1j},\ldots,a_{nj}$ 就构成了矩阵 $A$ 的第 $j$ 列。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">追问：$T(\alpha_j)$ 本身也是坐标表示，这是哪个基下的坐标？</div>
+        <p style="margin:0 0 12px">没有唯一答案，要看你怎么"写出"这个向量。$T(\alpha_j)$ 本身是一个<strong>抽象的向量</strong>（$V$ 里的一个元素），它自己并不天然带着坐标——只有<strong>选定一组基去展开它</strong>，才会得到一串具体的数字（坐标）。换一组基展开，坐标就会不一样，这正是"同一向量、不同基下坐标不同"。</p>
+        <p style="margin:0 0 12px">回到公式 $T(\alpha_j)=a_{1j}\alpha_1+\cdots+a_{nj}\alpha_n$，这里选的展开基就是<strong>旧基</strong> $\{\alpha_1,\ldots,\alpha_n\}$ 本身，所以 $(a_{1j},\ldots,a_{nj})$ 是 $T(\alpha_j)$ <strong>在旧基下</strong>的坐标。但如果换个角度，比如 $V=\mathbb{R}^n$ 且直接用具体运算算出 $T(\alpha_j)$ 等于某个数字元组（如 $(5,2,9)^T$），那这组数字其实是 $T(\alpha_j)$ <strong>在标准基下</strong>的坐标——因为在 $\mathbb{R}^n$ 里"直接写成一列数"这个习惯，默认用的就是标准基。</p>
+        <p style="margin:0">所以同一个抽象向量 $T(\alpha_j)$，可能有两套不同的坐标：直接算出来的（标准基下），以及公式里特意展开出来的（旧基 $\{\alpha_i\}$ 下）。矩阵 $A$ 的第 $j$ 列取的是<strong>后者</strong>，因为整套"变换的矩阵表示"，本来就建立在"用同一组基衡量变换前后"这个约定之上。</p>
+      </div>
+
       <div class="example">
         <div class="ex-label">例1</div>
         $\mathbb{R}^2$ 上把每个向量绕原点逆时针旋转 90° 的变换 $T$，在标准基下：$T(1,0)=(0,1)$，$T(0,1)=(-1,0)$，对应矩阵 $\begin{pmatrix}0&-1\\1&0\end{pmatrix}$——第一列是 $T(1,0)$ 的坐标，第二列是 $T(0,1)$ 的坐标。
