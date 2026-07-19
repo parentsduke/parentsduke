@@ -1311,6 +1311,8 @@
 
       <div class="note">
         <strong>说明：</strong>$T(\alpha_j)$ 是把变换 $T$ <strong>作用在</strong>基向量 $\alpha_j$ 上之后得到的结果——这一步变换已经做完了，$T(\alpha_j)$ 是 $V$ 中一个具体的新向量。等号右边 $a_{1j}\alpha_1+\cdots+a_{nj}\alpha_n$ 做的是另一件事：既然 $T(\alpha_j)$ 也是 $V$ 里的向量，而 $\{\alpha_1,\ldots,\alpha_n\}$ 是一组基，它自然也能被这组基<strong>唯一地线性表出</strong>——这一步是"分解"，不是"变换"。所以整条式子其实是两步：先变换（$\alpha_j\xrightarrow{T}T(\alpha_j)$），再把变换后的结果用原来的基重新展开，展开系数 $a_{1j},\ldots,a_{nj}$ 就构成了矩阵 $A$ 的第 $j$ 列。
+
+        <p style="margin:10px 0 0"><strong>下标 $i,j$ 的含义：</strong>$a_{ij}$ 就是把 $T(\alpha_j)$ 用原基展开时，排在 $\alpha_i$ 前面的那个系数——下标 $i$（行号）对应"第几个原基向量 $\alpha_i$"，下标 $j$（列号）对应"变换的是第几个基向量 $\alpha_j$"，也就是"这一列系数来自 $T(\alpha_j)$ 的展开"。矩阵 $A$ 整体，就是把 $T(\alpha_1),\ldots,T(\alpha_n)$ 这 $n$ 个展开式的系数一列一列拼起来的结果。</p>
       </div>
 
       <div class="example">
