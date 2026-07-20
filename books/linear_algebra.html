@@ -1373,6 +1373,20 @@
       <div class="center-block">$$y=Ax$$</div>
       <div class="step">把 $\xi$ 换回基向量 $\alpha_j$ 本身（坐标是 $x=(0,\ldots,1,\ldots,0)^T$，第 $j$ 位是1），代入 $y=Ax$ 恰好取出 $A$ 的第 $j$ 列——和最初的定义完全对上，说明 $T(\alpha_j)=\sum_i a_{ij}\alpha_i$ 只是这个一般式的特例。</div>
 
+      <h3 class="sub" style="margin-top:24px"><span class="tag">追问</span>$T(\xi)=\sum_{i=1}^n\left(\sum_{j=1}^n a_{ij}x_j\right)\alpha_i$ 具体是怎么一步步展开的？</h3>
+      <div class="step"><strong>第一步，$\xi$ 用基展开：</strong>坐标是 $(x_1,\ldots,x_n)$ 的意思就是 $\xi=x_1\alpha_1+x_2\alpha_2+\cdots+x_n\alpha_n$。</div>
+      <div class="step" style="margin-top:14px"><strong>第二步，利用线性性把 $T$ 拆开：</strong>线性变换满足 $T(u+v)=T(u)+T(v)$、$T(ku)=kT(u)$，所以 $T$ 可以逐项穿透加号：</div>
+      <div class="center-block">$$T(\xi)=T(x_1\alpha_1+\cdots+x_n\alpha_n)=x_1T(\alpha_1)+x_2T(\alpha_2)+\cdots+x_nT(\alpha_n)$$</div>
+      <div class="step">这一步的关键是：只要知道 $T$ 对<strong>每个基向量</strong>做了什么，就能推出 $T$ 对<strong>任意向量</strong>做了什么——因为任意向量都是基向量的线性组合。</div>
+      <div class="step" style="margin-top:14px"><strong>第三步，每个 $T(\alpha_j)$ 本身还是空间里的向量：</strong>它是变换之后的结果，仍待在同一个空间里，所以也能用同一组基展开，展开系数正是矩阵第 $j$ 列：</div>
+      <div class="center-block">$$T(\alpha_j)=\sum_{i=1}^n a_{ij}\alpha_i$$</div>
+      <div class="step" style="margin-top:14px"><strong>第四步，代回去、交换求和顺序：</strong>把第三步代入第二步，得到双重求和 $\sum_j x_j\left(\sum_i a_{ij}\alpha_i\right)$；再把求和顺序从"按 $j$ 分组"换成"按 $i$ 分组"（把所有含 $\alpha_i$ 的项收集到一起，凑成 $\alpha_i$ 前面的系数），就得到最终形式 $\sum_i\left(\sum_j a_{ij}x_j\right)\alpha_i$。括号里 $\sum_j a_{ij}x_j$ 正是矩阵 $A$ 与坐标向量 $x$ 相乘后第 $i$ 个分量——这就是为什么 $T(\xi)$ 在这组基下的坐标恰好等于 $Ax$。</div>
+      <div class="example" style="margin-top:14px">
+        <strong>小例子（$n=2$）：</strong>设 $T(\alpha_1)=2\alpha_1+3\alpha_2$，$T(\alpha_2)=1\alpha_1+4\alpha_2$，即 $a_{11}=2,a_{21}=3,a_{12}=1,a_{22}=4$。若 $\xi=x_1\alpha_1+x_2\alpha_2$，代入第二步、第三步：
+        $$T(\xi)=x_1(2\alpha_1+3\alpha_2)+x_2(1\alpha_1+4\alpha_2)=(2x_1+x_2)\alpha_1+(3x_1+4x_2)\alpha_2$$
+        对应矩阵形式 $\begin{pmatrix}2&1\\3&4\end{pmatrix}\begin{pmatrix}x_1\\x_2\end{pmatrix}=\begin{pmatrix}2x_1+x_2\\3x_1+4x_2\end{pmatrix}$，跟展开结果完全对上。
+      </div>
+
       <div class="note">
         <strong>说明：$Ax$ 是按列取，不是按行拼。</strong>矩阵乘向量 $Ax$，本质是"用 $x$ 的分量，把 $A$ 的各列做线性组合"：
         $$Ax=x_1\begin{pmatrix}a_{11}\\\vdots\\a_{n1}\end{pmatrix}+x_2\begin{pmatrix}a_{12}\\\vdots\\a_{n2}\end{pmatrix}+\cdots+x_n\begin{pmatrix}a_{1n}\\\vdots\\a_{nn}\end{pmatrix}$$
