@@ -1349,6 +1349,31 @@
         <strong>说明：变换矩阵 ≠ 过渡矩阵</strong>这里的 $A=\begin{pmatrix}1&0\\0&0\end{pmatrix}$ 是<strong>变换矩阵</strong>（也叫"变换在给定基下的矩阵"），描述的是变换 $T$ 本身在某组基下长什么样，来自 $T(\alpha_j)=\sum_i a_{ij}\alpha_i$；它会真的把一个向量变成另一个向量，比如把 $(x,y)$ 投影成 $(x,0)$，是一次实实在在的几何变换。这和第七节"基变换"里的<strong>过渡矩阵 $P$</strong> 是两回事：$P$ 来自 $\beta_j=\sum_i p_{ij}\alpha_i$，描述的是两组不同的<strong>基</strong>之间怎么换算，只是"翻译"同一个向量在两组基下的坐标，向量本身并没有被变换。
       </div>
 
+      <h3 class="part"><span class="tag">推广</span>任意向量的坐标怎么变：$y=Ax$</h3>
+      <div class="step">前面只讲了 $T$ 作用在基向量 $\alpha_j$ 上的情形。现在把 $\alpha_j$ 换成任意向量 $\xi=x_1\alpha_1+\cdots+x_n\alpha_n$（坐标是 $x=(x_1,\ldots,x_n)^T$），利用线性变换的可加、可数乘性质把 $T$ "打进"每一项：</div>
+      <div class="center-block">
+        $$T(\xi)=T(x_1\alpha_1+\cdots+x_n\alpha_n)=x_1T(\alpha_1)+\cdots+x_nT(\alpha_n)=\sum_{i=1}^n\left(\sum_{j=1}^n a_{ij}x_j\right)\alpha_i$$
+      </div>
+      <div class="step">括号里 $\sum_j a_{ij}x_j$ 正是矩阵 $A$ 乘向量 $x$ 的第 $i$ 行结果，所以 $T(\xi)$ 在旧基下的坐标 $y=(y_1,\ldots,y_n)^T$ 满足</div>
+      <div class="center-block">$$y=Ax$$</div>
+      <div class="step">把 $\xi$ 换回基向量 $\alpha_j$ 本身（坐标是 $x=(0,\ldots,1,\ldots,0)^T$，第 $j$ 位是1），代入 $y=Ax$ 恰好取出 $A$ 的第 $j$ 列——和最初的定义完全对上，说明 $T(\alpha_j)=\sum_i a_{ij}\alpha_i$ 只是这个一般式的特例。</div>
+
+      <div class="note">
+        <strong>说明：$Ax$ 是按列取，不是按行拼。</strong>矩阵乘向量 $Ax$，本质是"用 $x$ 的分量，把 $A$ 的各列做线性组合"：
+        $$Ax=x_1\begin{pmatrix}a_{11}\\\vdots\\a_{n1}\end{pmatrix}+x_2\begin{pmatrix}a_{12}\\\vdots\\a_{n2}\end{pmatrix}+\cdots+x_n\begin{pmatrix}a_{1n}\\\vdots\\a_{nn}\end{pmatrix}$$
+        而 $A$ 的第 $j$ 列本来就是 $T(\alpha_j)$ 的坐标，所以 $Ax=x_1T(\alpha_1)+\cdots+x_nT(\alpha_n)$，正好对上 $T(\xi)$ 的展开式——这也说明矩阵的<strong>行</strong>没有单独的几何意义：矩阵第 $i$ 行是"各个 $T(\alpha_j)$ 里 $\alpha_i$ 的系数"横着拼在一起，是跨越不同列取出来的数，本身不对应任何一个 $T(\alpha_j)$；只有<strong>列</strong>才完整对应某一个 $T(\alpha_j)$。
+      </div>
+
+      <div class="note">
+        <strong>说明：$T$ 变换向量，$A$ 是坐标层面的"代理人"——两者不矛盾。</strong>这里有两个层面，完全对应、同步进行：
+        <p style="margin:10px 0 0"><strong>向量层面（抽象、几何的）</strong>：$T$ 定义在向量上，$\xi\xrightarrow{T}T(\xi)$——$\xi$ 是空间 $V$ 里的一个向量，$T(\xi)$ 是变换后的新向量，这一层不需要任何坐标。</p>
+        <p style="margin:10px 0 0"><strong>坐标层面（具体、可计算的）</strong>：一旦选定一组基，每个向量对应一串坐标；$\xi$ 对应 $x$，$T(\xi)$ 对应 $y$，$y=Ax$ 是这两串坐标之间的换算关系。</p>
+        <p style="margin:10px 0 0">两层对应关系可以这样看：</p>
+        $$\xi\xrightarrow{\ T\ }T(\xi)\qquad\text{（向量层面，真正发生的变换）}$$
+        $$x\xrightarrow{\ A\ }y=Ax\qquad\text{（坐标层面，具体的计算）}$$
+        <p style="margin:10px 0 0">矩阵 $A$ 是"变换 $T$"翻译成坐标语言之后的计算工具——$Ax$ 不是取代了 $T(\xi)$，而是 $T(\xi)$ 在坐标层面的忠实翻版，算出来的 $y$ 恰好就是 $T(\xi)$ 的坐标。说"$T$ 变换向量"和说"$Ax$ 算坐标"，说的是同一件事的两个角度，并不矛盾。$x$ 全程都是坐标（$\xi$ 在旧基下的坐标），身份没有中途切换过，切换的只是"坐标属于哪个向量"。</p>
+      </div>
+
       <h3 class="part"><span class="tag">验证</span>矩阵乘法 = 变换复合</h3>
       <div class="step">设 $T_1$ 是"逆时针旋转90°"（矩阵 $A=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$），$T_2$ 是"沿 $x$ 轴投影"（矩阵 $B=\begin{pmatrix}1&0\\0&0\end{pmatrix}$）。先投影再旋转，对向量 $(1,1)$：先得 $T_2(1,1)=(1,0)$，再 $T_1(1,0)=(0,1)$。用矩阵直接算 $AB(1,1)^T$：</div>
       <div class="center-block">
