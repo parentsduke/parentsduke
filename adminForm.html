@@ -949,6 +949,13 @@
     all:       '已催信',
   };
 
+  // 管理员邮箱 → 显示用中文简称
+  const ADMIN_NAME_MAP = {
+    'lixiaobing@gmail.com': '笑',
+    'weihong_j@yahoo.com':  '伟',
+  };
+  const adminShortName = email => (email && ADMIN_NAME_MAP[email]) || email || '';
+
   // ── 通用字段保存（确认后保存，同时写审计表） ──
   async function saveField(recordId, col, val, inputEl) {
     const clean = (val || '').trim() || null;
@@ -1139,7 +1146,7 @@
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');unshelveRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消搁置</button>`;
       } else {
         const remindedSpan = r.last_reminder_type
-          ? `<span class="catalist-status" style="color:#6b21a8;">📧 ${REMINDER_LABELS[r.last_reminder_type] || '已催信'}${r.last_reminder_at ? '（' + new Date(r.last_reminder_at).toLocaleDateString('zh-CN') + '）' : ''}${r.last_reminder_by ? `<br><span style="font-size:11px;color:#8a6fb0;">由 ${r.last_reminder_by} 发送</span>` : ''}</span>`
+          ? `<span class="catalist-status" style="color:#6b21a8;">📧 ${REMINDER_LABELS[r.last_reminder_type] || '已催信'}${r.last_reminder_at ? '（' + new Date(r.last_reminder_at).toLocaleDateString('zh-CN') + '）' : ''}${r.last_reminder_by ? `<br><span style="font-size:11px;color:#8a6fb0;">由 ${adminShortName(r.last_reminder_by)} 发送</span>` : ''}</span>`
           : '';
         actionItems = `${remindedSpan}
           <button class="catalist-item" style="color:var(--green);" onclick="closeCatMenu('actmenu-${r.id}');approveRecord('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">✅ 批准入群</button>
@@ -1151,7 +1158,7 @@
       const btnLabel = r.rejected_at ? '已拒绝' : r.left_group_at ? '已退群' : r.not_joined ? '未进群' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : pendingReminded ? (REMINDER_LABELS[r.last_reminder_type] || '已催信') : '操作';
       const btnBg    = r.rejected_at ? '#7f1d1d' : r.left_group_at ? '#c2610c' : r.not_joined ? '#b45309' : r.approved_at ? '#14532d' : r.shelved_at ? '#78350f' : pendingReminded ? '#6b21a8' : '#444';
       const btnHover = r.rejected_at ? '#991b1b' : r.left_group_at ? '#d97706' : r.not_joined ? '#c2610c' : r.approved_at ? '#166534' : r.shelved_at ? '#92400e' : pendingReminded ? '#7e22ce' : '#222';
-      const btnTitle = pendingReminded && r.last_reminder_by ? ` title="由 ${r.last_reminder_by} 发送"` : '';
+      const btnTitle = pendingReminded && r.last_reminder_by ? ` title="由 ${adminShortName(r.last_reminder_by)} 发送"` : '';
       const actionCell = `<div class="catalist-wrap">
         <button onclick="toggleCatMenu(event,'actmenu-${r.id}')"${btnTitle}
           style="padding:3px 8px;background:${btnBg};color:#fff;border:none;border-radius:5px;
