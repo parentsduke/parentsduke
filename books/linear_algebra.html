@@ -1364,7 +1364,22 @@
         <strong>说明：变换矩阵 ≠ 过渡矩阵</strong>这里的 $A=\begin{pmatrix}1&0\\0&0\end{pmatrix}$ 是<strong>变换矩阵</strong>（也叫"变换在给定基下的矩阵"），描述的是变换 $T$ 本身在某组基下长什么样，来自 $T(\alpha_j)=\sum_i a_{ij}\alpha_i$；它会真的把一个向量变成另一个向量，比如把 $(x,y)$ 投影成 $(x,0)$，是一次实实在在的几何变换。这和第七节"基变换"里的<strong>过渡矩阵 $P$</strong> 是两回事：$P$ 来自 $\beta_j=\sum_i p_{ij}\alpha_i$，描述的是两组不同的<strong>基</strong>之间怎么换算，只是"翻译"同一个向量在两组基下的坐标，向量本身并没有被变换。
       </div>
 
-      <h3 class="part"><span class="tag">推广</span>任意向量的坐标怎么变：$y=Ax$</h3>
+      <div class="deepdive">
+        <h3 class="sub"><span class="tag">追问</span>$T(\alpha_j)=\sum_i a_{ij}\alpha_i$ 和 $\beta_j=\sum_i p_{ij}\alpha_i$ 公式长得一模一样，为什么一个说"基没有变"、一个是"基变换"？</h3>
+        <div class="step">这是个很值得深究的问题：两个式子从纯代数角度看<strong>结构完全一样</strong>——都是"用一组基 $\{\alpha_i\}$ 把某个向量展开，系数按列排成矩阵"。区别不在公式本身，而在<strong>等号右边"变出来"的东西是什么身份</strong>。</div>
+        <div class="step" style="margin-top:14px"><strong>基变换的情形（被动变换）：</strong>$\beta_j$ 本身也是一个<strong>基向量</strong>——你同时拥有两组基 $\{\alpha_i\}$ 和 $\{\beta_j\}$，它们都摆在那不动，空间里的向量也没有被"作用"或"移动"。你只是在问："换一把尺子（换一组基）去量同一个向量，坐标会怎么变？"——点没动，参照系变了。</div>
+        <div class="step" style="margin-top:14px"><strong>线性变换的情形（主动变换）：</strong>$T(\alpha_j)$ 不是新基向量，而是"把 $\alpha_j$ 这个向量真正搬到了空间里的另一个位置"（一般 $T(\alpha_j)\ne\alpha_j$，可能和任何基向量都不相等）。自始至终<strong>只有一组基 $\{\alpha_i\}$</strong>，你用它去测量"变换前"的向量（$\alpha_j$ 自己），也用<strong>同一把尺子</strong>去测量"变换后"的向量 $T(\alpha_j)$——尺子没动，点被搬走了。</div>
+        <div class="step" style="margin-top:14px">换个说法：基变换是"同一个向量，两把尺子，两组坐标"；线性变换是"同一把尺子，两个向量（变换前 $\alpha_j$、变换后 $T(\alpha_j)$），两组坐标"。"基没有变"说的正是——从头到尾用来读数的那把尺子（基 $\{\alpha_i\}$）自始至终是同一把，变的是被测量的对象。</div>
+        <div class="note" style="margin-top:14px">
+          <strong>更深一层：为什么公式会长得一样。</strong>这不是巧合。基变换本身其实也可以被看成一个特殊的线性变换：定义映射 $S$ 满足 $S(\alpha_j)=\beta_j$（把老基第 $j$ 个向量映到新基第 $j$ 个向量），那么"过渡矩阵"其实就是这个 $S$ 在基 $\{\alpha_i\}$ 下的矩阵——和"线性变换的矩阵"是同一套构造。所以两者用同一个公式毫不奇怪，真正的区别只在于<strong>你打算怎么解释这个矩阵</strong>：当作"某个具体映射 $T$ 把向量搬到哪去了"的记录表（主动视角，基不变）；还是当作"同一个点，换个坐标系看长什么样"的换算表（被动视角，点不变）。
+        </div>
+        <div class="example" style="margin-top:14px">
+          <strong>小例子帮你分清：</strong>设 $\alpha_1=(1,0),\alpha_2=(0,1)$（平面标准基），考虑逆时针旋转 90° 的变换 $T$：$T(\alpha_1)=(0,1)=\alpha_2$，$T(\alpha_2)=(-1,0)=-\alpha_1$，矩阵 $A=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$ 记录的是"$\alpha_1,\alpha_2$ 这两个具体的点，被旋转之后落到了哪"——基 $\{\alpha_1,\alpha_2\}$ 全程没变，变的是点的位置。<br><br>
+          而如果只是想换一套基 $\{\beta_1,\beta_2\}=\{(1,1),(1,-1)\}$ 去描述同一个向量，写出 $\beta_1=\alpha_1+\alpha_2,\ \beta_2=\alpha_1-\alpha_2$，得到过渡矩阵 $P=\begin{pmatrix}1&1\\1&-1\end{pmatrix}$——这里没有任何点被移动，$\alpha_1,\alpha_2,\beta_1,\beta_2$ 全部原地不动，只是选择了不同的"标尺"去读同一个点的坐标。
+        </div>
+      </div>
+
+
       <div class="step">前面只讲了 $T$ 作用在基向量 $\alpha_j$ 上的情形。现在把 $\alpha_j$ 换成任意向量 $\xi=x_1\alpha_1+\cdots+x_n\alpha_n$（坐标是 $x=(x_1,\ldots,x_n)^T$），利用线性变换的可加、可数乘性质把 $T$ "打进"每一项：</div>
       <div class="center-block">
         $$T(\xi)=T(x_1\alpha_1+\cdots+x_n\alpha_n)=x_1T(\alpha_1)+\cdots+x_nT(\alpha_n)=\sum_{i=1}^n\left(\sum_{j=1}^n a_{ij}x_j\right)\alpha_i$$
