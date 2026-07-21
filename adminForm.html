@@ -659,6 +659,34 @@
   let sortCol = 'created_at';
   let sortDir = 'desc';
 
+  // ── 统一操作反馈提示（每次状态变更都会弹出，2.5秒后自动消失）──
+  let _toastTimer = null;
+  function showStatusToast(msg) {
+    let el = document.getElementById('statusToast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'statusToast';
+      el.style.cssText = `
+        position:fixed; top:18px; left:50%; transform:translateX(-50%) translateY(-12px);
+        background:#1a1a1a; color:#fff; font-size:13.5px; font-weight:500;
+        padding:10px 18px; border-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,0.25);
+        z-index:9999; opacity:0; transition:opacity .18s ease, transform .18s ease;
+        pointer-events:none; white-space:nowrap;
+      `;
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    clearTimeout(_toastTimer);
+    requestAnimationFrame(() => {
+      el.style.opacity = '1';
+      el.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    _toastTimer = setTimeout(() => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(-50%) translateY(-12px)';
+    }, 2500);
+  }
+
   // ── Auth ──
   async function init() {
     const { data: { session } } = await db.auth.getSession();
@@ -845,9 +873,14 @@
     if (!col) return;
     const update = {};
     update[col] = val || null;
-    await db.from('admissions_submissions').update(update).eq('id', recordId);
+    const { error } = await db.from('admissions_submissions').update(update).eq('id', recordId);
+    if (error) {
+      alert('❌ 保存失败：' + error.message);
+      return;
+    }
     const rec = allRecords.find(r => r.id === recordId);
     if (rec) rec[col] = val || null;
+    showStatusToast('✅ 已保存');
   }
 
   async function saveCommitted(recordId, val) {
@@ -867,7 +900,11 @@
       }
     }
 
-    await db.from('admissions_submissions').update(update).eq('id', recordId);
+    const { error } = await db.from('admissions_submissions').update(update).eq('id', recordId);
+    if (error) {
+      alert('❌ 保存失败：' + error.message);
+      return;
+    }
     if (rec) {
       rec.committed    = update.committed;
       rec.committed_at = update.committed_at;
@@ -877,6 +914,7 @@
     // 刷新昵称输入框显示
     const nicknameInput = document.querySelector(`#row-${recordId} td input[onblur*="saveNickname"]`);
     if (nicknameInput && rec) nicknameInput.value = rec.wx_nickname || '';
+    showStatusToast('✅ 已保存');
   }
 
   async function saveNickname(recordId, val) {
@@ -899,6 +937,16 @@
     submitter_email:   '邮箱',
     wx_nickname:       '微信昵称',
     committed:         'Committed',
+  };
+
+  // 催信类型 → 按钮/状态显示文字
+  const REMINDER_LABELS = {
+    letter:    '催录取书',
+    committed: '催CL',
+    dorm:      '催宿舍照',
+    portal:    '催Portal',
+    sid:       '催学生证',
+    all:       '已催信',
   };
 
   // ── 通用字段保存（确认后保存，同时写审计表） ──
@@ -1090,17 +1138,22 @@
           <span class="catalist-status" style="color:#b45309;">⏸ 已搁置</span>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');unshelveRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消搁置</button>`;
       } else {
-        actionItems = `
+        const remindedSpan = r.last_reminder_type
+          ? `<span class="catalist-status" style="color:#6b21a8;">📧 ${REMINDER_LABELS[r.last_reminder_type] || '已催信'}${r.last_reminder_at ? '（' + new Date(r.last_reminder_at).toLocaleDateString('zh-CN') + '）' : ''}${r.last_reminder_by ? `<br><span style="font-size:11px;color:#8a6fb0;">由 ${r.last_reminder_by} 发送</span>` : ''}</span>`
+          : '';
+        actionItems = `${remindedSpan}
           <button class="catalist-item" style="color:var(--green);" onclick="closeCatMenu('actmenu-${r.id}');approveRecord('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">✅ 批准入群</button>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');rejectRecord('${r.id}','${esc(safeNameRaw)}')">❌ 拒绝</button>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');shelveRecord('${r.id}','${esc(safeNameRaw)}')">⏸ 搁置</button>`;
       }
       if (catalItems) actionItems += `<div style="border-top:1px solid var(--border);margin:2px 0;"></div>${catalItems}`;
-      const btnLabel = r.rejected_at ? '已拒绝' : r.left_group_at ? '已退群' : r.not_joined ? '未进群' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '操作';
-      const btnBg    = r.rejected_at ? '#7f1d1d' : r.left_group_at ? '#c2610c' : r.not_joined ? '#b45309' : r.approved_at ? '#14532d' : r.shelved_at ? '#78350f' : '#444';
-      const btnHover = r.rejected_at ? '#991b1b' : r.left_group_at ? '#d97706' : r.not_joined ? '#c2610c' : r.approved_at ? '#166534' : r.shelved_at ? '#92400e' : '#222';
+      const pendingReminded = !r.rejected_at && !r.left_group_at && !r.approved_at && !r.shelved_at && r.last_reminder_type;
+      const btnLabel = r.rejected_at ? '已拒绝' : r.left_group_at ? '已退群' : r.not_joined ? '未进群' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : pendingReminded ? (REMINDER_LABELS[r.last_reminder_type] || '已催信') : '操作';
+      const btnBg    = r.rejected_at ? '#7f1d1d' : r.left_group_at ? '#c2610c' : r.not_joined ? '#b45309' : r.approved_at ? '#14532d' : r.shelved_at ? '#78350f' : pendingReminded ? '#6b21a8' : '#444';
+      const btnHover = r.rejected_at ? '#991b1b' : r.left_group_at ? '#d97706' : r.not_joined ? '#c2610c' : r.approved_at ? '#166534' : r.shelved_at ? '#92400e' : pendingReminded ? '#7e22ce' : '#222';
+      const btnTitle = pendingReminded && r.last_reminder_by ? ` title="由 ${r.last_reminder_by} 发送"` : '';
       const actionCell = `<div class="catalist-wrap">
-        <button onclick="toggleCatMenu(event,'actmenu-${r.id}')"
+        <button onclick="toggleCatMenu(event,'actmenu-${r.id}')"${btnTitle}
           style="padding:3px 8px;background:${btnBg};color:#fff;border:none;border-radius:5px;
                  font-size:11px;cursor:pointer;font-family:'Noto Serif SC',serif;white-space:nowrap;"
           onmouseover="this.style.background='${btnHover}'" onmouseout="this.style.background='${btnBg}'">
@@ -1346,6 +1399,7 @@
       if (rec) rec.shelved_at = now;
       applyFilters();
       notifyAdminStatusChange('搁置', studentName);
+      showStatusToast(`✅ 已搁置 ${studentName}`);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1359,6 +1413,7 @@
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = null;
       applyFilters();
+      showStatusToast(`✅ 已恢复 ${studentName} 为待处理`);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1372,6 +1427,7 @@
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.not_joined = true;
       applyFilters();
+      showStatusToast(`✅ 已标记 ${studentName} 未进群`);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1385,6 +1441,7 @@
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.not_joined = null;
       applyFilters();
+      showStatusToast(`✅ 已取消 ${studentName} 的未进群标记`);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1399,6 +1456,7 @@
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.left_group_at = now;
       applyFilters();
+      showStatusToast(`✅ 已标记 ${studentName} 已退群`);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1412,6 +1470,7 @@
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.left_group_at = null;
       applyFilters();
+      showStatusToast(`✅ 已恢复 ${studentName} 为已批准`);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1425,6 +1484,7 @@
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.approved_at = null;
       applyFilters();
+      showStatusToast(`✅ 已取消批准 ${studentName}`);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1440,6 +1500,7 @@
       if (rec) rec.rejected_at = now;
       applyFilters();
       notifyAdminStatusChange('拒绝', studentName);
+      showStatusToast(`✅ 已拒绝 ${studentName}`);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1453,6 +1514,7 @@
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.rejected_at = null;
       applyFilters();
+      showStatusToast(`✅ 已取消拒绝 ${studentName}`);
     } catch(e) {
       alert('❌ 操作失败：' + e.message);
     }
@@ -1922,6 +1984,18 @@
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(await res.text());
+
+      // 记录本次催信类型、时间、操作人，供操作按钮显示状态
+      const nowIso = new Date().toISOString();
+      const { data: { session } } = await db.auth.getSession();
+      const sentBy = session?.user?.email || null;
+      await db.from('admissions_submissions')
+        .update({ last_reminder_type: type, last_reminder_at: nowIso, last_reminder_by: sentBy })
+        .eq('id', recordId);
+      const rec = allRecords.find(r => r.id === recordId);
+      if (rec) { rec.last_reminder_type = type; rec.last_reminder_at = nowIso; rec.last_reminder_by = sentBy; }
+      applyFilters();
+
       closeCataModal();
       notifyAdminReminderSent(studentName, email, subject, checked.length);
       alert(`✅ 已向 ${email} 发送催信${checked.length > 0 ? `（含 ${checked.length} 条附加询问）` : ''}`);
