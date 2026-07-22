@@ -1325,6 +1325,13 @@
       <div class="step">把这些系数按<strong>第 $j$ 列</strong>排列，就得到 $T$ 在这组基下的矩阵 $A=(a_{ij})$。这是一个<strong>约定</strong>，而非需要证明的定理——矩阵的每一列，记录的正是"某个基向量被变换后，用原基怎样重新配出来"。</div>
 
       <div class="note">
+        <strong>说明：为什么只需要"作用在每个基向量上的结果"，而不需要对空间里所有向量都算一遍？</strong>因为一个线性变换完全由它对基向量的作用决定。设 $v$ 是 $V$ 中任意向量，它可以唯一地写成基向量的线性组合 $v=c_1\alpha_1+\cdots+c_n\alpha_n$。利用 $T$ 的可加性与齐次性，就有
+        <div class="center-block" style="margin:8px 0">$$T(v)=T(c_1\alpha_1+\cdots+c_n\alpha_n)=c_1T(\alpha_1)+\cdots+c_nT(\alpha_n)$$</div>
+        也就是说，只要知道 $T(\alpha_1),\ldots,T(\alpha_n)$——即 $T$ <strong>作用在每个基向量上的结果</strong>——就能用同样的系数 $c_1,\ldots,c_n$ 组合出 $T$ 对任意向量 $v$ 的作用，完全不需要再对 $v$ 单独计算一次。这正是"矩阵能代表一个线性变换"的根本原因：把 $T(\alpha_1),\ldots,T(\alpha_n)$ 按列排起来，就是这个变换的矩阵。
+        <p style="margin:10px 0 0"><strong>提醒：这不是"换基"。</strong>这里从头到尾只有<strong>一组基</strong> $\{\alpha_i\}$——它既用来测量"变换前"的向量 $\alpha_j$ 自己，也用来测量"变换后"的新向量 $T(\alpha_j)$，尺子没换，只是向量被变换（搬动）到了空间里的另一个位置。而"换基"（见第七节"过渡矩阵"）讲的是完全不同的事：向量本身<strong>不动</strong>，只是换了一把新的尺子（另一组基）去描述同一个向量，坐标因此发生变化。两者在计算形式上很像，但一个是"点被移动了"（主动变换），一个是"描述方式变了，点没动"（被动变换）——第七节会展开细讲这个区别。</p>
+      </div>
+
+      <div class="note">
         <strong>说明：</strong>$T(\alpha_j)$ 是把变换 $T$ <strong>作用在</strong>基向量 $\alpha_j$ 上之后得到的结果——这一步变换已经做完了，$T(\alpha_j)$ 是 $V$ 中一个具体的新向量。等号右边 $a_{1j}\alpha_1+\cdots+a_{nj}\alpha_n$ 做的是另一件事：既然 $T(\alpha_j)$ 也是 $V$ 里的向量，而 $\{\alpha_1,\ldots,\alpha_n\}$ 是一组基，它自然也能被这组基<strong>唯一地线性表出</strong>——这一步是"分解"，不是"变换"。所以整条式子其实是两步：先变换（$\alpha_j\xrightarrow{T}T(\alpha_j)$），再把变换后的结果用原来的基重新展开，展开系数 $a_{1j},\ldots,a_{nj}$ 就构成了矩阵 $A$ 的第 $j$ 列。
 
         <p style="margin:10px 0 0"><strong>下标 $i,j$ 的含义：</strong>$a_{ij}$ 就是把 $T(\alpha_j)$ 用原基展开时，排在 $\alpha_i$ 前面的那个系数——下标 $i$（行号）对应"第几个原基向量 $\alpha_i$"，下标 $j$（列号）对应"变换的是第几个基向量 $\alpha_j$"，也就是"这一列系数来自 $T(\alpha_j)$ 的展开"。矩阵 $A$ 整体，就是把 $T(\alpha_1),\ldots,T(\alpha_n)$ 这 $n$ 个展开式的系数一列一列拼起来的结果。</p>
