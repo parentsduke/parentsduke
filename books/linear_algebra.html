@@ -972,7 +972,23 @@
       </div>
 
       <h3 class="part"><span class="tag">辨析</span>为什么一定要验证"公理"</h3>
-      <div class="step">一个集合光有"加法"和"数乘"两个运算符号还不够，还必须逐条核对以下八条公理才能称为线性空间：加法交换律、结合律、存在零向量、存在负向量、数乘对向量加法的分配律 $k(\xi+\eta)=k\xi+k\eta$、数乘对数的加法的分配律 $(k+l)\xi=k\xi+l\xi$、数乘结合律 $(kl)\xi=k(l\xi)$、以及 $1\cdot\xi=\xi$。</div>
+      <div class="step">一个集合光有"加法"和"数乘"两个运算符号还不够，还必须逐条核对以下八条公理才能称为线性空间。设 $\xi,\eta,\zeta$ 为该集合中任意元素，$k,l$ 为任意数（标量）：</div>
+
+      <div class="example">
+        <div class="ex-label">线性空间八条公理</div>
+        <table class="matrix-table" style="width:100%">
+          <tr><th style="width:34px">#</th><th style="text-align:left">名称</th><th style="text-align:left">公式</th></tr>
+          <tr><td>1</td><td style="text-align:left">加法交换律</td><td style="text-align:left">$\xi+\eta=\eta+\xi$</td></tr>
+          <tr><td>2</td><td style="text-align:left">加法结合律</td><td style="text-align:left">$(\xi+\eta)+\zeta=\xi+(\eta+\zeta)$</td></tr>
+          <tr><td>3</td><td style="text-align:left">存在零向量</td><td style="text-align:left">存在 $O$，使 $\xi+O=\xi$</td></tr>
+          <tr><td>4</td><td style="text-align:left">存在负向量</td><td style="text-align:left">存在 $-\xi$，使 $\xi+(-\xi)=O$</td></tr>
+          <tr><td>5</td><td style="text-align:left">数乘单位律</td><td style="text-align:left">$1\cdot\xi=\xi$</td></tr>
+          <tr><td>6</td><td style="text-align:left">数乘结合律</td><td style="text-align:left">$(kl)\xi=k(l\xi)$</td></tr>
+          <tr><td>7</td><td style="text-align:left">数对向量的分配律</td><td style="text-align:left">$k(\xi+\eta)=k\xi+k\eta$</td></tr>
+          <tr><td>8</td><td style="text-align:left">数的加法对向量的分配律</td><td style="text-align:left">$(k+l)\xi=k\xi+l\xi$</td></tr>
+        </table>
+        <div class="step" style="margin:14px 0 0"><strong>记忆口诀：</strong>前 4 条管"加法"（交换、结合、零元、负元），后 4 条管"数乘"（单位、结合、两条分配律）——只要这 8 条全部成立，这个集合配上这两种运算，就够格叫"线性空间"。</div>
+      </div>
 
       <div class="deepdive">
         <div class="dd-label">辨析：反例</div>
