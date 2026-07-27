@@ -122,11 +122,6 @@ PREMATRIC_PAGES = [
 PREMATRIC_HARDCODED = [
     # ── 录取确认 / 入学准备 ──
     {
-        'expire': (2026, 5, 1),
-        'category': '录取确认',
-        'text': 'May 1: National Decision Day — 全国确认入学截止日',
-    },
-    {
         'expire': (2026, 6, 15),
         'category': '入学准备',
         'text': 'June 15: 官方标准化考试成绩截止（如选择提交 SAT/ACT）',
@@ -164,19 +159,9 @@ PREMATRIC_HARDCODED = [
     },
     # ── Summer Engagement 暑期线上讲座系列（来源：students.duke.edu/info-for/students/incoming-students/summer-engagement/）──
     {
-        'expire': (2026, 5, 20),
-        'category': 'Summer Engagement',
-        'text': 'May 19 (Tue) 4:00 PM ET: Living at Duke - Part 1 — Duke Dining与Housing Assignments团队介绍Dining餐饮合同及住房申请流程，解答到校前疑问（需注册）',
-    },
-    {
         'expire': (2026, 6, 2),
         'category': 'Summer Engagement',
         'text': 'June 2 (Tue) 5:00 PM ET: Staying Well in Your First Year - Part 1 — Student Health团队介绍疫苗接种、医疗保险、营养，分享秋季到校前须知（注册：https://duke.zoom.us/webinar/register/WN_seWZzrdRRpu1L_Z6xQcO3Q）',
-    },
-    {
-        'expire': (2026, 5, 27),
-        'category': 'Summer Engagement',
-        'text': 'May 26 (Tue) 4:00 PM ET: Pratt Advising — Pratt工程学院顾问直接介绍注册与选课流程（需注册）',
     },
     {
         'expire': (2026, 6, 9),
@@ -221,21 +206,6 @@ PREMATRIC_HARDCODED = [
 
     # ── 开学前 Student Action Items（来源：Duke 2030家长群）──
     {
-        'expire': (2026, 5, 31),
-        'category': '开学前待办',
-        'text': 'May 31: Experiential Orientation Matching Survey 填写截止（结果决定迎新项目分配）',
-    },
-    {
-        'expire': (2026, 5, 31),
-        'category': '开学前待办',
-        'text': 'May 31: 新生住房申请（Housing Application）截止——系统将自动选入 First-Year Dining Plan；需要 Housing Accommodations 者须同日通过 Student Disability Access Office 申请',
-    },
-    {
-        'expire': (2026, 5, 31),
-        'category': '开学前待办',
-        'text': 'May 31: Blue Book 填写截止',
-    },
-    {
         'expire': (2026, 6, 15),
         'category': '开学前待办',
         'text': 'June 15: 疫苗接种证明（Immunization Form）须由医生签字并提交至 Duke Student Health——Student Health Gateway 开放上传时间通常为5月中至6月初，开放日期将另行通知',
@@ -257,11 +227,6 @@ PREMATRIC_HARDCODED = [
         'text': '【大一新生专属】July 30 (Thu) 12:01 AM: 大一新生（Class of 2030）Drop/Add 开始——可对已注册课程进行调整',
     },
     # ── 体验式迎新周 ──
-    {
-        'expire': (2026, 5, 31),
-        'category': '体验式迎新周',
-        'text': '5月中旬: Orientation Matching Questionnaire 发送至 Duke 邮箱（需完成，据此分配迎新项目）',
-    },
     {
         'expire': (2026, 7, 15),
         'category': '体验式迎新周',
@@ -319,26 +284,6 @@ PREMATRIC_HARDCODED = [
         'text': '【Passport to Duke & Durham】Resource Fair：8月14日(Fri)——主办：Duke International Student Center (DISC)；咨询：intlstudents@duke.edu',
     },
     # ── Send-Off Party（亚洲/全球）──
-    {
-        'expire': (2026, 5, 16),
-        'category': 'Send-Off Party',
-        'text': '🎉 5月16日(周六) 3:30-5:30 PM — Mumbai Send-Off Party，Mahalakshmi, Mumbai（主办：Hemal & Dr. Sonali Shah P27）',
-    },
-    {
-        'expire': (2026, 5, 17),
-        'category': 'Send-Off Party',
-        'text': '🎉 5月17日(周日) 2:00-4:00 PM — 北京 Send-Off Party，Changping District（主办：Patrick Cai MBA05 P30）',
-    },
-    {
-        'expire': (2026, 5, 19),
-        'category': 'Send-Off Party',
-        'text': '🎉 5月19日(周二) 7:00-9:30 PM — Bengaluru Send-Off Party，Jayamahal Extension（主办：Phyllis & Eric Savage 92 P27）',
-    },
-    {
-        'expire': (2026, 5, 23),
-        'category': 'Send-Off Party',
-        'text': '🎉 5月23日(周六) 6:00-8:00 PM — Delhi Send-Off Party（主办：Kapuria家庭 P27/P29）',
-    },
     {
         'expire': (2026, 6, 27),
         'category': 'Send-Off Party',
@@ -420,32 +365,7 @@ DUKE_EVENTS_CALENDAR_URL = ('https://calendar.duke.edu/index?cf[]=Academic+Calen
 
 # 学术日历硬编码（来源：registrar.duke.edu 官方日历）
 ACADEMIC_CALENDAR_HARDCODED = """
-=== Spring 2026 春季学期 ===
-Jan 7 (Wed): Classes begin (8:30 AM); Drop/Add continues
-Jan 19 (Mon): Martin Luther King Jr. Day holiday. No classes
-Jan 21 (Wed): Drop/Add ends (11:59 PM)
-Feb 9 (Mon): Shopping Carts open for Summer 2026
-Feb 16 (Mon): Registration begins for Summer 2026
-Mar 6 (Fri): Spring recess begins (7:00 PM)
-Mar 16 (Mon): Classes resume (8:30 AM)
-Mar 23 (Mon): Shopping Carts open for Fall 2026
-Mar 25 (Wed): Last day to withdraw with W from Spring 2026 (undergraduates only)
-Apr 1 (Wed): Registration begins for Fall 2026; Summer registration continues
-Apr 8 (Wed): Drop/Add begins for Fall 2026
-Apr 11 (Sat): Optional make-up day (for February 2 classes)
-Apr 15 (Wed): Graduate classes end
-Apr 16-26 (Thu-Sun): Graduate reading period
-Apr 22 (Wed): Undergraduate classes end
-Apr 23-26 (Thu-Sun): Undergraduate reading period
-Apr 27 (Mon): Final examinations begin
-May 2 (Sat): Final examinations end (10:00 PM)
-May 8 (Fri): Commencement begins
-May 10 (Sun): Graduation exercises; Conferring of degrees
-
 === Summer 2026 暑期学期 ===
-May 13 (Wed): Summer Term 1 classes begin
-May 15 (Fri): Drop/Add for Term 1 ends (11:59 PM)
-May 25 (Mon): Memorial Day holiday. No classes
 Jun 10 (Wed): Last day to withdraw with W from Term 1 (undergraduates only)
 Jun 19 (Fri): Juneteenth holiday. No classes
 Jun 22 (Mon): Term 1 classes end
