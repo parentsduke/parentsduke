@@ -1217,6 +1217,61 @@
         三者是不同层级的乘法，各自的顺序习惯或规则相互独立，不需要强行对齐——真正有强制顺序要求的只有矩阵乘向量（不可交换）；前两种顺序都是自由的，只是书写习惯。
       </div>
 
+      <div class="example">
+        <div class="ex-label">具体例子：把"按行拆 vs 按列拆"写清楚</div>
+        取 $A=\begin{pmatrix}2&1\\1&3\end{pmatrix},\ x=\begin{pmatrix}x_1\\x_2\end{pmatrix},\ b=\begin{pmatrix}5\\10\end{pmatrix}$，即方程组 $Ax=b$。
+
+        <div class="step" style="margin-top:14px"><strong>① 按行拆：</strong>$A$ 的第 1 行是 $(2,1)$，第 2 行是 $(1,3)$，分别跟 $x$ 做内积，等于 $b$ 的对应分量：</div>
+        $$\underbrace{2x_1+1x_2}_{\text{第1行}\cdot x}=5,\qquad \underbrace{1x_1+3x_2}_{\text{第2行}\cdot x}=10$$
+        <div class="step">这就是最熟悉的"两条方程"写法——逐个分量检查，每一条方程单独成立。</div>
+
+        <div class="step" style="margin-top:14px"><strong>② 按列拆：</strong>把 $A$ 的第 1 列记作 $\beta_1=\begin{pmatrix}2\\1\end{pmatrix}$，第 2 列记作 $\beta_2=\begin{pmatrix}1\\3\end{pmatrix}$，则</div>
+        $$Ax=x_1\beta_1+x_2\beta_2=x_1\begin{pmatrix}2\\1\end{pmatrix}+x_2\begin{pmatrix}1\\3\end{pmatrix}=\begin{pmatrix}2x_1+x_2\\x_1+3x_2\end{pmatrix}=\begin{pmatrix}5\\10\end{pmatrix}$$
+        <div class="step">这是"一个向量等式"——$b$ 是列向量 $\beta_1,\beta_2$ 的线性组合，组合系数正是 $x_1,x_2$。</div>
+
+        <div class="step" style="margin-top:14px"><strong>解出来</strong>：由第一条方程 $x_2=5-2x_1$，代入第二条得 $x_1+3(5-2x_1)=10\Rightarrow -5x_1=-5\Rightarrow x_1=1,\ x_2=3$。</div>
+
+        <div class="step"><strong>③ 逐分量验证两种拆法是同一件事：</strong>把按列拆算出来的 $1\cdot\beta_1+3\cdot\beta_2$ 拆开写每个分量——</div>
+        <div style="overflow-x:auto;margin-top:6px">
+        <table style="border-collapse:collapse;width:100%;font-size:0.95em">
+          <tr style="border-bottom:1px solid #ccc"><th style="text-align:left;padding:4px 10px 4px 0">分量</th><th style="text-align:left;padding:4px 10px">按列拆：$1\cdot\beta_1+3\cdot\beta_2$ 的这一分量</th><th style="text-align:left;padding:4px 10px">对应的按行拆方程</th></tr>
+          <tr style="border-bottom:1px solid #eee"><td style="padding:4px 10px 4px 0">第1分量</td><td style="padding:4px 10px">$1\times2+3\times1=5$</td><td style="padding:4px 10px">$2x_1+x_2=2(1)+3=5\ \checkmark$</td></tr>
+          <tr><td style="padding:4px 10px 4px 0">第2分量</td><td style="padding:4px 10px">$1\times1+3\times3=10$</td><td style="padding:4px 10px">$x_1+3x_2=1+3(3)=10\ \checkmark$</td></tr>
+        </table>
+        </div>
+        <div class="step" style="margin-top:10px">可以看到，按列拆那个向量等式，逐个分量拆开之后，第 $i$ 个分量算出来的式子，跟按行拆的第 $i$ 条方程<strong>逐字对应、完全一样</strong>——只是按行拆时你是先各写各的方程再分别验证，按列拆时你是先把整个向量等式列出来，之后才拆成分量去核对。两条路殊途同归，算的是同一个数字（这里都是 5 和 10），只是"看等式的姿势"不同：按行拆盯着"一条条方程"，按列拆盯着"一个向量怎么由另外几个向量拼出来"。</div>
+      </div>
+
+      <div class="deepdive">
+        <div class="dd-label">推广：一般的 $m\times n$ 情形</div>
+        <div class="step">上面是 $2\times2$ 的特例，把它写成一般形式——设 $A$ 是 $m\times n$ 矩阵，$A=(a_{ij})$，$x=(x_1,\ldots,x_n)^T\in\mathbb{R}^n$，$b=(b_1,\ldots,b_m)^T\in\mathbb{R}^m$。先把矩阵形式 $Ax=b$ 完全展开写出来（$m$ 行 $n$ 列全部摊开，不省略）：</div>
+
+        $$\begin{pmatrix}a_{11}&a_{12}&\cdots&a_{1n}\\a_{21}&a_{22}&\cdots&a_{2n}\\\vdots&\vdots&\ddots&\vdots\\a_{m1}&a_{m2}&\cdots&a_{mn}\end{pmatrix}\begin{pmatrix}x_1\\x_2\\\vdots\\x_n\end{pmatrix}=\begin{pmatrix}b_1\\b_2\\\vdots\\b_m\end{pmatrix}$$
+
+        <div class="step" style="margin-top:14px"><strong>① 按行拆展开（$m$ 条数量等式，每条都写全）：</strong>把 $A$ 的第 $i$ 行记作 $(a_{i1},a_{i2},\ldots,a_{in})$，跟 $x$ 做内积，对每个 $i=1,\ldots,m$ 都要成立——完全展开就是 $m$ 行：</div>
+        $$\begin{aligned}
+        a_{11}x_1+a_{12}x_2+\cdots+a_{1n}x_n&=b_1\\
+        a_{21}x_1+a_{22}x_2+\cdots+a_{2n}x_n&=b_2\\
+        &\ \vdots\\
+        a_{m1}x_1+a_{m2}x_2+\cdots+a_{mn}x_n&=b_m
+        \end{aligned}$$
+        <div class="step">写成求和号更紧凑：$\displaystyle\sum_{j=1}^{n}a_{ij}x_j=b_i\ (i=1,\ldots,m)$——上面的 $m$ 行就是这个求和式对 $i=1,\ldots,m$ 逐一展开的结果，一共 $m$ 条方程，逐条独立验证。</div>
+
+        <div class="step" style="margin-top:14px"><strong>② 按列拆展开（1 条向量等式，把每个 $\beta_j$ 也展开成分量）：</strong>把 $A$ 的第 $j$ 列记作 $\beta_j=(a_{1j},a_{2j},\ldots,a_{mj})^T\in\mathbb{R}^m$（$j=1,\ldots,n$，共 $n$ 个列向量），完全展开写出来：</div>
+        $$Ax=x_1\begin{pmatrix}a_{11}\\a_{21}\\\vdots\\a_{m1}\end{pmatrix}+x_2\begin{pmatrix}a_{12}\\a_{22}\\\vdots\\a_{m2}\end{pmatrix}+\cdots+x_n\begin{pmatrix}a_{1n}\\a_{2n}\\\vdots\\a_{mn}\end{pmatrix}=\begin{pmatrix}b_1\\b_2\\\vdots\\b_m\end{pmatrix}$$
+        <div class="step">把每一项 $x_j\beta_j$ 的分量再乘进去，即每个列向量的第 $i$ 个位置变成 $x_j a_{ij}$：</div>
+        $$\begin{pmatrix}a_{11}x_1\\a_{21}x_1\\\vdots\\a_{m1}x_1\end{pmatrix}+\begin{pmatrix}a_{12}x_2\\a_{22}x_2\\\vdots\\a_{m2}x_2\end{pmatrix}+\cdots+\begin{pmatrix}a_{1n}x_n\\a_{2n}x_n\\\vdots\\a_{mn}x_n\end{pmatrix}=\begin{pmatrix}b_1\\b_2\\\vdots\\b_m\end{pmatrix}$$
+        <div class="step">紧凑写法：$\displaystyle Ax=\sum_{j=1}^{n}x_j\beta_j=b$——这是 $\mathbb{R}^m$ 里的<strong>一个</strong>向量等式：$b$ 由 $n$ 个列向量 $\beta_1,\ldots,\beta_n$ 线性组合而成，系数就是 $x_1,\ldots,x_n$。</div>
+
+        <div class="step" style="margin-top:14px"><strong>③ 两者一般性地对应（展开到分量后逐项比对）：</strong>把上面"② 展开后"那 $n$ 个列向量<strong>逐行相加</strong>，取第 $i$ 行（即第 $i$ 个分量）：</div>
+        $$\underbrace{a_{i1}x_1}_{\text{第1列贡献}}+\underbrace{a_{i2}x_2}_{\text{第2列贡献}}+\cdots+\underbrace{a_{in}x_n}_{\text{第n列贡献}}=b_i$$
+        <div class="step">这一步做的事情是：先按列把 $n$ 个列向量摆开、逐分量对齐相加，再单独抽出第 $i$ 行——抽出来的这一行，恰好逐项等于按行拆里第 $i$ 条方程 $a_{i1}x_1+a_{i2}x_2+\cdots+a_{in}x_n=b_i$，两边一模一样，没有任何差异。这里用到的关键事实是 $(\beta_j)_i=a_{ij}$（第 $j$ 个列向量的第 $i$ 个分量，正是矩阵元素 $a_{ij}$）。对每一个 $i=1,\ldots,m$ 都能这样验证一遍，所以"1 个 $m$ 维向量等式"完全展开后，逐行拆开，就是"$m$ 条数量等式"——跟前面 $2\times2$ 的具体例子（那里 $m=n=2$）是同一个道理，只是这里把行数、列数换成了任意的 $m,n$。</div>
+
+        <div class="note" style="margin-top:14px">
+          <strong>一句话总结：</strong> $Ax=b\iff\sum_{j=1}^n x_j\beta_j=b\iff\sum_{j=1}^n a_{ij}x_j=b_i\ (i=1,\ldots,m)$——三种写法（矩阵形式、按列拆的向量组合形式、按行拆的分量方程组）说的是同一件事，$m,n$ 可以是任意正整数，具体例子里的 $2$ 只是 $m=n=2$ 这一特殊情形。
+        </div>
+      </div>
+
       <h3 class="part"><span class="tag">方法</span>高斯消元</h3>
       <div class="step">通过三种"行初等变换"（交换两行、某行乘非零常数、某行加上另一行的倍数——这些操作都不改变方程组的解），把增广矩阵化为<strong>阶梯形</strong>，再从最后一行开始，逐步回代求出每个未知数。</div>
 
