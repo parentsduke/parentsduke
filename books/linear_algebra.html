@@ -2025,6 +2025,27 @@
         <strong>说明：</strong> 对角化把整本讲义的几条主线收束到了一起：<strong>基变换</strong>（第七节）提供了"换一套参照方向"的工具，<strong>特征值/特征向量</strong>（第九节）指出了"该往哪个方向换"，<strong>正交基</strong>（第十节）保证了这套新方向"量起来互不干扰"——三者合力，把一个看起来复杂的线性变换，还原成了它最朴素的样子：沿着几个特定方向，各自拉伸了多少倍。这也是为什么"对角化"常被视为一学期线性代数课程的收尾章节。
       </div>
 
+      <h3 class="part"><span class="tag">深入</span>幂零矩阵：不可对角化的极端例子</h3>
+      <div class="step">练习 1 里 $\begin{pmatrix}1&1\\0&1\end{pmatrix}$ 之所以无法对角化，根源在于 $N=\begin{pmatrix}0&1\\0&0\end{pmatrix}$ 这个"缺陷部分"——这类矩阵有个专门的名字：<strong>幂零矩阵（nilpotent matrix）</strong>。它是理解"为什么有些矩阵天生对角化不了"的关键对象，值得单独讲一讲。</div>
+
+      <div class="step"><strong>定义</strong>：$n$ 阶方阵 $A$ 若存在正整数 $m$，使得 $A^m=O$，就称 $A$ 为幂零矩阵；使等式成立的最小 $m$ 叫做<strong>幂零指数</strong>。</div>
+
+      <div class="example">
+        <div class="ex-label">最基本的例子：严格上三角矩阵</div>
+        $$N=\begin{pmatrix}0&1\\0&0\end{pmatrix},\quad N^2=\begin{pmatrix}0&0\\0&0\end{pmatrix}=O$$
+        更一般地，$M=\begin{pmatrix}0&1&2\\0&0&3\\0&0&0\end{pmatrix}$ 满足 $M^3=O$。事实上，任何对角线以上（或以下）全为 0 的严格三角矩阵都是幂零的，且幂零指数不超过阶数 $n$。
+      </div>
+
+      <div class="step">幂零矩阵有一条最本质的性质：<strong>特征值全为 0</strong>。设 $\lambda$ 是 $A$ 的特征值，对应特征向量 $\xi\neq0$，由 $A^m=O$ 得 $A^m\xi=\lambda^m\xi=0$，而 $\xi\neq0$，故 $\lambda=0$。反过来，若一个矩阵所有特征值都是 0（即特征多项式 $\chi_A(\lambda)=\lambda^n$），由 Cayley–Hamilton 定理，$A$ 自动满足 $A^n=O$，也就是幂零。</div>
+
+      <div class="center-block">
+        $$A \text{ 幂零} \iff A \text{ 的特征值全为 } 0 \iff \chi_A(\lambda)=\lambda^n \iff \operatorname{tr}(A^k)=0\ (k=1,\dots,n)$$
+      </div>
+
+      <div class="note">
+        <strong>和对角化的关系：</strong> 幂零矩阵是"不可对角化程度"最极端的例子——除了零矩阵本身，非零的幂零矩阵<strong>永远不可对角化</strong>（若 $P^{-1}AP=\Lambda$ 且特征值全为 0，则 $\Lambda=O$，从而 $A=P\Lambda P^{-1}=O$，矛盾）。但每个矩阵都可以分解成"可对角化部分 + 幂零部分"（这是更高阶的<strong>若尔当标准形</strong>理论的核心思想），所以幂零矩阵虽然看起来特殊，却是刻画一般矩阵结构不可或缺的一块拼图。附录"习题七"给出了一个由代数关系式反推幂零性的完整证明，感兴趣可以深入看看。
+      </div>
+
       <div class="exercises">
         <div class="ex-head">小练习</div>
         <details>
@@ -2038,6 +2059,10 @@
         <details>
           <summary>3. 若 $A$ 是实对称矩阵，为什么它的对角化过程会比一般矩阵更"省心"？</summary>
           <div class="ans">因为实对称矩阵的特征向量天然可以选到互相正交（第十节+第十一节定理），这意味着过渡矩阵 $P$ 可以直接取成正交矩阵，此时 $P^{-1}=P^T$——求逆变成了转置，比一般矩阵求逆容易得多。这也是为什么大量实际应用（协方差矩阵、惯量张量等，它们大多是对称矩阵）都特别偏爱"实对称矩阵可正交对角化"这条定理。</div>
+        </details>
+        <details>
+          <summary>4. 验证 $N=\begin{pmatrix}0&2\\0&0\end{pmatrix}$ 是幂零矩阵，并说明为什么非零幂零矩阵一定不可逆。</summary>
+          <div class="ans">$N^2=\begin{pmatrix}0&2\\0&0\end{pmatrix}\begin{pmatrix}0&2\\0&0\end{pmatrix}=\begin{pmatrix}0&0\\0&0\end{pmatrix}=O$，故 $N$ 幂零，幂零指数为 2。若非零幂零矩阵 $A$（设 $A^m=O$）可逆，两边左乘 $A^{-1}$ 得 $A^{m-1}=O$，反复下去最终得到 $E=O$，矛盾。所以非零幂零矩阵必不可逆——这也与"特征值全为 0，行列式（=特征值之积）也为 0"一致。</div>
         </details>
       </div>
 
@@ -2501,12 +2526,54 @@
     </div>
   </section>
 
+  <!-- ===================== FOLLOW-UP: COMMUTATOR RELATION ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>"交换子关系"到底是什么？</h2>
+
+    <p>题目里的条件 \(AB-BA=A\) 不是随便一个方程，而是数学里一类非常重要的结构性约束——<strong>交换子关系（commutator relation）</strong>。理解它的背景，能帮你看清这道题为什么"注定"要用迹和特征值来做。</p>
+
+    <h3 class="sub"><span class="tag">定义</span>什么是交换子</h3>
+    <p style="margin:0 0 20px">对任意两个方阵（或更一般的线性算子）\(A,B\)，称</p>
+    \[[A,B]:=AB-BA\]
+    <p style="margin:0 0 20px">为 \(A,B\) 的<strong>交换子</strong>。它衡量的是"乘法顺序颠倒之后差多少"：若 \(AB=BA\)（可交换），交换子就是零矩阵；不可交换的程度越大，交换子就越"大"。而形如 \([A,B]=\cdots\) 的等式，就统称为交换子关系。</p>
+
+    <h3 class="sub"><span class="tag">对照</span>几个常见的交换子关系</h3>
+    <table class="compare">
+      <tr><th>关系式</th><th>名字 / 背景</th></tr>
+      <tr><td>\(AB-BA=O\)</td><td>可交换，最简单情形</td></tr>
+      <tr><td>\(AB-BA=A\)</td><td>本题的情形，对应一个二维<strong>可解李代数</strong></td></tr>
+      <tr><td>\(AB-BA=E\)（单位阵）</td><td>典型的<strong>海森堡（Heisenberg）交换关系</strong>——量子力学中位置算符 \(\hat x\) 与动量算符 \(\hat p\) 满足 \([\hat x,\hat p]=i\hbar\)，数学结构上正是这一类</td></tr>
+    </table>
+
+    <h3 class="sub"><span class="tag">性质</span>交换子的三条基本公理</h3>
+    <div class="box verify">
+      <div class="label">双线性、反对称、雅可比恒等式</div>
+      <p>\([A+B,C]=[A,C]+[B,C]\)（双线性）</p>
+      <p>\([A,B]=-[B,A]\)（反对称）</p>
+      <p style="margin:0">\([A,[B,C]]+[B,[C,A]]+[C,[A,B]]=0\)（雅可比恒等式）</p>
+    </div>
+    <p style="margin:0 0 20px">这三条正是<strong>李代数（Lie algebra）</strong>的定义公理——任何满足这三条的"括号运算"都构成一个李代数。矩阵的交换子 \([A,B]=AB-BA\) 是最典型、最重要的例子，矩阵全体在这个括号运算下构成的李代数记作 \(\mathfrak{gl}(n)\)。</p>
+
+    <h3 class="sub"><span class="tag">回顾</span>本题的关系式说明了什么</h3>
+    <div class="box note">
+      <div class="label">A 是 B 的"伴随特征向量"</div>
+      <p style="margin:0">令伴随作用 \(\operatorname{ad}_B(A):=[B,A]=BA-AB=-A\)。\(AB-BA=A\) 说的正是：\(A\) 是 \(B\) 通过"交换子作用"下的一个<strong>特征向量</strong>，对应特征值 \(-1\)。正因为这是李代数里的一种典型关系，才引出了"\(A\) 必为幂零矩阵"这个结论。</p>
+    </div>
+
+    <div class="box basis">
+      <div class="label">更一般的定理：恩格尔定理</div>
+      <p style="margin:0">本题其实是李代数理论中一个更一般定理——<strong>恩格尔定理（Engel's theorem）</strong>——的特殊情形：在可解李代数中，任何"在内导子作用下有特征值"的元素都必然是幂零的。附录里用迹与 Newton 恒等式给出的证明，正是恩格尔定理在这个具体情形下的初等实现。</p>
+    </div>
+  </div>
+
   <!-- ===================== FOLLOW-UP: WHY FOUR STEPS ===================== -->
   <div class="followup">
     <div class="eyebrow2">追问解析</div>
     <h2>证明为什么恰好需要这四步？</h2>
 
     <p>这四步不是随意划分的，而是证明这类"代数关系 → 矩阵结构"命题的一条<strong>必经链条</strong>——每一步解决一个此前无法绕过的障碍，少一步整个证明就断掉。</p>
+
 
     <div class="box note">
       <div class="label">核心困难</div>
