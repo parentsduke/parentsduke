@@ -1187,7 +1187,18 @@
         $$Ax=x_1\beta_1+x_2\beta_2+\cdots+x_n\beta_n=b$$
         这是<strong>按列拆</strong>，把整个 $Ax$ 看成一个 $m$ 维向量的等式，关心的是"$b$ 能不能由 $A$ 的列向量线性组合出来，组合系数是多少"。<br><br>
         两者其实是同一个等式：把 $x_1\beta_1+\cdots+x_n\beta_n$ 拆开写每个分量，第 $i$ 个分量正是 $a_{i1}x_1+\cdots+a_{in}x_n$（因为 $\beta_j$ 的第 $i$ 个分量就是 $a_{ij}$），刚好对上按行拆的第 $i$ 个方程。<strong>一个向量等式 = $m$ 个数的等式，只是观察角度不同。</strong><br><br>
-        按列拆这个形式，跟前面"坐标"的定义 $\xi=x_1\alpha_1+\cdots+x_n\alpha_n$ 长得一模一样——区别只是这里 $\beta_j$ 是 $A$ 的列（具体数组），坐标那里 $\alpha_i$ 是抽象基向量。这也是为什么"解方程组"和"向量的线性组合/坐标"在线性代数里本质上是一回事，后面第六章"线性变换与矩阵表示"里 $T(\alpha_j)$ 按基展开、再把系数一列列拼成矩阵 $A$，用的正是同一套逻辑。
+        按列拆这个形式，跟前面"坐标"的定义 $\xi=x_1\alpha_1+\cdots+x_n\alpha_n$ 长得一模一样——区别只是这里 $\beta_j$ 是 $A$ 的列（具体数组），坐标那里 $\alpha_i$ 是抽象基向量。这也是为什么"解方程组"和"向量的线性组合/坐标"在线性代数里本质上是一回事，后面第六章"线性变换与矩阵表示"里 $T(\alpha_j)$ 按基展开、再把系数一列列拼成矩阵 $A$，用的正是同一套逻辑。<br><br>
+        <strong>顺带一提：$x$ 一会儿写在左边一会儿写在右边，不矛盾。</strong>$Ax$ 里 $x$ 在右边，这是"矩阵 $A$ 乘向量 $x$"的记号——矩阵是操作符，永远写在左边，被作用的对象写在右边（就像 $f(x)$ 里 $f$ 在左、$x$ 在右），这不是数与数相乘。而展开成 $x_1\beta_1+\cdots+x_n\beta_n$ 之后，每一项 $x_j\beta_j$ 是"标量 $x_j$ 乘向量 $\beta_j$"，这时候按数乘的习惯把标量写在左边，跟坐标定义里 $x_i\alpha_i$ 的写法就完全对上了。也就是说，"$Ax$ 里 $x$ 在右"是矩阵–向量乘法的整体记号，"$x_j\beta_j$ 里 $x$ 在左"是展开后每一项内部的数乘顺序，两者说的不是同一层次的事，并不冲突。<br><br>
+        再往回看，方程组本身写的是 $a_{ij}x_j$（系数在左、未知数在右，比如 $a_{11}x_1+a_{12}x_2+\cdots$），这里的"×"又是另一回事——$a_{ij}$ 和 $x_j$ 都是<strong>数</strong>，是纯粹的数乘数，可以随意交换顺序，写成 $x_ja_{ij}$ 也完全等价，没有任何强制规定；系数写在前面只是"已知量在前、未知量在后"的书写习惯，就像 $3x+2y=5$ 一样。三种"×"其实是三个层级：
+        <div style="overflow-x:auto;margin-top:10px">
+        <table style="border-collapse:collapse;width:100%;font-size:0.95em">
+          <tr style="border-bottom:1px solid #ccc"><th style="text-align:left;padding:4px 10px 4px 0">写法</th><th style="text-align:left;padding:4px 10px">运算类型</th><th style="text-align:left;padding:4px 10px">顺序</th></tr>
+          <tr style="border-bottom:1px solid #eee"><td style="padding:4px 10px 4px 0">$a_{ij}x_j$</td><td style="padding:4px 10px">数 × 数</td><td style="padding:4px 10px">可交换，习惯系数在前</td></tr>
+          <tr style="border-bottom:1px solid #eee"><td style="padding:4px 10px 4px 0">$x_j\beta_j$（按列拆）</td><td style="padding:4px 10px">数(标量) × 向量</td><td style="padding:4px 10px">可交换，习惯标量在前</td></tr>
+          <tr><td style="padding:4px 10px 4px 0">$Ax$（矩阵形式）</td><td style="padding:4px 10px">矩阵 × 向量</td><td style="padding:4px 10px"><strong>不可交换</strong>，矩阵必须在左</td></tr>
+        </table>
+        </div>
+        三者是不同层级的乘法，各自的顺序习惯或规则相互独立，不需要强行对齐——真正有强制顺序要求的只有矩阵乘向量（不可交换）；前两种顺序都是自由的，只是书写习惯。
       </div>
 
       <h3 class="part"><span class="tag">方法</span>高斯消元</h3>
