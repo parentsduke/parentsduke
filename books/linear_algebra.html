@@ -804,6 +804,7 @@
 
       <p class="part-label">附录 · 习题详解</p>
       <a href="#ex6"><span class="num">✎</span>习题六：线性空间与基</a>
+      <a href="#ex7"><span class="num">✎</span>习题七：交换子与幂零矩阵</a>
     </nav>
   </aside>
 
@@ -2365,6 +2366,141 @@
 </div>
 </div>
 
+      <div class="nextlink" style="padding:0 40px;"><a href="#ex7">下一篇：习题七 · 交换子与幂零矩阵 →</a></div>
+
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ========================================================= -->
+    <!-- 附录：习题七解答 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ex7" style="max-width:none; padding:0;">
+      <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
+      <h2 class="chapter-title" style="padding:0 40px;">习题七：交换子关系与幂零矩阵</h2>
+      <p class="chapter-tagline" style="padding:0 40px;">对应第四部"变换的骨架"——用迹与特征值的技巧，证明由交换子关系导出的幂零性</p>
+
+<div class="ex6-scope"><div class="wrap">
+
+  <header>
+    <div class="eyebrow">线性代数 · 综合提高题 · 详解</div>
+    <h1>习题七详解</h1>
+    <div class="subtitle">交换子关系、迹的循环性质与幂零矩阵</div>
+    <div class="bracket-hero">
+      <svg viewBox="0 0 20 64" fill="none"><path d="M16 2 L4 2 L4 62 L16 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+      <div class="grid-mini">
+        <span>AB</span><span>−BA</span>
+        <span>=</span><span>A</span>
+      </div>
+      <svg viewBox="0 0 20 64" fill="none"><path d="M4 2 L16 2 L16 62 L4 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+    </div>
+  </header>
+
+  <!-- ===================== PROBLEM 5 ===================== -->
+  <section class="problem" id="p5">
+    <div class="prob-head">
+      <span class="prob-num">5</span>
+      <span class="prob-title">交换子关系 AB−BA=A 蕴含 A 幂零</span>
+    </div>
+    <div class="prob-statement">
+      设 \(A,B\) 为数域 \(\mathbb{C}\) 上的 \(n\) 阶方阵，满足 \(AB-BA=A\)。证明：\(A\) 是幂零矩阵，即存在正整数 \(m\)，使得 \(A^m=O\)。
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 1</span> 把交换子关系"提升"到任意幂次</h3>
+    <p>先证明一个关键引理：对任意正整数 \(k\)，都有</p>
+    \[A^kB-BA^k=kA^k\]
+
+    <div class="box verify">
+      <div class="label">数学归纳法</div>
+      <p><strong>\(k=1\)</strong>：即题设条件 \(AB-BA=A\)，成立。</p>
+      <p><strong>归纳假设</strong>：设 \(A^kB-BA^k=kA^k\)，即 \(A^kB=BA^k+kA^k\)。左边乘 \(A\)：</p>
+      <p>\(A^{k+1}B=A(BA^k+kA^k)=ABA^k+kA^{k+1}\)</p>
+      <p>由 \(AB=BA+A\)，把 \(ABA^k=(BA+A)A^k=BA^{k+1}+A^{k+1}\) 代入，得</p>
+      <p style="margin:0">\(A^{k+1}B=BA^{k+1}+A^{k+1}+kA^{k+1}=BA^{k+1}+(k+1)A^{k+1}\)，即 \(A^{k+1}B-BA^{k+1}=(k+1)A^{k+1}\)。归纳完成。</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 2</span> 两边取迹，消去矩阵结构</h3>
+    <p>对引理两边取迹，利用迹的循环性质 \(\operatorname{tr}(XY)=\operatorname{tr}(YX)\)（见下方"追问解析"）：</p>
+    \[\operatorname{tr}(A^kB)=\operatorname{tr}(BA^k)\ \Longrightarrow\ \operatorname{tr}(A^kB-BA^k)=0\]
+
+    <div class="box verify">
+      <div class="label">代入引理</div>
+      <p style="margin:0">结合 \(A^kB-BA^k=kA^k\)，得 \(k\cdot\operatorname{tr}(A^k)=0\)。因为在特征为 0 的域（如 \(\mathbb{C}\)）上 \(k\neq0\)，所以对一切正整数 \(k\)：</p>
+      <p style="margin:12px 0 0"><strong>\(\operatorname{tr}(A^k)=0,\quad k=1,2,3,\dots\)</strong></p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 3</span> 幂和全为零 ⟹ 特征值全为零</h3>
+    <p>设 \(A\) 的特征值（计重数）为 \(\lambda_1,\dots,\lambda_n\in\mathbb{C}\)，则 \(\operatorname{tr}(A^k)=\sum_i\lambda_i^k=p_k\)（第 \(k\) 个幂和）。已知 \(p_1=p_2=\cdots=p_n=0\)。</p>
+
+    <div class="box note">
+      <div class="label">Newton 恒等式</div>
+      <p style="margin:0">幂和 \(p_1,\dots,p_n\) 与初等对称多项式 \(e_1,\dots,e_n\)（特征多项式系数）满足递推 \(k\,e_k=\sum_{i=1}^{k}(-1)^{i-1}e_{k-i}\,p_i\)。由 \(p_1=\cdots=p_n=0\) 依次递推，立得</p>
+      <p style="margin:8px 0 0"><strong>\(e_1=e_2=\cdots=e_n=0\)</strong></p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 4</span> 结论：特征多项式为 \(\lambda^n\)</h3>
+    <p>\(e_1,\dots,e_n\) 全为零意味着 \(A\) 的特征多项式 \(\chi_A(\lambda)=\lambda^n\)，即所有特征值均为 0。</p>
+    <div class="box basis">
+      <div class="label">Cayley–Hamilton 定理</div>
+      <p style="margin:0">\(A\) 满足自己的特征多项式，故 \(A^n=O\)。因此 \(A\) 是幂零矩阵。\(\blacksquare\)</p>
+    </div>
+
+    <div class="box note">
+      <div class="label">背景延伸</div>
+      <p style="margin:0">这个结论还有一个推论：幂零矩阵可严格上三角化，从而 \(A,B\) 可同时上三角化——这与李代数中"可解李代数"的结构密切相关，正是本题的背景：\(\{A,B\}\) 张成一个二维可解李代数。</p>
+    </div>
+  </section>
+
+  <!-- ===================== FOLLOW-UP: TRACE PROPERTIES ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>为什么 \(\operatorname{tr}(AB)=\operatorname{tr}(BA)\)？——迹的基本性质</h2>
+
+    <p>Step 2 里用到的这条性质叫做迹的<strong>循环不变性（cyclic property）</strong>，是整个证明的"桥梁"：它把矩阵等式转化成了纯数值等式，从而把问题从矩阵运算引向了特征值分析。下面完整梳理迹的几条基本性质。</p>
+
+    <h3 class="sub"><span class="tag">性质 1</span> 线性性</h3>
+    <p style="margin:0 0 20px">\(\operatorname{tr}(A+B)=\operatorname{tr}(A)+\operatorname{tr}(B)\)，\(\operatorname{tr}(cA)=c\,\operatorname{tr}(A)\)。直接由 \(\operatorname{tr}\) 是对角元之和的定义得出。</p>
+
+    <h3 class="sub"><span class="tag">性质 2</span> 循环不变性（最关键）</h3>
+    <p>\(\operatorname{tr}(AB)=\operatorname{tr}(BA)\)。注意：一般 \(AB\neq BA\)，但它们的<strong>迹总是相等</strong>。</p>
+
+    <div class="box verify">
+      <div class="label">证明</div>
+      <p>设 \(A=(a_{ij})\)，\(B=(b_{ij})\)。\(AB\) 的第 \(i\) 个对角元是 \(\sum_k a_{ik}b_{ki}\)，故</p>
+      <p>\(\operatorname{tr}(AB)=\sum_i\sum_k a_{ik}b_{ki}\)</p>
+      <p>\(BA\) 的第 \(k\) 个对角元是 \(\sum_i b_{ki}a_{ik}\)，故 \(\operatorname{tr}(BA)=\sum_k\sum_i b_{ki}a_{ik}\)。</p>
+      <p style="margin:0">两者是同一个双重求和，只是交换了求和顺序，故相等。</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">性质 3</span> 多个矩阵的循环移位</h3>
+    <p style="margin:0 0 20px">\(\operatorname{tr}(ABC)=\operatorname{tr}(BCA)=\operatorname{tr}(CAB)\)，但一般 \(\operatorname{tr}(ABC)\neq\operatorname{tr}(ACB)\)——只能"循环"移动，不能任意换序。</p>
+
+    <h3 class="sub"><span class="tag">性质 4</span> 相似不变性</h3>
+    <p style="margin:0 0 20px">若 \(B=P^{-1}AP\)，则 \(\operatorname{tr}(B)=\operatorname{tr}(A)\)。这是性质 2 的直接推论：\(\operatorname{tr}(P^{-1}AP)=\operatorname{tr}(AP\cdot P^{-1})=\operatorname{tr}(A)\)。</p>
+
+    <h3 class="sub"><span class="tag">性质 5</span> 迹等于特征值之和</h3>
+    <p style="margin:0 0 20px">\(\operatorname{tr}(A)=\sum_i\lambda_i\)（在 \(\mathbb{C}\) 上，特征值计重数）。因为特征多项式 \(\det(\lambda I-A)=\lambda^n-\operatorname{tr}(A)\lambda^{n-1}+\cdots\) 又等于 \(\prod_i(\lambda-\lambda_i)\)，比较系数即得。</p>
+
+    <table class="compare">
+      <tr><th>性质</th><th>内容</th></tr>
+      <tr><td>线性性</td><td>\(\operatorname{tr}(A+B)=\operatorname{tr}(A)+\operatorname{tr}(B)\)</td></tr>
+      <tr><td>循环不变性</td><td>\(\operatorname{tr}(AB)=\operatorname{tr}(BA)\)（即使 \(AB\neq BA\)）</td></tr>
+      <tr><td>循环移位</td><td>\(\operatorname{tr}(ABC)=\operatorname{tr}(BCA)=\operatorname{tr}(CAB)\)</td></tr>
+      <tr><td>相似不变性</td><td>\(\operatorname{tr}(P^{-1}AP)=\operatorname{tr}(A)\)</td></tr>
+      <tr><td>与特征值的关系</td><td>\(\operatorname{tr}(A)=\sum_i\lambda_i\)</td></tr>
+    </table>
+
+    <div class="box note">
+      <div class="label">回到本题的应用</div>
+      <p style="margin:0">令 \(X=A^k,\ Y=B\)，则 \(\operatorname{tr}(A^kB)=\operatorname{tr}(BA^k)\)，于是 \(\operatorname{tr}(A^kB-BA^k)=0\)。这一步是本题最巧妙的地方：<strong>任何形如交换子 \([X,Y]=XY-YX\) 的矩阵，其迹必为零</strong>，值得牢记。</p>
+    </div>
+  </div>
+
+  <footer>习题七 · 交换子与幂零矩阵 &nbsp;·&nbsp; 逐题详解</footer>
+
+</div>
+</div>
 
     </section>
 
