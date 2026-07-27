@@ -1178,6 +1178,18 @@
         <strong>注意：这里的系数 $a_{ij}$ 不是"基"。</strong>系数就是一堆普通<strong>数字</strong>，只表示每个未知数前面乘了多少倍，和"基"没有任何关系；而后面"基与维数"一节里的 $\alpha_i$ 是<strong>向量</strong>，它们张成一个空间，空间里任何向量都能写成 $x_1\alpha_1+x_2\alpha_2+\cdots$，这时候 $x_i$ 才叫"坐标"。两者只是写法结构相似（数×数 vs 数×向量，都可交换、顺序无所谓），系数本身并不是基向量。
       </div>
 
+      <div class="note">
+        <strong>追问：</strong>$Ax=b$ 除了逐个分量地写成方程组，还能怎么理解？——按行拆 vs 按列拆<br><br>
+        矩阵乘法的定义是：$Ax$ 的第 $i$ 个分量，是 $A$ 的第 $i$ <strong>行</strong>跟 $x$ 做内积，即
+        $$(Ax)_i=a_{i1}x_1+a_{i2}x_2+\cdots+a_{in}x_n$$
+        令它等于 $b_i$，对 $i=1,\ldots,m$ 各写一遍，就是本节开头那个方程组——这是<strong>按行拆</strong>，逐个分量地看等式，关心的是"每一条方程要满足什么条件"。<br><br>
+        换个角度，把 $A$ 按<strong>列</strong>拆开：记 $A$ 的第 $j$ 列为 $\beta_j=(a_{1j},\ldots,a_{mj})^T$（$m$ 维列向量），矩阵乘法还有一个等价定义：
+        $$Ax=x_1\beta_1+x_2\beta_2+\cdots+x_n\beta_n=b$$
+        这是<strong>按列拆</strong>，把整个 $Ax$ 看成一个 $m$ 维向量的等式，关心的是"$b$ 能不能由 $A$ 的列向量线性组合出来，组合系数是多少"。<br><br>
+        两者其实是同一个等式：把 $x_1\beta_1+\cdots+x_n\beta_n$ 拆开写每个分量，第 $i$ 个分量正是 $a_{i1}x_1+\cdots+a_{in}x_n$（因为 $\beta_j$ 的第 $i$ 个分量就是 $a_{ij}$），刚好对上按行拆的第 $i$ 个方程。<strong>一个向量等式 = $m$ 个数的等式，只是观察角度不同。</strong><br><br>
+        按列拆这个形式，跟前面"坐标"的定义 $\xi=x_1\alpha_1+\cdots+x_n\alpha_n$ 长得一模一样——区别只是这里 $\beta_j$ 是 $A$ 的列（具体数组），坐标那里 $\alpha_i$ 是抽象基向量。这也是为什么"解方程组"和"向量的线性组合/坐标"在线性代数里本质上是一回事，后面第六章"线性变换与矩阵表示"里 $T(\alpha_j)$ 按基展开、再把系数一列列拼成矩阵 $A$，用的正是同一套逻辑。
+      </div>
+
       <h3 class="part"><span class="tag">方法</span>高斯消元</h3>
       <div class="step">通过三种"行初等变换"（交换两行、某行乘非零常数、某行加上另一行的倍数——这些操作都不改变方程组的解），把增广矩阵化为<strong>阶梯形</strong>，再从最后一行开始，逐步回代求出每个未知数。</div>
 
@@ -1485,6 +1497,22 @@
           <summary>3. 恒等变换 $T(\xi)=\xi$（什么都不做）在任意基下的矩阵是什么？</summary>
           <div class="ans">单位矩阵 $E$。因为 $T(\alpha_j)=\alpha_j=0\cdot\alpha_1+\cdots+1\cdot\alpha_j+\cdots+0\cdot\alpha_n$，第 $j$ 列除了第 $j$ 行是1，其余都是0。</div>
         </details>
+      </div>
+
+      <div class="note">
+        <strong>辨析：坐标、$Ax=b$、变换矩阵 $A$——三条线其实是同一件事</strong><br><br>
+        这一章走到这里，"坐标"（第三节）、"$Ax=b$"（第四节）、"$T(\alpha_j)$ 的矩阵表示"（本节）看起来是三个不同的话题，但拆开看，用的其实是同一套写法：<strong>把一个向量，用一组给定向量的线性组合表示出来，系数就是全部信息</strong>。
+        <p style="margin:10px 0 0"><strong>① 坐标（最基础的场景）</strong>：取一组基 $\alpha_1,\ldots,\alpha_n$，空间里任意向量 $\xi$ 都能唯一写成</p>
+        $$\xi=x_1\alpha_1+x_2\alpha_2+\cdots+x_n\alpha_n$$
+        <p style="margin:6px 0 0">这组系数 $(x_1,\ldots,x_n)$ 就是 $\xi$ 在这组基下的坐标——这是三条线共用的"底层语法"。</p>
+        <p style="margin:14px 0 0"><strong>② $Ax=b$（第四节，按列拆的视角）</strong>：把系数矩阵 $A$ 的列记作 $\beta_1,\ldots,\beta_n$，则</p>
+        $$Ax=x_1\beta_1+x_2\beta_2+\cdots+x_n\beta_n=b$$
+        <p style="margin:6px 0 0">跟①长得一模一样，区别只是 $\beta_j$ 是 $A$ 的列（具体数组），而不是抽象基向量。<strong>解方程组，本质上就是在问：$b$ 能不能写成 $A$ 的列向量的线性组合，系数是多少</strong>——这正是"坐标"思想反过来用：已知组合结果 $b$ 和"基向量" $\beta_j$，反解系数 $x$。</p>
+        <p style="margin:14px 0 0"><strong>③ 变换矩阵 $A$（本节）</strong>：把每个 $T(\alpha_j)$ 也用同一组基展开</p>
+        $$T(\alpha_j)=a_{1j}\alpha_1+a_{2j}\alpha_2+\cdots+a_{nj}\alpha_n$$
+        <p style="margin:6px 0 0">这个展开式的系数 $(a_{1j},\ldots,a_{nj})^T$，正是 $T(\alpha_j)$ 这个向量（按①的定义）在这组基下的<strong>坐标</strong>。把 $j=1,\ldots,n$ 这 $n$ 组坐标按列拼起来，就是矩阵 $A$。</p>
+        <p style="margin:14px 0 0"><strong>三者怎么接起来：</strong>③里"$A$ 的第 $j$ 列"就是"$T(\alpha_j)$ 的坐标"（用了①）；有了 $A$ 之后，它作用在坐标 $x=(x_1,\ldots,x_n)^T$ 上就是矩阵乘法 $Ax$（②的形式）——可以验证，若 $\xi=x_1\alpha_1+\cdots+x_n\alpha_n$，则 $T(\xi)=x_1T(\alpha_1)+\cdots+x_nT(\alpha_n)$，把每个 $T(\alpha_j)$ 按①展开、合并同类项，系数正好是 $Ax$（推导见前面 $T(\xi)=\sum_i\left(\sum_j a_{ij}x_j\right)\alpha_i$ 那一步）。也就是说，<strong>"$T(\xi)$ 的坐标 $=A\cdot$ "$\xi$ 的坐标"</strong>。</p>
+        <p style="margin:14px 0 0">逻辑链是：<strong>①坐标</strong>是基础语言 → <strong>③矩阵 $A$</strong> 是把线性变换翻译成"坐标对坐标"规则的产物（靠把 $T(\alpha_j)$ 的坐标一列列拼起来）→ <strong>②$Ax=b$</strong> 则是这套"系数乘向量求和"的写法，用在"解方程组"这个具体场景下的应用，列向量 $\beta_j$ 取代了抽象的 $\alpha_j$。一句话总结：<strong>矩阵乘法 $Ax$，无论出现在哪个场景，做的都是同一件事——用 $x$ 里的系数，把 $A$ 的列（或者说一组给定的向量）加权求和。</strong></p>
       </div>
 
       <div class="nextlink"><a href="#ch7">下一节：基变换 →</a></div>
