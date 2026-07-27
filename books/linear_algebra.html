@@ -1865,6 +1865,55 @@
         <strong>说明：</strong> 特征向量给出了一个变换"最诚实"的观察角度——沿着特征向量方向去看，一个可能看起来很复杂的变换（旋转+拉伸+切变混在一起），会简化成"就是把这个方向拉伸了 $\lambda$ 倍"这么简单的一句话。这正是下一节"对角化"想要达成的目标。
       </div>
 
+      <h3 class="part"><span class="tag">深入</span>迹的基本性质</h3>
+      <div class="step">前面只用了"迹=特征值之和"这一条性质来验算答案。但"迹"（trace，记作 $\operatorname{tr}(A)$，即矩阵主对角线元素之和）本身是一个非常有用的量，值得把它的几条基本性质一次讲透——它们在后面处理更复杂的矩阵关系式（比如附录习题七里的交换子证明）时是关键工具。</div>
+
+      <div class="center-block">$$\operatorname{tr}(A)=a_{11}+a_{22}+\cdots+a_{nn}$$</div>
+
+      <div class="step"><strong>性质 1（线性性）</strong>：$\operatorname{tr}(A+B)=\operatorname{tr}(A)+\operatorname{tr}(B)$，$\operatorname{tr}(cA)=c\operatorname{tr}(A)$。这直接由"迹是对角元之和"的定义得出，对角元逐项相加、逐项数乘即可。</div>
+
+      <div class="step"><strong>性质 2（循环不变性，最重要）</strong>：对任意 $n$ 阶方阵 $A,B$，都有</div>
+      <div class="center-block">$$\operatorname{tr}(AB)=\operatorname{tr}(BA)$$</div>
+      <div class="step">注意：一般来说 $AB\neq BA$（矩阵乘法不满足交换律），但它们的<strong>迹却总是相等</strong>——这是一个很容易被忽视但极其有用的事实。</div>
+
+      <div class="example">
+        <div class="ex-label">证明</div>
+        设 $A=(a_{ij})$，$B=(b_{ij})$。$AB$ 的第 $i$ 个对角元是 $\sum_{k=1}^n a_{ik}b_{ki}$，所以
+        $$\operatorname{tr}(AB)=\sum_{i=1}^n\sum_{k=1}^n a_{ik}b_{ki}$$
+        $BA$ 的第 $k$ 个对角元是 $\sum_{i=1}^n b_{ki}a_{ik}$，所以
+        $$\operatorname{tr}(BA)=\sum_{k=1}^n\sum_{i=1}^n b_{ki}a_{ik}$$
+        两者是同一个双重求和，只是交换了求和顺序，故相等。
+      </div>
+
+      <div class="step"><strong>性质 3（循环移位）</strong>：把性质 2 推广到三个矩阵，有 $\operatorname{tr}(ABC)=\operatorname{tr}(BCA)=\operatorname{tr}(CAB)$——矩阵可以像"围成一圈"一样循环移动位置。但要注意，一般 $\operatorname{tr}(ABC)\neq\operatorname{tr}(ACB)$，只能"循环"移动，不能任意交换两个矩阵的顺序。</div>
+
+      <div class="step"><strong>性质 4（相似不变性）</strong>：若 $B=P^{-1}AP$（即 $A,B$ 相似），则 $\operatorname{tr}(B)=\operatorname{tr}(A)$。这是性质 2 的直接推论：</div>
+      <div class="center-block">$$\operatorname{tr}(P^{-1}AP)=\operatorname{tr}\big((P^{-1}A)P\big)=\operatorname{tr}\big(P(P^{-1}A)\big)=\operatorname{tr}(A)$$</div>
+      <div class="step">这也解释了为什么"迹"可以作为矩阵的一个<strong>不变量</strong>：无论选哪组基去表示同一个线性变换，算出来的迹都一样，这正呼应了第七节"基变换"里"账本会变，但账本记的那件事没变"的思想。</div>
+
+      <div class="step"><strong>性质 5（迹等于特征值之和）</strong>：即本节开头用过的 $\operatorname{tr}(A)=\lambda_1+\lambda_2+\cdots+\lambda_n$。原因是特征多项式 $\det(\lambda E-A)=\lambda^n-\operatorname{tr}(A)\lambda^{n-1}+\cdots$，又等于 $\prod_{i=1}^n(\lambda-\lambda_i)$，比较两边 $\lambda^{n-1}$ 的系数即得。</div>
+
+      <div class="example">
+        <div class="ex-label">性质的一个典型应用：交换子的迹恒为零</div>
+        令 $X=AB,\ Y=BA$，由性质 2 直接得 $\operatorname{tr}(AB-BA)=\operatorname{tr}(AB)-\operatorname{tr}(BA)=0$。也就是说，<strong>任何形如交换子 $[A,B]=AB-BA$ 的矩阵，迹必为零</strong>。这个不起眼的小事实，是附录"习题七"里证明"若 $AB-BA=A$ 则 $A$ 幂零"这一综合题的关键突破口。
+      </div>
+
+      <div class="note">
+        <strong>小结：</strong> 五条性质里，线性性和"迹=特征值之和"比较直观，真正的威力在于<strong>循环不变性</strong>——它让我们能够在不知道 $A,B$ 具体长什么样的情况下，仅凭乘法顺序的循环对称性就消去矩阵结构、把问题变成数字方程。这条性质在李代数、量子力学的算符理论等更高阶的内容里也反复出现，值得牢记。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>4. 设 $A=\begin{pmatrix}1&2\\3&4\end{pmatrix}$，$B=\begin{pmatrix}0&1\\1&0\end{pmatrix}$，分别计算 $\operatorname{tr}(AB)$ 与 $\operatorname{tr}(BA)$，验证它们相等。</summary>
+          <div class="ans">$AB=\begin{pmatrix}2&1\\4&3\end{pmatrix}$，$\operatorname{tr}(AB)=2+3=5$；$BA=\begin{pmatrix}3&4\\1&2\end{pmatrix}$，$\operatorname{tr}(BA)=3+2=5$。两者相等，验证了 $\operatorname{tr}(AB)=\operatorname{tr}(BA)$，尽管 $AB\neq BA$。</div>
+        </details>
+        <details>
+          <summary>5. 若 $A$ 与 $B$ 相似，且 $\operatorname{tr}(A)=7$，能否判断 $\operatorname{tr}(B)$ 的值？</summary>
+          <div class="ans">可以，$\operatorname{tr}(B)=\operatorname{tr}(A)=7$。因为相似矩阵有相同的特征值（只是表示基不同），由性质 4（相似不变性）或性质 5（迹=特征值之和）都能立即得出。</div>
+        </details>
+      </div>
+
       <div class="exercises">
         <div class="ex-head">小练习</div>
         <details>
@@ -2451,6 +2500,49 @@
       <p style="margin:0">这个结论还有一个推论：幂零矩阵可严格上三角化，从而 \(A,B\) 可同时上三角化——这与李代数中"可解李代数"的结构密切相关，正是本题的背景：\(\{A,B\}\) 张成一个二维可解李代数。</p>
     </div>
   </section>
+
+  <!-- ===================== FOLLOW-UP: WHY FOUR STEPS ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>证明为什么恰好需要这四步？</h2>
+
+    <p>这四步不是随意划分的，而是证明这类"代数关系 → 矩阵结构"命题的一条<strong>必经链条</strong>——每一步解决一个此前无法绕过的障碍，少一步整个证明就断掉。</p>
+
+    <div class="box note">
+      <div class="label">核心困难</div>
+      <p style="margin:0">题目给的条件 \(AB-BA=A\) 是一个"一次"的关系，但要证明的结论 \(A^m=O\) 是关于 \(A\) 的<strong>高次幂</strong>、乃至<strong>全局结构</strong>的性质。中间隔着一条很长的路，四步正好对应这条路上四个不同性质的"跳板"。</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 1</span> 为什么要先把关系"提升到任意幂次"？</h3>
+    <p style="margin:0 0 20px">题设只告诉你 \(k=1\) 时 \(AB-BA=A\)。但后面要用的是迹，而迹是"整体"的量，直接对 \(AB-BA=A\) 取迹只能得到 \(\operatorname{tr}(A)=0\)——这只是一个方程，信息量太少，推不出 \(A^m=O\)。必须先证明<strong>对每个 \(k\)</strong> 都有 \(A^kB-BA^k=kA^k\)，这样才能对每个 \(k\) 分别取迹，得到<strong>一整族</strong>方程 \(\operatorname{tr}(A^k)=0\ (k=1,\dots,n)\)。没有这一步，后面的信息量根本不够。</p>
+
+    <h3 class="sub"><span class="tag">Step 2</span> 为什么要取迹？</h3>
+    <p style="margin:0 0 20px">因为 \(A^kB-BA^k=kA^k\) 仍然是一个<strong>矩阵等式</strong>，矩阵本身自由度太高（是 \(n\times n\) 个数），没法直接分析。取迹的作用是"降维打击"：利用 \(\operatorname{tr}(XY)=\operatorname{tr}(YX)\) 这个恒等式，让等式左边<strong>恒等于 0</strong>，从而把矩阵等式压缩成了一个纯数字命题 \(k\cdot\operatorname{tr}(A^k)=0\)。这是从"矩阵世界"跳到"数字世界"的关键桥梁——如果没有这一步，\(B\) 这个变量始终甩不掉，而 \(B\) 本身没有任何约束，没法处理。</p>
+
+    <h3 class="sub"><span class="tag">Step 3</span> 为什么要引入特征值和 Newton 恒等式？</h3>
+    <p>Step 2 只给出 \(\operatorname{tr}(A^k)=0\)，这是<strong>幂和为零</strong>，还不是我们想要的东西。而幂零性 \(A^m=O\) 等价于<strong>所有特征值都是 0</strong>（这是 Cayley–Hamilton 定理成立的前提）。</p>
+    <div class="box verify">
+      <div class="label">为什么"幂和为零"不是显然等价于"特征值为零"</div>
+      <p style="margin:0">比如两个特征值 \(1,-1\) 的和为零，但显然它们不全为零。这里必须借助 Newton 恒等式，把"<strong>所有</strong> \(k=1,\dots,n\) 的幂和都为零"翻译成"<strong>所有</strong>特征多项式系数为零"，才能排除类似 \(1,-1\) 抵消的情形。</p>
+    </div>
+    <p style="margin:0 0 20px">这也解释了为什么 Step 1 要覆盖所有 \(k\)，而不只是 \(k=1\)：Newton 恒等式需要用到 \(p_1,p_2,\dots,p_n\) 这 \(n\) 个幂和才能反推出 \(n\) 个特征多项式系数 \(e_1,\dots,e_n\) 全为零。只知道 \(\operatorname{tr}(A)=0\)（即 \(p_1=0\)）远远不够。</p>
+
+    <h3 class="sub"><span class="tag">Step 4</span> 为什么最后还要用 Cayley–Hamilton？</h3>
+    <p style="margin:0 0 20px">Step 3 只证明了特征多项式是 \(\chi_A(\lambda)=\lambda^n\)，这只是一个<strong>关于多项式的陈述</strong>，还没有落到矩阵 \(A\) 本身的等式上。需要 Cayley–Hamilton 定理（矩阵满足自己的特征多项式）才能把"特征多项式是 \(\lambda^n\)"翻译成"\(A\) 这个矩阵本身满足 \(A^n=O\)"——这才是题目要证明的东西。没有这一步，你顶多能说"\(A\) 的特征值都是 0"，但矩阵本身完全可能不等于零（若 \(A\) 不可对角化，没法仅凭特征值为零就断言 \(A^n=O\)，必须靠 Cayley–Hamilton 这座桥）。</p>
+
+    <table class="compare">
+      <tr><th>阶段</th><th>作用</th></tr>
+      <tr><td>Step 1 · 关系升幂</td><td>把 \(k=1\) 的单一关系升级为对一切 \(k\) 成立的一族关系，为后面积累足够多的方程</td></tr>
+      <tr><td>Step 2 · 取迹降维</td><td>甩掉自由的 \(B\)，把矩阵等式压缩为数字命题 \(\operatorname{tr}(A^k)=0\)</td></tr>
+      <tr><td>Step 3 · 幂和→特征值</td><td>借助 Newton 恒等式，把"幂和全为零"翻译成"特征多项式系数全为零"</td></tr>
+      <tr><td>Step 4 · 特征值→矩阵</td><td>用 Cayley–Hamilton 把"特征值全为零"落实为矩阵等式 \(A^n=O\)</td></tr>
+    </table>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">每一步都是把问题"翻译"到一个更容易处理的层面，直到最后落回矩阵等式：<strong>关系升幂 → 取迹降维 → 幂和→特征值 → 特征值→矩阵</strong>。四步中任何一步被跳过，链条就会在"矩阵—数字—特征值—矩阵"这个循环里断掉，无法闭合。</p>
+    </div>
+  </div>
 
   <!-- ===================== FOLLOW-UP: TRACE PROPERTIES ===================== -->
   <div class="followup">
