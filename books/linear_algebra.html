@@ -802,6 +802,9 @@
       <a href="#ch10"><span class="num">10</span>正交性与正交基</a>
       <a href="#ch11"><span class="num">11</span>对角化</a>
 
+      <p class="part-label">第五部 · 秩与解的结构</p>
+      <a href="#ch12"><span class="num">12</span>矩阵的秩</a>
+
       <p class="part-label">附录 · 习题详解</p>
       <a href="#ex6"><span class="num">✎</span>习题六：线性空间与基</a>
       <a href="#ex7"><span class="num">✎</span>习题七：交换子与幂零矩阵</a>
@@ -2164,6 +2167,92 @@
         </details>
       </div>
 
+      <div class="nextlink"><a href="#ch12">下一节：矩阵的秩 →</a></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ========================================================= -->
+    <!-- 第十二章：矩阵的秩 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ch12">
+      <p class="kicker">第五部 · 秩与解的结构 / 12</p>
+      <h2 class="chapter-title">矩阵的秩</h2>
+      <p class="chapter-tagline">一个数字，回答"这组向量、这个变换里，究竟有多少真正独立的方向"</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>想象你有一叠"配方卡片"，每张卡片写着一道菜用到的各种调料比例。有些卡片其实是别的卡片按比例翻倍、或者几张卡片加加减减拼出来的——它们并没有带来任何"新配方"。秩，就是这叠卡片里<strong>真正互不重复、缺一不可的配方个数</strong>。矩阵的秩不关心卡片写得多复杂，只关心里面到底藏着多少条独立的信息。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>三种等价的刻画方式</h3>
+      <div class="step"><strong>子式定义：</strong>矩阵 $A$ 的秩 $r(A)$，是 $A$ 中<strong>非零子式的最高阶数</strong>——存在一个 $r$ 阶非零子式，但所有 $r+1$ 阶子式全为零。</div>
+      <div class="step"><strong>向量组定义：</strong>$A$ 的秩等于它<strong>行向量组的秩</strong>，也等于<strong>列向量组的秩</strong>（这两者总相等，是一条重要而非显然的定理）。</div>
+      <div class="step"><strong>阶梯形定义：</strong>把 $A$ 用初等行变换化为行阶梯形，非零行的行数就是 $r(A)$——这是实际计算中最常用的方法。</div>
+      <div class="note">
+        <strong>三种定义看的是同一件事的三个侧面：</strong>子式看"局部行列式不为零"，向量组看"极大无关组有多大"，阶梯形看"消元后还剩多少条有效方程"。
+      </div>
+
+      <h3 class="part"><span class="tag">计算</span>用初等行变换化阶梯形</h3>
+      <div class="example">
+        <div class="ex-label">例：求 $A=\begin{pmatrix}1&2&3\\2&4&7\\3&6&10\end{pmatrix}$ 的秩</div>
+        $$\begin{pmatrix}1&2&3\\2&4&7\\3&6&10\end{pmatrix}\xrightarrow{R_2-2R_1,\ R_3-3R_1}\begin{pmatrix}1&2&3\\0&0&1\\0&0&1\end{pmatrix}\xrightarrow{R_3-R_2}\begin{pmatrix}1&2&3\\0&0&1\\0&0&0\end{pmatrix}$$
+        非零行有 2 行，所以 $r(A)=2$。这个方法之所以成立，是因为<strong>初等行变换不改变矩阵的秩</strong>——倍加、互换、倍乘这三种操作都不会创造或消灭"独立信息"。
+      </div>
+
+      <h3 class="part"><span class="tag">性质</span>秩的基本规律</h3>
+      <div class="step">对 $m\times n$ 矩阵 $A$：$0\le r(A)\le\min(m,n)$；$r(A)=0\iff A=O$；当 $r(A)=\min(m,n)$ 时称 $A$ <strong>满秩</strong>。</div>
+      <div class="step"><strong>转置不改变秩：</strong>$r(A^{\mathrm T})=r(A)$（因为行秩=列秩，转置只是把行列互换）。</div>
+      <div class="step"><strong>与可逆性的关系（方阵）：</strong>对 $n$ 阶方阵 $A$，$A$ 可逆 $\iff r(A)=n\iff\det(A)\neq0$。</div>
+      <div class="step"><strong>乘法不增秩：</strong>$r(AB)\le\min\big(r(A),r(B)\big)$——矩阵相乘是一种变换，变换之后信息量不会凭空增多。</div>
+      <div class="step"><strong>可逆矩阵相乘不改变秩：</strong>若 $P,Q$ 可逆，则 $r(PAQ)=r(A)$。这正是"初等变换不改变秩"的根本原因——初等变换本质上就是左乘或右乘一个可逆的初等矩阵。</div>
+      <div class="step"><strong>加法：</strong>$r(A+B)\le r(A)+r(B)$。</div>
+
+      <h3 class="part"><span class="tag">核心意义</span>秩与线性方程组解的结构</h3>
+      <div class="step">设 $Ax=b$，$A$ 是 $m\times n$ 矩阵，$\tilde A=(A\mid b)$ 是增广矩阵。比较 $r(A)$ 与 $r(\tilde A)$，就能完全确定解的情况：</div>
+      <div class="center-block">
+        $$r(A)\neq r(\tilde A)\ \Rightarrow\ \text{无解}\qquad r(A)=r(\tilde A)=n\ \Rightarrow\ \text{唯一解}\qquad r(A)=r(\tilde A)<n\ \Rightarrow\ \text{无穷多解}$$
+      </div>
+      <div class="step">这是线性方程组理论的核心定理：判断解的存在性和个数，全靠比较系数矩阵和增广矩阵的秩。对齐次方程组 $Ax=0$，解空间的维数为</div>
+      <div class="center-block">
+        $$\dim(\text{解空间}) = n - r(A)$$
+      </div>
+      <div class="step">这个 $n-r(A)$ 也叫 $A$ 的<strong>零度（nullity）</strong>，与秩合起来构成著名的<strong>秩-零度定理</strong>：$r(A)+\text{nullity}(A)=n$。这条定理也解释了第四节消元法里"自由变量个数"是怎么来的——自由变量的个数正好等于 $n-r(A)$。</div>
+
+      <h3 class="part"><span class="tag">几何意义</span>秩就是像空间的维数</h3>
+      <div class="step">把 $A$ 看作线性映射 $x\mapsto Ax$：$r(A)$ 就是这个映射<strong>值域（像空间）的维数</strong>，也就是"变换后落在多少维空间里"。比如把三维空间压扁成一张平面的变换，秩是 2；压成一条直线，秩是 1；如果什么都没压扁（满秩），像空间的维数和定义域一样大。这也接上了第九节"特征值"的视角：若 $A$ 有特征值 0，说明存在方向被完全压扁，$A$ 必然不满秩（$r(A)<n$）。</div>
+
+      <div class="example">
+        <div class="ex-label">综合例：求秩并分析解空间维数</div>
+        设 $A=\begin{pmatrix}1&2&-1\\2&4&1\\3&6&3\end{pmatrix}$：
+        $$\begin{pmatrix}1&2&-1\\2&4&1\\3&6&3\end{pmatrix}\xrightarrow{R_2-2R_1,\ R_3-3R_1}\begin{pmatrix}1&2&-1\\0&0&3\\0&0&6\end{pmatrix}\xrightarrow{R_3-2R_2}\begin{pmatrix}1&2&-1\\0&0&3\\0&0&0\end{pmatrix}$$
+        非零行 2 行，$r(A)=2$。由秩-零度定理，$Ax=0$ 的解空间维数 $=3-2=1$，即解空间是一条过原点的直线。
+      </div>
+
+      <div class="note">
+        <strong>说明：</strong>秩把这本讲义里好几条主线串了起来：它是<strong>线性相关性</strong>（第二节）的数值化身——列向量组线性无关当且仅当列满秩；它是<strong>消元法</strong>（第四节）自由变量个数的直接来源；它还预告了<strong>特征值为 0</strong>（第九节）与"不满秩"之间的联系。可以说，秩是贯穿整本讲义、把"空间的语言"和"方程与矩阵"这两部分焊接在一起的一个关键数字。
+      </div>
+
+      <div class="exercises">
+        <div class="ex-head">小练习</div>
+        <details>
+          <summary>1. 为什么 $r(A)=n$（$n$ 阶方阵满秩）可以推出 $A$ 可逆？试从"列向量线性无关"的角度说明。</summary>
+          <div class="ans">$r(A)=n$ 意味着 $A$ 的 $n$ 个列向量线性无关，从而构成 $\mathbb{R}^n$ 的一组基。这说明 $A$ 对应的线性映射把标准基映成了另一组基，是一个"一一对应"的映射（既不压缩也不重叠），因此存在逆映射，即 $A$ 可逆。反过来，若 $r(A)<n$，说明列向量线性相关，映射会把某个非零方向压成 0，信息丢失，不可能有逆。</div>
+        </details>
+        <details>
+          <summary>2. 设 $A$ 是 $3\times 5$ 矩阵，且 $r(A)=3$。求 $Ax=0$ 解空间的维数，并说明这意味着什么。</summary>
+          <div class="ans">由秩-零度定理，解空间维数 $=5-3=2$。这意味着解集是一个二维子空间（可以用 2 个自由变量描述所有解），几何上像是 $\mathbb{R}^5$ 里的一张"平面"。之所以有这么多自由度，是因为 5 个未知数只受到 3 个"真正独立"的约束方程限制（$r(A)=3$），剩下 2 个方向可以自由取值。</div>
+        </details>
+        <details>
+          <summary>3. 为什么 $r(AB)\le\min(r(A),r(B))$？试用"值域"的角度直观解释一下。</summary>
+          <div class="ans">把 $B$ 看作先做的映射，$A$ 看作后做的映射。$B$ 的像空间维数是 $r(B)$；这个像空间再经过 $A$ 映射，维数只可能不变或变小（映射不会凭空增加维数），所以 $r(AB)\le r(B)$。另一方面，$AB$ 的所有输出都必然落在 $A$ 的像空间里（因为先乘 $B$ 得到的向量，本质上还是某种"输入"，再乘 $A$，结果自然逃不出 $A$ 的值域范围），所以 $r(AB)\le r(A)$。两条合起来就是 $r(AB)\le\min(r(A),r(B))$。</div>
+        </details>
+        <details>
+          <summary>4. 若 $A$ 是 $n$ 阶方阵，且 $A$ 有特征值 $0$，能说明什么关于秩的信息？</summary>
+          <div class="ans">特征值 $0$ 对应的特征向量 $\xi\neq0$ 满足 $A\xi=0$，说明齐次方程组 $Ax=0$ 存在非零解，从而解空间维数至少为 1，由秩-零度定理 $r(A)=n-\dim(\text{解空间})\le n-1<n$，即 $A$ 不满秩、不可逆。这与第九节"$A$ 可逆 $\iff$ 特征值都不为 0"的结论是一致的。</div>
+        </details>
+      </div>
+
       <div class="nextlink"><a href="#ex6">附录：习题六详解 →</a></div>
     </section>
 
@@ -3360,7 +3449,7 @@
 
     </section>
 
-    <footer class="book-footer">线性代数 · 通俗讲义 · 全十一章 + 习题详解 完</footer>
+    <footer class="book-footer">线性代数 · 通俗讲义 · 全十二章 + 习题详解 完</footer>
 
   </main>
 </div>
