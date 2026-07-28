@@ -2257,7 +2257,20 @@
       <h3 class="part"><span class="tag">深入</span>Sylvester 秩不等式：乘积秩的下界</h3>
       <div class="step">前面"乘法不增秩"给出的是<strong>上界</strong> $r(AB)\le\min(r(A),r(B))$。更精细的结果给出了<strong>下界</strong>——设 $A$ 是 $m\times n$，$B$ 是 $n\times p$：</div>
       <div class="center-block">$$r(A)+r(B)-n \le r(AB)$$</div>
+
+      <div class="note">
+        <strong>说明：这里的 $n$ 是谁的？</strong>$n$ 既不是 $A$ 独有的，也不是 $B$ 独有的——它是 $A,B$ 相连接的那个<strong>公共维度</strong>，两边都占一份。要能相乘 $AB$，必须 $A$ 的<strong>列数</strong>和 $B$ 的<strong>行数</strong>相等，这个公共的数就是 $n$：$A$ 的 $n$ 是 $A$ 作为映射时<strong>输入空间</strong>的维数（所以"$A$ 的零空间维数是 $n-r(A)$"里的 $n$，说的是 $A$ 的输入空间维数）；$B$ 的 $n$ 是 $B$ 作为映射时<strong>输出空间</strong>的维数（"$B$ 的像空间维数是 $r(B)$"，这个像空间正活在这个 $n$ 维空间里）。关键是：$A$ 的输入空间和 $B$ 的输出空间是<strong>同一个空间</strong>——流水线 $x\xrightarrow{B}Bx\xrightarrow{A}A(Bx)$ 里，$B$ 吐出来的东西必须能直接喂给 $A$，两者天然共享这同一个 $n$ 维空间。这也是"重叠"这个说法能成立的前提：$A$ 的零空间和 $B$ 的像空间，说的是同一个 $n$ 维空间里的两个子空间，才谈得上重叠多少。
+      </div>
       <div class="step"><strong>直观理解：</strong>$A$ 的零空间维数是 $n-r(A)$，$B$ 的像空间维数是 $r(B)$，都活在同一个 $n$ 维空间里。这两个子空间"重叠"得越多，$AB$ 在乘 $A$ 时损失的秩就越多；重叠部分的维数至多是 $\min(n-r(A),\,r(B))$，所以损失不会超过这个数，移项即得 $r(AB)\ge r(A)+r(B)-n$。特殊情形：若 $AB=O$（$n$ 阶方阵情形），则 $r(A)+r(B)\le n$——两个矩阵乘积为零，秩不能都太大。</div>
+
+      <div class="step">再展开说一下这个"重叠"到底在讲什么。把 $AB$ 想象成一条流水线：$x\xrightarrow{\ B\ }Bx\xrightarrow{\ A\ }A(Bx)=(AB)x$，先经过 $B$ 加工，再经过 $A$ 加工。$AB$ 的像空间，就是"先被 $B$ 加工出来的那些向量，再被 $A$ 加工一遍"之后剩下的东西。这个"中转站"（$B$ 输出、$A$ 输入所在的那个 $n$ 维空间）里有两个关键子空间：<strong>$B$ 的像空间</strong>（维数 $r(B)$，是 $B$ 能吐出来的全部东西）和<strong>$A$ 的零空间</strong>（维数 $n-r(A)$，凡是落在这里的向量经过 $A$ 都会被压成 0）。若 $B$ 的像空间里有一部分恰好也落在 $A$ 的零空间里，这部分东西经 $A$ 加工后就会被抹成 0，相当于秩被"吃掉"——重叠得越多，$AB$ 相比 $B$ 掉的秩就越多；而重叠部分的维数不可能超过这两个子空间中较小的一个，即 $\min(n-r(A),r(B))$，这就是损失的秩不会超过这个上限的原因。</div>
+
+      <div class="example">
+        <div class="ex-label">具体例子：重叠多少，秩损失多少</div>
+        取 $A=\begin{pmatrix}1&0&0\\0&1&0\\0&0&0\end{pmatrix}$（抹掉第三个坐标，$r(A)=2$，零空间是 $z$ 轴，维数 $3-2=1$）。<br><br>
+        <strong>若 $B$ 的像空间是 $xz$ 平面</strong>（维数 2，<strong>包含</strong>了 $A$ 的零空间 $z$ 轴）：$B$ 输出的向量里凡带 $z$ 分量的部分，经 $A$ 加工全变成 0，只有 $x$ 方向的部分保留下来，算下来 $r(AB)=1$，恰好等于下界 $r(A)+r(B)-n=2+2-3=1$——重叠拿满了，损失也拿满了。<br><br>
+        <strong>若 $B$ 的像空间换成 $xy$ 平面</strong>（维数 2，和 $z$ 轴<strong>完全不重叠</strong>）：$A$ 根本没机会抹掉任何东西，$r(AB)=r(B)=2$，比下界大得多——因为这次完全没有重叠。
+      </div>
 
       <h3 class="part"><span class="tag">深入</span>$r(A^{\mathrm T}A)=r(A)$：最小二乘法的基石</h3>
       <div class="step">这条结论初看意外，却极其重要：对任意实矩阵 $A$，</div>
