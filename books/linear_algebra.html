@@ -2109,7 +2109,26 @@
       <div class="example">
         <div class="ex-label">最基本的例子：严格上三角矩阵</div>
         $$N=\begin{pmatrix}0&1\\0&0\end{pmatrix},\quad N^2=\begin{pmatrix}0&0\\0&0\end{pmatrix}=O$$
-        更一般地，$M=\begin{pmatrix}0&1&2\\0&0&3\\0&0&0\end{pmatrix}$ 满足 $M^3=O$。事实上，任何对角线以上（或以下）全为 0 的严格三角矩阵都是幂零的，且幂零指数不超过阶数 $n$。
+        更一般地，$M=\begin{pmatrix}0&1&2\\0&0&3\\0&0&0\end{pmatrix}$ 满足 $M^3=O$。事实上，任何对角线以上（或以下）全为 0 的严格三角矩阵都是幂零的，且幂零指数不超过阶数 $n$。直观理解：每乘一次 $A$，非零元素就会往右上角"挤"一格，乘的次数够多（不超过 $n$ 次），就被挤没了，变成零矩阵。比如
+        $$A=\begin{pmatrix}0&1&2\\0&0&3\\0&0&0\end{pmatrix},\quad A^2=\begin{pmatrix}0&0&3\\0&0&0\\0&0&0\end{pmatrix},\quad A^3=O$$
+      </div>
+
+      <div class="step"><strong>最基础的"积木"：若尔当块（特征值为 0）</strong>。形如</div>
+      <div class="center-block">
+        $$J=\begin{pmatrix}0&1&0&0\\0&0&1&0\\0&0&0&1\\0&0&0&0\end{pmatrix}$$
+      </div>
+      <div class="step">这是最简单也最有代表性的幂零矩阵：$J\xi$ 相当于把向量的每个分量往前"移一位"（类似移位算子）。乘 $n$ 次之后，所有分量都被移出去了，变成 0。</div>
+
+      <div class="step"><strong>一般结构：所有幂零矩阵本质上都长这样。</strong>虽然幂零矩阵不一定写成严格三角形式，但任何幂零矩阵都相似于一个严格上三角矩阵（更精确地说，相似于若干个像上面这样的若尔当块拼成的分块对角矩阵，每块对角线都是 0）：</div>
+      <div class="center-block">
+        $$A\text{ 幂零} \iff \text{存在可逆矩阵 } P,\text{ 使得 } P^{-1}AP \text{ 是严格上三角矩阵}$$
+      </div>
+      <div class="step">这正好呼应了"特征值全为 0"这个特征——严格三角矩阵的对角线就是它的特征值，全是 0。</div>
+
+      <div class="example">
+        <div class="ex-label">反直觉的地方：幂零矩阵不一定"看得出"是三角形</div>
+        $$A=\begin{pmatrix}2&4\\-1&-2\end{pmatrix},\quad A^2=\begin{pmatrix}0&0\\0&0\end{pmatrix}$$
+        这里 $A$ 本身元素都非零，排布上也没有任何三角形状，但 $A^2=O$，所以它仍然是幂零的。可以验证它的迹 $2+(-2)=0$、行列式 $2\times(-2)-4\times(-1)=0$，说明特征值确实都是 0。这说明"幂零"是一个关于<strong>特征值</strong>的性质，不是单纯看矩阵表面元素排列就能一眼判断的——真正判断幂零，最可靠的办法还是回到迹、行列式（或更一般地检查所有幂和 $\operatorname{tr}(A^k)$）是否全为 0。
       </div>
 
       <div class="step">幂零矩阵有一条最本质的性质：<strong>特征值全为 0</strong>。设 $\lambda$ 是 $A$ 的特征值，对应特征向量 $\xi\neq0$，由 $A^m=O$ 得 $A^m\xi=\lambda^m\xi=0$，而 $\xi\neq0$，故 $\lambda=0$。反过来，若一个矩阵所有特征值都是 0（即特征多项式 $\chi_A(\lambda)=\lambda^n$），由 Cayley–Hamilton 定理，$A$ 自动满足 $A^n=O$，也就是幂零。</div>
