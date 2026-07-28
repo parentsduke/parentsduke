@@ -2233,6 +2233,32 @@
         <strong>说明：</strong>秩把这本讲义里好几条主线串了起来：它是<strong>线性相关性</strong>（第二节）的数值化身——列向量组线性无关当且仅当列满秩；它是<strong>消元法</strong>（第四节）自由变量个数的直接来源；它还预告了<strong>特征值为 0</strong>（第九节）与"不满秩"之间的联系。可以说，秩是贯穿整本讲义、把"空间的语言"和"方程与矩阵"这两部分焊接在一起的一个关键数字。
       </div>
 
+      <h3 class="part"><span class="tag">深入</span>Sylvester 秩不等式：乘积秩的下界</h3>
+      <div class="step">前面"乘法不增秩"给出的是<strong>上界</strong> $r(AB)\le\min(r(A),r(B))$。更精细的结果给出了<strong>下界</strong>——设 $A$ 是 $m\times n$，$B$ 是 $n\times p$：</div>
+      <div class="center-block">$$r(A)+r(B)-n \le r(AB)$$</div>
+      <div class="step"><strong>直观理解：</strong>$A$ 的零空间维数是 $n-r(A)$，$B$ 的像空间维数是 $r(B)$，都活在同一个 $n$ 维空间里。这两个子空间"重叠"得越多，$AB$ 在乘 $A$ 时损失的秩就越多；重叠部分的维数至多是 $\min(n-r(A),\,r(B))$，所以损失不会超过这个数，移项即得 $r(AB)\ge r(A)+r(B)-n$。特殊情形：若 $AB=O$（$n$ 阶方阵情形），则 $r(A)+r(B)\le n$——两个矩阵乘积为零，秩不能都太大。</div>
+
+      <h3 class="part"><span class="tag">深入</span>$r(A^{\mathrm T}A)=r(A)$：最小二乘法的基石</h3>
+      <div class="step">这条结论初看意外，却极其重要：对任意实矩阵 $A$，</div>
+      <div class="center-block">$$r(A^{\mathrm T}A)=r(A)=r(AA^{\mathrm T})$$</div>
+      <div class="step"><strong>证明思路：</strong>只需证 $A^{\mathrm T}Ax=0$ 与 $Ax=0$ 同解（同解则零空间维数相同，由秩-零度定理秩也相同）。若 $Ax=0$，显然 $A^{\mathrm T}Ax=0$；反过来若 $A^{\mathrm T}Ax=0$，两边左乘 $x^{\mathrm T}$ 得 $x^{\mathrm T}A^{\mathrm T}Ax=(Ax)^{\mathrm T}(Ax)=\|Ax\|^2=0$，故 $Ax=0$。</div>
+      <div class="step"><strong>应用：</strong>最小二乘法的正规方程 $A^{\mathrm T}Ax=A^{\mathrm T}b$ 之所以能保证唯一解，正是靠这条性质——当 $A$ 列满秩（$r(A)=n$）时，$r(A^{\mathrm T}A)=n$，说明 $A^{\mathrm T}A$ 是满秩方阵，从而可逆，解 $x=(A^{\mathrm T}A)^{-1}A^{\mathrm T}b$ 唯一存在。</div>
+
+      <h3 class="part"><span class="tag">深入</span>幂等矩阵：秩恰好等于迹</h3>
+      <div class="step">若 $A^2=A$（<strong>幂等矩阵</strong>，也叫投影矩阵），则</div>
+      <div class="center-block">$$r(A)=\operatorname{tr}(A)$$</div>
+      <div class="step">幂等矩阵的特征值只能是 0 或 1（设 $A\xi=\lambda\xi$，则 $A^2\xi=\lambda^2\xi=A\xi=\lambda\xi$，故 $\lambda^2=\lambda$，解得 $\lambda=0$ 或 $1$），并且总能对角化，相似于 $\begin{pmatrix}I_r&\\&O\end{pmatrix}$——这里的 $r$ 既是特征值 1 的个数（也就是迹，因为对角化后迹=特征值之和），又恰好是秩（对角化后非零行的行数）。这条性质在统计学的"帽子矩阵"（回归里 $\hat y=Hy$ 的 $H$）中经常用来直接读出投影空间的维数。</div>
+
+      <h3 class="part"><span class="tag">深入</span>SVD 视角：秩是非零奇异值的个数</h3>
+      <div class="step">秩最本质的刻画来自<strong>奇异值分解（SVD）</strong>：任意矩阵都能写成 $A=U\Sigma V^{\mathrm T}$，其中 $\Sigma=\text{diag}(\sigma_1,\dots,\sigma_p)$，$\sigma_1\ge\cdots\ge\sigma_p\ge0$ 是奇异值。此时</div>
+      <div class="center-block">$$r(A) = \#\{\sigma_i : \sigma_i>0\}\ (\text{非零奇异值的个数})$$</div>
+      <div class="step">这个视角比"行阶梯形里数非零行"更<strong>稳健</strong>：实际数值计算中，矩阵常因浮点误差冒出极小但严格非零的元素，"是否等于 0"这个判据会失真；而 SVD 通过设一个阈值（比如把小于 $10^{-10}$ 的奇异值视为 0）来判断"数值秩"，是工程和数据科学里真正在用的方法。由此还能引出一条<strong>Eckart-Young 定理</strong>：所有秩为 $k$ 的矩阵里，与 $A$ 最接近的那个（Frobenius 范数意义下），就是只保留 SVD 前 $k$ 个奇异值构造出的 $A_k=\sum_{i=1}^k\sigma_iu_iv_i^{\mathrm T}$——这正是主成分分析（PCA）、图像压缩里"降秩近似"的理论依据。</div>
+
+      <div class="example">
+        <div class="ex-label">用 Sylvester 不等式验证一个具体例子</div>
+        取 $A=\begin{pmatrix}1&0\\0&0\end{pmatrix}$，$B=\begin{pmatrix}0&0\\0&1\end{pmatrix}$，都是 $2\times2$，$r(A)=r(B)=1$。直接算 $AB=\begin{pmatrix}0&0\\0&0\end{pmatrix}=O$，$r(AB)=0$。Sylvester 不等式给出的下界是 $r(A)+r(B)-n=1+1-2=0$，恰好取等——这个例子里 $A$ 的零空间（$y$ 轴）与 $B$ 的像空间（$y$ 轴）完全重合，重叠达到最大，所以损失的秩也达到了不等式允许的最大值。
+      </div>
+
       <div class="exercises">
         <div class="ex-head">小练习</div>
         <details>
@@ -2250,6 +2276,14 @@
         <details>
           <summary>4. 若 $A$ 是 $n$ 阶方阵，且 $A$ 有特征值 $0$，能说明什么关于秩的信息？</summary>
           <div class="ans">特征值 $0$ 对应的特征向量 $\xi\neq0$ 满足 $A\xi=0$，说明齐次方程组 $Ax=0$ 存在非零解，从而解空间维数至少为 1，由秩-零度定理 $r(A)=n-\dim(\text{解空间})\le n-1<n$，即 $A$ 不满秩、不可逆。这与第九节"$A$ 可逆 $\iff$ 特征值都不为 0"的结论是一致的。</div>
+        </details>
+        <details>
+          <summary>5. 设 $A,B$ 都是 $n$ 阶方阵且 $AB=O$。用 Sylvester 不等式说明 $r(A)+r(B)\le n$，并解释这为什么"合理"。</summary>
+          <div class="ans">Sylvester 不等式给出 $r(A)+r(B)-n\le r(AB)=r(O)=0$，移项即得 $r(A)+r(B)\le n$。直观上：$AB=O$ 意味着 $B$ 的所有列向量都落在 $A$ 的零空间里，而 $A$ 的零空间维数只有 $n-r(A)$，容不下一个秩超过 $n-r(A)$ 的列空间，所以 $r(B)\le n-r(A)$，即 $r(A)+r(B)\le n$。</div>
+        </details>
+        <details>
+          <summary>6. 为什么 $r(A^{\mathrm T}A)=r(A)$ 保证了最小二乘法在 $A$ 列满秩时"一定有唯一解"？</summary>
+          <div class="ans">最小二乘要解的正规方程是 $A^{\mathrm T}Ax=A^{\mathrm T}b$，这是一个以 $A^{\mathrm T}A$（$n$ 阶方阵）为系数矩阵的方程组。若 $A$ 列满秩，即 $r(A)=n$，由 $r(A^{\mathrm T}A)=r(A)=n$ 知 $A^{\mathrm T}A$ 也满秩，从而可逆——方阵满秩就意味着可逆，方程组自然有唯一解 $x=(A^{\mathrm T}A)^{-1}A^{\mathrm T}b$。如果 $A$ 不是列满秩，$A^{\mathrm T}A$ 就不可逆，最小二乘解就不唯一了（这时通常改用伪逆来找一个"最小范数"的解）。</div>
         </details>
       </div>
 
