@@ -16,6 +16,9 @@ SUPABASE_KEY  = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
 EMAIL_TO      = 'weihong_j@yahoo.com'
 EMAIL_FROM    = 'daily@dukeparents.org'
 
+# Chronicle 学生报：无论"最近N天"逻辑如何，一律不展示此日期之前发布的内容
+CHRONICLE_MIN_DATE = date(2026, 6, 1)
+
 SECTION_LABELS = {
     'weekly-school':       '🏫 学校新闻',
     'weekly-basketball':   '🏀 篮球/体育动态',
@@ -430,7 +433,10 @@ Sep 11-12: MCAT最后考试日（2026年）
 # ══════════════════════════════════════════════════════════════
 #  抓取工具
 # ══════════════════════════════════════════════════════════════
-def fetch_rss(url, max_items=8, max_age_days=180):
+def fetch_rss(url, max_items=8, max_age_days=180, min_date=None):
+    """min_date: 若提供（date对象），早于该日期的条目一律跳过（硬性下限，
+    优先级高于 max_age_days）；没有发布日期信息的条目在设置了 min_date 时也会被跳过，
+    以避免日期不明的旧内容混入。"""
     try:
         feed = feedparser.parse(url)
         items = []
@@ -442,9 +448,15 @@ def fetch_rss(url, max_items=8, max_age_days=180):
             date_str = ''
             if pub:
                 dt = datetime(*pub[:6])
-                if (now - dt).days > max_age_days:
+                if min_date is not None:
+                    if dt.date() < min_date:
+                        continue
+                elif (now - dt).days > max_age_days:
                     continue
                 date_str = f"{dt.year}年{dt.month}月{dt.day}日"
+            elif min_date is not None:
+                # 无法确认发布日期，且要求了硬性下限日期时，保守跳过
+                continue
             title = e.get('title', '').strip()
             if date_str:
                 title = f"[{date_str}] {title}"
@@ -563,7 +575,8 @@ def fetch_pages_text(urls, max_chars=1200):
 
 def fetch_source(name, max_items=8):
     if name in RSS_FEEDS:
-        items = fetch_rss(RSS_FEEDS[name], max_items)
+        min_date = CHRONICLE_MIN_DATE if name == 'chronicle' else None
+        items = fetch_rss(RSS_FEEDS[name], max_items, min_date=min_date)
         # Jina fallback for known 403/JS sites
         jina_sites = {
             'chronicle': 'https://www.dukechronicle.com/section/news',
@@ -892,6 +905,12 @@ def generate_section(section_name, items, extra='', allow_political=False):
             f'- 只保留今天（{today_str}）及以后的招生信息，过期内容一律排除，包括已过期的Blue Devil Days日期\n'
             f'- 如果某条信息的日期无法确认是否已过期，也不要输出\n'
             '- 重点提取：入学确认截止日、住房申请、奖学金、成绩单提交、Blue Devil Days（仅未来场次）、财务援助等信息\n'
+        )
+    if 'Chronicle' in section_name:
+        min_date_str = f"{CHRONICLE_MIN_DATE.year}年{CHRONICLE_MIN_DATE.month}月{CHRONICLE_MIN_DATE.day}日"
+        year_rule += (
+            f'- 【严格日期过滤】一律不得列出发布日期早于{min_date_str}的内容\n'
+            '- 如果某条内容的发布日期无法确认，也不要输出\n'
         )
 
     prompt = (
