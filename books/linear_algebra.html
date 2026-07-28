@@ -1306,6 +1306,61 @@
         <strong>说明：</strong> 方程组的解的情况（无解 / 唯一解 / 无穷多解），完全由系数矩阵与增广矩阵的<strong>秩</strong>决定——这一结论把"解方程"和"矩阵的结构"第一次联系了起来，也是后面章节反复出现的主线。
       </div>
 
+      <h3 class="part"><span class="tag">概念</span>齐次线性方程组</h3>
+      <div class="step">当常数项 $b_1=b_2=\cdots=b_m=0$ 时，方程组</div>
+      <div class="center-block">
+        $$\begin{cases}a_{11}x_1+a_{12}x_2+\cdots+a_{1n}x_n=0\\a_{21}x_1+a_{22}x_2+\cdots+a_{2n}x_n=0\\\quad\vdots\\a_{m1}x_1+a_{m2}x_2+\cdots+a_{mn}x_n=0\end{cases}\qquad\text{即}\qquad Ax=0$$
+      </div>
+      <div class="step">称为<strong>齐次线性方程组</strong>。它的特点是：</div>
+      <div class="example">
+        <div class="ex-label">一定有解——零解</div>
+        $x_1=x_2=\cdots=x_n=0$ 永远满足 $Ax=0$，这个解叫<strong>零解（平凡解）</strong>。所以讨论齐次方程组时，真正要问的问题是"<strong>除了零解，还有没有别的解</strong>"，而不是"有没有解"。
+      </div>
+      <div class="center-block">
+        <table class="matrix-table">
+          <tr><th>条件（$r(A)$ 为系数矩阵的秩，$n$ 为未知数个数）</th><th>解的情况</th></tr>
+          <tr><td>$r(A)=n$</td><td>只有零解</td></tr>
+          <tr><td>$r(A)&lt;n$</td><td>有非零解（无穷多解，含 $n-r(A)$ 个自由未知量）</td></tr>
+        </table>
+      </div>
+      <div class="note">
+        <strong>解具有"线性组合封闭性"：</strong>若 $\xi_1,\xi_2$ 都是 $Ax=0$ 的解，即 $A\xi_1=0,A\xi_2=0$，那么对任意常数 $k_1,k_2$，$A(k_1\xi_1+k_2\xi_2)=k_1A\xi_1+k_2A\xi_2=0$，说明 $k_1\xi_1+k_2\xi_2$ 也是解。所以齐次方程组的全体解构成一个<strong>向量空间</strong>（叫<strong>解空间</strong>），维数为 $n-r(A)$——这是齐次方程组独有的性质，非齐次方程组的解并不具备。
+      </div>
+
+      <h3 class="part"><span class="tag">概念</span>非齐次线性方程组</h3>
+      <div class="step">常数项 $b_1,\ldots,b_m$<strong>不全为零</strong>（即 $b\neq0$）的方程组 $Ax=b$，称为<strong>非齐次线性方程组</strong>。每一个非齐次方程组 $Ax=b$ 都对应一个"去掉常数项"的齐次方程组 $Ax=0$，后者叫前者的<strong>导出组（对应齐次组）</strong>，两者的系数矩阵 $A$ 完全相同，只是常数项不同。</div>
+
+      <div class="note">
+        <strong>非齐次方程组的解为什么不能随便相加？</strong>设 $\eta_1,\eta_2$ 都是 $Ax=b$ 的解，即 $A\eta_1=b,A\eta_2=b$，那么 $A(\eta_1+\eta_2)=2b\neq b$（只要 $b\neq0$），所以两个解相加<strong>不再是解</strong>；同样 $A(k\eta)=kb\neq b$（$k\neq1$ 时），数乘也不封闭。这正是"非齐次"与"齐次"最本质的区别——非齐次方程组的解集不是向量空间，而是一个"偏离原点"的<strong>仿射子空间</strong>（几何上像一条不过原点的直线/平面）。
+      </div>
+
+      <h3 class="part"><span class="tag">定理</span>解的结构——通解 = 特解 + 齐次通解</h3>
+      <div class="step">虽然非齐次方程组的解不能随意组合，但两个解<strong>相减</strong>却有好性质：设 $\eta_1,\eta_2$ 都是 $Ax=b$ 的解，则</div>
+      $$A(\eta_1-\eta_2)=A\eta_1-A\eta_2=b-b=0$$
+      <div class="step">说明 $\eta_1-\eta_2$ 是导出组 $Ax=0$ 的解。由此可得非齐次方程组解的结构定理：</div>
+      <div class="note">
+        <strong>结构定理：</strong>设 $\eta^{*}$ 是 $Ax=b$ 的<strong>任意一个特解</strong>，$\xi$ 是导出组 $Ax=0$ 的<strong>通解</strong>，则 $Ax=b$ 的<strong>通解</strong>为
+        $$x=\eta^{*}+\xi$$
+        直观理解：先随便找一个满足 $Ax=b$ 的"落脚点" $\eta^{*}$，再加上齐次解空间里的任意一个向量 $\xi$（$A\xi=0$ 不改变等式右边），$A(\eta^{*}+\xi)=A\eta^{*}+A\xi=b+0=b$ 仍然成立；反过来任何解都能写成这个形式（用上面"两解相减是齐次解"这一步可证）。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">具体例子</div>
+        方程组 $x_1+2x_2-x_3=3$。容易看出 $\eta^{*}=(3,0,0)^T$ 是一个特解。对应导出组 $x_1+2x_2-x_3=0$ 的通解为 $\xi=k_1(-2,1,0)^T+k_2(1,0,1)^T$（$k_1,k_2$ 任意常数，两个自由未知量对应 $n-r(A)=3-1=2$）。所以原方程组的通解为
+        $$x=\begin{pmatrix}3\\0\\0\end{pmatrix}+k_1\begin{pmatrix}-2\\1\\0\end{pmatrix}+k_2\begin{pmatrix}1\\0\\1\end{pmatrix}$$
+        几何上看，齐次解空间 $\xi$ 是一个过原点的平面，非齐次的解集则是把这个平面<strong>整体平移</strong> $\eta^{*}$ 之后得到的平面——不过原点，所以解集加法/数乘都不再封闭，只有"通解 = 特解 + 齐次通解"这种"平移后的向量空间"结构。
+      </div>
+
+      <div class="center-block">
+        <table class="matrix-table">
+          <tr><th></th><th>齐次方程组 $Ax=0$</th><th>非齐次方程组 $Ax=b\ (b\neq0)$</th></tr>
+          <tr><td>是否一定有解</td><td>一定有解（至少零解）</td><td>不一定（$r(A)\neq r(A|b)$ 时无解）</td></tr>
+          <tr><td>解集结构</td><td>向量空间（解空间），过原点</td><td>仿射子空间，不过原点</td></tr>
+          <tr><td>解的组合</td><td>解的线性组合仍是解</td><td>解的线性组合一般不再是解</td></tr>
+          <tr><td>通解形式</td><td>$k_1\xi_1+\cdots+k_s\xi_s$</td><td>$\eta^{*}+(k_1\xi_1+\cdots+k_s\xi_s)$</td></tr>
+        </table>
+      </div>
+
       <div class="exercises">
         <div class="ex-head">小练习</div>
         <details>
