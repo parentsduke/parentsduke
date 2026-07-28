@@ -2211,7 +2211,7 @@
       <h3 class="part"><span class="tag">核心意义</span>秩与线性方程组解的结构</h3>
       <div class="step">设 $Ax=b$，$A$ 是 $m\times n$ 矩阵，$\tilde A=(A\mid b)$ 是增广矩阵。比较 $r(A)$ 与 $r(\tilde A)$，就能完全确定解的情况：</div>
       <div class="center-block">
-        $$r(A)\neq r(\tilde A)\ \Rightarrow\ \text{无解}\qquad r(A)=r(\tilde A)=n\ \Rightarrow\ \text{唯一解}\qquad r(A)=r(\tilde A)<n\ \Rightarrow\ \text{无穷多解}$$
+        $$r(A)\neq r(\tilde A)\ \Rightarrow\ \text{无解}\qquad r(A)=r(\tilde A)=n\ \Rightarrow\ \text{唯一解}\qquad r(A)=r(\tilde A)&lt;n\ \Rightarrow\ \text{无穷多解}$$
       </div>
       <div class="step">这是线性方程组理论的核心定理：判断解的存在性和个数，全靠比较系数矩阵和增广矩阵的秩。对齐次方程组 $Ax=0$，解空间的维数为</div>
       <div class="center-block">
@@ -2220,7 +2220,7 @@
       <div class="step">这个 $n-r(A)$ 也叫 $A$ 的<strong>零度（nullity）</strong>，与秩合起来构成著名的<strong>秩-零度定理</strong>：$r(A)+\text{nullity}(A)=n$。这条定理也解释了第四节消元法里"自由变量个数"是怎么来的——自由变量的个数正好等于 $n-r(A)$。</div>
 
       <h3 class="part"><span class="tag">几何意义</span>秩就是像空间的维数</h3>
-      <div class="step">把 $A$ 看作线性映射 $x\mapsto Ax$：$r(A)$ 就是这个映射<strong>值域（像空间）的维数</strong>，也就是"变换后落在多少维空间里"。比如把三维空间压扁成一张平面的变换，秩是 2；压成一条直线，秩是 1；如果什么都没压扁（满秩），像空间的维数和定义域一样大。这也接上了第九节"特征值"的视角：若 $A$ 有特征值 0，说明存在方向被完全压扁，$A$ 必然不满秩（$r(A)<n$）。</div>
+      <div class="step">把 $A$ 看作线性映射 $x\mapsto Ax$：$r(A)$ 就是这个映射<strong>值域（像空间）的维数</strong>，也就是"变换后落在多少维空间里"。比如把三维空间压扁成一张平面的变换，秩是 2；压成一条直线，秩是 1；如果什么都没压扁（满秩），像空间的维数和定义域一样大。这也接上了第九节"特征值"的视角：若 $A$ 有特征值 0，说明存在方向被完全压扁，$A$ 必然不满秩（$r(A)&lt;n$）。</div>
 
       <div class="example">
         <div class="ex-label">综合例：求秩并分析解空间维数</div>
@@ -2302,7 +2302,7 @@
         <div class="ex-head">小练习</div>
         <details>
           <summary>1. 为什么 $r(A)=n$（$n$ 阶方阵满秩）可以推出 $A$ 可逆？试从"列向量线性无关"的角度说明。</summary>
-          <div class="ans">$r(A)=n$ 意味着 $A$ 的 $n$ 个列向量线性无关，从而构成 $\mathbb{R}^n$ 的一组基。这说明 $A$ 对应的线性映射把标准基映成了另一组基，是一个"一一对应"的映射（既不压缩也不重叠），因此存在逆映射，即 $A$ 可逆。反过来，若 $r(A)<n$，说明列向量线性相关，映射会把某个非零方向压成 0，信息丢失，不可能有逆。</div>
+          <div class="ans">$r(A)=n$ 意味着 $A$ 的 $n$ 个列向量线性无关，从而构成 $\mathbb{R}^n$ 的一组基。这说明 $A$ 对应的线性映射把标准基映成了另一组基，是一个"一一对应"的映射（既不压缩也不重叠），因此存在逆映射，即 $A$ 可逆。反过来，若 $r(A)&lt;n$，说明列向量线性相关，映射会把某个非零方向压成 0，信息丢失，不可能有逆。</div>
         </details>
         <details>
           <summary>2. 设 $A$ 是 $3\times 5$ 矩阵，且 $r(A)=3$。求 $Ax=0$ 解空间的维数，并说明这意味着什么。</summary>
@@ -2314,7 +2314,7 @@
         </details>
         <details>
           <summary>4. 若 $A$ 是 $n$ 阶方阵，且 $A$ 有特征值 $0$，能说明什么关于秩的信息？</summary>
-          <div class="ans">特征值 $0$ 对应的特征向量 $\xi\neq0$ 满足 $A\xi=0$，说明齐次方程组 $Ax=0$ 存在非零解，从而解空间维数至少为 1，由秩-零度定理 $r(A)=n-\dim(\text{解空间})\le n-1<n$，即 $A$ 不满秩、不可逆。这与第九节"$A$ 可逆 $\iff$ 特征值都不为 0"的结论是一致的。</div>
+          <div class="ans">特征值 $0$ 对应的特征向量 $\xi\neq0$ 满足 $A\xi=0$，说明齐次方程组 $Ax=0$ 存在非零解，从而解空间维数至少为 1，由秩-零度定理 $r(A)=n-\dim(\text{解空间})\le n-1&lt;n$，即 $A$ 不满秩、不可逆。这与第九节"$A$ 可逆 $\iff$ 特征值都不为 0"的结论是一致的。</div>
         </details>
         <details>
           <summary>5. 设 $A,B$ 都是 $n$ 阶方阵且 $AB=O$。用 Sylvester 不等式说明 $r(A)+r(B)\le n$，并解释这为什么"合理"。</summary>
