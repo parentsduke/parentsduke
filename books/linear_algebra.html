@@ -806,6 +806,7 @@
       <a href="#ex6"><span class="num">✎</span>习题六：线性空间与基</a>
       <a href="#ex7"><span class="num">✎</span>习题七：交换子与幂零矩阵</a>
       <a href="#ex8"><span class="num">✎</span>习题八：线性变换的矩阵表示</a>
+      <a href="#ex9"><span class="num">✎</span>习题九：特征多项式</a>
     </nav>
   </aside>
 
@@ -2894,7 +2895,198 @@
     </div>
   </div>
 
+  <div class="nextlink"><a href="#ex9">下一篇：习题九 · 特征多项式 →</a></div>
+
   <footer>习题八 · 线性变换的矩阵表示 &nbsp;·&nbsp; 逐题详解</footer>
+
+</div>
+</div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 习题九 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ex9" style="max-width:none; padding:0;">
+      <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
+      <h2 class="chapter-title" style="padding:0 40px;">习题九：特征多项式</h2>
+      <p class="chapter-tagline" style="padding:0 40px;">从 \(\det(A-\lambda I)=0\) 出发，掌握求特征值的标准流程、特殊矩阵的速算技巧，以及 Cayley-Hamilton 定理的应用</p>
+
+<div class="ex6-scope"><div class="wrap">
+
+  <header>
+    <div class="eyebrow">线性代数 · 基础题 · 详解</div>
+    <h1>习题九详解</h1>
+    <div class="subtitle">特征多项式 \(p(\lambda)=\det(A-\lambda I)\)：从计算到应用</div>
+    <div class="bracket-hero">
+      <svg viewBox="0 0 20 64" fill="none"><path d="M16 2 L4 2 L4 62 L16 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+      <div class="grid-mini">
+        <span>A-\(\lambda\)I</span><span>→</span>
+        <span>det=0</span><span>\(\lambda\)</span>
+      </div>
+      <svg viewBox="0 0 20 64" fill="none"><path d="M4 2 L16 2 L16 62 L4 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+    </div>
+  </header>
+
+  <!-- ===================== PROBLEM 9 ===================== -->
+  <section class="problem" id="p9">
+    <div class="prob-head">
+      <span class="prob-num">9</span>
+      <span class="prob-title">求 2×2 矩阵的特征多项式与特征值</span>
+    </div>
+    <div class="prob-statement">
+      设 \(A=\begin{pmatrix}4&1\\2&3\end{pmatrix}\)。求 \(A\) 的特征多项式，并求出所有特征值。
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 1</span> 写出 \(A-\lambda I\)</h3>
+    <p>特征多项式的定义是 \(p(\lambda)=\det(A-\lambda I)\)，先把对角元各减去 \(\lambda\)：</p>
+    \[A-\lambda I=\begin{pmatrix}4-\lambda&1\\2&3-\lambda\end{pmatrix}\]
+
+    <h3 class="sub"><span class="tag">Step 2</span> 展开行列式</h3>
+    <div class="box verify">
+      <div class="label">计算</div>
+      <p>\(p(\lambda)=(4-\lambda)(3-\lambda)-1\times2\)</p>
+      <p>\(=12-7\lambda+\lambda^2-2=\lambda^2-7\lambda+10\)</p>
+      <p style="margin:0">因式分解：\(\lambda^2-7\lambda+10=(\lambda-5)(\lambda-2)\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 3</span> 令 \(p(\lambda)=0\) 求特征值</h3>
+    <p style="margin:0 0 20px">\((\lambda-5)(\lambda-2)=0\ \Rightarrow\ \lambda_1=5,\ \lambda_2=2\)</p>
+
+    <div class="box basis">
+      <div class="label">验证</div>
+      <p>迹：\(\operatorname{tr}(A)=4+3=7=\lambda_1+\lambda_2=5+2\) ✓</p>
+      <p style="margin:0">行列式：\(\det(A)=4\times3-1\times2=10=\lambda_1\lambda_2=5\times2\) ✓</p>
+    </div>
+  </section>
+
+  <!-- ===================== PROBLEM 10 ===================== -->
+  <section class="problem" id="p10">
+    <div class="prob-head">
+      <span class="prob-num">10</span>
+      <span class="prob-title">带零元的 3×3 矩阵：分块展开求特征值</span>
+    </div>
+    <div class="prob-statement">
+      设 \(C=\begin{pmatrix}2&0&1\\0&3&0\\1&0&2\end{pmatrix}\)。求 \(C\) 的特征多项式，并求出所有特征值（含重数）。
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 1</span> 按第二行（或第二列）展开行列式</h3>
+    <p>\(C-\lambda I=\begin{pmatrix}2-\lambda&0&1\\0&3-\lambda&0\\1&0&2-\lambda\end{pmatrix}\)，第二行只有一个非零元 \(3-\lambda\)，按第二行展开最省力：</p>
+    \[p(\lambda)=(3-\lambda)\cdot\det\begin{pmatrix}2-\lambda&1\\1&2-\lambda\end{pmatrix}\]
+
+    <h3 class="sub"><span class="tag">Step 2</span> 计算 2×2 子行列式，再因式分解</h3>
+    <div class="box verify">
+      <div class="label">计算</div>
+      <p>\(\det\begin{pmatrix}2-\lambda&1\\1&2-\lambda\end{pmatrix}=(2-\lambda)^2-1=(\lambda-1)(\lambda-3)\)</p>
+      <p style="margin:0">所以 \(p(\lambda)=(3-\lambda)(\lambda-1)(\lambda-3)=-(\lambda-3)^2(\lambda-1)\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 3</span> 读出特征值</h3>
+    <p style="margin:0 0 20px">\(\lambda=1\)（单重），\(\lambda=3\)（<strong>二重</strong>，即代数重数为 2）。</p>
+
+    <div class="box basis">
+      <div class="label">验证</div>
+      <p>迹：\(\operatorname{tr}(C)=2+3+2=7=1+3+3\) ✓</p>
+      <p style="margin:0">行列式：按第二行展开得 \(\det(C)=3\times(2\times2-1\times1)=9=1\times3\times3\) ✓</p>
+    </div>
+  </section>
+
+  <!-- ===================== PROBLEM 11 ===================== -->
+  <section class="problem" id="p11">
+    <div class="prob-head">
+      <span class="prob-num">11</span>
+      <span class="prob-title">用 Cayley-Hamilton 定理化简矩阵表达式</span>
+    </div>
+    <div class="prob-statement">
+      已知 2×2 矩阵 \(A\) 的特征多项式为 \(p(\lambda)=\lambda^2-5\lambda+6\)。用 Cayley-Hamilton 定理，把 \(A^2\) 用 \(A\) 和单位矩阵 \(I\) 表示出来，并进一步求 \(A^3\) 的表达式。
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 1</span> Cayley-Hamilton 定理：矩阵满足自己的特征多项式</h3>
+    <p style="margin:0 0 20px">定理指出，把特征多项式里的变量 \(\lambda\) 直接换成矩阵 \(A\) 本身（常数项换成常数乘 \(I\)），等式依然成立，即 \(p(A)=O\)。</p>
+
+    <h3 class="sub"><span class="tag">Step 2</span> 代入并解出 \(A^2\)</h3>
+    <div class="box verify">
+      <div class="label">计算</div>
+      <p>\(p(A)=A^2-5A+6I=O\)</p>
+      <p style="margin:0">移项即得：\(A^2=5A-6I\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 3</span> 用同样的关系继续降幂求 \(A^3\)</h3>
+    <p>\(A^3=A\cdot A^2=A(5A-6I)=5A^2-6A\)，再把 \(A^2=5A-6I\) 代进去消掉高次项：</p>
+    <div class="box basis">
+      <div class="label">计算</div>
+      <p>\(A^3=5(5A-6I)-6A=25A-30I-6A\)</p>
+      <p style="margin:0">\(A^3=19A-30I\)</p>
+    </div>
+    <p style="margin:20px 0 0">这就是 Cayley-Hamilton 定理最常见的用途：把矩阵的高次幂（甚至矩阵多项式、矩阵的逆）都<strong>降幂</strong>成 \(A\) 和 \(I\) 的线性组合，不用真的做矩阵乘法。</p>
+  </section>
+
+  <!-- ===================== FOLLOW-UP: COEFFICIENTS OF CHAR POLY ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>特征多项式的系数，和迹、行列式有什么关系？</h2>
+
+    <p>特征多项式的每一项系数都不是随便来的——它们分别编码了矩阵的迹、行列式，以及更一般的"子式之和"，这也是前面每道题里用来验算的依据。</p>
+
+    <h3 class="sub"><span class="tag">n=2 的情形</span>最常用的一条</h3>
+    <p style="margin:0 0 20px">对 2×2 矩阵 \(A\)：\(p(\lambda)=\lambda^2-\operatorname{tr}(A)\lambda+\det(A)\)。一次项系数是负的迹，常数项是行列式——这正是习题 9、10 里用来验证答案的公式。</p>
+
+    <h3 class="sub"><span class="tag">一般 n</span>次数结构</h3>
+    <p style="margin:0 0 20px">对 \(n\times n\) 矩阵，\(p(\lambda)=\lambda^n-\operatorname{tr}(A)\lambda^{n-1}+\cdots+(-1)^n\det(A)\)。首项系数恒为 1（\(p\) 是<strong>首一多项式</strong>），\(\lambda^{n-1}\) 系数恒为 \(-\operatorname{tr}(A)\)，常数项恒为 \((-1)^n\det(A)\)。</p>
+
+    <h3 class="sub"><span class="tag">根与系数</span>特征值的对称函数</h3>
+    <p>把 \(p(\lambda)\) 写成 \(\prod_i(\lambda-\lambda_i)\) 展开后比较系数，可以得到更完整的一组关系：</p>
+    <div class="box note">
+      <div class="label">Vieta 公式（韦达定理）在特征值上的推广</div>
+      <p>\(\sum_i\lambda_i=\operatorname{tr}(A)\)（所有特征值之和 = 迹）</p>
+      <p style="margin:0">\(\prod_i\lambda_i=\det(A)\)（所有特征值之积 = 行列式）</p>
+    </div>
+
+    <table class="compare">
+      <tr><th>矩阵大小</th><th>特征多项式</th><th>验算用系数</th></tr>
+      <tr><td>2×2</td><td>\(\lambda^2-\operatorname{tr}(A)\lambda+\det(A)\)</td><td>一次项、常数项</td></tr>
+      <tr><td>3×3</td><td>\(\lambda^3-\operatorname{tr}(A)\lambda^2+c_1\lambda-\det(A)\)</td><td>\(\lambda^2\) 项、常数项</td></tr>
+      <tr><td>n×n</td><td>\(\lambda^n-\operatorname{tr}(A)\lambda^{n-1}+\cdots\pm\det(A)\)</td><td>首、次高、末三项</td></tr>
+    </table>
+
+    <div class="box note">
+      <div class="label">对角 / 三角矩阵的速算技巧</div>
+      <p style="margin:0">若 \(A\) 是对角矩阵或（上/下）三角矩阵，特征值就是对角线上的元素本身，不需要展开行列式——因为 \(A-\lambda I\) 仍是三角矩阵，行列式直接等于对角元之积 \(\prod_i(a_{ii}-\lambda)\)。习题 10 中的 \(C\) 虽然不是三角矩阵，但因为第二行只有一个非零元，本质上是把问题降维成了一个 2×2 子问题，思路是相通的。</p>
+    </div>
+  </div>
+
+  <!-- ===================== FOLLOW-UP: CAYLEY-HAMILTON ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>Cayley-Hamilton 定理到底在说什么？</h2>
+
+    <p>这条定理经常被记成一句口诀——"矩阵满足自己的特征方程"——但这句话初看有点奇怪：\(\lambda\) 明明是个数，怎么能换成矩阵？下面把这件事说清楚。</p>
+
+    <h3 class="sub"><span class="tag">定理陈述</span></h3>
+    <p style="margin:0 0 20px">设 \(A\) 是 \(n\times n\) 矩阵，特征多项式为 \(p(\lambda)=\lambda^n+c_{n-1}\lambda^{n-1}+\cdots+c_1\lambda+c_0\)。把 \(\lambda\) 替换成 \(A\)，常数项替换成"常数乘单位矩阵"，得到的<strong>矩阵等式</strong>恒成立：</p>
+    \[p(A)=A^n+c_{n-1}A^{n-1}+\cdots+c_1A+c_0I=O\]
+
+    <h3 class="sub"><span class="tag">直观理解</span>为什么"代入矩阵"是合理的</h3>
+    <p style="margin:0 0 20px">\(p(\lambda)=\det(A-\lambda I)\) 本身是由行列式展开出来的一个关于 \(\lambda\) 的<strong>多项式</strong>（系数是 \(A\) 的元素的代数组合），一旦写成 \(\lambda^n+c_{n-1}\lambda^{n-1}+\cdots\) 这种"纯数字系数"的形式，\(\lambda^k\) 就可以自然地替换成 \(A^k\)（矩阵的幂），常数项替换成"常数 \(\times I\)"——因为矩阵的加法、数乘、幂运算都有意义。定理断言：这样代入后，结果恰好是零矩阵。</p>
+
+    <div class="box verify">
+      <div class="label">用习题 9 验证</div>
+      <p>\(A=\begin{pmatrix}4&1\\2&3\end{pmatrix}\)，\(p(\lambda)=\lambda^2-7\lambda+10\)，定理断言 \(A^2-7A+10I=O\)。</p>
+      <p>\(A^2=\begin{pmatrix}18&7\\14&11\end{pmatrix}\)，\(7A=\begin{pmatrix}28&7\\14&21\end{pmatrix}\)，\(10I=\begin{pmatrix}10&0\\0&10\end{pmatrix}\)</p>
+      <p style="margin:0">\(A^2-7A+10I=\begin{pmatrix}18-28+10&7-7+0\\14-14+0&11-21+10\end{pmatrix}=\begin{pmatrix}0&0\\0&0\end{pmatrix}=O\) ✓</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">主要用途</span></h3>
+    <p style="margin:0 0 20px">最常见的应用就是习题 11 那样，把矩阵的高次幂、矩阵多项式、甚至矩阵的逆（当 \(A\) 可逆时，从 \(p(A)=O\) 中解出 \(I\) 关于 \(A\) 的表达式，就能得到 \(A^{-1}\) 的多项式表示）都<strong>降幂</strong>为 \(A^{n-1},\dots,A,I\) 的线性组合，从而避免直接做高阶矩阵乘法。</p>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">特征多项式先靠 \(\det(A-\lambda I)=0\) 帮我们求特征值；反过来，把同一个多项式里的 \(\lambda\) 换成 \(A\) 本身，又能帮我们把矩阵的高次运算化简成低次运算——同一件"工具"，两种方向的用法。</p>
+    </div>
+  </div>
+
+  <footer>习题九 · 特征多项式 &nbsp;·&nbsp; 逐题详解</footer>
 
 </div>
 </div>
