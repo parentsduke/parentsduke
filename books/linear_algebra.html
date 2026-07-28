@@ -2259,6 +2259,45 @@
         取 $A=\begin{pmatrix}1&0\\0&0\end{pmatrix}$，$B=\begin{pmatrix}0&0\\0&1\end{pmatrix}$，都是 $2\times2$，$r(A)=r(B)=1$。直接算 $AB=\begin{pmatrix}0&0\\0&0\end{pmatrix}=O$，$r(AB)=0$。Sylvester 不等式给出的下界是 $r(A)+r(B)-n=1+1-2=0$，恰好取等——这个例子里 $A$ 的零空间（$y$ 轴）与 $B$ 的像空间（$y$ 轴）完全重合，重叠达到最大，所以损失的秩也达到了不等式允许的最大值。
       </div>
 
+      <h3 class="part"><span class="tag">深入</span>秩的可加性：什么时候 $r(A+B)=r(A)+r(B)$ 精确成立</h3>
+      <div class="step">一般情形只有不等式 $r(A+B)\le r(A)+r(B)$。等号成立<strong>当且仅当</strong> $A,B$ 的列空间之交为零、且行空间之交也为零——直观说，两者"完全没有共享的独立方向"，加起来的每一份秩都是"纯增量"，没有相互抵消或重叠。</div>
+      <div class="step">一个常见的充分条件：若 $AB^{\mathrm T}=O$ 且 $A^{\mathrm T}B=O$，则等号成立。这条判据在证明"某矩阵可以分解成若干秩一矩阵之和且互不冗余"、或者分析若尔当块结构时经常用到。</div>
+
+      <h3 class="part"><span class="tag">深入</span>Cauchy-Binet 公式：秩与子式的定量关系</h3>
+      <div class="step">设 $A$ 是 $m\times n$ 矩阵、$B$ 是 $n\times m$ 矩阵（$m\le n$），则</div>
+      <div class="center-block">$$\det(AB)=\sum_{S}\det(A_S)\det(B_S)$$</div>
+      <div class="step">其中 $S$ 遍历 $\{1,\dots,n\}$ 的所有 $m$ 元子集，$A_S,B_S$ 分别是取 $A$ 对应列、$B$ 对应行构成的 $m$ 阶子方阵。这个公式其实是"子式定义秩"的定量升级版——它精确解释了为什么 $AB$ 的秩会被 $A,B$ 各自的子式结构所限制，可以看作 Sylvester 秩不等式更深层的代数根源。</div>
+
+      <h3 class="part"><span class="tag">深入</span>Drazin 逆：不满秩、不可对角化方阵的广义逆</h3>
+      <div class="step">Moore-Penrose 伪逆适用于一般（未必是方阵）矩阵；而对于方阵但不可逆的情形（比如带幂零部分、不可对角化），还有一种更贴合矩阵结构的逆——<strong>Drazin 逆</strong> $A^D$，满足：</div>
+      <div class="center-block">$$A^kA^DA=A^k,\qquad A^DAA^D=A^D,\qquad AA^D=A^DA$$</div>
+      <div class="step">其中 $k$ 是 $A$ 的指标（使 $r(A^k)=r(A^{k+1})$ 成立的最小 $k$）。它在求解奇异线性微分方程组、马尔可夫链的平稳分布分析中，比 Moore-Penrose 伪逆更贴合问题的代数结构。</div>
+
+      <h3 class="part"><span class="tag">深入</span>结构化矩阵的秩：从代数走向应用</h3>
+      <div class="step"><strong>Vandermonde 矩阵：</strong>$V_{ij}=x_i^{\,j-1}$，只要 $x_1,\dots,x_n$ 两两不同，$V$ 就满秩——这正是"插值多项式存在且唯一"的代数根源。</div>
+      <div class="step"><strong>Hankel / Toeplitz 矩阵：</strong>一个 Hankel 矩阵的秩为 $r$，等价于生成它的数列可以写成 $r$ 个指数序列的线性组合——这是信号处理中"用低秩 Hankel 矩阵做频率估计"（Prony 方法）的理论基础。</div>
+      <div class="step"><strong>循环矩阵（circulant）：</strong>秩等于非零特征值的个数，而它的全部特征值可以直接由离散傅里叶变换（DFT/FFT）算出，完全不需要解特征方程——这也是循环矩阵在快速算法里特别受青睐的原因。</div>
+
+      <h3 class="part"><span class="tag">深入</span>秩与图论：拉普拉斯矩阵的秩与连通分量</h3>
+      <div class="step">图 $G$ 的拉普拉斯矩阵 $L=D-A$（$D$ 是度数对角阵，$A$ 是邻接矩阵）满足</div>
+      <div class="center-block">$$r(L)=n-(\text{连通分量个数})$$</div>
+      <div class="step">换句话说，$L$ 的零特征值的重数恰好等于图的连通分量数——这是谱图理论里最基本的结果之一，也是<strong>谱聚类算法</strong>的出发点：通过考察拉普拉斯矩阵最小的几个特征值对应的特征向量，就能把图"自然地"划分成若干个簇。</div>
+
+      <h3 class="part"><span class="tag">深入</span>低秩矩阵补全：从"部分已知"恢复整个矩阵</h3>
+      <div class="step">如果只知道一个（假定）低秩矩阵的一部分元素，能否恢复出全部元素？这是"推荐系统"（比如根据少数已打分的电影，推断用户对所有电影的评分）的数学原型。Candès–Recht 等人的理论结果表明：当矩阵的秩足够低、且已知条目分布得足够"随机分散"时，最小化<strong>核范数</strong>（矩阵所有奇异值之和，是秩的凸松弛）可以<strong>精确恢复</strong>原矩阵。</div>
+      <div class="step">这一结果的关键意义在于：直接最小化秩是一个组合优化问题（NP-难），而核范数把它转化成了一个凸优化问题，从而有高效算法可解。</div>
+
+      <h3 class="part"><span class="tag">深入</span>Sherman-Morrison-Woodbury 公式：低秩更新对逆矩阵的影响</h3>
+      <div class="step">若 $A$ 可逆，对它做一个秩 $k$ 的扰动 $A+UV^{\mathrm T}$（$U,V$ 都是 $n\times k$），则</div>
+      <div class="center-block">$$(A+UV^{\mathrm T})^{-1}=A^{-1}-A^{-1}U\big(I_k+V^{\mathrm T}A^{-1}U\big)^{-1}V^{\mathrm T}A^{-1}$$</div>
+      <div class="step">这条公式把一个 $n$ 阶矩阵求逆的问题，转化成了一个规模小得多的 $k$ 阶矩阵求逆——这是卡尔曼滤波、在线学习里"每来一条新数据就低秩更新一次"的核心工具，本质上利用的正是"更新只改变了秩为 $k$ 的一小块信息"这一事实。</div>
+
+      <h3 class="part"><span class="tag">深入</span>张量秩：秩概念的推广，也是它"失控"的地方</h3>
+      <div class="step">把"秩"这个概念推广到高维数组（张量）之后，情况急转直下：张量的秩（CP 分解里，最少需要多少个秩一张量之和才能表示它）一般是 NP-难问题，甚至同一个张量在实数域和复数域上的秩都可能不同——这与矩阵秩形成了鲜明对比（矩阵秩不依赖于具体用哪种方法计算，也不依赖于实数域还是复数域）。</div>
+      <div class="note">
+        <strong>说明：</strong>这提醒我们，矩阵秩之所以"性质好、可以被完全刻画"，本质上依赖于矩阵只有"行、列"两个方向；一旦推广到三维及以上，很多良好的性质（唯一分解、域无关性、多项式可解性）就都不再成立了。这也是本节把秩讲得如此详尽的原因——它是少数几个"低维时非常完美、一旦推广就迅速变得棘手"的概念之一。
+      </div>
+
       <div class="exercises">
         <div class="ex-head">小练习</div>
         <details>
