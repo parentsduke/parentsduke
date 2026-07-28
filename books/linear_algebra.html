@@ -1917,6 +1917,26 @@
       </div>
       <div class="step">用例2验算：迹 $=3+2=5=1+4$ ✓；行列式 $=3\times2-1\times2=4=1\times4$ ✓。</div>
 
+      <div class="example">
+        <div class="ex-label">证明</div>
+        设 $A$ 是 $n\times n$ 矩阵，特征值为 $\lambda_1,\dots,\lambda_n$（按重数计入，允许复数）。特征值是特征方程 $\det(A-\lambda E)=0$ 的根，把左边展开是关于 $\lambda$ 的 $n$ 次多项式，称为<strong>特征多项式</strong> $p(\lambda)=\det(A-\lambda E)$。既然 $\lambda_1,\dots,\lambda_n$ 是它的全部根，就可以因式分解为
+        $$p(\lambda)=(-1)^n(\lambda-\lambda_1)(\lambda-\lambda_2)\cdots(\lambda-\lambda_n)$$
+        下面分别比较这个因式分解式与行列式定义式中的<strong>常数项</strong>和<strong>$\lambda^{n-1}$ 项系数</strong>，就得到两条捷径。
+        <br><br>
+        <strong>① 常数项 ⟹ 行列式 = 特征值之积。</strong>在因式分解式中令 $\lambda=0$：
+        $$p(0)=(-1)^n(-\lambda_1)(-\lambda_2)\cdots(-\lambda_n)=(-1)^n\cdot(-1)^n\lambda_1\lambda_2\cdots\lambda_n=\lambda_1\lambda_2\cdots\lambda_n$$
+        另一方面直接代入定义：$p(0)=\det(A-0\cdot E)=\det A$。两者相等，故 $\lambda_1\lambda_2\cdots\lambda_n=\det A$。
+        <br><br>
+        <strong>② $\lambda^{n-1}$ 系数 ⟹ 迹 = 特征值之和。</strong>把因式分解式的 $n$ 个因子展开，$\lambda^{n-1}$ 项来自"$n-1$ 个因子取 $\lambda$、剩下 1 个因子取 $-\lambda_i$"，对所有 $i$ 求和，系数为 $(-1)^{n-1}(\lambda_1+\cdots+\lambda_n)$。另一方面，按行列式的定义展开
+        $$p(\lambda)=\det(A-\lambda E)=\begin{vmatrix}a_{11}-\lambda&a_{12}&\cdots&a_{1n}\\a_{21}&a_{22}-\lambda&\cdots&a_{2n}\\\vdots&\vdots&\ddots&\vdots\\a_{n1}&a_{n2}&\cdots&a_{nn}-\lambda\end{vmatrix}$$
+        可以证明只有主对角线这一项 $(a_{11}-\lambda)(a_{22}-\lambda)\cdots(a_{nn}-\lambda)$ 能贡献出 $\lambda^{n-1}$（其余每一项排列都至少有两个位置不在对角线上，含 $\lambda$ 的因子最多 $n-2$ 个，次数不够）。把它展开，$\lambda^{n-1}$ 的系数是 $(-1)^{n-1}(a_{11}+\cdots+a_{nn})$。比较两边系数，约去 $(-1)^{n-1}$，即得
+        $$\lambda_1+\lambda_2+\cdots+\lambda_n=a_{11}+a_{22}+\cdots+a_{nn}=\operatorname{tr}(A)$$
+      </div>
+
+      <div class="note">
+        <strong>说明：</strong> 这两条捷径本质上是特征多项式系数与特征值之间的<strong>韦达定理（根与系数关系）</strong>：常数项（$\lambda=0$ 处取值）对应行列式（特征值之积），次高次项系数对应迹（特征值之和）。这也是为什么算出特征值后，只需快速验一下 $\det A$ 和 $\operatorname{tr}(A)$，就能检验计算是否正确。
+      </div>
+
       <div class="note">
         <strong>说明：</strong> 特征向量给出了一个变换"最诚实"的观察角度——沿着特征向量方向去看，一个可能看起来很复杂的变换（旋转+拉伸+切变混在一起），会简化成"就是把这个方向拉伸了 $\lambda$ 倍"这么简单的一句话。这正是下一节"对角化"想要达成的目标。
       </div>
@@ -2709,6 +2729,45 @@
     <div class="box note">
       <div class="label">回到本题的应用</div>
       <p style="margin:0">令 \(X=A^k,\ Y=B\)，则 \(\operatorname{tr}(A^kB)=\operatorname{tr}(BA^k)\)，于是 \(\operatorname{tr}(A^kB-BA^k)=0\)。这一步是本题最巧妙的地方：<strong>任何形如交换子 \([X,Y]=XY-YX\) 的矩阵，其迹必为零</strong>，值得牢记。</p>
+    </div>
+  </div>
+
+  <!-- ===================== FOLLOW-UP: WHAT IS A COMMUTATOR ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>什么是交换子 \([A,B]\)？</h2>
+
+    <p>"交换子"衡量两个元素（矩阵、算子，或群里的元素）"是否可交换"，即先做 \(A\) 再做 \(B\)，与先做 \(B\) 再做 \(A\)，结果是否相同。它在不同数学分支里定义略有不同，但核心思想一致。</p>
+
+    <h3 class="sub"><span class="tag">定义</span> 矩阵 / 算子中的交换子</h3>
+    <p>对于两个 \(n\times n\) 矩阵 \(A,B\)，定义</p>
+    \[[A,B]=AB-BA\]
+    <p style="margin:0 0 20px">若 \(A,B\) 可交换（\(AB=BA\)），则 \([A,B]=0\)；反之 \([A,B]\neq0\) 说明两者不可交换，并且 \([A,B]\) 这个矩阵本身就精确刻画了"顺序颠倒之后差多少"。</p>
+
+    <div class="box verify">
+      <div class="label">交换子的基本性质</div>
+      <p>反对称性：\([A,B]=-[B,A]\)</p>
+      <p>双线性：\([A+B,C]=[A,C]+[B,C]\)（对数乘同样成立）</p>
+      <p>雅可比恒等式：\([A,[B,C]]+[B,[C,A]]+[C,[A,B]]=0\)</p>
+      <p style="margin:0">迹为零：\(\operatorname{tr}([A,B])=\operatorname{tr}(AB)-\operatorname{tr}(BA)=0\)（正是本题 Step 2 用到的循环不变性）</p>
+    </div>
+
+    <p style="margin:0 0 20px">配上 \([\cdot,\cdot]\) 这个运算，所有 \(n\times n\) 矩阵构成一个<strong>李代数（Lie algebra）</strong>，记作 \(\mathfrak{gl}(n)\)。量子力学中最著名的例子是位置算子与动量算子：</p>
+    \[[\hat x,\hat p]=i\hbar\]
+    <p style="margin:0 0 20px">这个非零的交换子正是海森堡不确定性原理的数学根源——正因为 \(\hat x,\hat p\) 不可交换，才不能同时精确测量位置和动量。</p>
+
+    <h3 class="sub"><span class="tag">对照</span> 群论中的交换子</h3>
+    <p style="margin:0 0 20px">对群 \(G\) 中的元素 \(a,b\)，交换子定义为 \([a,b]=a^{-1}b^{-1}ab\)。若 \(a,b\) 可交换，则 \([a,b]=e\)（单位元）。由所有交换子生成的子群叫<strong>换位子群</strong> \([G,G]\)，衡量群"离阿贝尔群有多远"；商群 \(G/[G,G]\) 则是最大的阿贝尔商，称为 \(G\) 的阿贝尔化。</p>
+
+    <table class="compare">
+      <tr><th>场景</th><th>定义</th><th>为 0（或单位元）时意味着</th></tr>
+      <tr><td>矩阵 / 算子</td><td>\([A,B]=AB-BA\)</td><td>\(A,B\) 可交换</td></tr>
+      <tr><td>群</td><td>\([a,b]=a^{-1}b^{-1}ab\)</td><td>\(a,b\) 可交换</td></tr>
+    </table>
+
+    <div class="box note">
+      <div class="label">一句话理解</div>
+      <p style="margin:0">交换子就是"顺序颠倒之后差多少"的精确度量——结果是 0（或单位元）说明顺序不影响结果；否则，交换子本身就编码了这种"不可交换性"的具体结构。这也是习题七里 \(A^kB-BA^k\) 这类式子被称作交换子、并且天然满足"迹为零"的根本原因。</p>
     </div>
   </div>
 
