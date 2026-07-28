@@ -805,6 +805,7 @@
       <p class="part-label">附录 · 习题详解</p>
       <a href="#ex6"><span class="num">✎</span>习题六：线性空间与基</a>
       <a href="#ex7"><span class="num">✎</span>习题七：交换子与幂零矩阵</a>
+      <a href="#ex8"><span class="num">✎</span>习题八：线性变换的矩阵表示</a>
     </nav>
   </aside>
 
@@ -2657,6 +2658,110 @@
   </div>
 
   <footer>习题七 · 交换子与幂零矩阵 &nbsp;·&nbsp; 逐题详解</footer>
+
+</div>
+</div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 习题八 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ex8" style="max-width:none; padding:0;">
+      <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
+      <h2 class="chapter-title" style="padding:0 40px;">习题八：线性变换的矩阵表示</h2>
+      <p class="chapter-tagline" style="padding:0 40px;">对应第三部"变换的账本"——从"整体公式"到"矩阵的列"，弄清两种写法各自在做什么</p>
+
+<div class="ex6-scope"><div class="wrap">
+
+  <header>
+    <div class="eyebrow">线性代数 · 基础题 · 详解</div>
+    <h1>习题八详解</h1>
+    <div class="subtitle">给定变换公式，如何逐个基向量代入，写出矩阵表示</div>
+    <div class="bracket-hero">
+      <svg viewBox="0 0 20 64" fill="none"><path d="M16 2 L4 2 L4 62 L16 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+      <div class="grid-mini">
+        <span>T(e_i)</span><span>→</span>
+        <span>第 i 列</span><span>A</span>
+      </div>
+      <svg viewBox="0 0 20 64" fill="none"><path d="M4 2 L16 2 L16 62 L4 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+    </div>
+  </header>
+
+  <!-- ===================== PROBLEM 6 ===================== -->
+  <section class="problem" id="p6">
+    <div class="prob-head">
+      <span class="prob-num">6</span>
+      <span class="prob-title">求线性变换 T 在标准基下的矩阵表示</span>
+    </div>
+    <div class="prob-statement">
+      取 \(\mathbb{R}^5\) 标准基 \(e_1,\dots,e_5\)，变换 \(T(x_1,x_2,x_3,x_4,x_5)=(x_2+x_5,\ x_3,\ x_4,\ x_5,\ x_1)\)。求 \(T\) 在标准基下的矩阵表示。
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 1</span> 矩阵的列由"逐个基向量"的像决定</h3>
+    <p>题目给出的公式 \(T(x_1,\dots,x_5)=(x_2+x_5,x_3,x_4,x_5,x_1)\) 是对<strong>任意</strong>向量一次性给出的整体规则。但按照矩阵表示的定义，矩阵 \(A\) 的第 \(i\) 列必须是 \(T(e_i)\)——所以求矩阵时不能"整体代入"，而要把 \(e_1,\dots,e_5\) 逐个代进公式里：</p>
+    \[A=\big(\,T(e_1)\ \ T(e_2)\ \ T(e_3)\ \ T(e_4)\ \ T(e_5)\,\big)\]
+
+    <h3 class="sub"><span class="tag">Step 2</span> 逐个代入基向量，计算像</h3>
+    <div class="box verify">
+      <div class="label">五次代入</div>
+      <p>\(T(e_1)=T(1,0,0,0,0)=(0,0,0,0,1)\)</p>
+      <p>\(T(e_2)=T(0,1,0,0,0)=(1,0,0,0,0)\)</p>
+      <p>\(T(e_3)=T(0,0,1,0,0)=(0,1,0,0,0)\)</p>
+      <p>\(T(e_4)=T(0,0,0,1,0)=(0,0,1,0,0)\)</p>
+      <p style="margin:0">\(T(e_5)=T(0,0,0,0,1)=(1,0,0,1,0)\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 3</span> 依次排成矩阵的列</h3>
+    <p>把上面五个像依次作为第 1 列到第 5 列，得到 \(T\) 在标准基下的矩阵：</p>
+    \[A=\begin{pmatrix}0&1&0&0&1\\0&0&1&0&0\\0&0&0&1&0\\0&0&0&0&1\\1&0&0&0&0\end{pmatrix}\]
+
+    <div class="box basis">
+      <div class="label">验证</div>
+      <p style="margin:0">\(A\begin{pmatrix}x_1\\x_2\\x_3\\x_4\\x_5\end{pmatrix}=\begin{pmatrix}x_2+x_5\\x_3\\x_4\\x_5\\x_1\end{pmatrix}\)，正好与题设的整体公式一致。\(\blacksquare\)</p>
+    </div>
+  </section>
+
+  <!-- ===================== FOLLOW-UP: TWO WRITING STYLES ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>"整体公式"和"逐个代入"，为什么两种写法都要用？</h2>
+
+    <p>这是两件不同的事——<strong>定义变换</strong>和<strong>求矩阵表示</strong>，各自用最方便的方式来写，两者并不矛盾。</p>
+
+    <h3 class="sub"><span class="tag">整体公式</span>用来定义变换</h3>
+    <p style="margin:0 0 20px">\(T(x_1,\dots,x_5)=(x_2+x_5,x_3,x_4,x_5,x_1)\) 一次性说清楚了 \(T\) 对<strong>任意</strong>向量的作用规则，是最简洁、最完整的定义方式，不需要逐个列出五条式子。</p>
+
+    <h3 class="sub"><span class="tag">逐个代入</span>用来求矩阵</h3>
+    <p style="margin:0 0 20px">矩阵表示法的定义规定：矩阵的每一列就是基向量的像。所以哪怕已经有了整体公式，要写出矩阵，还是必须把 \(e_1,\dots,e_5\) 逐个代进公式里，看每次输出的是什么。</p>
+
+    <div class="box note">
+      <div class="label">两者殊途同归</div>
+      <p style="margin:0">利用向量的坐标分解 \((x_1,\dots,x_5)=x_1e_1+\cdots+x_5e_5\) 与 \(T\) 的线性性，可以反过来验证：\(T(x_1,\dots,x_5)=x_1T(e_1)+\cdots+x_5T(e_5)\)，把 Step 2 求出的五个像代入，线性组合出来的结果正好就是原来的整体公式。所以"整体公式"负责简洁地<strong>定义</strong>变换，"逐个代入基向量"负责按矩阵的构造规则<strong>翻译</strong>成矩阵。</p>
+    </div>
+  </div>
+
+  <!-- ===================== FOLLOW-UP: VECTOR AS BASIS COMBINATION ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>\((x_1,\dots,x_5)=x_1e_1+\cdots+x_5e_5\) 在说什么？</h2>
+
+    <p>这条式子和前面"整体公式 vs 逐个代入"是另一回事——它表达的是<strong>基</strong>的定义本身：任意向量都可以分解成基向量的线性组合。</p>
+
+    <h3 class="sub"><span class="tag">恒等式</span>与 T 无关，对任何向量都成立</h3>
+    <p style="margin:0 0 20px">\((x_1,\dots,x_5)\) 就是 \(\mathbb{R}^5\) 中<strong>一个向量</strong>，\(x_1,\dots,x_5\) 不是五个独立的向量，而是同一个向量的五个分量（坐标）。把 \(e_1=(1,0,0,0,0),\dots,e_5=(0,0,0,0,1)\) 乘上系数加起来：</p>
+    \[x_1(1,0,0,0,0)+x_2(0,1,0,0,0)+\cdots+x_5(0,0,0,0,1)=(x_1,x_2,x_3,x_4,x_5)\]
+    <p style="margin:0 0 20px">正好凑出原向量，这是对任何向量都成立的恒等式，跟 \(T\) 无关。</p>
+
+    <div class="box verify">
+      <div class="label">它是证明"矩阵的列 = 基向量的像"的关键一步</div>
+      <p>\(T(x_1,\dots,x_5)=T(x_1e_1+\cdots+x_5e_5)\)</p>
+      <p style="margin:0">利用线性性展开：\(=x_1T(e_1)+x_2T(e_2)+x_3T(e_3)+x_4T(e_4)+x_5T(e_5)\)。第一步是把向量拆成基向量的组合（本节公式），第二步是把 \(T\) 的作用挪到每一项上单独算——两步结合起来，正好说明了为什么"逐个求 \(T(e_i)\) 再排成矩阵"是对的。</p>
+    </div>
+  </div>
+
+  <footer>习题八 · 线性变换的矩阵表示 &nbsp;·&nbsp; 逐题详解</footer>
 
 </div>
 </div>
