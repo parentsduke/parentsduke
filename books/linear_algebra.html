@@ -807,6 +807,7 @@
       <a href="#ex7"><span class="num">✎</span>习题七：交换子与幂零矩阵</a>
       <a href="#ex8"><span class="num">✎</span>习题八：线性变换的矩阵表示</a>
       <a href="#ex9"><span class="num">✎</span>习题九：特征多项式</a>
+      <a href="#ex10"><span class="num">✎</span>习题十：过渡矩阵与几何变换</a>
     </nav>
   </aside>
 
@@ -2930,9 +2931,9 @@
   </header>
 
   <!-- ===================== PROBLEM 9 ===================== -->
-  <section class="problem" id="p9">
+  <section class="problem" id="p7">
     <div class="prob-head">
-      <span class="prob-num">9</span>
+      <span class="prob-num">7</span>
       <span class="prob-title">求 2×2 矩阵的特征多项式与特征值</span>
     </div>
     <div class="prob-statement">
@@ -2962,9 +2963,9 @@
   </section>
 
   <!-- ===================== PROBLEM 10 ===================== -->
-  <section class="problem" id="p10">
+  <section class="problem" id="p8">
     <div class="prob-head">
-      <span class="prob-num">10</span>
+      <span class="prob-num">8</span>
       <span class="prob-title">带零元的 3×3 矩阵：分块展开求特征值</span>
     </div>
     <div class="prob-statement">
@@ -2993,9 +2994,9 @@
   </section>
 
   <!-- ===================== PROBLEM 11 ===================== -->
-  <section class="problem" id="p11">
+  <section class="problem" id="p9">
     <div class="prob-head">
-      <span class="prob-num">11</span>
+      <span class="prob-num">9</span>
       <span class="prob-title">用 Cayley-Hamilton 定理化简矩阵表达式</span>
     </div>
     <div class="prob-statement">
@@ -3086,7 +3087,160 @@
     </div>
   </div>
 
+  <div class="nextlink"><a href="#ex10">下一篇：习题十 · 过渡矩阵与几何变换 →</a></div>
+
   <footer>习题九 · 特征多项式 &nbsp;·&nbsp; 逐题详解</footer>
+
+</div>
+</div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 习题十 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ex10" style="max-width:none; padding:0;">
+      <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
+      <h2 class="chapter-title" style="padding:0 40px;">习题十：过渡矩阵与几何变换</h2>
+      <p class="chapter-tagline" style="padding:0 40px;">一道基变换的完整流程题，加上四个 2×2 矩阵的几何意义辨认</p>
+
+<div class="ex6-scope"><div class="wrap">
+
+  <header>
+    <div class="eyebrow">线性代数 · 基础题 · 详解</div>
+    <h1>习题十详解</h1>
+    <div class="subtitle">从过渡矩阵到坐标变换，再到平面变换的几何直觉</div>
+    <div class="bracket-hero">
+      <svg viewBox="0 0 20 64" fill="none"><path d="M16 2 L4 2 L4 62 L16 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+      <div class="grid-mini">
+        <span>e</span><span>→</span>
+        <span>&alpha;</span><span>P</span>
+      </div>
+      <svg viewBox="0 0 20 64" fill="none"><path d="M4 2 L16 2 L16 62 L4 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+    </div>
+  </header>
+
+  <!-- ===================== PROBLEM 10 ===================== -->
+  <section class="problem" id="p10">
+    <div class="prob-head">
+      <span class="prob-num">10</span>
+      <span class="prob-title">求过渡矩阵、坐标变换，与两基下坐标相同的向量</span>
+    </div>
+    <div class="prob-statement">
+      在 \(\mathbb{R}^4\) 中取两个基：标准基 \(e_1=(1,0,0,0)^{\mathrm T},e_2=(0,1,0,0)^{\mathrm T},e_3=(0,0,1,0)^{\mathrm T},e_4=(0,0,0,1)^{\mathrm T}\)，以及 \(\alpha_1=(2,1,-1,1)^{\mathrm T},\alpha_2=(0,3,1,0)^{\mathrm T},\alpha_3=(5,3,2,1)^{\mathrm T},\alpha_4=(6,6,1,3)^{\mathrm T}\)。
+      (1) 求由前一个基到后一个基的过渡矩阵；(2) 求向量 \((x_1,x_2,x_3,x_4)^{\mathrm T}\) 在后一个基下的坐标；(3) 求在两个基下有相同坐标的向量。
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 1</span> 过渡矩阵：把 \(\alpha_j\) 按 \(e\) 展开，逐列排开</h3>
+    <p>过渡矩阵 \(P\) 的定义是：\((\alpha_1,\alpha_2,\alpha_3,\alpha_4)=(e_1,e_2,e_3,e_4)P\)，即 \(P\) 的第 \(j\) 列就是 \(\alpha_j\) 在 \(e\) 基下的坐标。因为 \(e\) 是<strong>标准基</strong>，\(\alpha_j\) 的坐标就是它自己的分量，所以直接把四个 \(\alpha_j\) 按列排起来即可：</p>
+    <div class="box verify">
+      <div class="label">过渡矩阵 P</div>
+      <p style="margin:0">\[P=\begin{pmatrix}2&0&5&6\\1&3&3&6\\-1&1&2&1\\1&0&1&3\end{pmatrix}\]</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 2</span> 坐标变换公式：\(x=Py\ \Rightarrow\ y=P^{-1}x\)</h3>
+    <p>设向量 \(v\) 在 \(e\) 基下坐标为 \(x=(x_1,x_2,x_3,x_4)^{\mathrm T}\)（因为 \(e\) 是标准基，坐标就等于分量本身），在 \(\alpha\) 基下坐标为 \(y\)。由过渡矩阵的定义，两组坐标满足 \(x=Py\)，于是 \(y=P^{-1}x\)。用初等行变换求出：</p>
+    <div class="box basis">
+      <div class="label">\(P^{-1}\)（用 Gauss-Jordan 消元求得）</div>
+      <p style="margin:0">\[P^{-1}=\dfrac{1}{27}\begin{pmatrix}12&9&-27&-33\\1&12&-9&-23\\9&0&0&-18\\-7&-3&9&26\end{pmatrix}\]</p>
+    </div>
+    <p>于是 \((x_1,x_2,x_3,x_4)^{\mathrm T}\) 在 \(\alpha\) 基下的坐标 \(y=(y_1,y_2,y_3,y_4)^{\mathrm T}\) 为：</p>
+    <div class="box verify">
+      <div class="label">结果</div>
+      <p>\(y_1=\dfrac{4x_1+3x_2-9x_3-11x_4}{9}\)</p>
+      <p>\(y_2=\dfrac{x_1+12x_2-9x_3-23x_4}{27}\)</p>
+      <p>\(y_3=\dfrac{x_1-2x_4}{3}\)</p>
+      <p style="margin:0">\(y_4=\dfrac{-7x_1-3x_2+9x_3+26x_4}{27}\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 3</span> 两基下坐标相同：\(x=y\) 意味着 \(Px=x\)</h3>
+    <p>"坐标相同"是指同一个向量在两个基下的坐标向量相等，即 \(y=x\)。代入 \(x=Py\) 得 \(x=Px\)，即 \((P-I)x=0\)——这是一个关于 \(x\) 的齐次线性方程组：</p>
+    <div class="box verify">
+      <div class="label">求解 \((P-I)x=0\)</div>
+      <p>\(P-I=\begin{pmatrix}1&0&5&6\\1&2&3&6\\-1&1&1&1\\1&0&1&2\end{pmatrix}\)，消元后解得 \(x_1=x_2=x_3=-x_4\)</p>
+      <p style="margin:0">令 \(x_4=t\)，得通解 \(x=t(-1,-1,-1,1)^{\mathrm T},\ t\in\mathbb{R}\)</p>
+    </div>
+
+    <div class="box note">
+      <div class="label">结论</div>
+      <p style="margin:0">在两个基下坐标相同的向量，恰好构成一条过原点的直线（一维子空间）：\(k(-1,-1,-1,1)^{\mathrm T}\)，\(k\in\mathbb{R}\)。</p>
+    </div>
+  </section>
+
+  <!-- ===================== PROBLEM 11 ===================== -->
+  <section class="problem" id="p11">
+    <div class="prob-head">
+      <span class="prob-num">11</span>
+      <span class="prob-title">辨认平面变换 \(T\binom{x}{y}=A\binom{x}{y}\) 的几何意义</span>
+    </div>
+    <div class="prob-statement">
+      说明 \(xOy\) 平面上变换 \(T\binom{x}{y}=A\binom{x}{y}\) 的几何意义，其中
+      (1) \(A=\begin{pmatrix}-1&0\\0&1\end{pmatrix}\)；(2) \(A=\begin{pmatrix}0&0\\0&1\end{pmatrix}\)；(3) \(A=\begin{pmatrix}0&1\\1&0\end{pmatrix}\)；(4) \(A=\begin{pmatrix}0&1\\-1&0\end{pmatrix}\)。
+    </div>
+
+    <h3 class="sub"><span class="tag">思路</span>把每个矩阵直接作用在 \((x,y)\) 上，看输出长什么样</h3>
+    <p style="margin:0 0 20px">辨认 2×2 矩阵几何意义最直接的办法：把 \(A\binom{x}{y}\) 乘出来，得到一个新的点 \((x',y')\)，再看这个对应关系是"翻转""投影""旋转"中的哪一种。</p>
+
+    <div class="box verify">
+      <div class="label">(1) \(A=\begin{pmatrix}-1&0\\0&1\end{pmatrix}\)</div>
+      <p style="margin:0">\(A\binom{x}{y}=\binom{-x}{y}\)：横坐标变号，纵坐标不变——这是<strong>关于 y 轴的镜面反射</strong>。</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">(2) \(A=\begin{pmatrix}0&0\\0&1\end{pmatrix}\)</div>
+      <p style="margin:0">\(A\binom{x}{y}=\binom{0}{y}\)：横坐标被直接抹为 0，纵坐标保留——这是把平面上任意一点<strong>正交投影到 y 轴</strong>上（投影后图形被压扁成一条直线，是不可逆变换，因为 \(\det A=0\)）。</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">(3) \(A=\begin{pmatrix}0&1\\1&0\end{pmatrix}\)</div>
+      <p style="margin:0">\(A\binom{x}{y}=\binom{y}{x}\)：横纵坐标互换——这是<strong>关于直线 \(y=x\) 的镜面反射</strong>。</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">(4) \(A=\begin{pmatrix}0&1\\-1&0\end{pmatrix}\)</div>
+      <p style="margin:0">\(A\binom{x}{y}=\binom{y}{-x}\)。对照旋转矩阵 \(R(\theta)=\begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix}\)，令 \(\cos\theta=0,\sin\theta=-1\)，即 \(\theta=-90^\circ\)——这是绕原点<strong>顺时针旋转 90°</strong>（例如 \((1,0)\mapsto(0,-1)\)）。</p>
+    </div>
+
+    <table class="compare">
+      <tr><th>矩阵</th><th>作用</th><th>几何意义</th></tr>
+      <tr><td>\(\begin{pmatrix}-1&0\\0&1\end{pmatrix}\)</td><td>\((x,y)\mapsto(-x,y)\)</td><td>关于 y 轴反射</td></tr>
+      <tr><td>\(\begin{pmatrix}0&0\\0&1\end{pmatrix}\)</td><td>\((x,y)\mapsto(0,y)\)</td><td>投影到 y 轴</td></tr>
+      <tr><td>\(\begin{pmatrix}0&1\\1&0\end{pmatrix}\)</td><td>\((x,y)\mapsto(y,x)\)</td><td>关于 y=x 反射</td></tr>
+      <tr><td>\(\begin{pmatrix}0&1\\-1&0\end{pmatrix}\)</td><td>\((x,y)\mapsto(y,-x)\)</td><td>顺时针旋转 90°</td></tr>
+    </table>
+  </section>
+
+  <!-- ===================== FOLLOW-UP: HOW TO SPOT ROTATION/REFLECTION/PROJECTION ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>不代入数字，怎么一眼看出矩阵是反射、投影还是旋转？</h2>
+
+    <p>习题 11 是靠代入 \((x,y)\) 硬算出来的，但更快的办法是看矩阵满足的<strong>代数特征</strong>——三类变换各自对应一条可以直接检验的等式。</p>
+
+    <h3 class="sub"><span class="tag">反射</span> \(A^2=I\) 且 \(A^{\mathrm T}=A\)</h3>
+    <p style="margin:0 0 20px">反射"做两次等于什么都没做"，所以 \(A^2=I\)；反射矩阵还是<strong>对称矩阵</strong>（\(A^{\mathrm T}=A\)）。(1)(3) 都满足这两条：\(\begin{pmatrix}-1&0\\0&1\end{pmatrix}^2=I\)，\(\begin{pmatrix}0&1\\1&0\end{pmatrix}^2=I\)，且两者都对称。</p>
+
+    <h3 class="sub"><span class="tag">投影</span> \(A^2=A\) 且 \(\det A=0\)</h3>
+    <p style="margin:0 0 20px">投影"做第二次和做第一次效果一样"（已经投影过的点再投一次还在原处），所以满足 \(A^2=A\)（这样的矩阵叫<strong>幂等矩阵</strong>）；又因为投影会把一个维度"压没"，必然\(\det A=0\)、不可逆。(2) 中 \(\begin{pmatrix}0&0\\0&1\end{pmatrix}^2=\begin{pmatrix}0&0\\0&1\end{pmatrix}\)，且行列式为 0，正好符合。</p>
+
+    <h3 class="sub"><span class="tag">旋转</span> \(A^{\mathrm T}A=I\) 且 \(\det A=1\)</h3>
+    <p style="margin:0 0 20px">旋转不改变长度和角度，是<strong>正交变换</strong>（\(A^{\mathrm T}A=I\)），并且不翻转方向，行列式恒为 \(+1\)（若行列式为 \(-1\)，则是"旋转+反射"的组合，即旋转反射变换）。(4) 中 \(A^{\mathrm T}A=\begin{pmatrix}0&-1\\1&0\end{pmatrix}\begin{pmatrix}0&1\\-1&0\end{pmatrix}=I\)，\(\det A=0\times0-1\times(-1)=1\)，符合旋转的判据。</p>
+
+    <table class="compare">
+      <tr><th>变换类型</th><th>代数特征</th><th>直觉</th></tr>
+      <tr><td>反射</td><td>\(A^2=I,\ A^{\mathrm T}=A\)</td><td>做两次抵消，且是对称的</td></tr>
+      <tr><td>投影</td><td>\(A^2=A,\ \det A=0\)</td><td>投第二次和第一次一样，且压缩了维度</td></tr>
+      <tr><td>旋转</td><td>\(A^{\mathrm T}A=I,\ \det A=1\)</td><td>保长度、保角度、不翻转</td></tr>
+    </table>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">与其每次都代入 \((x,y)\) 算一遍，不如先算 \(A^2\)、\(A^{\mathrm T}A\)、\(\det A\) 这几个量，往往几步就能锁定变换的类型，再回过头验证具体的作用效果。</p>
+    </div>
+  </div>
+
+  <footer>习题十 · 过渡矩阵与几何变换 &nbsp;·&nbsp; 逐题详解</footer>
 
 </div>
 </div>
