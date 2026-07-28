@@ -1322,6 +1322,17 @@
         <div class="ex-label">一定有解——零解</div>
         $x_1=x_2=\cdots=x_n=0$ 永远满足 $Ax=0$，这个解叫<strong>零解（平凡解）</strong>。所以讨论齐次方程组时，真正要问的问题是"<strong>除了零解，还有没有别的解</strong>"，而不是"有没有解"。
       </div>
+
+      <div class="step"><strong>什么叫解空间：</strong>把所有满足 $Ax=0$ 的 $x$ 收集起来，这整个集合就叫<strong>解空间</strong>，也叫<strong>零空间</strong>。它配得上"空间"这个名字，是因为满足<strong>线性组合封闭性</strong>——两个解相加、解乘以任意常数，结果仍然是解（下面会证明），这正是线性空间要求的"加法封闭、数乘封闭"。</div>
+
+      <div class="example">
+        <div class="ex-label">具体例子：解空间长什么样</div>
+        设 $A=\begin{pmatrix}1&0&0\\0&1&0\\0&0&0\end{pmatrix}$。解 $Ax=0$，即 $(x,y,0)=(0,0,0)$，得 $x=0,y=0$，而 $z$ 可以任意取值。所以解空间是 $\{(0,0,z):z\in\mathbb{R}\}$——正是 $z$ 轴，一条过原点的直线，维数是 1，对应 $n-r(A)=3-2=1$（这里 $r(A)=2$）。<br><br>
+        一般地：$r(A)=n$（满秩）时解空间只有一个点（零向量），只有零解；$r(A)=n-1$ 时解空间是一条过原点的直线；$r(A)=n-2$ 时是一张过原点的平面……解空间永远<strong>过原点</strong>，因为 $x=0$ 恒在其中。
+      </div>
+
+      <div class="step" style="margin-top:14px"><strong>提醒：非齐次方程组 $Ax=b$（$b\neq0$）的解集不叫"解空间"</strong>——因为这时 $x=0$ 一般不是解，两个解相加也不再是解，解集不满足线性空间的封闭性，只是"解空间"整体平移后的一个仿射子空间（详见下一节）。"解空间"这个词专指齐次方程组的解集。</div>
+
       <div class="center-block">
         <table class="matrix-table">
           <tr><th>条件（$r(A)$ 为系数矩阵的秩，$n$ 为未知数个数）</th><th>解的情况</th></tr>
