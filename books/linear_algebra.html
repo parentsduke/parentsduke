@@ -2206,7 +2206,7 @@
       <div class="step"><strong>与可逆性的关系（方阵）：</strong>对 $n$ 阶方阵 $A$，$A$ 可逆 $\iff r(A)=n\iff\det(A)\neq0$。</div>
       <div class="step"><strong>乘法不增秩：</strong>$r(AB)\le\min\big(r(A),r(B)\big)$——矩阵相乘是一种变换，变换之后信息量不会凭空增多。</div>
       <div class="step"><strong>可逆矩阵相乘不改变秩：</strong>若 $P,Q$ 可逆，则 $r(PAQ)=r(A)$。这正是"初等变换不改变秩"的根本原因——初等变换本质上就是左乘或右乘一个可逆的初等矩阵。</div>
-      <div class="step"><strong>加法：</strong>$r(A+B)\le r(A)+r(B)$。</div>
+      <div class="step"><strong>加法：</strong>$r(A+B)\le r(A)+r(B)$。注意这条只是上界，加法并不像乘法那样"不增秩"——比如 $A=\begin{pmatrix}1&0\\0&0\end{pmatrix}$、$B=\begin{pmatrix}0&0\\0&1\end{pmatrix}$，$r(A)=r(B)=1$，但 $A+B=I$ 的秩是 2，秩反而变大了。更完整的说法是一个双边不等式：$$|r(A)-r(B)|\le r(A+B)\le r(A)+r(B)$$左边的下界把 $A$ 写成 $(A+B)-B$ 再用上界即得 $r(A)\le r(A+B)+r(B)$，移项就是 $r(A)-r(B)\le r(A+B)$，同理可得 $r(B)-r(A)\le r(A+B)$。何时等号精确成立，见后文"秩的可加性"一节。</div>
 
       <h3 class="part"><span class="tag">核心意义</span>秩与线性方程组解的结构</h3>
       <div class="step">设 $Ax=b$，$A$ 是 $m\times n$ 矩阵，$\tilde A=(A\mid b)$ 是增广矩阵。比较 $r(A)$ 与 $r(\tilde A)$，就能完全确定解的情况：</div>
