@@ -808,6 +808,7 @@
       <a href="#ex8"><span class="num">✎</span>习题八：线性变换的矩阵表示</a>
       <a href="#ex9"><span class="num">✎</span>习题九：特征多项式</a>
       <a href="#ex10"><span class="num">✎</span>习题十：过渡矩阵与几何变换</a>
+      <a href="#ex11"><span class="num">✎</span>习题十一：合同变换是线性变换</a>
     </nav>
   </aside>
 
@@ -3240,7 +3241,119 @@
     </div>
   </div>
 
+  <div class="nextlink"><a href="#ex11">下一篇：习题十一 · 合同变换是线性变换 →</a></div>
+
   <footer>习题十 · 过渡矩阵与几何变换 &nbsp;·&nbsp; 逐题详解</footer>
+
+</div>
+</div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 习题十一 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ex11" style="max-width:none; padding:0;">
+      <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
+      <h2 class="chapter-title" style="padding:0 40px;">习题十一：合同变换是线性变换</h2>
+      <p class="chapter-tagline" style="padding:0 40px;">在对称矩阵构成的线性空间里，验证 \(T(A)=P^{\mathrm T}AP\) 满足线性变换的两条公理</p>
+
+<div class="ex6-scope"><div class="wrap">
+
+  <header>
+    <div class="eyebrow">线性代数 · 基础题 · 详解</div>
+    <h1>习题十一详解</h1>
+    <div class="subtitle">先证映射落在空间内，再验证可加性与齐次性</div>
+    <div class="bracket-hero">
+      <svg viewBox="0 0 20 64" fill="none"><path d="M16 2 L4 2 L4 62 L16 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+      <div class="grid-mini">
+        <span>A</span><span>→</span>
+        <span>P&#7511;AP</span><span>T</span>
+      </div>
+      <svg viewBox="0 0 20 64" fill="none"><path d="M4 2 L16 2 L16 62 L4 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+    </div>
+  </header>
+
+  <!-- ===================== PROBLEM 12 ===================== -->
+  <section class="problem" id="p12">
+    <div class="prob-head">
+      <span class="prob-num">12</span>
+      <span class="prob-title">证明合同变换 \(T(A)=P^{\mathrm T}AP\) 是线性变换</span>
+    </div>
+    <div class="prob-statement">
+      \(n\) 阶对称矩阵的全体 \(V\) 对于矩阵的线性运算构成一个 \(\dfrac{n(n+1)}{2}\) 维线性空间。给出 \(n\) 阶可逆矩阵 \(P\)，以 \(A\) 表示 \(V\) 中的任一元素，试证合同变换
+      \[T(A)=P^{\mathrm T}AP\]
+      是 \(V\) 中的线性变换。
+    </div>
+
+    <h3 class="sub"><span class="tag">思路</span>要证两件事</h3>
+    <p style="margin:0 0 20px">线性变换的定义要求"从 \(V\) 到 \(V\) 的映射，且满足可加性与齐次性"。这里的空间 \(V\) 是<strong>对称矩阵</strong>的全体，比一般的 \(\mathbb{R}^n\) 更抽象一些，所以第一步必须先确认 \(T(A)\) 真的还在 \(V\) 里（仍然对称），否则"线性变换"这个说法根本无从谈起；第二步才是常规的可加性、齐次性验证。</p>
+
+    <h3 class="sub"><span class="tag">Step 1</span> 验证 \(T(A)\in V\)：\(T(A)\) 仍是对称矩阵</h3>
+    <p>对任意 \(A\in V\)（即 \(A^{\mathrm T}=A\)），用转置的性质 \((XYZ)^{\mathrm T}=Z^{\mathrm T}Y^{\mathrm T}X^{\mathrm T}\) 展开：</p>
+    <div class="box verify">
+      <div class="label">计算</div>
+      <p>\(\big(T(A)\big)^{\mathrm T}=(P^{\mathrm T}AP)^{\mathrm T}=P^{\mathrm T}A^{\mathrm T}(P^{\mathrm T})^{\mathrm T}=P^{\mathrm T}A^{\mathrm T}P\)</p>
+      <p style="margin:0">因为 \(A^{\mathrm T}=A\)，所以 \(\big(T(A)\big)^{\mathrm T}=P^{\mathrm T}AP=T(A)\)</p>
+    </div>
+    <p style="margin:0 0 20px">即 \(T(A)\) 本身也是对称矩阵，\(T(A)\in V\)——这保证了 \(T\) 是一个 \(V\to V\) 的映射，值域没有跑出 \(V\)。</p>
+
+    <div class="box note">
+      <div class="label">为什么直接就有 \(A^{\mathrm T}=A\)？</div>
+      <p style="margin:0">这一步不是算出来的，而是<strong>题目对 \(V\) 的定义</strong>本身给出的：\(V\) 被定义为"\(n\) 阶对称矩阵的全体"，所以只要 \(A\in V\)，"对称矩阵"这个身份就自动带着 \(A^{\mathrm T}=A\) 这条性质，是前提条件，不需要另外证明。正因为有这条前提，才能在上面的计算里把 \(A^{\mathrm T}\) 替换成 \(A\)，推出 \(T(A)\) 也对称；如果 \(V\) 换成"全体矩阵"（不要求对称），这一步就会失效，\(T\) 的像就可能跑出 \(V\) 了。</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 2</span> 验证可加性</h3>
+    <p>对任意 \(A,B\in V\)，利用矩阵乘法对加法的分配律：</p>
+    <div class="box verify">
+      <div class="label">计算</div>
+      <p style="margin:0">\(T(A+B)=P^{\mathrm T}(A+B)P=P^{\mathrm T}AP+P^{\mathrm T}BP=T(A)+T(B)\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 3</span> 验证齐次性</h3>
+    <p>对任意 \(A\in V\)，任意数 \(k\)，数乘可以在矩阵乘法中自由挪动位置：</p>
+    <div class="box verify">
+      <div class="label">计算</div>
+      <p style="margin:0">\(T(kA)=P^{\mathrm T}(kA)P=k(P^{\mathrm T}AP)=kT(A)\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">结论</span></h3>
+    <p style="margin:0 0 20px">\(T\) 把 \(V\) 映到 \(V\)，且对任意 \(A,B\in V\)、任意数 \(k\) 都满足 \(T(A+B)=T(A)+T(B)\) 与 \(T(kA)=kT(A)\)。由线性变换的定义，\(T(A)=P^{\mathrm T}AP\) 是 \(V\) 中的线性变换。\(\blacksquare\)</p>
+
+    <div class="box note">
+      <div class="label">名称由来：合同变换</div>
+      <p style="margin:0">形如 \(P^{\mathrm T}AP\)（\(P\) 可逆）的变换叫<strong>合同变换</strong>，\(A\) 与 \(P^{\mathrm T}AP\) 互称<strong>合同矩阵</strong>。它的几何背景是二次型：若 \(x^{\mathrm T}Ax\) 是一个二次型，做坐标替换 \(x=Py\)，代入得 \(x^{\mathrm T}Ax=y^{\mathrm T}(P^{\mathrm T}AP)y\)，新二次型的矩阵恰好就是 \(T(A)=P^{\mathrm T}AP\)。这也解释了为什么 \(T(A)\) 天然保持对称——二次型矩阵本来就必须对称，坐标替换不会破坏这一点。</p>
+    </div>
+  </section>
+
+  <!-- ===================== FOLLOW-UP: CONGRUENT VS SIMILAR ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>合同（\(P^{\mathrm T}AP\)）和相似（\(P^{-1}AP\)）有什么区别？</h2>
+
+    <p>这两个式子长得很像，也都在附录习题里出现过（相似矩阵见习题七），很容易混淆，但它们描述的是完全不同的两件事。</p>
+
+    <h3 class="sub"><span class="tag">相似</span>\(B=P^{-1}AP\)：同一个线性变换，换了一组基</h3>
+    <p style="margin:0 0 20px">相似矩阵描述的是<strong>同一个线性变换</strong>在不同基下的矩阵表示。因为变换本身没变，只是"记录方式"换了，所以相似矩阵保留了很多变换的内在信息：特征值相同、迹相同、行列式相同、秩相同。</p>
+
+    <h3 class="sub"><span class="tag">合同</span>\(B=P^{\mathrm T}AP\)：同一个二次型，换了一组坐标</h3>
+    <p style="margin:0 0 20px">合同矩阵描述的是<strong>同一个二次型</strong>在坐标替换 \(x=Py\) 下的矩阵变化。这里保留的不是特征值，而是二次型的"正负惯性指数"（正特征值、负特征值、零特征值的个数分别不变，这是<strong>惯性定理</strong>的内容）——一般来说合同矩阵的特征值本身会变。</p>
+
+    <table class="compare">
+      <tr><th></th><th>相似 \(P^{-1}AP\)</th><th>合同 \(P^{\mathrm T}AP\)</th></tr>
+      <tr><td>背景</td><td>线性变换换基</td><td>二次型换坐标</td></tr>
+      <tr><td>不变量</td><td>特征值、迹、行列式、秩</td><td>正负惯性指数、秩</td></tr>
+      <tr><td>特殊情形</td><td>\(P\) 正交时 \(P^{-1}=P^{\mathrm T}\)，两者重合</td><td>同左</td></tr>
+    </table>
+
+    <div class="box note">
+      <div class="label">两者的交汇点</div>
+      <p style="margin:0">当 \(P\) 是<strong>正交矩阵</strong>（\(P^{\mathrm T}P=I\)，即 \(P^{-1}=P^{\mathrm T}\)）时，\(P^{-1}AP\) 和 \(P^{\mathrm T}AP\) 是同一个式子——这正是"实对称矩阵一定能被正交相似对角化"这条定理背后的原因：对称矩阵的正交对角化，同时也是一次合同变换，所以对角线上得到的既是特征值，也恰好是这个二次型的标准形系数。</p>
+    </div>
+  </div>
+
+  <footer>习题十一 · 合同变换是线性变换 &nbsp;·&nbsp; 逐题详解</footer>
 
 </div>
 </div>
