@@ -2219,6 +2219,25 @@
       <div class="step"><strong>乘法不增秩：</strong>$r(AB)\le\min\big(r(A),r(B)\big)$——矩阵相乘是一种变换，变换之后信息量不会凭空增多。</div>
       <div class="step"><strong>可逆矩阵相乘不改变秩：</strong>若 $P,Q$ 可逆，则 $r(PAQ)=r(A)$。这正是"初等变换不改变秩"的根本原因——初等变换本质上就是左乘或右乘一个可逆的初等矩阵。</div>
       <div class="step"><strong>加法：</strong>$r(A+B)\le r(A)+r(B)$。注意这条只是上界，加法并不像乘法那样"不增秩"——比如 $A=\begin{pmatrix}1&0\\0&0\end{pmatrix}$、$B=\begin{pmatrix}0&0\\0&1\end{pmatrix}$，$r(A)=r(B)=1$，但 $A+B=I$ 的秩是 2，秩反而变大了。更完整的说法是一个双边不等式：$$|r(A)-r(B)|\le r(A+B)\le r(A)+r(B)$$左边的下界把 $A$ 写成 $(A+B)-B$ 再用上界即得 $r(A)\le r(A+B)+r(B)$，移项就是 $r(A)-r(B)\le r(A+B)$，同理可得 $r(B)-r(A)\le r(A+B)$。何时等号精确成立，见后文"秩的可加性"一节。</div>
+      <div class="step"><strong>数乘不改变秩：</strong>$r(cA)=r(A)\ (c\neq0)$——把每个元素同时放大 $c$ 倍，不会让"哪些子式非零"这件事发生任何变化，$c\neq0$ 保证放大不会把非零子式压成零。</div>
+
+      <h3 class="part"><span class="tag">性质</span>零化条件与分块矩阵的秩</h3>
+      <div class="step"><strong>零化条件：</strong>若 $A_{m\times n}B_{n\times l}=O$，则 $$r(A)+r(B)\le n$$ 直观上看：$B$ 的每一列都要落进 $A$ 的零空间（否则乘出来不是零列），而 $A$ 的零空间维数是 $n-r(A)$，所以 $B$ 的列空间必须"塞进"这个 $n-r(A)$ 维的子空间里，故 $r(B)\le n-r(A)$，移项即得。这其实是 Sylvester 不等式 $r(A)+r(B)-n\le r(AB)$ 在 $AB=O$ 这个特殊情形下的直接推论。</div>
+      <div class="step"><strong>准对角分块：</strong>$$r\begin{pmatrix}A&O\\O&B\end{pmatrix}=r(A)+r(B)=r\begin{pmatrix}O&A\\B&O\end{pmatrix}$$ 两块之间没有任何"跨界"的非零元素，各自的非零子式互不干扰、可以直接拼成一个更大的非零子式，秩自然相加；把两块换个位置（反对角摆放）只是把矩阵的行、列重新排了个顺序，属于初等变换（互换），秩不受影响，所以两个式子相等。这条是前面"加法只给上界"之外的一种"等号必然成立"的特例——只要两块矩阵分居对角、互不重叠，秩就是精确可加的。</div>
+      <div class="step"><strong>竖排分块：</strong>$$\max\{r(A),r(B)\}\ \le\ r\begin{pmatrix}A\\B\end{pmatrix}\ \le\ r(A)+r(B)$$ 左边的下界很直观：把 $A$ 单独的最大无关行组摆在一起本来就是 $\begin{pmatrix}A\\B\end{pmatrix}$ 的一部分行，不可能因为多摆了几行 $B$ 反而让"独立行数"变少，$B$ 同理，取两者较大值仍成立；右边的上界则是因为 $\begin{pmatrix}A\\B\end{pmatrix}$ 的行向量组，无非是 $A$ 的行向量组和 $B$ 的行向量组直接合并，合并后的极大无关组个数最多不超过两边各自极大无关组个数之和。</div>
+
+      <h3 class="part"><span class="tag">性质</span>秩为 1 的矩阵：唯一能写成外积的矩阵</h3>
+      <div class="step">$$r(A)=1\iff A=\alpha\beta^{\mathrm T}，\text{其中 }\alpha,\beta\text{ 为非零列向量}$$ 若 $r(A)=1$，说明 $A$ 的所有行向量都是同一个非零行向量的倍数：设第一行是 $\beta^{\mathrm T}$，则第 $i$ 行必为 $a_i\beta^{\mathrm T}$，把这些倍数 $a_i$ 竖着排成一列就是 $\alpha$，于是 $A=\alpha\beta^{\mathrm T}$；反过来，$\alpha\beta^{\mathrm T}$ 的每一行都是 $\beta^{\mathrm T}$ 的倍数，行向量组的秩显然是 1（因为 $\alpha,\beta$ 都非零，$A\neq O$，秩不会是 0）。这个结构也叫<strong>秩一矩阵（外积）</strong>，是 SVD 里"$A=\sum_i\sigma_iu_iv_i^{\mathrm T}$"这个求和式中每一项的原型——任意矩阵都能分解成若干个秩一矩阵之和，秩就是最少需要几项。</div>
+
+      <h3 class="part"><span class="tag">性质</span>伴随矩阵的秩：三种情形，秩会"跳变"</h3>
+      <div class="step">设 $A^*$ 为 $n$ 阶矩阵 $A$ 的伴随矩阵，则 $$r(A^*)=\begin{cases}n, &r(A)=n\\1, &r(A)=n-1\\0, &r(A)<n-1\end{cases}$$</div>
+      <div class="step"><strong>为什么会有这种"跳变"而不是平滑变化：</strong>关键恒等式是 $AA^*=A^*A=\det(A)I_n$。<br><br>
+      <strong>$r(A)=n$（$A$ 可逆）：</strong>两边取行列式，$\det(A)\det(A^*)=\det(A)^n\neq0$，故 $\det(A^*)\neq0$，$A^*$ 也可逆，$r(A^*)=n$。<br><br>
+      <strong>$r(A)=n-1$：</strong>此时 $\det(A)=0$，代入 $AA^*=O$，说明 $A^*$ 的每一列都落在 $A$ 的零空间里，而 $r(A)=n-1$ 时零空间维数只有 1，所以 $r(A^*)\le1$；另一方面 $r(A)=n-1$ 意味着 $A$ 至少存在一个 $n-1$ 阶非零子式（否则秩会更低），这个非零子式恰好就是 $A^*$ 里的某个元素，说明 $A^*\neq O$，故 $r(A^*)\ge1$。两边夹逼，$r(A^*)=1$。<br><br>
+      <strong>$r(A)<n-1$：</strong>此时 $A$ 所有 $n-1$ 阶子式全为零（否则秩至少是 $n-1$），而 $A^*$ 的每个元素恰好就是 $A$ 某个 $n-1$ 阶子式（带符号），于是 $A^*$ 的所有元素都是 0，$A^*=O$，$r(A^*)=0$。</div>
+      <div class="note">
+        <strong>说明：这条性质为什么"跳"得这么突然？</strong>因为伴随矩阵的每个元素都是 $A$ 的 $n-1$ 阶子式，这是一个关于 $A$ 元素的高次多项式，"非零"是一个很脆弱的条件——只要秩从 $n-1$ 掉到 $n-2$，这些 $n-1$ 阶子式会<strong>整批同时</strong>归零（而不是逐渐减小到零），所以 $A^*$ 的秩不会经过"中间值"，只能在 $n,1,0$ 这三个值之间跳变，中间的 $2,3,\dots,n-2$ 都不可能出现。
+      </div>
 
       <h3 class="part"><span class="tag">核心意义</span>秩与线性方程组解的结构</h3>
       <div class="step">设 $Ax=b$，$A$ 是 $m\times n$ 矩阵，$\tilde A=(A\mid b)$ 是增广矩阵。比较 $r(A)$ 与 $r(\tilde A)$，就能完全确定解的情况：</div>
