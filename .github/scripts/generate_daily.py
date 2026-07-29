@@ -16,8 +16,15 @@ SUPABASE_KEY  = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
 EMAIL_TO      = 'weihong_j@yahoo.com'
 EMAIL_FROM    = 'daily@dukeparents.org'
 
-# Chronicle 学生报：无论"最近N天"逻辑如何，一律不展示此日期之前发布的内容
-CHRONICLE_MIN_DATE = date(2026, 6, 1)
+# 全局最早日期：无论哪个栏目、无论各自的"最近N天"逻辑如何，
+# 一律只展示【最近15天】以内发布/发生的内容，超过15天自动视为过期。
+# 这里用当天日期减去15天动态计算，脚本每次运行都会自动往前滚动，
+# 无需每月/每次手动改日期。
+ROLLING_WINDOW_DAYS = 15
+GLOBAL_MIN_DATE = datetime.now().date() - timedelta(days=ROLLING_WINDOW_DAYS)
+
+# Chronicle 学生报：单独保留此变量以兼容旧代码引用，统一指向全局下限
+CHRONICLE_MIN_DATE = GLOBAL_MIN_DATE
 
 SECTION_LABELS = {
     'weekly-school':       '🏫 学校新闻',
@@ -341,8 +348,10 @@ def build_prematric_text(today=None):
     过了 expire_date 当天结束后才移除（即当天仍保留）。"""
     if today is None:
         today = datetime.now().date()
+    # 硬性下限：超出最近15天窗口的条目，无论today参数为何，一律不显示
+    effective_cutoff = max(today, GLOBAL_MIN_DATE)
     active = [e for e in PREMATRIC_HARDCODED
-              if e['expire'] is None or datetime(*e['expire']).date() >= today]
+              if e['expire'] is None or datetime(*e['expire']).date() >= effective_cutoff]
 
     # 按 category 分组输出
     from collections import OrderedDict
@@ -575,8 +584,8 @@ def fetch_pages_text(urls, max_chars=1200):
 
 def fetch_source(name, max_items=8):
     if name in RSS_FEEDS:
-        min_date = CHRONICLE_MIN_DATE if name == 'chronicle' else None
-        items = fetch_rss(RSS_FEEDS[name], max_items, min_date=min_date)
+        # 所有 RSS 栏目统一应用全局最早日期下限（超出最近15天滚动窗口的内容一律不抓取）
+        items = fetch_rss(RSS_FEEDS[name], max_items, min_date=GLOBAL_MIN_DATE)
         # Jina fallback for known 403/JS sites
         jina_sites = {
             'chronicle': 'https://www.dukechronicle.com/section/news',
@@ -826,6 +835,8 @@ def filter_expired_text(text, today=None):
     """
     if today is None:
         today = datetime.now().date()
+    # 硬性下限：无论传入的 today 是什么，超出最近15天滚动窗口的内容一律视为过期
+    effective_cutoff = max(today, GLOBAL_MIN_DATE)
 
     import re as _re
 
@@ -868,8 +879,8 @@ def filter_expired_text(text, today=None):
     filtered = []
     for line in text.splitlines():
         d = earliest_date_in_line(line)
-        if d is not None and d < today:
-            # 日期已过期 → 丢弃
+        if d is not None and d < effective_cutoff:
+            # 日期已过期（早于今天或超出最近15天滚动窗口）→ 丢弃
             continue
         filtered.append(line)
     return '\n'.join(filtered)
@@ -897,20 +908,23 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "- 严格过滤政治内容（政治人物、党派、抗议、移民政策、联邦拨款争议等），只保留学术/体育/校园相关\n"
     )
 
-    year_rule = ''
+    today_str = f"{today.year}年{today.month}月{today.day}日"
+    global_min_str = f"{GLOBAL_MIN_DATE.year}年{GLOBAL_MIN_DATE.month}月{GLOBAL_MIN_DATE.day}日"
+    # 【全局硬性规则】所有栏目统一执行：{global_min_str}以前的信息一律视为过期，不得出现
+    year_rule = (
+        f'- 【严格日期过滤·全栏目统一】{global_min_str}之前发布/发生的任何内容一律视为过期，'
+        f'绝对不得出现在输出中，无一例外\n'
+        f'- 同时，任何截止日期/活动日期早于今天（{today_str}）的条目也一律不得出现\n'
+        '- 如果某条内容的日期无法确认是否已过期，为安全起见也不要输出\n'
+    )
     if '招生' in section_name:
-        today_str = f"{today.year}年{today.month}月{today.day}日"
-        year_rule = (
-            f'- 【严格日期过滤】今天是{today_str}。任何截止日期/活动日期早于今天的条目，一律不得出现在输出中\n'
+        year_rule += (
             f'- 只保留今天（{today_str}）及以后的招生信息，过期内容一律排除，包括已过期的Blue Devil Days日期\n'
-            f'- 如果某条信息的日期无法确认是否已过期，也不要输出\n'
             '- 重点提取：入学确认截止日、住房申请、奖学金、成绩单提交、Blue Devil Days（仅未来场次）、财务援助等信息\n'
         )
     if 'Chronicle' in section_name:
-        min_date_str = f"{CHRONICLE_MIN_DATE.year}年{CHRONICLE_MIN_DATE.month}月{CHRONICLE_MIN_DATE.day}日"
         year_rule += (
-            f'- 【严格日期过滤】一律不得列出发布日期早于{min_date_str}的内容\n'
-            '- 如果某条内容的发布日期无法确认，也不要输出\n'
+            f'- Chronicle学生报内容：一律不得列出发布日期早于{global_min_str}的内容\n'
         )
 
     prompt = (
@@ -953,7 +967,9 @@ def generate_calendar_section(items):
     prompt = (
         f"你是杜克大学家长社区的中文编辑。今天是{today.year}年{today.month}月{today.day}日。\n"
         f"以下是 Duke Registrar 2025-2026学术日历：\n\n{combined}\n\n"
-        "请严格按照以下规则输出：\n"
+        f"请严格按照以下规则输出：\n"
+        f"0. 【严格日期过滤】{GLOBAL_MIN_DATE.year}年{GLOBAL_MIN_DATE.month}月{GLOBAL_MIN_DATE.day}日"
+        f"之前发生的任何事项一律视为过期，绝对不得出现在输出中\n"
         "1. 只列出【今天及今天起7天内】日历中明确记载的事项\n"
         "2. 今天的事项必须列出并标注'【今日】'\n"
         "3. 如果今天处于某个持续性时间段内（如期末考试、迎新周、开学典礼周等），必须标注该事项（例如：📅 期末考试进行中），绝对不能写'无特定事项'或'无具体事项'\n"
@@ -973,6 +989,8 @@ def generate_registration_section(registration_text, housing_text):
         f"你是杜克大学家长社区的中文编辑。今天是{today.year}年{today.month}月{today.day}日。\n"
         f"【选课信息】\n{registration_text}\n\n【宿舍信息】\n{housing_text}\n\n"
         "请提取近期最重要的截止日期和流程节点：\n"
+        f"- 【严格日期过滤】{GLOBAL_MIN_DATE.year}年{GLOBAL_MIN_DATE.month}月{GLOBAL_MIN_DATE.day}日"
+        f"之前的截止日期/事项一律视为过期，不得出现在输出中\n"
         "- 格式：<ul><li>📌 X月X日 — 事项</li></ul>，最多8条，按紧迫程度排序\n"
         "- 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
         "- 只输出HTML"
@@ -991,6 +1009,8 @@ def generate_prematric_section(page_text):
         f"今天是{today.year}年{today.month}月{today.day}日。\n\n"
         f"以下是杜克大学开学前安排的官方信息：\n\n{combined}\n\n"
         "请按紧迫程度整理成中文清单，规则：\n"
+        f"0. 【严格日期过滤】{GLOBAL_MIN_DATE.year}年{GLOBAL_MIN_DATE.month}月{GLOBAL_MIN_DATE.day}日"
+        f"之前的事项一律视为过期，绝对不得出现（联系方式等无日期条目除外）\n"
         "1. 优先列出【今天起90天内】的待办事项和截止日期\n"
         "2. 每条标注具体日期，用📌表示截止/重要节点，用📅表示一般节点\n"
         "3. 格式：<ul><li>📌/📅 X月X日 — 事项说明</li></ul>，最多10条\n"
@@ -1229,20 +1249,29 @@ def main():
     basketball_items = r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_all'] + r['athletics']
     admissions_items = r['admissions'] + r['admissions_site']
 
-    # ── 招生文本：Python层面先过滤过期日期，再交给AI ──────────────
+    # ── Python层面先过滤过期日期，再交给AI（所有栏目统一执行，不再局限于招生）──
     _today_date = datetime.now().date()
+
+    def _drop_expired_items(items):
+        """丢弃标题中含有过期日期（早于今天或超出最近15天滚动窗口）的条目"""
+        return [i for i in items
+                if filter_expired_text(i["title"], _today_date).strip() != ""]
+
     r["admissions_text"] = filter_expired_text(r["admissions_text"], _today_date)
-    # admissions_items 里标题含过期日期的条目也一并过滤
-    admissions_items = [
-        i for i in admissions_items
-        if filter_expired_text(i["title"], _today_date).strip() != ""
-    ]
+    r["reg_text"]        = filter_expired_text(r["reg_text"], _today_date)
+    r["housing_text"]    = filter_expired_text(r["housing_text"], _today_date)
+    r["prematric_text"]  = filter_expired_text(r["prematric_text"], _today_date)
+
+    admissions_items = _drop_expired_items(admissions_items)
+    school_items     = _drop_expired_items(school_items)
+    basketball_items = _drop_expired_items(basketball_items)
     campus_items     = (r['campus'] + r['dsg'] + r['students'] + r['dukeengage'] +
                         r['undergrad'] + r['interdisciplinary'] + r['focus'] +
                         r['library'] + r['alumni_sendoff'] + r['careerhub_outcomes'])
-    chronicle_items  = r['chronicle']
-    research_items   = r['research'] + r['pratt'] + r['trinity']
-    visa_items       = r['visa'] + r['visa_site']
+    campus_items     = _drop_expired_items(campus_items)
+    chronicle_items  = _drop_expired_items(r['chronicle'])
+    research_items   = _drop_expired_items(r['research'] + r['pratt'] + r['trinity'])
+    visa_items       = _drop_expired_items(r['visa'] + r['visa_site'])
     calendar_items   = r['calendar']
 
     print(f'学校:{len(school_items)} 体育:{len(basketball_items)} '
