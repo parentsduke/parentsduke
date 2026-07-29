@@ -3746,6 +3746,24 @@
     </div>
   </div>
 
+  <!-- ===================== FOLLOW-UP: 为什么要把 min 去掉放宽 ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>为什么要把 \(\min\) 去掉放宽？</h2>
+
+    <p>\(W\cap N(A)\) 本身当然只依赖 \(W\) 和 \(N(A)\) 各自的维数，精确的上界应该写成 \(\dim(W\cap N(A))\le\min\big(\dim W,\ n-r(A)\big)\)——交集不可能比其中任何一个"母集合"更大。但在很多线性代数的证明题里（例如证明 Sylvester 不等式 \(r(AB)\ge r(A)+r(B)-n\)，或乘积的秩不等式 \(r(AB)\le r(B)\)），保留这个 \(\min\) 会让整个推导变得很繁琐。</p>
+
+    <div class="box verify">
+      <div class="label">放宽的依据</div>
+      <p style="margin:0">为了得到一个只含 \(r(A)\) 或只含 \(r(B)\) 的干净结论，就用 \(\min(x,y)\le x\) 这一条最基本的不等式，把上界直接放宽为 \[\dim(W\cap N(A))\le n-r(A)\] ——只保留其中一项限制，代价是这个界不再是最紧的，但换来了式子的简洁，足够支撑后续消元和移项。</p>
+    </div>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">这句话本质上就是：交集的大小（\(\min\)）绝不可能超过大集合的大小（\(n-r(A)\)）。在做放大缩小的推导时，为了简化计算，直接去掉 \(\min\)，只保留其中某一个限制条件——这正是 §7 证明 \(r(AB)\ge r(A)+r(B)-n\) 时"损失不超过 \(\min(n-r(A),r(B))\)"一步的同一套放宽手法。</p>
+    </div>
+  </div>
+
   <!-- ===================== FOLLOW-UP: 高级变体 ===================== -->
   <div class="followup">
     <div class="eyebrow2">追问解析</div>
