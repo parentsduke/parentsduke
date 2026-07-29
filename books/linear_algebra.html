@@ -2276,6 +2276,52 @@
 
       <div class="step">再展开说一下这个"重叠"到底在讲什么。把 $AB$ 想象成一条流水线：$x\xrightarrow{\ B\ }Bx\xrightarrow{\ A\ }A(Bx)=(AB)x$，先经过 $B$ 加工，再经过 $A$ 加工。$AB$ 的像空间，就是"先被 $B$ 加工出来的那些向量，再被 $A$ 加工一遍"之后剩下的东西。这个"中转站"（$B$ 输出、$A$ 输入所在的那个 $n$ 维空间）里有两个关键子空间：<strong>$B$ 的像空间</strong>（维数 $r(B)$，是 $B$ 能吐出来的全部东西）和<strong>$A$ 的零空间</strong>（维数 $n-r(A)$，凡是落在这里的向量经过 $A$ 都会被压成 0）。若 $B$ 的像空间里有一部分恰好也落在 $A$ 的零空间里，这部分东西经 $A$ 加工后就会被抹成 0，相当于秩被"吃掉"——重叠得越多，$AB$ 相比 $B$ 掉的秩就越多；而重叠部分的维数不可能超过这两个子空间中较小的一个，即 $\min(n-r(A),r(B))$，这就是损失的秩不会超过这个上限的原因。</div>
 
+      <div class="figure-wrap">
+        <svg viewBox="0 0 700 460" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="20" width="660" height="380" rx="6" fill="#fbf9f1" stroke="#8a7a3c" stroke-width="1.2" stroke-dasharray="5,4"/>
+          <text x="40" y="46" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="600" fill="#5c4a1a">n 维空间（$B$ 的输出空间 = $A$ 的输入空间）</text>
+
+          <!-- ker(A) ellipse -->
+          <ellipse cx="280" cy="250" rx="185" ry="140" fill="#0b1f3a" fill-opacity="0.10" stroke="#0b1f3a" stroke-width="2"/>
+          <text x="120" y="140" font-family="Noto Sans SC, sans-serif" font-size="17" font-weight="700" fill="#0b1f3a">ker(A)</text>
+          <text x="120" y="164" font-family="Noto Sans SC, sans-serif" font-size="12.5" fill="#0b1f3a">维数 = n − r(A)</text>
+          <text x="120" y="184" font-family="Noto Sans SC, sans-serif" font-size="11.5" fill="#0b1f3a">（落在这里的向量都被 A 打成 0）</text>
+
+          <!-- im(B) ellipse, overlapping -->
+          <ellipse cx="420" cy="280" rx="170" ry="130" fill="#8a7a3c" fill-opacity="0.16" stroke="#8a7a3c" stroke-width="2"/>
+          <text x="470" y="140" font-family="Noto Sans SC, sans-serif" font-size="17" font-weight="700" fill="#5c4a1a">im(B)</text>
+          <text x="470" y="164" font-family="Noto Sans SC, sans-serif" font-size="12.5" fill="#5c4a1a">维数 = r(B)</text>
+          <text x="470" y="184" font-family="Noto Sans SC, sans-serif" font-size="11.5" fill="#5c4a1a">（B 能输出到的全部向量）</text>
+
+          <!-- overlap label -->
+          <text x="320" y="270" text-anchor="middle" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="700" fill="#1c2430">① 被消灭</text>
+          <text x="320" y="290" text-anchor="middle" font-family="Noto Sans SC, sans-serif" font-size="11.5" fill="#1c2430">im(B) ∩ ker(A)</text>
+
+          <!-- im(B) outside ker(A): surviving part -->
+          <text x="510" y="300" text-anchor="middle" font-family="Noto Sans SC, sans-serif" font-size="14" font-weight="700" fill="#5c4a1a">② 存活</text>
+          <text x="510" y="320" text-anchor="middle" font-family="Noto Sans SC, sans-serif" font-size="11.5" fill="#5c4a1a">构成 im(AB)</text>
+
+          <!-- ker(A) outside im(B) -->
+          <text x="140" y="330" font-family="Noto Sans SC, sans-serif" font-size="12" fill="#0b1f3a">③ ker(A) 中不来自 B 的部分</text>
+          <text x="140" y="348" font-family="Noto Sans SC, sans-serif" font-size="11" fill="#0b1f3a">（与 r(AB) 无关，只是 A 自身的零空间）</text>
+
+          <text x="350" y="388" text-anchor="middle" font-family="Noto Sans SC, sans-serif" font-size="13.5" font-weight="600" fill="#1c2430">r(AB) = r(B) − dim(①) = dim(②)</text>
+        </svg>
+        <div class="figure-caption">im(B) 与 ker(A) 在 n 维"中转站"里部分重叠：①被 A 消灭、②存活成为 im(AB)、③是 ker(A) 中与 B 无关的部分</div>
+      </div>
+
+      <div class="note">
+        <strong>说明：图中虚线大框是什么空间？</strong>它不是 $AB$ 的空间——$AB$ 本身是一个从 $\mathbb R^p\to\mathbb R^m$ 的映射，没有单独的"$AB$ 空间"可画。虚线大框画的是<strong>中间那个 $n$ 维空间</strong>：完整的流水线其实是三层 $\mathbb R^p\xrightarrow{B}\mathbb R^n\xrightarrow{A}\mathbb R^m$，图里只画了走到一半的那一层——$B$ 的输出空间同时也是 $A$ 的输入空间，正是这里，$\operatorname{im}(B)$ 和 $\ker(A)$ 才有机会"打照面"。前后两层（$B$ 的定义域 $\mathbb R^p$ 和 $A$ 的值域 $\mathbb R^m$）跟秩损失的机制无关，所以没有画出来。
+      </div>
+
+      <div class="note">
+        <strong>说明：①②③三块区域分别是什么，为什么要分成三块？</strong>把 $n$ 维空间按 $\ker(A)$ 分成两半：$\ker(A)$ 本身（维数 $n-r(A)$，A 把这里全部打成 0）和它的补集（维数 $r(A)$，A 在这部分是单射，不会把任何向量压成 0）。$\operatorname{im}(B)$ 这个子空间会同时和这两半发生交集，于是被切成两块：<br><br>
+        <strong>① $\operatorname{im}(B)\cap\ker(A)$（被消灭）：</strong>$B$ 输出的向量里，恰好也落在 $A$ 零空间里的那部分，经 $A$ 加工后变成 0，是真正的"重叠"，也是秩损失的来源。注意这只是 $\ker(A)$ 的一个<strong>子空间</strong>，而不是 $\ker(A)$ 整体——只有在 $\ker(A)$ 恰好完全落进 $\operatorname{im}(B)$ 这种极端情形下，①才会等于整个 $\ker(A)$。<br><br>
+        <strong>② $\operatorname{im}(B)$ 落在 $\ker(A)$ 补集里的部分（存活）：</strong>这部分向量没被 A 消灭，被 A 映过去之后仍然互不相同，恰好构成了 $\operatorname{im}(AB)$，所以②的维数就是 $r(AB)$，且①的维数加②的维数 $=r(B)$。<br><br>
+        <strong>③ $\ker(A)$ 里但不属于 $\operatorname{im}(B)$ 的部分：</strong>这些向量本来就和 $B$ 毫无关系，A 照样把它们打成 0，但这跟 $AB$ 的秩没有直接关系，画出来只是为了说明 $\ker(A)$ 不会整个都和 $\operatorname{im}(B)$ 相交。<br><br>
+        <strong>为什么重叠特指"$\operatorname{im}(B)$ 与 $\ker(A)$"，而不是别的组合？</strong>因为这是流水线机制决定的：第一步 B 把任何输入都打进 $\operatorname{im}(B)$ 这个子空间，跑不出去；第二步 A 会把 $\ker(A)$ 里的任何向量都消灭，不管它是不是来自 B。所以决定"损失多少"的，就只能是这两个空间的交集——$\operatorname{im}(A)$ 或 $\ker(B)$ 根本不出现在这条流水线里，和 $r(AB)$ 没有直接关系。
+      </div>
+
       <div class="note">
         <strong>说明：从"重叠上界"到"$r(AB)$ 的下界"，这一步"移项"具体在做什么？</strong>分四步走：<br><br>
         <strong>① 把"损失"写成一个式子：</strong>$B$ 原本的秩是 $r(B)$，经过 $A$ 加工后变成 $r(AB)$，中间损失掉的秩就是两者之差：$r(B)-r(AB)$。<br><br>
