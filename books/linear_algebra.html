@@ -844,7 +844,7 @@
         $$\text{加法：}\ (x_1,y_1)+(x_2,y_2)=(x_1+x_2,\ y_1+y_2)$$
         $$\text{数乘：}\ k(x,y)=(kx,\ ky)$$
       </div>
-      <div class="step">加法对应"依次走两段路"（首尾相接），数乘对应"把这段路按比例放大或缩短（$k<0$ 则反向）"。</div>
+      <div class="step">加法对应"依次走两段路"（首尾相接），数乘对应"把这段路按比例放大或缩短（$k&lt;0$ 则反向）"。</div>
 
       <div class="note">
         <strong>说明：$\mathbb{R}^n$ 是什么？</strong>$\mathbb{R}^n$ 表示 <strong>$n$ 维实数向量空间</strong>——由 $n$ 个实数排成一组 $(x_1,x_2,\ldots,x_n)$（$x_i\in\mathbb{R}$）构成的全体集合，通常写成列向量。$\mathbb{R}^1$（常写作 $\mathbb{R}$）是数轴；$\mathbb{R}^2$ 是平面（本节例子用的就是它）；$\mathbb{R}^3$ 是立体空间；$\mathbb{R}^4,\mathbb{R}^5,\ldots$ 更高维，没法直接画出来，但加法、数乘照样逐分量进行，操作方式和低维完全一样。之所以线性代数总拿 $\mathbb{R}^n$ 举例，是因为它是最标准、最具体的线性空间，满足"能加、能数乘"这两条基本规律，还自带一组现成的<strong>标准基</strong> $\{e_1,\ldots,e_n\}$（即 $e_1=(1,0,\ldots,0)$、$e_2=(0,1,0,\ldots,0)$ 等），用起来非常方便。
@@ -2230,11 +2230,11 @@
       <div class="step">$$r(A)=1\iff A=\alpha\beta^{\mathrm T}，\text{其中 }\alpha,\beta\text{ 为非零列向量}$$ 若 $r(A)=1$，说明 $A$ 的所有行向量都是同一个非零行向量的倍数：设第一行是 $\beta^{\mathrm T}$，则第 $i$ 行必为 $a_i\beta^{\mathrm T}$，把这些倍数 $a_i$ 竖着排成一列就是 $\alpha$，于是 $A=\alpha\beta^{\mathrm T}$；反过来，$\alpha\beta^{\mathrm T}$ 的每一行都是 $\beta^{\mathrm T}$ 的倍数，行向量组的秩显然是 1（因为 $\alpha,\beta$ 都非零，$A\neq O$，秩不会是 0）。这个结构也叫<strong>秩一矩阵（外积）</strong>，是 SVD 里"$A=\sum_i\sigma_iu_iv_i^{\mathrm T}$"这个求和式中每一项的原型——任意矩阵都能分解成若干个秩一矩阵之和，秩就是最少需要几项。</div>
 
       <h3 class="part"><span class="tag">性质</span>伴随矩阵的秩：三种情形，秩会"跳变"</h3>
-      <div class="step">设 $A^*$ 为 $n$ 阶矩阵 $A$ 的伴随矩阵，则 $$r(A^*)=\begin{cases}n, &r(A)=n\\1, &r(A)=n-1\\0, &r(A)<n-1\end{cases}$$</div>
+      <div class="step">设 $A^*$ 为 $n$ 阶矩阵 $A$ 的伴随矩阵，则 $$r(A^*)=\begin{cases}n, &r(A)=n\\1, &r(A)=n-1\\0, &r(A)&lt;n-1\end{cases}$$</div>
       <div class="step"><strong>为什么会有这种"跳变"而不是平滑变化：</strong>关键恒等式是 $AA^*=A^*A=\det(A)I_n$。<br><br>
       <strong>$r(A)=n$（$A$ 可逆）：</strong>两边取行列式，$\det(A)\det(A^*)=\det(A)^n\neq0$，故 $\det(A^*)\neq0$，$A^*$ 也可逆，$r(A^*)=n$。<br><br>
       <strong>$r(A)=n-1$：</strong>此时 $\det(A)=0$，代入 $AA^*=O$，说明 $A^*$ 的每一列都落在 $A$ 的零空间里，而 $r(A)=n-1$ 时零空间维数只有 1，所以 $r(A^*)\le1$；另一方面 $r(A)=n-1$ 意味着 $A$ 至少存在一个 $n-1$ 阶非零子式（否则秩会更低），这个非零子式恰好就是 $A^*$ 里的某个元素，说明 $A^*\neq O$，故 $r(A^*)\ge1$。两边夹逼，$r(A^*)=1$。<br><br>
-      <strong>$r(A)<n-1$：</strong>此时 $A$ 所有 $n-1$ 阶子式全为零（否则秩至少是 $n-1$），而 $A^*$ 的每个元素恰好就是 $A$ 某个 $n-1$ 阶子式（带符号），于是 $A^*$ 的所有元素都是 0，$A^*=O$，$r(A^*)=0$。</div>
+      <strong>$r(A)&lt;n-1$：</strong>此时 $A$ 所有 $n-1$ 阶子式全为零（否则秩至少是 $n-1$），而 $A^*$ 的每个元素恰好就是 $A$ 某个 $n-1$ 阶子式（带符号），于是 $A^*$ 的所有元素都是 0，$A^*=O$，$r(A^*)=0$。</div>
       <div class="note">
         <strong>说明：这条性质为什么"跳"得这么突然？</strong>因为伴随矩阵的每个元素都是 $A$ 的 $n-1$ 阶子式，这是一个关于 $A$ 元素的高次多项式，"非零"是一个很脆弱的条件——只要秩从 $n-1$ 掉到 $n-2$，这些 $n-1$ 阶子式会<strong>整批同时</strong>归零（而不是逐渐减小到零），所以 $A^*$ 的秩不会经过"中间值"，只能在 $n,1,0$ 这三个值之间跳变，中间的 $2,3,\dots,n-2$ 都不可能出现。
       </div>
