@@ -1862,6 +1862,32 @@
 
       </div>
 
+      <h3 class="part"><span class="tag">推导</span>性质 $|\lambda A|=\lambda^n|A|$</h3>
+      <div class="step">数乘矩阵 $\lambda A$ 是把标量 $\lambda$ 乘到 $A$ 的<strong>每一个元素</strong>上；而行列式具有逐行的齐次性（多重线性），提公因数时每次只能从<strong>一行</strong>提出一个 $\lambda$。$n$ 阶方阵有 $n$ 行，逐行提取，一共提出 $n$ 个 $\lambda$：</div>
+      <div class="center-block">
+        $$
+        |\lambda A|=\begin{vmatrix}\lambda a_{11}&\cdots&\lambda a_{1n}\\ \vdots& &\vdots\\ \lambda a_{n1}&\cdots&\lambda a_{nn}\end{vmatrix}=\lambda\begin{vmatrix}a_{11}&\cdots&a_{1n}\\ \lambda a_{21}&\cdots&\lambda a_{2n}\\ \vdots& &\vdots\\ \lambda a_{n1}&\cdots&\lambda a_{nn}\end{vmatrix}=\cdots=\underbrace{\lambda\cdot\lambda\cdots\lambda}_{n\text{ 个}}|A|=\lambda^n|A|
+        $$
+      </div>
+      <div class="step">💡 直观记忆：数乘矩阵是"行行都有份"，所以 $n$ 阶矩阵提取出 $n$ 个 $\lambda$，而不是 1 个。</div>
+
+      <h3 class="part"><span class="tag">推导</span>性质 $|AB|=|A||B|$</h3>
+      <div class="step"><strong>① 几何直观：</strong>行列式 $|A|$ 代表变换 $A$ 对体积的缩放倍数。复合变换 $AB$ 是先做变换 $B$（体积变为 $|B|$ 倍），再做变换 $A$（在此基础上再变为 $|A|$ 倍），两次连续缩放，总倍数即为 $|A||B|$。</div>
+      <div class="step"><strong>② 代数推导：</strong>任何方阵 $A$ 都能由若干初等矩阵 $E_1,\dots,E_k$ 相乘得到，而每个初等矩阵对行列式的作用（提取一行的倍数、交换两行变号、或行列式不变）都满足乘法可以逐步提出，因此：</div>
+      <div class="center-block">$$|AB|=|E_1E_2\cdots E_k B|=|E_1||E_2|\cdots|E_k||B|=|A||B|$$</div>
+
+      <h3 class="part"><span class="tag">几何</span>行列式的符号与维度对应表</h3>
+      <div class="step">$|\det A|$ 是空间体积的缩放比例，符号则代表定向是否被保留：</div>
+      <div class="center-block">
+        <table class="matrix-table">
+          <tr><th>维度</th><th>几何含义</th><th>说明</th></tr>
+          <tr><td>2D</td><td>面积缩放倍数</td><td>单位正方形变为平行四边形后的面积</td></tr>
+          <tr><td>3D</td><td>体积缩放倍数</td><td>单位正方体变为平行六面体后的体积</td></tr>
+          <tr><td>$n$D</td><td>超体积缩放倍数</td><td>$n$ 维单位超立方体变换后的超体积</td></tr>
+        </table>
+      </div>
+      <div class="step"><strong>正号（$>0$）：</strong>保持定向（右手系仍是右手系）。<strong>负号（$<0$）：</strong>翻转定向（如镜像对称，右手系变左手系）。</div>
+
       <h3 class="part"><span class="tag">应用</span>克拉默法则</h3>
       <div class="step">对于 $n$ 元方程组 $Ax=b$，若系数矩阵行列式 $\det A\neq 0$，则方程组有唯一解，且</div>
       <div class="center-block">$$x_i=\frac{\det A_i}{\det A}$$</div>
