@@ -1871,6 +1871,23 @@
       </div>
       <div class="step">💡 直观记忆：数乘矩阵是"行行都有份"，所以 $n$ 阶矩阵提取出 $n$ 个 $\lambda$，而不是 1 个。</div>
 
+      <h3 class="part"><span class="tag">推导</span>为什么只对<strong>一行</strong>提系数，就等于对整个行列式提系数</h3>
+      <div class="step">上面的 $|\lambda A|=\lambda^n|A|$ 是"每一行都乘 $\lambda$"的情形。但还有一条更基础的性质：如果<strong>只把第 $i$ 行</strong>整体乘以 $k$（其余行不变），那么行列式也整体乘以 $k$——只提出<strong>一个</strong> $k$，而不是 $n$ 个：</div>
+      <div class="center-block">
+        $$
+        \begin{vmatrix}a_{11}&\cdots&a_{1n}\\ \vdots& &\vdots\\ ka_{i1}&\cdots&ka_{in}\\ \vdots& &\vdots\\ a_{n1}&\cdots&a_{nn}\end{vmatrix}=k\begin{vmatrix}a_{11}&\cdots&a_{1n}\\ \vdots& &\vdots\\ a_{i1}&\cdots&a_{in}\\ \vdots& &\vdots\\ a_{n1}&\cdots&a_{nn}\end{vmatrix}
+        $$
+      </div>
+      <div class="step"><strong>① 从定义看：</strong>行列式按定义是"每行、每列各取一个元素相乘再求和"：</div>
+      <div class="center-block">$$\det A=\sum_{\sigma}\operatorname{sgn}(\sigma)\,a_{1\sigma(1)}a_{2\sigma(2)}\cdots a_{n\sigma(n)}$$</div>
+      <div class="step">每一项乘积里，第 $i$ 行只贡献了<strong>一个</strong>因子 $a_{i\sigma(i)}$。把第 $i$ 行整体乘以 $k$，每一项就多出这一个 $k$：$a_{1\sigma(1)}\cdots(k\,a_{i\sigma(i)})\cdots a_{n\sigma(n)}=k\cdot a_{1\sigma(1)}\cdots a_{i\sigma(i)}\cdots a_{n\sigma(n)}$。既然每一项都提出同一个 $k$，对所有项求和后，这个 $k$ 就成了整个和式的公因子，直接提到最前面。</div>
+      <div class="step"><strong>② 几何直观：</strong>$|\det A|$ 是各行向量张成的平行多面体"体积"。只把其中一条边（一个行向量）拉长 $k$ 倍，其余边不变，整个平行多面体的体积自然也变成 $k$ 倍——就像平行四边形只把一条边拉长 $k$ 倍，面积也跟着变成 $k$ 倍。</div>
+      <div class="step"><strong>③ 本质：多重线性。</strong>把行列式看成 $n$ 个行向量的函数 $\det(v_1,\dots,v_n)$，它对<strong>每一个</strong> $v_i$ 单独都是线性的：</div>
+      <div class="center-block">$$\det(v_1,\dots,kv_i,\dots,v_n)=k\det(v_1,\dots,v_i,\dots,v_n)$$</div>
+      <div class="note">
+        <strong>与 $|\lambda A|=\lambda^n|A|$ 的关系：</strong> $\lambda A$ 相当于把<strong>每一行</strong>都乘 $\lambda$，所以要把"单行提系数"这条性质连续用 $n$ 次（对第 1 行提一个 $\lambda$，再对第 2 行提一个 $\lambda$，……），$n$ 行提完正好是 $\lambda^n$。也就是说，"单行提系数"是更基本的性质，$|\lambda A|=\lambda^n|A|$ 只是把它逐行反复使用的推论。
+      </div>
+
       <h3 class="part"><span class="tag">推导</span>性质 $|AB|=|A||B|$</h3>
       <div class="step"><strong>① 几何直观：</strong>行列式 $|A|$ 代表变换 $A$ 对体积的缩放倍数。复合变换 $AB$ 是先做变换 $B$（体积变为 $|B|$ 倍），再做变换 $A$（在此基础上再变为 $|A|$ 倍），两次连续缩放，总倍数即为 $|A||B|$。</div>
       <div class="step"><strong>② 代数推导：</strong>任何方阵 $A$ 都能由若干初等矩阵 $E_1,\dots,E_k$ 相乘得到，而每个初等矩阵对行列式的作用（提取一行的倍数、交换两行变号、或行列式不变）都满足乘法可以逐步提出，因此：</div>
@@ -2272,6 +2289,11 @@
       <strong>$r(A)&lt;n-1$：</strong>此时 $A$ 所有 $n-1$ 阶子式全为零（否则秩至少是 $n-1$），而 $A^*$ 的每个元素恰好就是 $A$ 某个 $n-1$ 阶子式（带符号），于是 $A^*$ 的所有元素都是 0，$A^*=O$，$r(A^*)=0$。</div>
       <div class="note">
         <strong>说明：这条性质为什么"跳"得这么突然？</strong>因为伴随矩阵的每个元素都是 $A$ 的 $n-1$ 阶子式，这是一个关于 $A$ 元素的高次多项式，"非零"是一个很脆弱的条件——只要秩从 $n-1$ 掉到 $n-2$，这些 $n-1$ 阶子式会<strong>整批同时</strong>归零（而不是逐渐减小到零），所以 $A^*$ 的秩不会经过"中间值"，只能在 $n,1,0$ 这三个值之间跳变，中间的 $2,3,\dots,n-2$ 都不可能出现。
+      </div>
+
+      <div class="note">
+        <strong>追问：为什么"$r(A)=n-1$"能推出"至少有一个 $(n-1)$ 阶子式非零"？</strong>这一步用的正是秩的<strong>子式定义</strong>（上面 §5 提到过）：$r(A)=k$ 的严格含义是"存在一个 $k$ 阶非零子式，且所有 $k+1$ 阶及以上的子式全为零"。所以 $r(A)=n-1$ 本身就自带了"存在 $(n-1)$ 阶非零子式"这条要求，不是额外条件。<br><br>
+        用反证法看会更直观：假设所有的 $(n-1)$ 阶子式都恰好是 0，那么按定义，"最高非零子式的阶数"就够不到 $n-1$，只能落在更低的阶（$n-2$ 或更小），于是 $r(A)$ 就会小于 $n-1$，与已知条件 $r(A)=n-1$ 矛盾。所以"至少有一个 $(n-1)$ 阶子式非零"是 $r(A)=n-1$ 反过来倒逼出的必然结果——正因如此，才能保证 $A^*$（由这些 $n-1$ 阶子式构成）里必有非零元素，即 $A^*\neq O$。
       </div>
 
       <h3 class="part"><span class="tag">核心意义</span>秩与线性方程组解的结构</h3>
