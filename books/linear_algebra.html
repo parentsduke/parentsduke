@@ -2248,6 +2248,20 @@
         <strong>三种定义看的是同一件事的三个侧面：</strong>子式看"局部行列式不为零"，向量组看"极大无关组有多大"，阶梯形看"消元后还剩多少条有效方程"。
       </div>
 
+      <h3 class="part"><span class="tag">注记</span>基本注记</h3>
+      <div class="step"><strong>注1（子式定义的拆解）：</strong>若 $A$ 中有一个 $D_r\neq0$（$r$ 阶子式非零），则 $R(A)\ge r$；若 $A$ 中所有的 $D_{r+1}=0$（所有 $r+1$ 阶子式全为零），则 $R(A)\le r$。这两句合起来就是子式定义的完整表述：既要"够得到" $r$ 阶（存在非零），又要"上不去" $r+1$ 阶（更高阶全零），两条同时满足才有 $R(A)=r$。</div>
+      <div class="step"><strong>注2：</strong>若 $A\neq O$，则 $R(A)\ge1$——只要矩阵不是全零，至少有一个元素非零，这个元素本身就是一个 $1$ 阶非零子式。</div>
+      <div class="step"><strong>注3：</strong>非零列（行）向量的秩为 $1$——只有一列（或一行）的矩阵凑不出 $2$ 阶子式，秩最高是 $1$，又因非零，秩恰好是 $1$。</div>
+      <div class="step"><strong>注4：</strong>$n$ 阶矩阵 $A$ 可逆 $\iff R(A)=n$（满秩）——这是贯穿全篇的核心等价关系，等价于 $\det(A)\neq0$。</div>
+      <div class="step"><strong>注5：</strong>初等变换不改变矩阵的秩——倍加、互换、倍乘这三种操作都不会创造或消灭矩阵里的"独立信息"，这正是"化阶梯形数非零行"这一计算方法成立的根本原因。</div>
+      <div class="step"><strong>注6：</strong>转置不改变秩，$R(A^{\mathrm T})=R(A)$——因为行秩恒等于列秩，转置只是把行、列互换了位置，独立信息量不变。</div>
+      <div class="step"><strong>注7：</strong>乘法不增秩，$R(AB)\le\min\{R(A),R(B)\}$——矩阵相乘是一种变换，变换之后信息量不会凭空增多，只可能持平或减少。</div>
+      <div class="step"><strong>注8：</strong>可逆矩阵相乘不改变秩，若 $P,Q$ 可逆，则 $R(PAQ)=R(A)$——这正是注5"初等变换不改变秩"的根本原因，因为初等变换本质上就是左乘或右乘一个可逆的初等矩阵。</div>
+      <div class="step"><strong>注9：</strong>并矩阵的秩有双边界，$\max\{R(A),R(B)\}\le R(A,B)\le R(A)+R(B)$，$R\begin{pmatrix}A\\B\end{pmatrix}$ 同理——把两个矩阵的行（或列）拼在一起，独立信息不会比任何一方单独更少，但也不会超过两边各自独立信息之和。</div>
+      <div class="note">
+        <strong>注6~注9 与本节后文的关系：</strong>这几条在下面"性质·秩的基本规律"一节还会展开举反例、给出完整推导（比如注9 拼成加法的双边不等式 $|R(A)-R(B)|\le R(A+B)\le R(A)+R(B)$），这里先列出结论，方便和注1~注5 放在一起做速查。
+      </div>
+
       <h3 class="part"><span class="tag">计算</span>用初等行变换化阶梯形</h3>
       <div class="example">
         <div class="ex-label">例：求 $A=\begin{pmatrix}1&2&3\\2&4&7\\3&6&10\end{pmatrix}$ 的秩</div>
