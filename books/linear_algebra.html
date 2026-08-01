@@ -412,10 +412,14 @@
   .figure-caption {
     text-align: center;
     font-size: 13.5px;
+    line-height: 1.9;
     color: #6b6555;
     font-style: italic;
     margin-top: 10px;
     font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (max-width: 480px) {
+    .figure-caption { text-align: left; }
   }
 
   table.matrix-table {
@@ -813,6 +817,7 @@
       <a href="#ex10"><span class="num">✎</span>习题十：过渡矩阵与几何变换</a>
       <a href="#ex11"><span class="num">✎</span>习题十一：合同变换是线性变换</a>
       <a href="#ex12"><span class="num">✎</span>习题十二：W ∩ N(A) 的结构与应用</a>
+      <a href="#ex13"><span class="num">✎</span>习题十三：‖Ax‖² 与最小二乘法</a>
     </nav>
   </aside>
 
@@ -1903,7 +1908,7 @@
           <tr><td>$n$D</td><td>超体积缩放倍数</td><td>$n$ 维单位超立方体变换后的超体积</td></tr>
         </table>
       </div>
-      <div class="step"><strong>正号（$>0$）：</strong>保持定向（右手系仍是右手系）。<strong>负号（$<0$）：</strong>翻转定向（如镜像对称，右手系变左手系）。</div>
+      <div class="step"><strong>正号（$>0$）：</strong>保持定向（右手系仍是右手系）。<strong>负号（$\lt 0$）：</strong>翻转定向（如镜像对称，右手系变左手系）。</div>
 
       <h3 class="part"><span class="tag">应用</span>克拉默法则</h3>
       <div class="step">对于 $n$ 元方程组 $Ax=b$，若系数矩阵行列式 $\det A\neq 0$，则方程组有唯一解，且</div>
@@ -2454,7 +2459,7 @@
       </div>
 
       <div class="note">
-        <strong>说明：为什么这条不等式只给下界，不是精确等式？</strong>因为 $B$ 的像空间通常并不是那个 $n$ 维"中转站"的全部——只有 $r(B)=n$ 时它才会填满整个空间，否则 $r(B)<n$ 时它只是其中一个真子空间。这个子空间具体落在什么位置——是恰好"扎"进了 $A$ 的零空间，还是完全"躲开"了它——由 $A,B$ 的具体数值决定，不是单靠维数就能确定的，所以重叠部分的维数其实是一个范围：$$0\ \le\ \dim(\text{重叠})\ \le\ \min(n-r(A),\,r(B))$$下限 0 对应上面"$xy$ 平面"的情形（完全躲开），上限 $\min(n-r(A),r(B))$ 对应"$xz$ 平面"的情形（尽量扎进去、扎到不能再扎）。真正精确的等式其实是 $$r(AB)=r(B)-\dim(\text{重叠})$$ 但重叠维数本身并不固定，会在 $0$ 到 $\min(n-r(A),r(B))$ 之间浮动，我们只能保证它不会超过这个上限，于是只能确定 $r(AB)$ 不低于"重叠拿满"这个最坏情况对应的值，也就是 $r(A)+r(B)-n$——这正是 Sylvester 不等式只给出下界、而非等式的原因。
+        <strong>说明：为什么这条不等式只给下界，不是精确等式？</strong>因为 $B$ 的像空间通常并不是那个 $n$ 维"中转站"的全部——只有 $r(B)=n$ 时它才会填满整个空间，否则 $r(B)\lt n$ 时它只是其中一个真子空间。这个子空间具体落在什么位置——是恰好"扎"进了 $A$ 的零空间，还是完全"躲开"了它——由 $A,B$ 的具体数值决定，不是单靠维数就能确定的，所以重叠部分的维数其实是一个范围：$$0\ \le\ \dim(\text{重叠})\ \le\ \min(n-r(A),\,r(B))$$下限 0 对应上面"$xy$ 平面"的情形（完全躲开），上限 $\min(n-r(A),r(B))$ 对应"$xz$ 平面"的情形（尽量扎进去、扎到不能再扎）。真正精确的等式其实是 $$r(AB)=r(B)-\dim(\text{重叠})$$ 但重叠维数本身并不固定，会在 $0$ 到 $\min(n-r(A),r(B))$ 之间浮动，我们只能保证它不会超过这个上限，于是只能确定 $r(AB)$ 不低于"重叠拿满"这个最坏情况对应的值，也就是 $r(A)+r(B)-n$——这正是 Sylvester 不等式只给出下界、而非等式的原因。
       </div>
 
       <h3 class="part"><span class="tag">深入</span>$r(A^{\mathrm T}A)=r(A)$：最小二乘法的基石</h3>
@@ -3922,6 +3927,8 @@
     </div>
   </div>
 
+  <div class="nextlink"><a href="#ex13">下一篇：习题十三 · ‖Ax‖² 与最小二乘法 →</a></div>
+
   <footer>习题十二 · W ∩ N(A) 的结构与应用 &nbsp;·&nbsp; 逐题详解</footer>
 
 </div>
@@ -3929,7 +3936,136 @@
 
     </section>
 
-    <footer class="book-footer">线性代数 · 通俗讲义 · 全十二章 + 习题详解 完</footer>
+    <!-- ========================================================= -->
+    <!-- 习题十三 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ex13" style="max-width:none; padding:0;">
+      <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
+      <h2 class="chapter-title" style="padding:0 40px;">习题十三：‖Ax‖² 恒等式与最小二乘法</h2>
+      <p class="chapter-tagline" style="padding:0 40px;">对应第二部"方程与矩阵"与第五部"秩与解的结构"的延伸练习——从一个范数恒等式，走到"无解方程组"的最佳近似解</p>
+
+<div class="ex6-scope"><div class="wrap">
+
+  <header>
+    <div class="eyebrow">线性代数 · 补充专题 · 详解</div>
+    <h1>‖Ax‖² 恒等式与最小二乘法</h1>
+    <div class="subtitle">先证明一个恒等式，再看它如何撑起整套最小二乘理论</div>
+    <div class="bracket-hero">
+      <svg viewBox="0 0 20 64" fill="none"><path d="M16 2 L4 2 L4 62 L16 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+      <div class="grid-mini">
+        <span>Ax</span><span>=</span>
+        <span>b</span><span>min?</span>
+      </div>
+      <svg viewBox="0 0 20 64" fill="none"><path d="M4 2 L16 2 L16 62 L4 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+    </div>
+  </header>
+
+  <!-- ===================== PROBLEM 14 ===================== -->
+  <section class="problem" id="p14">
+    <div class="prob-head">
+      <span class="prob-num">14</span>
+      <span class="prob-title">证明 \(\ker(A^{\mathrm T}A)=\ker(A)\)，并说明其在最小二乘法中的作用</span>
+    </div>
+    <div class="prob-statement">
+      设 \(A\) 为 \(m\times n\) 实矩阵。证明：\((A\mathbf{x})^{\mathrm T}(A\mathbf{x})=\|A\mathbf{x}\|^2\)，并由此说明 \(\ker(A^{\mathrm T}A)=\ker(A)\)，从而 \(\operatorname{rank}(A^{\mathrm T}A)=\operatorname{rank}(A)\)。
+    </div>
+
+    <h3 class="sub"><span class="tag">起点</span>范数的定义</h3>
+    <p style="margin:0 0 20px">对任意向量 \(\mathbf{v}\)，欧几里得范数的平方就是它与自身的内积：\(\|\mathbf{v}\|^2=\mathbf{v}^{\mathrm T}\mathbf{v}\)。取 \(\mathbf{v}=A\mathbf{x}\)，立刻得到
+    \[(A\mathbf{x})^{\mathrm T}(A\mathbf{x})=\|A\mathbf{x}\|^2\]
+    这条恒等式本身没有任何条件限制，对任意 \(A,\mathbf{x}\) 都成立——它只是把"矩阵乘法"和"长度"这两个概念连了起来。</p>
+
+    <div class="box verify">
+      <div class="label">Step 1　\(\ker(A)\subseteq\ker(A^{\mathrm T}A)\)（平凡方向）</div>
+      <p style="margin:0">若 \(A\mathbf{x}=\mathbf{0}\)，两边左乘 \(A^{\mathrm T}\) 得 \(A^{\mathrm T}A\mathbf{x}=A^{\mathrm T}\mathbf{0}=\mathbf{0}\)，故 \(\mathbf{x}\in\ker(A^{\mathrm T}A)\)。</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">Step 2　\(\ker(A^{\mathrm T}A)\subseteq\ker(A)\)（关键方向）</div>
+      <p style="margin:0">设 \(A^{\mathrm T}A\mathbf{x}=\mathbf{0}\)。两边左乘 \(\mathbf{x}^{\mathrm T}\)：\(\mathbf{x}^{\mathrm T}A^{\mathrm T}A\mathbf{x}=0\)。注意到 \(\mathbf{x}^{\mathrm T}A^{\mathrm T}=(A\mathbf{x})^{\mathrm T}\)，左边正好是
+      \[(A\mathbf{x})^{\mathrm T}(A\mathbf{x})=\|A\mathbf{x}\|^2=0\]
+      范数非负，平方为零只能是 \(A\mathbf{x}=\mathbf{0}\)，即 \(\mathbf{x}\in\ker(A)\)。</p>
+    </div>
+
+    <div class="box basis">
+      <div class="label">结论</div>
+      <p style="margin:0">两个方向都成立，故 \(\ker(A^{\mathrm T}A)=\ker(A)\)。由秩–零化度定理（两者列数相同，零空间维数相等），直接得到
+      \[\operatorname{rank}(A^{\mathrm T}A)=\operatorname{rank}(A)\]
+      特别地，当 \(A\) 列满秩时，\(\ker(A)=\{\mathbf{0}\}\)，于是 \(A^{\mathrm T}A\) 满秩、可逆——这正是最小二乘法正规方程有唯一解的根本原因。</p>
+    </div>
+  </section>
+
+  <div class="divider"><div class="line"></div><div class="mark">§ 2</div><div class="line"></div></div>
+
+  <!-- ===================== FOLLOW-UP: 最小二乘法 ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>方程组无解怎么办？——最小二乘法</h2>
+
+    <p>当 \(A\) 是 \(m\times n\)（\(m>n\)，方程个数多于未知数）矩阵时，\(A\mathbf{x}=\mathbf{b}\) 往往是"超定方程组"，一般没有精确解。最小二乘法退而求其次，找一个 \(\mathbf{x}\) 使 \(A\mathbf{x}\) 尽量接近 \(\mathbf{b}\)，即最小化残差平方和：
+    \[\min_{\mathbf{x}}\|A\mathbf{x}-\mathbf{b}\|^2\]
+    对该式求导并令其为零，可以推出正规方程：
+    \[A^{\mathrm T}A\mathbf{x}=A^{\mathrm T}\mathbf{b}\]
+    若 \(A\) 列满秩，由习题 14 的结论，\(A^{\mathrm T}A\) 可逆，于是最小二乘解可以直接写出：
+    \[\mathbf{x}=(A^{\mathrm T}A)^{-1}A^{\mathrm T}\mathbf{b}\]</p>
+
+    <div class="box note">
+      <div class="label">几何直觉</div>
+      <p style="margin:0">\(A\mathbf{x}\) 的所有可能取值构成 \(A\) 的列空间，而 \(\mathbf{b}\) 一般不在这个子空间里。最小二乘法本质上是求 \(\mathbf{b}\) 在列空间上的<strong>正交投影</strong>：残差 \(\mathbf{b}-A\mathbf{x}\) 垂直于列空间，即 \(A^{\mathrm T}(\mathbf{b}-A\mathbf{x})=\mathbf{0}\)，整理后正是正规方程。</p>
+    </div>
+  </div>
+
+  <!-- ===================== FOLLOW-UP: 拟合直线例题 ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>例题：用最小二乘法拟合一条直线</h2>
+
+    <p>已知三个数据点 \((1,2),(2,3),(3,5)\)，求直线 \(y=c+dx\) 的最佳拟合。</p>
+
+    <div class="box verify">
+      <div class="label">Step 1　写成 \(A\mathbf{x}=\mathbf{b}\)</div>
+      <p style="margin:0">\[A=\begin{pmatrix}1&1\\1&2\\1&3\end{pmatrix},\quad \mathbf{x}=\begin{pmatrix}c\\d\end{pmatrix},\quad \mathbf{b}=\begin{pmatrix}2\\3\\5\end{pmatrix}\]
+      3 个方程、2 个未知数，超定方程组，一般无解。</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">Step 2　计算 \(A^{\mathrm T}A\) 与 \(A^{\mathrm T}\mathbf{b}\)</div>
+      <p style="margin:0">\[A^{\mathrm T}A=\begin{pmatrix}3&6\\6&14\end{pmatrix},\qquad A^{\mathrm T}\mathbf{b}=\begin{pmatrix}10\\23\end{pmatrix}\]</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">Step 3　解正规方程</div>
+      <p style="margin:0">\[\begin{pmatrix}3&6\\6&14\end{pmatrix}\begin{pmatrix}c\\d\end{pmatrix}=\begin{pmatrix}10\\23\end{pmatrix}\]
+      由第一行 \(c=\dfrac{10-6d}{3}\)，代入第二行消去 \(c\)：\(20-12d+14d=23\Rightarrow d=1.5\)，代回得 \(c=\dfrac13\approx0.33\)。</p>
+    </div>
+
+    <div class="box basis">
+      <div class="label">最小二乘解</div>
+      \[y\approx 0.33+1.5x\]
+      <table class="compare">
+        <tr><th>\(x\)</th><th>实际 \(y\)</th><th>预测 \(\hat y\)</th><th>误差</th></tr>
+        <tr><td>1</td><td>2</td><td>1.83</td><td>0.17</td></tr>
+        <tr><td>2</td><td>3</td><td>3.33</td><td>-0.33</td></tr>
+        <tr><td>3</td><td>5</td><td>4.83</td><td>0.17</td></tr>
+      </table>
+      <p style="margin:0">这条直线不能精确穿过任何一点，但在所有直线中，使误差平方和最小——这正是"最小二乘"名字的由来。</p>
+    </div>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">\((A\mathbf{x})^{\mathrm T}(A\mathbf{x})=\|A\mathbf{x}\|^2\) 看似只是一条范数恒等式，却是"\(\ker(A^{\mathrm T}A)=\ker(A)\)"这一关键结论的枢纽，而这个结论又直接决定了最小二乘正规方程 \(A^{\mathrm T}A\mathbf{x}=A^{\mathrm T}\mathbf{b}\) 何时有唯一解——从一个恒等式到整套曲线拟合理论，中间只隔了两步推导。</p>
+    </div>
+  </div>
+
+  <footer>习题十三 · ‖Ax‖² 与最小二乘法 &nbsp;·&nbsp; 逐题详解</footer>
+
+</div>
+</div>
+
+    </section>
+
+    <footer class="book-footer">线性代数 · 通俗讲义 · 全十三章 + 习题详解 完</footer>
 
   </main>
 </div>
