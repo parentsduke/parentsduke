@@ -105,6 +105,23 @@
       opacity: 0.5; background: #f0f7f0;
       border-color: #b0d8b0;
     }
+    .request-thumb {
+      width: 64px; height: 64px; object-fit: cover;
+      border-radius: 8px; border: 1px solid #e0e8f0;
+      cursor: pointer; flex-shrink: 0; background: #f0f4f8;
+    }
+    .request-thumb:hover { border-color: #003087; }
+    .lightbox-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.8);
+      align-items: center; justify-content: center;
+      padding: 24px; cursor: zoom-out;
+    }
+    .lightbox-overlay.open { display: flex; }
+    .lightbox-overlay img {
+      max-width: 100%; max-height: 100%;
+      border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
     .request-info { flex: 1; min-width: 200px; }
     .request-name { font-size: 15px; font-weight: 700; color: #001a4d; margin-bottom: 4px; }
     .request-meta { font-size: 13px; color: #555; line-height: 1.8; }
@@ -226,6 +243,10 @@
       <button class="logout-btn" onclick="doLogout()">退出登录</button>
     </div>
   </header>
+
+  <div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="群昵称截图"/>
+  </div>
 
   <div class="container">
     <div class="error-msg" id="errorMsg"></div>
@@ -465,9 +486,11 @@
       const status = r.status || 'pending';
 
       const isDone = status === 'approved' || status === 'rejected';
+      const screenshotUrl = r.screenshot_url || '';
 
       return `
       <div class="request-card ${status === 'approved' ? 'approved' : ''}" id="card-${r.id}">
+        ${screenshotUrl ? `<img class="request-thumb" src="${screenshotUrl}" alt="群昵称截图" onclick="openLightbox('${screenshotUrl}')">` : ''}
         <div class="request-info">
           <div class="request-name">${classVal}届 &nbsp;|&nbsp; ${wxgroup} &nbsp;|&nbsp; ${nickname}</div>
           <div class="request-meta">📧 <a href="mailto:${email}">${email}</a></div>
@@ -486,6 +509,15 @@
         </div>
       </div>`;
     }).join('');
+  }
+
+  function openLightbox(url) {
+    document.getElementById('lightboxImg').src = url;
+    document.getElementById('lightboxOverlay').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightboxOverlay').classList.remove('open');
+    document.getElementById('lightboxImg').src = '';
   }
 
   async function approveRequest(btn) {
