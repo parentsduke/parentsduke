@@ -818,6 +818,7 @@
       <a href="#ex11"><span class="num">✎</span>习题十一：合同变换是线性变换</a>
       <a href="#ex12"><span class="num">✎</span>习题十二：W ∩ N(A) 的结构与应用</a>
       <a href="#ex13"><span class="num">✎</span>习题十三：‖Ax‖² 与最小二乘法</a>
+      <a href="#ex14"><span class="num">✎</span>习题十四：矩阵求导与正规方程的推导</a>
     </nav>
   </aside>
 
@@ -4058,6 +4059,8 @@
     </div>
   </div>
 
+  <div class="nextlink"><a href="#ex14">下一篇：习题十四 · 矩阵求导与正规方程的推导 →</a></div>
+
   <footer>习题十三 · ‖Ax‖² 与最小二乘法 &nbsp;·&nbsp; 逐题详解</footer>
 
 </div>
@@ -4065,7 +4068,126 @@
 
     </section>
 
-    <footer class="book-footer">线性代数 · 通俗讲义 · 全十三章 + 习题详解 完</footer>
+    <!-- ========================================================= -->
+    <!-- 习题十四 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ex14" style="max-width:none; padding:0;">
+      <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
+      <h2 class="chapter-title" style="padding:0 40px;">习题十四：矩阵求导与正规方程的推导</h2>
+      <p class="chapter-tagline" style="padding:0 40px;">从 \(\min_{\mathbf{x}}\|A\mathbf{x}-\mathbf{b}\|^2\) 到正规方程 \(A^{\mathrm T}A\mathbf{x}=A^{\mathrm T}\mathbf{b}\)，中间那一步"求导"到底是怎么算的</p>
+
+<div class="ex6-scope"><div class="wrap">
+
+  <header>
+    <div class="eyebrow">线性代数 · 补充专题 · 详解</div>
+    <h1>矩阵求导与正规方程的推导</h1>
+    <div class="subtitle">两条矩阵求导公式，撑起整个最小二乘的求解过程</div>
+    <div class="bracket-hero">
+      <svg viewBox="0 0 20 64" fill="none"><path d="M16 2 L4 2 L4 62 L16 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+      <div class="grid-mini">
+        <span>∇f</span><span>=0</span>
+        <span>2Mx</span><span>c</span>
+      </div>
+      <svg viewBox="0 0 20 64" fill="none"><path d="M4 2 L16 2 L16 62 L4 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+    </div>
+  </header>
+
+  <!-- ===================== PROBLEM 15 ===================== -->
+  <section class="problem" id="p15">
+    <div class="prob-head">
+      <span class="prob-num">15</span>
+      <span class="prob-title">对 \(f(\mathbf{x})=\|A\mathbf{x}-\mathbf{b}\|^2\) 求导，推出正规方程</span>
+    </div>
+    <div class="prob-statement">
+      设 \(A\) 为 \(m\times n\) 实矩阵，\(\mathbf{b}\in\mathbb{R}^m\)。对 \(f(\mathbf{x})=\|A\mathbf{x}-\mathbf{b}\|^2\) 关于 \(\mathbf{x}\) 求梯度并令其为零，推导出正规方程 \(A^{\mathrm T}A\mathbf{x}=A^{\mathrm T}\mathbf{b}\)。
+    </div>
+
+    <h3 class="sub"><span class="tag">起点</span>把范数平方展开成内积</h3>
+    <p style="margin:0 0 20px">利用 \(\|\mathbf{v}\|^2=\mathbf{v}^{\mathrm T}\mathbf{v}\)：
+    \[f(\mathbf{x})=(A\mathbf{x}-\mathbf{b})^{\mathrm T}(A\mathbf{x}-\mathbf{b})=(A\mathbf{x})^{\mathrm T}(A\mathbf{x})-(A\mathbf{x})^{\mathrm T}\mathbf{b}-\mathbf{b}^{\mathrm T}(A\mathbf{x})+\mathbf{b}^{\mathrm T}\mathbf{b}\]
+    中间两项 \((A\mathbf{x})^{\mathrm T}\mathbf{b}\) 与 \(\mathbf{b}^{\mathrm T}(A\mathbf{x})\) 互为转置，且都是 \(1\times1\) 标量——标量转置等于自身，故两项相等，合并后：
+    \[f(\mathbf{x})=\mathbf{x}^{\mathrm T}A^{\mathrm T}A\mathbf{x}-2\mathbf{b}^{\mathrm T}A\mathbf{x}+\mathbf{b}^{\mathrm T}\mathbf{b}\]
+    这是一个"二次型 + 线性项 + 常数"的标准形式，接下来分别对这两类项求导。</p>
+
+    <div class="box verify">
+      <div class="label">公式 1　\(\nabla_{\mathbf{x}}(\mathbf{x}^{\mathrm T}M\mathbf{x})=(M+M^{\mathrm T})\mathbf{x}\)，\(M\) 对称时化为 \(2M\mathbf{x}\)</div>
+      <p style="margin:0">按分量展开 \(\mathbf{x}^{\mathrm T}M\mathbf{x}=\sum_{i,j}M_{ij}x_ix_j\)，对 \(x_k\) 求偏导，\(i=k\) 与 \(j=k\) 两类项各贡献一份：
+      \[\frac{\partial}{\partial x_k}\sum_{i,j}M_{ij}x_ix_j=\sum_j M_{kj}x_j+\sum_i M_{ik}x_i=(M\mathbf{x})_k+(M^{\mathrm T}\mathbf{x})_k\]
+      汇总成向量即 \(\nabla_{\mathbf{x}}(\mathbf{x}^{\mathrm T}M\mathbf{x})=(M+M^{\mathrm T})\mathbf{x}\)，这对任意 \(M\) 都成立。当 \(M\) 对称（\(M^{\mathrm T}=M\)）时化简为 \(2M\mathbf{x}\)。</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">公式 2　\(\nabla_{\mathbf{x}}(\mathbf{c}^{\mathrm T}\mathbf{x})=\mathbf{c}\)</div>
+      <p style="margin:0">按分量展开 \(\mathbf{c}^{\mathrm T}\mathbf{x}=\sum_i c_ix_i\)，对 \(x_k\) 求偏导只有 \(i=k\) 一项存活：\(\dfrac{\partial}{\partial x_k}=c_k\)，汇总即 \(\nabla_{\mathbf{x}}(\mathbf{c}^{\mathrm T}\mathbf{x})=\mathbf{c}\)——本质上和一元函数 \(\dfrac{d}{dx}(cx)=c\) 是同一件事，只是升到了向量维度。</p>
+    </div>
+
+    <div class="box basis">
+      <div class="label">代入求梯度</div>
+      <p style="margin:0">取 \(M=A^{\mathrm T}A\)（下面会证明它天然对称）、\(\mathbf{c}=2A^{\mathrm T}\mathbf{b}\)，代入公式 1、2：
+      \[\nabla f(\mathbf{x})=2A^{\mathrm T}A\mathbf{x}-2A^{\mathrm T}\mathbf{b}\]
+      令 \(\nabla f(\mathbf{x})=\mathbf{0}\)，两边除以 2：
+      \[A^{\mathrm T}A\mathbf{x}=A^{\mathrm T}\mathbf{b}\]
+      这就是正规方程。又因为 Hessian（二阶导）为 \(2A^{\mathrm T}A\)，而 \(\mathbf{x}^{\mathrm T}A^{\mathrm T}A\mathbf{x}=\|A\mathbf{x}\|^2\ge0\)（习题十四本证明）恒成立，说明 Hessian 半正定，驻点必为全局最小值，而非最大值或鞍点。</p>
+    </div>
+  </section>
+
+  <div class="divider"><div class="line"></div><div class="mark">§ 2</div><div class="line"></div></div>
+
+  <!-- ===================== FOLLOW-UP: A^TA 对称性 ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>为什么 \(A^{\mathrm T}A\) 天然对称？</h2>
+
+    <p>只需两条转置的基本规则：\((XY)^{\mathrm T}=Y^{\mathrm T}X^{\mathrm T}\)，以及 \((X^{\mathrm T})^{\mathrm T}=X\)。对 \(A^{\mathrm T}A\) 取转置，把它看成 \(X=A^{\mathrm T},\,Y=A\) 的乘积：
+    \[(A^{\mathrm T}A)^{\mathrm T}=A^{\mathrm T}(A^{\mathrm T})^{\mathrm T}=A^{\mathrm T}A\]
+    这正好符合对称矩阵的定义 \(M^{\mathrm T}=M\)，证毕——而且这对<strong>任意</strong> \(A\) 都成立，不要求 \(A\) 是方阵，更不要求 \(A\) 本身对称。</p>
+
+    <div class="box note">
+      <div class="label">直观理解</div>
+      <p style="margin:0">\((A^{\mathrm T}A)_{ij}\) 其实是 \(A\) 的第 \(i\) 列与第 \(j\) 列做内积。内积满足交换律，第 \(i\) 列点乘第 \(j\) 列和第 \(j\) 列点乘第 \(i\) 列结果相同，即 \((A^{\mathrm T}A)_{ij}=(A^{\mathrm T}A)_{ji}\)——这正是"沿主对角线镜像对称"的定义。</p>
+    </div>
+  </div>
+
+  <!-- ===================== FOLLOW-UP: 数值例题 ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>例题：用具体数字验证两条求导公式</h2>
+
+    <div class="box verify">
+      <div class="label">验证公式 1（取 \(n=2\)）</div>
+      <p style="margin:0">令 \(M=\begin{pmatrix}2&1\\1&3\end{pmatrix}\)（对称），展开 \(\mathbf{x}^{\mathrm T}M\mathbf{x}=2x_1^2+2x_1x_2+3x_2^2\)，直接求偏导得 \(\nabla f=\begin{pmatrix}4x_1+2x_2\\2x_1+6x_2\end{pmatrix}\)；用公式算 \(2M\mathbf{x}=\begin{pmatrix}4x_1+2x_2\\2x_1+6x_2\end{pmatrix}\)——两者完全一致。</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">验证公式 2</div>
+      <p style="margin:0">令 \(\mathbf{c}=\begin{pmatrix}5\\-2\end{pmatrix}\)，则 \(\mathbf{c}^{\mathrm T}\mathbf{x}=5x_1-2x_2\)，直接求偏导得 \(\begin{pmatrix}5\\-2\end{pmatrix}\)，正好等于 \(\mathbf{c}\)。</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">验证 \(A^{\mathrm T}A\) 对称（数值例）</div>
+      <p style="margin:0">取 \(A=\begin{pmatrix}1&2\\3&4\\5&6\end{pmatrix}\)，算得 \(A^{\mathrm T}A=\begin{pmatrix}35&44\\44&56\end{pmatrix}\)——左下角与右上角都是 44，对称性在数字上一目了然。</p>
+    </div>
+
+    <div class="box basis">
+      <div class="label">套回最小二乘拟合直线的例子</div>
+      <p style="margin:0">回忆习题十三里的拟合例题：\(A^{\mathrm T}A=\begin{pmatrix}3&6\\6&14\end{pmatrix}\)，\(A^{\mathrm T}\mathbf{b}=\begin{pmatrix}10\\23\end{pmatrix}\)。代入梯度公式 \(\nabla f(\mathbf{x})=2A^{\mathrm T}A\mathbf{x}-2A^{\mathrm T}\mathbf{b}\)，令其为零、两边除以 2，正好还原出正规方程 \(\begin{pmatrix}3&6\\6&14\end{pmatrix}\begin{pmatrix}c\\d\end{pmatrix}=\begin{pmatrix}10\\23\end{pmatrix}\)，解得 \(c\approx0.33,\,d=1.5\)——从抽象求导公式到具体拟合结果，完整闭环。</p>
+    </div>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">最小二乘的正规方程不是凭空出现的，而是对 \(\|A\mathbf{x}-\mathbf{b}\|^2\) 求导、令梯度为零的自然结果；而这个过程能顺利进行、且解一定是最小值，靠的正是 \(A^{\mathrm T}A\) 永远对称、永远半正定这两条性质——它们分别来自转置的基本规则和习题十四证明过的范数恒等式。</p>
+    </div>
+  </div>
+
+  <footer>习题十四 · 矩阵求导与正规方程的推导 &nbsp;·&nbsp; 逐题详解</footer>
+
+</div>
+</div>
+
+    </section>
+
+    <footer class="book-footer">线性代数 · 通俗讲义 · 全十四章 + 习题详解 完</footer>
 
   </main>
 </div>
