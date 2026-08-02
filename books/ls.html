@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>最小二乘法完整讲义</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: "宋体", "仿宋", serif;
+      margin: 0;
+      background-color: #f4f1ea;
+      line-height: 1.9;
+      color: #2b2b2b;
+    }
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 50px 30px 100px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 15px;
+      margin-bottom: 45px;
+    }
+    section {
+      background: #fff;
+      padding: 20px 30px;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    h2 {
+      font-size: 21px;
+      color: #1a1a1a;
+      border-left: 5px solid #7a5c3e;
+      padding-left: 12px;
+      margin-bottom: 18px;
+    }
+    h3 {
+      font-size: 16px;
+      color: #7a5c3e;
+      margin: 20px 0 8px;
+    }
+    p { margin: 10px 0; }
+    .eq {
+      text-align: center;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    .box {
+      background: #fbfaf7;
+      border: 1px solid #e3ddd0;
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .proof {
+      background: #fbfaf7;
+      border-left: 3px solid #b0a58e;
+      padding: 12px 18px;
+      margin: 14px 0;
+      font-size: 15px;
+    }
+    .proof-title {
+      font-weight: bold;
+      color: #7a5c3e;
+      margin-bottom: 6px;
+    }
+    .key {
+      background: #f1e9dc;
+      border-radius: 6px;
+      padding: 14px 20px;
+      margin: 18px 0;
+      font-weight: bold;
+      text-align: center;
+    }
+    .remark {
+      font-size: 14px;
+      color: #666;
+      margin-top: 10px;
+    }
+    canvas {
+      border: 1px solid #333;
+      background: #fff;
+      margin-top: 20px;
+    }
+    #formula, #rss {
+      font-size: 18px;
+      color: #e74c3c;
+      margin-top: 10px;
+    }
+    .toggle-buttons {
+      margin-bottom: 15px;
+    }
+    .toggle-buttons button {
+      margin-right: 10px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid #7a5c3e;
+      background: #fff;
+      color: #7a5c3e;
+      border-radius: 4px;
+    }
+    .toggle-buttons button:hover {
+      background: #7a5c3e;
+      color: #fff;
+    }
+    .hidden {
+      display: none;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #e3ddd0;
+      margin: 30px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>最小二乘法完整讲义</h1>
+<div class="subtitle">从一元回归的直接推导，到矩阵求导法的严格证明，再到交互式几何演示</div>
+
+<section>
+  <h2>一、一元情形：直接求偏导</h2>
+  <p>残差定义：\(u_i = y_i - a_0 - a_1 x_i\)。</p>
+  <p>法方程：</p>
+  <p>\(\sum y_i = n a_0 + a_1 \sum x_i\)</p>
+  <p>\(\sum x_i y_i = a_0 \sum x_i + a_1 \sum x_i^2\)</p>
+  <p>解得：</p>
+  <p>\(a_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}, \quad a_0 = \bar{y} - a_1 \bar{x}\)</p>
+</section>
+
+<section>
+  <h2>二、矩阵形式：问题设定</h2>
+  <p>把一元情形推广到多元，线性模型写成：\(Y = X\beta + u\)，其中 \(Y \in \mathbb{R}^n\)，\(X \in \mathbb{R}^{n\times p}\)，\(\beta \in \mathbb{R}^p\)，\(u\) 是残差向量。</p>
+  <p>目标：找到 \(\hat\beta\)，使得残差平方和</p>
+  <div class="eq">\(S(\beta) = \sum_{i=1}^n u_i^2 = u^T u = (Y-X\beta)^T(Y-X\beta)\)</div>
+  <p>最小。最小值点满足梯度为零，下面把 \(S(\beta)\) 对 \(\beta\) 的梯度算出来。</p>
+</section>
+
+<section>
+  <h2>三、展开目标函数</h2>
+  <div class="eq">\(S(\beta) = Y^TY - Y^TX\beta - \beta^TX^TY + \beta^TX^TX\beta\)</div>
+  <p>其中 \(Y^TX\beta\) 是一个 \(1\times1\) 的标量，标量转置等于自身，于是</p>
+  <div class="eq">\(Y^TX\beta = (Y^TX\beta)^T = \beta^TX^TY\)</div>
+  <p>两项合并，得到</p>
+  <div class="key">\(S(\beta) = Y^TY \;-\; 2\beta^TX^TY \;+\; \beta^TX^TX\beta\)</div>
+  <p>这是关于 \(\beta\) 的二次型：常数项 + 线性项 + 二次项，结构和一元二次函数 \(c - 2bx + ax^2\) 完全类似，只是把标量换成了向量和矩阵。</p>
+</section>
+
+<section>
+  <h2>四、矩阵求导的两条基本规则</h2>
+  <p>要对 \(S(\beta)\) 求梯度，只需要分别处理线性项和二次项。下面从分量定义出发证明这两条规则。</p>
+
+  <h3>规则 1：线性项 \(\nabla_\beta(a^T\beta) = a\)</h3>
+  <div class="proof">
+    <div class="proof-title">证明</div>
+    <p>设 \(a\in\mathbb{R}^p\)，则 \(a^T\beta = \sum_{j=1}^p a_j\beta_j\)。对第 \(k\) 个分量求偏导：</p>
+    <div class="eq">\(\dfrac{\partial}{\partial \beta_k}\sum_{j=1}^p a_j\beta_j = a_k\)</div>
+    <p>因为求和式里只有 \(j=k\) 那一项含 \(\beta_k\)，其余项对 \(\beta_k\) 求导都是零。把所有分量组合成向量，就得到 \(\nabla_\beta(a^T\beta)=a\)。</p>
+  </div>
+  <p>代入 \(a = X^TY\)，线性项 \(-2\beta^TX^TY\) 的梯度就是：</p>
+  <div class="eq">\(\nabla_\beta(-2\beta^TX^TY) = -2X^TY\)</div>
+
+  <h3>规则 2：二次型 \(\nabla_\beta(\beta^TA\beta) = (A+A^T)\beta\)</h3>
+  <div class="proof">
+    <div class="proof-title">证明</div>
+    <p>展开成分量求和：\(\beta^TA\beta = \sum_{i=1}^p\sum_{j=1}^p A_{ij}\beta_i\beta_j\)。对第 \(k\) 个分量求偏导，需要分两种情况讨论含 \(\beta_k\) 的项：</p>
+    <p>① \(i=k,\ j\neq k\) 的项：\(A_{kj}\beta_j\)，求和得 \(\sum_j A_{kj}\beta_j\)；</p>
+    <p>② \(j=k,\ i\neq k\) 的项：\(A_{ik}\beta_i\)，求和得 \(\sum_i A_{ik}\beta_i\)；</p>
+    <p>③ \(i=j=k\) 的项：\(A_{kk}\beta_k^2\)，求导得 \(2A_{kk}\beta_k\)，恰好等于把①②中 \(i=j=k\) 的部分重复计入一次的结果，所以①②已经涵盖了它。</p>
+    <p>合并①②，第 \(k\) 个分量的偏导数是：</p>
+    <div class="eq">\(\sum_j A_{kj}\beta_j + \sum_i A_{ik}\beta_i = (A\beta)_k + (A^T\beta)_k\)</div>
+    <p>组合成向量，就是 \(\nabla_\beta(\beta^TA\beta) = A\beta + A^T\beta = (A+A^T)\beta\)。</p>
+  </div>
+  <p>代入 \(A = X^TX\)。因为 \((X^TX)^T = X^TX\) 是对称矩阵，所以 \(A+A^T=2A\)，于是二次项的梯度是：</p>
+  <div class="eq">\(\nabla_\beta(\beta^TX^TX\beta) = 2X^TX\beta\)</div>
+</section>
+
+<section>
+  <h2>五、合并梯度，令其为零：法方程</h2>
+  <p>把常数项（求导为零）、线性项、二次项的梯度加在一起：</p>
+  <div class="key">\(\nabla_\beta S(\beta) = -2X^TY + 2X^TX\beta\)</div>
+  <p>极小值点必须满足梯度为零：</p>
+  <div class="eq">\(-2X^TY + 2X^TX\beta = 0 \quad\Longrightarrow\quad X^TX\beta = X^TY\)</div>
+  <div class="box">
+    <p>这就是<strong>法方程（Normal Equations）</strong>，是 \(p\) 个方程组成的线性方程组。</p>
+  </div>
+  <p>为什么梯度为零一定对应最小值？看 Hessian：</p>
+  <div class="eq">\(\nabla^2_\beta S(\beta) = 2X^TX\)</div>
+  <p class="remark">\(X^TX\) 对任意非零向量 \(v\) 都满足 \(v^TX^TXv = \|Xv\|^2 \geq 0\)，是半正定矩阵，所以 \(S(\beta)\) 是凸函数，梯度为零处一定是全局最小值（\(X\) 列满秩时是严格凸，最小值唯一）。</p>
+</section>
+
+<section>
+  <h2>六、解出显式公式</h2>
+  <p>当 \(X^TX\) 可逆（等价于 \(X\) 的列线性无关）时，两边左乘 \((X^TX)^{-1}\)：</p>
+  <div class="key">\(\hat\beta = (X^TX)^{-1}X^TY\)</div>
+</section>
+
+<section>
+  <h2>七、几何视角：残差与列空间正交</h2>
+  <p>法方程 \(X^TX\hat\beta = X^TY\) 可以改写成：</p>
+  <div class="eq">\(X^T(Y-X\hat\beta) = 0 \quad\Longleftrightarrow\quad X^T\hat u = 0\)</div>
+  <p>其中 \(\hat u = Y - X\hat\beta\) 是拟合残差。\(X^T\hat u = 0\) 意味着 \(\hat u\) 与 \(X\) 的每一列都正交，即残差向量与整个列空间 \(\mathrm{col}(X)\) 正交。</p>
+  <p>这正是投影的定义：\(X\hat\beta\) 是 \(Y\) 在列空间 \(\mathrm{col}(X)\) 上的正交投影，\(\hat u\) 是投影后剩下的、与该空间垂直的部分。最小二乘法在几何上，本质就是"找一个最近的投影点"。</p>
+</section>
+
+<hr>
+
+<section>
+  <h2>八、交互式演示</h2>
+
+  <h3>二维拟合演示</h3>
+  <div id="twoD" class="module">
+    <p>拖动散点，拟合直线、公式、残差线段、残差平方和和平均点会实时更新。</p>
+    <canvas id="plot" width="600" height="400"></canvas>
+    <div id="formula"></div>
+    <div id="rss"></div>
+  </div>
+
+  <h3 style="margin-top:35px;">三维投影演示</h3>
+  <div id="threeD" class="module">
+    <p>展示向量 \(Y=(2,3,4)\)，它在解释变量空间（这里取过原点、方向为 \((1,1,1)\) 的直线，即"截距模型"的列空间）上的投影 \(\hat{Y}\)，以及与该空间正交的残差向量 \(r = Y - \hat{Y}\)。</p>
+    <div id="threeDPlot" style="width:100%;max-width:700px;height:500px;"></div>
+    <div id="threeDInfo" style="margin-top:10px; color:#e74c3c; font-size:16px;"></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+// 二维交互式演示
+const canvas = document.getElementById("plot");
+const ctx = canvas.getContext("2d");
+const formulaDiv = document.getElementById("formula");
+const rssDiv = document.getElementById("rss");
+
+let points = [
+  {x:100,y:200}, {x:200,y:150}, {x:300,y:250}, {x:400,y:180}, {x:500,y:300}
+];
+let dragging = null;
+
+function updateFormula(a0,a1){
+  formulaDiv.innerHTML = `当前拟合公式: $$\\hat{y} = ${a0.toFixed(2)} + ${a1.toFixed(2)}x$$`;
+  MathJax.typesetPromise();
+}
+
+function updateRSS(rss){
+  rssDiv.innerHTML = `当前残差平方和: $$RSS = ${rss.toFixed(2)}$$`;
+  MathJax.typesetPromise();
+}
+
+function draw() {
+  ctx.clearRect(0,0,600,400);
+  ctx.fillStyle="black";
+  points.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,6,0,2*Math.PI);
+    ctx.fill();
+  });
+  let xs = points.map(p=>p.x);
+  let ys = points.map(p=>400-p.y);
+  let n = xs.length;
+  let meanX = xs.reduce((a,b)=>a+b)/n;
+  let meanY = ys.reduce((a,b)=>a+b)/n;
+  let num=0,den=0;
+  for(let i=0;i<n;i++){
+    num += (xs[i]-meanX)*(ys[i]-meanY);
+    den += (xs[i]-meanX)*(xs[i]-meanX);
+  }
+  let a1 = num/den;
+  let a0 = meanY - a1*meanX;
+  ctx.strokeStyle="red";
+  ctx.beginPath();
+  for(let x=0;x<=600;x+=10){
+    let y = a0 + a1*x;
+    ctx.lineTo(x,400-y);
+  }
+  ctx.stroke();
+  ctx.strokeStyle="blue";
+  let rss=0;
+  points.forEach(p=>{
+    let yhat = a0 + a1*p.x;
+    let residual = (400-p.y) - yhat;
+    rss += residual*residual;
+    ctx.beginPath();
+    ctx.moveTo(p.x,p.y);
+    ctx.lineTo(p.x,400-yhat);
+    ctx.stroke();
+  });
+  ctx.fillStyle="green";
+  ctx.beginPath();
+  ctx.arc(meanX,400-meanY,6,0,2*Math.PI);
+  ctx.fill();
+  ctx.fillText("平均点", meanX+10, 400-meanY);
+  updateFormula(a0,a1);
+  updateRSS(rss);
+}
+
+canvas.addEventListener("mousedown",e=>{
+  let rect = canvas.getBoundingClientRect();
+  let mx = e.clientX-rect.left, my=e.clientY-rect.top;
+  points.forEach(p=>{
+    if(Math.hypot(p.x-mx,p.y-my)<8) dragging=p;
+  });
+});
+canvas.addEventListener("mousemove",e=>{
+  if(dragging){
+    let rect = canvas.getBoundingClientRect();
+    dragging.x = e.clientX-rect.left;
+    dragging.y = e.clientY-rect.top;
+    draw();
+  }
+});
+canvas.addEventListener("mouseup",()=>dragging=null);
+
+draw();
+window.addEventListener("load", drawThreeD);
+
+// 三维投影演示
+function drawThreeD(){
+  let Y = [2,3,4];
+  let v = [1,1,1];
+  let dot = Y[0]*v[0] + Y[1]*v[1] + Y[2]*v[2];
+  let vnorm2 = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+  let t = dot / vnorm2;
+  let Yhat = [t*v[0], t*v[1], t*v[2]];
+  let r = [Y[0]-Yhat[0], Y[1]-Yhat[1], Y[2]-Yhat[2]];
+
+  let lineSpan = {
+    x:[-1*v[0], 5*v[0]], y:[-1*v[1], 5*v[1]], z:[-1*v[2], 5*v[2]],
+    mode:'lines', type:'scatter3d',
+    line:{color:'gray', width:3, dash:'dot'},
+    name:'列空间 span(v)'
+  };
+
+  let traceY = {
+    x:[0,Y[0]], y:[0,Y[1]], z:[0,Y[2]],
+    mode:'lines+markers', type:'scatter3d',
+    line:{color:'black', width:5}, marker:{size:4},
+    name:'Y'
+  };
+
+  let traceYhat = {
+    x:[0,Yhat[0]], y:[0,Yhat[1]], z:[0,Yhat[2]],
+    mode:'lines+markers', type:'scatter3d',
+    line:{color:'red', width:5}, marker:{size:4},
+    name:'Ŷ (投影)'
+  };
+
+  let traceR = {
+    x:[Yhat[0],Y[0]], y:[Yhat[1],Y[1]], z:[Yhat[2],Y[2]],
+    mode:'lines+markers', type:'scatter3d',
+    line:{color:'blue', width:5, dash:'dash'}, marker:{size:3},
+    name:'残差 r = Y - Ŷ'
+  };
+
+  let layout = {
+    margin:{l:0,r:0,b:0,t:0},
+    scene:{
+      xaxis:{title:'x', range:[-1,5]},
+      yaxis:{title:'y', range:[-1,5]},
+      zaxis:{title:'z', range:[-1,5]}
+    },
+    legend:{x:0, y:1}
+  };
+
+  Plotly.newPlot('threeDPlot', [lineSpan, traceY, traceYhat, traceR], layout);
+
+  document.getElementById('threeDInfo').innerHTML =
+    `Ŷ = (${Yhat.map(n=>n.toFixed(2)).join(', ')})，r = (${r.map(n=>n.toFixed(2)).join(', ')})，`
+    + `可验证 r 与 v 正交：r·v = ${(r[0]*v[0]+r[1]*v[1]+r[2]*v[2]).toFixed(4)}`;
+}
+</script>
+
+</body>
+</html>
