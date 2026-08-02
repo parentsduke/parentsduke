@@ -4024,6 +4024,15 @@
 
     <p>已知三个数据点 \((1,2),(2,3),(3,5)\)，求直线 \(y=c+dx\) 的最佳拟合。</p>
 
+    <div class="box note">
+      <div class="label">\(A\)、\(\mathbf{x}\)、\(\mathbf{b}\) 是怎么来的</div>
+      <p style="margin:0 0 12px">把每个点 \((x,y)\) 代入待定直线 \(y=c+dx\)，若直线恰好穿过该点，方程应成立：
+      \[c+1d=2,\qquad c+2d=3,\qquad c+3d=5\]
+      三个方程左边都是"\(c\) 的系数乘 \(c\)，加上 \(d\) 的系数乘 \(d\)"，这正是矩阵乘向量的结构——\(c\) 前的系数恒为 \(1\)（截距与 \(x\) 无关），\(d\) 前的系数就是各点的 \(x\) 坐标，于是可以写成
+      \[\underbrace{\begin{pmatrix}1&1\\1&2\\1&3\end{pmatrix}}_{A}\underbrace{\begin{pmatrix}c\\d\end{pmatrix}}_{\mathbf{x}}=\underbrace{\begin{pmatrix}2\\3\\5\end{pmatrix}}_{\mathbf{b}}\]
+      对应关系：\(A\) 的每一行对应一个数据点，第一列固定是 \(1\)（截距系数），第二列是该点的 \(x\) 坐标（斜率系数）；\(\mathbf{x}\) 是待求的参数向量 \((c,d)\)（注意这里的 \(\mathbf{x}\) 是"参数"而非数据点的横坐标，只是符号巧合）；\(\mathbf{b}\) 是各点的 \(y\) 坐标，即每个方程右边的目标值。</p>
+    </div>
+
     <div class="box verify">
       <div class="label">Step 1　写成 \(A\mathbf{x}=\mathbf{b}\)</div>
       <p style="margin:0">\[A=\begin{pmatrix}1&1\\1&2\\1&3\end{pmatrix},\quad \mathbf{x}=\begin{pmatrix}c\\d\end{pmatrix},\quad \mathbf{b}=\begin{pmatrix}2\\3\\5\end{pmatrix}\]
@@ -4056,6 +4065,16 @@
     <div class="box note">
       <div class="label">一句话总结</div>
       <p style="margin:0">\((A\mathbf{x})^{\mathrm T}(A\mathbf{x})=\|A\mathbf{x}\|^2\) 看似只是一条范数恒等式，却是"\(\ker(A^{\mathrm T}A)=\ker(A)\)"这一关键结论的枢纽，而这个结论又直接决定了最小二乘正规方程 \(A^{\mathrm T}A\mathbf{x}=A^{\mathrm T}\mathbf{b}\) 何时有唯一解——从一个恒等式到整套曲线拟合理论，中间只隔了两步推导。</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">展开：这"两步推导"具体是怎么走通的</div>
+      <p style="margin:0 0 12px"><strong>第一步：</strong>范数恒等式 \(\Rightarrow\) 证出 \(\ker(A^{\mathrm T}A)=\ker(A)\)（即本节前面的证明）。<strong>第二步：</strong>再用这条零空间相等的结论，推出正规方程何时有唯一解——关键在于，正规方程 \(A^{\mathrm T}A\mathbf{x}=A^{\mathrm T}\mathbf{b}\) 是 \(n\times n\) 的方阵方程，方阵方程有唯一解，当且仅当系数矩阵可逆，即
+      \[\ker(A^{\mathrm T}A)=\{\mathbf{0}\}\]
+      借助第一步的等式，这个条件直接翻译成 \(\ker(A)=\{\mathbf{0}\}\)，也就是 \(A\mathbf{x}=\mathbf{0}\) 只有零解——等价于说 \(A\) 的所有列向量<strong>线性无关</strong>，即 \(A\) 列满秩，没有哪一列是其余列的线性组合。</p>
+      <p style="margin:0">完整的因果链：
+      \[A\text{ 列满秩（无冗余列）}\iff\ker(A)=\{\mathbf{0}\}\xrightarrow{\text{第一步}}\ker(A^{\mathrm T}A)=\{\mathbf{0}\}\iff A^{\mathrm T}A\text{ 可逆}\iff\text{正规方程唯一解}\]
+      这也是最小二乘法要求"\(A\) 列满秩"的本质：拟合用的这些自变量之间不能线性相关（比如不能同时把"摄氏度"和"华氏度"都当自变量放进 \(A\)，因为二者是同一信息的线性变换，会让 \(A\) 出现多余的列，破坏列满秩）。</p>
     </div>
   </div>
 
