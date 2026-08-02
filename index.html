@@ -12572,17 +12572,16 @@ async function uploadInviteScreenshot(file) {
 
 // ===== 申请入群 =====
 async function submitInviteRequest(btn) {
-  var classVal    = (document.getElementById('invite-class')    || {}).value || '';
-  var wxgroupVal  = (document.getElementById('invite-name')     || {}).value || '';
-  var nicknameVal = '';
+  var classVal    = (document.getElementById('invite-name')     || {}).value || '';
   var emailVal    = (document.getElementById('invite-email')    || {}).value || '';
   var screenshotFile = (document.getElementById('invite-screenshot') || {}).files && document.getElementById('invite-screenshot').files[0];
   var msg         = document.getElementById('invite-msg');
 
-  classVal = classVal.trim(); wxgroupVal = wxgroupVal.trim();
+  classVal = classVal.trim();
   emailVal = emailVal.trim();
+  var wxgroupVal = classVal;
 
-  if (!classVal || !wxgroupVal || !emailVal) {
+  if (!classVal || !emailVal) {
     msg.style.color = 'crimson'; msg.textContent = '请填写全部信息'; return;
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
@@ -12678,9 +12677,8 @@ async function submitInviteRequest(btn) {
 
     if (resp.ok) {
       msg.style.color = '#0a7c3e'; msg.textContent = '已提交';
-      document.getElementById('invite-class').value    = '';
-      document.getElementById('invite-name').value     = '';
-      document.getElementById('invite-email').value    = '';
+      document.getElementById('invite-name').value      = '';
+      document.getElementById('invite-email').value     = '';
     } else {
       var errData = await resp.json().catch(function(){ return {}; });
       msg.style.color = 'crimson';
