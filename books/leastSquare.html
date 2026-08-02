@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>最小二乘法的矩阵求导推导</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      font-family: "宋体", "仿宋", serif;
+      margin: 0;
+      background-color: #f4f1ea;
+      line-height: 1.9;
+      color: #2b2b2b;
+    }
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 50px 30px 100px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 15px;
+      margin-bottom: 45px;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-size: 20px;
+      color: #1a1a1a;
+      border-left: 5px solid #7a5c3e;
+      padding-left: 12px;
+      margin-bottom: 18px;
+    }
+    h3 {
+      font-size: 16px;
+      color: #7a5c3e;
+      margin: 20px 0 8px;
+    }
+    p { margin: 10px 0; }
+    .eq {
+      text-align: center;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    .box {
+      background: #fff;
+      border: 1px solid #e3ddd0;
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .proof {
+      background: #fbfaf7;
+      border-left: 3px solid #b0a58e;
+      padding: 12px 18px;
+      margin: 14px 0;
+      font-size: 15px;
+    }
+    .proof-title {
+      font-weight: bold;
+      color: #7a5c3e;
+      margin-bottom: 6px;
+    }
+    .key {
+      background: #f1e9dc;
+      border-radius: 6px;
+      padding: 14px 20px;
+      margin: 18px 0;
+      font-weight: bold;
+      text-align: center;
+    }
+    .remark {
+      font-size: 14px;
+      color: #666;
+      margin-top: 10px;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #e3ddd0;
+      margin: 40px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>最小二乘法的矩阵求导推导</h1>
+<div class="subtitle">从残差平方和到法方程：一份自成体系的推导</div>
+
+<section>
+  <h2>一、问题设定</h2>
+  <p>线性模型：\\(Y = X\\beta + u\\)，其中 \\(Y \\in \\mathbb{R}^n\\)，\\(X \\in \\mathbb{R}^{n\\times p}\\)，\\(\\beta \\in \\mathbb{R}^p\\)，\\(u\\) 是残差向量。</p>
+  <p>目标：找到 \\(\\hat\\beta\\)，使得残差平方和</p>
+  <div class="eq">\\(S(\\beta) = \\sum_{i=1}^n u_i^2 = u^T u = (Y-X\\beta)^T(Y-X\\beta)\\)</div>
+  <p>最小。这是一个无约束优化问题，最小值点满足梯度为零，所以整个推导的核心是把 \\(S(\\beta)\\) 对 \\(\\beta\\) 的梯度算出来。</p>
+</section>
+
+<section>
+  <h2>二、展开目标函数</h2>
+  <div class="eq">\\(S(\\beta) = Y^TY - Y^TX\\beta - \\beta^TX^TY + \\beta^TX^TX\\beta\\)</div>
+  <p>其中 \\(Y^TX\\beta\\) 是一个 \\(1\\times1\\) 的标量，标量转置等于自身，于是</p>
+  <div class="eq">\\(Y^TX\\beta = (Y^TX\\beta)^T = \\beta^TX^TY\\)</div>
+  <p>两项合并，得到</p>
+  <div class="key">\\(S(\\beta) = Y^TY \\;-\\; 2\\beta^TX^TY \\;+\\; \\beta^TX^TX\\beta\\)</div>
+  <p>这是关于 \\(\\beta\\) 的二次型：常数项 + 线性项 + 二次项，结构和一元二次函数 \\(c - 2bx + ax^2\\) 完全类似，只是把标量换成了向量和矩阵。</p>
+</section>
+
+<section>
+  <h2>三、矩阵求导的两条基本规则</h2>
+  <p>要对 \\(S(\\beta)\\) 求梯度，只需要分别处理线性项和二次项。下面从分量定义出发证明这两条规则，而不是直接照搬结论。</p>
+
+  <h3>规则 1：线性项 \\(\\nabla_\\beta(a^T\\beta) = a\\)</h3>
+  <div class="proof">
+    <div class="proof-title">证明</div>
+    <p>设 \\(a\\in\\mathbb{R}^p\\)，则 \\(a^T\\beta = \\sum_{j=1}^p a_j\\beta_j\\)。对第 \\(k\\) 个分量求偏导：</p>
+    <div class="eq">\\(\\dfrac{\\partial}{\\partial \\beta_k}\\sum_{j=1}^p a_j\\beta_j = a_k\\)</div>
+    <p>因为求和式里只有 \\(j=k\\) 那一项含 \\(\\beta_k\\)，其余项对 \\(\\beta_k\\) 求导都是零。把所有分量组合成向量，就得到 \\(\\nabla_\\beta(a^T\\beta)=a\\)。</p>
+  </div>
+  <p>代入 \\(a = X^TY\\)，线性项 \\(-2\\beta^TX^TY\\) 的梯度就是：</p>
+  <div class="eq">\\(\\nabla_\\beta(-2\\beta^TX^TY) = -2X^TY\\)</div>
+
+  <h3>规则 2：二次型 \\(\\nabla_\\beta(\\beta^TA\\beta) = (A+A^T)\\beta\\)</h3>
+  <div class="proof">
+    <div class="proof-title">证明</div>
+    <p>展开成分量求和：\\(\\beta^TA\\beta = \\sum_{i=1}^p\\sum_{j=1}^p A_{ij}\\beta_i\\beta_j\\)。对第 \\(k\\) 个分量求偏导，需要分两种情况讨论含 \\(\\beta_k\\) 的项：</p>
+    <p>① \\(i=k,\\ j\\neq k\\) 的项：\\(A_{kj}\\beta_j\\)，求和得 \\(\\sum_j A_{kj}\\beta_j\\)；</p>
+    <p>② \\(j=k,\\ i\\neq k\\) 的项：\\(A_{ik}\\beta_i\\)，求和得 \\(\\sum_i A_{ik}\\beta_i\\)；</p>
+    <p>③ \\(i=j=k\\) 的项：\\(A_{kk}\\beta_k^2\\)，求导得 \\(2A_{kk}\\beta_k\\)，恰好等于把①②中 \\(i=j=k\\) 的部分重复计入一次的结果，所以①②已经涵盖了它。</p>
+    <p>合并①②，第 \\(k\\) 个分量的偏导数是：</p>
+    <div class="eq">\\(\\sum_j A_{kj}\\beta_j + \\sum_i A_{ik}\\beta_i = (A\\beta)_k + (A^T\\beta)_k\\)</div>
+    <p>组合成向量，就是 \\(\\nabla_\\beta(\\beta^TA\\beta) = A\\beta + A^T\\beta = (A+A^T)\\beta\\)。</p>
+  </div>
+  <p>代入 \\(A = X^TX\\)。因为 \\((X^TX)^T = X^TX\\) 是对称矩阵，所以 \\(A+A^T=2A\\)，于是二次项的梯度是：</p>
+  <div class="eq">\\(\\nabla_\\beta(\\beta^TX^TX\\beta) = 2X^TX\\beta\\)</div>
+</section>
+
+<section>
+  <h2>四、合并得到梯度</h2>
+  <p>把常数项（对 \\(\\beta\\) 求导为零）、线性项、二次项的梯度加在一起：</p>
+  <div class="key">\\(\\nabla_\\beta S(\\beta) = -2X^TY + 2X^TX\\beta\\)</div>
+</section>
+
+<section>
+  <h2>五、令梯度为零：法方程</h2>
+  <p>极小值点必须满足梯度为零：</p>
+  <div class="eq">\\(-2X^TY + 2X^TX\\beta = 0 \\quad\\Longrightarrow\\quad X^TX\\beta = X^TY\\)</div>
+  <div class="box">
+    <p>这就是<strong>法方程（Normal Equations）</strong>。它其实是 \\(p\\) 个方程组成的线性方程组，未知数是 \\(\\beta\\) 的 \\(p\\) 个分量。</p>
+  </div>
+  <p>为什么梯度为零一定对应最小值而不是最大值或鞍点？可以看二阶导数（Hessian）：</p>
+  <div class="eq">\\(\\nabla^2_\\beta S(\\beta) = 2X^TX\\)</div>
+  <p class="remark">\\(X^TX\\) 对任意非零向量 \\(v\\) 都满足 \\(v^TX^TXv = \\|Xv\\|^2 \\geq 0\\)，是半正定矩阵，所以 \\(S(\\beta)\\) 是凸函数，梯度为零处一定是全局最小值（若 \\(X\\) 列满秩，则是严格凸，最小值唯一）。</p>
+</section>
+
+<section>
+  <h2>六、解出显式公式</h2>
+  <p>当 \\(X^TX\\) 可逆（等价于 \\(X\\) 的列线性无关）时，两边左乘 \\((X^TX)^{-1}\\)：</p>
+  <div class="key">\\(\\hat\\beta = (X^TX)^{-1}X^TY\\)</div>
+</section>
+
+<hr>
+
+<section>
+  <h2>七、几何视角：为什么残差与列空间正交</h2>
+  <p>法方程 \\(X^TX\\hat\\beta = X^TY\\) 可以改写成：</p>
+  <div class="eq">\\(X^T(Y-X\\hat\\beta) = 0 \\quad\\Longleftrightarrow\\quad X^T\\hat u = 0\\)</div>
+  <p>其中 \\(\\hat u = Y - X\\hat\\beta\\) 是拟合残差。\\(X^T\\hat u = 0\\) 意味着 \\(\\hat u\\) 与 \\(X\\) 的每一列都正交，也就是残差向量与整个列空间 \\(\\mathrm{col}(X)\\) 正交。</p>
+  <p>这正是投影的定义：\\(X\\hat\\beta\\) 是 \\(Y\\) 在列空间 \\(\\mathrm{col}(X)\\) 上的正交投影，\\(\\hat u\\) 是投影后剩下的、与该空间垂直的部分。最小二乘法在几何上，本质就是"找一个最近的投影点"。</p>
+</section>
+
+</div>
+</body>
+</html>
