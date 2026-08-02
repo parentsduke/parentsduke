@@ -134,12 +134,51 @@
 
 <section>
   <h2>一、一元情形：直接求偏导</h2>
-  <p>残差定义：\(u_i = y_i - a_0 - a_1 x_i\)。</p>
-  <p>法方程：</p>
-  <p>\(\sum y_i = n a_0 + a_1 \sum x_i\)</p>
-  <p>\(\sum x_i y_i = a_0 \sum x_i + a_1 \sum x_i^2\)</p>
+  <p>模型：\(y_i = a_0 + a_1 x_i + u_i\)，残差定义为：</p>
+  <div class="eq">\(u_i = y_i - a_0 - a_1 x_i\)</div>
+  <p>目标函数（残差平方和）：</p>
+  <div class="eq">\(S(a_0,a_1) = \sum_{i=1}^n u_i^2 = \sum_{i=1}^n (y_i - a_0 - a_1 x_i)^2\)</div>
+
+  <h3>对 \(a_0\) 求偏导</h3>
+  <div class="proof">
+    <div class="proof-title">推导</div>
+    <p>用链式法则，对求和式里每一项求偏导：</p>
+    <div class="eq">\(\dfrac{\partial S}{\partial a_0} = \sum_{i=1}^n 2(y_i - a_0 - a_1 x_i)\cdot(-1)\)</div>
+    <p>令其为零，两边除以 \(-2\)：</p>
+    <div class="eq">\(\sum_{i=1}^n (y_i - a_0 - a_1 x_i) = 0\)</div>
+    <p>拆开求和号，\(a_0\) 是常数，出现 \(n\) 次：</p>
+    <div class="eq">\(\sum y_i - n a_0 - a_1\sum x_i = 0 \;\Longrightarrow\; \sum y_i = n a_0 + a_1 \sum x_i\)</div>
+  </div>
+
+  <h3>对 \(a_1\) 求偏导</h3>
+  <div class="proof">
+    <div class="proof-title">推导</div>
+    <div class="eq">\(\dfrac{\partial S}{\partial a_1} = \sum_{i=1}^n 2(y_i - a_0 - a_1 x_i)\cdot(-x_i)\)</div>
+    <p>令其为零，两边除以 \(-2\)：</p>
+    <div class="eq">\(\sum_{i=1}^n x_i(y_i - a_0 - a_1 x_i) = 0\)</div>
+    <p>拆开求和号：</p>
+    <div class="eq">\(\sum x_i y_i - a_0\sum x_i - a_1\sum x_i^2 = 0 \;\Longrightarrow\; \sum x_i y_i = a_0 \sum x_i + a_1 \sum x_i^2\)</div>
+  </div>
+
+  <h3>法方程组</h3>
+  <p>于是得到两个方程（这就是最小二乘法的<strong>法方程</strong>）：</p>
+  <div class="box">
+    <p>\(\sum y_i = n a_0 + a_1 \sum x_i\)</p>
+    <p>\(\sum x_i y_i = a_0 \sum x_i + a_1 \sum x_i^2\)</p>
+  </div>
+  <p class="remark">直观理解：第一个方程保证残差的平均值为零；第二个方程保证残差与解释变量 \(x_i\) 不相关。</p>
+
+  <h3>解方程组</h3>
+  <div class="proof">
+    <div class="proof-title">推导</div>
+    <p>由第一个方程解出 \(a_0 = \bar{y} - a_1\bar{x}\)（两边同除以 \(n\) 即得），代入第二个方程：</p>
+    <div class="eq">\(\sum x_i y_i = (\bar{y}-a_1\bar{x})\sum x_i + a_1\sum x_i^2\)</div>
+    <p>整理含 \(a_1\) 的项：</p>
+    <div class="eq">\(\sum x_i y_i - \bar{y}\sum x_i = a_1\left(\sum x_i^2 - \bar{x}\sum x_i\right)\)</div>
+    <p>利用恒等式 \(\sum(x_i-\bar{x})(y_i-\bar{y}) = \sum x_i y_i - \bar{y}\sum x_i\)（因为 \(\sum(x_i-\bar x)=0\)），以及 \(\sum(x_i-\bar{x})^2 = \sum x_i^2 - \bar{x}\sum x_i\)，两边可以分别替换，得到：</p>
+  </div>
   <p>解得：</p>
-  <p>\(a_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}, \quad a_0 = \bar{y} - a_1 \bar{x}\)</p>
+  <div class="key">\(a_1 = \dfrac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}, \quad a_0 = \bar{y} - a_1 \bar{x}\)</div>
 </section>
 
 <section>
@@ -232,7 +271,15 @@
 
   <h3 style="margin-top:35px;">三维投影演示</h3>
   <div id="threeD" class="module">
-    <p>展示向量 \(Y=(2,3,4)\)，它在解释变量空间（这里取过原点、方向为 \((1,1,1)\) 的直线，即"截距模型"的列空间）上的投影 \(\hat{Y}\)，以及与该空间正交的残差向量 \(r = Y - \hat{Y}\)。</p>
+    <p>展示向量 \(Y=(2,3,4)\)，它在解释变量空间（这里取过原点、方向为 \(v=(1,1,1)\) 的直线，即"截距模型"的列空间）上的投影 \(\hat{Y}\)，以及与该空间正交的残差向量 \(r = Y - \hat{Y}\)。</p>
+    <div class="proof">
+      <div class="proof-title">投影系数 \(t\) 的推导</div>
+      <p>设 \(\hat{Y} = tv\)（\(t\) 是待求的标量），根据"残差与列空间正交"，\(r=Y-\hat Y\) 必须与 \(v\) 正交：</p>
+      <div class="eq">\((Y-tv)\cdot v = 0\)</div>
+      <p>展开：</p>
+      <div class="eq">\(Y\cdot v - t(v\cdot v) = 0 \;\Longrightarrow\; t = \dfrac{Y\cdot v}{v\cdot v} = \dfrac{Y\cdot v}{\|v\|^2}\)</div>
+      <p>这其实就是一元法方程 \(X^TX\beta=X^TY\) 在 \(X=v\)（单列矩阵）时的特例：\(t = (v^Tv)^{-1}v^TY\)。</p>
+    </div>
     <div id="threeDPlot" style="width:100%;max-width:700px;height:500px;"></div>
     <div id="threeDInfo" style="margin-top:10px; color:#e74c3c; font-size:16px;"></div>
   </div>
