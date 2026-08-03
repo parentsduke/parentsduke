@@ -819,6 +819,7 @@
       <a href="#ex12"><span class="num">✎</span>习题十二：W ∩ N(A) 的结构与应用</a>
       <a href="#ex13"><span class="num">✎</span>习题十三：‖Ax‖² 与最小二乘法</a>
       <a href="#ex14"><span class="num">✎</span>习题十四：矩阵求导与正规方程的推导</a>
+      <a href="#ex15"><span class="num">✎</span>习题十五：AP 的含义与矩阵表示的构造顺序</a>
     </nav>
   </aside>
 
@@ -4206,7 +4207,116 @@
 
     </section>
 
-    <footer class="book-footer">线性代数 · 通俗讲义 · 全十四章 + 习题详解 完</footer>
+    <!-- ========================================================= -->
+    <!-- 习题十五 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ex15" style="max-width:none; padding:0;">
+      <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
+      <h2 class="chapter-title" style="padding:0 40px;">习题十五：AP 的含义与矩阵表示的构造顺序</h2>
+      <p class="chapter-tagline" style="padding:0 40px;">拆开 $B=P^{-1}AP$ 这三个字母的乘法，逐层看清每一步到底在"翻译"什么</p>
+
+<div class="ex6-scope"><div class="wrap">
+
+  <header>
+    <div class="eyebrow">线性代数 · 补充专题 · 详解</div>
+    <h1>AP 的含义与矩阵表示的构造顺序</h1>
+    <div class="subtitle">A、AP、P⁻¹AP 三者的区别，以及"A 的列 = T(基向量的像)"这条规则到底是谁定义谁</div>
+    <div class="bracket-hero">
+      <svg viewBox="0 0 20 64" fill="none"><path d="M16 2 L4 2 L4 62 L16 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+      <div class="grid-mini">
+        <span>A</span><span>P</span>
+        <span>T(f)</span><span>B</span>
+      </div>
+      <svg viewBox="0 0 20 64" fill="none"><path d="M4 2 L16 2 L16 62 L4 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+    </div>
+  </header>
+
+  <!-- ===================== PROBLEM 16 ===================== -->
+  <section class="problem" id="p16">
+    <div class="prob-head">
+      <span class="prob-num">16</span>
+      <span class="prob-title">设 $A$ 是变换 $T$ 在旧基 $F=\{f_1,\dots,f_n\}$ 下的矩阵，$P$ 的列是新基 $G=\{g_1,\dots,g_n\}$ 用旧基 $F$ 坐标表示的结果。说明 $AP$ 的每一列代表什么，并解释为什么 $A$ 的第 $i$ 列等于 $T(f_i)$。</span>
+    </div>
+    <div class="prob-statement">
+      核心困惑：$AP$ 算出来的结果，到底还在哪个坐标系里？$A$ 的列凭什么等于 $T(f_i)$——这是推出来的性质，还是矩阵表示本身的定义？
+    </div>
+
+    <h3 class="sub"><span class="tag">起点</span>矩阵乘法是逐列进行的</h3>
+    <p style="margin:0 0 20px">把 $P=(\xi_1,\dots,\xi_n)$ 按列拆开，则
+    \[AP=A(\xi_1,\dots,\xi_n)=(A\xi_1,\dots,A\xi_n)\]
+    也就是说，$AP$ 的第 $i$ 列，就是 $A$ 单独作用在 $P$ 的第 $i$ 列上的结果——而 $P$ 的第 $i$ 列 $\xi_i$，正是新基向量 $g_i$ 用旧基 $F$ 坐标写出的样子。</p>
+
+    <div class="box verify">
+      <div class="label">AP 的第 i 列：$T(g_i)$，但仍是旧基坐标</div>
+      <p style="margin:0">$A$ 只认识旧基坐标，它不知道"新基"这回事。喂给它 $\xi_i$（$g_i$ 的旧基坐标），它吐出来的 $A\xi_i$，本质上就是 $T(g_i)$——只不过这个结果依然是用旧基 $F$ 的坐标写出来的，还没有翻译成新基 $G$ 坐标。</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">对比</span>A 的列 vs AP 的列</h3>
+    <p style="margin:0 0 16px">两者用的是同一条规则（$A$ 乘以某向量的坐标），区别只在于"喂给它的是谁"：</p>
+    <table class="compare">
+      <tr><th></th><th>输入</th><th>输出（旧基 F 坐标下）代表什么</th></tr>
+      <tr><td>$A$ 本身的第 $i$ 列</td><td>旧基向量 $f_i$</td><td>$T(f_i)$ 的坐标</td></tr>
+      <tr><td>$AP$ 的第 $i$ 列</td><td>新基向量 $g_i$</td><td>$T(g_i)$ 的坐标（还没换成新基坐标）</td></tr>
+    </table>
+    <p style="margin:16px 0 0">正因为 $AP$ 给出的是"$T(g_i)$ 的旧基坐标"，而我们想要的是"$T(g_i)$ 的新基坐标"，所以还要再左乘 $P^{-1}$，把这批结果从旧基坐标翻译成新基坐标，才得到 $B=P^{-1}AP$——真正意义上"$T$ 在新基 $G$ 下"的矩阵。</p>
+
+    <div class="box verify">
+      <div class="label">数值例：旧基 F 不是标准基</div>
+      <p style="margin:0 0 10px">设在旧基 $F=\{f_1,f_2\}$ 下 $A=\begin{pmatrix}3&0\\0&2\end{pmatrix}$（即 $T(f_1)=3f_1,\ T(f_2)=2f_2$），新基 $g_1=f_1+f_2,\ g_2=f_1-f_2$，于是 $P=\begin{pmatrix}1&1\\1&-1\end{pmatrix}$。</p>
+      <p style="margin:0">\[AP=\begin{pmatrix}3&0\\0&2\end{pmatrix}\begin{pmatrix}1&1\\1&-1\end{pmatrix}=\begin{pmatrix}3&3\\2&-2\end{pmatrix}\]
+      验证第一列：$T(g_1)=T(f_1)+T(f_2)=3f_1+2f_2$，坐标恰好是 $(3,2)$——与 $AP$ 第一列一致，且这个坐标是"旧基 $F$"下的，不是新基 $G$ 下的。</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">关键</span>"A 的列 = T(f_i)"是定义，不是推导结论</h3>
+    <div class="step">"矩阵 $A$ 是 $T$ 在基 $F$ 下的矩阵"这句话本身，就是按照下面的规则被<strong>构造</strong>出来的：第 $i$ 列 $:= T(f_i)$ 用基 $F$ 的坐标表示。这样定义是因为线性变换完全由它在基向量上的作用决定——知道 $T(f_1),\dots,T(f_n)$，就能用线性性算出 $T$ 对任何向量的作用。所以这条规则不是被证明出来的性质，而是"矩阵表示线性变换"这件事的定义本身。</div>
+
+    <div class="box note">
+      <div class="label">两个反方向：由向量求坐标，由坐标还原向量</div>
+      <p style="margin:0 0 10px">已知 $T(f_i)$（向量）求 $A$：把 $T(f_i)$ 写成基 $F$ 坐标，作为 $A$ 的第 $i$ 列。反过来，已知 $A$ 求 $T(f_i)$（向量本身）：取 $A$ 第 $i$ 列的各分量，分别乘上对应基向量再相加，即
+      \[T(f_i)=\sum_k A_{ki}\,f_k\]</p>
+      <p style="margin:0">两个方向互为逆过程——矩阵 $A$ 存的是坐标，不是向量本身；要把 $T(f_i)$ 这个向量还原出来，需要把坐标"翻译"回基向量的线性组合。</p>
+    </div>
+  </section>
+
+  <div class="divider"><div class="line"></div><div class="mark">§ 2</div><div class="line"></div></div>
+
+  <!-- ===================== FOLLOW-UP ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>"先有变换 T，再有矩阵 A"，这句话对不对？</h2>
+
+    <p>这句话只对了一半，取决于认识变换的顺序，其实有两种同样合理的视角。</p>
+
+    <div class="box verify">
+      <div class="label">视角一：T 先于 A（抽象代数视角）</div>
+      <p style="margin:0">线性变换 $T$（比如求导、旋转、投影）常常先被抽象定义，不依赖任何具体的基。矩阵 $A$ 只是"记录 $T$ 在某组基下长什么样"的工具——换一组基，同一个 $T$ 会对应不同的矩阵。这种情形下，"先有 $T$ 再有 $A$"是对的。</p>
+    </div>
+
+    <div class="box verify">
+      <div class="label">视角二：A 先于 T（$\mathbb{R}^n$ 中最常见的情形）</div>
+      <p style="margin:0">很多时候并不存在独立于矩阵的 $T$，而是直接用 $A$ 来定义变换：$T(x):=Ax$。这时候关系是反过来的——先给定 $A$，$T$ 就是"乘以 $A$"这个规则本身，没有更早的、独立存在的 $T$。</p>
+    </div>
+
+    <div class="box basis">
+      <div class="label">共同点：核心等式永远成立</div>
+      <p style="margin:0">不管谁先谁后，$A$ 的第 $i$ 列 $=T(f_i)$（用基 $F$ 坐标表示）这条规则都成立，区别只在于它被当成什么来使用：若先有抽象的 $T$，这个等式是<strong>构造</strong> $A$ 的规则；若先有具体的 $A$，这个等式是<strong>解读</strong> $A$ 的规则（读出 $T$ 对基向量做了什么）。</p>
+    </div>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">"矩阵的列 = 基向量的像（用该基坐标表示）"是矩阵表示变换这件事的定义本身，不依赖于谁是"起因"谁是"结果"——这也是为什么同一个 $T$ 换一组基就得到不同的 $A$，而同一个 $A$ 摆在不同基的语境下，也可以反过来读出它所代表的 $T$ 对基向量做了什么。</p>
+    </div>
+  </div>
+
+  <footer>习题十五 · AP 的含义与矩阵表示的构造顺序 &nbsp;·&nbsp; 逐题详解</footer>
+
+</div>
+</div>
+
+    </section>
+
+    <footer class="book-footer">线性代数 · 通俗讲义 · 全十五章 + 习题详解 完</footer>
 
   </main>
 </div>
