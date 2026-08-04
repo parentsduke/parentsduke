@@ -809,6 +809,17 @@
       <p class="part-label">第五部 · 秩与解的结构</p>
       <a href="#ch12"><span class="num">12</span>矩阵的秩</a>
 
+      <p class="part-label">第六部 · 高级专题</p>
+      <a href="#ch13"><span class="num">13</span>若尔当标准形</a>
+      <a href="#ch14"><span class="num">14</span>最小多项式与 C-H 定理</a>
+      <a href="#ch15"><span class="num">15</span>谱定理与正规矩阵</a>
+      <a href="#ch16"><span class="num">16</span>奇异值分解（SVD）</a>
+      <a href="#ch17"><span class="num">17</span>广义逆（伪逆）</a>
+      <a href="#ch18"><span class="num">18</span>矩阵分解：LU/QR/Cholesky</a>
+      <a href="#ch19"><span class="num">19</span>二次型的正定性判别</a>
+      <a href="#ch20"><span class="num">20</span>Gershgorin 圆盘定理</a>
+      <a href="#ch21"><span class="num">21</span>矩阵函数与矩阵指数</a>
+
       <p class="part-label">附录 · 习题详解</p>
       <a href="#ex6"><span class="num">✎</span>习题六：线性空间与基</a>
       <a href="#ex7"><span class="num">✎</span>习题七：交换子与幂零矩阵</a>
@@ -4319,7 +4330,374 @@
 
     </section>
 
-    <footer class="book-footer">线性代数 · 通俗讲义 · 全十五章 + 习题详解 完</footer>
+    <div class="divider"><div class="line"></div><div class="mark">§ 高级专题</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch13">
+      <p class="kicker">第六部 · 高级专题 / 13</p>
+      <h2 class="chapter-title">若尔当标准形</h2>
+      <p class="chapter-tagline">当特征向量不够用时，退而求其次找一组"几乎对角"的基</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>对角化就像给每个人都分配一间独立单人宿舍（互不打扰）。但有些"团队"人数虽够，独立房间却不够——这时候只能退一步，把关系紧密的几个人安排进同一间"套房"，房间内部还留了一道"门"（次对角线上的 1）互相连通。若尔当标准形就是这种"尽量独立、局部打通"的最优安排。
+      </div>
+
+      <h3 class="part"><span class="tag">回顾</span>为什么不是所有矩阵都能对角化</h3>
+      <div class="step">第十一节讲过，$n$ 阶矩阵 $A$ 可对角化 $\iff$ 每个特征值的<strong>几何重数</strong>（对应特征子空间的维数）都等于它的<strong>代数重数</strong>（特征多项式中该根的重数）。当某个特征值的几何重数小于代数重数时，特征向量"不够用"，凑不齐 $n$ 个线性无关的特征向量，也就没法对角化。</div>
+      <div class="example">
+        <div class="ex-label">典型例子：$A=\begin{pmatrix}2&1\\0&2\end{pmatrix}$</div>
+        特征值只有 $\lambda=2$（代数重数 2）。解 $(A-2I)\xi=0$：$\begin{pmatrix}0&1\\0&0\end{pmatrix}\xi=0$，只给出一维解空间 $\xi=(1,0)^{\mathrm T}$ 的倍数——几何重数只有 1，凑不出第二个线性无关的特征向量，$A$ 不可对角化。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>广义特征向量与若尔当链</h3>
+      <div class="step">既然普通特征向量不够，就退一步找<strong>广义特征向量</strong>：向量 $\xi$ 满足 $(A-\lambda I)^k\xi=0$（对某个正整数 $k$），但 $(A-\lambda I)^{k-1}\xi\neq0$。这样的 $\xi$ 未必被 $A$ 单纯拉伸，但被 $(A-\lambda I)$ 反复作用后终会归零。</div>
+      <div class="step">从一个满足 $(A-\lambda I)^m\xi_m=0$、$(A-\lambda I)^{m-1}\xi_m\neq0$ 的向量 $\xi_m$ 出发，递推定义一条<strong>若尔当链</strong>：
+      $$\xi_{m-1}=(A-\lambda I)\xi_m,\quad \xi_{m-2}=(A-\lambda I)\xi_{m-1},\ \dots,\ \xi_1=(A-\lambda I)\xi_2$$
+      链的末端 $\xi_1$ 正是一个普通特征向量（因为 $(A-\lambda I)\xi_1=0$）。这条链上的向量线性无关，用它们做基，$T$ 在这组基下的矩阵就是一个"若尔当块"。</div>
+
+      <h3 class="part"><span class="tag">构造</span>若尔当块长什么样</h3>
+      <div class="step">把链倒过来看 $A$ 的作用：$A\xi_1=\lambda\xi_1$（真正的特征向量），而 $A\xi_2=\lambda\xi_2+\xi_1$（因为 $(A-\lambda I)\xi_2=\xi_1$），依此类推 $A\xi_i=\lambda\xi_i+\xi_{i-1}$。把 $\xi_1,\dots,\xi_m$ 按顺序作为基，$T$ 的矩阵恰好是：</div>
+      <div class="center-block">
+        $$J_m(\lambda)=\begin{pmatrix}\lambda&1& & \\ &\lambda&1& \\ & &\ddots&\ddots\\ & & &\lambda&1\\ & & & &\lambda\end{pmatrix}$$
+      </div>
+      <div class="note">
+        <strong>结构解读：</strong>对角线全是 $\lambda$（这条链上每个向量都"主要"沿 $\lambda$ 方向被拉伸），紧挨着对角线右上方全是 1（这个 1 记录的是"还带了一点点上一环的分量"），其余位置全是 0。这正是"独立房间+局部一道门"的具体体现：对角部分是独立的伸缩，1 这个位置是唯一保留的"耦合"。
+      </div>
+
+      <h3 class="part"><span class="tag">定理</span>若尔当标准形</h3>
+      <div class="step">任意 $n$ 阶复矩阵 $A$（或者说，特征多项式在所给数域上能完全分解为一次因子的矩阵），都存在可逆矩阵 $P$，使得
+      $$P^{-1}AP=J=\begin{pmatrix}J_{m_1}(\lambda_1)& & \\ &J_{m_2}(\lambda_2)& \\ & &\ddots\end{pmatrix}$$
+      是若干个若尔当块拼成的准对角矩阵——$J$ 就叫 $A$ 的<strong>若尔当标准形</strong>，各若尔当块的阶数之和等于 $n$，同一个特征值可能对应好几个块（几何重数就是该特征值对应块的个数）。</div>
+      <div class="note">
+        <strong>和对角化的关系：</strong>若每个特征值的几何重数都等于代数重数，所有若尔当块的阶数都是 1，$J$ 退化成普通对角矩阵——对角化正是若尔当标准形的一个特例（所有"套房"都变回了单人间）。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">回到 $A=\begin{pmatrix}2&1\\0&2\end{pmatrix}$</div>
+        这个矩阵本身就已经是若尔当标准形——一个 $2$ 阶若尔当块 $J_2(2)$。取 $\xi_1=(1,0)^{\mathrm T}$（真正的特征向量），$\xi_2$ 满足 $(A-2I)\xi_2=\xi_1$，解得 $\xi_2=(0,1)^{\mathrm T}$，正是标准基本身，故 $P=I$。
+      </div>
+
+      <h3 class="part"><span class="tag">应用</span>若尔当标准形求矩阵幂</h3>
+      <div class="step">对角化能快速求 $A^k$，若尔当标准形也可以，只是若尔当块的幂需要用二项式展开处理"对角部分"与"耦合部分"：把 $J_m(\lambda)=\lambda I+N$（$N$ 是次对角线全 1、其余全 0 的<strong>幂零矩阵</strong>，见下一节），因为 $\lambda I$ 与 $N$ 可交换，可用二项式定理
+      $$J_m(\lambda)^k=(\lambda I+N)^k=\sum_{i=0}^{m-1}\binom{k}{i}\lambda^{k-i}N^i$$
+      （$N^m=O$，求和到 $m-1$ 项即可截断）。</div>
+    </section>
+
+    <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch14">
+      <p class="kicker">第六部 · 高级专题 / 14</p>
+      <h2 class="chapter-title">最小多项式与 Cayley-Hamilton 定理</h2>
+      <p class="chapter-tagline">每个矩阵都"满足"自己的特征方程——而且还有一个更精简的版本</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>特征多项式就像一份"体检报告模板"，把矩阵能测到的所有指标都列全了；最小多项式则是"诊断这个人到底得了什么病所需的最少信息"——有些指标（重复的检测项）其实是多余的，砍掉之后依然能唯一确定病情。
+      </div>
+
+      <h3 class="part"><span class="tag">定理</span>Cayley-Hamilton 定理</h3>
+      <div class="step">设 $A$ 是 $n$ 阶方阵，$f(\lambda)=\det(\lambda I-A)$ 是它的特征多项式，则把 $A$ 本身代入 $f$ 得到的是零矩阵：
+      $$f(A)=O$$
+      也就是说，每个矩阵都是自己特征方程的一个"解"——这句话字面上有点奇怪（$\lambda$ 是数，$A$ 是矩阵），但只要把 $f(\lambda)$ 里的常数项 $c_0$ 理解成 $c_0 I$，把 $\lambda^k$ 理解成 $A^k$，等式两边就都是同阶方阵，可以严格比较。</div>
+      <div class="note">
+        <strong>常见的误解：</strong>不能简单地把 $f(A)=\det(AI-A)=\det(O)=0$ 当作证明——这里 $\det(O)=0$ 是一个<strong>数</strong>，而 $f(A)$ 是一个<strong>矩阵</strong>，两者根本不是同一类对象，这个"证明"从符号上就是错的。真正的证明要用到伴随矩阵 $\mathrm{adj}(\lambda I-A)$ 的多项式展开，比较系数得到，属于更技术性的内容，这里只给出结论和用法。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">验证：$2\times2$ 情形</div>
+        取 $A=\begin{pmatrix}1&2\\3&4\end{pmatrix}$，特征多项式 $f(\lambda)=\lambda^2-\mathrm{tr}(A)\lambda+\det(A)=\lambda^2-5\lambda-2$。代入 $A$：
+        $$A^2=\begin{pmatrix}7&10\\15&22\end{pmatrix},\qquad A^2-5A-2I=\begin{pmatrix}7-5-2&10-10\\15-15&22-20-2\end{pmatrix}=\begin{pmatrix}0&0\\0&0\end{pmatrix}$$
+        验证成立。
+      </div>
+
+      <h3 class="part"><span class="tag">应用</span>用 Cayley-Hamilton 求逆矩阵</h3>
+      <div class="step">若 $A$ 可逆（即 $\det A\neq0$，也就是特征多项式常数项 $c_0=(-1)^n\det A\neq0$），可以把 $f(A)=O$ 变形，两边同乘 $A^{-1}$，直接解出 $A^{-1}$ 是 $A$ 的一个多项式表达式，而不需要伴随矩阵那套繁琐的余子式计算：</div>
+      <div class="example">
+        <div class="ex-label">用上面的例子求 $A^{-1}$</div>
+        由 $A^2-5A-2I=O$，两边乘 $A^{-1}$：$A-5I-2A^{-1}=O$，解出
+        $$A^{-1}=\frac{1}{2}(A-5I)=\frac{1}{2}\begin{pmatrix}-4&2\\3&-1\end{pmatrix}=\begin{pmatrix}-2&1\\1.5&-0.5\end{pmatrix}$$
+        可以直接验证 $AA^{-1}=I$。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>最小多项式</h3>
+      <div class="step">矩阵 $A$ 的<strong>最小多项式</strong> $m(\lambda)$，是使得 $m(A)=O$ 成立的、次数最低的<strong>首一</strong>（最高次项系数为 1）多项式。由 Cayley-Hamilton 定理，特征多项式 $f(\lambda)$ 本身就是一个让 $f(A)=O$ 的多项式，所以最小多项式的次数不会超过 $n$；而且可以证明<strong>最小多项式一定整除特征多项式</strong>——特征多项式能提供的"零化"信息，最小多项式用更少（或相等）的次数就完整包含了。</div>
+      <div class="step">最小多项式与特征多项式含有<strong>完全相同的根</strong>（即相同的特征值集合），区别只在于每个根的<strong>重数可能更低</strong>。</div>
+
+      <h3 class="part"><span class="tag">判据</span>用最小多项式判断可对角化</h3>
+      <div class="step">$A$ 可对角化 $\iff$ 最小多项式<strong>没有重根</strong>，即 $m(\lambda)=(\lambda-\lambda_1)(\lambda-\lambda_2)\cdots(\lambda-\lambda_k)$（$\lambda_1,\dots,\lambda_k$ 是互不相同的特征值，每个都只出现一次）。这是一条比"几何重数=代数重数"更精炼的判据。</div>
+      <div class="example">
+        <div class="ex-label">对照两个例子</div>
+        单位矩阵 $I$：最小多项式是 $m(\lambda)=\lambda-1$（因为 $I-I=O$ 已经是最低次），无重根，可对角化（显然，它本来就是对角阵）。<br><br>
+        上一节的 $A=\begin{pmatrix}2&1\\0&2\end{pmatrix}$：特征多项式是 $(\lambda-2)^2$，但 $A-2I\neq O$（因为它是若尔当块，不是零矩阵），所以最小多项式不可能是 $\lambda-2$，只能是 $m(\lambda)=(\lambda-2)^2$——含重根，对应"不可对角化"的结论，与前面若尔当标准形一节的判断完全吻合。
+      </div>
+
+      <div class="note">
+        <strong>说明：</strong>最小多项式和若尔当标准形其实是同一件事的两种语言——最小多项式里每个根的重数，恰好等于该特征值对应的<strong>最大的那个</strong>若尔当块的阶数；而特征多项式里的重数（代数重数），则是该特征值所有若尔当块阶数之和。
+      </div>
+    </section>
+
+    <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch15">
+      <p class="kicker">第六部 · 高级专题 / 15</p>
+      <h2 class="chapter-title">谱定理与正规矩阵</h2>
+      <p class="chapter-tagline">实对称矩阵可正交对角化的结论，在复数域上真正的完整版本是什么</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>第十节讲过实对称矩阵能找到一组互相垂直的"专属坐标轴"。到了复数域，"对称"这个条件太窄了——真正起作用的条件换了一副面孔，但精神完全一致：这个变换和它的"共轭搭档"必须步调一致、互不较劲。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>共轭转置与几类特殊矩阵</h3>
+      <div class="step">复矩阵 $A$ 的<strong>共轭转置</strong>（也叫伴随），记作 $A^*$，是先取每个元素的共轭复数、再转置得到的矩阵：$(A^*)_{ij}=\overline{A_{ji}}$。它是实矩阵转置 $A^{\mathrm T}$ 在复数域上的自然推广（若 $A$ 是实矩阵，$A^*=A^{\mathrm T}$）。</div>
+      <div class="step">基于 $A^*$，定义三类矩阵：<strong>厄米矩阵</strong>（$A^*=A$，实对称矩阵的复数版本）；<strong>酉矩阵</strong>（$A^*A=I$，即 $A^{-1}=A^*$，正交矩阵的复数版本）；<strong>正规矩阵</strong>（$AA^*=A^*A$，即 $A$ 与自己的共轭转置可交换）。</div>
+      <div class="note">
+        <strong>包含关系：</strong>厄米矩阵和酉矩阵都自动满足 $AA^*=A^*A$（厄米矩阵：$AA^*=AA=A^*A$；酉矩阵：$AA^*=I=A^*A$），所以它们都是正规矩阵的特例。正规矩阵是这三者中<strong>最大</strong>的一类。</div>
+
+      <h3 class="part"><span class="tag">定理</span>复数域上的谱定理</h3>
+      <div class="step">$n$ 阶复矩阵 $A$ 可以被<strong>酉对角化</strong>（即存在酉矩阵 $U$，使 $U^*AU=U^{-1}AU$ 是对角矩阵）$\iff$ $A$ 是<strong>正规矩阵</strong>（$AA^*=A^*A$）。</div>
+      <div class="note">
+        <strong>和实对称矩阵谱定理的关系：</strong>第十节的结论"实对称矩阵可正交对角化"正是这个定理在<strong>实数域、厄米（=对称）矩阵</strong>这个特殊情形下的版本——把复数域上的"共轭转置"换回实数域上的"普通转置"，"酉矩阵"换回"正交矩阵"，"正规矩阵"这个条件在实对称的场景下恰好自动满足（因为 $A^{\mathrm T}=A$ 显然和自己可交换）。可以说，正规矩阵才是"可以被漂亮地对角化"这件事背后真正起作用的最一般条件。</div>
+
+      <div class="example">
+        <div class="ex-label">一个正规但既非厄米也非酉的矩阵</div>
+        取 $A=\begin{pmatrix}1&-1\\1&1\end{pmatrix}$（实矩阵，本质上是旋转+缩放）。$A^{\mathrm T}A=\begin{pmatrix}2&0\\0&2\end{pmatrix}=AA^{\mathrm T}$，两者相等，故 $A$ 是正规矩阵；但 $A^{\mathrm T}\neq A$（不是对称/厄米），且 $A^{\mathrm T}A=2I\neq I$（不是正交/酉），它仍然可以被（复数域上的）酉矩阵对角化，特征值是 $1\pm i$。
+      </div>
+
+      <h3 class="part"><span class="tag">辨析</span>为什么"正规"恰好是分界线</h3>
+      <div class="step">直观理解：矩阵 $A$ 能被酉对角化，意味着存在一组正交基，$A$ 在这组基下就是纯粹的"各方向独立伸缩"。而 $A^*$（作为 $A$ 的共轭转置）在同一组正交基下，恰好是"伸缩系数取共轭"的对角矩阵——两者在同一组基下都是对角矩阵，对角矩阵之间显然可交换，于是 $AA^*=A^*A$ 是"可对角化"必然带来的结果；反过来，只要 $AA^*=A^*A$，就能证明确实存在这样一组共同的正交特征基（证明过程用到"正规矩阵的特征向量之间必正交"这一关键引理，属于更深入的内容）。</div>
+
+      <h3 class="part"><span class="tag">应用</span>正规矩阵的意义</h3>
+      <div class="step">正规矩阵在物理（量子力学中的可观测量算符往往是厄米矩阵）、信号处理（傅里叶变换矩阵本质是酉矩阵）中大量出现，谱定理保证了它们都拥有一组完备的正交特征基，这也是"能量本征态""频率分量"这些概念在数学上站得住脚的根本原因。</div>
+    </section>
+
+    <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch16">
+      <p class="kicker">第六部 · 高级专题 / 16</p>
+      <h2 class="chapter-title">奇异值分解（SVD）</h2>
+      <p class="chapter-tagline">不管矩阵是不是方阵、能不能对角化，都能拆成"旋转 → 伸缩 → 旋转"三步走</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>特征值分解要求"原地打转"（变换前后用的是同一组坐标轴），很多变换根本做不到。SVD 放弃了这种"原地"的要求，允许你进门前先换一次鞋（旋转），中间沿着新轴伸缩，出门再换一次鞋（再旋转）——任何变换，不管形状规不规则，都能这样三步分解。
+      </div>
+
+      <h3 class="part"><span class="tag">定理</span>奇异值分解的存在性</h3>
+      <div class="step">任意 $m\times n$ 实（或复）矩阵 $A$，都可以分解为
+      $$A=U\Sigma V^{\mathrm T}$$
+      其中 $U$ 是 $m$ 阶正交（酉）矩阵，$V$ 是 $n$ 阶正交（酉）矩阵，$\Sigma$ 是 $m\times n$ 的"对角"矩阵（只有主对角线上可能非零，其余全零），对角线上的元素 $\sigma_1\ge\sigma_2\ge\cdots\ge0$ 叫做<strong>奇异值</strong>。</div>
+      <div class="note">
+        <strong>和特征值分解的关系：</strong>特征值分解 $A=P\Lambda P^{-1}$ 只对可对角化的方阵成立，且用的是同一个 $P$（一次换基）；SVD 用两个不同的正交矩阵 $U,V$（进门换一次、出门换一次），对<strong>任意形状、任意矩阵</strong>都成立，是远比特征值分解普适的工具。
+      </div>
+
+      <h3 class="part"><span class="tag">方法</span>奇异值从哪里来</h3>
+      <div class="step">关键在于构造 $A^{\mathrm T}A$（$n$ 阶方阵）。这个矩阵总是<strong>对称且半正定</strong>的（对任意 $x$，$x^{\mathrm T}(A^{\mathrm T}A)x=\|Ax\|^2\ge0$），由第十节谱定理，它必可正交对角化，且特征值都非负。把这些非负特征值记作 $\sigma_1^2\ge\sigma_2^2\ge\cdots\ge0$，开根号就是奇异值 $\sigma_i$；对应的单位特征向量组成的正交基就是 $V$ 的列（叫做<strong>右奇异向量</strong>）。</div>
+      <div class="step">$U$ 的列（<strong>左奇异向量</strong>）则由 $u_i=\dfrac{1}{\sigma_i}Av_i$（对 $\sigma_i\neq0$ 的部分）给出，可以验证这样构造出的 $u_i$ 两两正交、且长度为 1。</div>
+
+      <div class="example">
+        <div class="ex-label">具体例子：$A=\begin{pmatrix}1&1\\0&1\\1&0\end{pmatrix}$</div>
+        先算 $A^{\mathrm T}A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$，特征值是 $3$ 和 $1$（迹为 4，行列式为 3，解一元二次方程即得），对应单位特征向量 $v_1=\frac{1}{\sqrt2}(1,1)^{\mathrm T}$，$v_2=\frac{1}{\sqrt2}(1,-1)^{\mathrm T}$。<br><br>
+        奇异值 $\sigma_1=\sqrt3,\ \sigma_2=1$。再算 $u_1=\frac{1}{\sqrt3}Av_1=\frac{1}{\sqrt6}(2,1,1)^{\mathrm T}$，$u_2=\frac{1}{1}Av_2=\frac{1}{\sqrt2}(0,-1,1)^{\mathrm T}$（第三个 $u_3$ 需要另外补一个与前两者正交的单位向量凑满 $U$ 的第三列）。
+      </div>
+
+      <h3 class="part"><span class="tag">几何</span>SVD 的几何意义</h3>
+      <div class="step">把 $A$ 看成映射 $x\mapsto Ax$：先用 $V^{\mathrm T}$ 把输入换到一组特殊的正交坐标（右奇异向量方向），再沿着这组坐标各自独立地伸缩 $\sigma_1,\dots,\sigma_r$ 倍（$r$ 是非零奇异值个数），最后用 $U$ 把结果转回输出空间的坐标。这也解释了为什么 $\Sigma$ 里非零元素的个数（也就是非零奇异值的个数）恰好等于 $A$ 的秩——正是那些真正被"保留"下来、没有被压扁成 0 的方向数。</div>
+
+      <h3 class="part"><span class="tag">应用</span>秩一矩阵求和展开</h3>
+      <div class="step">SVD 还给出一个漂亮的展开式：
+      $$A=\sum_{i=1}^{r}\sigma_i u_i v_i^{\mathrm T}$$
+      每一项 $u_iv_i^{\mathrm T}$ 都是第十二节讲过的<strong>秩一矩阵</strong>（外积），按奇异值从大到小排列，前面几项包含了 $A$ 里最主要的信息——只取前 $k$ 项求和，就是数据压缩、降噪、推荐系统里常用的"低秩近似"技术的数学基础。</div>
+    </section>
+
+    <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch17">
+      <p class="kicker">第六部 · 高级专题 / 17</p>
+      <h2 class="chapter-title">广义逆（伪逆）</h2>
+      <p class="chapter-tagline">矩阵不可逆或不是方阵时，退而求其次找一个"最讲道理"的替代品</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>普通的逆矩阵要求"严丝合缝、可逆推"，但现实中很多"账本"（矩阵）要么行列数对不上，要么信息重叠有冗余，压根凑不出这种完美逆推。伪逆做的是退而求其次：找不到完美答案，就找一个"最接近、误差最小"的答案。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>Moore-Penrose 伪逆</h3>
+      <div class="step">任意 $m\times n$ 矩阵 $A$（不要求可逆、甚至不要求是方阵），都存在唯一的 $n\times m$ 矩阵 $A^+$，满足以下四条（Moore-Penrose 条件）：
+      $$AA^+A=A,\quad A^+AA^+=A^+,\quad (AA^+)^{\mathrm T}=AA^+,\quad (A^+A)^{\mathrm T}=A^+A$$
+      这个 $A^+$ 就叫 $A$ 的<strong>伪逆</strong>（广义逆）。若 $A$ 本身可逆，$A^+=A^{-1}$——伪逆是普通逆矩阵概念的推广，不是另起炉灶的新东西。</div>
+
+      <h3 class="part"><span class="tag">方法</span>借助 SVD 计算伪逆</h3>
+      <div class="step">若 $A=U\Sigma V^{\mathrm T}$（上一节的 SVD），伪逆有非常直接的构造：
+      $$A^+=V\Sigma^+U^{\mathrm T}$$
+      其中 $\Sigma^+$ 是把 $\Sigma$ 转置后，把每个非零奇异值 $\sigma_i$ 换成它的倒数 $\dfrac{1}{\sigma_i}$（零元素保持不变，不能对 0 取倒数）。</div>
+      <div class="note">
+        <strong>为什么这样构造是对的：</strong>$\Sigma$ 本身是"对角"（伸缩）部分，能取倒数的地方就取倒数、直接"撤销"那部分伸缩；至于 $\Sigma$ 里那些原本就是 0 的位置（对应完全被压扁、信息已经丢失的方向），没有任何办法能把丢失的信息找回来，只能让 $\Sigma^+$ 在这些位置也保持 0——伪逆诚实地承认了"有些信息回不去了"，只对能挽回的部分做逆操作。$U,V$ 都是正交矩阵，转置即为逆，直接互换位置写出来即可。</div>
+
+      <h3 class="part"><span class="tag">应用</span>最小二乘问题的完整解</h3>
+      <div class="step">第十三节（习题）提到，当 $A$ <strong>列满秩</strong>时，最小二乘问题 $\min_x\|Ax-b\|^2$ 有唯一解 $x=(A^{\mathrm T}A)^{-1}A^{\mathrm T}b$。用伪逆可以把这个结论推广到<strong>任意</strong> $A$（不管是否列满秩、甚至不是方阵）：最小二乘问题的解（若不唯一，取长度最小的那个）总能写成
+      $$x=A^+b$$
+      一条统一的式子，涵盖了"恰好有解""无解只能取近似""解不唯一取最小范数"这几种情形。</div>
+
+      <div class="example">
+        <div class="ex-label">数值例：不满秩情形</div>
+        取 $A=\begin{pmatrix}1&2\\2&4\end{pmatrix}$（第二列是第一列的 2 倍，$r(A)=1$，不可逆，$A^{\mathrm T}A$ 也不可逆，公式 $(A^{\mathrm T}A)^{-1}A^{\mathrm T}$ 直接用不了）。这时只有 SVD 构造的 $A^+$ 才能给出一个确定的、有意义的"广义逆解"，而普通逆矩阵的思路在这里完全失效。
+      </div>
+
+      <div class="note">
+        <strong>说明：</strong>伪逆把整本讲义的几条主线在这里交汇：秩（第十二节）决定了 $A^+$ 能"挽回"多少信息；SVD（上一节）提供了具体的计算方法；最小二乘（第十三节习题）则是伪逆最直接的应用场景。</div>
+    </section>
+
+    <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch18">
+      <p class="kicker">第六部 · 高级专题 / 18</p>
+      <h2 class="chapter-title">矩阵分解：LU、QR、Cholesky</h2>
+      <p class="chapter-tagline">把高斯消元和施密特正交化的"过程"，本身也写成矩阵乘积的形式</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>之前学的高斯消元、施密特正交化都是"动手做一遍"的具体步骤。这一节做的事情是把整个操作过程"打包"，写成几个特殊矩阵相乘——就像把一道菜的完整烹饪流程，浓缩成几个可以直接复用的"半成品"。
+      </div>
+
+      <h3 class="part"><span class="tag">分解</span>LU 分解：把消元过程打包成矩阵</h3>
+      <div class="step">第四节讲的高斯消元，本质上是不断做"倍加"这种初等行变换，把 $A$ 化成上三角矩阵 $U$。每一步倍加操作都对应左乘一个下三角的初等矩阵，把这些初等矩阵的逆依次相乘，恰好又拼成一个下三角矩阵 $L$（对角线全是 1），于是
+      $$A=LU$$
+      $L$（下三角，Lower）记录了消元过程中"每一步减去了多少倍"，$U$（上三角，Upper）就是消元结束后的阶梯形。</div>
+      <div class="note">
+        <strong>用途：</strong>解方程组 $Ax=b$ 时，若已有 $A=LU$，可以拆成两步：先解 $Ly=b$（下三角，正向代入很快），再解 $Ux=y$（上三角，回代很快）——避免了每换一个 $b$ 就要重新消元一遍，在数值计算里非常高效。</div>
+
+      <h3 class="part"><span class="tag">分解</span>QR 分解：把施密特正交化打包成矩阵</h3>
+      <div class="step">第十节的施密特正交化，把一组基 $\alpha_1,\dots,\alpha_n$ 变成一组正交基，再单位化。把这个过程写成矩阵形式：把 $A$ 的列看作 $\alpha_1,\dots,\alpha_n$，正交化+单位化后的结果作为 $Q$ 的列（$Q$ 是正交矩阵，$Q^{\mathrm T}Q=I$），每一步"减去投影"的过程记录在一个上三角矩阵 $R$ 里，于是
+      $$A=QR$$</div>
+      <div class="note">
+        <strong>为什么 $R$ 是上三角：</strong>施密特正交化的规则是"第 $i$ 个正交向量只依赖前 $i$ 个原始向量"，反过来，第 $i$ 个原始向量 $\alpha_i$ 用正交基展开时，也只会用到前 $i$ 个正交基向量——这正是 $R$ 里第 $i$ 列只有前 $i$ 行非零（上三角结构）的原因。</div>
+      <div class="step">QR 分解在解最小二乘问题时也很实用：把上一节的正规方程 $A^{\mathrm T}Ax=A^{\mathrm T}b$ 代入 $A=QR$，利用 $Q^{\mathrm T}Q=I$ 化简，能得到数值上更稳定的求解方式 $Rx=Q^{\mathrm T}b$（避免了显式计算 $A^{\mathrm T}A$ 带来的精度损失）。</div>
+
+      <h3 class="part"><span class="tag">分解</span>Cholesky 分解：对称正定矩阵的"平方根"</h3>
+      <div class="step">若 $A$ 是<strong>对称正定矩阵</strong>（下一节会具体讲"正定"的判别），存在唯一的下三角矩阵 $L$（对角线元素都为正），使得
+      $$A=LL^{\mathrm T}$$
+      这可以看成 LU 分解在"对称正定"这个特殊情形下的加强版——因为对称性，$U$ 恰好能写成 $L^{\mathrm T}$ 的形式，一次分解顶两次用，计算量只有普通 LU 分解的一半左右。</div>
+      <div class="example">
+        <div class="ex-label">具体例子</div>
+        取 $A=\begin{pmatrix}4&2\\2&5\end{pmatrix}$（后面会验证它是正定的）。设 $L=\begin{pmatrix}l_{11}&0\\l_{21}&l_{22}\end{pmatrix}$，由 $LL^{\mathrm T}=A$ 逐项比较：$l_{11}^2=4\Rightarrow l_{11}=2$；$l_{11}l_{21}=2\Rightarrow l_{21}=1$；$l_{21}^2+l_{22}^2=5\Rightarrow l_{22}=2$。故
+        $$L=\begin{pmatrix}2&0\\1&2\end{pmatrix}$$
+      </div>
+
+      <div class="note">
+        <strong>三种分解的共同主线：</strong>LU 记录"消元"，QR 记录"正交化"，Cholesky 是"消元+对称"的结合体——它们都是把本讲义前面几节讲过的<strong>过程</strong>（消元、施密特正交化）重新包装成矩阵乘积的<strong>结果</strong>，方便反复调用、也更适合计算机高效实现。</div>
+    </section>
+
+    <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch19">
+      <p class="kicker">第六部 · 高级专题 / 19</p>
+      <h2 class="chapter-title">二次型的正定性判别</h2>
+      <p class="chapter-tagline">不求特征值，只看几个"子行列式"，就能判断二次型的正负性质</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>判断一个碗是"正着放"（碗口朝上，到处都是最低点）还是"倒扣着"（到处都是最高点），最直接的办法是看它的特征值符号；但特征值往往不好算。赫尔维茨判别法提供了一条"抄近路"：只用检查几个角落的行列式符号，不用真的解特征方程。</div>
+
+      <h3 class="part"><span class="tag">回顾</span>二次型与合同变换</h3>
+      <div class="step">第十一节讲过，二次型 $f(x)=x^{\mathrm T}Ax$（$A$ 是对称矩阵）可以通过合同变换 $x=Cy$ 化简成标准形 $\sum d_iy_i^2$。根据标准形里正、负、零系数的个数，二次型（或者说对称矩阵 $A$）被分为几类：<strong>正定</strong>（$f(x)>0$ 对所有 $x\neq0$ 成立，标准形系数全正）、<strong>负定</strong>（全负）、<strong>半正定</strong>（$\ge0$，允许等号）、<strong>不定</strong>（有正有负）。</div>
+      <div class="step">正定性最直接的定义是：对所有非零向量 $x$，都有 $x^{\mathrm T}Ax>0$。这等价于 $A$ 的所有特征值都为正——但求特征值往往需要解一个 $n$ 次方程，计算量不小。</div>
+
+      <h3 class="part"><span class="tag">判别</span>赫尔维茨（顺序主子式）判别法</h3>
+      <div class="step">设 $A$ 是 $n$ 阶对称矩阵，$A$ 的<strong>顺序主子式</strong> $D_k$ 是取 $A$ 左上角 $k\times k$ 子块的行列式（$k=1,2,\dots,n$）。则：
+      $$A\text{ 正定}\iff D_1>0,\ D_2>0,\ \dots,\ D_n>0\ (\text{全部为正})$$
+      $$A\text{ 负定}\iff D_1&lt;0,\ D_2>0,\ D_3&lt;0,\dots\ (\text{正负交替，从负号开始})$$</div>
+      <div class="note">
+        <strong>负定判据的记忆窍门：</strong>$A$ 负定 $\iff$ $-A$ 正定。把 $-A$ 的顺序主子式用 $\det(kM)=k^n\det(M)$ 这条性质（第八节讲过）展开：$(-A)$ 的 $k$ 阶顺序主子式等于 $(-1)^k D_k$，要求这些全为正，就是要求 $D_k$ 与 $(-1)^k$ 同号——$k$ 为偶数时 $D_k>0$，$k$ 为奇数时 $D_k&lt;0$，正是"正负交替、从负号开始"的判据。</div>
+
+      <div class="example">
+        <div class="ex-label">判定 $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ 是否正定</div>
+        $D_1=2>0$；$D_2=\det(A)=4-1=3>0$。两条顺序主子式全为正，故 $A$ 正定——对照特征值法验证：$A$ 的特征值是 $1$ 和 $3$（迹为 4，行列式为 3），确实都是正数，两种方法结论一致。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">判定上一节 Cholesky 例子 $A=\begin{pmatrix}4&2\\2&5\end{pmatrix}$</div>
+        $D_1=4>0$；$D_2=20-4=16>0$。故 $A$ 正定——这也解释了为什么它能顺利做出 Cholesky 分解：<strong>Cholesky 分解存在的前提，正是矩阵对称正定</strong>，赫尔维茨判据在这里起到了"预检"的作用。
+      </div>
+
+      <h3 class="part"><span class="tag">辨析</span>半正定的情形要小心</h3>
+      <div class="step">赫尔维茨判据只能干净利落地判断<strong>严格</strong>正定/负定；如果某个顺序主子式恰好为 0（不满足严格大于），并不能直接下结论是半正定还是不定，需要用更谨慎的方法（比如检查所有主子式，不仅是顺序主子式，或者退回特征值判据）来判断。</div>
+      <div class="note">
+        <strong>说明：</strong>正定性判别贯穿了本讲义好几处：第十三节最小二乘用到"$A^{\mathrm T}A$ 正定 $\Rightarrow$ 唯一解"；上一节 Cholesky 分解要求对称正定；下一节 Gershgorin 圆盘定理也能作为"特征值是否都为正"的一种辅助判断手段。</div>
+    </section>
+
+    <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch20">
+      <p class="kicker">第六部 · 高级专题 / 20</p>
+      <h2 class="chapter-title">Gershgorin 圆盘定理</h2>
+      <p class="chapter-tagline">不用解特征方程，用矩阵的元素就能圈出特征值的"活动范围"</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>找一个人具体在哪个房间可能很麻烦，但只要知道"他一定在某几间标了号的房子附近活动"，往往已经够用了。Gershgorin 圆盘定理干的正是这件事：不精确求出特征值，只用矩阵的元素画几个圆盘，保证所有特征值都躲在这些圆盘里。
+      </div>
+
+      <h3 class="part"><span class="tag">定理</span>Gershgorin 圆盘定理</h3>
+      <div class="step">设 $A=(a_{ij})$ 是 $n$ 阶（复）方阵。对每个 $i=1,\dots,n$，定义第 $i$ 个<strong>Gershgorin 圆盘</strong>：以对角元 $a_{ii}$ 为圆心，以该行非对角元绝对值之和 $R_i=\sum_{j\neq i}|a_{ij}|$ 为半径，即复平面上满足 $|z-a_{ii}|\le R_i$ 的区域。则 $A$ 的<strong>每一个</strong>特征值，都必然落在这 $n$ 个圆盘的并集里。</div>
+      <div class="note">
+        <strong>直观理解：</strong>对角元 $a_{ii}$ 是"如果非对角元全部忽略"时的近似特征值；非对角元的绝对值之和 $R_i$ 衡量的是"这一行偏离纯对角矩阵有多远"——偏离得越多，真实特征值就可能离 $a_{ii}$ 越远，所以半径要相应放大。</div>
+
+      <div class="example">
+        <div class="ex-label">具体例子</div>
+        取 $A=\begin{pmatrix}5&1&0\\1&4&1\\0&1&-2\end{pmatrix}$。三个圆盘分别是：圆心 5、半径 $|1|+|0|=1$（即 $[4,6]$）；圆心 4、半径 $|1|+|1|=2$（即 $[2,6]$）；圆心 $-2$、半径 $|0|+|1|=1$（即 $[-3,-1]$）。<br><br>
+        不需要解特征方程就能断言：$A$ 的所有特征值必然落在 $[-3,-1]\cup[2,6]$ 里（区间是圆盘在实轴上的投影，因为 $A$ 对称，特征值必为实数）。真实特征值大约是 $5.4,\ 3.8,\ -2.2$，确实都落在预测的区间里。
+      </div>
+
+      <h3 class="part"><span class="tag">应用</span>快速判断可逆性与正定性</h3>
+      <div class="step">若所有 Gershgorin 圆盘都不包含原点（即每一行都满足 $|a_{ii}|>R_i$，这个条件叫做<strong>严格对角占优</strong>），则 0 不可能是特征值，从而 $A$ 一定<strong>可逆</strong>——不需要计算行列式，只看每行的元素大小关系就能下结论。</div>
+      <div class="step">类似地，若 $A$ 对称且严格对角占优、同时所有对角元都为正，可以断言所有圆盘都完全落在正半轴，从而所有特征值都为正，即 $A$ <strong>正定</strong>——这提供了一条比上一节赫尔维茨判据更"快但更保守"的正定性充分条件（满足对角占优就一定正定，但正定的矩阵未必满足对角占优）。</div>
+
+      <div class="example">
+        <div class="ex-label">验证对角占优保证可逆</div>
+        取 $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$：第一行 $|4|>|1|$，第二行 $|3|>|1|$，严格对角占优，故可逆——直接验证 $\det(A)=12-1=11\neq0$，结论一致，但对角占优判据完全不需要算这个行列式。
+      </div>
+
+      <div class="note">
+        <strong>说明：</strong>Gershgorin 圆盘定理提供的是特征值的<strong>范围估计</strong>，不是精确值，胜在计算量极小（只需要加加减减）。工程和数值计算中，当矩阵规模很大、精确求特征值代价高昂时，这条定理常被用来做快速的可逆性、稳定性预检。</div>
+    </section>
+
+    <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch21">
+      <p class="kicker">第六部 · 高级专题 / 21</p>
+      <h2 class="chapter-title">矩阵函数与矩阵指数</h2>
+      <p class="chapter-tagline">把"求矩阵幂"的技巧继续往前推一步，推广到求 $e^{At}$，并直接用来解微分方程组</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>第十一节用对角化快速算出了 $A^k$（矩阵的整数次幂）。这一节问一个更进一步的问题：如果指数不是整数，而是像 $e^{At}$ 这样一整个"连续变化"的量，该怎么算？答案是：只要能对角化（或找到若尔当标准形），思路完全不变，只是把"求 $k$ 次方"换成"对角线上每个数分别求 $e^{\lambda t}$"。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>矩阵指数</h3>
+      <div class="step">仿照数值函数 $e^x=\sum_{k=0}^{\infty}\dfrac{x^k}{k!}$ 的幂级数展开，<strong>矩阵指数</strong>定义为
+      $$e^{At}=\sum_{k=0}^{\infty}\frac{(At)^k}{k!}=I+At+\frac{A^2t^2}{2!}+\frac{A^3t^3}{3!}+\cdots$$
+      这个级数对任意方阵 $A$ 都收敛（矩阵范数意义下），结果是一个和 $A$ 同阶的方阵，且随 $t$ 连续变化。</div>
+
+      <h3 class="part"><span class="tag">方法</span>用对角化计算 $e^{At}$</h3>
+      <div class="step">若 $A=P\Lambda P^{-1}$（$\Lambda=\mathrm{diag}(\lambda_1,\dots,\lambda_n)$，第十一节的对角化），代入幂级数：
+      $$e^{At}=\sum_{k=0}^{\infty}\frac{(P\Lambda P^{-1}t)^k}{k!}=P\left(\sum_{k=0}^{\infty}\frac{(\Lambda t)^k}{k!}\right)P^{-1}=Pe^{\Lambda t}P^{-1}$$
+      这一步用到了 $(P\Lambda P^{-1})^k=P\Lambda^k P^{-1}$（第十一节"对角化求矩阵幂"里已经验证过的恒等式），而 $e^{\Lambda t}$（对角矩阵的指数）非常简单：
+      $$e^{\Lambda t}=\mathrm{diag}(e^{\lambda_1 t},\,e^{\lambda_2 t},\,\dots,\,e^{\lambda_n t})$$
+      也就是把对角线上每一个特征值，各自独立地代入普通的数量指数函数 $e^{\lambda t}$。</div>
+
+      <div class="example">
+        <div class="ex-label">具体例子</div>
+        取 $A=\begin{pmatrix}3&0\\0&2\end{pmatrix}$（本身已是对角矩阵，$P=I$）。直接得
+        $$e^{At}=\begin{pmatrix}e^{3t}&0\\0&e^{2t}\end{pmatrix}$$
+        若 $A$ 不是对角矩阵，先按第十一节的方法求出 $P$ 和 $\Lambda$，再套用上面的公式即可。
+      </div>
+
+      <h3 class="part"><span class="tag">应用</span>求解线性微分方程组</h3>
+      <div class="step">一阶线性常系数微分方程组 $\dfrac{dx}{dt}=Ax$（$x=x(t)$ 是向量值函数），配合初始条件 $x(0)=x_0$，解恰好就是
+      $$x(t)=e^{At}x_0$$
+      这与一元微分方程 $x'=ax,\ x(0)=x_0$ 的解 $x(t)=e^{at}x_0$ 形式上完全一致——矩阵指数把"单变量指数增长/衰减"的图景，直接搬到了"多变量耦合系统"上。</div>
+      <div class="note">
+        <strong>说明：</strong>当 $A$ 可对角化时，$x(t)=Pe^{\Lambda t}P^{-1}x_0$，换元 $y=P^{-1}x$ 后，方程组解耦成 $n$ 个互不相干的一元方程 $y_i'=\lambda_iy_i$——这也是对角化"把复杂的联立方程拆成互不干扰的独立分量"这一核心思想（第九节起就反复出现）的又一次体现。若 $A$ 不可对角化，需要用若尔当标准形（第十三节）代替，$e^{Jt}$ 的计算会多出带 $t$ 的多项式因子，但整体思路不变。</div>
+
+      <div class="note">
+        <strong>全篇收尾：</strong>从最初的一根箭头（第一节），到这里的矩阵指数与微分方程，贯穿全篇的核心思想始终未变——找一组"最合适的坐标"（基），让复杂的联立关系拆解成互不干扰的独立分量。特征值、若尔当块、奇异值、正定性判据，都是在不同场景下回答同一个问题：这组"最合适的坐标"到底是什么、能拆到多干净。</div>
+    </section>
+
+
+
+    <footer class="book-footer">线性代数 · 通俗讲义 · 全二十一章 + 习题详解 完</footer>
 
   </main>
 </div>
