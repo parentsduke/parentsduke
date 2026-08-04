@@ -4156,6 +4156,8 @@
     \[\mathbf{x}^{\mathrm T}M\mathbf{x}=\sum_{i=1}^{2}\sum_{j=1}^{2}M_{ij}x_ix_j=\sum_{i,j}M_{ij}x_ix_j\]
     推广到 \(n\) 维同理：\(n\times n\) 个 \((i,j)\) 组合各出现一次，\(M\) 的每个元素 \(M_{ij}\) 都被用一次，权重是 \(x_ix_j\)。</div>
 
+    <div class="step"><strong>计算顺序：</strong>\(\sum_{i=1}^{2}\sum_{j=1}^{2}M_{ij}x_ix_j\) 里 \(\sum_j\) 写在内层，按嵌套求和的规则要<strong>先对 \(j\) 求和（固定 \(i\)），再对 \(i\) 求和</strong>。固定 \(i=1\)：\(\sum_j M_{1j}x_1x_j=x_1(M_{11}x_1+M_{12}x_2)=x_1(M\mathbf{x})_1\)；固定 \(i=2\)：\(\sum_j M_{2j}x_2x_j=x_2(M_{21}x_1+M_{22}x_2)=x_2(M\mathbf{x})_2\)。这一步内层求和其实就是在算 \(M\mathbf{x}\) 的第 \(i\) 个分量。再对 \(i\) 求和，把两部分加起来 \(x_1(M\mathbf{x})_1+x_2(M\mathbf{x})_2\)，对应的正是"先算 \(M\mathbf{x}\)，再左乘 \(\mathbf{x}^{\mathrm T}\)"这一步。因为这是有限项的加法求和，交换律必然成立，所以<strong>反过来先对 \(i\) 求和、再对 \(j\) 求和</strong>（对应"先算 \(\mathbf{x}^{\mathrm T}M\)，再乘 \(\mathbf{x}\)"）最终结果完全相同——顺序只是配合了某一种自然的计算路径，并非唯一合法顺序。</div>
+
     <div class="box verify">
       <div class="label">公式 1　\(\nabla_{\mathbf{x}}(\mathbf{x}^{\mathrm T}M\mathbf{x})=(M+M^{\mathrm T})\mathbf{x}\)，\(M\) 对称时化为 \(2M\mathbf{x}\)</div>
       <p style="margin:0">按分量展开 \(\mathbf{x}^{\mathrm T}M\mathbf{x}=\sum_{i,j}M_{ij}x_ix_j\)，对 \(x_k\) 求偏导，\(i=k\) 与 \(j=k\) 两类项各贡献一份：
