@@ -773,6 +773,8 @@
   }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
@@ -819,6 +821,8 @@
       <a href="#ch19"><span class="num">19</span>二次型的正定性判别</a>
       <a href="#ch20"><span class="num">20</span>Gershgorin 圆盘定理</a>
       <a href="#ch21"><span class="num">21</span>矩阵函数与矩阵指数</a>
+      <a href="#ch22"><span class="num">22</span>向量点积</a>
+      <a href="#ch23"><span class="num">23</span>向量叉积</a>
 
       <p class="part-label">附录 · 习题详解</p>
       <a href="#ex6"><span class="num">✎</span>习题六：线性空间与基</a>
@@ -4695,9 +4699,123 @@
         <strong>全篇收尾：</strong>从最初的一根箭头（第一节），到这里的矩阵指数与微分方程，贯穿全篇的核心思想始终未变——找一组"最合适的坐标"（基），让复杂的联立关系拆解成互不干扰的独立分量。特征值、若尔当块、奇异值、正定性判据，都是在不同场景下回答同一个问题：这组"最合适的坐标"到底是什么、能拆到多干净。</div>
     </section>
 
+    <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch22">
+      <p class="kicker">第六部 · 高级专题 / 22</p>
+      <h2 class="chapter-title">向量点积（Dot Product）</h2>
+      <p class="chapter-tagline">从"对应相乘再求和"这一个具体运算，回看第一部讲过的抽象内积结构</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>点积回答的是"两个方向到底有多"合拍""这个问题——把两支队伍在同一批指标上的得分逐项相乘再加总，同向的分量互相加成，反向的分量互相抵消，最后一个数字就把"合拍程度"浓缩了出来。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>坐标分量计算法</h3>
+      <div class="step">设 $a=(a_1,a_2,\dots,a_n)^{\mathrm T}$，$b=(b_1,b_2,\dots,b_n)^{\mathrm T}$ 是两个同维列向量，点积（也叫数量积、内积）定义为对应分量相乘后求和：
+      $$a\cdot b=a_1b_1+a_2b_2+\cdots+a_nb_n=\sum_{i=1}^{n}a_ib_i$$
+      结果是一个<strong>标量</strong>（一个数），不是向量——这一点和下一节要讲的叉积正好相反。</div>
+
+      <h3 class="part"><span class="tag">性质</span>基本代数性质</h3>
+      <table class="matrix-table" style="width:100%">
+        <tr><th style="text-align:left">性质</th><th style="text-align:left">公式</th><th style="text-align:left">直观理解</th></tr>
+        <tr><td style="text-align:left">交换律</td><td style="text-align:left">$u\cdot v=v\cdot u$</td><td style="text-align:left">顺序颠倒，结果不变</td></tr>
+        <tr><td style="text-align:left">分配律</td><td style="text-align:left">$u\cdot(v+w)=u\cdot v+u\cdot w$</td><td style="text-align:left">可以像普通乘法一样拆括号</td></tr>
+        <tr><td style="text-align:left">与数乘的结合</td><td style="text-align:left">$(cu)\cdot v=c(u\cdot v)=u\cdot(cv)$</td><td style="text-align:left">标量可以自由提出或塞回任意一侧</td></tr>
+        <tr><td style="text-align:left">正定性</td><td style="text-align:left">$v\cdot v\ge0$，等号 $\iff v=0$</td><td style="text-align:left">自己和自己点积恒非负，等于长度平方 $\|v\|^2$</td></tr>
+      </table>
+      <div class="note">
+        <strong>和第一部的呼应：</strong>这四条性质并不是点积独有的巧合，而是第一部讲向量空间时提到的<strong>公理化结构</strong>在"内积"这一层面的具体版本——交换律、分配律、与数乘的相容性、正定性，正是数学上定义"内积空间"时明文写出的四条公理。点积只是 $\mathbb{R}^n$ 上最常见、最具体的一种内积，第十节讲的"正交""长度""夹角"这些概念，说到底都是从点积（更一般地说，从内积）这一个运算里派生出来的。</div>
+
+      <h3 class="part"><span class="tag">矩阵形式</span>点积与矩阵乘法的对应</h3>
+      <div class="step">若把 $a,b$ 都看成 $n\times1$ 的列向量，点积可以直接写成矩阵乘法：
+      $$a\cdot b=a^{\mathrm T}b=b^{\mathrm T}a$$
+      左边 $a^{\mathrm T}$ 是 $1\times n$ 的行向量，右边 $b$ 是 $n\times1$ 的列向量，$(1\times n)\times(n\times1)=1\times1$，结果自然是一个数——这也解释了为什么点积结果一定是标量：矩阵乘法的形状规则直接决定了这一点。</div>
+
+      <div class="note">
+        <strong>核心转换法则（矩阵跨界公式）：</strong>当点积中间夹着一个矩阵 $M$ 时：
+        $$\langle a,\,Mb\rangle=a^{\mathrm T}(Mb)=(a^{\mathrm T}M)b=(M^{\mathrm T}a)^{\mathrm T}b=\langle M^{\mathrm T}a,\,b\rangle$$
+        口诀：矩阵从点积的一侧移到另一侧时，必须加上转置（$M\to M^{\mathrm T}$）。这条法则在机器学习的反向传播、最小二乘（第十三节）的正规方程推导里反复出现——本质上就是矩阵乘法结合律 $(a^{\mathrm T}M)b=a^{\mathrm T}(Mb)$，加上转置的性质 $(MN)^{\mathrm T}=N^{\mathrm T}M^{\mathrm T}$ 拼出来的。</div>
+
+      <h3 class="part"><span class="tag">几何</span>点积与夹角</h3>
+      <div class="step">点积还有一个等价的几何定义，用模长和夹角表示：
+      $$a\cdot b=\|a\|\,\|b\|\cos\theta$$
+      两个定义（坐标分量求和 vs 模长夹角）算出来的结果完全一致，这本身就是一条值得记住的定理，可以由余弦定理推导得到。</div>
+      <table class="matrix-table" style="width:100%">
+        <tr><th style="text-align:left">点积数值</th><th style="text-align:left">夹角 $\theta$ 范围</th><th style="text-align:left">几何含义</th></tr>
+        <tr><td style="text-align:left">$a\cdot b>0$</td><td style="text-align:left">$0^\circ\le\theta&lt;90^\circ$</td><td style="text-align:left">锐角，方向大致相同</td></tr>
+        <tr><td style="text-align:left">$a\cdot b=0$</td><td style="text-align:left">$\theta=90^\circ$</td><td style="text-align:left">垂直 / 正交（第十节的核心概念）</td></tr>
+        <tr><td style="text-align:left">$a\cdot b&lt;0$</td><td style="text-align:left">$90^\circ&lt;\theta\le180^\circ$</td><td style="text-align:left">钝角，方向大致相反</td></tr>
+      </table>
+      <div class="note">
+        <strong>说明：</strong>"$a\cdot b=0\iff$ 正交"这一行，正是第十节施密特正交化整个流程的判据来源——那里"减去在某方向上的投影"这一步，用的就是点积去检测、去消除两个向量之间不为零的"重叠部分"。</div>
+
+      <div class="example">
+        <div class="ex-label">数值例</div>
+        取 $a=(1,2,0)^{\mathrm T}$，$b=(0,3,4)^{\mathrm T}$（下一节叉积会用到同一对向量）。
+        $$a\cdot b=1\times0+2\times3+0\times4=6$$
+        因为 $a\cdot b=6>0$，可以判断两向量夹角是锐角，方向大致相同。
+      </div>
+    </section>
+
+    <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
+
+    <section class="chapter" id="ch23">
+      <p class="kicker">第六部 · 高级专题 / 23</p>
+      <h2 class="chapter-title">向量叉积（Cross Product）</h2>
+      <p class="chapter-tagline">三维空间里独有的运算：两个向量"乘"出一个新向量，而不是一个数</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>点积问的是"两个方向有多合拍"，叉积问的是完全不同的问题——"这两个方向撑起的平面，法线朝哪儿、这块平行四边形有多大"。拧螺丝时，右手四指从 $a$ 转向 $b$，大拇指指的方向就是 $a\times b$ 的方向（右手定则）。
+      </div>
+
+      <h3 class="part"><span class="tag">定义</span>叉积是什么</h3>
+      <div class="step">叉积（矢积、向量积）是<strong>仅在三维空间</strong>里定义的一种运算：两个三维向量 $a,b$ 的叉积 $a\times b$，结果是<strong>一个新的向量</strong>（这一点和点积恰好相反——点积吃两个向量吐出一个数，叉积吃两个向量吐出一个向量）。</div>
+
+      <h3 class="part"><span class="tag">性质</span>核心几何性质</h3>
+      <div class="step"><strong>方向：</strong>$a\times b$ 同时垂直于 $a$ 和 $b$（也就是垂直于 $a,b$ 张成的平面），具体指向哪一侧由右手定则确定：右手四指从 $a$ 弯向 $b$（走劣弧那一侧），大拇指方向就是 $a\times b$ 的方向。</div>
+      <div class="step"><strong>大小（模长）：</strong>等于 $a,b$ 构成的平行四边形面积：
+      $$|a\times b|=|a|\,|b|\sin\theta$$
+      对照点积的 $\cos\theta$，叉积用的是 $\sin\theta$——这也符合直觉：$a,b$ 平行（$\theta=0$）时平行四边形"压扁"成一条线，面积为 0，叉积也确实为零向量；$a,b$ 垂直（$\theta=90^\circ$）时面积最大，叉积模长也达到最大值 $|a||b|$。</div>
+      <div class="step"><strong>反交换律：</strong>颠倒顺序，方向翻转：
+      $$a\times b=-(b\times a)$$
+      这与点积的<strong>交换律</strong>（$a\cdot b=b\cdot a$，顺序不影响结果）形成鲜明对比，是叉积和点积最本质的区别之一：叉积记录了"从 $a$ 转向 $b$"这个<strong>有方向性</strong>的过程，颠倒过程自然反号。</div>
+
+      <h3 class="part"><span class="tag">规则</span>单位基底 $i,j,k$ 的运算表</h3>
+      <div class="step">把三维标准基记作 $i=(1,0,0)^{\mathrm T}$、$j=(0,1,0)^{\mathrm T}$、$k=(0,0,1)^{\mathrm T}$，它们两两之间的叉积遵循一套循环规则：
+      $$i\times j=k,\quad j\times k=i,\quad k\times i=j$$
+      $$j\times i=-k,\quad k\times j=-i,\quad i\times k=-j$$
+      $$i\times i=j\times j=k\times k=0$$
+      记忆窍门：按 $i\to j\to k\to i$ 这个循环顺序，"顺着走"（如 $i\times j$）得到下一个基向量；"逆着走"（如 $j\times i$）就变号；自己乘自己（平行向量）恒为零向量——这最后一条其实是"平行四边形压扁成一条线，面积为零"这一几何性质的特例。</div>
+
+      <h3 class="part"><span class="tag">计算</span>行列式展开法</h3>
+      <div class="step">对一般的 $a=(a_1,a_2,a_3)^{\mathrm T}$，$b=(b_1,b_2,b_3)^{\mathrm T}$，叉积可以用一个"形式行列式"（第八节讲过的行列式，这里第一行放的是基向量符号而非数字，只是一种方便记忆的写法）展开计算：
+      $$a\times b=\begin{vmatrix}i&j&k\\a_1&a_2&a_3\\b_1&b_2&b_3\end{vmatrix}=(a_2b_3-a_3b_2)\,i-(a_1b_3-a_3b_1)\,j+(a_1b_2-a_2b_1)\,k$$
+      按第八节讲的代数余子式展开（沿第一行展开），每一项前面的正负号也与第八节"棋盘式"符号规则完全吻合。</div>
+
+      <div class="example">
+        <div class="ex-label">数值例：延续上一节的 $a,b$</div>
+        取 $a=(1,2,0)^{\mathrm T}=1i+2j$，$b=(0,3,4)^{\mathrm T}=3j+4k$。
+        $$a\times b=\begin{vmatrix}i&j&k\\1&2&0\\0&3&4\end{vmatrix}=(2\times4-0\times3)\,i-(1\times4-0\times0)\,j+(1\times3-2\times0)\,k=8i-4j+3k$$
+        即 $a\times b=(8,-4,3)^{\mathrm T}$。平行四边形面积就是这个新向量的模长：
+        $$|a\times b|=\sqrt{8^2+(-4)^2+3^2}=\sqrt{89}\approx9.43$$
+      </div>
+
+      <div class="note">
+        <strong>验证垂直性：</strong>可以直接用上一节的点积检验 $a\times b$ 确实同时垂直于 $a,b$——$(8,-4,3)\cdot(1,2,0)=8-8+0=0$，$(8,-4,3)\cdot(0,3,4)=0-12+12=0$，两个点积都为零，印证了"叉积垂直于原两个向量"这条性质，也再次体现了点积（判定垂直）和叉积（构造垂直向量）这两节内容互为验证工具的关系。</div>
+
+      <h3 class="part"><span class="tag">交互</span>三维可视化</h3>
+      <div class="step">下面是这组数值例的 3D 交互演示：<span style="color:#e74c3c;font-weight:600">红色箭头</span>是 $a$，<span style="color:#2e86de;font-weight:600">蓝色箭头</span>是 $b$，<span style="color:#27ae60;font-weight:600">绿色箭头</span>是 $a\times b$（可以观察到它确实垂直于黄色的平行四边形所在的平面），可用鼠标左键拖动旋转视角、滚轮缩放。</div>
+      <div id="cross-product-viz" style="position:relative; width:100%; height:440px; border-radius:12px; overflow:hidden; background:#121212; margin:16px 0;">
+        <div id="cp-canvas-container" style="width:100%; height:100%;"></div>
+        <div style="position:absolute; bottom:12px; right:14px; background:rgba(0,0,0,0.65); padding:6px 12px; border-radius:6px; font-size:12px; color:#ccc; pointer-events:none;">拖动旋转 · 滚轮缩放 · 右键平移</div>
+      </div>
+      <div class="note">
+        <strong>说明：</strong>黄色半透明的两块三角面拼成的正是 $a,b$ 张成的平行四边形，其面积 $\sqrt{89}\approx9.43$ 正是上面算出的叉积模长——绿色箭头（$a\times b$）垂直刺出这个平面，符号（往上还是往下）由右手定则决定。
+      </div>
+    </section>
 
 
-    <footer class="book-footer">线性代数 · 通俗讲义 · 全二十一章 + 习题详解 完</footer>
+    <footer class="book-footer">线性代数 · 通俗讲义 · 全二十三章 + 习题详解 完</footer>
 
   </main>
 </div>
@@ -4722,6 +4840,68 @@
     document.querySelector('.sidebar').classList.remove('open');
     document.querySelector('.sidebar-backdrop').classList.remove('open');
   }));
+</script>
+
+<script>
+  // 第23章：叉积 3D 可视化（作用域内变量，避免与其他脚本冲突）
+  (function initCrossProductViz() {
+    const container = document.getElementById('cp-canvas-container');
+    if (!container || typeof THREE === 'undefined') return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(8, 8, 14);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+
+    const cpControls = new THREE.OrbitControls(camera, renderer.domElement);
+    cpControls.enableDamping = true;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const cpDirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    cpDirLight.position.set(10, 20, 10);
+    scene.add(cpDirLight);
+
+    const cpGrid = new THREE.GridHelper(20, 20, 0x444444, 0x222222);
+    cpGrid.position.y = -0.01;
+    scene.add(cpGrid);
+    scene.add(new THREE.AxesHelper(3));
+
+    const cpOrigin = new THREE.Vector3(0, 0, 0);
+    const cpA = new THREE.Vector3(1, 2, 0);
+    const cpB = new THREE.Vector3(0, 3, 4);
+    const cpC = new THREE.Vector3().crossVectors(cpA, cpB);
+    const cpAB = new THREE.Vector3().addVectors(cpA, cpB);
+
+    scene.add(new THREE.ArrowHelper(cpA.clone().normalize(), cpOrigin, cpA.length(), 0xe74c3c, 0.4, 0.2));
+    scene.add(new THREE.ArrowHelper(cpB.clone().normalize(), cpOrigin, cpB.length(), 0x2e86de, 0.4, 0.2));
+    scene.add(new THREE.ArrowHelper(cpC.clone().normalize(), cpOrigin, cpC.length(), 0x27ae60, 0.5, 0.3));
+
+    const cpGeom = new THREE.BufferGeometry();
+    const cpVertices = new Float32Array([
+      0, 0, 0, cpA.x, cpA.y, cpA.z, cpAB.x, cpAB.y, cpAB.z,
+      0, 0, 0, cpAB.x, cpAB.y, cpAB.z, cpB.x, cpB.y, cpB.z
+    ]);
+    cpGeom.setAttribute('position', new THREE.BufferAttribute(cpVertices, 3));
+    cpGeom.computeVertexNormals();
+    scene.add(new THREE.Mesh(cpGeom, new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide, transparent: true, opacity: 0.35 })));
+
+    window.addEventListener('resize', () => {
+      if (!container.clientWidth || !container.clientHeight) return;
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    function cpAnimate() {
+      requestAnimationFrame(cpAnimate);
+      cpControls.update();
+      renderer.render(scene, camera);
+    }
+    cpAnimate();
+  })();
 </script>
 
 </body>
