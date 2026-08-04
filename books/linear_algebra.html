@@ -4148,6 +4148,14 @@
     \[f(\mathbf{x})=\mathbf{x}^{\mathrm T}A^{\mathrm T}A\mathbf{x}-2\mathbf{b}^{\mathrm T}A\mathbf{x}+\mathbf{b}^{\mathrm T}\mathbf{b}\]
     这是一个"二次型 + 线性项 + 常数"的标准形式，接下来分别对这两类项求导。</p>
 
+    <div class="step">在证明公式 1 之前，先看清楚 \(\mathbf{x}^{\mathrm T}M\mathbf{x}=\sum_{i,j}M_{ij}x_ix_j\) 这个双重求和是怎么来的——它其实是"矩阵乘向量"再"向量乘向量"两步压成一步的结果。以 \(n=2\) 为例：先算 \(M\mathbf{x}\)，第 \(i\) 个分量是 \(M\) 的第 \(i\) 行与 \(\mathbf{x}\) 的内积，即 \((M\mathbf{x})_i=\sum_j M_{ij}x_j\)：
+    \[M\mathbf{x}=\begin{pmatrix}M_{11}x_1+M_{12}x_2\\M_{21}x_1+M_{22}x_2\end{pmatrix}\]
+    再左乘 \(\mathbf{x}^{\mathrm T}\)，即两个向量对应位置相乘再相加：
+    \[\mathbf{x}^{\mathrm T}M\mathbf{x}=x_1(M_{11}x_1+M_{12}x_2)+x_2(M_{21}x_1+M_{22}x_2)=M_{11}x_1x_1+M_{12}x_1x_2+M_{21}x_2x_1+M_{22}x_2x_2\]
+    一共 \(2\times2=4\) 项，每一项都长成 \(M_{ij}x_ix_j\) 的样子——\(i\) 是外层 \(\mathbf{x}^{\mathrm T}\) 里第几个分量（对应矩阵的行标号），\(j\) 是内层 \(M\mathbf{x}\) 里第几个分量（对应矩阵的列标号）。把这四项打包，正好是 \(i,j\) 各自跑遍 \(1,2\) 的双重求和：
+    \[\mathbf{x}^{\mathrm T}M\mathbf{x}=\sum_{i=1}^{2}\sum_{j=1}^{2}M_{ij}x_ix_j=\sum_{i,j}M_{ij}x_ix_j\]
+    推广到 \(n\) 维同理：\(n\times n\) 个 \((i,j)\) 组合各出现一次，\(M\) 的每个元素 \(M_{ij}\) 都被用一次，权重是 \(x_ix_j\)。</div>
+
     <div class="box verify">
       <div class="label">公式 1　\(\nabla_{\mathbf{x}}(\mathbf{x}^{\mathrm T}M\mathbf{x})=(M+M^{\mathrm T})\mathbf{x}\)，\(M\) 对称时化为 \(2M\mathbf{x}\)</div>
       <p style="margin:0">按分量展开 \(\mathbf{x}^{\mathrm T}M\mathbf{x}=\sum_{i,j}M_{ij}x_ix_j\)，对 \(x_k\) 求偏导，\(i=k\) 与 \(j=k\) 两类项各贡献一份：
