@@ -4175,6 +4175,21 @@
     </div>
 
     <div class="example">
+      <div class="label">"碰撞筛选"实例：取 \(n=2\)、目标 \(k=1\)</div>
+      <p style="margin:0 0 10px">\(\mathbf{x}^{\mathrm T}M\mathbf{x}\) 展开后一共 4 项，每一项都要检验 \(\partial x_i/\partial x_1=\delta_{i1}\) 是否为 1（即 \(i\) 是否恰好等于目标 \(k=1\)）：</p>
+      <div class="center-block">
+        <table class="matrix-table">
+          <tr><th>遍历项 $(i,j)$</th><th>原项</th><th>$\partial x_i/\partial x_1$</th><th>保留结果</th><th>状态</th></tr>
+          <tr><td>$i=1,j=1$</td><td>$M_{11}x_1x_1$</td><td>$1$（$i=k$）</td><td>$M_{11}x_1$</td><td>存活</td></tr>
+          <tr><td>$i=1,j=2$</td><td>$M_{12}x_1x_2$</td><td>$1$（$i=k$）</td><td>$M_{12}x_2$</td><td>存活</td></tr>
+          <tr><td>$i=2,j=1$</td><td>$M_{21}x_2x_1$</td><td>$0$（$i\neq k$）</td><td>$0$</td><td>归零</td></tr>
+          <tr><td>$i=2,j=2$</td><td>$M_{22}x_2x_2$</td><td>$0$（$i\neq k$）</td><td>$0$</td><td>归零</td></tr>
+        </table>
+      </div>
+      <p style="margin:10px 0 0">存活项加起来 \(M_{11}x_1+M_{12}x_2=\sum_j M_{1j}x_j=(M\mathbf{x})_1\)，与前面 \(\delta_{ik}\) 的一般论证完全吻合——\(i\neq k\) 的项无一例外全部归零，只有 \(i=k\) 那一整行能穿过筛选。（这里只展示了乘法法则里 \(x_j\left(\partial x_i/\partial x_k\right)\) 那一半贡献；另一半 \(x_i\left(\partial x_j/\partial x_k\right)\) 同理筛选 \(j=k\)，两者相加才是完整的 \((M\mathbf{x})_k+(M^{\mathrm T}\mathbf{x})_k\)。）</p>
+    </div>
+
+    <div class="example">
       <div class="label">举例验证：取一个不对称的 \(M\)</div>
       <p style="margin:0 0 10px">取 \(M=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)（注意 \(M\neq M^{\mathrm T}\)），先直接展开算出标量函数：
       \[\mathbf{x}^{\mathrm T}M\mathbf{x}=x_1(x_1+2x_2)+x_2(3x_1+4x_2)=x_1^2+5x_1x_2+4x_2^2\]
