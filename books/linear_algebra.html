@@ -4206,6 +4206,11 @@
       <p style="margin:0">对照公式：前一半 \(\sum_j M_{2j}x_j\) 正是取 \(M\) 的<strong>第 2 行</strong>乘 \(\mathbf{x}\)：\(M_{21}x_1+M_{22}x_2+M_{23}x_3=4x_1+5x_2+6x_3\)；后一半 \(\sum_i M_{i2}x_i\) 是取 \(M\) 的<strong>第 2 列</strong>乘 \(\mathbf{x}\)：\(M_{12}x_1+M_{22}x_2+M_{32}x_3=2x_1+5x_2+8x_3\)，两者与暴力展开的结果完全一致——前面找第 2 行，后面找第 2 列，"行、列"下标必须同为 2，才能对应同一个求导目标 \(x_2\)。</p>
     </div>
 
+    <div class="step">
+      <strong>顺带说清楚主对角线为什么会冒出平方项：</strong>双重求和 \(\sum_{i,j}M_{ij}x_ix_j\) 里，只要 \(i\neq j\)（比如 \(M_{12}x_1x_2\)），两个变量不同，是普通交叉项；但当 \(i=j\)（比如上例中 \(i=j=2\)）时，行号等于列号，取到的是<strong>同一个变量乘自己</strong>，即 \(M_{22}x_2x_2=M_{22}x_2^2\)——这正是主对角线元素 \(M_{22}=5\) 会以平方项 \(5x_2^2\) 形式出现的原因。
+      <br>对这个平方项求导有两种完全等价的视角：<strong>视角 A（幂函数求导）</strong>直接用 \((x^2)'=2x\)：\(\dfrac{d}{dx_2}(5x_2^2)=5\cdot 2x_2=10x_2\)；<strong>视角 B（乘法法则）</strong>把它写成 \(5\cdot x_2\cdot x_2\)，用 \((uv)'=u'v+uv'\) 拆开：\(\dfrac{\partial}{\partial x_2}(5x_2x_2)=\underbrace{5x_2}_{\text{对第 1 个}x_2\text{求导}}+\underbrace{5x_2}_{\text{对第 2 个}x_2\text{求导}}=10x_2\)。两种算法结果一致，而视角 B 正好对应矩阵公式里"第 2 行"与"第 2 列"各贡献一次 \(5x_2\)（即前面例子里 \(4x_1+\mathbf{5x_2}+6x_3\) 与 \(2x_1+\mathbf{5x_2}+8x_3\) 中各自的那个 \(5x_2\)）——这也是为什么"两类项各贡献一份"这条一般规则，套到对角线元素上依然成立、不需要特殊处理。
+    </div>
+
     <div class="example">
       <div class="label">举例验证：取一个不对称的 \(M\)</div>
       <p style="margin:0 0 10px">取 \(M=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)（注意 \(M\neq M^{\mathrm T}\)），先直接展开算出标量函数：
