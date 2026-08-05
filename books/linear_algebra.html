@@ -4166,6 +4166,13 @@
     </div>
 
     <div class="step">
+      <strong>转回矩阵-向量记号：</strong>为什么 \(\sum_j M_{kj}x_j\) 和 \(\sum_i M_{ik}x_i\) 分别就是 \((M\mathbf{x})_k\) 和 \((M^{\mathrm T}\mathbf{x})_k\)？
+      <br>① \(\sum_j M_{kj}x_j\) 是矩阵 \(M\) 的第 \(k\)<strong>行</strong>与向量 \(\mathbf{x}\) 做内积——这正是矩阵乘向量 \(M\mathbf{x}\) 的定义本身，所以它就是 \((M\mathbf{x})_k\)。
+      <br>② \(\sum_i M_{ik}x_i\) 用到 \(M_{ik}=(M^{\mathrm T})_{ki}\)（转置就是把行列标号互换），代入后变成 \(\sum_i (M^{\mathrm T})_{ki}x_i\)——这是矩阵 \(M^{\mathrm T}\) 的第 \(k\)<strong>行</strong>与 \(\mathbf{x}\) 做内积，按同样的定义，正是 \((M^{\mathrm T}\mathbf{x})_k\)。
+      <br>两步本质相同：一个下标求和式，只要能整理成"矩阵某一行 \(\times\) 向量"的形状，就可以直接读成该矩阵乘向量的对应分量——这也是分量记号和矩阵记号能够互相转换的根本原因。
+    </div>
+
+    <div class="step">
       <strong>"剥洋葱"式的严格推导：</strong>上面"\(i=k\) 与 \(j=k\) 两类项各贡献一份"这句话，其实是求导法则一层层穿透求和号的结果。
       <br>① <strong>和的导数 = 导数的和</strong>，\(\partial/\partial x_k\) 直接穿过 \(\sum_{i,j}\)：\(\ \dfrac{\partial}{\partial x_k}\sum_{i,j}M_{ij}x_ix_j=\sum_{i,j}\dfrac{\partial}{\partial x_k}(M_{ij}x_ix_j)\)。
       <br>② \(M_{ij}\) 是常数，提到求导符号外面：\(\ =\sum_{i,j}M_{ij}\dfrac{\partial}{\partial x_k}(x_ix_j)\)。
