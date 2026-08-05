@@ -924,7 +924,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
             f"你是杜克大学家长社区的中文编辑。今天是{date_hint}。\n"
             f"【{section_name}】今日没有抓取到新内容。\n"
             "请根据你对杜克大学的了解，生成2-3条对中国家长有实用价值的背景信息。\n"
-            "要求：<ul><li>格式，末尾加<li>📡 今日暂无最新动态，以上为近期背景信息</li>，只输出HTML。"
+            "要求：<ul><li>格式，只输出HTML，不要加任何类似「今日暂无最新动态」的说明文字。"
         )
         return gemini(prompt) or FALLBACK_HTML
 
@@ -1282,9 +1282,14 @@ def main():
     _today_date = datetime.now().date()
 
     def _drop_expired_items(items):
-        """丢弃标题中含有过期日期（早于今天或超出最近15天滚动窗口）的条目"""
+        """丢弃标题中日期早于15天滚动窗口下限（GLOBAL_MIN_DATE）的条目。
+        注意：这里传的是 GLOBAL_MIN_DATE 而不是"今天"——RSS条目标题里的日期是
+        文章发布日期，只要在最近15天内就该保留，不能要求"必须正好是今天"，
+        否则 filter_expired_text 内部 max(today, GLOBAL_MIN_DATE) 恒等于 today，
+        会把昨天及更早发布的所有新闻都当"过期"误删（曾导致学校新闻/科研动态
+        几乎全部清零，只剩发布日恰好是当天的极少数条目）。"""
         return [i for i in items
-                if filter_expired_text(i["title"], _today_date).strip() != ""]
+                if filter_expired_text(i["title"], GLOBAL_MIN_DATE).strip() != ""]
 
     r["admissions_text"] = filter_expired_text(r["admissions_text"], _today_date)
     r["reg_text"]        = filter_expired_text(r["reg_text"], _today_date)
