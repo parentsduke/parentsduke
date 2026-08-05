@@ -38,7 +38,9 @@ SECTION_LABELS = {
     'weekly-research':     '🔬 科研动态',
     'weekly-visa':         '🛂 签证与国际生',
 }
-HEADERS = {'User-Agent': 'Mozilla/5.0 (compatible; DukeParentsBot/1.0)'}
+HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                         'AppleWebKit/537.36 (KHTML, like Gecko) '
+                         'Chrome/124.0.0.0 Safari/537.36'}
 
 # ══════════════════════════════════════════════════════════════
 #  RSS 源
@@ -49,7 +51,11 @@ RSS_FEEDS = {
     'news':             'https://news.google.com/rss/search?q=Duke+University+news+site:news.duke.edu&hl=en-US&gl=US&ceid=US:en',
     'research':         'https://news.google.com/rss/search?q=Duke+University+research+site:research.duke.edu&hl=en-US&gl=US&ceid=US:en',
     'pratt':            'https://today.duke.edu/tags/pratt-school-of-engineering/rss',
-    'trinity':          'https://today.duke.edu/tags/trinity-college-of-arts-&-sciences/rss',
+    # 注意：原来这里写的是 trinity-college-of-arts-&-sciences，URL路径里塞了字面
+    # "&" 符号，slug拼法存疑（Duke Today网站上"school"页面用的是不含"of"和"&"的
+    # trinity-college-arts-sciences）。改为在 fetch_source() 里按候选列表依次尝试，
+    # 这里保留一个默认值供未走候选逻辑的地方引用。
+    'trinity':          'https://today.duke.edu/tags/trinity-college-arts-sciences/rss',
     'admissions':       'https://today.duke.edu/tags/admissions/rss',
     'athletics':        'https://today.duke.edu/tags/athletics/rss',
     'campus':           'https://today.duke.edu/topics/campus-&-community/rss',
@@ -447,7 +453,10 @@ def fetch_rss(url, max_items=8, max_age_days=180, min_date=None):
     优先级高于 max_age_days）；没有发布日期信息的条目在设置了 min_date 时也会被跳过，
     以避免日期不明的旧内容混入。"""
     try:
-        feed = feedparser.parse(url)
+        feed = feedparser.parse(url, request_headers=HEADERS)
+        if getattr(feed, 'bozo', 0) and not feed.entries:
+            # 第一次带默认UA可能仍被拦截/解析失败，打印详细原因方便排查
+            print(f'  RSS bozo警告 {url}: {getattr(feed, "bozo_exception", "unknown")}')
         items = []
         now = datetime.now()
         for e in feed.entries:
@@ -582,8 +591,28 @@ def fetch_pages_text(urls, max_chars=1200):
                 print(f'  抓取失败 {url}: {ex}')
     return '\n\n'.join(texts)
 
+TRINITY_TAG_URL_CANDIDATES = [
+    'https://today.duke.edu/tags/trinity-college-arts-sciences/rss',
+    'https://today.duke.edu/tags/trinity-college-of-arts-and-sciences/rss',
+    'https://today.duke.edu/tags/trinity-college-of-arts-&-sciences/rss',  # 旧写法，垫底再试一次
+]
+
 def fetch_source(name, max_items=8):
-    if name in RSS_FEEDS:
+    if name == 'trinity':
+        # slug拼法不确定，依次尝试候选URL，命中（有条目）就用
+        items = []
+        for cand_url in TRINITY_TAG_URL_CANDIDATES:
+            items = fetch_rss(cand_url, max_items, min_date=GLOBAL_MIN_DATE)
+            if items:
+                return items
+        # 全部候选都没拿到，走Jina/HTML兜底
+        if not items:
+            items = fetch_jina('https://trinity.duke.edu/news', max_items)
+        if not items:
+            items = fetch_html_items('https://trinity.duke.edu/news',
+                                      ['h2 a', 'h3 a', '.views-row a'], max_items)
+        return items
+    elif name in RSS_FEEDS:
         # 所有 RSS 栏目统一应用全局最早日期下限（超出最近15天滚动窗口的内容一律不抓取）
         items = fetch_rss(RSS_FEEDS[name], max_items, min_date=GLOBAL_MIN_DATE)
         # Jina fallback for known 403/JS sites
@@ -624,7 +653,7 @@ def fetch_source(name, max_items=8):
 
 def fetch_calendar():
     try:
-        feed = feedparser.parse(DUKE_EVENTS_CALENDAR_URL)
+        feed = feedparser.parse(DUKE_EVENTS_CALENDAR_URL, request_headers=HEADERS)
         items = []
         today = datetime.now().date()
         for e in feed.entries[:30]:
