@@ -448,14 +448,38 @@ Sep 11-12: MCAT最后考试日（2026年）
 # ══════════════════════════════════════════════════════════════
 #  抓取工具
 # ══════════════════════════════════════════════════════════════
+_BARE_AMP_RE = re.compile(r'&(?!#\d+;|#x[0-9a-fA-F]+;|[a-zA-Z]+;)')
+_XML_INVALID_CTRL_RE = re.compile(r'[\x00-\x08\x0B\x0C\x0E-\x1F]')
+
+def _sanitize_xml_text(text):
+    """修复不少体育类/第三方RSS源（典型如goduke.com这类SIDEARM/PrestoSports
+    体育网站CMS）常见的两个问题，二者都会导致feedparser报
+    "not well-formed (invalid token)"：
+    1) 裸露未转义的 & （比如球队描述里的 "Arts & Sciences"、"A&M" 直接原样输出，
+       没有转义成 &amp;）——只替换不构成合法实体引用的裸&，已经是
+       &amp;/&lt;/&#123;等的不动。
+    2) XML 1.0 不允许出现的控制字符（如某些编码错误混入的 \\x00-\\x1F）。
+    """
+    text = _XML_INVALID_CTRL_RE.sub('', text)
+    text = _BARE_AMP_RE.sub('&amp;', text)
+    return text
+
 def fetch_rss(url, max_items=8, max_age_days=180, min_date=None):
     """min_date: 若提供（date对象），早于该日期的条目一律跳过（硬性下限，
     优先级高于 max_age_days）；没有发布日期信息的条目在设置了 min_date 时也会被跳过，
     以避免日期不明的旧内容混入。"""
     try:
-        feed = feedparser.parse(url, request_headers=HEADERS)
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            raw_text = resp.text
+        except Exception as req_ex:
+            # 直接请求失败（网络/超时等），把URL原样交给feedparser自己兜底试一次
+            print(f'  RSS 直接请求失败，交给feedparser兜底 {url}: {req_ex}')
+            raw_text = url
+        cleaned = _sanitize_xml_text(raw_text) if raw_text != url else raw_text
+        feed = feedparser.parse(cleaned, request_headers=HEADERS)
         if getattr(feed, 'bozo', 0) and not feed.entries:
-            # 第一次带默认UA可能仍被拦截/解析失败，打印详细原因方便排查
+            # 清洗过后如果还是解析失败/没有条目，打印详细原因方便排查
             print(f'  RSS bozo警告 {url}: {getattr(feed, "bozo_exception", "unknown")}')
         items = []
         now = datetime.now()
