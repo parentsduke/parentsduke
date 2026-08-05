@@ -4165,6 +4165,15 @@
       汇总成向量即 \(\nabla_{\mathbf{x}}(\mathbf{x}^{\mathrm T}M\mathbf{x})=(M+M^{\mathrm T})\mathbf{x}\)，这对任意 \(M\) 都成立。当 \(M\) 对称（\(M^{\mathrm T}=M\)）时化简为 \(2M\mathbf{x}\)。</p>
     </div>
 
+    <div class="step">
+      <strong>"剥洋葱"式的严格推导：</strong>上面"\(i=k\) 与 \(j=k\) 两类项各贡献一份"这句话，其实是求导法则一层层穿透求和号的结果。
+      <br>① <strong>和的导数 = 导数的和</strong>，\(\partial/\partial x_k\) 直接穿过 \(\sum_{i,j}\)：\(\ \dfrac{\partial}{\partial x_k}\sum_{i,j}M_{ij}x_ix_j=\sum_{i,j}\dfrac{\partial}{\partial x_k}(M_{ij}x_ix_j)\)。
+      <br>② \(M_{ij}\) 是常数，提到求导符号外面：\(\ =\sum_{i,j}M_{ij}\dfrac{\partial}{\partial x_k}(x_ix_j)\)。
+      <br>③ 对 \(x_ix_j\) 用乘法法则 \((uv)'=u'v+uv'\)：\(\ \dfrac{\partial}{\partial x_k}(x_ix_j)=\left(\dfrac{\partial x_i}{\partial x_k}\right)x_j+x_i\left(\dfrac{\partial x_j}{\partial x_k}\right)\)——这里就自然冒出了"变量对变量求导" \(\partial x_i/\partial x_k\)。
+      <br>由于 \(\mathbf{x}\) 的各分量相互独立，\(\partial x_i/\partial x_k=\delta_{ik}\)（克罗内克记号：\(i=k\) 时为 1，否则为 0）。代入后 \(\left(\dfrac{\partial x_i}{\partial x_k}\right)x_j=\delta_{ik}x_j\)，在 \(\sum_{i,j}M_{ij}\delta_{ik}x_j\) 里只有 \(i=k\) 的项能存活，直接"锁定"掉了 \(i\) 这个求和号，剩下 \(\sum_j M_{kj}x_j=(M\mathbf{x})_k\)；同理另一半 \(x_i(\partial x_j/\partial x_k)=x_i\delta_{jk}\) 锁定 \(j=k\)，剩下 \(\sum_i M_{ik}x_i=(M^{\mathrm T}\mathbf{x})_k\)。两部分相加正是 \((M\mathbf{x})_k+(M^{\mathrm T}\mathbf{x})_k\)。
+      <br>💡 类比一元函数 \(f(x)=3x^2\)：\(\dfrac{d}{dx}(3x^2)=3\cdot 2x\cdot\dfrac{dx}{dx}=6x\)，那个隐藏的 \(dx/dx=1\) 平时被省略；矩阵求导里 \(x_i,x_j\) 是两个不同分量，\(\partial x_i/\partial x_k\) 不能想当然地当成 1，必须用 \(\delta_{ik}\) 显式处理——这正是两种求导唯一的本质区别。
+    </div>
+
     <div class="example">
       <div class="label">举例验证：取一个不对称的 \(M\)</div>
       <p style="margin:0 0 10px">取 \(M=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)（注意 \(M\neq M^{\mathrm T}\)），先直接展开算出标量函数：
