@@ -4197,6 +4197,16 @@
     </div>
 
     <div class="example">
+      <div class="label">为什么公式里前后两个 $k$ 必须相同？——3 维实例（$n=3$，锁定 $k=2$）</div>
+      <p style="margin:0 0 10px"><strong>先说理由：</strong>公式 \(\sum_j M_{kj}x_j+\sum_i M_{ik}x_i\) 里，前后两个 \(k\) 都来自<strong>同一个求导目标</strong>——二次型里任何一项 \(x_ix_j\) 中，\(x_2\) 既可能站在"前位置"（\(i=2\)），也可能站在"后位置"（\(j=2\)），但两种情况求的都是对同一个 \(x_2\) 的偏导，所以前后筛选出来的下标必须都锁定为同一个 \(k=2\)，才能不重不漏地收集 \(x_2\) 的全部贡献。</p>
+      <p style="margin:0 0 10px">取 \(\mathbf{x}=(x_1,x_2,x_3)^{\mathrm T}\)、\(M=\begin{pmatrix}1&2&3\\4&5&6\\7&8&9\end{pmatrix}\)，展开 \(f=\mathbf{x}^{\mathrm T}M\mathbf{x}\)：
+      \[f=x_1^2+2x_1x_2+3x_1x_3+4x_2x_1+5x_2^2+6x_2x_3+7x_3x_1+8x_3x_2+9x_3^2\]
+      含 \(x_2\) 的项分两类：<strong>前位置</strong>（\(i=2\)）：\(4x_2x_1+5x_2^2+6x_2x_3\)；<strong>后位置</strong>（\(j=2\)）：\(2x_1x_2+5x_2^2+8x_3x_2\)。对 \(x_2\) 求偏导：
+      \[\frac{\partial f}{\partial x_2}=\underbrace{(4x_1+5x_2+6x_3)}_{\text{前位置贡献}}+\underbrace{(2x_1+5x_2+8x_3)}_{\text{后位置贡献}}\]</p>
+      <p style="margin:0">对照公式：前一半 \(\sum_j M_{2j}x_j\) 正是取 \(M\) 的<strong>第 2 行</strong>乘 \(\mathbf{x}\)：\(M_{21}x_1+M_{22}x_2+M_{23}x_3=4x_1+5x_2+6x_3\)；后一半 \(\sum_i M_{i2}x_i\) 是取 \(M\) 的<strong>第 2 列</strong>乘 \(\mathbf{x}\)：\(M_{12}x_1+M_{22}x_2+M_{32}x_3=2x_1+5x_2+8x_3\)，两者与暴力展开的结果完全一致——前面找第 2 行，后面找第 2 列，"行、列"下标必须同为 2，才能对应同一个求导目标 \(x_2\)。</p>
+    </div>
+
+    <div class="example">
       <div class="label">举例验证：取一个不对称的 \(M\)</div>
       <p style="margin:0 0 10px">取 \(M=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)（注意 \(M\neq M^{\mathrm T}\)），先直接展开算出标量函数：
       \[\mathbf{x}^{\mathrm T}M\mathbf{x}=x_1(x_1+2x_2)+x_2(3x_1+4x_2)=x_1^2+5x_1x_2+4x_2^2\]
