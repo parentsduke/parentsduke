@@ -4212,6 +4212,20 @@
     </div>
 
     <div class="example">
+      <div class="label">补全 3 维完整梯度：把 $k=1,2,3$ 全部算完再拼回向量</div>
+      <p style="margin:0 0 10px">沿用同一个 \(M=\begin{pmatrix}1&2&3\\4&5&6\\7&8&9\end{pmatrix}\)，前面已经算出 \(k=2\) 那一分量，现在补上 \(k=1\) 和 \(k=3\)，三者都遵循"第 \(k\) 行 + 第 \(k\) 列"的同一套路：
+      \[\frac{\partial f}{\partial x_1}=\underbrace{(1x_1+2x_2+3x_3)}_{M\text{ 第 1 行}}+\underbrace{(1x_1+4x_2+7x_3)}_{M\text{ 第 1 列}}=2x_1+6x_2+10x_3\]
+      \[\frac{\partial f}{\partial x_2}=\underbrace{(4x_1+5x_2+6x_3)}_{M\text{ 第 2 行}}+\underbrace{(2x_1+5x_2+8x_3)}_{M\text{ 第 2 列}}=6x_1+10x_2+14x_3\]
+      \[\frac{\partial f}{\partial x_3}=\underbrace{(7x_1+8x_2+9x_3)}_{M\text{ 第 3 行}}+\underbrace{(3x_1+6x_2+9x_3)}_{M\text{ 第 3 列}}=10x_1+14x_2+18x_3\]</p>
+      <p style="margin:0 0 10px">把三个分量竖着排成梯度向量，正好能拆成"\(M\) 乘 \(\mathbf{x}\)"和"\(M^{\mathrm T}\) 乘 \(\mathbf{x}\)"两部分相加：
+      \[\nabla_{\mathbf{x}}f=\begin{pmatrix}1&2&3\\4&5&6\\7&8&9\end{pmatrix}\begin{pmatrix}x_1\\x_2\\x_3\end{pmatrix}+\begin{pmatrix}1&4&7\\2&5&8\\3&6&9\end{pmatrix}\begin{pmatrix}x_1\\x_2\\x_3\end{pmatrix}=M\mathbf{x}+M^{\mathrm T}\mathbf{x}\]
+      左边第一个矩阵就是原来的 \(M\)，第二个矩阵行列互换后正是 \(M^{\mathrm T}\)——三个分量各自"行+列"拼起来，宏观上自动就是 \(M\mathbf{x}+M^{\mathrm T}\mathbf{x}=(M+M^{\mathrm T})\mathbf{x}\)。</p>
+      <p style="margin:0">代入具体数字，\(M+M^{\mathrm T}=\begin{pmatrix}2&6&10\\6&10&14\\10&14&18\end{pmatrix}\)，最终梯度为：
+      \[\nabla_{\mathbf{x}}f=\begin{pmatrix}2&6&10\\6&10&14\\10&14&18\end{pmatrix}\begin{pmatrix}x_1\\x_2\\x_3\end{pmatrix}=\begin{pmatrix}2x_1+6x_2+10x_3\\6x_1+10x_2+14x_3\\10x_1+14x_2+18x_3\end{pmatrix}\]
+      与逐分量算出的结果完全一致——这就是"分量证明"和"矩阵证明"殊途同归的具体验证。</p>
+    </div>
+
+    <div class="example">
       <div class="label">举例验证：取一个不对称的 \(M\)</div>
       <p style="margin:0 0 10px">取 \(M=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)（注意 \(M\neq M^{\mathrm T}\)），先直接展开算出标量函数：
       \[\mathbf{x}^{\mathrm T}M\mathbf{x}=x_1(x_1+2x_2)+x_2(3x_1+4x_2)=x_1^2+5x_1x_2+4x_2^2\]
