@@ -4034,6 +4034,73 @@
       <div class="label">几何直觉</div>
       <p style="margin:0">\(A\mathbf{x}\) 的所有可能取值构成 \(A\) 的列空间，而 \(\mathbf{b}\) 一般不在这个子空间里。最小二乘法本质上是求 \(\mathbf{b}\) 在列空间上的<strong>正交投影</strong>：残差 \(\mathbf{b}-A\mathbf{x}\) 垂直于列空间，即 \(A^{\mathrm T}(\mathbf{b}-A\mathbf{x})=\mathbf{0}\)，整理后正是正规方程。</p>
     </div>
+
+    <h3 class="sub"><span class="tag">证明</span>为什么 \(A^{\mathrm T}(\mathbf{b}-A\hat{\mathbf x})=\mathbf{0}\)</h3>
+    <p>设 \(\hat{\mathbf x}\) 是使 \(\|\mathbf{b}-A\mathbf{x}\|\) 最小的解。下面用两种方式说明残差 \(\mathbf{b}-A\hat{\mathbf x}\) 必须满足这个等式。</p>
+
+    <div class="box basis">
+      <div class="label">方法一 · 正交投影</div>
+      <p>\(A\hat{\mathbf x}\) 就是 \(\mathbf{b}\) 在列空间 \(\operatorname{Col}A\) 上的正交投影，因此误差向量 \(\mathbf{b}-A\hat{\mathbf x}\) 必须与 \(\operatorname{Col}A\) 中<strong>每一个</strong>向量都垂直——包括 \(A\) 的每一列 \(a_1,a_2,\dots,a_n\)：
+      \[a_i^{\mathrm T}(\mathbf{b}-A\hat{\mathbf x})=0,\quad i=1,\dots,n\]
+      把这 \(n\) 个方程叠成矩阵形式，正是把 \(A^{\mathrm T}\) 的每一行取出来做点积，于是
+      \[A^{\mathrm T}(\mathbf{b}-A\hat{\mathbf x})=\mathbf{0}\]</p>
+    </div>
+
+    <div class="box basis">
+      <div class="label">方法二 · 求导取极值</div>
+      <p>令 \(f(\mathbf x)=\|\mathbf b-A\mathbf x\|^2=(\mathbf b-A\mathbf x)^{\mathrm T}(\mathbf b-A\mathbf x)\)。展开后对 \(\mathbf x\) 求梯度并令其为零（这正是习题十四的推导）：
+      \[\nabla f(\mathbf x)=-2A^{\mathrm T}\mathbf b+2A^{\mathrm T}A\mathbf x=0\ \Longrightarrow\ A^{\mathrm T}A\hat{\mathbf x}=A^{\mathrm T}\mathbf b\]
+      移项即得 \(A^{\mathrm T}(\mathbf b-A\hat{\mathbf x})=\mathbf 0\)——这就是正规方程，和方法一的几何结论完全等价，只是分别从代数和几何两个角度得到同一件事。</p>
+    </div>
+
+    <div class="figure-wrap">
+      <svg viewBox="0 0 640 380" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowLS" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1D2A44"/>
+          </marker>
+        </defs>
+
+        <!-- 列空间（平面） -->
+        <polygon points="70,300 560,300 470,360 10,360" fill="#E8F1EE" stroke="#3E7C6B" stroke-width="1.2"/>
+        <text x="30" y="352" font-family="Noto Sans SC, sans-serif" font-size="13" font-weight="600" fill="#3E7C6B">Col A（列空间）</text>
+
+        <!-- 原点 -->
+        <circle cx="220" cy="330" r="2.6" fill="#1D2A44"/>
+        <text x="228" y="345" font-family="Noto Sans SC, sans-serif" font-size="12.5" fill="#1D2A44">O</text>
+
+        <!-- 列向量 a1, a2 -->
+        <line x1="220" y1="330" x2="360" y2="312" stroke="#3E7C6B" stroke-width="1.4" marker-end="url(#arrowLS)"/>
+        <text x="368" y="308" font-family="Noto Sans SC, sans-serif" font-size="13" font-style="italic" fill="#3E7C6B">a₁</text>
+        <line x1="220" y1="330" x2="130" y2="308" stroke="#3E7C6B" stroke-width="1.4" marker-end="url(#arrowLS)"/>
+        <text x="96" y="302" font-family="Noto Sans SC, sans-serif" font-size="13" font-style="italic" fill="#3E7C6B">a₂</text>
+
+        <!-- b -->
+        <line x1="220" y1="330" x2="360" y2="46" stroke="#B4483C" stroke-width="1.6" marker-end="url(#arrowLS)"/>
+        <text x="368" y="46" font-family="Noto Sans SC, sans-serif" font-size="14" font-style="italic" fill="#B4483C">b</text>
+
+        <!-- Ax_hat 投影 -->
+        <line x1="220" y1="330" x2="320" y2="314" stroke="#1D2A44" stroke-width="1.6" marker-end="url(#arrowLS)"/>
+        <text x="300" y="345" font-family="Noto Sans SC, sans-serif" font-size="13.5" font-style="italic" fill="#1D2A44">Ax̂</text>
+
+        <!-- 残差（虚线） -->
+        <line x1="320" y1="314" x2="360" y2="46" stroke="#B4483C" stroke-width="1.2" stroke-dasharray="5 5" marker-end="url(#arrowLS)"/>
+        <text x="368" y="190" font-family="Noto Sans SC, sans-serif" font-size="13" fill="#B4483C">b − Ax̂</text>
+
+        <!-- 直角标记 -->
+        <path d="M320,314 L312,299 L327,291" fill="none" stroke="#1D2A44" stroke-width="1"/>
+      </svg>
+      <div class="figure-caption">Ax̂ 是 b 在列空间上的正交投影，残差 b − Ax̂ 与列空间垂直，故 A<sup>T</sup>(b − Ax̂) = 0</div>
+    </div>
+
+    <div class="box verify">
+      <div class="label">为什么正交投影一定是"最短"</div>
+      <p>对列空间中<strong>任意</strong>向量 \(\mathbf v\)（不一定是 \(A\hat{\mathbf x}\)），把 \(\mathbf b-\mathbf v\) 拆成两段：
+      \[\mathbf b-\mathbf v=\underbrace{(\mathbf b-A\hat{\mathbf x})}_{\perp\ \operatorname{Col}A}+\underbrace{(A\hat{\mathbf x}-\mathbf v)}_{\in\ \operatorname{Col}A}\]
+      这两段互相垂直，由勾股定理：
+      \[\|\mathbf b-\mathbf v\|^2=\|\mathbf b-A\hat{\mathbf x}\|^2+\|A\hat{\mathbf x}-\mathbf v\|^2\ \ge\ \|\mathbf b-A\hat{\mathbf x}\|^2\]
+      等号仅在 \(\mathbf v=A\hat{\mathbf x}\) 时成立。这说明列空间里任何其他点到 \(\mathbf b\) 的距离都不会比 \(A\hat{\mathbf x}\) 更短——垂直投影正是最短路径，这也是"最小二乘"名字的由来。</p>
+    </div>
   </div>
 
   <!-- ===================== FOLLOW-UP: 拟合直线例题 ===================== -->
