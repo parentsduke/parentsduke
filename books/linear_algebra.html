@@ -1992,6 +1992,10 @@
       <div class="center-block">$$\det(A-\lambda E)=0$$</div>
       <div class="step">这就是<strong>特征方程</strong>，解出的 $\lambda$ 即为特征值；把每个 $\lambda$ 代回 $(A-\lambda E)\xi=0$，解出的 $\xi$ 即为对应的特征向量。</div>
 
+      <div class="note">
+        <strong>从线性变换角度理解"系数矩阵不可逆"：</strong>把 $A-\lambda E$ 也看成一个线性变换：它把向量 $x$ 映到 $(A-\lambda E)x=Ax-\lambda x$。一个变换 $M$ <strong>可逆</strong>，等价于它是单射——不同输入必映给不同输出，特别地只有零向量会被映到零向量，即 $Mx=0\iff x=0$。反过来，$M$ <strong>不可逆</strong>就意味着它会把某个非零方向"压扁"到原点，这些被压扁的非零向量构成 $M$ 的<strong>核（kernel）</strong>，此时核里不再只有零向量。<br><br>
+        现在要找非零 $\xi$ 使 $(A-\lambda E)\xi=0$，正是在问：$A-\lambda E$ 的核里是否存在非零向量。若 $A-\lambda E$ 可逆，则只有 $\xi=0$ 能被映到零，不存在特征向量；若 $A-\lambda E$ 不可逆，则它必然把某个非零方向压缩为零，这个方向上的非零向量就是特征向量 $\xi$。所以"$A-\lambda E$ 不可逆"这一代数条件，几何上就是要求变换 $A-\lambda E$ 存在非平凡的核——即存在一整条方向被压缩到原点。这与本节开头"方向不变、只被拉伸"的比喻是同一件事的两种说法：$A$ 在方向 $\xi$ 上不改变方向只做伸缩，恰好等价于 $A-\lambda E$ 把这个方向压扁为零。</div>
+
       <div class="example">
         <div class="ex-label">例1（对角矩阵，一眼看出）</div>
         $A=\begin{pmatrix}2&0\\0&3\end{pmatrix}$，特征方程 $(2-\lambda)(3-\lambda)=0$，解得 $\lambda_1=2,\lambda_2=3$，对应特征向量分别是 $(1,0)$ 和 $(0,1)$——这类对角矩阵的特征值和特征向量可以"一眼看出"，因为它本身已经是沿坐标轴方向的纯拉伸。
