@@ -4223,6 +4223,17 @@
     </div>
 
     <div class="step">
+      <strong>小结：\(i\)、\(j\) 分别是谁的下标</strong>
+      <br>在 \(\sum_i\sum_j M_{ij}x_ix_j\) 里，\(i\) 和 \(j\) 各自的身份是固定的——
+      <table style="width:100%;border-collapse:collapse;margin:10px 0;">
+        <tr style="border-bottom:1px solid #ccc;"><th style="text-align:left;padding:4px 8px;">下标</th><th style="text-align:left;padding:4px 8px;">对应谁</th><th style="text-align:left;padding:4px 8px;">对应 \(M\) 的哪部分</th></tr>
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:4px 8px;">\(i\)</td><td style="padding:4px 8px;">\(\mathbf{x}^{\mathrm T}\)（前面）的第 \(i\) 个分量</td><td style="padding:4px 8px;">第 \(i\) <strong>行</strong></td></tr>
+        <tr><td style="padding:4px 8px;">\(j\)</td><td style="padding:4px 8px;">\(\mathbf{x}\)（后面）的第 \(j\) 个分量</td><td style="padding:4px 8px;">第 \(j\) <strong>列</strong></td></tr>
+      </table>
+      两个下标各自出现两次（一次决定取 \(\mathbf{x}\) 的哪个分量，一次决定取 \(M\) 的哪行/哪列），被同一个字母绑定在一起，这就是行、列会分别锁定到某个具体 \(x_k\) 的根本原因。
+    </div>
+
+    <div class="step">
       <strong>顺带说清楚主对角线为什么会冒出平方项：</strong>双重求和 \(\sum_{i,j}M_{ij}x_ix_j\) 里，只要 \(i\neq j\)（比如 \(M_{12}x_1x_2\)），两个变量不同，是普通交叉项；但当 \(i=j\)（比如上例中 \(i=j=2\)）时，行号等于列号，取到的是<strong>同一个变量乘自己</strong>，即 \(M_{22}x_2x_2=M_{22}x_2^2\)——这正是主对角线元素 \(M_{22}=5\) 会以平方项 \(5x_2^2\) 形式出现的原因。
       <br>对这个平方项求导有两种完全等价的视角：<strong>视角 A（幂函数求导）</strong>直接用 \((x^2)'=2x\)：\(\dfrac{d}{dx_2}(5x_2^2)=5\cdot 2x_2=10x_2\)；<strong>视角 B（乘法法则）</strong>把它写成 \(5\cdot x_2\cdot x_2\)，用 \((uv)'=u'v+uv'\) 拆开：\(\dfrac{\partial}{\partial x_2}(5x_2x_2)=\underbrace{5x_2}_{\text{对第 1 个}x_2\text{求导}}+\underbrace{5x_2}_{\text{对第 2 个}x_2\text{求导}}=10x_2\)。两种算法结果一致，而视角 B 正好对应矩阵公式里"第 2 行"与"第 2 列"各贡献一次 \(5x_2\)（即前面例子里 \(4x_1+\mathbf{5x_2}+6x_3\) 与 \(2x_1+\mathbf{5x_2}+8x_3\) 中各自的那个 \(5x_2\)）——这也是为什么"两类项各贡献一份"这条一般规则，套到对角线元素上依然成立、不需要特殊处理。
     </div>
