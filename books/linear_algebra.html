@@ -5020,6 +5020,53 @@
       <div class="note">
         <strong>说明：</strong>黄色半透明的两块三角面拼成的正是 $a,b$ 张成的平行四边形，其面积 $\sqrt{89}\approx9.43$ 正是上面算出的叉积模长——绿色箭头（$a\times b$）垂直刺出这个平面，符号（往上还是往下）由右手定则决定。
       </div>
+      <h3 class="part"><span class="tag">总结</span>内积、外积、叉积的区别</h3>
+      <div class="step">这三个词经常被混着用，容易搞混，这里集中辨析一下。三者的共同点是"输入都是向量"，区别在于<strong>输出的东西不一样、维度限制不一样</strong>：</div>
+
+      <table style="width:100%;border-collapse:collapse;margin:14px 0;font-size:15px;">
+        <thead>
+          <tr style="border-bottom:2px solid #ccc;">
+            <th style="text-align:left;padding:8px;">运算</th>
+            <th style="text-align:left;padding:8px;">记号</th>
+            <th style="text-align:left;padding:8px;">输入</th>
+            <th style="text-align:left;padding:8px;">输出</th>
+            <th style="text-align:left;padding:8px;">维度限制</th>
+            <th style="text-align:left;padding:8px;">几何意义</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:8px;">内积（点积）</td>
+            <td style="padding:8px;">$x^{\mathrm T}y$</td>
+            <td style="padding:8px;">两个 $n$ 维向量</td>
+            <td style="padding:8px;"><strong>标量</strong></td>
+            <td style="padding:8px;">任意维</td>
+            <td style="padding:8px;">投影长度、夹角余弦</td>
+          </tr>
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:8px;">外积</td>
+            <td style="padding:8px;">$xy^{\mathrm T}$</td>
+            <td style="padding:8px;">$m$ 维、$n$ 维向量</td>
+            <td style="padding:8px;"><strong>$m\times n$ 矩阵</strong></td>
+            <td style="padding:8px;">任意维（不必同维）</td>
+            <td style="padding:8px;">秩1矩阵（第十二节讲过）</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;">叉积（向量积）</td>
+            <td style="padding:8px;">$x\times y$</td>
+            <td style="padding:8px;">两个3维向量</td>
+            <td style="padding:8px;"><strong>3维向量</strong></td>
+            <td style="padding:8px;">仅3维</td>
+            <td style="padding:8px;">垂直向量、平行四边形面积</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <strong>记忆窍门：</strong>内积是"缩"——两个向量缩成一个数（本节和第十节都讲过）；外积是"张"——两个向量张成一个矩阵（呼应第十二节"秩一矩阵"和第十九节 SVD 里的 $\sum_i\sigma_iu_iv_i^{\mathrm T}$）；叉积是"转"——转到与原平面垂直的方向去，是专属三维空间的特殊运算。<br><br>
+        ⚠️ <strong>常见混淆</strong>：中文语境里"外积"有时被用来指代叉积（尤其一些物理、工程教材受翻译习惯影响），但线性代数教材（包括本讲义）里说的"外积"，指的都是 $xy^{\mathrm T}$ 这个秩一矩阵，和叉积是完全不同的两种运算，读到"外积"时要结合上下文判断具体指哪一个。
+      </div>
+
     </section>
 
 
