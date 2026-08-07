@@ -4603,6 +4603,23 @@
         这个矩阵本身就已经是若尔当标准形——一个 $2$ 阶若尔当块 $J_2(2)$。取 $\xi_1=(1,0)^{\mathrm T}$（真正的特征向量），$\xi_2$ 满足 $(A-2I)\xi_2=\xi_1$，解得 $\xi_2=(0,1)^{\mathrm T}$，正是标准基本身，故 $P=I$。
       </div>
 
+      <div class="example">
+        <div class="ex-label">三维举例：$A=\begin{pmatrix}1&1&0\\0&2&1\\1&-1&3\end{pmatrix}$</div>
+        <strong>第一步，求特征值：</strong>展开 $\det(A-\lambda I)=-\lambda^3+6\lambda^2-12\lambda+8=-(\lambda-2)^3$，得 $\lambda=2$（三重根），代数重数 3。
+        <p style="margin:10px 0 0"><strong>第二步，求几何重数：</strong>$A-2I=\begin{pmatrix}-1&1&0\\0&0&1\\1&-1&1\end{pmatrix}$，行变换 $R_3+R_1$ 后第三行变成 $(0,0,1)$，与 $R_2$ 相同，可消去，剩两行线性无关，$\mathrm{rank}(A-2I)=2$，于是 $\dim\ker(A-2I)=3-2=1$。</p>
+        <p style="margin:10px 0 0"><strong>第三步，判定块结构：</strong>几何重数 1、代数重数 3——只能是<strong>一个 $3\times3$ 若尔当块</strong>，不能拆成更小的块。</p>
+        <p style="margin:10px 0 0"><strong>第四步，求链：</strong>解 $(A-2I)p_1=0$ 得 $p_1=(1,1,0)^{\mathrm T}$；解 $(A-2I)p_2=p_1$ 得 $p_2=(0,1,1)^{\mathrm T}$；解 $(A-2I)p_3=p_2$ 得 $p_3=(0,0,1)^{\mathrm T}$。取
+        $$P=(p_1,p_2,p_3)=\begin{pmatrix}1&0&0\\1&1&0\\0&1&1\end{pmatrix},\qquad J=P^{-1}AP=\begin{pmatrix}2&1&0\\0&2&1\\0&0&2\end{pmatrix}$$</p>
+      </div>
+
+      <div class="note">
+        <strong>辨析：为什么"几何重数 1、代数重数 3"就只能是一个 $3\times3$ 块，不能拆</strong>
+        <p style="margin:10px 0 0">依据两条规则：<strong>若尔当块的个数 = 几何重数</strong>；<strong>若尔当块的阶数之和 = 代数重数</strong>。</p>
+        <p style="margin:10px 0 0"><strong>规则一为什么成立：</strong>不管一个若尔当块 $J_m(\lambda)$ 阶数多大，解 $(J_m(\lambda)-\lambda I)v=0$ 永远只给出 1 维解空间——次对角线上的 1 会把除第一个坐标外的所有自由度"锁死"。所以若尔当标准形里若有 $r$ 个块，$\ker(A-\lambda I)$ 的总维数就是 $r$：块的个数直接等于几何重数。</p>
+        <p style="margin:10px 0 0"><strong>套进这道题：</strong>几何重数 $=1$ $\Rightarrow$ 只有 1 个块；代数重数 $=3$ $\Rightarrow$ 这唯一的块阶数必须是 3（因为块的阶数之和要凑够 3，只有一个块，3 全给它）。想拆成"更小的块"（比如 2+1）就意味着有 2 个块，这会让几何重数变成 2，与已经算出的"几何重数 1"矛盾，所以不可能。</p>
+        <p style="margin:10px 0 0">对比一下：如果这道题算出几何重数是 2，那么规则一给出"2 个块"，规则二给出"阶数之和 3"，唯一能凑出的组合就是 2+1——两条规则合起来，块的划分方式永远是唯一确定的。</p>
+      </div>
+
       <h3 class="part"><span class="tag">应用</span>若尔当标准形求矩阵幂</h3>
       <div class="step">对角化能快速求 $A^k$，若尔当标准形也可以，只是若尔当块的幂需要用二项式展开处理"对角部分"与"耦合部分"：把 $J_m(\lambda)=\lambda I+N$（$N$ 是次对角线全 1、其余全 0 的<strong>幂零矩阵</strong>，见下一节），因为 $\lambda I$ 与 $N$ 可交换，可用二项式定理
       $$J_m(\lambda)^k=(\lambda I+N)^k=\sum_{i=0}^{m-1}\binom{k}{i}\lambda^{k-i}N^i$$
