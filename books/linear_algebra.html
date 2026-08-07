@@ -4573,6 +4573,14 @@
         <p style="margin:10px 0 0">两条路径殊途同归，但推导视角更容易让人记住"为什么方程长这样"，换一种若尔当块的排布也能自己重新推出来，而不是死记一个公式。</p>
       </div>
 
+      <div class="note">
+        <strong>辨析：$\xi_1$ 与 $\xi_2$ 之间到底是什么关系</strong>
+        <p style="margin:10px 0 0">两者是同一条若尔当链上前后相邻的两环，靠 $(A-\lambda I)$ 这个算子串联起来。</p>
+        <p style="margin:10px 0 0"><strong>各自的身份：</strong>$\xi_1$ 是<strong>普通特征向量</strong>，满足 $(A-\lambda I)\xi_1=0$，本身就落在 $\ker(A-\lambda I)$ 里，是链的"根"。$\xi_2$ 是 <strong>2 阶广义特征向量</strong>，满足 $(A-\lambda I)^2\xi_2=0$ 但 $(A-\lambda I)\xi_2\neq0$——用 $(A-\lambda I)$ 打一次不会归零，打两次才归零。</p>
+        <p style="margin:10px 0 0"><strong>连接方式：</strong>$(A-\lambda I)\xi_2=\xi_1$ 说明 $\xi_2$ 被 $(A-\lambda I)$ 作用一次后，结果恰好精确落在 $\xi_1$ 的方向上，不是随便什么方向。可以想成"下楼梯"：$\xi_2\xrightarrow{(A-\lambda I)}\xi_1\xrightarrow{(A-\lambda I)}0$——$\xi_1$ 走一步就到 0，$\xi_2$ 要走两步才能到 0，这正是"代数重数超过几何重数"时，普通特征向量不够用、必须靠 $\xi_2$ 这种"隔了一层"的向量补齐维度的原因。</p>
+        <p style="margin:10px 0 0"><strong>在矩阵里的体现：</strong>$J_2(\lambda)$ 第一列 $(\lambda,0)^{\mathrm T}$ 对应 $\xi_1$：$A\xi_1=\lambda\xi_1$，单纯被拉伸，不牵扯别人。第二列 $(1,\lambda)^{\mathrm T}$ 对应 $\xi_2$：$A\xi_2=\xi_1+\lambda\xi_2$，说明 $A$ 作用在 $\xi_2$ 上时，主要沿 $\lambda$ 方向拉伸，但还带了一点点 $\xi_1$ 方向的分量——这个"带了一点点 $\xi_1$"正是若尔当块次对角线上那个 1 的来源。</p>
+      </div>
+
       <h3 class="part"><span class="tag">构造</span>若尔当块长什么样</h3>
       <div class="step">把链倒过来看 $A$ 的作用：$A\xi_1=\lambda\xi_1$（真正的特征向量），而 $A\xi_2=\lambda\xi_2+\xi_1$（因为 $(A-\lambda I)\xi_2=\xi_1$），依此类推 $A\xi_i=\lambda\xi_i+\xi_{i-1}$。把 $\xi_1,\dots,\xi_m$ 按顺序作为基，$T$ 的矩阵恰好是：</div>
       <div class="center-block">
