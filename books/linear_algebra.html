@@ -4566,6 +4566,19 @@
       链的末端 $\xi_1$ 正是一个普通特征向量（因为 $(A-\lambda I)\xi_1=0$）。这条链上的向量线性无关，用它们做基，$T$ 在这组基下的矩阵就是一个"若尔当块"。</div>
 
       <div class="note">
+        <strong>为什么链上的向量线性无关？</strong>
+        <p style="margin:10px 0 0">记 $N=A-\lambda I$，链的定义翻译成算子语言就是 $N\xi_1=0,\ N\xi_2=\xi_1,\ \dots,\ N\xi_m=\xi_{m-1}$。直观上看，链上每个向量"扛住 $N$反复作用而不归零的次数"两两不同：$\xi_1$ 被 $N$ 作用<strong>1次</strong>就归零；$\xi_2$ 要作用<strong>2次</strong>才归零；一般地 $\xi_k$ 要作用 <strong>$k$ 次</strong>才归零（因为 $\xi_k=N^{k-1}\xi_1$ 再多退一步即为零）。这种逐级递增的"消灭深度"两两不同，正是它们不可能线性相关的根源。</p>
+        <p style="margin:10px 0 0"><strong>严格证明（反证 + 用 $N^{m-1}$ 筛选）：</strong>设 $c_1\xi_1+c_2\xi_2+\cdots+c_m\xi_m=0$。两边同时作用 $N^{m-1}$：由于 $k<m$ 时 $N^{m-1}\xi_k=0$（作用次数早已超过消灭 $\xi_k$ 所需的 $k$ 次），只有 $k=m$ 那一项存活且 $N^{m-1}\xi_m=\xi_1\neq0$，代入后其余项全部消失，只剩 $c_m\xi_1=0$。因为 $\xi_1\neq0$，得 $c_m=0$。把这一项去掉后重复同样的论证（这次用 $N^{m-2}$ 作用剩下 $m-1$ 项），逐层剥离，最终推出 $c_1=c_2=\cdots=c_m=0$——只有全零系数才能让组合为零，链上向量线性无关。</p>
+      </div>
+
+      <div class="example">
+        <div class="ex-label">具体例子：$m=2$ 的若尔当链</div>
+        取 $A=\begin{pmatrix}3&-1\\1&1\end{pmatrix}$，特征多项式 $(3-\lambda)(1-\lambda)+1=\lambda^2-4\lambda+4=(\lambda-2)^2$，$\lambda=2$ 是二重特征值。算 $N=A-2I=\begin{pmatrix}1&-1\\1&-1\end{pmatrix}$，秩为 1（两行成比例），几何重数只有 1，凑不齐 2 个特征向量，需要走若尔当链。<br><br>
+        求链：$N\xi_1=0$ 即 $x-y=0$，取 $\xi_1=(1,1)^{\mathrm T}$；$N\xi_2=\xi_1$ 即 $x-y=1$，取 $\xi_2=(1,0)^{\mathrm T}$。<br><br>
+        <strong>验证线性无关：</strong>假设 $c_1\xi_1+c_2\xi_2=0$，两边作用 $N$（此时 $m=2$，即 $N^{m-1}=N^1$）：$N(c_1\xi_1+c_2\xi_2)=c_1\cdot0+c_2\xi_1=c_2\xi_1=0$。因为 $\xi_1\neq0$，得 $c_2=0$，代回原式得 $c_1=0$。也可以直接算行列式验证：$\det(\xi_1,\xi_2)=\det\begin{pmatrix}1&1\\1&0\end{pmatrix}=-1\neq0$，与证明结论吻合。
+      </div>
+
+      <div class="note">
         <strong>辨析：$(A-\lambda I)\xi_2=\xi_1$ 这类方程是"定义"还是"推导出来的"？</strong>
         <p style="margin:10px 0 0">两种叙述都说得通，区别只在于出发点。</p>
         <p style="margin:10px 0 0"><strong>推导视角：</strong>先设定目标——想让 $P^{-1}AP=J$ 成立。把 $P=(\xi_1,\xi_2,\dots,\xi_m)$ 代入 $AP=PJ$，按列比较：$J$ 的第 $i$ 列是 $(0,\dots,1,\lambda,0,\dots)^{\mathrm T}$（第 $i-1$ 行是 1，第 $i$ 行是 $\lambda$），所以 $PJ$ 的第 $i$ 列是 $\xi_{i-1}+\lambda\xi_i$，与 $AP$ 的第 $i$ 列 $A\xi_i$ 对齐，即得 $A\xi_i=\lambda\xi_i+\xi_{i-1}$，也就是 $(A-\lambda I)\xi_i=\xi_{i-1}$。这个方程不是凭空规定的，而是"若尔当块次对角线上那个 1"逼出来的必然条件。</p>
