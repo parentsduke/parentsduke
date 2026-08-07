@@ -4565,6 +4565,14 @@
       $$\xi_{m-1}=(A-\lambda I)\xi_m,\quad \xi_{m-2}=(A-\lambda I)\xi_{m-1},\ \dots,\ \xi_1=(A-\lambda I)\xi_2$$
       链的末端 $\xi_1$ 正是一个普通特征向量（因为 $(A-\lambda I)\xi_1=0$）。这条链上的向量线性无关，用它们做基，$T$ 在这组基下的矩阵就是一个"若尔当块"。</div>
 
+      <div class="note">
+        <strong>辨析：$(A-\lambda I)\xi_2=\xi_1$ 这类方程是"定义"还是"推导出来的"？</strong>
+        <p style="margin:10px 0 0">两种叙述都说得通，区别只在于出发点。</p>
+        <p style="margin:10px 0 0"><strong>推导视角：</strong>先设定目标——想让 $P^{-1}AP=J$ 成立。把 $P=(\xi_1,\xi_2,\dots,\xi_m)$ 代入 $AP=PJ$，按列比较：$J$ 的第 $i$ 列是 $(0,\dots,1,\lambda,0,\dots)^{\mathrm T}$（第 $i-1$ 行是 1，第 $i$ 行是 $\lambda$），所以 $PJ$ 的第 $i$ 列是 $\xi_{i-1}+\lambda\xi_i$，与 $AP$ 的第 $i$ 列 $A\xi_i$ 对齐，即得 $A\xi_i=\lambda\xi_i+\xi_{i-1}$，也就是 $(A-\lambda I)\xi_i=\xi_{i-1}$。这个方程不是凭空规定的，而是"若尔当块次对角线上那个 1"逼出来的必然条件。</p>
+        <p style="margin:10px 0 0"><strong>定义视角：</strong>反过来，也可以直接把满足这串方程的向量组 $\{\xi_1,\dots,\xi_m\}$ <strong>定义</strong>为一条"若尔当链"，然后证明（定理）用若尔当链拼出的 $P$ 一定能把 $A$ 化成若尔当标准形。多数教材采用这种写法，先给定义再证定理。</p>
+        <p style="margin:10px 0 0">两条路径殊途同归，但推导视角更容易让人记住"为什么方程长这样"，换一种若尔当块的排布也能自己重新推出来，而不是死记一个公式。</p>
+      </div>
+
       <h3 class="part"><span class="tag">构造</span>若尔当块长什么样</h3>
       <div class="step">把链倒过来看 $A$ 的作用：$A\xi_1=\lambda\xi_1$（真正的特征向量），而 $A\xi_2=\lambda\xi_2+\xi_1$（因为 $(A-\lambda I)\xi_2=\xi_1$），依此类推 $A\xi_i=\lambda\xi_i+\xi_{i-1}$。把 $\xi_1,\dots,\xi_m$ 按顺序作为基，$T$ 的矩阵恰好是：</div>
       <div class="center-block">
