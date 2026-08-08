@@ -5902,6 +5902,7 @@
       clearHighlight();
       playBtn.textContent = mode === 'full' ? '▶ 朗读全文' : '▶ 朗读全部公式';
       if (recordingActive) stopRecording();
+      releaseWakeLock();
     }
 
     function stopAll() {
@@ -5909,11 +5910,34 @@
       stopRequested = true; playing = false;
       clearHighlight();
       playBtn.textContent = mode === 'full' ? '▶ 朗读全文' : '▶ 朗读全部公式';
+      releaseWakeLock();
     }
 
     playBtn.addEventListener('click', () => {
       if (playing) { stopAll(); return; }
       startFrom(0);
+    });
+
+    // ---------------------------------------------------------------
+    // 屏幕唤醒锁：朗读期间尽量阻止系统自动熄屏，减少中途被暂停的情况。
+    // 只能防"自动锁屏"，手动按电源键锁屏或切后台仍会被系统暂停，无法绕过。
+    // ---------------------------------------------------------------
+    let wakeLock = null;
+
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      } catch (e) { /* 用户可能拒绝了权限，或设备不支持，静默忽略 */ }
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && playing && !wakeLock) requestWakeLock();
     });
 
     function startFrom(idx) {
@@ -5924,6 +5948,7 @@
       playBtn.textContent = '⏸ 朗读中…';
       currentIdx = idx;
       updateProgress(currentIdx);
+      requestWakeLock();
       speakOne(currentIdx, list, true);
     }
 
