@@ -5473,6 +5473,8 @@
     nu:'纽', xi:'克西', pi:'派', rho:'柔', sigma:'西格玛', tau:'陶', upsilon:'宇普西龙',
     phi:'斐', chi:'凯', psi:'普赛', omega:'欧米伽' };
   const FUNCS = { sin:'正弦', cos:'余弦', tan:'正切', cot:'余切', log:'对数', ln:'自然对数', exp:'指数', det:'行列式' };
+  const OPNAMES = { im:'像', ker:'核', rank:'秩', tr:'迹', span:'张成', dim:'维数', det:'行列式',
+    col:'列空间', row:'行空间', sgn:'符号', ad:'伴随作用', adj:'伴随矩阵', diag:'对角矩阵', proj:'投影' };
 
   function speakify(latex) {
     latex = (latex || '').trim()
@@ -5542,7 +5544,12 @@
               else { i++; upper = speakify(readGroup()).trim(); }
               skipSpace();
             }
-            out += (lower || upper) ? ` 从${lower || '?'}到${upper || '?'}的${label} ` : ` ${label} `;
+            let phrase;
+            if (lower && upper) phrase = `从${lower}到${upper}的${label}`;
+            else if (lower) phrase = (cmd === 'sum') ? `对${lower}求和` : `从${lower}开始的${label}`;
+            else if (upper) phrase = `到${upper}的${label}`;
+            else phrase = label;
+            out += ` ${phrase} `;
           } else if (cmd === 'lim') {
             skipSpace();
             if (peek() === '_') { i++; const cond = speakify(readGroup()).trim(); out += ` 当${cond}时的极限 `; }
@@ -5592,6 +5599,10 @@
           else if (cmd === 'circ') { out += ' 度 '; }
           else if (cmd === 'left' || cmd === 'right') { /* 括号大小标记，忽略 */ }
           else if (cmd === 'text') { out += ` ${readGroup()} `; }
+          else if (cmd === 'operatorname') {
+            const opRaw = readGroup().trim().toLowerCase();
+            out += ` ${OPNAMES[opRaw] || opRaw} `;
+          }
           else if (cmd === 'vec') { out += ` 向量${speakify(readGroup())} `; }
           else if (cmd === 'mathrm' || cmd === 'mathbf' || cmd === 'boldsymbol' || cmd === 'hat' || cmd === 'bar' || cmd === 'overline' || cmd === 'mathbb' || cmd === 'mathcal') { out += ` ${speakify(readGroup())} `; }
           else if (GREEK[cmd]) { out += ` ${GREEK[cmd]} `; }
@@ -5806,6 +5817,7 @@
         stopAll();
         setMode('formula');
         currentIdx = idx;
+        checkChineseVoice();
         speakOne(idx, formulas, false);
       });
       f.el.appendChild(btn);
@@ -5945,12 +5957,25 @@
       if (playing) stopAll();
       const list = currentList();
       if (!list.length || idx < 0 || idx >= list.length) return;
+      checkChineseVoice();
       playing = true; stopRequested = false;
       playBtn.textContent = '⏸ 朗读中…';
       currentIdx = idx;
       updateProgress(currentIdx);
       requestWakeLock();
       speakOne(currentIdx, list, true);
+    }
+
+    let voiceWarned = false;
+    function checkChineseVoice() {
+      if (voiceWarned || !('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return; // 语音列表可能还没加载好，跳过这次检测
+      const hasZh = voices.some(v => v.lang && v.lang.toLowerCase().startsWith('zh'));
+      if (!hasZh) {
+        voiceWarned = true;
+        alert('没检测到设备上的中文语音包，念出来的可能是别的语言。\n\n去 设置 → 语言和输入法 → 文字转语音输出，把引擎设为"Google 文字转语音"，进去下载"中文（中国）"语音包，装完刷新页面重试。');
+      }
     }
 
     // 点击任意一段正文，从那一段开始往下连续朗读（自动切到"全文+公式"模式）
