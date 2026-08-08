@@ -4848,6 +4848,22 @@
       <div class="step">SVD 还给出一个漂亮的展开式：
       $$A=\sum_{i=1}^{r}\sigma_i u_i v_i^{\mathrm T}$$
       每一项 $u_iv_i^{\mathrm T}$ 都是第十二节讲过的<strong>秩一矩阵</strong>（外积），按奇异值从大到小排列，前面几项包含了 $A$ 里最主要的信息——只取前 $k$ 项求和，就是数据压缩、降噪、推荐系统里常用的"低秩近似"技术的数学基础。</div>
+
+      <div class="note">
+        <strong>这个展开式是怎么来的：</strong>回忆 $A=U\Sigma V^{\mathrm T}$，把它<strong>按列展开</strong>而不是整体当一块矩阵看会更直观。$U\Sigma$ 这一步，因为 $\Sigma$ 是对角矩阵，只会把 $U$ 的第 $i$ 列 $u_i$ 缩放 $\sigma_i$ 倍，不会把不同列混在一起；再乘 $V^{\mathrm T}$，本质上是把这些缩放后的列，按 $V$ 的每一行（也就是每个 $v_i^{\mathrm T}$）做线性组合。这正是矩阵乘法"外积求和"的标准写法——两矩阵相乘等于把第一个矩阵的列和第二个矩阵的行两两配对做外积再相加，展开后就得到 $A=\sigma_1u_1v_1^{\mathrm T}+\sigma_2u_2v_2^{\mathrm T}+\cdots+\sigma_ru_rv_r^{\mathrm T}$。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">用前面 $A=\begin{pmatrix}1&1\\0&1\\1&0\end{pmatrix}$ 的例子验证展开式</div>
+        已知 $\sigma_1=\sqrt3,\ u_1=\frac{1}{\sqrt6}(2,1,1)^{\mathrm T},\ v_1=\frac{1}{\sqrt2}(1,1)^{\mathrm T}$；$\sigma_2=1,\ u_2=\frac{1}{\sqrt2}(0,-1,1)^{\mathrm T},\ v_2=\frac{1}{\sqrt2}(1,-1)^{\mathrm T}$（$r=2$，两个奇异值都非零）。
+        <p style="margin:10px 0 0"><strong>第一项（最主要的部分）：</strong>
+        $$\sigma_1u_1v_1^{\mathrm T}=\sqrt3\cdot\frac{1}{\sqrt6}(2,1,1)^{\mathrm T}\cdot\frac{1}{\sqrt2}(1,1)=\frac12\begin{pmatrix}2&2\\1&1\\1&1\end{pmatrix}=\begin{pmatrix}1&1\\0.5&0.5\\0.5&0.5\end{pmatrix}$$</p>
+        <p style="margin:10px 0 0"><strong>第二项（修正的部分）：</strong>
+        $$\sigma_2u_2v_2^{\mathrm T}=1\cdot\frac{1}{\sqrt2}(0,-1,1)^{\mathrm T}\cdot\frac{1}{\sqrt2}(1,-1)=\frac12\begin{pmatrix}0&0\\-1&1\\1&-1\end{pmatrix}=\begin{pmatrix}0&0\\-0.5&0.5\\0.5&-0.5\end{pmatrix}$$</p>
+        <p style="margin:10px 0 0"><strong>两项相加：</strong>
+        $$\begin{pmatrix}1&1\\0.5&0.5\\0.5&0.5\end{pmatrix}+\begin{pmatrix}0&0\\-0.5&0.5\\0.5&-0.5\end{pmatrix}=\begin{pmatrix}1&1\\0&1\\1&0\end{pmatrix}=A$$
+        正好还原出原矩阵，验证展开式成立。第一项的系数 $\sigma_1=\sqrt3\approx1.73$ 比第二项的 $\sigma_2=1$ 大，说明第一项对 $A$ 的贡献更主要——单看第一项 $\begin{pmatrix}1&1\\0.5&0.5\\0.5&0.5\end{pmatrix}$ 已经比较接近 $A$ 的整体形状，第二项只是做"精细修正"。若原矩阵规模很大（比如一张图片、一份用户评分表），奇异值往往衰减得很快，只保留前 $k$ 项求和 $A_k=\sum_{i=1}^k\sigma_iu_iv_i^{\mathrm T}$，就能用远少于原始数据量的信息，近似还原出 $A$ 的大部分内容——这正是图像压缩、推荐系统、降噪的数学基础，第十二节的 Eckart-Young 定理保证了这种近似在 Frobenius 范数意义下是最优的。</p>
+      </div>
     </section>
 
     <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
