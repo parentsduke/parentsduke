@@ -5361,15 +5361,25 @@
   }
   #fr-rate-row{ display:flex; align-items:center; gap:6px; font-size:11px; color:#c7d0e0; }
   #fr-rate{ flex:1; accent-color: var(--gold); }
+  #fr-mode-row{ display:flex; gap:6px; margin-bottom:8px; }
+  .fr-mode-btn{
+    flex:1; font-size:11px; padding:5px 6px; border-radius:5px; cursor:pointer;
+    background: transparent; border:1px solid rgba(201,168,76,0.35); color:#c7d0e0;
+  }
+  .fr-mode-btn.active{ background: rgba(201,168,76,0.18); border-color: var(--gold); color: var(--gold); }
   @media (max-width: 640px){ #fr-panel{ right:10px; bottom:10px; width:180px; padding:10px 12px; } }
 </style>
 
 <div id="fr-panel">
-  <div class="fr-title">公式朗读 · 全文</div>
-  <div id="fr-progress">正在扫描公式…</div>
+  <div class="fr-title">朗读全文 · 含公式</div>
+  <div id="fr-mode-row">
+    <button class="fr-mode-btn active" data-mode="full">全文+公式</button>
+    <button class="fr-mode-btn" data-mode="formula">仅公式</button>
+  </div>
+  <div id="fr-progress">正在扫描内容…</div>
   <div id="fr-bar-track"><div id="fr-bar-fill"></div></div>
   <div class="fr-row">
-    <button id="fr-play">▶ 朗读全部</button>
+    <button id="fr-play">▶ 朗读全文</button>
     <button id="fr-stop">■</button>
   </div>
   <div id="fr-rate-row">
@@ -5612,18 +5622,109 @@
     else if (tries < 100) { setTimeout(() => waitForMathJax(cb, tries + 1), 100); }
   }
 
+  // ---------------------------------------------------------------
+  // 把 .main 下的内容切成"朗读单元"：段落/步骤/表格行等最小可读块，
+  // 每个单元内部把普通文字和公式（已转换成中文）按原文顺序拼接。
+  // 按块级单元分段发送给语音引擎，比整篇一次性朗读更稳定、不易卡壳漏读。
+  // ---------------------------------------------------------------
+  const BLOCK_TAGS = new Set(['DIV','P','LI','TD','TH','TR','H1','H2','H3','H4','H5','H6',
+    'BLOCKQUOTE','SECTION','TABLE','THEAD','TBODY','UL','OL','FIGURE','FIGCAPTION','DT','DD',
+    'FOOTER','HEADER','ARTICLE','MAIN']);
+  const SKIP_IDS = ['cross-product-viz'];
+  const SKIP_CLASSES = ['divider'];
+
+  function shouldSkipEl(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (SKIP_IDS.includes(el.id)) return true;
+    for (const cls of SKIP_CLASSES) { if (el.classList && el.classList.contains(cls)) return true; }
+    if (el.closest && el.closest('#cross-product-viz')) return true;
+    return false;
+  }
+
+  function formulaSpoken(el, formulas) {
+    const idx = Number(el.getAttribute('data-idx'));
+    const f = formulas[idx];
+    return f ? (f.text || '') : '';
+  }
+
+  // 聚合任意元素内部（含嵌套）的可朗读内容为一整段字符串
+  function collectInline(el, formulas) {
+    const parts = [];
+    el.childNodes.forEach(node => {
+      if (node.nodeType === 3) {
+        const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+        if (t) parts.push(t);
+      } else if (node.nodeType === 1) {
+        if (shouldSkipEl(node)) return;
+        if (node.classList.contains('mj-speak-btn')) return;
+        if (node.classList.contains('mj-src')) {
+          const s = formulaSpoken(node, formulas);
+          if (s) parts.push(s);
+          return;
+        }
+        const inner = collectInline(node, formulas);
+        if (inner) parts.push(inner);
+      }
+    });
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  // 递归遍历：遇到块级子元素就先把之前攒的散文/公式内容打包成一个单元，
+  // 再深入这个块级子元素；从而正确处理"段落里嵌了一个块级子标签"的混合内容。
+  function buildContentUnits(root, formulas) {
+    const units = [];
+    function walk(el) {
+      if (shouldSkipEl(el)) return;
+      if (el.tagName === 'TR') {
+        const text = collectInline(el, formulas);
+        if (text) units.push({ el, text });
+        return;
+      }
+      let buffer = [];
+      const flush = () => {
+        const text = buffer.join(' ').replace(/\s+/g, ' ').trim();
+        if (text) units.push({ el, text });
+        buffer = [];
+      };
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+          if (t) buffer.push(t);
+        } else if (node.nodeType === 1) {
+          if (shouldSkipEl(node)) return;
+          if (node.classList.contains('mj-speak-btn')) return;
+          if (node.classList.contains('mj-src')) {
+            const s = formulaSpoken(node, formulas);
+            if (s) buffer.push(s);
+            return;
+          }
+          if (BLOCK_TAGS.has(node.tagName)) {
+            flush();
+            walk(node);
+          } else {
+            const inner = collectInline(node, formulas);
+            if (inner) buffer.push(inner);
+          }
+        }
+      });
+      flush();
+    }
+    walk(root);
+    return units;
+  }
+
   waitForMathJax(function () {
     const root = document.querySelector('.main') || document.body;
     const formulas = extractAndWrapFormulas(root);
-    MathJax.typesetPromise().then(function () { initReader(formulas); })
-      .catch(function () { initReader(formulas); });
+    MathJax.typesetPromise().then(function () { initReader(formulas, root); })
+      .catch(function () { initReader(formulas, root); });
   });
 
-  function initReader(formulas) {
+  function initReader(formulas, root) {
     const progressEl = document.getElementById('fr-progress');
-    if (!formulas.length) { progressEl.textContent = '未找到公式'; return; }
 
     formulas.forEach((f, idx) => {
+      f.text = speakify(f.tex) || '这是一个公式';
       const btn = document.createElement('span');
       btn.className = 'mj-speak-btn';
       btn.textContent = '🔊';
@@ -5631,6 +5732,7 @@
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         stopAll();
+        setMode('formula');
         currentIdx = idx;
         speakOne(idx, formulas, false);
       });
@@ -5638,38 +5740,72 @@
       f.btn = btn;
     });
 
+    const units = buildContentUnits(root, formulas);
+
+    if (!units.length && !formulas.length) { progressEl.textContent = '未找到可朗读内容'; return; }
+
     const playBtn = document.getElementById('fr-play');
     const stopBtn = document.getElementById('fr-stop');
     const barFill = document.getElementById('fr-bar-fill');
     const rateInput = document.getElementById('fr-rate');
     const rateVal = document.getElementById('fr-rate-val');
+    const modeBtns = document.querySelectorAll('.fr-mode-btn');
 
-    progressEl.textContent = `共 ${formulas.length} 条公式`;
-
+    let mode = 'full'; // 'full' = 全文+公式, 'formula' = 仅公式
     let playing = false;
     let currentIdx = -1;
     let stopRequested = false;
 
+    function currentList() { return mode === 'full' ? units : formulas; }
+
+    function setMode(m) {
+      if (playing) stopAll();
+      mode = m;
+      modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+      playBtn.textContent = m === 'full' ? '▶ 朗读全文' : '▶ 朗读全部公式';
+      updateProgressIdle();
+    }
+
+    function updateProgressIdle() {
+      const list = currentList();
+      progressEl.textContent = mode === 'full'
+        ? `共 ${units.length} 段（含 ${formulas.length} 条公式）`
+        : `共 ${formulas.length} 条公式`;
+      barFill.style.width = '0%';
+    }
+
+    modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
     rateInput.addEventListener('input', () => { rateVal.textContent = `${rateInput.value}x`; });
 
     function updateProgress(idx) {
-      progressEl.textContent = `第 ${idx + 1} / ${formulas.length} 条`;
-      barFill.style.width = `${((idx + 1) / formulas.length) * 100}%`;
+      const list = currentList();
+      progressEl.textContent = `第 ${idx + 1} / ${list.length} ${mode === 'full' ? '段' : '条'}`;
+      barFill.style.width = `${((idx + 1) / list.length) * 100}%`;
     }
 
     function clearHighlight() {
-      formulas.forEach(f => { f.el.classList.remove('fr-reading'); f.btn.classList.remove('playing'); });
+      units.forEach(u => u.el.classList.remove('fr-reading'));
+      formulas.forEach(f => { f.el.classList.remove('fr-reading'); if (f.btn) f.btn.classList.remove('playing'); });
     }
 
     function speakOne(idx, list, chainNext) {
       if (!('speechSynthesis' in window)) { alert('当前浏览器不支持语音朗读'); return; }
-      const f = list[idx];
+      const item = list[idx];
       clearHighlight();
-      f.el.classList.add('fr-reading');
-      f.btn.classList.add('playing');
-      f.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      item.el.classList.add('fr-reading');
+      if (item.btn) item.btn.classList.add('playing');
+      item.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      const spoken = speakify(f.tex) || '这是一个公式';
+      const spoken = item.text || '';
+      if (!spoken) {
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < list.length) { updateProgress(currentIdx); speakOne(currentIdx, list, true); }
+          else { finishPlay(); }
+        }
+        return;
+      }
+
       const utter = new SpeechSynthesisUtterance(spoken);
       utter.lang = 'zh-CN';
       utter.rate = parseFloat(rateInput.value);
@@ -5678,8 +5814,8 @@
       if (v) utter.voice = v;
 
       utter.onend = () => {
-        f.el.classList.remove('fr-reading');
-        f.btn.classList.remove('playing');
+        item.el.classList.remove('fr-reading');
+        if (item.btn) item.btn.classList.remove('playing');
         if (chainNext && !stopRequested) {
           currentIdx = idx + 1;
           if (currentIdx < list.length) { updateProgress(currentIdx); speakOne(currentIdx, list, true); }
@@ -5693,26 +5829,29 @@
     function finishPlay() {
       playing = false; stopRequested = false;
       clearHighlight();
-      playBtn.textContent = '▶ 朗读全部';
+      playBtn.textContent = mode === 'full' ? '▶ 朗读全文' : '▶ 朗读全部公式';
     }
 
     function stopAll() {
       window.speechSynthesis.cancel();
       stopRequested = true; playing = false;
       clearHighlight();
-      playBtn.textContent = '▶ 朗读全部';
+      playBtn.textContent = mode === 'full' ? '▶ 朗读全文' : '▶ 朗读全部公式';
     }
 
     playBtn.addEventListener('click', () => {
       if (playing) { stopAll(); return; }
+      const list = currentList();
+      if (!list.length) return;
       playing = true; stopRequested = false;
       playBtn.textContent = '⏸ 朗读中…';
       currentIdx = 0;
       updateProgress(currentIdx);
-      speakOne(currentIdx, formulas, true);
+      speakOne(currentIdx, list, true);
     });
 
     stopBtn.addEventListener('click', stopAll);
+    updateProgressIdle();
   }
 })();
 </script>
