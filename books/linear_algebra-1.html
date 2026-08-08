@@ -5325,12 +5325,16 @@
   .mj-speak-btn:active{ transform: scale(0.9); }
   .mj-speak-btn.playing{ background: var(--gold); color:#2a2110; }
 
-  .mj-src.fr-reading{
+  .fr-reading{
     outline: 2px solid var(--gold);
     outline-offset: 3px;
     background: rgba(201,168,76,0.1);
     border-radius: 4px;
   }
+
+  .fr-clickable{ cursor: pointer; transition: background 0.15s ease; }
+  .fr-clickable:hover{ background: rgba(201,168,76,0.05); border-radius: 4px; }
+  .fr-clickable:active{ background: rgba(201,168,76,0.12); }
 
   #fr-panel{
     position: fixed; right: 18px; bottom: 18px; z-index: 60;
@@ -5909,13 +5913,30 @@
 
     playBtn.addEventListener('click', () => {
       if (playing) { stopAll(); return; }
+      startFrom(0);
+    });
+
+    function startFrom(idx) {
+      if (playing) stopAll();
       const list = currentList();
-      if (!list.length) return;
+      if (!list.length || idx < 0 || idx >= list.length) return;
       playing = true; stopRequested = false;
       playBtn.textContent = '⏸ 朗读中…';
-      currentIdx = 0;
+      currentIdx = idx;
       updateProgress(currentIdx);
       speakOne(currentIdx, list, true);
+    }
+
+    // 点击任意一段正文，从那一段开始往下连续朗读（自动切到"全文+公式"模式）
+    units.forEach((u, idx) => {
+      u.el.classList.add('fr-clickable');
+      u.el.addEventListener('click', (e) => {
+        if (e.target.closest('.mj-speak-btn')) return;
+        const sel = window.getSelection ? window.getSelection().toString() : '';
+        if (sel) return;
+        if (mode !== 'full') setMode('full');
+        startFrom(idx);
+      });
     });
 
     stopBtn.addEventListener('click', stopAll);
