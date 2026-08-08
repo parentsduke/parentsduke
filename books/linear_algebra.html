@@ -5513,7 +5513,17 @@
 
         if (c === '\\') {
           if (latex[i + 1] === '|') { out += ' 模 '; i += 2; continue; }
-          if (latex.slice(i, i + 2) === '\\,' || latex.slice(i, i + 2) === '\\;' || latex.slice(i, i + 2) === '\\!') { i += 2; continue; }
+          if (latex[i + 1] === '{') {
+            const start = i + 2;
+            const endIdx = latex.indexOf('\\}', start);
+            let inner;
+            if (endIdx !== -1) { inner = latex.slice(start, endIdx); i = endIdx + 2; }
+            else { inner = latex.slice(start); i = latex.length; }
+            out += ` 集合，${speakify(inner)} `;
+            continue;
+          }
+          if (latex[i + 1] === '}') { i += 2; continue; } // 落单的右大括号，忽略
+          if (latex.slice(i, i + 2) === '\\,' || latex.slice(i, i + 2) === '\\;' || latex.slice(i, i + 2) === '\\!' || latex[i + 1] === ' ') { i += 2; continue; }
 
           const m = latex.slice(i).match(/^\\([a-zA-Z]+)/);
           if (!m) { out += c; i++; continue; }
@@ -5585,6 +5595,8 @@
           else if (cmd === 'partial') { out += ' 偏 '; }
           else if (cmd === 'nabla') { out += ' 梯度 '; }
           else if (cmd === 'perp') { out += ' 垂直 '; }
+          else if (cmd === 'cong') { out += ' 同构于 '; }
+          else if (cmd === 'sim' || cmd === 'simeq') { out += ' 相似于 '; }
           else if (cmd === 'parallel') { out += ' 平行 '; }
           else if (cmd === 'infty') { out += ' 无穷 '; }
           else if (cmd === 'times') { out += ' 乘 '; }
