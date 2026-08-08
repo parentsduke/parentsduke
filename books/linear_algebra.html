@@ -4741,6 +4741,28 @@
       <div class="note">
         <strong>说明：</strong>最小多项式和若尔当标准形其实是同一件事的两种语言——最小多项式里每个根的重数，恰好等于该特征值对应的<strong>最大的那个</strong>若尔当块的阶数；而特征多项式里的重数（代数重数），则是该特征值所有若尔当块阶数之和。
       </div>
+
+      <h3 class="part"><span class="tag">应用</span>最小多项式有什么用</h3>
+      <div class="step">把"这个矩阵到底有多不可对角化""块结构有多复杂"这些信息压缩成一个多项式后，至少能带来四类实际好处：<strong>①</strong>判断能否对角化（看有无重根，比逐个比较几何重数和代数重数更快）；<strong>②</strong>判断最大若尔当块的阶数（次数直接给出答案，不用一个个凑链）；<strong>③</strong>简化矩阵幂 $A^k$、矩阵函数 $e^{At}$ 的计算；<strong>④</strong>求逆矩阵，往往比用特征多项式次数更低、更省事。下面用同一个矩阵串起来演示。</div>
+
+      <div class="example">
+        <div class="ex-label">用 $A=\begin{pmatrix}2&1\\0&2\end{pmatrix}$ 串联四个用处</div>
+        特征多项式 $f(\lambda)=(\lambda-2)^2$。
+        <p style="margin:10px 0 0"><strong>① 判断能否对角化：</strong>$A-2I=\begin{pmatrix}0&1\\0&0\end{pmatrix}\neq O$，1 次不行；再算 $(A-2I)^2=O$，所以 $m(\lambda)=(\lambda-2)^2$。含重根 $\Rightarrow$ 不可对角化，不用再单独算特征子空间维数。</p>
+        <p style="margin:10px 0 0"><strong>② 判断最大若尔当块阶数：</strong>$m(\lambda)$ 次数为 2，说明 $\lambda=2$ 对应的最大若尔当块阶数就是 2；矩阵本身是 2 阶，所以直接就是一个整块 $J_2(2)$，不用再拼链验证。</p>
+        <p style="margin:10px 0 0"><strong>③ 简化矩阵幂，求 $A^{10}$：</strong>由 $(A-2I)^2=O$，设 $A=2I+N$，其中 $N=\begin{pmatrix}0&1\\0&0\end{pmatrix}$ 满足 $N^2=O$。因为 $2I$ 与 $N$ 可交换，二项式展开
+        $$A^{10}=(2I+N)^{10}=\sum_{k=0}^{10}\binom{10}{k}2^{10-k}N^k$$
+        由 $N^2=O$，$k\ge2$ 的项全部消失，只剩 $k=0,1$ 两项：
+        $$A^{10}=2^{10}I+10\cdot2^{9}N=\begin{pmatrix}1024&5120\\0&1024\end{pmatrix}$$
+        若不知道 $N^2=O$（最小多项式给的信息），需要老实展开 11 项求和，现在只要 2 项。</p>
+        <p style="margin:10px 0 0"><strong>④ 求逆矩阵：</strong>由 $m(A)=(A-2I)^2=A^2-4A+4I=O$，两边乘 $A^{-1}$：$A-4I+4A^{-1}=O$，解出
+        $$A^{-1}=\frac{1}{4}(4I-A)=\begin{pmatrix}0.5&-0.25\\0&0.5\end{pmatrix}$$
+        可直接验证 $AA^{-1}=I$。</p>
+      </div>
+
+      <div class="note">
+        <strong>对比可对角化的情形：</strong>换成 $B=\begin{pmatrix}2&0\\0&2\end{pmatrix}=2I$，最小多项式是 $m(\lambda)=\lambda-2$（1 次、无重根），可对角化——它本身已经是对角阵，$B^{10}=2^{10}I$ 直接秒算，连二项式展开都不需要。最小多项式次数的高低，直接对应了后续计算复杂度的差异。
+      </div>
     </section>
 
     <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
