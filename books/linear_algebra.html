@@ -4702,6 +4702,29 @@
       <div class="step">矩阵 $A$ 的<strong>最小多项式</strong> $m(\lambda)$，是使得 $m(A)=O$ 成立的、次数最低的<strong>首一</strong>（最高次项系数为 1）多项式。由 Cayley-Hamilton 定理，特征多项式 $f(\lambda)$ 本身就是一个让 $f(A)=O$ 的多项式，所以最小多项式的次数不会超过 $n$；而且可以证明<strong>最小多项式一定整除特征多项式</strong>——特征多项式能提供的"零化"信息，最小多项式用更少（或相等）的次数就完整包含了。</div>
       <div class="step">最小多项式与特征多项式含有<strong>完全相同的根</strong>（即相同的特征值集合），区别只在于每个根的<strong>重数可能更低</strong>。</div>
 
+      <div class="note">
+        <strong>为什么要强调"首一"？</strong>若 $m(\lambda)$ 是一个零化多项式（$m(A)=O$），把它乘以任意非零常数 $k$，$k\cdot m(\lambda)$ 依然满足 $k\cdot m(A)=k\cdot O=O$，也是零化多项式。如果不规定首一，次数最低的零化多项式就可以相差一个常数倍，不唯一。规定首一（最高次项系数为 1）之后，把任何一个最低次的零化多项式除以它的最高次项系数，就能统一变成首一形式——最小多项式因此才是<strong>唯一确定</strong>的。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">追问：次数最低，是不是意味着最小多项式一般是 1 次？</div>
+        不是。条件是双重的：既要 $m(A)=O$，又要在满足这个条件的多项式里选次数最低的——1 次这条路往往走不通。<br><br>
+        若最小多项式是 1 次，形如 $m(\lambda)=\lambda-c$，则要求 $A-cI=O$，即 $A=cI$（数量矩阵，对角线全是 $c$、其余全是 0）。取 $A=\begin{pmatrix}1&2\\3&4\end{pmatrix}$ 验证：若 $A-cI=O$，需要 $\begin{pmatrix}1-c&2\\3&4-c\end{pmatrix}=O$，但这要求 $2=0$ 且 $3=0$，显然不成立——不存在 1 次的零化多项式。退而求其次，由 Cayley-Hamilton，$f(\lambda)=\lambda^2-5\lambda-2$ 满足 $f(A)=O$（已在上面验证过），2 次可行且 1 次不可行，于是 $m(\lambda)=\lambda^2-5\lambda-2$，与 $f(\lambda)$ 相同。<br><br>
+        只有当 $A$ 本身就是数量矩阵 $cI$ 时，最小多项式才会是 1 次；一般矩阵至少要 2 次。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">三阶情形：一个特征值 $\lambda_0$、代数重数为 3 时的三种最小多项式</div>
+        设 $A$ 只有一个特征值 $\lambda_0$，$f(\lambda)=(\lambda-\lambda_0)^3$。按上一节三阶若尔当标准形的三种情形，逐一验证 $(J-\lambda_0I)^k$ 何时首次变成 $O$：
+        <table class="compare">
+          <tr><th>若尔当块结构</th><th>最大块阶数</th><th>验证</th><th>最小多项式</th></tr>
+          <tr><td>1+1+1（完全对角化，$A=\lambda_0I$）</td><td>1</td><td>$A-\lambda_0I=O$，1 次已够</td><td>$(\lambda-\lambda_0)^1$</td></tr>
+          <tr><td>2+1</td><td>2</td><td>$(J-\lambda_0I)\neq O$，但 $(J-\lambda_0I)^2=O$</td><td>$(\lambda-\lambda_0)^2$</td></tr>
+          <tr><td>3（单一大块）</td><td>3</td><td>$(J-\lambda_0I)^2\neq O$，要到 3 次才为 $O$</td><td>$(\lambda-\lambda_0)^3=f(\lambda)$</td></tr>
+        </table>
+        规律：最小多项式中 $(\lambda-\lambda_0)$ 的次数，恰好等于该特征值对应的<strong>最大若尔当块的阶数</strong>——这也是反过来判定若尔当标准形具体长什么样的关键工具。
+      </div>
+
       <h3 class="part"><span class="tag">判据</span>用最小多项式判断可对角化</h3>
       <div class="step">$A$ 可对角化 $\iff$ 最小多项式<strong>没有重根</strong>，即 $m(\lambda)=(\lambda-\lambda_1)(\lambda-\lambda_2)\cdots(\lambda-\lambda_k)$（$\lambda_1,\dots,\lambda_k$ 是互不相同的特征值，每个都只出现一次）。这是一条比"几何重数=代数重数"更精炼的判据。</div>
       <div class="example">
