@@ -4825,7 +4825,19 @@
       <div class="example">
         <div class="ex-label">具体例子：$A=\begin{pmatrix}1&1\\0&1\\1&0\end{pmatrix}$</div>
         先算 $A^{\mathrm T}A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$，特征值是 $3$ 和 $1$（迹为 4，行列式为 3，解一元二次方程即得），对应单位特征向量 $v_1=\frac{1}{\sqrt2}(1,1)^{\mathrm T}$，$v_2=\frac{1}{\sqrt2}(1,-1)^{\mathrm T}$。<br><br>
-        奇异值 $\sigma_1=\sqrt3,\ \sigma_2=1$。再算 $u_1=\frac{1}{\sqrt3}Av_1=\frac{1}{\sqrt6}(2,1,1)^{\mathrm T}$，$u_2=\frac{1}{1}Av_2=\frac{1}{\sqrt2}(0,-1,1)^{\mathrm T}$（第三个 $u_3$ 需要另外补一个与前两者正交的单位向量凑满 $U$ 的第三列）。
+        奇异值 $\sigma_1=\sqrt3,\ \sigma_2=1$。再算 $u_1=\frac{1}{\sqrt3}Av_1=\frac{1}{\sqrt6}(2,1,1)^{\mathrm T}$，$u_2=\frac{1}{1}Av_2=\frac{1}{\sqrt2}(0,-1,1)^{\mathrm T}$。
+        <p style="margin:10px 0 0"><strong>补第三个 $u_3$：</strong>$m=3$，$U$ 是 $3$ 阶方阵，还差一列，需要另外补一个与 $u_1,u_2$ 都正交的单位向量。可以直接用叉积构造：
+        $$(2,1,1)\times(0,-1,1)=(1\cdot1-1\cdot(-1),\ 1\cdot0-2\cdot1,\ 2\cdot(-1)-1\cdot0)=(2,-2,-2)$$
+        单位化（长度 $\sqrt{4+4+4}=2\sqrt3$）：
+        $$u_3=\frac{1}{\sqrt3}(1,-1,-1)^{\mathrm T}$$
+        验证正交：$(1,-1,-1)\cdot(2,1,1)=2-1-1=0$，$(1,-1,-1)\cdot(0,-1,1)=0+1-1=0$，两个都成立。</p>
+        <p style="margin:10px 0 0"><strong>拼出完整的 $U,\Sigma,V$：</strong>
+        $$U=\begin{pmatrix}\frac{2}{\sqrt6}&0&\frac{1}{\sqrt3}\\[4pt]\frac{1}{\sqrt6}&-\frac{1}{\sqrt2}&-\frac{1}{\sqrt3}\\[4pt]\frac{1}{\sqrt6}&\frac{1}{\sqrt2}&-\frac{1}{\sqrt3}\end{pmatrix},\qquad
+        \Sigma=\begin{pmatrix}\sqrt3&0\\0&1\\0&0\end{pmatrix},\qquad
+        V=\begin{pmatrix}\frac{1}{\sqrt2}&\frac{1}{\sqrt2}\\[4pt]\frac{1}{\sqrt2}&-\frac{1}{\sqrt2}\end{pmatrix}$$</p>
+        <p style="margin:10px 0 0"><strong>验证 $A=U\Sigma V^{\mathrm T}$：</strong>先算 $\Sigma V^{\mathrm T}=\begin{pmatrix}\sqrt3&0\\0&1\\0&0\end{pmatrix}\begin{pmatrix}\frac{1}{\sqrt2}&\frac{1}{\sqrt2}\\\frac{1}{\sqrt2}&-\frac{1}{\sqrt2}\end{pmatrix}=\begin{pmatrix}\sqrt{3/2}&\sqrt{3/2}\\\frac{1}{\sqrt2}&-\frac{1}{\sqrt2}\\0&0\end{pmatrix}$，再乘 $U$（只需前两列参与，因为 $\Sigma V^{\mathrm T}$ 第三行全为 0）：
+        $$U\Sigma V^{\mathrm T}=\begin{pmatrix}\frac{2}{\sqrt6}\sqrt{\frac32}+0&\frac{2}{\sqrt6}\sqrt{\frac32}-0\\[4pt]\frac{1}{\sqrt6}\sqrt{\frac32}-\frac{1}{\sqrt2}\cdot\frac{1}{\sqrt2}&\frac{1}{\sqrt6}\sqrt{\frac32}+\frac{1}{\sqrt2}\cdot\frac{1}{\sqrt2}\\[4pt]\frac{1}{\sqrt6}\sqrt{\frac32}+\frac{1}{\sqrt2}\cdot\frac{1}{\sqrt2}&\frac{1}{\sqrt6}\sqrt{\frac32}-\frac{1}{\sqrt2}\cdot\frac{1}{\sqrt2}\end{pmatrix}=\begin{pmatrix}1&1\\0&1\\1&0\end{pmatrix}=A$$
+        与最初的 $A$ 完全吻合，说明 $U,\Sigma,V$ 三个矩阵配对无误——这一步验证在自己动手算 SVD 时很值得做，能及时发现符号或者向量对应搞混的错误。</p>
       </div>
 
       <h3 class="part"><span class="tag">几何</span>SVD 的几何意义</h3>
