@@ -7,7 +7,8 @@
 <script>
   MathJax = {
     tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
-    svg: { fontCache: 'global' }
+    svg: { fontCache: 'global' },
+    startup: { typeset: false }
   };
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" id="MathJax-script" async></script>
@@ -5306,6 +5307,854 @@
     }
     cpAnimate();
   })();
+</script>
+
+<style id="formula-reader-style">
+  .mj-speak-btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:20px; height:20px; margin-left:3px;
+    border-radius:50%;
+    background: rgba(201,168,76,0.15);
+    border:1px solid rgba(201,168,76,0.45);
+    color: var(--gold);
+    font-size:11px; cursor:pointer;
+    vertical-align: middle; line-height:1; user-select:none;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .mj-speak-btn:hover{ background: rgba(201,168,76,0.32); }
+  .mj-speak-btn:active{ transform: scale(0.9); }
+  .mj-speak-btn.playing{ background: var(--gold); color:#2a2110; }
+
+  .fr-reading{
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    background: rgba(201,168,76,0.1);
+    border-radius: 4px;
+  }
+
+  .fr-clickable{ cursor: pointer; transition: background 0.15s ease; }
+  .fr-clickable:hover{ background: rgba(201,168,76,0.05); border-radius: 4px; }
+  .fr-clickable:active{ background: rgba(201,168,76,0.12); }
+
+  #fr-panel{
+    position: fixed; right: 18px; bottom: 18px; z-index: 60;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    color: var(--gold-soft);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    width: 210px;
+  }
+  #fr-panel .fr-title{
+    font-size:10.5px; letter-spacing:0.15em; text-transform:uppercase;
+    color: var(--gold); margin-bottom:8px;
+  }
+  #fr-progress{ font-size:12px; color:#c7d0e0; margin-bottom:6px; }
+  #fr-bar-track{ height:4px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden; margin-bottom:10px;}
+  #fr-bar-fill{ height:100%; width:0%; background: var(--gold); transition: width 0.2s ease; }
+  .fr-row{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  #fr-play{
+    flex:1; background: var(--gold); color:#2a2110; border:none;
+    border-radius:6px; padding:8px 10px; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  #fr-stop{
+    background: transparent; border:1px solid rgba(201,168,76,0.5);
+    color: var(--gold-soft); border-radius:6px; padding:8px 10px; font-size:13px; cursor:pointer;
+  }
+  #fr-rate-row{ display:flex; align-items:center; gap:6px; font-size:11px; color:#c7d0e0; }
+  #fr-rate{ flex:1; accent-color: var(--gold); }
+  #fr-mode-row{ display:flex; gap:6px; margin-bottom:8px; }
+  .fr-mode-btn{
+    flex:1; font-size:11px; padding:5px 6px; border-radius:5px; cursor:pointer;
+    background: transparent; border:1px solid rgba(201,168,76,0.35); color:#c7d0e0;
+  }
+  .fr-mode-btn.active{ background: rgba(201,168,76,0.18); border-color: var(--gold); color: var(--gold); }
+
+  #fr-export{ margin-top:10px; border-top: 1px solid rgba(201,168,76,0.2); padding-top:8px; }
+  #fr-export summary{
+    font-size:11px; color: var(--gold-soft); cursor:pointer; list-style:none;
+    display:flex; align-items:center; gap:4px;
+  }
+  #fr-export summary::-webkit-details-marker{ display:none; }
+  #fr-export summary::before{ content:'▸'; color: var(--gold); }
+  #fr-export[open] summary::before{ content:'▾'; }
+  .fr-export-body{ margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+  #fr-export input[type="password"], #fr-export input[type="text"], #fr-export select{
+    background: rgba(0,0,0,0.25); border:1px solid rgba(201,168,76,0.35); color: var(--gold-soft);
+    border-radius:5px; padding:6px 8px; font-size:12px; width:100%;
+  }
+  .fr-row2{ display:flex; gap:6px; }
+  .fr-row2 input{ flex:1.2; }
+  .fr-row2 select{ flex:1; }
+  #fr-export-btn, #fr-export-cancel{
+    background: var(--gold); color:#2a2110; border:none; border-radius:6px;
+    padding:7px 10px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-export-cancel{ background: transparent; border:1px solid rgba(201,168,76,0.5); color: var(--gold-soft); }
+  #fr-export-progress{ font-size:11px; color:#c7d0e0; min-height:14px; }
+  #fr-download-link{
+    display:inline-block; text-align:center; background: rgba(201,168,76,0.18); color: var(--gold);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+  }
+  #fr-audio-preview{ width:100%; height:32px; }
+
+  #fr-record-btn{
+    width:100%; background: rgba(201,168,76,0.18); color: var(--gold);
+    border:1px solid var(--gold); border-radius:6px; padding:8px 10px;
+    font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-record-btn.recording{ background: #b3453f; border-color:#e88a84; color:#fff; }
+  #fr-record-status{ font-size:11px; color:#c7d0e0; min-height:14px; margin-top:4px; }
+  #fr-record-download{
+    display:inline-block; text-align:center; background: rgba(201,168,76,0.18); color: var(--gold);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+    margin-top:4px;
+  }
+  #fr-record-preview{ width:100%; height:32px; margin-top:4px; }
+  @media (max-width: 640px){ #fr-panel{ right:10px; bottom:10px; width:180px; padding:10px 12px; } }
+</style>
+
+<div id="fr-panel">
+  <div class="fr-title">朗读全文 · 含公式</div>
+  <div id="fr-mode-row">
+    <button class="fr-mode-btn active" data-mode="full">全文+公式</button>
+    <button class="fr-mode-btn" data-mode="formula">仅公式</button>
+  </div>
+  <div id="fr-progress">正在扫描内容…</div>
+  <div id="fr-bar-track"><div id="fr-bar-fill"></div></div>
+  <div class="fr-row">
+    <button id="fr-play">▶ 朗读全文</button>
+    <button id="fr-stop">■</button>
+  </div>
+  <div id="fr-rate-row">
+    语速 <input type="range" id="fr-rate" min="0.6" max="1.6" step="0.1" value="0.95"> <span id="fr-rate-val">0.95x</span>
+  </div>
+  <div class="fr-row" style="margin-top:2px;">
+    <button id="fr-record-btn">🎙 录制音频文件（免注册）</button>
+  </div>
+  <div id="fr-record-status"></div>
+  <a id="fr-record-download" style="display:none;">↓ 下载录音</a>
+  <audio id="fr-record-preview" controls style="display:none;"></audio>
+  <details id="fr-export">
+    <summary>高级：导出 MP3（Azure 语音，需注册）</summary>
+    <div class="fr-export-body">
+      <input type="password" id="fr-azure-key" placeholder="Azure Speech Key">
+      <div class="fr-row2">
+        <input type="text" id="fr-azure-region" placeholder="区域 如 eastasia">
+        <select id="fr-azure-voice">
+          <option value="zh-CN-XiaoxiaoNeural">晓晓 女声</option>
+          <option value="zh-CN-YunxiNeural">云希 男声</option>
+          <option value="zh-CN-YunyangNeural">云扬 男声</option>
+        </select>
+      </div>
+      <button id="fr-export-btn">生成并下载 MP3</button>
+      <button id="fr-export-cancel" style="display:none;">取消</button>
+      <div id="fr-export-progress"></div>
+      <a id="fr-download-link" style="display:none;">↓ 下载 MP3</a>
+      <audio id="fr-audio-preview" controls style="display:none;"></audio>
+    </div>
+  </details>
+</div>
+
+<script id="formula-reader-script">
+(function () {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function () {};
+  }
+
+  // ---------------------------------------------------------------
+  // LaTeX -> 中文朗读文本（含矩阵/行列式、转置、逆等线性代数常用记号）
+  // ---------------------------------------------------------------
+  const GREEK = { alpha:'阿尔法', beta:'贝塔', gamma:'伽马', delta:'德尔塔', epsilon:'艾普西龙',
+    zeta:'泽塔', eta:'伊塔', theta:'西塔', iota:'约塔', kappa:'卡帕', lambda:'拉姆达', mu:'缪',
+    nu:'纽', xi:'克西', pi:'派', rho:'柔', sigma:'西格玛', tau:'陶', upsilon:'宇普西龙',
+    phi:'斐', chi:'凯', psi:'普赛', omega:'欧米伽' };
+  const FUNCS = { sin:'正弦', cos:'余弦', tan:'正切', cot:'余切', log:'对数', ln:'自然对数', exp:'指数', det:'行列式' };
+
+  function speakify(latex) {
+    latex = (latex || '').trim()
+      .replace(/^\$+|\$+$/g, '')
+      .replace(/^\\\[|\\\]$/g, '')
+      .replace(/^\\\(|\\\)$/g, '');
+    let i = 0;
+    function peek() { return latex[i]; }
+    function skipSpace() { while (latex[i] === ' ') i++; }
+    function readGroup() {
+      skipSpace();
+      if (peek() === '{') {
+        let depth = 1, start = ++i;
+        while (i < latex.length && depth > 0) {
+          if (latex[i] === '{') depth++;
+          else if (latex[i] === '}') depth--;
+          if (depth > 0) i++;
+        }
+        const inner = latex.slice(start, i);
+        i++;
+        return inner;
+      }
+      if (peek() === '\\') {
+        if (latex[i + 1] === '|') { i += 2; return '\\|'; }
+        const m = latex.slice(i).match(/^\\([a-zA-Z]+)/);
+        if (m) { i += m[0].length; return m[0]; }
+      }
+      return latex[i++] || '';
+    }
+
+    function parse() {
+      let out = '';
+      while (i < latex.length) {
+        const c = latex[i];
+        if (c === ' ') { i++; continue; }
+
+        if (c === '\\') {
+          if (latex[i + 1] === '|') { out += ' 模 '; i += 2; continue; }
+          if (latex.slice(i, i + 2) === '\\,' || latex.slice(i, i + 2) === '\\;' || latex.slice(i, i + 2) === '\\!') { i += 2; continue; }
+
+          const m = latex.slice(i).match(/^\\([a-zA-Z]+)/);
+          if (!m) { out += c; i++; continue; }
+          const cmd = m[1];
+          i += m[0].length;
+
+          if (cmd === 'frac') {
+            const num = speakify(readGroup());
+            const den = speakify(readGroup());
+            out += ` ${den}分之${num} `;
+          } else if (cmd === 'sqrt') {
+            skipSpace();
+            let index = '';
+            if (peek() === '[') {
+              let start = ++i;
+              while (peek() !== ']' && i < latex.length) i++;
+              index = latex.slice(start, i);
+              i++;
+            }
+            const radicand = speakify(readGroup());
+            out += index ? ` ${index}次根号下${radicand} ` : ` 根号下${radicand} `;
+          } else if (cmd === 'sum' || cmd === 'int') {
+            const label = cmd === 'sum' ? '求和' : '积分';
+            skipSpace();
+            let lower = '', upper = '';
+            while (peek() === '_' || peek() === '^') {
+              if (peek() === '_') { i++; lower = speakify(readGroup()).trim(); }
+              else { i++; upper = speakify(readGroup()).trim(); }
+              skipSpace();
+            }
+            out += (lower || upper) ? ` 从${lower || '?'}到${upper || '?'}的${label} ` : ` ${label} `;
+          } else if (cmd === 'lim') {
+            skipSpace();
+            if (peek() === '_') { i++; const cond = speakify(readGroup()).trim(); out += ` 当${cond}时的极限 `; }
+            else { out += ' 极限 '; }
+          } else if (cmd === 'begin') {
+            const envName = readGroup().trim().replace(/\*$/, '');
+            const endToken = `\\end{${envName}}`;
+            const endIdx = latex.indexOf(endToken, i);
+            let inner;
+            if (endIdx !== -1) { inner = latex.slice(i, endIdx); i = endIdx + endToken.length; }
+            else { inner = latex.slice(i); i = latex.length; }
+            const rows = inner.split('\\\\').map(r => r.trim()).filter(r => r.length);
+            const spokenRows = rows.map(row => row.split('&').map(cell => speakify(cell.trim()).trim()).join('，'));
+            const label = /vmatrix/i.test(envName) ? '行列式' : (/matrix/i.test(envName) ? '矩阵' : envName);
+            out += rows.length > 1 ? ` ${label}，${spokenRows.join('，换行，')} ` : ` ${label}，${spokenRows.join('')} `;
+          }
+          else if (cmd === 'to') { out += ' 趋近于 '; }
+          else if (cmd === 'rightarrow') { out += ' 箭头 '; }
+          else if (cmd === 'Rightarrow') { out += ' 推出 '; }
+          else if (cmd === 'Leftrightarrow' || cmd === 'Longleftrightarrow' || cmd === 'iff') { out += ' 当且仅当 '; }
+          else if (cmd === 'dots' || cmd === 'cdots' || cmd === 'ldots' || cmd === 'vdots' || cmd === 'ddots') { out += ' 等等 '; }
+          else if (/^[Bb]igg?[lr]?$/.test(cmd)) { /* 括号大小标记，忽略 */ }
+          else if (cmd === 'underbrace' || cmd === 'overbrace') { /* 下方/上方标注花括号，内容照常朗读 */ }
+          else if (cmd === 'quad' || cmd === 'qquad') { out += ' '; }
+          else if (cmd === 'in') { out += ' 属于 '; }
+          else if (cmd === 'notin') { out += ' 不属于 '; }
+          else if (cmd === 'subset' || cmd === 'subseteq') { out += ' 是...的子集 '; }
+          else if (cmd === 'cup') { out += ' 并 '; }
+          else if (cmd === 'cap') { out += ' 交 '; }
+          else if (cmd === 'emptyset' || cmd === 'varnothing') { out += ' 空集 '; }
+          else if (cmd === 'forall') { out += ' 对任意 '; }
+          else if (cmd === 'exists') { out += ' 存在 '; }
+          else if (cmd === 'partial') { out += ' 偏 '; }
+          else if (cmd === 'nabla') { out += ' 梯度 '; }
+          else if (cmd === 'perp') { out += ' 垂直 '; }
+          else if (cmd === 'parallel') { out += ' 平行 '; }
+          else if (cmd === 'infty') { out += ' 无穷 '; }
+          else if (cmd === 'times') { out += ' 乘 '; }
+          else if (cmd === 'div') { out += ' 除以 '; }
+          else if (cmd === 'cdot') { out += ' 乘 '; }
+          else if (cmd === 'pm') { out += ' 正负 '; }
+          else if (cmd === 'mp') { out += ' 负正 '; }
+          else if (cmd === 'leq' || cmd === 'le') { out += ' 小于等于 '; }
+          else if (cmd === 'geq' || cmd === 'ge') { out += ' 大于等于 '; }
+          else if (cmd === 'neq' || cmd === 'ne') { out += ' 不等于 '; }
+          else if (cmd === 'approx') { out += ' 约等于 '; }
+          else if (cmd === 'circ') { out += ' 度 '; }
+          else if (cmd === 'left' || cmd === 'right') { /* 括号大小标记，忽略 */ }
+          else if (cmd === 'text') { out += ` ${readGroup()} `; }
+          else if (cmd === 'vec') { out += ` 向量${speakify(readGroup())} `; }
+          else if (cmd === 'mathrm' || cmd === 'mathbf' || cmd === 'boldsymbol' || cmd === 'hat' || cmd === 'bar' || cmd === 'overline' || cmd === 'mathbb' || cmd === 'mathcal') { out += ` ${speakify(readGroup())} `; }
+          else if (GREEK[cmd]) { out += ` ${GREEK[cmd]} `; }
+          else if (FUNCS[cmd]) { out += ` ${FUNCS[cmd]} `; }
+          else { out += ` ${cmd} `; }
+          continue;
+        }
+
+        if (c === '^') {
+          i++;
+          const raw = readGroup().trim();
+          if (raw === '\\circ') { out += ' 度 '; }
+          else if (/^\\mathrm\s*\{?\s*[Tt]\s*\}?$/.test(raw) || raw === 'T') { out += ' 的转置 '; }
+          else if (raw === '-1') { out += ' 的逆 '; }
+          else if (/^-\d+$/.test(raw)) { out += ` 的负${raw.slice(1)}次方 `; }
+          else if (raw === '2') { out += ' 的平方 '; }
+          else if (raw === '3') { out += ' 的立方 '; }
+          else { out += ` 的${speakify(raw).trim()}次方 `; }
+          continue;
+        }
+
+        if (c === '_') {
+          i++;
+          const g = speakify(readGroup()).trim();
+          out += ` 下标${g} `;
+          continue;
+        }
+
+        if (c === '{') { out += speakify(readGroup()); continue; }
+        if (c === '}') { i++; continue; }
+
+        const OP_MAP = { '+': ' 加 ', '-': ' 减 ', '*': ' 乘 ', '=': ' 等于 ', '<': ' 小于 ', '>': ' 大于 ',
+          '(': ' 括号 ', ')': ' 右括号 ', '[': ' 方括号 ', ']': ' 右方括号 ' };
+        if (OP_MAP[c]) { out += OP_MAP[c]; i++; continue; }
+        if (c === '/') { out += ' 除以 '; i++; continue; }
+        if (c === '&') { out += ' ，'; i++; continue; }
+
+        out += c;
+        i++;
+      }
+      return out;
+    }
+
+    return parse().replace(/\s+/g, ' ').trim();
+  }
+
+  // ---------------------------------------------------------------
+  // 扫描页面文本节点，找出 $...$ / $$...$$ / \(...\) / \[...\]，
+  // 用 <span class="mj-src"> 包裹（保留原始定界符，交给 MathJax 正常渲染）
+  // ---------------------------------------------------------------
+  function extractAndWrapFormulas(root) {
+    const formulas = [];
+    const regex = /\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\]|\\\(([\s\S]+?)\\\)|\$([^\$\n]+?)\$/g;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const p = node.parentElement;
+        if (!p) return NodeFilter.FILTER_REJECT;
+        const tag = p.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA') return NodeFilter.FILTER_REJECT;
+        const v = node.nodeValue;
+        if (v.indexOf('$') === -1 && v.indexOf('\\(') === -1 && v.indexOf('\\[') === -1) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const nodes = [];
+    let n;
+    while ((n = walker.nextNode())) nodes.push(n);
+
+    nodes.forEach(node => {
+      const text = node.nodeValue;
+      regex.lastIndex = 0;
+      let match, lastIndex = 0, found = false;
+      const frag = document.createDocumentFragment();
+      while ((match = regex.exec(text))) {
+        found = true;
+        const full = match[0];
+        const tex = match[1] || match[2] || match[3] || match[4] || '';
+        const before = text.slice(lastIndex, match.index);
+        if (before) frag.appendChild(document.createTextNode(before));
+        const span = document.createElement('span');
+        span.className = 'mj-src';
+        span.setAttribute('data-idx', String(formulas.length));
+        span.textContent = full;
+        formulas.push({ tex: tex.trim(), el: span });
+        frag.appendChild(span);
+        lastIndex = match.index + full.length;
+      }
+      if (found) {
+        const after = text.slice(lastIndex);
+        if (after) frag.appendChild(document.createTextNode(after));
+        node.parentNode.replaceChild(frag, node);
+      }
+    });
+    return formulas;
+  }
+
+  function waitForMathJax(cb, tries) {
+    tries = tries || 0;
+    if (window.MathJax && MathJax.typesetPromise) { cb(); }
+    else if (tries < 100) { setTimeout(() => waitForMathJax(cb, tries + 1), 100); }
+  }
+
+  // ---------------------------------------------------------------
+  // 把 .main 下的内容切成"朗读单元"：段落/步骤/表格行等最小可读块，
+  // 每个单元内部把普通文字和公式（已转换成中文）按原文顺序拼接。
+  // 按块级单元分段发送给语音引擎，比整篇一次性朗读更稳定、不易卡壳漏读。
+  // ---------------------------------------------------------------
+  const BLOCK_TAGS = new Set(['DIV','P','LI','TD','TH','TR','H1','H2','H3','H4','H5','H6',
+    'BLOCKQUOTE','SECTION','TABLE','THEAD','TBODY','UL','OL','FIGURE','FIGCAPTION','DT','DD',
+    'FOOTER','HEADER','ARTICLE','MAIN']);
+  const SKIP_IDS = ['cross-product-viz'];
+  const SKIP_CLASSES = ['divider'];
+
+  function shouldSkipEl(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (SKIP_IDS.includes(el.id)) return true;
+    for (const cls of SKIP_CLASSES) { if (el.classList && el.classList.contains(cls)) return true; }
+    if (el.closest && el.closest('#cross-product-viz')) return true;
+    return false;
+  }
+
+  function formulaSpoken(el, formulas) {
+    const idx = Number(el.getAttribute('data-idx'));
+    const f = formulas[idx];
+    return f ? (f.text || '') : '';
+  }
+
+  // 聚合任意元素内部（含嵌套）的可朗读内容为一整段字符串
+  function collectInline(el, formulas) {
+    const parts = [];
+    el.childNodes.forEach(node => {
+      if (node.nodeType === 3) {
+        const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+        if (t) parts.push(t);
+      } else if (node.nodeType === 1) {
+        if (shouldSkipEl(node)) return;
+        if (node.classList.contains('mj-speak-btn')) return;
+        if (node.classList.contains('mj-src')) {
+          const s = formulaSpoken(node, formulas);
+          if (s) parts.push(s);
+          return;
+        }
+        const inner = collectInline(node, formulas);
+        if (inner) parts.push(inner);
+      }
+    });
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  // 递归遍历：遇到块级子元素就先把之前攒的散文/公式内容打包成一个单元，
+  // 再深入这个块级子元素；从而正确处理"段落里嵌了一个块级子标签"的混合内容。
+  function buildContentUnits(root, formulas) {
+    const units = [];
+    function walk(el) {
+      if (shouldSkipEl(el)) return;
+      if (el.tagName === 'TR') {
+        const text = collectInline(el, formulas);
+        if (text) units.push({ el, text });
+        return;
+      }
+      let buffer = [];
+      const flush = () => {
+        const text = buffer.join(' ').replace(/\s+/g, ' ').trim();
+        if (text) units.push({ el, text });
+        buffer = [];
+      };
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+          if (t) buffer.push(t);
+        } else if (node.nodeType === 1) {
+          if (shouldSkipEl(node)) return;
+          if (node.classList.contains('mj-speak-btn')) return;
+          if (node.classList.contains('mj-src')) {
+            const s = formulaSpoken(node, formulas);
+            if (s) buffer.push(s);
+            return;
+          }
+          if (BLOCK_TAGS.has(node.tagName)) {
+            flush();
+            walk(node);
+          } else {
+            const inner = collectInline(node, formulas);
+            if (inner) buffer.push(inner);
+          }
+        }
+      });
+      flush();
+    }
+    walk(root);
+    return units;
+  }
+
+  waitForMathJax(function () {
+    const root = document.querySelector('.main') || document.body;
+    const formulas = extractAndWrapFormulas(root);
+    MathJax.typesetPromise().then(function () { initReader(formulas, root); })
+      .catch(function () { initReader(formulas, root); });
+  });
+
+  function initReader(formulas, root) {
+    const progressEl = document.getElementById('fr-progress');
+
+    formulas.forEach((f, idx) => {
+      f.text = speakify(f.tex) || '这是一个公式';
+      const btn = document.createElement('span');
+      btn.className = 'mj-speak-btn';
+      btn.textContent = '🔊';
+      btn.title = '朗读这条公式';
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        stopAll();
+        setMode('formula');
+        currentIdx = idx;
+        speakOne(idx, formulas, false);
+      });
+      f.el.appendChild(btn);
+      f.btn = btn;
+    });
+
+    const units = buildContentUnits(root, formulas);
+
+    if (!units.length && !formulas.length) { progressEl.textContent = '未找到可朗读内容'; return; }
+
+    const playBtn = document.getElementById('fr-play');
+    const stopBtn = document.getElementById('fr-stop');
+    const barFill = document.getElementById('fr-bar-fill');
+    const rateInput = document.getElementById('fr-rate');
+    const rateVal = document.getElementById('fr-rate-val');
+    const modeBtns = document.querySelectorAll('.fr-mode-btn');
+
+    let mode = 'full'; // 'full' = 全文+公式, 'formula' = 仅公式
+    let playing = false;
+    let currentIdx = -1;
+    let stopRequested = false;
+
+    function currentList() { return mode === 'full' ? units : formulas; }
+
+    function setMode(m) {
+      if (playing) stopAll();
+      mode = m;
+      modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+      playBtn.textContent = m === 'full' ? '▶ 朗读全文' : '▶ 朗读全部公式';
+      updateProgressIdle();
+    }
+
+    function updateProgressIdle() {
+      const list = currentList();
+      progressEl.textContent = mode === 'full'
+        ? `共 ${units.length} 段（含 ${formulas.length} 条公式）`
+        : `共 ${formulas.length} 条公式`;
+      barFill.style.width = '0%';
+    }
+
+    modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+    rateInput.addEventListener('input', () => { rateVal.textContent = `${rateInput.value}x`; });
+
+    function updateProgress(idx) {
+      const list = currentList();
+      progressEl.textContent = `第 ${idx + 1} / ${list.length} ${mode === 'full' ? '段' : '条'}`;
+      barFill.style.width = `${((idx + 1) / list.length) * 100}%`;
+    }
+
+    function clearHighlight() {
+      units.forEach(u => u.el.classList.remove('fr-reading'));
+      formulas.forEach(f => { f.el.classList.remove('fr-reading'); if (f.btn) f.btn.classList.remove('playing'); });
+    }
+
+    function speakOne(idx, list, chainNext) {
+      if (!('speechSynthesis' in window)) { alert('当前浏览器不支持语音朗读'); return; }
+      const item = list[idx];
+      clearHighlight();
+      item.el.classList.add('fr-reading');
+      if (item.btn) item.btn.classList.add('playing');
+      item.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const spoken = item.text || '';
+      if (!spoken) {
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < list.length) { updateProgress(currentIdx); speakOne(currentIdx, list, true); }
+          else { finishPlay(); }
+        }
+        return;
+      }
+
+      const utter = new SpeechSynthesisUtterance(spoken);
+      utter.lang = 'zh-CN';
+      utter.rate = parseFloat(rateInput.value);
+      const voices = window.speechSynthesis.getVoices();
+      const v = voices.find(vv => vv.lang && vv.lang.toLowerCase().startsWith('zh'));
+      if (v) utter.voice = v;
+
+      utter.onend = () => {
+        item.el.classList.remove('fr-reading');
+        if (item.btn) item.btn.classList.remove('playing');
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < list.length) { updateProgress(currentIdx); speakOne(currentIdx, list, true); }
+          else { finishPlay(); }
+        }
+      };
+      utter.onerror = () => { if (chainNext) finishPlay(); };
+      window.speechSynthesis.speak(utter);
+    }
+
+    function finishPlay() {
+      playing = false; stopRequested = false;
+      clearHighlight();
+      playBtn.textContent = mode === 'full' ? '▶ 朗读全文' : '▶ 朗读全部公式';
+      if (recordingActive) stopRecording();
+      releaseWakeLock();
+    }
+
+    function stopAll() {
+      window.speechSynthesis.cancel();
+      stopRequested = true; playing = false;
+      clearHighlight();
+      playBtn.textContent = mode === 'full' ? '▶ 朗读全文' : '▶ 朗读全部公式';
+      releaseWakeLock();
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (playing) { stopAll(); return; }
+      startFrom(0);
+    });
+
+    // ---------------------------------------------------------------
+    // 屏幕唤醒锁：朗读期间尽量阻止系统自动熄屏，减少中途被暂停的情况。
+    // 只能防"自动锁屏"，手动按电源键锁屏或切后台仍会被系统暂停，无法绕过。
+    // ---------------------------------------------------------------
+    let wakeLock = null;
+
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      } catch (e) { /* 用户可能拒绝了权限，或设备不支持，静默忽略 */ }
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && playing && !wakeLock) requestWakeLock();
+    });
+
+    function startFrom(idx) {
+      if (playing) stopAll();
+      const list = currentList();
+      if (!list.length || idx < 0 || idx >= list.length) return;
+      playing = true; stopRequested = false;
+      playBtn.textContent = '⏸ 朗读中…';
+      currentIdx = idx;
+      updateProgress(currentIdx);
+      requestWakeLock();
+      speakOne(currentIdx, list, true);
+    }
+
+    // 点击任意一段正文，从那一段开始往下连续朗读（自动切到"全文+公式"模式）
+    units.forEach((u, idx) => {
+      u.el.classList.add('fr-clickable');
+      u.el.addEventListener('click', (e) => {
+        if (e.target.closest('.mj-speak-btn')) return;
+        const sel = window.getSelection ? window.getSelection().toString() : '';
+        if (sel) return;
+        if (mode !== 'full') setMode('full');
+        startFrom(idx);
+      });
+    });
+
+    stopBtn.addEventListener('click', stopAll);
+    updateProgressIdle();
+
+    // ---------------------------------------------------------------
+    // 免注册方案：录制当前标签页播放的朗读声音，存成音频文件。
+    // 依赖 getDisplayMedia 的"分享标签页音频"能力（Chrome/Edge 支持）。
+    // ---------------------------------------------------------------
+    const recordBtn = document.getElementById('fr-record-btn');
+    const recordStatus = document.getElementById('fr-record-status');
+    const recordDownload = document.getElementById('fr-record-download');
+    const recordPreview = document.getElementById('fr-record-preview');
+
+    let recordingActive = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      recordingActive = false;
+      recordBtn.classList.remove('recording');
+      recordBtn.textContent = '🎙 录制音频文件（免注册）';
+    }
+
+    recordBtn.addEventListener('click', async () => {
+      if (recordingActive) { stopRecording(); recordStatus.textContent = '已手动停止'; return; }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        alert('当前浏览器不支持标签页音频录制，换 Chrome / Edge 试试'); return;
+      }
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      } catch (err) {
+        recordStatus.textContent = '未授权分享，已取消'; return;
+      }
+      const audioTracks = stream.getAudioTracks();
+      stream.getVideoTracks().forEach(t => t.stop());
+      if (!audioTracks.length) {
+        recordStatus.textContent = '没有捕获到音频 —— 分享时要勾选"分享标签页音频"';
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+
+      const audioStream = new MediaStream(audioTracks);
+      recordedChunks = [];
+      try {
+        mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+      } catch (err) {
+        mediaRecorder = new MediaRecorder(audioStream);
+      }
+      mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        audioTracks.forEach(t => t.stop());
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        const ext = (blob.type.indexOf('webm') !== -1) ? 'webm' : 'ogg';
+        recordDownload.href = url;
+        recordDownload.download = (mode === 'full' ? '线性代数_全文朗读' : '线性代数_公式朗读') + '.' + ext;
+        recordDownload.style.display = 'inline-block';
+        recordPreview.src = url;
+        recordPreview.style.display = 'block';
+        recordStatus.textContent = `录制完成，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+      };
+
+      mediaRecorder.start();
+      recordingActive = true;
+      recordBtn.classList.add('recording');
+      recordBtn.textContent = '⏹ 停止录制';
+      recordStatus.textContent = '正在录制…请不要切走这个标签页或静音';
+      recordDownload.style.display = 'none';
+      recordPreview.style.display = 'none';
+
+      if (!playing) playBtn.click();
+    });
+
+    // ---------------------------------------------------------------
+    // 导出 MP3：把当前模式（全文+公式 / 仅公式）的朗读文本
+    // 逐段发给 Azure 语音合成 REST API，拼成一个 MP3 文件供下载。
+    // ---------------------------------------------------------------
+    const keyInput = document.getElementById('fr-azure-key');
+    const regionInput = document.getElementById('fr-azure-region');
+    const voiceSelect = document.getElementById('fr-azure-voice');
+    const exportBtn = document.getElementById('fr-export-btn');
+    const exportCancelBtn = document.getElementById('fr-export-cancel');
+    const exportProgress = document.getElementById('fr-export-progress');
+    const downloadLink = document.getElementById('fr-download-link');
+    const audioPreview = document.getElementById('fr-audio-preview');
+
+    try {
+      keyInput.value = localStorage.getItem('fr-azure-key') || '';
+      regionInput.value = localStorage.getItem('fr-azure-region') || 'eastasia';
+      const savedVoice = localStorage.getItem('fr-azure-voice');
+      if (savedVoice) voiceSelect.value = savedVoice;
+    } catch (e) { /* localStorage 不可用则忽略，仅本次会话内使用 */ }
+
+    function escapeXml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    }
+
+    async function getAzureToken(key, region) {
+      const resp = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issuetoken`, {
+        method: 'POST',
+        headers: { 'Ocp-Apim-Subscription-Key': key, 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
+      if (!resp.ok) throw new Error(`认证失败（${resp.status}），请检查 Key 和区域是否正确`);
+      return await resp.text();
+    }
+
+    async function synthesizeOne(token, region, text, voice, rate) {
+      const ratePct = Math.round((rate - 1) * 100);
+      const ssml = `<speak version="1.0" xml:lang="zh-CN"><voice name="${voice}"><prosody rate="${ratePct}%">${escapeXml(text)}</prosody></voice></speak>`;
+      const resp = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/ssml+xml',
+          'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3'
+        },
+        body: ssml
+      });
+      if (!resp.ok) {
+        const errText = await resp.text().catch(() => '');
+        throw new Error(`合成失败（${resp.status}）${errText.slice(0, 150)}`);
+      }
+      return await resp.arrayBuffer();
+    }
+
+    let exportCancelled = false;
+
+    exportBtn.addEventListener('click', async () => {
+      const key = keyInput.value.trim();
+      const region = (regionInput.value.trim() || 'eastasia');
+      if (!key) { alert('请先填写 Azure Speech Key'); return; }
+
+      try {
+        localStorage.setItem('fr-azure-key', key);
+        localStorage.setItem('fr-azure-region', region);
+        localStorage.setItem('fr-azure-voice', voiceSelect.value);
+      } catch (e) { /* ignore */ }
+
+      const list = currentList().filter(it => it.text && it.text.trim());
+      if (!list.length) { alert('当前模式下没有可朗读的内容'); return; }
+
+      if (playing) stopAll();
+
+      exportCancelled = false;
+      exportBtn.disabled = true;
+      exportBtn.textContent = '生成中…';
+      exportCancelBtn.style.display = 'inline-block';
+      downloadLink.style.display = 'none';
+      audioPreview.style.display = 'none';
+
+      const rate = parseFloat(rateInput.value);
+      const voice = voiceSelect.value;
+      const chunks = [];
+      let token = '', tokenTime = 0;
+
+      try {
+        for (let i = 0; i < list.length; i++) {
+          if (exportCancelled) { exportProgress.textContent = '已取消'; break; }
+          if (!token || Date.now() - tokenTime > 8 * 60 * 1000) {
+            token = await getAzureToken(key, region);
+            tokenTime = Date.now();
+          }
+          exportProgress.textContent = `正在合成第 ${i + 1} / ${list.length} 段…`;
+          const buf = await synthesizeOne(token, region, list[i].text, voice, rate);
+          chunks.push(new Uint8Array(buf));
+        }
+
+        if (!exportCancelled && chunks.length) {
+          const blob = new Blob(chunks, { type: 'audio/mpeg' });
+          const url = URL.createObjectURL(blob);
+          downloadLink.href = url;
+          downloadLink.download = (mode === 'full' ? '线性代数_全文朗读' : '线性代数_公式朗读') + '.mp3';
+          downloadLink.style.display = 'inline-block';
+          audioPreview.src = url;
+          audioPreview.style.display = 'block';
+          exportProgress.textContent = `完成，共 ${chunks.length} 段，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+        }
+      } catch (err) {
+        exportProgress.textContent = '出错：' + err.message;
+      } finally {
+        exportBtn.disabled = false;
+        exportBtn.textContent = '生成并下载 MP3';
+        exportCancelBtn.style.display = 'none';
+      }
+    });
+
+    exportCancelBtn.addEventListener('click', () => { exportCancelled = true; });
+  }
+})();
 </script>
 
 </body>
