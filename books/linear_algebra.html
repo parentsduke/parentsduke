@@ -4831,6 +4831,7 @@
         单位化（长度 $\sqrt{4+4+4}=2\sqrt3$）：
         $$u_3=\frac{1}{\sqrt3}(1,-1,-1)^{\mathrm T}$$
         验证正交：$(1,-1,-1)\cdot(2,1,1)=2-1-1=0$，$(1,-1,-1)\cdot(0,-1,1)=0+1-1=0$，两个都成立。</p>
+        <p style="margin:10px 0 0"><strong>$\Sigma$ 怎么来的：</strong>$\Sigma$ 不需要单独计算，是把已经算出的奇异值"组装"进一个和 $A$ 同形状的矩阵。$A$ 是 $3\times2$，所以 $\Sigma$ 也是 $3\times2$；主对角线位置只有 $(1,1)$、$(2,2)$ 两个（$\min(3,2)=2$），按从大到小的顺序把 $\sigma_1=\sqrt3,\ \sigma_2=1$ 填进去，其余位置（包括第 3 行）全部补 0：$\Sigma=\begin{pmatrix}\sqrt3&0\\0&1\\0&0\end{pmatrix}$。之所以要这个形状，是因为 SVD 要求 $A_{m\times n}=U_{m\times m}\Sigma_{m\times n}V^{\mathrm T}_{n\times n}$，只有 $\Sigma$ 取 $m\times n$，矩阵乘法的维数才能对上，连乘结果才和 $A$ 同形状。</p>
         <p style="margin:10px 0 0"><strong>拼出完整的 $U,\Sigma,V$：</strong>
         $$U=\begin{pmatrix}\frac{2}{\sqrt6}&0&\frac{1}{\sqrt3}\\[4pt]\frac{1}{\sqrt6}&-\frac{1}{\sqrt2}&-\frac{1}{\sqrt3}\\[4pt]\frac{1}{\sqrt6}&\frac{1}{\sqrt2}&-\frac{1}{\sqrt3}\end{pmatrix},\qquad
         \Sigma=\begin{pmatrix}\sqrt3&0\\0&1\\0&0\end{pmatrix},\qquad
