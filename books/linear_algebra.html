@@ -5473,6 +5473,13 @@
     nu:'纽', xi:'克西', pi:'派', rho:'柔', sigma:'西格玛', tau:'陶', upsilon:'宇普西龙',
     phi:'斐', chi:'凯', psi:'普赛', omega:'欧米伽' };
   const FUNCS = { sin:'正弦', cos:'余弦', tan:'正切', cot:'余切', log:'对数', ln:'自然对数', exp:'指数', det:'行列式' };
+  // 会把"接下来该出现一个新操作数"的状态重置为 true 的命令（关系符/连接词），
+  // 用来判断紧随其后的 - 应该念"负"还是"减"
+  const OPERATOR_CMDS = new Set(['to','rightarrow','Rightarrow','Leftrightarrow','Longleftrightarrow','iff',
+    'times','div','cdot','pm','mp','leq','le','geq','ge','neq','ne','approx',
+    'in','notin','subset','subseteq','cup','cap','forall','exists','perp','parallel','cong','sim','simeq',
+    'dots','cdots','ldots','vdots','ddots','sum','int','lim']);
+  const NO_STATE_CHANGE_CMDS = new Set(['left','right','underbrace','overbrace','quad','qquad']);
   const OPNAMES = { im:'像', ker:'核', rank:'秩', tr:'迹', span:'张成', dim:'维数', det:'行列式',
     col:'列空间', row:'行空间', sgn:'符号', ad:'伴随作用', adj:'伴随矩阵', diag:'对角矩阵', proj:'投影' };
 
@@ -5507,6 +5514,7 @@
 
     function parse() {
       let out = '';
+      let atOperandStart = true; // true = 接下来该出现一个新操作数（此时的 - 是负号，否则是减号）
       while (i < latex.length) {
         const c = latex[i];
         if (c === ' ') { i++; continue; }
@@ -5620,6 +5628,9 @@
           else if (GREEK[cmd]) { out += ` ${GREEK[cmd]} `; }
           else if (FUNCS[cmd]) { out += ` ${FUNCS[cmd]} `; }
           else { out += ` ${cmd} `; }
+          if (!NO_STATE_CHANGE_CMDS.has(cmd) && !/^[Bb]igg?[lr]?$/.test(cmd)) {
+            atOperandStart = OPERATOR_CMDS.has(cmd);
+          }
           continue;
         }
 
@@ -5633,27 +5644,40 @@
           else if (raw === '2') { out += ' 的平方 '; }
           else if (raw === '3') { out += ' 的立方 '; }
           else { out += ` 的${speakify(raw).trim()}次方 `; }
+          atOperandStart = false;
           continue;
         }
 
         if (c === '_') {
           i++;
-          const g = speakify(readGroup()).trim();
+          const raw = readGroup().trim();
+          const g = /^\d{2,}$/.test(raw) ? raw.split('').join('，') : speakify(raw).trim();
           out += ` 下标${g} `;
+          atOperandStart = false;
           continue;
         }
 
-        if (c === '{') { out += speakify(readGroup()); continue; }
+        if (c === '{') { out += speakify(readGroup()); atOperandStart = false; continue; }
         if (c === '}') { i++; continue; }
 
-        const OP_MAP = { '+': ' 加 ', '-': ' 减 ', '*': ' 乘 ', '=': ' 等于 ', '<': ' 小于 ', '>': ' 大于 ',
-          '(': ' 括号 ', ')': ' 右括号 ', '[': ' 方括号 ', ']': ' 右方括号 ' };
-        if (OP_MAP[c]) { out += OP_MAP[c]; i++; continue; }
-        if (c === '/') { out += ' 除以 '; i++; continue; }
-        if (c === '&') { out += ' ，'; i++; continue; }
+        if (c === '-') {
+          if (atOperandStart) { out += ' 负 '; }
+          else { out += ' 减 '; atOperandStart = true; }
+          i++; continue;
+        }
+        if (c === ',' || c === ':' || c === ';') { out += c; atOperandStart = true; i++; continue; }
+
+        const OP_MAP = { '+': ' 加 ', '*': ' 乘 ', '=': ' 等于 ', '<': ' 小于 ', '>': ' 大于 ',
+          '(': ' 括号 ', '[': ' 方括号 ' };
+        const OP_MAP_CLOSE = { ')': ' 右括号 ', ']': ' 右方括号 ' };
+        if (OP_MAP[c]) { out += OP_MAP[c]; atOperandStart = true; i++; continue; }
+        if (OP_MAP_CLOSE[c]) { out += OP_MAP_CLOSE[c]; atOperandStart = false; i++; continue; }
+        if (c === '/') { out += ' 除以 '; atOperandStart = true; i++; continue; }
+        if (c === '&') { out += ' ，'; atOperandStart = true; i++; continue; }
 
         out += c;
         i++;
+        atOperandStart = false;
       }
       return out;
     }
