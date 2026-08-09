@@ -5640,6 +5640,7 @@
           if (raw === '\\circ') { out += ' 度 '; }
           else if (/^\\mathrm\s*\{?\s*[Tt]\s*\}?$/.test(raw) || raw === 'T') { out += ' 的转置 '; }
           else if (raw === '-1') { out += ' 的逆 '; }
+          else if (raw === '*' || raw === '\\ast') { out += ' 的伴随 '; }
           else if (/^-\d+$/.test(raw)) { out += ` 的负${raw.slice(1)}次方 `; }
           else if (raw === '2') { out += ' 的平方 '; }
           else if (raw === '3') { out += ' 的立方 '; }
