@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>杜克大学萨拉·P·杜克花园详细介绍</title>
+<style>
+  :root {
+    --duke-blue: #012169;
+    --duke-blue-light: #00539b;
+    --accent: #b2860a;
+    --bg: #fbfaf7;
+    --text: #2a2a2a;
+    --muted: #6b6b6b;
+    --card-bg: #ffffff;
+    --border: #e5e0d5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+  }
+  header {
+    background: linear-gradient(135deg, var(--duke-blue) 0%, var(--duke-blue-light) 100%);
+    color: #fff;
+    padding: 48px 24px 36px;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0 0 8px;
+    font-size: 1.9rem;
+    letter-spacing: 1px;
+  }
+  header .subtitle {
+    font-size: 0.95rem;
+    color: #cfe0f5;
+    margin: 4px 0;
+  }
+  header .credit {
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: #a9c4e8;
+    letter-spacing: 0.5px;
+  }
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+  }
+  .audio-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: -20px auto 30px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .audio-panel h3 {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    color: var(--duke-blue);
+  }
+  .audio-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .audio-controls button {
+    background: var(--duke-blue);
+    color: #fff;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .audio-controls button:hover { background: var(--duke-blue-light); }
+  .audio-controls button:disabled { background: #aaa; cursor: not-allowed; }
+  audio { width: 100%; margin-top: 10px; display: none; }
+  .audio-status { font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
+  .key-note {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  details.settings { margin-top: 10px; }
+  details.settings summary { cursor: pointer; font-size: 0.85rem; color: var(--duke-blue-light); }
+  .settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .settings-grid input, .settings-grid select {
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    width: 100%;
+  }
+  section {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 26px;
+    margin-bottom: 20px;
+  }
+  h2 {
+    color: var(--duke-blue);
+    font-size: 1.3rem;
+    border-left: 5px solid var(--accent);
+    padding-left: 12px;
+    margin-top: 0;
+  }
+  h3 {
+    color: var(--duke-blue-light);
+    font-size: 1.08rem;
+    margin-top: 22px;
+  }
+  p { margin: 10px 0; }
+  strong { color: var(--duke-blue); }
+  .tip-box {
+    background: #f4f8ec;
+    border-left: 4px solid #7a9a3c;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.92rem;
+    margin-top: 10px;
+  }
+  footer {
+    text-align: center;
+    padding: 30px 20px 50px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  footer .credit-final {
+    margin-top: 10px;
+    font-weight: 600;
+    color: var(--duke-blue);
+  }
+  .disclaimer {
+    font-size: 0.8rem;
+    color: var(--muted);
+    border-top: 1px dashed var(--border);
+    padding-top: 14px;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>杜克大学萨拉·P·杜克花园</h1>
+  <div class="subtitle">Sarah P. Duke Gardens 详细介绍</div>
+  <div class="credit">文字编辑与音频合成由扯谈Duke 群完成</div>
+</header>
+
+<div class="container">
+
+  <div class="audio-panel">
+    <h3>🔊 语音朗读（Azure 文本转语音）</h3>
+    <div class="audio-controls">
+      <button id="genBtn">生成并播放语音</button>
+      <button id="stopBtn" disabled>停止</button>
+    </div>
+    <audio id="ttsAudio" controls></audio>
+    <div class="audio-status" id="ttsStatus">尚未生成音频。点击"生成并播放语音"，将调用 Azure 语音服务朗读全文。</div>
+    <details class="settings">
+      <summary>Azure 语音服务设置（首次使用需填写）</summary>
+      <div class="settings-grid">
+        <input type="text" id="azureKey" placeholder="Azure Speech API Key">
+        <input type="text" id="azureRegion" placeholder="区域，如 eastasia">
+        <select id="voiceName">
+          <option value="zh-CN-XiaoxiaoNeural">晓晓（女声，标准）</option>
+          <option value="zh-CN-YunxiNeural">云希（男声，标准）</option>
+          <option value="zh-CN-XiaoyiNeural">晓伊（女声，活泼）</option>
+          <option value="zh-CN-YunyangNeural">云扬（男声，新闻播报）</option>
+        </select>
+      </div>
+      <div class="key-note">
+        说明：本页面不包含任何 Azure API Key。你需要在 Azure 门户创建"语音服务"资源，将 Key 与区域填入上方输入框（仅保存在本机浏览器内存中，不会上传到任何第三方服务器）。生成的 mp3 可在播放器中直接下载保存，用于扯谈Duke 群的音频分发。
+      </div>
+    </details>
+  </div>
+
+  <section>
+    <h2>杜克大学萨拉·P·杜克花园</h2>
+    <div class="subtitle">Sarah P. Duke Gardens 详细介绍</div>
+    <div class="credit">文字编辑与音频合成由扯谈Duke 群完成</div>
+  </section>
+  
+  <section>
+    <h2>一、基本概况</h2>
+    <p>萨拉·P·杜克花园位于美国北卡罗来纳州达勒姆市杜克大学西校区中心地带，占地约55英亩（约22公顷），园内有5英里长的林荫道、步道和小径贯穿其中。它常年365天开放，全年不设门票，每年吸引超过65万人次游客到访，是达勒姆市游客最多的景点，也被公认为美国顶级公共花园之一。</p>
+    <p><strong>开放时间：</strong>户外区域每天上午8点开放至日落</p>
+  </section>
+
+  <section>
+    <h2>二、历史沿革</h2>
+    <p>20世纪20年代初，杜克大学规划者本打算把如今花园所在的区域改造成一座人工湖，但因资金短缺，这一计划最终搁浅。这座公共花园最早起源于20世纪30年代初，当时人们在杜克大学西校区边缘一处沟壑中种下了一座朴素的花园。杜克医学院教师弗雷德里克·莫伊尔·海恩斯博士说服萨拉·P·杜克捐资2万美元，用以在这片布满碎石的沟壑中种植花卉，花园由此正式起步。</p>
+    <p>花园的历史核心区——台地花园由知名景观建筑师伊丽莎白·比德尔·希普曼于1937年设计，并于1939年正式落成，此后一直是整个花园最具标志性的核心区域。该区域取代了1934年最初建成的鸢尾与多年生植物花坛。2004年至2014年间，台地花园又经历了长达十年的大规模修复工程。</p>
+    <p>此后规划设计历经多位景观建筑师之手：1959至1963年间，威廉·梁主持实施了总体规划，设计了南草坪、桥梁和小型水池；1979年，琳达·朱厄尔制定了新的总体规划，促成了亚洲植物园的设计；她的合伙人萨姆·雷诺兹随后完成了玫瑰环岛、罗林斯观景台等大规模翻新；21世纪初，沃伦·伯德规划设计了多丽丝·杜克中心的景观；2004年，马歇尔·泰勒·劳施事务所又制定了新的总体规划。</p>
+    <p>花园是为纪念萨拉·皮尔逊·安吉尔·杜克而建——她是玛丽·杜克·比德尔之母，也是杜克大学捐助人本杰明·N·杜克的妻子。</p>
+  </section>
+
+  <section>
+    <h2>三、四大分区详解</h2>
+
+    <h3>1. 历史花园与台地区（Historic Gardens & Terraces）</h3>
+    <p>这里是1934年花园的起源地。标志性的意大利式台地花园于1939年正式落成，此后各类精心打理的园区陆续在周边扩展开来，包括沃克·迪拉德·柯比多年生植物园道、纪念花园、杜鹃庭院、蝴蝶园、山茶花园以及樱花道。台地脚下有一株1949年种植的水杉（曾一度被认为已灭绝的物种）。该区域还包括玛丽·杜克·比德尔玫瑰园和历史悠久的罗尼喷泉。每年3月盛放的樱花道也是不可错过的景观。台地区以其精致繁复的花卉布置著称，是全园花卉配置最丰富考究的区域。</p>
+    <p>台地花园顶部有一座紫藤缠绕的廊架，底部则是一座鱼池，池中常年养有锦鲤，夏季还会种满耐寒与热带睡莲；沿台地一侧新建的岩缝花园则巧妙利用石缝间隙作为种植角落，为一些原本难以在本地气候中生长的植物创造出适宜的小气候。</p>
+
+    <h3>2. 布隆奎斯特本土植物园（H.L. Blomquist Garden of Native Plants）</h3>
+    <p>这座占地6.5英亩的花园地势起伏、林木葱郁，收藏了超过900种植物分类群，大多为美国东南部本土物种。花园于1968年落成，以纪念杜克大学植物学系首任系主任、东南部植物权威休戈·L·布隆奎斯特教授。园内还设有食虫植物区、一条静谧的溪流以及一座观鸟棚。园中有一座迷人的凉亭，是夏日纳凉的好去处；此外还有一处由天然泉水补给的小池塘，为苔藓、睡莲及食虫植物提供了理想的生长环境。</p>
+
+    <h3>3. 卡尔伯森亚洲植物园（W.L. Culberson Asiatic Arboretum）</h3>
+    <p>这座占地18英亩的花园以杜克大学教授、曾任花园主任的威廉·路易斯·卡尔伯森命名，代表了东亚地区丰富的植物多样性。步道沿途可见日本红枫、鸢尾、牡丹、姜百合和樱花等经典园艺植物，此外还有更多小众但极具植物学价值的物种。景观中融入了典型的亚洲园林元素——踏脚石小径、石灯笼与水钵、大型景石，以及各式仿古大门与桥梁。园内主要景点包括：日式风格的入口大门（周围点缀黄菊与秋季红叶）、克莱曼苔藓解说园、达勒姆-富山姊妹城市茶亭与凉亭、和平花园、凯瑟琳·史密斯苔藓园，以及本节重点介绍的梅耶桥（Meyer Bridge）和露丝·玛丽·梅耶日本园。</p>
+
+    <p><strong>红桥（Meyer Bridge）与池塘详情：</strong></p>
+    <p>这座标志性的红色拱桥横跨一片开阔水面，倒影清晰，桥旁还立有一座日式石灯笼雕塑，与四周树林相映成趣。据一些游客观察，这座桥原本是白色的，后来才被改漆成红色。2016年，这座桥正式命名为"梅耶桥"，以纪念在杜克大学任教超过50年的著名物理学家J·霍斯特·梅耶。如今它已成为许多婚纱照和纪念照的热门取景地。</p>
+    <p><strong>鱼：</strong>桥下池塘里游弋着大量锦鲤，是游客驻足观赏的重点。池塘中还生活着鲶鱼，它们常常靠捡食游客投喂给鸭子的面包屑为生。</p>
+    <p><strong>水禽：</strong>花园曾从北卡罗来纳州斯科特兰内克的Sylvan Heights水禽公园引入一批新水禽，充实亚洲池塘的"禽类展区"，包括一只雌性黑颈天鹅，以及成对的普通麻鸭、北方针尾鸭、帆背潜鸭、红冠潜鸭、白眼鸭、罗纹鸭、澳洲麻鸭、北美林鸳鸯，还有一只雄性中国鸳鸯。池边能近距离观察到多种鸭子（大多是被剪翅的观赏性外来品种），也常见家麻雀等小型雀鸟。湖中还能看到天鹅和乌龟，它们有时会共享一根浮木休憩。此外池塘及周边还能见到鹅，以及一只在"禽类池"边出没的大型苍鹭——它有时会利用游客投喂面包引鱼群浮出水面的机会捕食，游客甚至能在近至5英尺的距离内观察到它捕鱼的过程。</p>
+    <p><strong>喂食提示：</strong>花园建议游客购买台地商店里售卖的、每袋5毛钱的专用鸭食喂食，而不要用面包——面包对水禽的消化系统可能造成伤害。</p>
+    <p>这一带也很适合带孩子的家庭前来，游客除了看鸭子，运气好时还能观察到乌龟等小动物，是花园里节奏较慢、适合静静观察自然的一角。</p>
+    <p><strong>冬季雪景：</strong>偶尔降雪时，红桥在雪中格外醒目，鸭子仍在未结冰的水面游动，花园工作人员会特意前来喂食它们。</p>
+
+    <h3>4. 多丽丝·杜克中心花园（Doris Duke Center Gardens）</h3>
+    <p>该区域靠近花园主入口，包括佩奇-罗林斯白色花园、有机种植的夏洛特·布罗迪发现花园，以及种有睡莲与荷花的维图和平池。安格尔露天剧场被维图和平池与白色花园环绕，是儿童表演、观赏池塘和拍照的热门场所。夏季，这里的水池种满耐寒与热带睡莲、荷花及水生边缘植物，也是蝴蝶和蜻蜓最活跃的季节。</p>
+  </section>
+
+  <section>
+    <h2>四、草坪与野餐区域</h2>
+    <p>杜克花园里的草坪主要集中在历史花园与台地区，是全园最受欢迎的野餐和休闲场所。</p>
+    <p><strong>南草坪（South Lawn）：</strong>这里正是历史花园的起源地——1934年最初的鸢尾花园就位于如今南草坪所在的位置。如今，南草坪被公认为花园里最适合野餐的地方，紧邻台地花园。</p>
+    <p><strong>其他推荐草坪：</strong>花园官方还推荐蝴蝶园旁的草坪，以及水杉树周围的草坪作为野餐/团体聚会场地。</p>
+    <p><strong>多丽丝·杜克中心草坪：</strong>从多丽丝·杜克中心可直接进入，这片草坪可容纳多达700人，常用于露天音乐会等活动，游客可自带野餐垫、野餐篮和折叠椅，现场也有食品饮料出售（不允许携带宠物）。</p>
+    <p><strong>费舍尔露天剧场：</strong>同样位于历史花园内，是另一处宽敞美丽的聚会空间。</p>
+    <div class="tip-box">
+      <strong>使用须知：</strong>花园不适合用来组织运动会或进行飞盘、躲避球、足球等球类活动，这类活动建议改去校园内其他草坪或市内公园；野餐产生的垃圾需自行带走或投入垃圾桶/回收桶；也不可将冰块或饮料倒在草地、排水沟或园内水槽中，以免损害植物或影响基础设施运作。25人以上的团体需拆分成更小的小组分批入园。
+    </div>
+    <p><strong>冬季雪天场景：</strong>下雪天，草坪上常能看到学生们用纸箱裹着垃圾袋玩滑雪、堆巨型雪人，热闹非凡。</p>
+  </section>
+
+  <section>
+    <h2>五、特色植物收藏</h2>
+    <p>布隆奎斯特花园收藏有珍稀濒危本土植物、本土蕨类、延龄草、杜鹃花、栎属、山楂属和木兰属植物；卡尔伯森亚洲植物园收藏山茶（89种）、牡丹（46种）、亚洲鸢尾（49种）以及大量在中国、日本、韩国野外采集的植物，还有槭属（含大量日本红枫品种，共68种）、萱草（45种获奖品种）、玉簪等；历史核心区则收藏杜鹃花（70种）、黄杨（9种）、山茶（175种）、萱草（150种）、铁筷子（10种）、玉簪（22种）、鸢尾（23种）、牡丹（60种）、月季（25种）等。</p>
+  </section>
+
+  <section>
+    <h2>六、四季亮点与活动</h2>
+
+    <h3>春季（3-4月）</h3>
+    <p>3月盛开的樱花道是春季一大亮点。4月的台地花园则以球根花卉、樱花以及廊架上75年历史的紫藤盛放而闻名。</p>
+
+    <h3>夏季</h3>
+    <p><strong>水景与睡莲：</strong>台地花园鱼池夏季种满耐寒与热带睡莲，池中锦鲤悠游其间；维多利亚睡莲的叶片直径可达7英尺，十分壮观。</p>
+    <p><strong>盛开花卉：</strong>夏季亮点花卉包括各类百合、杜鹃花、松果菊、绣球花、福禄考、向日葵及紫薇。</p>
+    <p><strong>惊喜百合：</strong>花期在晚夏至初秋（约8月末至9月初），先开花后长叶，主要分布在亚洲植物园的苔藓园和牡丹园区。</p>
+    <p><strong>蝴蝶与蜻蜓：</strong>多丽丝·杜克中心花园夏季是蝴蝶和蜻蜓最活跃的季节。整个夏季花园处处繁花盛开，是远离城市喧嚣的宁静休憩之地。</p>
+
+    <h3>秋季</h3>
+    <p><strong>绚丽菊花节（A Festival of Fabulous Mums）：</strong>花园秋季固定特色展览，通常在11月初的周六、周日两天举行，时间为上午10点至下午3点（2025年为11月1-2日）；展出地点主要在卡尔伯森亚洲植物园内的露丝·玛丽·梅耶日本园户外。展出品种涵盖菊花的13个分类，中卡罗来纳菊花协会会员会到场讲解菊花知识、解答提问，并配有《菊花的奇妙世界》《如何培育大型菊花》等科普讲解；免费随到随看，适合各年龄段，未成年人须由成年人陪同，停车需另付费用；展览设在户外，步道为铺装与非铺装路面混合，部分路段有轻微起伏。</p>
+    <p><strong>丰收节（Harvest Festival）：</strong>通常在10月上旬举行，地点在夏洛特·布罗迪发现花园，是面向全年龄段的免费庆祝活动，内容包括达勒姆养蜂人协会展示、科学互动、音乐工坊、食物保存活动等。</p>
+
+    <h3>冬季</h3>
+    <p><strong>山茶花：</strong>从1月底开始，日本山茶花相继开放，花朵硕大（直径3-5英寸），有白、粉、玫红、红等多种颜色，能耐受冬季低温；12月起，常绿的枸骨冬青和落叶冬青以鲜红浆果为花园增添节日气息。</p>
+    <p><strong>蜡梅：</strong>2月前后，芳香四溢的蛋黄色蜡梅盛开，是冬季里格外惊艳的一景。</p>
+    <p><strong>其他冬季花卉：</strong>冬季游览时能欣赏到日本山茶、贴梗海棠和金缕梅的斑斓色彩；随着春天临近，木兰及其他开花乔木也会相继萌动。</p>
+    <p><strong>实地一景：</strong>冬季台地花园里种满了五颜六色的三色堇，池中的锦鲤依然活跃；金缕梅在山坡起始处绽放；亚洲植物园里的日本杏开始吐露粉色花苞；穿过红桥后还能看到色彩明艳的山茶花，不少花苞蓄势待放。</p>
+    <p><strong>偶尔降雪：</strong>雪后的花园红桥格外醒目，鸭子在未结冰水面游动，工作人员特意前来喂食；草坪上则是学生们滑雪、堆雪人的欢乐场景。</p>
+  </section>
+
+  <section>
+    <h2>七、参观配套</h2>
+    <p>园区入口设有多丽丝·杜克中心，内含咖啡馆、礼品店和游客中心，并配有可供租赁的典雅活动大厅，是许多婚礼及特殊活动的举办地。</p>
+    <p>花园毗邻杜克教堂等标志性建筑，可结合校园游览一并安排；附近的华盛顿·杜克旅馆和JB杜克酒店是两座颇具口碑的高档住宿选择；达勒姆市区可通过免费的Bull City Connector公交线路便捷抵达花园。</p>
+    <div class="disclaimer">
+      门票、开放时间、活动日期及动植物情况可能随季节和实际管理情况调整，建议出发前访问官网 gardens.duke.edu 或联系 gardens@duke.edu 确认最新信息。
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div>本文整理自公开资料，仅供参考</div>
+  <div class="credit-final">文字编辑与音频合成由扯谈Duke 群完成</div>
+</footer>
+
+<script>
+(function () {
+  const genBtn = document.getElementById('genBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const audioEl = document.getElementById('ttsAudio');
+  const statusEl = document.getElementById('ttsStatus');
+  const keyInput = document.getElementById('azureKey');
+  const regionInput = document.getElementById('azureRegion');
+  const voiceSelect = document.getElementById('voiceName');
+
+  // 提取正文文本（去掉音频面板本身，避免朗读设置说明）
+  function getArticleText() {
+    const sections = document.querySelectorAll('.container section');
+    let text = '';
+    sections.forEach(sec => {
+      text += sec.innerText.trim() + '\n\n';
+    });
+    return text;
+  }
+
+  // 将长文本拆分为 Azure TTS 单次请求可接受的片段（避免超出 SSML 长度限制）
+  function chunkText(text, maxLen) {
+    const paragraphs = text.split('\n').filter(p => p.trim().length > 0);
+    const chunks = [];
+    let current = '';
+    for (const p of paragraphs) {
+      if ((current + p).length > maxLen) {
+        if (current) chunks.push(current);
+        current = p;
+      } else {
+        current += (current ? '\n' : '') + p;
+      }
+    }
+    if (current) chunks.push(current);
+    return chunks;
+  }
+
+  function escapeXml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  async function synthesizeChunk(text, key, region, voice) {
+    const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
+    const ssml = `<speak version='1.0' xml:lang='zh-CN'>
+      <voice xml:lang='zh-CN' name='${voice}'>${escapeXml(text)}</voice>
+    </speak>`;
+
+    const resp = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Ocp-Apim-Subscription-Key': key,
+        'Content-Type': 'application/ssml+xml',
+        'X-Microsoft-OutputFormat': 'audio-16khz-64kbitrate-mono-mp3',
+        'User-Agent': 'DukeGardensHTML'
+      },
+      body: ssml
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text().catch(() => '');
+      throw new Error(`Azure TTS 请求失败 (${resp.status})：${errText || resp.statusText}`);
+    }
+    return await resp.arrayBuffer();
+  }
+
+  genBtn.addEventListener('click', async () => {
+    const key = keyInput.value.trim();
+    const region = regionInput.value.trim();
+    const voice = voiceSelect.value;
+
+    if (!key || !region) {
+      statusEl.textContent = '请先在下方"Azure 语音服务设置"中填写 API Key 和区域。';
+      return;
+    }
+
+    genBtn.disabled = true;
+    stopBtn.disabled = false;
+    audioEl.style.display = 'none';
+    statusEl.textContent = '正在调用 Azure 语音服务合成音频，请稍候……';
+
+    try {
+      const fullText = getArticleText();
+      // Azure 单次请求建议控制在约 3000 字符以内
+      const chunks = chunkText(fullText, 1800);
+      const buffers = [];
+
+      for (let i = 0; i < chunks.length; i++) {
+        statusEl.textContent = `正在合成第 ${i + 1} / ${chunks.length} 段音频……`;
+        const buf = await synthesizeChunk(chunks[i], key, region, voice);
+        buffers.push(buf);
+      }
+
+      // 合并多个 mp3 片段（简单拼接，适用于大多数播放器）
+      const blob = new Blob(buffers, { type: 'audio/mpeg' });
+      const url = URL.createObjectURL(blob);
+      audioEl.src = url;
+      audioEl.style.display = 'block';
+      audioEl.play();
+
+      // 提供下载链接
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '杜克花园介绍-扯谈Duke群.mp3';
+      a.textContent = '⬇ 下载 mp3 文件';
+      a.style.display = 'inline-block';
+      a.style.marginTop = '8px';
+      a.style.color = '#00539b';
+      statusEl.innerHTML = `音频生成完成，共 ${chunks.length} 段已合并播放。`;
+      statusEl.appendChild(document.createElement('br'));
+      statusEl.appendChild(a);
+
+    } catch (err) {
+      statusEl.textContent = '生成失败：' + err.message;
+    } finally {
+      genBtn.disabled = false;
+      stopBtn.disabled = true;
+    }
+  });
+
+  stopBtn.addEventListener('click', () => {
+    audioEl.pause();
+    stopBtn.disabled = true;
+  });
+})();
+</script>
+
+</body>
+</html>
