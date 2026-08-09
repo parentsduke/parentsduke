@@ -5648,6 +5648,15 @@
           continue;
         }
 
+        if (c === '\'') {
+          let count = 0;
+          while (peek() === '\'') { count++; i++; }
+          const ORDER_WORD = { 1: '', 2: '二阶', 3: '三阶' };
+          out += count <= 3 ? ` 的${ORDER_WORD[count]}导数 ` : ` 的${count}阶导数 `;
+          atOperandStart = false;
+          continue;
+        }
+
         if (c === '_') {
           i++;
           const raw = readGroup().trim();
