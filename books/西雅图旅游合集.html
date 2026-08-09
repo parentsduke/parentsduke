@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>西雅图景点美食合集</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    background: #f5f7f8;
+    color: #262b2e;
+    margin: 0;
+    padding: 0;
+    line-height: 1.7;
+  }
+  header {
+    background: linear-gradient(135deg, #0b3d5c 0%, #072940 100%);
+    color: #fff;
+    padding: 48px 24px 36px;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+  header p {
+    margin: 8px 0 0;
+    color: #cfe2ee;
+    font-size: 14px;
+  }
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+  section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px 26px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  section h2 {
+    font-size: 19px;
+    color: #072940;
+    border-left: 5px solid #2a9d8f;
+    padding-left: 12px;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  h3.sub {
+    font-size: 15px;
+    color: #1f7a6e;
+    margin: 18px 0 8px;
+  }
+  .item {
+    margin-bottom: 14px;
+  }
+  .item .name {
+    font-weight: 600;
+    color: #072940;
+  }
+  .item .desc {
+    color: #454b4e;
+    font-size: 14.5px;
+    margin-top: 3px;
+  }
+  ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  li {
+    margin-bottom: 6px;
+  }
+  .tip {
+    background: #eaf6f4;
+    border-left: 4px solid #2a9d8f;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #17564d;
+    margin-top: 16px;
+  }
+  .audio-panel {
+    background: #fff;
+    border: 1px solid #dfe6e9;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: -20px auto 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .audio-panel h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    color: #072940;
+  }
+  .audio-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .audio-controls button {
+    background: #0b3d5c;
+    color: #fff;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .audio-controls button:hover { background: #072940; }
+  .audio-controls button:disabled { background: #aaa; cursor: not-allowed; }
+  audio { width: 100%; margin-top: 10px; display: none; }
+  .audio-status { font-size: 13px; color: #6b6b6b; margin-top: 6px; }
+  .key-note {
+    font-size: 12px;
+    color: #6b6b6b;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  details.settings { margin-top: 10px; }
+  details.settings summary { cursor: pointer; font-size: 13.5px; color: #1f7a6e; }
+  .settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .settings-grid input, .settings-grid select {
+    padding: 6px 8px;
+    border: 1px solid #dfe6e9;
+    border-radius: 6px;
+    font-size: 13.5px;
+    width: 100%;
+  }
+  footer {
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+    padding: 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>西雅图景点 · 美食合集</h1>
+  <p>Seattle Travel Guide</p>
+</header>
+
+<div class="container">
+
+  <div class="audio-panel">
+    <h3>🔊 语音朗读（Azure 文本转语音）</h3>
+    <div class="audio-controls">
+      <button id="genBtn">生成并播放语音</button>
+      <button id="stopBtn" disabled>停止</button>
+    </div>
+    <audio id="ttsAudio" controls></audio>
+    <div class="audio-status" id="ttsStatus">尚未生成音频。点击"生成并播放语音"，将调用 Azure 语音服务朗读全文。</div>
+    <details class="settings">
+      <summary>Azure 语音服务设置（首次使用需填写）</summary>
+      <div class="settings-grid">
+        <input type="text" id="azureKey" placeholder="Azure Speech API Key">
+        <input type="text" id="azureRegion" placeholder="区域，如 eastasia">
+        <select id="voiceName">
+          <option value="zh-CN-XiaoxiaoNeural">晓晓（女声，标准）</option>
+          <option value="zh-CN-YunxiNeural">云希（男声，标准）</option>
+          <option value="zh-CN-XiaoyiNeural">晓伊（女声，活泼）</option>
+          <option value="zh-CN-YunyangNeural">云扬（男声，新闻播报）</option>
+        </select>
+      </div>
+      <div class="key-note">
+        说明：本页面不包含任何 Azure API Key。你需要在 Azure 门户创建"语音服务"资源，将 Key 与区域填入上方输入框（仅保存在本机浏览器内存中，不会上传到任何第三方服务器）。生成的 mp3 可在播放器中直接下载保存。
+      </div>
+    </details>
+  </div>
+
+  <section>
+    <h2>地标与公园</h2>
+    <div class="item">
+      <div class="name">太空针塔（Space Needle）</div>
+      <div class="desc">西雅图最著名的地标，1962年世博会为主题建造，高184米，观景台可360度俯瞰整个城市、埃利奥特湾和雷尼尔雪山。塔顶还有旋转玻璃地板，适合拍照。</div>
+    </div>
+    <div class="item">
+      <div class="name">派克市场（Pike Place Market）</div>
+      <div class="desc">美国历史最悠久的公众市场之一，1907年开业。以飞鱼摊位（摊贩隔空抛接鱼）闻名，还有第一家星巴克门店、各种手工艺品、鲜花摊和小吃摊，是西雅图人气最高的景点。</div>
+    </div>
+    <div class="item">
+      <div class="name">奇胡利玻璃艺术园（Chihuly Garden and Glass）</div>
+      <div class="desc">紧邻太空针塔，展出玻璃艺术大师戴尔·奇胡利的作品，色彩斑斓的玻璃雕塑与花园、玻璃屋结合，视觉效果震撼，适合喜欢艺术摄影的游客。</div>
+    </div>
+    <div class="item">
+      <div class="name">凯利公园（Kerry Park）</div>
+      <div class="desc">皇后区（Queen Anne）山坡上的小公园，是拍摄西雅图天际线（太空针塔+雷尼尔雪山+市区）明信片照片的经典机位，日落时分尤其漂亮。</div>
+    </div>
+    <div class="item">
+      <div class="name">发现公园（Discovery Park）</div>
+      <div class="desc">西雅图最大的城市公园，占地超过五百英亩，有海滩、悬崖步道和原始森林，能远眺普吉特湾和奥林匹克山脉，适合徒步和亲近自然。</div>
+    </div>
+    <div class="item">
+      <div class="name">煤气厂公园（Gas Works Park）</div>
+      <div class="desc">由废弃的煤气厂改造而成的工业风公园，保留了大型锈迹斑斑的炼油设备作为景观装置，隔湖能看到市区天际线，是野餐和放风筝的热门地点。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>市区与特色社区</h2>
+    <div class="item">
+      <div class="name">先锋广场（Pioneer Square）</div>
+      <div class="desc">西雅图最早的城区，19世纪末维多利亚风格砖石建筑保留完好，画廊、古董店集中，也是"地下西雅图"（Underground Tour）导览的起点，能了解1889年大火后城市重建的历史。</div>
+    </div>
+    <div class="item">
+      <div class="name">弗里蒙特（Fremont）</div>
+      <div class="desc">自称"宇宙中心"的波西米亚风社区，以巨型桥下巨人雕像（Fremont Troll）和列宁雕像闻名，周日有大型跳蚤市场，气氛文艺又古怪。</div>
+    </div>
+    <div class="item">
+      <div class="name">巴拉德（Ballard）</div>
+      <div class="desc">曾是斯堪的纳维亚渔民聚居区，保留北欧文化痕迹，如今是精酿啤酒厂、海鲜餐厅和周末农夫市场的聚集地，巴拉德船闸（Ballard Locks）能看到船只和洄游的三文鱼。</div>
+    </div>
+    <div class="item">
+      <div class="name">国会山（Capitol Hill）</div>
+      <div class="desc">西雅图最有活力的街区之一，LGBTQ+文化重镇，酒吧、livehouse、咖啡馆和独立书店密集，夜生活丰富。</div>
+    </div>
+    <div class="item">
+      <div class="name">皇后区（Queen Anne）</div>
+      <div class="desc">环绕山丘的住宅区，维多利亚风格老宅林立，视野好，是本地人喜欢居住的安静片区，也是俯瞰市区的好去处。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>博物馆</h2>
+    <div class="item">
+      <div class="name">流行文化博物馆（MoPOP）</div>
+      <div class="desc">由建筑师弗兰克·盖里设计，外形如流动的金属波浪，紧邻太空针塔。馆内展出音乐、科幻、电影相关的流行文化收藏，西雅图本地音乐人吉米·亨德里克斯和涅槃乐队的展区是亮点。</div>
+    </div>
+    <div class="item">
+      <div class="name">西雅图艺术博物馆（Seattle Art Museum, SAM）</div>
+      <div class="desc">市中心核心美术馆，收藏跨越古代到当代的多元艺术，非洲、亚洲、太平洋西北原住民艺术板块很有特色，门口的"锤人"（Hammering Man）雕塑是地标。</div>
+    </div>
+    <div class="item">
+      <div class="name">西雅图历史与工业博物馆（MOHAI）</div>
+      <div class="desc">位于联合湖畔，讲述西雅图从伐木小镇到科技之城的发展历程，馆藏包括波音早期飞机模型和大量本地历史影像资料。</div>
+    </div>
+    <div class="item">
+      <div class="name">太平洋科学中心（Pacific Science Center）</div>
+      <div class="desc">紧邻太空针塔，互动科学馆加IMAX剧场，还有蝴蝶温室和恐龙化石展区，适合带小孩的家庭。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>大学</h2>
+    <div class="item">
+      <div class="name">华盛顿大学（University of Washington, UW）</div>
+      <div class="desc">美国顶尖公立大学之一，校园本身是著名景点：红砖哥特式的Suzzallo图书馆被称为"哈利波特图书馆"；每年3-4月樱花道盛开时是本地人气打卡地；校园紧邻联合湖，风景优美，適合悠闲漫步。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>美食</h2>
+
+    <h3 class="sub">海鲜</h3>
+    <ul>
+      <li>派克市场内及周边有多家老牌海鲜餐厅，太平洋沿岸生蚝、邓杰内斯蟹（Dungeness Crab）、三文鱼是招牌</li>
+      <li>Ivar's：西雅图本地老字号海鲜连锁，主打炸鱼薯条和蛤蜊浓汤，滨水区分店可以边吃边看海景</li>
+      <li>渔人码头附近有不少现捞现做的海鲜摊位</li>
+    </ul>
+
+    <h3 class="sub">咖啡文化</h3>
+    <ul>
+      <li><strong>星巴克1号店</strong>：位于派克市场，1971年开业，是全球咖啡连锁巨头的起点，外观保留最初的棕色双尾美人鱼标志，常年排长队</li>
+      <li>西雅图是精品咖啡文化的发源地之一，独立咖啡馆密集，Victrola、Espresso Vivace等本地品牌都值得一试</li>
+    </ul>
+
+    <h3 class="sub">其他特色</h3>
+    <ul>
+      <li>派克市场内的手工甜甜圈、新鲜水果和奶酪摊位适合边逛边吃</li>
+      <li>国会山一带聚集了不少亚洲料理和创意融合菜餐厅，选择丰富</li>
+      <li>巴拉德的精酿啤酒厂适合喜欢啤酒文化的游客体验本地酒馆气氛</li>
+    </ul>
+
+    <div class="tip">小贴士：派克市场人多手杂，逛的时候要看好随身物品；如果对海鲜感兴趣，建议避开正午高峰时段去尝鲜，体验更好。</div>
+  </section>
+
+  <section>
+    <h2>公共交通</h2>
+    <div class="item">
+      <div class="desc">西雅图地区的公共交通由多家机构联合运营（Sound Transit、King County Metro等），统一使用ORCA卡支付，覆盖轻轨、公交、streetcar和渡轮。</div>
+    </div>
+
+    <h3 class="sub">交通方式</h3>
+    <ul>
+      <li><strong>Link轻轨</strong>：连接机场（SeaTac）、市中心和多个社区，是从机场进城最方便的方式</li>
+      <li><strong>公交车（Metro Bus）</strong>：覆盖面最广，市区和周边社区都能到达</li>
+      <li><strong>西雅图有轨电车（Streetcar）</strong>：市区短途接驳，连接南湖联合区和国际区</li>
+      <li><strong>华盛顿州渡轮（Washington State Ferries）</strong>：从市中心可以坐渡轮去贝恩布里奇岛等地，本身就是热门观光体验</li>
+    </ul>
+
+    <h3 class="sub">票价</h3>
+    <ul>
+      <li>Link轻轨、Sound Transit快线单程票价成人$3.00，18岁以下青少年免费</li>
+      <li>区域日票（Regional Day Pass）$6.00，全天不限次数换乘（票价$3以内的行程都覆盖）</li>
+      <li>ORCA卡换乘规则：2小时内换乘不同交通方式，之前的车资可以抵扣</li>
+    </ul>
+
+    <h3 class="sub">ORCA卡怎么用</h3>
+    <ul>
+      <li>ORCA卡是覆盖全区域交通系统的通用卡，也支持手机银行卡直接拍卡（Tap to Pay）支付</li>
+      <li>可在自助售票机、官网、部分超市购买和充值</li>
+      <li>短途游客可以直接用带感应功能的信用卡/手机钱包拍卡进站，不用单独买卡</li>
+    </ul>
+
+    <div class="tip">小贴士：市中心景点（派克市场、先锋广场、太空针塔）步行或轻轨都能到；去巴拉德、弗里蒙特建议公交或打车；晚上避免在市中心第三大道（3rd Avenue）附近独自等车，建议用轻轨或网约车。</div>
+  </section>
+
+  <section>
+    <h2>8月气候</h2>
+    <div class="item">
+      <div class="name">气温</div>
+      <div class="desc">白天最高温大约24-26°C，夜晚最低温14-15°C左右，是西雅图全年最温暖、最舒适的月份之一，昼夜温差比较明显，早晚建议带件薄外套。</div>
+    </div>
+    <div class="item">
+      <div class="name">降水</div>
+      <div class="desc">8月是西雅图全年最干燥的月份之一，降雨很少，晴天居多，和秋冬季节多雨阴沉的天气形成鲜明对比，是户外活动的最佳季节。</div>
+    </div>
+    <div class="item">
+      <div class="name">穿衣建议</div>
+      <div class="desc">白天短袖、薄外套即可；早晚和海边（如渡轮上、派克市场滨水区）风比较大，建议带件薄外套；紫外线较强，建议涂防晒霜、戴墨镜。</div>
+    </div>
+    <div class="item">
+      <div class="name">其他</div>
+      <div class="desc">8月是旅游旺季，太空针塔、派克市场等热门景点人流较多，建议尽量避开周末和正午高峰时段；晴朗天气下，从凯利公园等观景点能清晰看到雷尼尔雪山，是拍照最佳时机。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>安全须知</h2>
+    <div class="item">
+      <div class="desc">西雅图整体安全评级为中等偏上，2026年犯罪率较前两年有明显下降趋势，但安全状况因街区而异，建议提前了解要去的区域。</div>
+    </div>
+
+    <h3 class="sub">需要注意的风险</h3>
+    <ul>
+      <li><strong>财物安全</strong>是主要问题：车内不要留下任何可见的行李或电子设备，这是游客最常遇到的犯罪类型；派克市场人群密集处要留意扒窃</li>
+      <li><strong>市中心第三大道（3rd Avenue，Pike到Pine一带）、先锋广场（Pioneer Square）夜间</strong>：这几个区域晚上治安相对复杂，公开吸毒和流浪现象较明显，建议避开或改走第四、第五大道，夜间尽量用网约车</li>
+      <li>国际区（International District）夜间也建议多加留意</li>
+      <li>派克市场、滨水区、太空针塔周边以及皇后区、弗里蒙特、巴拉德、国会山这些游客常去的区域整体安全、氛围不错</li>
+    </ul>
+
+    <h3 class="sub">实用建议</h3>
+    <ul>
+      <li>停车尽量选择酒店停车场或有人看管的停车场，不要路边停车过夜</li>
+      <li>入住前可以关注西雅图警方的"Visitor Safety Tips"页面，了解实时安全信息</li>
+      <li>如果不是本地保险用户，美国急诊费用普遍较高，建议购买旅行医疗保险</li>
+    </ul>
+  </section>
+
+</div>
+
+<footer>西雅图旅游合集 · Seattle</footer>
+
+<script>
+(function () {
+  const genBtn = document.getElementById('genBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const audioEl = document.getElementById('ttsAudio');
+  const statusEl = document.getElementById('ttsStatus');
+  const keyInput = document.getElementById('azureKey');
+  const regionInput = document.getElementById('azureRegion');
+  const voiceSelect = document.getElementById('voiceName');
+
+  // 提取正文文本（去掉音频面板本身，避免朗读设置说明）
+  function getArticleText() {
+    const sections = document.querySelectorAll('.container section');
+    let text = '';
+    sections.forEach(sec => {
+      text += sec.innerText.trim() + '\n\n';
+    });
+    return text;
+  }
+
+  // 将长文本拆分为 Azure TTS 单次请求可接受的片段（避免超出 SSML 长度限制）
+  function chunkText(text, maxLen) {
+    const paragraphs = text.split('\n').filter(p => p.trim().length > 0);
+    const chunks = [];
+    let current = '';
+    for (const p of paragraphs) {
+      if ((current + p).length > maxLen) {
+        if (current) chunks.push(current);
+        current = p;
+      } else {
+        current += (current ? '\n' : '') + p;
+      }
+    }
+    if (current) chunks.push(current);
+    return chunks;
+  }
+
+  function escapeXml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  async function synthesizeChunk(text, key, region, voice) {
+    const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
+    const ssml = `<speak version='1.0' xml:lang='zh-CN'>
+      <voice xml:lang='zh-CN' name='${voice}'>${escapeXml(text)}</voice>
+    </speak>`;
+
+    const resp = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Ocp-Apim-Subscription-Key': key,
+        'Content-Type': 'application/ssml+xml',
+        'X-Microsoft-OutputFormat': 'audio-16khz-64kbitrate-mono-mp3',
+        'User-Agent': 'SeattleGuideHTML'
+      },
+      body: ssml
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text().catch(() => '');
+      throw new Error(`Azure TTS 请求失败 (${resp.status})：${errText || resp.statusText}`);
+    }
+    return await resp.arrayBuffer();
+  }
+
+  genBtn.addEventListener('click', async () => {
+    const key = keyInput.value.trim();
+    const region = regionInput.value.trim();
+    const voice = voiceSelect.value;
+
+    if (!key || !region) {
+      statusEl.textContent = '请先在下方"Azure 语音服务设置"中填写 API Key 和区域。';
+      return;
+    }
+
+    genBtn.disabled = true;
+    stopBtn.disabled = false;
+    audioEl.style.display = 'none';
+    statusEl.textContent = '正在调用 Azure 语音服务合成音频，请稍候……';
+
+    try {
+      const fullText = getArticleText();
+      // Azure 单次请求建议控制在约 1800 字符以内
+      const chunks = chunkText(fullText, 1800);
+      const buffers = [];
+
+      for (let i = 0; i < chunks.length; i++) {
+        statusEl.textContent = `正在合成第 ${i + 1} / ${chunks.length} 段音频……`;
+        const buf = await synthesizeChunk(chunks[i], key, region, voice);
+        buffers.push(buf);
+      }
+
+      // 合并多个 mp3 片段（简单拼接，适用于大多数播放器）
+      const blob = new Blob(buffers, { type: 'audio/mpeg' });
+      const url = URL.createObjectURL(blob);
+      audioEl.src = url;
+      audioEl.style.display = 'block';
+      audioEl.play();
+
+      // 提供下载链接
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '西雅图旅游合集.mp3';
+      a.textContent = '⬇ 下载 mp3 文件';
+      a.style.display = 'inline-block';
+      a.style.marginTop = '8px';
+      a.style.color = '#0b3d5c';
+      statusEl.innerHTML = `音频生成完成，共 ${chunks.length} 段已合并播放。`;
+      statusEl.appendChild(document.createElement('br'));
+      statusEl.appendChild(a);
+
+    } catch (err) {
+      statusEl.textContent = '生成失败：' + err.message;
+    } finally {
+      genBtn.disabled = false;
+      stopBtn.disabled = true;
+    }
+  });
+
+  stopBtn.addEventListener('click', () => {
+    audioEl.pause();
+    stopBtn.disabled = true;
+  });
+})();
+</script>
+
+</body>
+</html>
