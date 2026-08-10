@@ -5586,7 +5586,7 @@
           }
           else if (cmd === 'to') { out += ' 趋近于 '; }
           else if (cmd === 'rightarrow') { out += ' 箭头 '; }
-          else if (cmd === 'Rightarrow') { out += ' 推出 '; }
+          else if (cmd === 'Rightarrow' || cmd === 'Longrightarrow') { out += ' 推出 '; }
           else if (cmd === 'Leftrightarrow' || cmd === 'Longleftrightarrow' || cmd === 'iff') { out += ' 当且仅当 '; }
           else if (cmd === 'dots' || cmd === 'cdots' || cmd === 'ldots' || cmd === 'vdots' || cmd === 'ddots') { out += ' 等等 '; }
           else if (/^[Bb]igg?[lr]?$/.test(cmd)) { /* 括号大小标记，忽略 */ }
