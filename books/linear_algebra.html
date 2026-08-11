@@ -5471,15 +5471,18 @@
   const GREEK = { alpha:'阿尔法', beta:'贝塔', gamma:'伽马', delta:'德尔塔', epsilon:'艾普西龙',
     zeta:'泽塔', eta:'伊塔', theta:'西塔', iota:'约塔', kappa:'卡帕', lambda:'拉姆达', mu:'缪',
     nu:'纽', xi:'克西', pi:'派', rho:'柔', sigma:'西格玛', tau:'陶', upsilon:'宇普西龙',
-    phi:'斐', chi:'凯', psi:'普赛', omega:'欧米伽' };
-  const FUNCS = { sin:'正弦', cos:'余弦', tan:'正切', cot:'余切', log:'对数', ln:'自然对数', exp:'指数', det:'行列式' };
+    phi:'斐', chi:'凯', psi:'普赛', omega:'欧米伽',
+    Gamma:'大写伽马', Delta:'大写德尔塔', Theta:'大写西塔', Lambda:'大写拉姆达', Xi:'大写克西',
+    Pi:'大写派', Sigma:'大写西格玛', Upsilon:'大写宇普西龙', Phi:'大写斐', Psi:'大写普赛', Omega:'大写欧米伽' };
+  const FUNCS = { sin:'正弦', cos:'余弦', tan:'正切', cot:'余切', log:'对数', ln:'自然对数', exp:'指数', det:'行列式',
+    min:'最小值', max:'最大值' };
   // 会把"接下来该出现一个新操作数"的状态重置为 true 的命令（关系符/连接词），
   // 用来判断紧随其后的 - 应该念"负"还是"减"
   const OPERATOR_CMDS = new Set(['to','rightarrow','Rightarrow','Longrightarrow','Leftrightarrow','Longleftrightarrow','iff',
-    'times','div','cdot','pm','mp','leq','le','geq','ge','neq','ne','approx',
+    'times','div','cdot','pm','mp','leq','le','geq','ge','neq','ne','approx','lt','gt',
     'in','notin','subset','subseteq','cup','cap','forall','exists','perp','parallel','cong','sim','simeq',
-    'dots','cdots','ldots','vdots','ddots','sum','int','lim']);
-  const NO_STATE_CHANGE_CMDS = new Set(['left','right','underbrace','overbrace','quad','qquad']);
+    'dots','cdots','ldots','vdots','ddots','sum','int','prod','lim','langle','mid','xrightarrow','xleftarrow','leftrightarrow']);
+  const NO_STATE_CHANGE_CMDS = new Set(['left','right','middle','underbrace','overbrace','quad','qquad','displaystyle','textstyle','scriptstyle','phantom']);
   const OPNAMES = { im:'像', ker:'核', rank:'秩', tr:'迹', span:'张成', dim:'维数', det:'行列式',
     col:'列空间', row:'行空间', sgn:'符号', ad:'伴随作用', adj:'伴随矩阵', diag:'对角矩阵', proj:'投影' };
   // 矩阵/行列式阶数的中文数词（1~10阶常见范围，超出则退回阿拉伯数字）
@@ -5541,7 +5544,7 @@
           const cmd = m[1];
           i += m[0].length;
 
-          if (cmd === 'frac') {
+          if (cmd === 'frac' || cmd === 'dfrac' || cmd === 'tfrac') {
             const num = speakify(readGroup());
             const den = speakify(readGroup());
             out += ` ${den}分之${num} `;
@@ -5556,8 +5559,8 @@
             }
             const radicand = speakify(readGroup());
             out += index ? ` ${index}次根号下${radicand} ` : ` 根号下${radicand} `;
-          } else if (cmd === 'sum' || cmd === 'int') {
-            const label = cmd === 'sum' ? '求和' : '积分';
+          } else if (cmd === 'sum' || cmd === 'int' || cmd === 'prod') {
+            const label = cmd === 'sum' ? '求和' : (cmd === 'prod' ? '连乘' : '积分');
             skipSpace();
             let lower = '', upper = '';
             while (peek() === '_' || peek() === '^') {
@@ -5567,7 +5570,7 @@
             }
             let phrase;
             if (lower && upper) phrase = `从${lower}到${upper}的${label}`;
-            else if (lower) phrase = (cmd === 'sum') ? `对${lower}求和` : `从${lower}开始的${label}`;
+            else if (lower) phrase = (cmd === 'sum' || cmd === 'prod') ? `对${lower}${label}` : `从${lower}开始的${label}`;
             else if (upper) phrase = `到${upper}的${label}`;
             else phrase = label;
             out += ` ${phrase} `;
@@ -5598,6 +5601,14 @@
           }
           else if (cmd === 'to') { out += ' 趋近于 '; }
           else if (cmd === 'rightarrow') { out += ' 箭头 '; }
+          else if (cmd === 'xrightarrow' || cmd === 'xleftarrow') {
+            skipSpace();
+            let label = '';
+            if (peek() === '[') { let start = ++i; while (peek() !== ']' && i < latex.length) i++; i++; } // 跳过下标形式的说明，不朗读
+            if (peek() === '{') { label = speakify(readGroup()).trim(); }
+            out += label ? ` 经过${label}变为 ` : ' 变为 ';
+          }
+          else if (cmd === 'leftrightarrow') { out += ' 交换 '; }
           else if (cmd === 'Rightarrow' || cmd === 'Longrightarrow') { out += ' 推出 '; }
           else if (cmd === 'Leftrightarrow' || cmd === 'Longleftrightarrow' || cmd === 'iff') { out += ' 当且仅当 '; }
           else if (cmd === 'dots' || cmd === 'cdots' || cmd === 'ldots' || cmd === 'vdots' || cmd === 'ddots') { out += ' 等等 '; }
@@ -5628,15 +5639,29 @@
           else if (cmd === 'geq' || cmd === 'ge') { out += ' 大于等于 '; }
           else if (cmd === 'neq' || cmd === 'ne') { out += ' 不等于 '; }
           else if (cmd === 'approx') { out += ' 约等于 '; }
-          else if (cmd === 'circ') { out += ' 度 '; }
-          else if (cmd === 'left' || cmd === 'right') { /* 括号大小标记，忽略 */ }
+          else if (cmd === 'circ') { out += ' 复合 '; }
+          else if (cmd === 'left' || cmd === 'right' || cmd === 'middle') { /* 括号大小标记，忽略 */ }
+          else if (cmd === 'displaystyle' || cmd === 'textstyle' || cmd === 'scriptstyle') { /* 排版样式标记，无实际读音，忽略 */ }
+          else if (cmd === 'phantom') { readGroup(); /* 不可见占位，跳过不读 */ }
+          else if (cmd === 'langle') { out += ' 尖括号 '; }
+          else if (cmd === 'rangle') { out += ' 右尖括号 '; }
+          else if (cmd === 'binom') {
+            const top = speakify(readGroup());
+            const bottom = speakify(readGroup());
+            out += ` 上${top}下${bottom} `;
+          }
+          else if (cmd === 'mid') { out += ' 竖线 '; }
+          else if (cmd === 'lt') { out += ' 小于 '; }
+          else if (cmd === 'gt') { out += ' 大于 '; }
+          else if (cmd === 'checkmark') { out += ' 对勾 '; }
+          else if (cmd === 'hbar') { out += ' 约化普朗克常数 '; }
           else if (cmd === 'text') { out += ` ${readGroup()} `; }
           else if (cmd === 'operatorname') {
             const opRaw = readGroup().trim().toLowerCase();
             out += ` ${OPNAMES[opRaw] || opRaw} `;
           }
           else if (cmd === 'vec') { out += ` 向量${speakify(readGroup())} `; }
-          else if (cmd === 'mathrm' || cmd === 'mathbf' || cmd === 'boldsymbol' || cmd === 'hat' || cmd === 'bar' || cmd === 'overline' || cmd === 'mathbb' || cmd === 'mathcal') { out += ` ${speakify(readGroup())} `; }
+          else if (cmd === 'mathrm' || cmd === 'mathbf' || cmd === 'boldsymbol' || cmd === 'hat' || cmd === 'bar' || cmd === 'overline' || cmd === 'tilde' || cmd === 'underline' || cmd === 'mathbb' || cmd === 'mathcal' || cmd === 'mathfrak') { out += ` ${speakify(readGroup())} `; }
           else if (GREEK[cmd]) { out += ` ${GREEK[cmd]} `; }
           else if (FUNCS[cmd]) { out += ` ${FUNCS[cmd]} `; }
           else { out += ` ${cmd} `; }
