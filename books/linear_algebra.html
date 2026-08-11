@@ -4561,7 +4561,7 @@
       </div>
 
       <h3 class="part"><span class="tag">定义</span>广义特征向量与若尔当链</h3>
-      <div class="step">既然普通特征向量不够，就退一步找<strong>广义特征向量</strong>：向量 $\xi$ 满足 $(A-\lambda I)^k\xi=0$（对某个正整数 $k$），但 $(A-\lambda I)^{k-1}\xi\neq0$。这样的 $\xi$ 未必被 $A$ 单纯拉伸，但被 $(A-\lambda I)$ 反复作用后终会归零。</div>
+      <div class="step">既然普通特征向量不够，就退一步找<strong>广义特征向量</strong>：向量 $\xi_k$ 满足 $(A-\lambda I)^k\xi_k=0$（对某个正整数 $k$），但 $(A-\lambda I)^{k-1}\xi_k\neq0$。这样的 $\xi_k$ 未必被 $A$ 单纯拉伸，但被 $(A-\lambda I)$ 反复作用后终会归零。</div>
       <div class="step">从一个满足 $(A-\lambda I)^m\xi_m=0$、$(A-\lambda I)^{m-1}\xi_m\neq0$ 的向量 $\xi_m$ 出发，递推定义一条<strong>若尔当链</strong>：
       $$\xi_{m-1}=(A-\lambda I)\xi_m,\quad \xi_{m-2}=(A-\lambda I)\xi_{m-1},\ \dots,\ \xi_1=(A-\lambda I)\xi_2$$
       链的末端 $\xi_1$ 正是一个普通特征向量（因为 $(A-\lambda I)\xi_1=0$）。这条链上的向量线性无关，用它们做基，$T$ 在这组基下的矩阵就是一个"若尔当块"。</div>
