@@ -5600,7 +5600,11 @@
             const isMatrixEnv = /matrix/i.test(envName);
             const baseLabel = /vmatrix/i.test(envName) ? '行列式' : (isMatrixEnv ? '矩阵' : envName);
             let label = baseLabel;
-            if (isMatrixEnv && rows.length > 0) {
+            // 含 \ddots 或 \vdots 说明这是"画出首尾、中间省略"的示意写法，
+            // 代表任意阶数，不能按字面写出的行列数念成"N阶矩阵"（否则会把 J_m(λ) 这类
+            // 5 行示意写法错误地念成"五阶矩阵"）。
+            const isSchematic = /\\ddots|\\vdots/.test(inner);
+            if (isMatrixEnv && rows.length > 0 && !isSchematic) {
               const numRows = rows.length;
               const numCols = Math.max(...rows.map(r => r.split('&').length));
               label = (numRows === numCols)
