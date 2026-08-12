@@ -4753,6 +4753,29 @@
         规律：最小多项式中 $(\lambda-\lambda_0)$ 的次数，恰好等于该特征值对应的<strong>最大若尔当块的阶数</strong>——这也是反过来判定若尔当标准形具体长什么样的关键工具。
       </div>
 
+      <div class="example">
+        <div class="ex-label">进阶例题：两个不同特征值的 4×4 混合若尔当块</div>
+        上一个例子只有一个特征值，指数范围一目了然。换成有<strong>两个不同特征值</strong>的情形，"候选式"就不止一个了，需要真正去逐一测试。设 4 阶矩阵
+        $$A=\begin{pmatrix}3&1&0&0\\0&3&0&0\\0&0&5&0\\0&0&0&5\end{pmatrix}$$
+        它含一个 $2\times2$ 若尔当块（特征值 3）和两个独立的对角元（特征值 5）。特征多项式为 $f_A(\lambda)=(\lambda-3)^2(\lambda-5)^2$（4 次）。
+        <br><br>
+        由于最小多项式必须整除 $f_A(\lambda)$、且必须同时包含因式 $\lambda-3$ 与 $\lambda-5$（否则无法零化对应特征值的部分），每个因式的指数范围是 $1\le k_i\le$ 代数重数，一共可以组合出 4 种候选式：
+        <table class="compare">
+          <tr><th>候选式</th><th>次数</th></tr>
+          <tr><td>$(\lambda-3)(\lambda-5)$</td><td>2</td></tr>
+          <tr><td>$(\lambda-3)^2(\lambda-5)$</td><td>3</td></tr>
+          <tr><td>$(\lambda-3)(\lambda-5)^2$</td><td>3</td></tr>
+          <tr><td>$(\lambda-3)^2(\lambda-5)^2=f_A(\lambda)$</td><td>4</td></tr>
+        </table>
+        从次数最低的开始逐一代入验证。先测 2 次候选 $P_1(\lambda)=(\lambda-3)(\lambda-5)$：
+        $$P_1(A)=(A-3I)(A-5I)=\begin{pmatrix}0&1&0&0\\0&0&0&0\\0&0&2&0\\0&0&0&2\end{pmatrix}\begin{pmatrix}-2&1&0&0\\0&-2&0&0\\0&0&0&0\\0&0&0&0\end{pmatrix}=\begin{pmatrix}0&-2&0&0\\0&0&0&0\\0&0&0&0\\0&0&0&0\end{pmatrix}\neq O$$
+        失败——左上角残留了一个 $-2$，说明 2 次不够。再测 3 次候选 $P_2(\lambda)=(\lambda-3)^2(\lambda-5)$：先算 $(A-3I)^2=\begin{pmatrix}0&0&0&0\\0&0&0&0\\0&0&4&0\\0&0&0&4\end{pmatrix}$，再乘以 $(A-5I)$：
+        $$P_2(A)=\begin{pmatrix}0&0&0&0\\0&0&0&0\\0&0&4&0\\0&0&0&4\end{pmatrix}\begin{pmatrix}-2&1&0&0\\0&-2&0&0\\0&0&0&0\\0&0&0&0\end{pmatrix}=O$$
+        成功消去，故最小多项式为 $m_A(\lambda)=(\lambda-3)^2(\lambda-5)$。比对特征多项式，整除关系写出来正好是：
+        $$f_A(\lambda)=\underbrace{(\lambda-3)^2(\lambda-5)}_{m_A(\lambda)}\cdot\underbrace{(\lambda-5)}_{\text{商}\ Q(\lambda)}$$
+        这也印证了前面的规律：特征值 3 对应的最大若尔当块是 $2\times2$（指数 2），特征值 5 对应的最大若尔当块是 $1\times1$（指数 1）——因为矩阵右下角那两个 5 不是拼在一起的 $2\times2$ 若尔当块，而是两个互不相连的独立对角元。
+      </div>
+
       <h3 class="part"><span class="tag">判据</span>用最小多项式判断可对角化</h3>
       <div class="step">$A$ 可对角化 $\iff$ 最小多项式<strong>没有重根</strong>，即 $m(\lambda)=(\lambda-\lambda_1)(\lambda-\lambda_2)\cdots(\lambda-\lambda_k)$（$\lambda_1,\dots,\lambda_k$ 是互不相同的特征值，每个都只出现一次）。这是一条比"几何重数=代数重数"更精炼的判据。</div>
       <div class="example">
@@ -4818,8 +4841,28 @@
       <h3 class="part"><span class="tag">辨析</span>为什么"正规"恰好是分界线</h3>
       <div class="step">直观理解：矩阵 $A$ 能被酉对角化，意味着存在一组正交基，$A$ 在这组基下就是纯粹的"各方向独立伸缩"。而 $A^*$（作为 $A$ 的共轭转置）在同一组正交基下，恰好是"伸缩系数取共轭"的对角矩阵——两者在同一组基下都是对角矩阵，对角矩阵之间显然可交换，于是 $AA^*=A^*A$ 是"可对角化"必然带来的结果；反过来，只要 $AA^*=A^*A$，就能证明确实存在这样一组共同的正交特征基（证明过程用到"正规矩阵的特征向量之间必正交"这一关键引理，属于更深入的内容）。</div>
 
+      <h3 class="part"><span class="tag">分解</span>谱分解：把矩阵拆成投影算子的线性组合</h3>
+      <div class="step">若正规矩阵 $A$ 有 $k$ 个互不相同的特征值 $\lambda_1,\dots,\lambda_k$，谱定理其实还给出比"能对角化"更进一步的结构：$A$ 可以<strong>唯一地</strong>写成一组正交投影矩阵的线性组合
+      $$A=\lambda_1P_1+\lambda_2P_2+\cdots+\lambda_kP_k$$
+      其中 $P_i$ 是"把向量正交投影到第 $i$ 个特征值对应的特征子空间"这个几何操作所对应的矩阵。</div>
+      <div class="step">这些投影矩阵满足三条代数性质：<strong>①</strong> 互相正交 $P_iP_j=O\ (i\neq j)$（不同特征子空间彼此没有重叠）；<strong>②</strong> 自伴且幂等 $P_i^*=P_i=P_i^2$（同一个方向投影两次，和投影一次的结果一样）；<strong>③</strong> 完备性 $\sum_{i=1}^kP_i=I$（所有特征子空间叠加起来，正好铺满整个空间）。</div>
+      <div class="note">
+        <strong>几何解读：</strong>向量 $A\mathbf{x}$ 的计算过程可以这样理解——先把 $\mathbf{x}$ 正交投影到每一个互相垂直的特征子空间上（得到 $P_i\mathbf{x}$），再分别按该子空间对应的特征值 $\lambda_i$ 独立伸缩，最后把所有子空间上的结果重新叠加起来。这正是"矩阵变换＝沿一组正交轴独立伸缩"这句话，在代数上最精确的写法——谱分解把"对角化"这件事，从"找一组新坐标"进一步翻译成了"矩阵本身就是这些投影的加权和"。
+      </div>
+
+      <h3 class="part"><span class="tag">对比</span>几类常见矩阵的正交对角化属性</h3>
+      <div class="step">把本节涉及的几类矩阵按判定条件、特征值分布、对角化所需矩阵类型整理成一张对照表，方便速查：</div>
+      <table class="compare">
+        <tr><th>矩阵类型</th><th>判定条件</th><th>特征值特点</th><th>对角化矩阵</th></tr>
+        <tr><td>实对称矩阵</td><td>$A^{\mathrm T}=A$</td><td>全部为实数</td><td>实正交矩阵 $Q$</td></tr>
+        <tr><td>厄米矩阵</td><td>$A^*=A$</td><td>全部为实数</td><td>复酉矩阵 $U$</td></tr>
+        <tr><td>酉矩阵</td><td>$U^*U=I$</td><td>模长恒为 1（$|\lambda|=1$）</td><td>复酉矩阵 $U$</td></tr>
+        <tr><td>一般正规矩阵</td><td>$AA^*=A^*A$</td><td>任意复数</td><td>复酉矩阵 $U$</td></tr>
+      </table>
+
       <h3 class="part"><span class="tag">应用</span>正规矩阵的意义</h3>
-      <div class="step">正规矩阵在物理（量子力学中的可观测量算符往往是厄米矩阵）、信号处理（傅里叶变换矩阵本质是酉矩阵）中大量出现，谱定理保证了它们都拥有一组完备的正交特征基，这也是"能量本征态""频率分量"这些概念在数学上站得住脚的根本原因。</div>
+      <div class="step">正规矩阵在物理（量子力学中的可观测量算符往往是厄米矩阵，谱定理保证测量值必为实数、且量子态可分解到一组正交本征态上）、信号处理（傅里叶变换矩阵本质是酉矩阵）中大量出现，谱定理保证了它们都拥有一组完备的正交特征基，这也是"能量本征态""频率分量"这些概念在数学上站得住脚的根本原因。</div>
+      <div class="step">另外两个常见场景：<strong>主成分分析（PCA）</strong>对协方差矩阵（一定是实对称阵）做正交对角化，特征向量指向数据方差最大的方向；<strong>奇异值分解（SVD）</strong>则是通过对半正定实对称阵 $A^{\mathrm T}A$ 施加谱定理直接推导出来的——下一节就会看到这个联系。</div>
     </section>
 
     <div class="divider"><div class="line"></div><div class="mark">§</div><div class="line"></div></div>
