@@ -5500,13 +5500,14 @@
     min:'最小值', max:'最大值' };
   // 会把"接下来该出现一个新操作数"的状态重置为 true 的命令（关系符/连接词），
   // 用来判断紧随其后的 - 应该念"负"还是"减"
-  const OPERATOR_CMDS = new Set(['to','rightarrow','Rightarrow','Longrightarrow','Leftrightarrow','Longleftrightarrow','iff',
+  const OPERATOR_CMDS = new Set(['to','mapsto','rightarrow','Rightarrow','Longrightarrow','Leftrightarrow','Longleftrightarrow','iff',
     'times','div','cdot','pm','mp','leq','le','geq','ge','neq','ne','approx','lt','gt',
-    'in','notin','subset','subseteq','cup','cap','forall','exists','perp','parallel','cong','sim','simeq',
+    'in','notin','subset','subseteq','cup','cap','oplus','forall','exists','perp','parallel','cong','sim','simeq',
     'dots','cdots','ldots','vdots','ddots','sum','int','prod','lim','langle','mid','xrightarrow','xleftarrow','leftrightarrow']);
   const NO_STATE_CHANGE_CMDS = new Set(['left','right','middle','underbrace','overbrace','quad','qquad','displaystyle','textstyle','scriptstyle','phantom']);
   const OPNAMES = { im:'像', ker:'核', rank:'秩', tr:'迹', span:'张成', dim:'维数', det:'行列式',
-    col:'列空间', row:'行空间', sgn:'符号', ad:'伴随作用', adj:'伴随矩阵', diag:'对角矩阵', proj:'投影' };
+    col:'列空间', row:'行空间', sgn:'符号', ad:'伴随作用', adj:'伴随矩阵', diag:'对角矩阵', proj:'投影',
+    nullity:'零度' };
   // 矩阵/行列式阶数的中文数词（1~10阶常见范围，超出则退回阿拉伯数字）
   const ORDER_CN = ['','一','二','三','四','五','六','七','八','九','十'];
   function orderWord(n) { return ORDER_CN[n] || String(n); }
@@ -5602,6 +5603,12 @@
             else { out += ' 极限 '; }
           } else if (cmd === 'begin') {
             const envName = readGroup().trim().replace(/\*$/, '');
+            // array 环境紧跟一个列格式参数（如 {ccc|c}），不是朗读内容，需跳过
+            let colSpec = '';
+            if (envName === 'array') {
+              skipSpace();
+              if (peek() === '{') colSpec = readGroup();
+            }
             const endToken = `\\end{${envName}}`;
             const endIdx = latex.indexOf(endToken, i);
             let inner;
@@ -5610,7 +5617,13 @@
             const rows = inner.split('\\\\').map(r => r.trim()).filter(r => r.length);
             const spokenRows = rows.map(row => row.split('&').map(cell => speakify(cell.trim()).trim()).join('，'));
             const isMatrixEnv = /matrix/i.test(envName);
-            const baseLabel = /vmatrix/i.test(envName) ? '行列式' : (isMatrixEnv ? '矩阵' : envName);
+            let baseLabel;
+            if (/vmatrix/i.test(envName)) baseLabel = '行列式';
+            else if (isMatrixEnv) baseLabel = '矩阵';
+            else if (envName === 'array') baseLabel = colSpec.indexOf('|') !== -1 ? '增广矩阵' : '矩阵';
+            else if (envName === 'cases') baseLabel = '分情况';
+            else if (envName === 'aligned' || envName === 'align' || envName === 'align*') baseLabel = '';
+            else baseLabel = envName;
             let label = baseLabel;
             // 含 \ddots 或 \vdots 说明这是"画出首尾、中间省略"的示意写法，
             // 代表任意阶数，不能按字面写出的行列数念成"N阶矩阵"（否则会把 J_m(λ) 这类
@@ -5623,9 +5636,13 @@
                 ? `${orderWord(numRows)}阶${baseLabel}`
                 : `${numRows}行${numCols}列${baseLabel}`;
             }
-            out += rows.length > 1 ? ` ${label}，${spokenRows.join('，换行，')} ` : ` ${label}，${spokenRows.join('')} `;
+            const labelPrefix = label ? `${label}，` : '';
+            out += rows.length > 1 ? ` ${labelPrefix}${spokenRows.join('，换行，')} ` : ` ${labelPrefix}${spokenRows.join('')} `;
           }
           else if (cmd === 'to') { out += ' 趋近于 '; }
+          else if (cmd === 'mapsto') { out += ' 映射到 '; }
+          else if (cmd === 'oplus') { out += ' 直和 '; }
+          else if (cmd === 'blacksquare') { out += ' 证毕 '; }
           else if (cmd === 'rightarrow') { out += ' 箭头 '; }
           else if (cmd === 'xrightarrow' || cmd === 'xleftarrow') {
             skipSpace();
@@ -5681,15 +5698,24 @@
           else if (cmd === 'gt') { out += ' 大于 '; }
           else if (cmd === 'checkmark') { out += ' 对勾 '; }
           else if (cmd === 'hbar') { out += ' 约化普朗克常数 '; }
-          else if (cmd === 'text') { out += ` ${readGroup()} `; }
+          else if (cmd === 'text') {
+            const raw = readGroup();
+            const key = raw.trim().toLowerCase();
+            out += OPNAMES[key] ? ` ${OPNAMES[key]} ` : ` ${raw} `;
+          }
           else if (cmd === 'operatorname') {
             const opRaw = readGroup().trim().toLowerCase();
             out += ` ${OPNAMES[opRaw] || opRaw} `;
           }
           else if (cmd === 'vec') { out += ` 向量${speakify(readGroup())} `; }
-          else if (cmd === 'mathrm' || cmd === 'mathbf' || cmd === 'boldsymbol' || cmd === 'hat' || cmd === 'bar' || cmd === 'overline' || cmd === 'tilde' || cmd === 'underline' || cmd === 'mathbb' || cmd === 'mathcal' || cmd === 'mathfrak') { out += ` ${speakify(readGroup())} `; }
+          else if (cmd === 'mathrm' || cmd === 'mathbf' || cmd === 'boldsymbol' || cmd === 'hat' || cmd === 'bar' || cmd === 'overline' || cmd === 'tilde' || cmd === 'underline' || cmd === 'mathbb' || cmd === 'mathcal' || cmd === 'mathfrak') {
+            const raw = readGroup();
+            const key = raw.trim().toLowerCase();
+            out += OPNAMES[key] ? ` ${OPNAMES[key]} ` : ` ${speakify(raw)} `;
+          }
           else if (GREEK[cmd]) { out += ` ${GREEK[cmd]} `; }
           else if (FUNCS[cmd]) { out += ` ${FUNCS[cmd]} `; }
+          else if (OPNAMES[cmd]) { out += ` ${OPNAMES[cmd]} `; } // \dim \ker 等本身就是标准 LaTeX 命令，不经过 \operatorname 也要能识别
           else { out += ` ${cmd} `; }
           if (!NO_STATE_CHANGE_CMDS.has(cmd) && !/^[Bb]igg?[lr]?$/.test(cmd)) {
             atOperandStart = OPERATOR_CMDS.has(cmd);
