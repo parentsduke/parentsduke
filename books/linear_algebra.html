@@ -4823,7 +4823,10 @@
       </div>
 
       <h3 class="part"><span class="tag">定义</span>共轭转置与几类特殊矩阵</h3>
-      <div class="step">复矩阵 $A$ 的<strong>共轭转置</strong>（也叫伴随），记作 $A^*$，是先取每个元素的共轭复数、再转置得到的矩阵：$(A^*)_{ij}=\overline{A_{ji}}$。它是实矩阵转置 $A^{\mathrm T}$ 在复数域上的自然推广（若 $A$ 是实矩阵，$A^*=A^{\mathrm T}$）。</div>
+      <div class="step">复矩阵 $A$ 的<strong>共轭转置</strong>，记作 $A^*$（英文常称 adjoint，也写作 $A^\dagger$），是先取每个元素的共轭复数、再转置得到的矩阵：$(A^*)_{ij}=\overline{A_{ji}}$。它是实矩阵转置 $A^{\mathrm T}$ 在复数域上的自然推广（若 $A$ 是实矩阵，$A^*=A^{\mathrm T}$）。</div>
+      <div class="note">
+        <strong>注意，不要和"伴随矩阵"搞混：</strong>中文语境里"伴随矩阵"通常特指用代数余子式构造出来的 $\text{adj}(A)$（满足 $A\cdot\text{adj}(A)=\det(A)\,I$，是求逆矩阵公式 $A^{-1}=\frac{1}{\det A}\text{adj}(A)$ 里的那个），和这里的共轭转置是两个完全不同的对象，只是英文里 "adjoint" 这个词恰好在不同语境下被用来指代它们——共轭转置更贴切的中文说法应该是"共轭转置"或直接叫"$A$ 星"，避免和伴随矩阵混用同一个"伴随"。
+      </div>
       <div class="step">基于 $A^*$，定义三类矩阵：<strong>厄米矩阵</strong>（$A^*=A$，实对称矩阵的复数版本）；<strong>酉矩阵</strong>（$A^*A=I$，即 $A^{-1}=A^*$，正交矩阵的复数版本）；<strong>正规矩阵</strong>（$AA^*=A^*A$，即 $A$ 与自己的共轭转置可交换）。</div>
       <div class="note">
         <strong>包含关系：</strong>厄米矩阵和酉矩阵都自动满足 $AA^*=A^*A$（厄米矩阵：$AA^*=AA=A^*A$；酉矩阵：$AA^*=I=A^*A$），所以它们都是正规矩阵的特例。正规矩阵是这三者中<strong>最大</strong>的一类。</div>
@@ -5773,6 +5776,7 @@
           else if (/^\\mathrm\s*\{?\s*[Tt]\s*\}?$/.test(raw) || raw === 'T') { out += ' 的转置 '; }
           else if (raw === '-1') { out += ' 的逆 '; }
           else if (raw === '*' || raw === '\\ast') { out += ' 的伴随 '; }
+          else if (raw === '\\dagger') { out += ' 的共轭转置 '; }
           else if (/^-\d+$/.test(raw)) { out += ` 的负${raw.slice(1)}次方 `; }
           else if (raw === '2') { out += ' 的平方 '; }
           else if (raw === '3') { out += ' 的立方 '; }
