@@ -854,7 +854,7 @@
 
     <section class="chapter" id="ch1">
       <p class="kicker">第一部 · 空间的语言 / 01</p>
-      <h2 class="chapter-title">向量与向量空间</h2>
+      <h2 class="chapter-title">向量（vector）与向量空间（vector space）</h2>
       <p class="chapter-tagline">一支箭，一个方向，一种可以"加"与"缩放"的东西</p>
 
       <div class="life">
@@ -870,7 +870,7 @@
       <div class="step">加法对应"依次走两段路"（首尾相接），数乘对应"把这段路按比例放大或缩短（$k&lt;0$ 则反向）"。</div>
 
       <div class="note">
-        <strong>说明：$\mathbb{R}^n$ 是什么？</strong>$\mathbb{R}^n$ 表示 <strong>$n$ 维实数向量空间</strong>——由 $n$ 个实数排成一组 $(x_1,x_2,\ldots,x_n)$（$x_i\in\mathbb{R}$）构成的全体集合，通常写成列向量。$\mathbb{R}^1$（常写作 $\mathbb{R}$）是数轴；$\mathbb{R}^2$ 是平面（本节例子用的就是它）；$\mathbb{R}^3$ 是立体空间；$\mathbb{R}^4,\mathbb{R}^5,\ldots$ 更高维，没法直接画出来，但加法、数乘照样逐分量进行，操作方式和低维完全一样。之所以线性代数总拿 $\mathbb{R}^n$ 举例，是因为它是最标准、最具体的线性空间，满足"能加、能数乘"这两条基本规律，还自带一组现成的<strong>标准基</strong> $\{e_1,\ldots,e_n\}$（即 $e_1=(1,0,\ldots,0)$、$e_2=(0,1,0,\ldots,0)$ 等），用起来非常方便。
+        <strong>说明：$\mathbb{R}^n$ 是什么？</strong>$\mathbb{R}^n$ 表示 <strong>$n$ 维实数向量空间</strong>——由 $n$ 个实数排成一组 $(x_1,x_2,\ldots,x_n)$（$x_i\in\mathbb{R}$）构成的全体集合，通常写成列向量。$\mathbb{R}^1$（常写作 $\mathbb{R}$）是数轴；$\mathbb{R}^2$ 是平面（本节例子用的就是它）；$\mathbb{R}^3$ 是立体空间；$\mathbb{R}^4,\mathbb{R}^5,\ldots$ 更高维，没法直接画出来，但加法、数乘照样逐分量进行，操作方式和低维完全一样。之所以线性代数总拿 $\mathbb{R}^n$ 举例，是因为它是最标准、最具体的线性空间，满足"能加、能数乘"这两条基本规律，还自带一组现成的<strong>标准基</strong>（standard basis） $\{e_1,\ldots,e_n\}$（即 $e_1=(1,0,\ldots,0)$、$e_2=(0,1,0,\ldots,0)$ 等），用起来非常方便。
       </div>
 
       <h3 class="part"><span class="tag">抽象</span>向量空间</h3>
@@ -930,8 +930,8 @@
         </div>
       </div>
 
-      <h3 class="part"><span class="tag">辨析</span>矩阵为什么"本质上"是四维向量</h3>
-      <div class="step">矩阵的加法是逐个位置相加，数乘是逐个位置数乘——这和四维向量 $(a,b,c,d)$ 的加法、数乘规则<strong>完全对应</strong>，只是数字的排列方式不同（一个排成方阵，一个排成一行）。既然运算规则完全一致，这两个空间本质上就是"同一个东西"的两种写法，数学上称为<strong>同构</strong>：</div>
+      <h3 class="part"><span class="tag">辨析</span>矩阵（matrix）为什么"本质上"是四维向量</h3>
+      <div class="step">矩阵的加法是逐个位置相加，数乘是逐个位置数乘——这和四维向量 $(a,b,c,d)$ 的加法、数乘规则<strong>完全对应</strong>，只是数字的排列方式不同（一个排成方阵，一个排成一行）。既然运算规则完全一致，这两个空间本质上就是"同一个东西"的两种写法，数学上称为<strong>同构</strong>（isomorphism）：</div>
       <div class="center-block">$$\{2\times 2\ \text{矩阵全体}\}\ \cong\ \mathbb{R}^4$$</div>
       <div class="step">"维数"看的是需要几个独立的自由坐标才能确定空间里的一个元素，而不是这些坐标排成什么形状。一般地，所有 $m\times n$ 实矩阵构成的线性空间，维数是 $\dim = m\times n$——即矩阵里独立元素的总个数。</div>
 
@@ -993,7 +993,7 @@
       <div class="step">也就是说，"两个向量各自活在2维空间里"和"这两个向量拼起来构成的矩阵空间是几维"并不矛盾——恰恰是 $2+2=4$，与前面结论一致。可以类比：身高是1个独立数字（1维），体重也是1个独立数字（1维），但"身高+体重"合起来描述一个人需要 2 个独立数字，不是"1维"；同理，两个独立的2维向量拼在一起，自然需要 $2+2=4$ 个数字，即4维。</div>
 
       <div class="note">
-        <strong>说明：</strong> 这里的"4维"，说的不是"能画出4个互相垂直的空间方向"，而是"需要4个独立参数才能唯一确定一个矩阵"。在 $\mathbb{R}^2$、$\mathbb{R}^3$ 这种熟悉的例子里，"维数"恰好等于"能画出几个互相垂直的方向"，容易让人误以为维数本来就是指方向个数。但"维数"更本质、更抽象的含义是<strong>自由度</strong>：要写出一个具体的矩阵，必须给定 $a,b,c,d$ 四个独立的数，少一个不够、多一个是重复，这就是"4维"。同样，"$[0,1]$ 上所有连续函数构成无穷维空间"，也不是说这个空间有"无穷多个方向"这种直观画面，而是说一个连续函数没法只用有限个数字完全描述——每一点的取值都是相对独立的信息。
+        <strong>说明：</strong> 这里的"4维"，说的不是"能画出4个互相垂直的空间方向"，而是"需要4个独立参数才能唯一确定一个矩阵"。在 $\mathbb{R}^2$、$\mathbb{R}^3$ 这种熟悉的例子里，"维数"恰好等于"能画出几个互相垂直的方向"，容易让人误以为维数本来就是指方向个数。但"维数"更本质、更抽象的含义是<strong>自由度</strong>（degrees of freedom）：要写出一个具体的矩阵，必须给定 $a,b,c,d$ 四个独立的数，少一个不够、多一个是重复，这就是"4维"。同样，"$[0,1]$ 上所有连续函数构成无穷维空间"，也不是说这个空间有"无穷多个方向"这种直观画面，而是说一个连续函数没法只用有限个数字完全描述——每一点的取值都是相对独立的信息。
       </div>
 
       <div class="step">这里因果关系其实是反过来的：不是"因为维数的定义就是方向个数，所以2维平面有2个方向"，而是"2维空间恰好有2个自由度，这2个自由度恰好可以用2条互相垂直的轴来表示"——这只是低维情形里一个"恰好能画出来"的巧合，不是维数的定义本身。</div>
@@ -1076,7 +1076,7 @@
 
     <section class="chapter" id="ch2">
       <p class="kicker">第一部 · 空间的语言 / 02</p>
-      <h2 class="chapter-title">线性组合、张成与线性相关</h2>
+      <h2 class="chapter-title">线性组合（linear combination）、张成（span）与线性相关（linearly dependent）</h2>
       <p class="chapter-tagline">用一小撮"配料"，能不能配出空间里的任意一点？</p>
 
       <div class="life">
@@ -1088,7 +1088,7 @@
       <div class="center-block">$$k_1\alpha_1+k_2\alpha_2+\cdots+k_n\alpha_n$$</div>
       <div class="step">的表达式称为它们的一个<strong>线性组合</strong>。所有这样的组合构成的集合，称为 $\alpha_1,\dots,\alpha_n$ 的<strong>张成</strong>，记作 $\text{span}(\alpha_1,\dots,\alpha_n)$。</div>
 
-      <h3 class="part"><span class="tag">定义</span>线性相关与线性无关</h3>
+      <h3 class="part"><span class="tag">定义</span>线性相关与线性无关（linearly independent）</h3>
       <div class="step">如果存在一组<strong>不全为零</strong>的系数 $k_1,\dots,k_n$，使得</div>
       <div class="center-block">$$k_1\alpha_1+\cdots+k_n\alpha_n=0$$</div>
       <div class="step">则称 $\alpha_1,\dots,\alpha_n$ <strong>线性相关</strong>——直观地说，其中至少有一个向量是多余的，能被其余向量线性表出。反之，如果只有 $k_1=\cdots=k_n=0$ 才能使上式成立，则称它们<strong>线性无关</strong>：每一个都"各司其职"，谁也替代不了谁。</div>
@@ -1102,7 +1102,7 @@
         <div class="ex-label">例2</div>
         判断 $(1,2,1),(2,1,0),(1,-1,-1)$ 是否线性相关：设 $k_1(1,2,1)+k_2(2,1,0)+k_3(1,-1,-1)=0$，展开得方程组
         $$k_1+2k_2+k_3=0,\quad 2k_1+k_2-k_3=0,\quad k_1-k_3=0$$
-        由第三式 $k_1=k_3$，代入第一式得 $2k_1+2k_2=0$ 即 $k_2=-k_1$，代入第二式验证：$2k_1-k_1-k_1=0$ 恒成立。取 $k_1=1$ 得非零解 $(1,-1,1)$，说明这三个向量<strong>线性相关</strong>，且 $(1,2,1)-(2,1,0)+(1,-1,-1)=0$。
+        由第三式 $k_1=k_3$，代入第一式得 $2k_1+2k_2=0$ 即 $k_2=-k_1$，代入第二式验证：$2k_1-k_1-k_1=0$ 恒成立。取 $k_1=1$ 得非零解（trivial solution） $(1,-1,1)$，说明这三个向量<strong>线性相关</strong>，且 $(1,2,1)-(2,1,0)+(1,-1,-1)=0$。
       </div>
 
       <h3 class="part"><span class="tag">方法</span>用矩阵秩判定线性相关性</h3>
@@ -1135,14 +1135,14 @@
 
     <section class="chapter" id="ch3">
       <p class="kicker">第一部 · 空间的语言 / 03</p>
-      <h2 class="chapter-title">基与维数</h2>
+      <h2 class="chapter-title">基与维数（dimension）</h2>
       <p class="chapter-tagline">最省钱的一套"参照方向"</p>
 
       <div class="life">
         <strong>生活比喻：</strong>回到调色的例子——如果红、黄、蓝三种颜料已经能调出你想要的所有颜色，而且没有一种是多余的（谁也调不出另一种），这三种颜料就是这片"颜色空间"的一套<strong>基</strong>：既足够（能张成整个空间），又不浪费（线性无关）。
       </div>
 
-      <h3 class="part"><span class="tag">定义</span>基与坐标</h3>
+      <h3 class="part"><span class="tag">定义</span>基与坐标（coordinates）</h3>
       <div class="step">线性空间 $V$ 中一组向量 $\alpha_1,\dots,\alpha_n$ 称为 $V$ 的一组<strong>基</strong>，如果同时满足：</div>
       <div class="center-block">
         <table class="matrix-table">
@@ -1202,7 +1202,7 @@
 
     <section class="chapter" id="ch4">
       <p class="kicker">第二部 · 方程与矩阵 / 04</p>
-      <h2 class="chapter-title">线性方程组与高斯消元</h2>
+      <h2 class="chapter-title">线性方程组（system of linear equations）与高斯消元（Gaussian elimination）</h2>
       <p class="chapter-tagline">把"未知数的联立条件"整理成一张清晰的表格</p>
 
       <div class="life">
@@ -1221,7 +1221,7 @@
 
       <div class="note">
         <strong>追问：</strong>为什么系数 $a_{ij}$（或后面基向量 $\alpha_i$）写在左边，未知数 $x_i$ 写在右边，而不是反过来？<br><br>
-        在 $a_{ij}x_j$ 或 $x_i\alpha_i$ 这类"标量乘标量""标量乘向量"的写法里，乘法是<strong>可交换</strong>的，写在左边右边结果完全一样——这里"系数在前、未知数在后"只是沿用了 $3x$ 而不写 $x3$ 的书写习惯，没有数学含义。<br><br>
+        在 $a_{ij}x_j$ 或 $x_i\alpha_i$ 这类"标量乘标量""标量乘向量"的写法里，乘法是<strong>可交换</strong>（commutative）的，写在左边右边结果完全一样——这里"系数在前、未知数在后"只是沿用了 $3x$ 而不写 $x3$ 的书写习惯，没有数学含义。<br><br>
         真正有顺序讲究的是把它们打包成<strong>矩阵形式</strong> $Ax=b$ 之后：这时候 $A=(a_{ij})$ 是矩阵，$x=(x_1,\ldots,x_n)^T$ 是列向量，矩阵乘法要求"左边矩阵的列数 = 右边向量的行数"，所以只能写成 $Ax$（$m\times n$ 乘 $n\times1$）而不能写成 $xA$（维度对不上）。这一点会在下一节"矩阵及其运算"里展开。<br><br>
         <strong>注意：这里的系数 $a_{ij}$ 不是"基"。</strong>系数就是一堆普通<strong>数字</strong>，只表示每个未知数前面乘了多少倍，和"基"没有任何关系；而后面"基与维数"一节里的 $\alpha_i$ 是<strong>向量</strong>，它们张成一个空间，空间里任何向量都能写成 $x_1\alpha_1+x_2\alpha_2+\cdots$，这时候 $x_i$ 才叫"坐标"。两者只是写法结构相似（数×数 vs 数×向量，都可交换、顺序无所谓），系数本身并不是基向量。
       </div>
@@ -1336,7 +1336,7 @@
         <strong>说明：</strong> 方程组的解的情况（无解 / 唯一解 / 无穷多解），完全由系数矩阵与增广矩阵的<strong>秩</strong>决定——这一结论把"解方程"和"矩阵的结构"第一次联系了起来，也是后面章节反复出现的主线。
       </div>
 
-      <h3 class="part"><span class="tag">概念</span>齐次线性方程组</h3>
+      <h3 class="part"><span class="tag">概念</span>齐次线性方程组（homogeneous linear system）</h3>
       <div class="step">当常数项 $b_1=b_2=\cdots=b_m=0$ 时，方程组</div>
       <div class="center-block">
         $$\begin{cases}a_{11}x_1+a_{12}x_2+\cdots+a_{1n}x_n=0\\a_{21}x_1+a_{22}x_2+\cdots+a_{2n}x_n=0\\\quad\vdots\\a_{m1}x_1+a_{m2}x_2+\cdots+a_{mn}x_n=0\end{cases}\qquad\text{即}\qquad Ax=0$$
@@ -1347,7 +1347,7 @@
         $x_1=x_2=\cdots=x_n=0$ 永远满足 $Ax=0$，这个解叫<strong>零解（平凡解）</strong>。所以讨论齐次方程组时，真正要问的问题是"<strong>除了零解，还有没有别的解</strong>"，而不是"有没有解"。
       </div>
 
-      <div class="step"><strong>什么叫解空间：</strong>把所有满足 $Ax=0$ 的 $x$ 收集起来，这整个集合就叫<strong>解空间</strong>，也叫<strong>零空间</strong>。它配得上"空间"这个名字，是因为满足<strong>线性组合封闭性</strong>——两个解相加、解乘以任意常数，结果仍然是解（下面会证明），这正是线性空间要求的"加法封闭、数乘封闭"。</div>
+      <div class="step"><strong>什么叫解空间：</strong>把所有满足 $Ax=0$ 的 $x$ 收集起来，这整个集合就叫<strong>解空间</strong>（solution space），也叫<strong>零空间</strong>。它配得上"空间"这个名字，是因为满足<strong>线性组合封闭性</strong>——两个解相加、解乘以任意常数，结果仍然是解（下面会证明），这正是线性空间要求的"加法封闭、数乘封闭"。</div>
 
       <div class="example">
         <div class="ex-label">具体例子：解空间长什么样</div>
@@ -1368,17 +1368,17 @@
         <strong>解具有"线性组合封闭性"：</strong>若 $\xi_1,\xi_2$ 都是 $Ax=0$ 的解，即 $A\xi_1=0,A\xi_2=0$，那么对任意常数 $k_1,k_2$，$A(k_1\xi_1+k_2\xi_2)=k_1A\xi_1+k_2A\xi_2=0$，说明 $k_1\xi_1+k_2\xi_2$ 也是解。所以齐次方程组的全体解构成一个<strong>向量空间</strong>（叫<strong>解空间</strong>），维数为 $n-r(A)$——这是齐次方程组独有的性质，非齐次方程组的解并不具备。
       </div>
 
-      <h3 class="part"><span class="tag">概念</span>非齐次线性方程组</h3>
+      <h3 class="part"><span class="tag">概念</span>非齐次线性方程组（inhomogeneous linear system）</h3>
       <div class="step">常数项 $b_1,\ldots,b_m$<strong>不全为零</strong>（即 $b\neq0$）的方程组 $Ax=b$，称为<strong>非齐次线性方程组</strong>。每一个非齐次方程组 $Ax=b$ 都对应一个"去掉常数项"的齐次方程组 $Ax=0$，后者叫前者的<strong>导出组（对应齐次组）</strong>，两者的系数矩阵 $A$ 完全相同，只是常数项不同。</div>
 
       <div class="note">
         <strong>非齐次方程组的解为什么不能随便相加？</strong>设 $\eta_1,\eta_2$ 都是 $Ax=b$ 的解，即 $A\eta_1=b,A\eta_2=b$，那么 $A(\eta_1+\eta_2)=2b\neq b$（只要 $b\neq0$），所以两个解相加<strong>不再是解</strong>；同样 $A(k\eta)=kb\neq b$（$k\neq1$ 时），数乘也不封闭。这正是"非齐次"与"齐次"最本质的区别——非齐次方程组的解集不是向量空间，而是一个"偏离原点"的<strong>仿射子空间</strong>（几何上像一条不过原点的直线/平面）。
       </div>
 
-      <h3 class="part"><span class="tag">定理</span>解的结构——通解 = 特解 + 齐次通解</h3>
+      <h3 class="part"><span class="tag">定理</span>解的结构——通解（general solution） = 特解（particular solution） + 齐次通解</h3>
       <div class="step">虽然非齐次方程组的解不能随意组合，但两个解<strong>相减</strong>却有好性质：设 $\eta_1,\eta_2$ 都是 $Ax=b$ 的解，则</div>
       $$A(\eta_1-\eta_2)=A\eta_1-A\eta_2=b-b=0$$
-      <div class="step">说明 $\eta_1-\eta_2$ 是导出组 $Ax=0$ 的解。由此可得非齐次方程组解的结构定理：</div>
+      <div class="step">说明 $\eta_1-\eta_2$ 是导出组（associated homogeneous system） $Ax=0$ 的解。由此可得非齐次方程组解的结构定理：</div>
       <div class="note">
         <strong>结构定理：</strong>设 $\eta^{*}$ 是 $Ax=b$ 的<strong>任意一个特解</strong>，$\xi$ 是导出组 $Ax=0$ 的<strong>通解</strong>，则 $Ax=b$ 的<strong>通解</strong>为
         $$x=\eta^{*}+\xi$$
@@ -1396,7 +1396,7 @@
         <table class="matrix-table">
           <tr><th></th><th>齐次方程组 $Ax=0$</th><th>非齐次方程组 $Ax=b\ (b\neq0)$</th></tr>
           <tr><td>是否一定有解</td><td>一定有解（至少零解）</td><td>不一定（$r(A)\neq r(A|b)$ 时无解）</td></tr>
-          <tr><td>解集结构</td><td>向量空间（解空间），过原点</td><td>仿射子空间，不过原点</td></tr>
+          <tr><td>解集结构</td><td>向量空间（解空间），过原点</td><td>仿射子空间（affine subspace），不过原点</td></tr>
           <tr><td>解的组合</td><td>解的线性组合仍是解</td><td>解的线性组合一般不再是解</td></tr>
           <tr><td>通解形式</td><td>$k_1\xi_1+\cdots+k_s\xi_s$</td><td>$\eta^{*}+(k_1\xi_1+\cdots+k_s\xi_s)$</td></tr>
         </table>
@@ -1432,7 +1432,7 @@
         <strong>生活比喻：</strong>工厂里，"配方表"告诉你每种产品要用多少原料；"产量表"告诉你每天生产多少产品。想知道每天一共用了多少原料，就是把这两张表按特定规则"乘"起来——矩阵乘法正是这种"批量套用配方"的数学表达，而不是简单的逐项相乘。
       </div>
 
-      <h3 class="part"><span class="tag">定义</span>矩阵乘法</h3>
+      <h3 class="part"><span class="tag">定义</span>矩阵乘法（matrix multiplication）</h3>
       <div class="step">设 $A$ 是 $m\times n$ 矩阵，$B$ 是 $n\times p$ 矩阵，乘积 $C=AB$ 是 $m\times p$ 矩阵，其中每一项</div>
       <div class="center-block">$$c_{ij}=\sum_{k=1}^{n}a_{ik}b_{kj}$$</div>
       <div class="step">即"$A$ 的第 $i$ 行"与"$B$ 的第 $j$ 列"对应相乘再求和——这也是为什么矩阵乘法要求"左边矩阵的列数 = 右边矩阵的行数"，就像配方表里原料的种类要对得上。</div>
@@ -1443,7 +1443,7 @@
         对照上面的公式：结果矩阵第 1 行第 2 列的元素 $22=1\times6+2\times8$，正是第一个矩阵的第1行 $(1,2)$ 与第二个矩阵的第2列 $(6,8)$ 对应相乘再相加。
       </div>
 
-      <h3 class="part"><span class="tag">定义</span>逆矩阵与转置</h3>
+      <h3 class="part"><span class="tag">定义</span>逆矩阵（inverse matrix）与转置</h3>
       <div class="step">若存在矩阵 $A^{-1}$ 使得 $AA^{-1}=A^{-1}A=E$（单位矩阵），则称 $A$<strong>可逆</strong>，$A^{-1}$ 为其<strong>逆矩阵</strong>——直观地说，$A^{-1}$ 就是能把 $A$ 这次变换"完全撤销"的那个变换。对于二阶矩阵：</div>
       <div class="center-block">
         $$A=\begin{pmatrix}a&b\\c&d\end{pmatrix},\qquad A^{-1}=\frac{1}{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}\quad(ad-bc\neq 0)$$
@@ -1462,7 +1462,7 @@
         <p style="margin:12px 0 0">右边正好读出 $A^{-1}=\dfrac{1}{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}$。每一步分母都出现 $ad-bc$，这就是为什么必须 $ad-bc\neq0$——一旦它是0，第二步就没法除，消元根本进行不下去，逆矩阵自然也不存在。</p>
       </div>
 
-      <div class="step">另外，把矩阵的行和列互换得到<strong>转置矩阵</strong> $A^T$，满足 $(AB)^T=B^TA^T$（注意顺序也翻转了）。</div>
+      <div class="step">另外，把矩阵的行和列互换得到<strong>转置矩阵</strong>（transpose matrix） $A^T$，满足 $(AB)^T=B^TA^T$（注意顺序也翻转了）。</div>
 
       <div class="note">
         <strong>说明：</strong> 矩阵乘法一般<strong>不满足交换律</strong>（$AB\neq BA$）——这不是数学上刻意设计的"陷阱"，而是因为矩阵乘法的真正身份是"两个变换的先后复合"，先做哪个变换、后做哪个变换，结果本来就可能不同，就像"先穿袜子再穿鞋"和"先穿鞋再穿袜子"是两回事。这一点会在第六节讲"线性变换"时看得更清楚。
@@ -1495,7 +1495,7 @@
 
     <section class="chapter" id="ch6">
       <p class="kicker">第三部 · 变换的账本 / 06</p>
-      <h2 class="chapter-title">线性变换与矩阵表示</h2>
+      <h2 class="chapter-title">线性变换（linear transformation）与矩阵表示</h2>
       <p class="chapter-tagline">矩阵不是主角，它只是变换在某套基下的说明书</p>
 
       <div class="life">
@@ -1508,7 +1508,7 @@
       <div class="step">则称 $T$ 为 $V$ 上的<strong>线性变换</strong>——先合成再变换，与先变换再合成，结果一致。</div>
 
       <div class="note">
-        <strong>说明：</strong>$\xi,\eta$ 都是 $V$ 中的向量，所以 $T(\xi+\eta)=T(\xi)+T(\eta)$ 里出现的两次"$+$"都是<strong>向量加法</strong>，只是发生的时机不同：左边是先把 $\xi,\eta$ 相加（向量加法）再做变换 $T$；右边是先分别对 $\xi,\eta$ 做变换，再把变换后的两个向量相加（同样是向量加法，因为 $T:V\to V$，变换结果仍在 $V$ 里）。"线性变换"的核心要求，就是这两种做法——先加后变、先变后加——结果必须一致。另一半 $T(k\xi)=kT(\xi)$ 是同样的道理，只不过针对的是<strong>数乘</strong>：先放大 $k$ 倍再变换，与先变换再放大 $k$ 倍，结果也要一致。
+        <strong>说明：</strong>$\xi,\eta$ 都是 $V$ 中的向量，所以 $T(\xi+\eta)=T(\xi)+T(\eta)$ 里出现的两次"$+$"都是<strong>向量加法</strong>（vector addition），只是发生的时机不同：左边是先把 $\xi,\eta$ 相加（向量加法）再做变换 $T$；右边是先分别对 $\xi,\eta$ 做变换，再把变换后的两个向量相加（同样是向量加法，因为 $T:V\to V$，变换结果仍在 $V$ 里）。"线性变换"的核心要求，就是这两种做法——先加后变、先变后加——结果必须一致。另一半 $T(k\xi)=kT(\xi)$ 是同样的道理，只不过针对的是<strong>数乘</strong>：先放大 $k$ 倍再变换，与先变换再放大 $k$ 倍，结果也要一致。
       </div>
 
       <h3 class="part"><span class="tag">定义</span>变换在给定基下的矩阵</h3>
@@ -1576,13 +1576,13 @@
       </div>
 
       <div class="note">
-        <strong>说明：变换矩阵 ≠ 过渡矩阵</strong>这里的 $A=\begin{pmatrix}1&0\\0&0\end{pmatrix}$ 是<strong>变换矩阵</strong>（也叫"变换在给定基下的矩阵"），描述的是变换 $T$ 本身在某组基下长什么样，来自 $T(\alpha_j)=\sum_i a_{ij}\alpha_i$；它会真的把一个向量变成另一个向量，比如把 $(x,y)$ 投影成 $(x,0)$，是一次实实在在的几何变换。这和第七节"基变换"里的<strong>过渡矩阵 $P$</strong> 是两回事：$P$ 来自 $\beta_j=\sum_i p_{ij}\alpha_i$，描述的是两组不同的<strong>基</strong>之间怎么换算，只是"翻译"同一个向量在两组基下的坐标，向量本身并没有被变换。
+        <strong>说明：变换矩阵（transformation matrix） ≠ 过渡矩阵</strong>这里的 $A=\begin{pmatrix}1&0\\0&0\end{pmatrix}$ 是<strong>变换矩阵</strong>（也叫"变换在给定基下的矩阵"），描述的是变换 $T$ 本身在某组基下长什么样，来自 $T(\alpha_j)=\sum_i a_{ij}\alpha_i$；它会真的把一个向量变成另一个向量，比如把 $(x,y)$ 投影成 $(x,0)$，是一次实实在在的几何变换。这和第七节"基变换"里的<strong>过渡矩阵 $P$</strong> 是两回事：$P$ 来自 $\beta_j=\sum_i p_{ij}\alpha_i$，描述的是两组不同的<strong>基</strong>之间怎么换算，只是"翻译"同一个向量在两组基下的坐标，向量本身并没有被变换。
       </div>
 
       <div class="deepdive">
         <h3 class="sub"><span class="tag">追问</span>$T(\alpha_j)=\sum_i a_{ij}\alpha_i$ 和 $\beta_j=\sum_i p_{ij}\alpha_i$ 公式长得一模一样，为什么一个说"基没有变"、一个是"基变换"？</h3>
         <div class="step">这是个很值得深究的问题：两个式子从纯代数角度看<strong>结构完全一样</strong>——都是"用一组基 $\{\alpha_i\}$ 把某个向量展开，系数按列排成矩阵"。区别不在公式本身，而在<strong>等号右边"变出来"的东西是什么身份</strong>。</div>
-        <div class="step" style="margin-top:14px"><strong>基变换的情形（被动变换）：</strong>$\beta_j$ 本身也是一个<strong>基向量</strong>——你同时拥有两组基 $\{\alpha_i\}$ 和 $\{\beta_j\}$，它们都摆在那不动，空间里的向量也没有被"作用"或"移动"。你只是在问："换一把尺子（换一组基）去量同一个向量，坐标会怎么变？"——点没动，参照系变了。</div>
+        <div class="step" style="margin-top:14px"><strong>基变换的情形（被动变换）：</strong>$\beta_j$ 本身也是一个<strong>基向量</strong>（basis vector）——你同时拥有两组基 $\{\alpha_i\}$ 和 $\{\beta_j\}$，它们都摆在那不动，空间里的向量也没有被"作用"或"移动"。你只是在问："换一把尺子（换一组基）去量同一个向量，坐标会怎么变？"——点没动，参照系变了。</div>
         <div class="step" style="margin-top:14px"><strong>线性变换的情形（主动变换）：</strong>$T(\alpha_j)$ 不是新基向量，而是"把 $\alpha_j$ 这个向量真正搬到了空间里的另一个位置"（一般 $T(\alpha_j)\ne\alpha_j$，可能和任何基向量都不相等）。自始至终<strong>只有一组基 $\{\alpha_i\}$</strong>，你用它去测量"变换前"的向量（$\alpha_j$ 自己），也用<strong>同一把尺子</strong>去测量"变换后"的向量 $T(\alpha_j)$——尺子没动，点被搬走了。</div>
         <div class="step" style="margin-top:14px">换个说法：基变换是"同一个向量，两把尺子，两组坐标"；线性变换是"同一把尺子，两个向量（变换前 $\alpha_j$、变换后 $T(\alpha_j)$），两组坐标"。"基没有变"说的正是——从头到尾用来读数的那把尺子（基 $\{\alpha_i\}$）自始至终是同一把，变的是被测量的对象。</div>
         <div class="note" style="margin-top:14px">
@@ -1709,7 +1709,7 @@
         <strong>生活比喻：</strong>描述地图上一个点，你可以用"东、北"作参照，也可以换成"北、东"，甚至换成一套斜着的方向。点的<strong>位置</strong>没有变，但你报出来的<strong>坐标数字</strong>会跟着参照方向的选择而变化。基变换研究的正是：换一套参照（基），坐标、矩阵会如何随之改变。
       </div>
 
-      <h3 class="part"><span class="tag">定义</span>过渡矩阵</h3>
+      <h3 class="part"><span class="tag">定义</span>过渡矩阵（transition matrix）</h3>
       <div class="step">设 $\alpha_1,\dots,\alpha_n$ 与 $\beta_1,\dots,\beta_n$ 是同一空间 $V$ 的两组基，且</div>
       <div class="center-block">$$\beta_j=\sum_{i=1}^{n}p_{ij}\alpha_i,\quad j=1,\dots,n$$</div>
       <div class="step">矩阵 $P=(p_{ij})$ 称为由基 $\{\alpha_i\}$ 到基 $\{\beta_j\}$ 的<strong>过渡矩阵</strong>。同一向量 $\xi$ 在两组基下的坐标 $x$（旧）、$y$（新）满足 $x=Py$。</div>
@@ -1865,7 +1865,7 @@
 
     <section class="chapter" id="ch8">
       <p class="kicker">第三部 · 变换的账本 / 08</p>
-      <h2 class="chapter-title">行列式</h2>
+      <h2 class="chapter-title">行列式（determinant）</h2>
       <p class="chapter-tagline">一个数字，告诉你变换把面积（体积）放大了多少倍</p>
 
       <div class="life">
@@ -1940,7 +1940,7 @@
       </div>
       <div class="step"><strong>正号（$>0$）：</strong>保持定向（右手系仍是右手系）。<strong>负号（$\lt 0$）：</strong>翻转定向（如镜像对称，右手系变左手系）。</div>
 
-      <h3 class="part"><span class="tag">应用</span>克拉默法则</h3>
+      <h3 class="part"><span class="tag">应用</span>克拉默法则（Cramer's rule）</h3>
       <div class="step">对于 $n$ 元方程组 $Ax=b$，若系数矩阵行列式 $\det A\neq 0$，则方程组有唯一解，且</div>
       <div class="center-block">$$x_i=\frac{\det A_i}{\det A}$$</div>
       <div class="step">其中 $A_i$ 是把 $A$ 的第 $i$ 列替换成 $b$ 后得到的矩阵。比如方程组 $x+y=3,\ 2x-y=0$，$\det A=\begin{vmatrix}1&1\\2&-1\end{vmatrix}=-3$，$\det A_1=\begin{vmatrix}3&1\\0&-1\end{vmatrix}=-3$，故 $x=\dfrac{-3}{-3}=1$，与第四节例1的消元结果一致。</div>
@@ -1976,7 +1976,7 @@
 
     <section class="chapter" id="ch9">
       <p class="kicker">第四部 · 变换的骨架 / 09</p>
-      <h2 class="chapter-title">特征值与特征向量</h2>
+      <h2 class="chapter-title">特征值（eigenvalue）与特征向量（eigenvector）</h2>
       <p class="chapter-tagline">在变换中"方向不变、只被拉伸"的那几根特殊的轴</p>
 
       <div class="life">
@@ -1991,7 +1991,7 @@
       <h3 class="part"><span class="tag">方法</span>如何求特征值</h3>
       <div class="step">把 $A\xi=\lambda\xi$ 改写为 $(A-\lambda E)\xi=0$。这是一个齐次线性方程组，要有非零解 $\xi$，系数矩阵必须不可逆，即</div>
       <div class="center-block">$$\det(A-\lambda E)=0$$</div>
-      <div class="step">这就是<strong>特征方程</strong>，解出的 $\lambda$ 即为特征值；把每个 $\lambda$ 代回 $(A-\lambda E)\xi=0$，解出的 $\xi$ 即为对应的特征向量。</div>
+      <div class="step">这就是<strong>特征方程</strong>（characteristic equation），解出的 $\lambda$ 即为特征值；把每个 $\lambda$ 代回 $(A-\lambda E)\xi=0$，解出的 $\xi$ 即为对应的特征向量。</div>
 
       <div class="note">
         <strong>从线性变换角度理解"系数矩阵不可逆"：</strong>把 $A-\lambda E$ 也看成一个线性变换：它把向量 $x$ 映到 $(A-\lambda E)x=Ax-\lambda x$。一个变换 $M$ <strong>可逆</strong>，等价于它是单射——不同输入必映给不同输出，特别地只有零向量会被映到零向量，即 $Mx=0\iff x=0$。反过来，$M$ <strong>不可逆</strong>就意味着它会把某个非零方向"压扁"到原点，这些被压扁的非零向量构成 $M$ 的<strong>核（kernel）</strong>，此时核里不再只有零向量。<br><br>
@@ -2065,7 +2065,7 @@
 
       <div class="step"><strong>性质 4（相似不变性）</strong>：若 $B=P^{-1}AP$（即 $A,B$ 相似），则 $\operatorname{tr}(B)=\operatorname{tr}(A)$。这是性质 2 的直接推论：</div>
       <div class="center-block">$$\operatorname{tr}(P^{-1}AP)=\operatorname{tr}\big((P^{-1}A)P\big)=\operatorname{tr}\big(P(P^{-1}A)\big)=\operatorname{tr}(A)$$</div>
-      <div class="step">这也解释了为什么"迹"可以作为矩阵的一个<strong>不变量</strong>：无论选哪组基去表示同一个线性变换，算出来的迹都一样，这正呼应了第七节"基变换"里"账本会变，但账本记的那件事没变"的思想。</div>
+      <div class="step">这也解释了为什么"迹"可以作为矩阵的一个<strong>不变量</strong>（invariant）：无论选哪组基去表示同一个线性变换，算出来的迹都一样，这正呼应了第七节"基变换"里"账本会变，但账本记的那件事没变"的思想。</div>
 
       <div class="step"><strong>性质 5（迹等于特征值之和）</strong>：即本节开头用过的 $\operatorname{tr}(A)=\lambda_1+\lambda_2+\cdots+\lambda_n$。原因是特征多项式 $\det(\lambda E-A)=\lambda^n-\operatorname{tr}(A)\lambda^{n-1}+\cdots$，又等于 $\prod_{i=1}^n(\lambda-\lambda_i)$，比较两边 $\lambda^{n-1}$ 的系数即得。</div>
 
@@ -2120,12 +2120,12 @@
         <strong>生活比喻：</strong>量身高只需要一把竖直的尺子，量肩宽只需要一把水平的尺子——两把尺子互相垂直，量出来的两个数字互不干扰，谁也不会"污染"谁的读数。如果两把尺子斜着摆，量出来的数字就会掺杂在一起，很难直接看出"身高"和"肩宽"各是多少。这就是"正交基"比一般的基更好用的原因。
       </div>
 
-      <h3 class="part"><span class="tag">定义</span>内积与正交</h3>
+      <h3 class="part"><span class="tag">定义</span>内积（inner product）与正交</h3>
       <div class="step">$\mathbb{R}^n$ 中向量 $\xi=(x_1,\dots,x_n)$、$\eta=(y_1,\dots,y_n)$ 的内积定义为</div>
       <div class="center-block">$$\langle\xi,\eta\rangle=x_1y_1+x_2y_2+\cdots+x_ny_n$$</div>
-      <div class="step">若 $\langle\xi,\eta\rangle=0$，则称 $\xi$ 与 $\eta$ <strong>正交</strong>（几何上即互相垂直）。若一组基中任意两个向量都正交，且每个向量长度为1，则称为<strong>标准正交基</strong>。</div>
+      <div class="step">若 $\langle\xi,\eta\rangle=0$，则称 $\xi$ 与 $\eta$ <strong>正交</strong>（几何上即互相垂直）。若一组基中任意两个向量都正交，且每个向量长度为1，则称为<strong>标准正交基</strong>（orthonormal basis）。</div>
 
-      <h3 class="part"><span class="tag">方法</span>施密特正交化</h3>
+      <h3 class="part"><span class="tag">方法</span>施密特正交化（Gram-Schmidt orthogonalization）</h3>
       <div class="step">任意一组线性无关的向量 $\alpha_1,\alpha_2,\dots$，都可以通过<strong>施密特正交化</strong>过程，逐个"扣除"与前面方向重合的分量，改造成一组互相正交的向量：</div>
       <div class="center-block">
         $$\beta_1=\alpha_1,\qquad \beta_2=\alpha_2-\frac{\langle\alpha_2,\beta_1\rangle}{\langle\beta_1,\beta_1\rangle}\beta_1,\qquad \cdots$$
@@ -2140,7 +2140,7 @@
         验证正交：$\langle\beta_1,\beta_2\rangle=\frac12-\frac12+0=0$ ✓。若还需要<strong>标准</strong>正交基，再把每个 $\beta_i$ 除以自身长度 $\|\beta_i\|=\sqrt{\langle\beta_i,\beta_i\rangle}$ 即可（$\beta_1$ 长度 $\sqrt2$，$\beta_2$ 长度 $\sqrt{3/2}$）。
       </div>
 
-      <h3 class="part"><span class="tag">辨析</span>为什么要"减去投影"</h3>
+      <h3 class="part"><span class="tag">辨析</span>为什么要"减去投影（projection）"</h3>
       <div class="step">$\dfrac{\langle\alpha_2,\beta_1\rangle}{\langle\beta_1,\beta_1\rangle}\beta_1$ 正是 $\alpha_2$ 在 $\beta_1$ 方向上的<strong>投影</strong>——把 $\alpha_2$ 减去这部分"与 $\beta_1$ 平行的分量"，剩下的部分自然只包含"垂直于 $\beta_1$"的信息，这就是为什么 $\beta_2$ 一定与 $\beta_1$ 正交。这个操作可以形象地理解为：把手电筒沿 $\beta_1$ 方向照向 $\alpha_2$，投影就是墙上的影子，减去影子剩下的，正是"影子之外"（垂直方向）的部分。</div>
 
       <div class="note">
@@ -2170,7 +2170,7 @@
 
     <section class="chapter" id="ch11">
       <p class="kicker">第四部 · 变换的骨架 / 11</p>
-      <h2 class="chapter-title">对角化</h2>
+      <h2 class="chapter-title">对角化（diagonalization）</h2>
       <p class="chapter-tagline">换一套最合适的基，把复杂的账本简化成一条对角线</p>
 
       <div class="life">
@@ -2186,7 +2186,7 @@
         <strong>换基 vs 对角化：</strong>对角化<em>是</em>换基，但只是换基里的一种特殊情形，不是随便换一套基就能对角化。第七节的换基公式 $B=P^{-1}AP$ 里，$P$ 可以是<strong>任意</strong>可逆矩阵——对应"随便换一套参照方向"，换出来的 $B$ 一般还是杂乱无章的矩阵，只是描述同一个变换的坐标系变了。而对角化要问的是：能不能<strong>刻意挑选</strong>一套基，让换出来的 $B$ 恰好变成最简单的对角矩阵？答案是：当且仅当把 $P$ 的每一列取为 $A$ 的<strong>特征向量</strong>时才行。原因也不难看出：若新基第 $i$ 个基向量正是特征向量 $\xi_i$（对应特征值 $\lambda_i$），则 $A\xi_i=\lambda_i\xi_i$——用新基的语言说，就是"$A$ 把第 $i$ 个基向量变成它自己的 $\lambda_i$ 倍"，这正好是对角矩阵第 $i$ 列 $(0,\dots,\lambda_i,\dots,0)^{\mathrm T}$ 的含义。一句话总结：<strong>换基是工具，对角化是这个工具的最佳使用方式</strong>——挑特征向量作基，把原本可能同时旋转、拉伸、切变的复杂变换，还原成沿几个固定方向各自纯拉伸的最朴素形式。
       </div>
 
-      <h3 class="part"><span class="tag">定理</span>可对角化的条件</h3>
+      <h3 class="part"><span class="tag">定理</span>可对角化（diagonalizable）的条件</h3>
       <div class="step">$n$ 阶矩阵 $A$ 可对角化，当且仅当 $A$ 拥有 $n$ 个线性无关的特征向量。特别地，若 $A$ 是<strong>实对称矩阵</strong>，则一定可以对角化，并且总能找到一组<strong>正交</strong>的特征向量作为过渡矩阵 $P$ 的列（此时 $P$ 是正交矩阵，$P^{-1}=P^{T}$）——这正好接上第十节"正交基"的结论。</div>
 
       <div class="example">
@@ -2205,7 +2205,7 @@
         <strong>说明：</strong> 对角化把整本讲义的几条主线收束到了一起：<strong>基变换</strong>（第七节）提供了"换一套参照方向"的工具，<strong>特征值/特征向量</strong>（第九节）指出了"该往哪个方向换"，<strong>正交基</strong>（第十节）保证了这套新方向"量起来互不干扰"——三者合力，把一个看起来复杂的线性变换，还原成了它最朴素的样子：沿着几个特定方向，各自拉伸了多少倍。这也是为什么"对角化"常被视为一学期线性代数课程的收尾章节。
       </div>
 
-      <h3 class="part"><span class="tag">别名</span>特征值分解（谱分解）</h3>
+      <h3 class="part"><span class="tag">别名</span>特征值分解（谱分解，spectral decomposition）</h3>
       <div class="step">"对角化" $A=P\Lambda P^{-1}$ 这个式子还有一个更常见的名字——<strong>特征值分解（Eigenvalue Decomposition）</strong>，对称矩阵的情形又叫<strong>谱分解</strong>。两个名字说的是同一件事，只是叫法不同：把矩阵 $A$ 拆成"过渡矩阵 $P$（特征向量作列） + 对角矩阵 $\Lambda$（特征值） + $P^{-1}$"三部分乘积，本质上就是本节讲的对角化。</div>
 
       <div class="note">
@@ -2219,7 +2219,7 @@
         <br>④ <strong>判断正定性、可逆性</strong>：结合第十二节 Gershgorin 圆盘定理，特征值的符号和范围直接反映矩阵在各方向上的"强弱"。
       </div>
 
-      <h3 class="part"><span class="tag">深入</span>幂零矩阵：不可对角化的极端例子</h3>
+      <h3 class="part"><span class="tag">深入</span>幂零矩阵（nilpotent matrix）：不可对角化的极端例子</h3>
       <div class="step">练习 1 里 $\begin{pmatrix}1&1\\0&1\end{pmatrix}$ 之所以无法对角化，根源在于 $N=\begin{pmatrix}0&1\\0&0\end{pmatrix}$ 这个"缺陷部分"——这类矩阵有个专门的名字：<strong>幂零矩阵（nilpotent matrix）</strong>。它是理解"为什么有些矩阵天生对角化不了"的关键对象，值得单独讲一讲。</div>
 
       <div class="step"><strong>定义</strong>：$n$ 阶方阵 $A$ 若存在正整数 $m$，使得 $A^m=O$，就称 $A$ 为幂零矩阵；使等式成立的最小 $m$ 叫做<strong>幂零指数</strong>。</div>
@@ -2319,7 +2319,7 @@
         <strong>注6~注9 与本节后文的关系：</strong>这几条在下面"性质·秩的基本规律"一节还会展开举反例、给出完整推导（比如注9 拼成加法的双边不等式 $|R(A)-R(B)|\le R(A+B)\le R(A)+R(B)$），这里先列出结论，方便和注1~注5 放在一起做速查。
       </div>
 
-      <h3 class="part"><span class="tag">计算</span>用初等行变换化阶梯形</h3>
+      <h3 class="part"><span class="tag">计算</span>用初等行变换（elementary row operation）化阶梯形（row echelon form）</h3>
       <div class="example">
         <div class="ex-label">例：求 $A=\begin{pmatrix}1&2&3\\2&4&7\\3&6&10\end{pmatrix}$ 的秩</div>
         $$\begin{pmatrix}1&2&3\\2&4&7\\3&6&10\end{pmatrix}\xrightarrow{R_2-2R_1,\ R_3-3R_1}\begin{pmatrix}1&2&3\\0&0&1\\0&0&1\end{pmatrix}\xrightarrow{R_3-R_2}\begin{pmatrix}1&2&3\\0&0&1\\0&0&0\end{pmatrix}$$
@@ -2335,12 +2335,12 @@
       <div class="step"><strong>加法：</strong>$r(A+B)\le r(A)+r(B)$。注意这条只是上界，加法并不像乘法那样"不增秩"——比如 $A=\begin{pmatrix}1&0\\0&0\end{pmatrix}$、$B=\begin{pmatrix}0&0\\0&1\end{pmatrix}$，$r(A)=r(B)=1$，但 $A+B=I$ 的秩是 2，秩反而变大了。更完整的说法是一个双边不等式：$$|r(A)-r(B)|\le r(A+B)\le r(A)+r(B)$$左边的下界把 $A$ 写成 $(A+B)-B$ 再用上界即得 $r(A)\le r(A+B)+r(B)$，移项就是 $r(A)-r(B)\le r(A+B)$，同理可得 $r(B)-r(A)\le r(A+B)$。何时等号精确成立，见后文"秩的可加性"一节。</div>
       <div class="step"><strong>数乘不改变秩：</strong>$r(cA)=r(A)\ (c\neq0)$——把每个元素同时放大 $c$ 倍，不会让"哪些子式非零"这件事发生任何变化，$c\neq0$ 保证放大不会把非零子式压成零。</div>
 
-      <h3 class="part"><span class="tag">性质</span>零化条件与分块矩阵的秩</h3>
+      <h3 class="part"><span class="tag">性质</span>零化条件与分块矩阵（block matrix）的秩</h3>
       <div class="step"><strong>零化条件：</strong>若 $A_{m\times n}B_{n\times l}=O$，则 $$r(A)+r(B)\le n$$ 直观上看：$B$ 的每一列都要落进 $A$ 的零空间（否则乘出来不是零列），而 $A$ 的零空间维数是 $n-r(A)$，所以 $B$ 的列空间必须"塞进"这个 $n-r(A)$ 维的子空间里，故 $r(B)\le n-r(A)$，移项即得。这其实是 Sylvester 不等式 $r(A)+r(B)-n\le r(AB)$ 在 $AB=O$ 这个特殊情形下的直接推论。</div>
-      <div class="step"><strong>准对角分块：</strong>$$r\begin{pmatrix}A&O\\O&B\end{pmatrix}=r(A)+r(B)=r\begin{pmatrix}O&A\\B&O\end{pmatrix}$$ 两块之间没有任何"跨界"的非零元素，各自的非零子式互不干扰、可以直接拼成一个更大的非零子式，秩自然相加；把两块换个位置（反对角摆放）只是把矩阵的行、列重新排了个顺序，属于初等变换（互换），秩不受影响，所以两个式子相等。这条是前面"加法只给上界"之外的一种"等号必然成立"的特例——只要两块矩阵分居对角、互不重叠，秩就是精确可加的。</div>
+      <div class="step"><strong>准对角（block diagonal）分块：</strong>$$r\begin{pmatrix}A&O\\O&B\end{pmatrix}=r(A)+r(B)=r\begin{pmatrix}O&A\\B&O\end{pmatrix}$$ 两块之间没有任何"跨界"的非零元素，各自的非零子式互不干扰、可以直接拼成一个更大的非零子式，秩自然相加；把两块换个位置（反对角摆放）只是把矩阵的行、列重新排了个顺序，属于初等变换（互换），秩不受影响，所以两个式子相等。这条是前面"加法只给上界"之外的一种"等号必然成立"的特例——只要两块矩阵分居对角、互不重叠，秩就是精确可加的。</div>
       <div class="step"><strong>竖排分块：</strong>$$\max\{r(A),r(B)\}\ \le\ r\begin{pmatrix}A\\B\end{pmatrix}\ \le\ r(A)+r(B)$$ 左边的下界很直观：把 $A$ 单独的最大无关行组摆在一起本来就是 $\begin{pmatrix}A\\B\end{pmatrix}$ 的一部分行，不可能因为多摆了几行 $B$ 反而让"独立行数"变少，$B$ 同理，取两者较大值仍成立；右边的上界则是因为 $\begin{pmatrix}A\\B\end{pmatrix}$ 的行向量组，无非是 $A$ 的行向量组和 $B$ 的行向量组直接合并，合并后的极大无关组个数最多不超过两边各自极大无关组个数之和。</div>
 
-      <h3 class="part"><span class="tag">性质</span>秩为 1 的矩阵：唯一能写成外积的矩阵</h3>
+      <h3 class="part"><span class="tag">性质</span>秩为 1 的矩阵：唯一能写成外积（outer product）的矩阵</h3>
       <div class="step">$$r(A)=1\iff A=\alpha\beta^{\mathrm T}，\text{其中 }\alpha,\beta\text{ 为非零列向量}$$ 若 $r(A)=1$，说明 $A$ 的所有行向量都是同一个非零行向量的倍数：设第一行是 $\beta^{\mathrm T}$，则第 $i$ 行必为 $a_i\beta^{\mathrm T}$，把这些倍数 $a_i$ 竖着排成一列就是 $\alpha$，于是 $A=\alpha\beta^{\mathrm T}$；反过来，$\alpha\beta^{\mathrm T}$ 的每一行都是 $\beta^{\mathrm T}$ 的倍数，行向量组的秩显然是 1（因为 $\alpha,\beta$ 都非零，$A\neq O$，秩不会是 0）。这个结构也叫<strong>秩一矩阵（外积）</strong>，是 SVD 里"$A=\sum_i\sigma_iu_iv_i^{\mathrm T}$"这个求和式中每一项的原型——任意矩阵都能分解成若干个秩一矩阵之和，秩就是最少需要几项。</div>
 
       <div class="example">
@@ -2352,7 +2352,7 @@
         <strong>为什么秩恰好是 1（而不是 0）：</strong>因为 $\alpha,\beta$ 都非零，所以 $A\neq O$，秩不可能是 0；又因为所有行都是同一个向量 $\beta^{\mathrm T}$ 的倍数，行向量组线性相关、挤在一条"直线"上，秩最多是 1。两条夹在一起，秩恰好等于 1。
       </div>
 
-      <h3 class="part"><span class="tag">性质</span>伴随矩阵的秩：三种情形，秩会"跳变"</h3>
+      <h3 class="part"><span class="tag">性质</span>伴随矩阵（adjugate matrix）的秩：三种情形，秩会"跳变"</h3>
       <div class="step">设 $A^*$ 为 $n$ 阶矩阵 $A$ 的伴随矩阵，则 $$r(A^*)=\begin{cases}n, &r(A)=n\\1, &r(A)=n-1\\0, &r(A)&lt;n-1\end{cases}$$</div>
       <div class="step"><strong>为什么会有这种"跳变"而不是平滑变化：</strong>关键恒等式是 $AA^*=A^*A=\det(A)I_n$。<br><br>
       <strong>$r(A)=n$（$A$ 可逆）：</strong>两边取行列式。用到两条性质：一是 $\det(XY)=\det(X)\det(Y)$，所以左边 $\det(AA^*)=\det(A)\det(A^*)$；二是 $\det(kM)=k^n\det(M)$（$M$ 为 $n$ 阶方阵）——给矩阵整体乘 $k$ 等于每一行都乘 $k$，$n$ 行各乘一次，行列式就乘了 $n$ 次 $k$，即 $k^n$。把这条用在右边的 $\det(A)I_n$ 上，$\det(A)$ 就是那个"标量"，而 $\det(I_n)=1$（单位矩阵是对角线全 1 的上三角矩阵），于是 $\det(\det(A)I_n)=\det(A)^n\det(I_n)=\det(A)^n$。两边合起来就是 $\det(A)\det(A^*)=\det(A)^n\neq0$，故 $\det(A^*)\neq0$，$A^*$ 也可逆，$r(A^*)=n$。<br><br>
@@ -2403,7 +2403,7 @@
         秩-零度定理告诉我们的，正是这个子空间的维数具体等于多少：$n-r(A)$ 不是另起炉灶的新概念，而是"第三节定义的那个维数，具体应用在解空间这个特定子空间上"算出来的结果——和"$\mathbb{R}^3$ 维数是 3"用的是同一把尺子，只是量的对象不同、量出来的具体数值由秩来决定。
       </div>
 
-      <h3 class="part"><span class="tag">几何意义</span>秩就是像空间的维数</h3>
+      <h3 class="part"><span class="tag">几何意义</span>秩就是像空间（image space）的维数</h3>
       <div class="step">把 $A$ 看作线性映射 $x\mapsto Ax$：$r(A)$ 就是这个映射<strong>值域（像空间）的维数</strong>，也就是"变换后落在多少维空间里"。比如把三维空间压扁成一张平面的变换，秩是 2；压成一条直线，秩是 1；如果什么都没压扁（满秩），像空间的维数和定义域一样大。这也接上了第九节"特征值"的视角：若 $A$ 有特征值 0，说明存在方向被完全压扁，$A$ 必然不满秩（$r(A)&lt;n$）。</div>
 
       <div class="step"><strong>解空间是像空间的镜像：问的是"哪些输入被压成了 0"。</strong>像空间关心的是"输出能落在哪里"，解空间（也叫零空间）关心的是完全相反的问题——哪些输入向量，经过 $A$ 加工之后，恰好被压成了零向量。</div>
@@ -2483,7 +2483,7 @@
       </div>
 
       <div class="note">
-        <strong>说明：图中虚线大框是什么空间？</strong>它不是 $AB$ 的空间——$AB$ 本身是一个从 $\mathbb R^p\to\mathbb R^m$ 的映射，没有单独的"$AB$ 空间"可画。虚线大框画的是<strong>中间那个 $n$ 维空间</strong>：完整的流水线其实是三层 $\mathbb R^p\xrightarrow{B}\mathbb R^n\xrightarrow{A}\mathbb R^m$，图里只画了走到一半的那一层——$B$ 的输出空间同时也是 $A$ 的输入空间，正是这里，$\operatorname{im}(B)$ 和 $\ker(A)$ 才有机会"打照面"。前后两层（$B$ 的定义域 $\mathbb R^p$ 和 $A$ 的值域 $\mathbb R^m$）跟秩损失的机制无关，所以没有画出来。
+        <strong>说明：图中虚线大框是什么空间？</strong>它不是 $AB$ 的空间——$AB$ 本身是一个从 $\mathbb R^p\to\mathbb R^m$ 的映射，没有单独的"$AB$ 空间"可画。虚线大框画的是<strong>中间那个 $n$ 维空间</strong>：完整的流水线其实是三层 $\mathbb R^p\xrightarrow{B}\mathbb R^n\xrightarrow{A}\mathbb R^m$，图里只画了走到一半的那一层——$B$ 的输出空间同时也是 $A$ 的输入空间，正是这里，$\operatorname{im}(B)$ 和 $\ker(A)$ 才有机会"打照面"。前后两层（$B$ 的定义域 $\mathbb R^p$ 和 $A$ 的值域（range） $\mathbb R^m$）跟秩损失的机制无关，所以没有画出来。
       </div>
 
       <div class="note">
@@ -2514,18 +2514,18 @@
         <strong>说明：为什么这条不等式只给下界，不是精确等式？</strong>因为 $B$ 的像空间通常并不是那个 $n$ 维"中转站"的全部——只有 $r(B)=n$ 时它才会填满整个空间，否则 $r(B)\lt n$ 时它只是其中一个真子空间。这个子空间具体落在什么位置——是恰好"扎"进了 $A$ 的零空间，还是完全"躲开"了它——由 $A,B$ 的具体数值决定，不是单靠维数就能确定的，所以重叠部分的维数其实是一个范围：$$0\ \le\ \dim(\text{重叠})\ \le\ \min(n-r(A),\,r(B))$$下限 0 对应上面"$xy$ 平面"的情形（完全躲开），上限 $\min(n-r(A),r(B))$ 对应"$xz$ 平面"的情形（尽量扎进去、扎到不能再扎）。真正精确的等式其实是 $$r(AB)=r(B)-\dim(\text{重叠})$$ 但重叠维数本身并不固定，会在 $0$ 到 $\min(n-r(A),r(B))$ 之间浮动，我们只能保证它不会超过这个上限，于是只能确定 $r(AB)$ 不低于"重叠拿满"这个最坏情况对应的值，也就是 $r(A)+r(B)-n$——这正是 Sylvester 不等式只给出下界、而非等式的原因。
       </div>
 
-      <h3 class="part"><span class="tag">深入</span>$r(A^{\mathrm T}A)=r(A)$：最小二乘法的基石</h3>
+      <h3 class="part"><span class="tag">深入</span>$r(A^{\mathrm T}A)=r(A)$：最小二乘（least squares）法的基石</h3>
       <div class="step">这条结论初看意外，却极其重要：对任意实矩阵 $A$，</div>
       <div class="center-block">$$r(A^{\mathrm T}A)=r(A)=r(AA^{\mathrm T})$$</div>
       <div class="step"><strong>证明思路：</strong>只需证 $A^{\mathrm T}Ax=0$ 与 $Ax=0$ 同解（同解则零空间维数相同，由秩-零度定理秩也相同）。若 $Ax=0$，显然 $A^{\mathrm T}Ax=0$；反过来若 $A^{\mathrm T}Ax=0$，两边左乘 $x^{\mathrm T}$ 得 $x^{\mathrm T}A^{\mathrm T}Ax=(Ax)^{\mathrm T}(Ax)=\|Ax\|^2=0$，故 $Ax=0$。</div>
       <div class="step"><strong>应用：</strong>最小二乘法的正规方程 $A^{\mathrm T}Ax=A^{\mathrm T}b$ 之所以能保证唯一解，正是靠这条性质——当 $A$ 列满秩（$r(A)=n$）时，$r(A^{\mathrm T}A)=n$，说明 $A^{\mathrm T}A$ 是满秩方阵，从而可逆，解 $x=(A^{\mathrm T}A)^{-1}A^{\mathrm T}b$ 唯一存在。</div>
 
-      <h3 class="part"><span class="tag">深入</span>幂等矩阵：秩恰好等于迹</h3>
+      <h3 class="part"><span class="tag">深入</span>幂等矩阵（idempotent matrix）：秩恰好等于迹</h3>
       <div class="step">若 $A^2=A$（<strong>幂等矩阵</strong>，也叫投影矩阵），则</div>
       <div class="center-block">$$r(A)=\operatorname{tr}(A)$$</div>
       <div class="step">幂等矩阵的特征值只能是 0 或 1（设 $A\xi=\lambda\xi$，则 $A^2\xi=\lambda^2\xi=A\xi=\lambda\xi$，故 $\lambda^2=\lambda$，解得 $\lambda=0$ 或 $1$），并且总能对角化，相似于 $\begin{pmatrix}I_r&\\&O\end{pmatrix}$——这里的 $r$ 既是特征值 1 的个数（也就是迹，因为对角化后迹=特征值之和），又恰好是秩（对角化后非零行的行数）。这条性质在统计学的"帽子矩阵"（回归里 $\hat y=Hy$ 的 $H$）中经常用来直接读出投影空间的维数。</div>
 
-      <h3 class="part"><span class="tag">深入</span>SVD 视角：秩是非零奇异值的个数</h3>
+      <h3 class="part"><span class="tag">深入</span>SVD 视角：秩是非零奇异值（singular value）的个数</h3>
       <div class="step">秩最本质的刻画来自<strong>奇异值分解（SVD）</strong>：任意矩阵都能写成 $A=U\Sigma V^{\mathrm T}$，其中 $\Sigma=\text{diag}(\sigma_1,\dots,\sigma_p)$，$\sigma_1\ge\cdots\ge\sigma_p\ge0$ 是奇异值。此时</div>
       <div class="center-block">$$r(A) = \#\{\sigma_i : \sigma_i>0\}\ (\text{非零奇异值的个数})$$</div>
       <div class="step">这个视角比"行阶梯形里数非零行"更<strong>稳健</strong>：实际数值计算中，矩阵常因浮点误差冒出极小但严格非零的元素，"是否等于 0"这个判据会失真；而 SVD 通过设一个阈值（比如把小于 $10^{-10}$ 的奇异值视为 0）来判断"数值秩"，是工程和数据科学里真正在用的方法。由此还能引出一条<strong>Eckart-Young 定理</strong>：所有秩为 $k$ 的矩阵里，与 $A$ 最接近的那个（Frobenius 范数意义下），就是只保留 SVD 前 $k$ 个奇异值构造出的 $A_k=\sum_{i=1}^k\sigma_iu_iv_i^{\mathrm T}$——这正是主成分分析（PCA）、图像压缩里"降秩近似"的理论依据。</div>
@@ -2539,12 +2539,12 @@
       <div class="step">一般情形只有不等式 $r(A+B)\le r(A)+r(B)$。等号成立<strong>当且仅当</strong> $A,B$ 的列空间之交为零、且行空间之交也为零——直观说，两者"完全没有共享的独立方向"，加起来的每一份秩都是"纯增量"，没有相互抵消或重叠。</div>
       <div class="step">一个常见的充分条件：若 $AB^{\mathrm T}=O$ 且 $A^{\mathrm T}B=O$，则等号成立。这条判据在证明"某矩阵可以分解成若干秩一矩阵之和且互不冗余"、或者分析若尔当块结构时经常用到。</div>
 
-      <h3 class="part"><span class="tag">深入</span>Cauchy-Binet 公式：秩与子式的定量关系</h3>
+      <h3 class="part"><span class="tag">深入</span>Cauchy-Binet 公式：秩与子式（minor）的定量关系</h3>
       <div class="step">设 $A$ 是 $m\times n$ 矩阵、$B$ 是 $n\times m$ 矩阵（$m\le n$），则</div>
       <div class="center-block">$$\det(AB)=\sum_{S}\det(A_S)\det(B_S)$$</div>
       <div class="step">其中 $S$ 遍历 $\{1,\dots,n\}$ 的所有 $m$ 元子集，$A_S,B_S$ 分别是取 $A$ 对应列、$B$ 对应行构成的 $m$ 阶子方阵。这个公式其实是"子式定义秩"的定量升级版——它精确解释了为什么 $AB$ 的秩会被 $A,B$ 各自的子式结构所限制，可以看作 Sylvester 秩不等式更深层的代数根源。</div>
 
-      <h3 class="part"><span class="tag">深入</span>Drazin 逆：不满秩、不可对角化方阵的广义逆</h3>
+      <h3 class="part"><span class="tag">深入</span>Drazin 逆：不满秩（full rank）、不可对角化方阵的广义逆（generalized inverse）</h3>
       <div class="step">Moore-Penrose 伪逆适用于一般（未必是方阵）矩阵；而对于方阵但不可逆的情形（比如带幂零部分、不可对角化），还有一种更贴合矩阵结构的逆——<strong>Drazin 逆</strong> $A^D$，满足：</div>
       <div class="center-block">$$A^kA^DA=A^k,\qquad A^DAA^D=A^D,\qquad AA^D=A^DA$$</div>
       <div class="step">其中 $k$ 是 $A$ 的指标（使 $r(A^k)=r(A^{k+1})$ 成立的最小 $k$）。它在求解奇异线性微分方程组、马尔可夫链的平稳分布分析中，比 Moore-Penrose 伪逆更贴合问题的代数结构。</div>
@@ -2554,12 +2554,12 @@
       <div class="step"><strong>Hankel / Toeplitz 矩阵：</strong>一个 Hankel 矩阵的秩为 $r$，等价于生成它的数列可以写成 $r$ 个指数序列的线性组合——这是信号处理中"用低秩 Hankel 矩阵做频率估计"（Prony 方法）的理论基础。</div>
       <div class="step"><strong>循环矩阵（circulant）：</strong>秩等于非零特征值的个数，而它的全部特征值可以直接由离散傅里叶变换（DFT/FFT）算出，完全不需要解特征方程——这也是循环矩阵在快速算法里特别受青睐的原因。</div>
 
-      <h3 class="part"><span class="tag">深入</span>秩与图论：拉普拉斯矩阵的秩与连通分量</h3>
+      <h3 class="part"><span class="tag">深入</span>秩与图论：拉普拉斯矩阵（Laplacian matrix）的秩与连通分量（connected component）</h3>
       <div class="step">图 $G$ 的拉普拉斯矩阵 $L=D-A$（$D$ 是度数对角阵，$A$ 是邻接矩阵）满足</div>
       <div class="center-block">$$r(L)=n-(\text{连通分量个数})$$</div>
       <div class="step">换句话说，$L$ 的零特征值的重数恰好等于图的连通分量数——这是谱图理论里最基本的结果之一，也是<strong>谱聚类算法</strong>的出发点：通过考察拉普拉斯矩阵最小的几个特征值对应的特征向量，就能把图"自然地"划分成若干个簇。</div>
 
-      <h3 class="part"><span class="tag">深入</span>低秩矩阵补全：从"部分已知"恢复整个矩阵</h3>
+      <h3 class="part"><span class="tag">深入</span>低秩矩阵补全（low-rank matrix completion）：从"部分已知"恢复整个矩阵</h3>
       <div class="step">如果只知道一个（假定）低秩矩阵的一部分元素，能否恢复出全部元素？这是"推荐系统"（比如根据少数已打分的电影，推断用户对所有电影的评分）的数学原型。Candès–Recht 等人的理论结果表明：当矩阵的秩足够低、且已知条目分布得足够"随机分散"时，最小化<strong>核范数</strong>（矩阵所有奇异值之和，是秩的凸松弛）可以<strong>精确恢复</strong>原矩阵。</div>
       <div class="step">这一结果的关键意义在于：直接最小化秩是一个组合优化问题（NP-难），而核范数把它转化成了一个凸优化问题，从而有高效算法可解。</div>
 
@@ -2613,7 +2613,7 @@
 
     <section class="chapter" id="ex6" style="max-width:none; padding:0;">
       <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
-      <h2 class="chapter-title" style="padding:0 40px;">习题六：线性空间与基</h2>
+      <h2 class="chapter-title" style="padding:0 40px;">习题六：线性空间（vector space）与基</h2>
       <p class="chapter-tagline" style="padding:0 40px;">对应第一部"空间的语言"三节内容的巩固练习——线性空间的验证、基的构造与坐标变换</p>
 
 <div class="ex6-scope"><div class="wrap">
@@ -2988,7 +2988,7 @@
 
     <section class="chapter" id="ex7" style="max-width:none; padding:0;">
       <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
-      <h2 class="chapter-title" style="padding:0 40px;">习题七：交换子关系与幂零矩阵</h2>
+      <h2 class="chapter-title" style="padding:0 40px;">习题七：交换子（commutator）关系与幂零（nilpotent）矩阵</h2>
       <p class="chapter-tagline" style="padding:0 40px;">对应第四部"变换的骨架"——用迹与特征值的技巧，证明由交换子关系导出的幂零性</p>
 
 <div class="ex6-scope"><div class="wrap">
@@ -3350,7 +3350,7 @@
 
     <section class="chapter" id="ex9" style="max-width:none; padding:0;">
       <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
-      <h2 class="chapter-title" style="padding:0 40px;">习题九：特征多项式</h2>
+      <h2 class="chapter-title" style="padding:0 40px;">习题九：特征多项式（characteristic polynomial）</h2>
       <p class="chapter-tagline" style="padding:0 40px;">从 \(\det(A-\lambda I)=0\) 出发，掌握求特征值的标准流程、特殊矩阵的速算技巧，以及 Cayley-Hamilton 定理的应用</p>
 
 <div class="ex6-scope"><div class="wrap">
@@ -3478,7 +3478,7 @@
     <h3 class="sub"><span class="tag">根与系数</span>特征值的对称函数</h3>
     <p>把 \(p(\lambda)\) 写成 \(\prod_i(\lambda-\lambda_i)\) 展开后比较系数，可以得到更完整的一组关系：</p>
     <div class="box note">
-      <div class="label">Vieta 公式（韦达定理）在特征值上的推广</div>
+      <div class="label">Vieta 公式（韦达定理，Vieta's formulas）在特征值上的推广</div>
       <p>\(\sum_i\lambda_i=\operatorname{tr}(A)\)（所有特征值之和 = 迹）</p>
       <p style="margin:0">\(\prod_i\lambda_i=\det(A)\)（所有特征值之积 = 行列式）</p>
     </div>
@@ -3694,7 +3694,7 @@
 
     <section class="chapter" id="ex11" style="max-width:none; padding:0;">
       <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
-      <h2 class="chapter-title" style="padding:0 40px;">习题十一：合同变换是线性变换</h2>
+      <h2 class="chapter-title" style="padding:0 40px;">习题十一：合同变换（congruence transformation）是线性变换</h2>
       <p class="chapter-tagline" style="padding:0 40px;">在对称矩阵构成的线性空间里，验证 \(T(A)=P^{\mathrm T}AP\) 满足线性变换的两条公理</p>
 
 <div class="ex6-scope"><div class="wrap">
@@ -3806,7 +3806,7 @@
 
     <section class="chapter" id="ex12" style="max-width:none; padding:0;">
       <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
-      <h2 class="chapter-title" style="padding:0 40px;">习题十二：子空间与零空间的交集 \(W \cap N(A)\)</h2>
+      <h2 class="chapter-title" style="padding:0 40px;">习题十二：子空间（subspace）与零空间（null space）的交集 \(W \cap N(A)\)</h2>
       <p class="chapter-tagline" style="padding:0 40px;">对应第五部"秩与解的结构"的延伸练习——两个子空间叠在一起，交出来的还剩多少维</p>
 
 <div class="ex6-scope"><div class="wrap">
@@ -4064,7 +4064,7 @@
 
     <div class="box note">
       <div class="label">几何直觉</div>
-      <p style="margin:0">\(A\mathbf{x}\) 的所有可能取值构成 \(A\) 的列空间，而 \(\mathbf{b}\) 一般不在这个子空间里。最小二乘法本质上是求 \(\mathbf{b}\) 在列空间上的<strong>正交投影</strong>：残差 \(\mathbf{b}-A\mathbf{x}\) 垂直于列空间，即 \(A^{\mathrm T}(\mathbf{b}-A\mathbf{x})=\mathbf{0}\)，整理后正是正规方程。</p>
+      <p style="margin:0">\(A\mathbf{x}\) 的所有可能取值构成 \(A\) 的列空间，而 \(\mathbf{b}\) 一般不在这个子空间里。最小二乘法本质上是求 \(\mathbf{b}\) 在列空间上的<strong>正交投影</strong>（orthogonal projection）：残差 \(\mathbf{b}-A\mathbf{x}\) 垂直于列空间，即 \(A^{\mathrm T}(\mathbf{b}-A\mathbf{x})=\mathbf{0}\)，整理后正是正规方程。</p>
     </div>
 
     <h3 class="sub"><span class="tag">证明</span>为什么 \(A^{\mathrm T}(\mathbf{b}-A\hat{\mathbf x})=\mathbf{0}\)</h3>
@@ -4546,7 +4546,7 @@
 
     <section class="chapter" id="ch13">
       <p class="kicker">第六部 · 高级专题 / 13</p>
-      <h2 class="chapter-title">若尔当标准形</h2>
+      <h2 class="chapter-title">若尔当标准形（Jordan normal form）</h2>
       <p class="chapter-tagline">当特征向量不够用时，退而求其次找一组"几乎对角"的基</p>
 
       <div class="life">
@@ -4560,7 +4560,7 @@
         特征值只有 $\lambda=2$（代数重数 2）。解 $(A-2I)\xi=0$：$\begin{pmatrix}0&1\\0&0\end{pmatrix}\xi=0$，只给出一维解空间 $\xi=(1,0)^{\mathrm T}$ 的倍数——几何重数只有 1，凑不出第二个线性无关的特征向量，$A$ 不可对角化。
       </div>
 
-      <h3 class="part"><span class="tag">定义</span>广义特征向量与若尔当链</h3>
+      <h3 class="part"><span class="tag">定义</span>广义特征向量（generalized eigenvector）与若尔当链（Jordan chain）</h3>
       <div class="step">既然普通特征向量不够，就退一步找<strong>广义特征向量</strong>：向量 $\xi_k$ 满足 $(A-\lambda I)^k\xi_k=0$（对某个正整数 $k$），但 $(A-\lambda I)^{k-1}\xi_k\neq0$。这样的 $\xi_k$ 未必被 $A$ 单纯拉伸，但被 $(A-\lambda I)$ 反复作用后终会归零。</div>
       <div class="step">从一个满足 $(A-\lambda I)^m\xi_m=0$、$(A-\lambda I)^{m-1}\xi_m\neq0$ 的向量 $\xi_m$ 出发，递推定义一条<strong>若尔当链</strong>：
       $$\xi_{m-1}=(A-\lambda I)\xi_m,\quad \xi_{m-2}=(A-\lambda I)\xi_{m-1},\ \dots,\ \xi_1=(A-\lambda I)\xi_2$$
@@ -4613,7 +4613,7 @@
         <p style="margin:10px 0 0"><strong>在矩阵里的体现：</strong>$J_2(\lambda)$ 第一列 $(\lambda,0)^{\mathrm T}$ 对应 $\xi_1$：$A\xi_1=\lambda\xi_1$，单纯被拉伸，不牵扯别人。第二列 $(1,\lambda)^{\mathrm T}$ 对应 $\xi_2$：$A\xi_2=\xi_1+\lambda\xi_2$，说明 $A$ 作用在 $\xi_2$ 上时，主要沿 $\lambda$ 方向拉伸，但还带了一点点 $\xi_1$ 方向的分量——这个"带了一点点 $\xi_1$"正是若尔当块次对角线上那个 1 的来源。</p>
       </div>
 
-      <h3 class="part"><span class="tag">构造</span>若尔当块长什么样</h3>
+      <h3 class="part"><span class="tag">构造</span>若尔当块（Jordan block）长什么样</h3>
       <div class="step">把链倒过来看 $A$ 的作用：$A\xi_1=\lambda\xi_1$（真正的特征向量），而 $A\xi_2=\lambda\xi_2+\xi_1$（因为 $(A-\lambda I)\xi_2=\xi_1$），依此类推 $A\xi_i=\lambda\xi_i+\xi_{i-1}$。把 $\xi_1,\dots,\xi_m$ 按顺序作为基，$T$ 的矩阵恰好是：</div>
       <div class="center-block">
         $$J_m(\lambda)=\begin{pmatrix}\lambda&1& & \\ &\lambda&1& \\ & &\ddots&\ddots\\ & & &\lambda&1\\ & & & &\lambda\end{pmatrix}$$
@@ -4690,7 +4690,7 @@
 
     <section class="chapter" id="ch14">
       <p class="kicker">第六部 · 高级专题 / 14</p>
-      <h2 class="chapter-title">最小多项式与 Cayley-Hamilton 定理</h2>
+      <h2 class="chapter-title">最小多项式（minimal polynomial）与 Cayley-Hamilton 定理</h2>
       <p class="chapter-tagline">每个矩阵都"满足"自己的特征方程——而且还有一个更精简的版本</p>
 
       <div class="life">
@@ -4815,23 +4815,23 @@
 
     <section class="chapter" id="ch15">
       <p class="kicker">第六部 · 高级专题 / 15</p>
-      <h2 class="chapter-title">谱定理与正规矩阵</h2>
+      <h2 class="chapter-title">谱定理（spectral theorem）与正规矩阵（normal matrix）</h2>
       <p class="chapter-tagline">实对称矩阵可正交对角化的结论，在复数域上真正的完整版本是什么</p>
 
       <div class="life">
         <strong>生活比喻：</strong>第十节讲过实对称矩阵能找到一组互相垂直的"专属坐标轴"。到了复数域，"对称"这个条件太窄了——真正起作用的条件换了一副面孔，但精神完全一致：这个变换和它的"共轭搭档"必须步调一致、互不较劲。
       </div>
 
-      <h3 class="part"><span class="tag">定义</span>共轭转置与几类特殊矩阵</h3>
+      <h3 class="part"><span class="tag">定义</span>共轭转置（conjugate transpose）与几类特殊矩阵</h3>
       <div class="step">复矩阵 $A$ 的<strong>共轭转置</strong>，记作 $A^*$（英文常称 adjoint，也写作 $A^\dagger$），是先取每个元素的共轭复数、再转置得到的矩阵：$(A^*)_{ij}=\overline{A_{ji}}$。它是实矩阵转置 $A^{\mathrm T}$ 在复数域上的自然推广（若 $A$ 是实矩阵，$A^*=A^{\mathrm T}$）。</div>
       <div class="note">
         <strong>注意，不要和"伴随矩阵"搞混：</strong>中文语境里"伴随矩阵"通常特指用代数余子式构造出来的 $\text{adj}(A)$（满足 $A\cdot\text{adj}(A)=\det(A)\,I$，是求逆矩阵公式 $A^{-1}=\frac{1}{\det A}\text{adj}(A)$ 里的那个），和这里的共轭转置是两个完全不同的对象，只是英文里 "adjoint" 这个词恰好在不同语境下被用来指代它们——共轭转置更贴切的中文说法应该是"共轭转置"或直接叫"$A$ 星"，避免和伴随矩阵混用同一个"伴随"。
       </div>
       <div class="step">基于 $A^*$，定义三类矩阵：<strong>厄米矩阵</strong>（$A^*=A$，实对称矩阵的复数版本）；<strong>酉矩阵</strong>（$A^*A=I$，即 $A^{-1}=A^*$，正交矩阵的复数版本）；<strong>正规矩阵</strong>（$AA^*=A^*A$，即 $A$ 与自己的共轭转置可交换）。</div>
       <div class="note">
-        <strong>包含关系：</strong>厄米矩阵和酉矩阵都自动满足 $AA^*=A^*A$（厄米矩阵：$AA^*=AA=A^*A$；酉矩阵：$AA^*=I=A^*A$），所以它们都是正规矩阵的特例。正规矩阵是这三者中<strong>最大</strong>的一类。</div>
+        <strong>包含关系：</strong>厄米矩阵（Hermitian matrix）和酉矩阵（unitary matrix）都自动满足 $AA^*=A^*A$（厄米矩阵：$AA^*=AA=A^*A$；酉矩阵：$AA^*=I=A^*A$），所以它们都是正规矩阵的特例。正规矩阵是这三者中<strong>最大</strong>的一类。</div>
 
-      <h3 class="part"><span class="tag">定理</span>复数域上的谱定理</h3>
+      <h3 class="part"><span class="tag">定理</span>复数域（field）上的谱定理</h3>
       <div class="step">$n$ 阶复矩阵 $A$ 可以被<strong>酉对角化</strong>（即存在酉矩阵 $U$，使 $U^*AU=U^{-1}AU$ 是对角矩阵）$\iff$ $A$ 是<strong>正规矩阵</strong>（$AA^*=A^*A$）。</div>
       <div class="note">
         <strong>和实对称矩阵谱定理的关系：</strong>第十节的结论"实对称矩阵可正交对角化"正是这个定理在<strong>实数域、厄米（=对称）矩阵</strong>这个特殊情形下的版本——把复数域上的"共轭转置"换回实数域上的"普通转置"，"酉矩阵"换回"正交矩阵"，"正规矩阵"这个条件在实对称的场景下恰好自动满足（因为 $A^{\mathrm T}=A$ 显然和自己可交换）。可以说，正规矩阵才是"可以被漂亮地对角化"这件事背后真正起作用的最一般条件。</div>
@@ -4879,7 +4879,7 @@
         <strong>生活比喻：</strong>特征值分解要求"原地打转"（变换前后用的是同一组坐标轴），很多变换根本做不到。SVD 放弃了这种"原地"的要求，允许你进门前先换一次鞋（旋转），中间沿着新轴伸缩，出门再换一次鞋（再旋转）——任何变换，不管形状规不规则，都能这样三步分解。
       </div>
 
-      <h3 class="part"><span class="tag">定理</span>奇异值分解的存在性</h3>
+      <h3 class="part"><span class="tag">定理</span>奇异值分解（singular value decomposition）的存在性</h3>
       <div class="step">任意 $m\times n$ 实（或复）矩阵 $A$，都可以分解为
       $$A=U\Sigma V^{\mathrm T}$$
       其中 $U$ 是 $m$ 阶正交（酉）矩阵，$V$ 是 $n$ 阶正交（酉）矩阵，$\Sigma$ 是 $m\times n$ 的"对角"矩阵（只有主对角线上可能非零，其余全零），对角线上的元素 $\sigma_1\ge\sigma_2\ge\cdots\ge0$ 叫做<strong>奇异值</strong>。</div>
@@ -4939,7 +4939,7 @@
 
     <section class="chapter" id="ch17">
       <p class="kicker">第六部 · 高级专题 / 17</p>
-      <h2 class="chapter-title">广义逆（伪逆）</h2>
+      <h2 class="chapter-title">广义逆（伪逆，pseudoinverse）</h2>
       <p class="chapter-tagline">矩阵不可逆或不是方阵时，退而求其次找一个"最讲道理"的替代品</p>
 
       <div class="life">
@@ -4997,7 +4997,7 @@
         <strong>为什么 $R$ 是上三角：</strong>施密特正交化的规则是"第 $i$ 个正交向量只依赖前 $i$ 个原始向量"，反过来，第 $i$ 个原始向量 $\alpha_i$ 用正交基展开时，也只会用到前 $i$ 个正交基向量——这正是 $R$ 里第 $i$ 列只有前 $i$ 行非零（上三角结构）的原因。</div>
       <div class="step">QR 分解在解最小二乘问题时也很实用：把上一节的正规方程 $A^{\mathrm T}Ax=A^{\mathrm T}b$ 代入 $A=QR$，利用 $Q^{\mathrm T}Q=I$ 化简，能得到数值上更稳定的求解方式 $Rx=Q^{\mathrm T}b$（避免了显式计算 $A^{\mathrm T}A$ 带来的精度损失）。</div>
 
-      <h3 class="part"><span class="tag">分解</span>Cholesky 分解：对称正定矩阵的"平方根"</h3>
+      <h3 class="part"><span class="tag">分解</span>Cholesky 分解：对称正定（positive definite）矩阵的"平方根"</h3>
       <div class="step">若 $A$ 是<strong>对称正定矩阵</strong>（下一节会具体讲"正定"的判别），存在唯一的下三角矩阵 $L$（对角线元素都为正），使得
       $$A=LL^{\mathrm T}$$
       这可以看成 LU 分解在"对称正定"这个特殊情形下的加强版——因为对称性，$U$ 恰好能写成 $L^{\mathrm T}$ 的形式，一次分解顶两次用，计算量只有普通 LU 分解的一半左右。</div>
@@ -5015,7 +5015,7 @@
 
     <section class="chapter" id="ch19">
       <p class="kicker">第六部 · 高级专题 / 19</p>
-      <h2 class="chapter-title">二次型的正定性判别</h2>
+      <h2 class="chapter-title">二次型（quadratic form）的正定性判别</h2>
       <p class="chapter-tagline">不求特征值，只看几个"子行列式"，就能判断二次型的正负性质</p>
 
       <div class="life">
@@ -5025,7 +5025,7 @@
       <div class="step">第十一节讲过，二次型 $f(x)=x^{\mathrm T}Ax$（$A$ 是对称矩阵）可以通过合同变换 $x=Cy$ 化简成标准形 $\sum d_iy_i^2$。根据标准形里正、负、零系数的个数，二次型（或者说对称矩阵 $A$）被分为几类：<strong>正定</strong>（$f(x)>0$ 对所有 $x\neq0$ 成立，标准形系数全正）、<strong>负定</strong>（全负）、<strong>半正定</strong>（$\ge0$，允许等号）、<strong>不定</strong>（有正有负）。</div>
       <div class="step">正定性最直接的定义是：对所有非零向量 $x$，都有 $x^{\mathrm T}Ax>0$。这等价于 $A$ 的所有特征值都为正——但求特征值往往需要解一个 $n$ 次方程，计算量不小。</div>
 
-      <h3 class="part"><span class="tag">判别</span>赫尔维茨（顺序主子式）判别法</h3>
+      <h3 class="part"><span class="tag">判别</span>赫尔维茨（顺序主子式，leading principal minor）判别法</h3>
       <div class="step">设 $A$ 是 $n$ 阶对称矩阵，$A$ 的<strong>顺序主子式</strong> $D_k$ 是取 $A$ 左上角 $k\times k$ 子块的行列式（$k=1,2,\dots,n$）。则：
       $$A\text{ 正定}\iff D_1>0,\ D_2>0,\ \dots,\ D_n>0\ (\text{全部为正})$$
       $$A\text{ 负定}\iff D_1&lt;0,\ D_2>0,\ D_3&lt;0,\dots\ (\text{正负交替，从负号开始})$$</div>
@@ -5042,7 +5042,7 @@
         $D_1=4>0$；$D_2=20-4=16>0$。故 $A$ 正定——这也解释了为什么它能顺利做出 Cholesky 分解：<strong>Cholesky 分解存在的前提，正是矩阵对称正定</strong>，赫尔维茨判据在这里起到了"预检"的作用。
       </div>
 
-      <h3 class="part"><span class="tag">辨析</span>半正定的情形要小心</h3>
+      <h3 class="part"><span class="tag">辨析</span>半正定（positive semidefinite）的情形要小心</h3>
       <div class="step">赫尔维茨判据只能干净利落地判断<strong>严格</strong>正定/负定；如果某个顺序主子式恰好为 0（不满足严格大于），并不能直接下结论是半正定还是不定，需要用更谨慎的方法（比如检查所有主子式，不仅是顺序主子式，或者退回特征值判据）来判断。</div>
       <div class="note">
         <strong>说明：</strong>正定性判别贯穿了本讲义好几处：第十三节最小二乘用到"$A^{\mathrm T}A$ 正定 $\Rightarrow$ 唯一解"；上一节 Cholesky 分解要求对称正定；下一节 Gershgorin 圆盘定理也能作为"特征值是否都为正"的一种辅助判断手段。</div>
@@ -5088,7 +5088,7 @@
 
     <section class="chapter" id="ch21">
       <p class="kicker">第六部 · 高级专题 / 21</p>
-      <h2 class="chapter-title">矩阵函数与矩阵指数</h2>
+      <h2 class="chapter-title">矩阵函数与矩阵指数（matrix exponential）</h2>
       <p class="chapter-tagline">把"求矩阵幂"的技巧继续往前推一步，推广到求 $e^{At}$，并直接用来解微分方程组</p>
 
       <div class="life">
@@ -5114,7 +5114,7 @@
         若 $A$ 不是对角矩阵，先按第十一节的方法求出 $P$ 和 $\Lambda$，再套用上面的公式即可。
       </div>
 
-      <h3 class="part"><span class="tag">应用</span>求解线性微分方程组</h3>
+      <h3 class="part"><span class="tag">应用</span>求解线性微分方程组（system of linear differential equations）</h3>
       <div class="step">一阶线性常系数微分方程组 $\dfrac{dx}{dt}=Ax$（$x=x(t)$ 是向量值函数），配合初始条件 $x(0)=x_0$，解恰好就是
       $$x(t)=e^{At}x_0$$
       这与一元微分方程 $x'=ax,\ x(0)=x_0$ 的解 $x(t)=e^{at}x_0$ 形式上完全一致——矩阵指数把"单变量指数增长/衰减"的图景，直接搬到了"多变量耦合系统"上。</div>
@@ -5152,7 +5152,7 @@
       <div class="note">
         <strong>和第一部的呼应：</strong>这四条性质并不是点积独有的巧合，而是第一部讲向量空间时提到的<strong>公理化结构</strong>在"内积"这一层面的具体版本——交换律、分配律、与数乘的相容性、正定性，正是数学上定义"内积空间"时明文写出的四条公理。点积只是 $\mathbb{R}^n$ 上最常见、最具体的一种内积，第十节讲的"正交""长度""夹角"这些概念，说到底都是从点积（更一般地说，从内积）这一个运算里派生出来的。</div>
 
-      <h3 class="part"><span class="tag">矩阵形式</span>点积与矩阵乘法的对应</h3>
+      <h3 class="part"><span class="tag">矩阵形式</span>点积（dot product）与矩阵乘法的对应</h3>
       <div class="step">若把 $a,b$ 都看成 $n\times1$ 的列向量，点积可以直接写成矩阵乘法：
       $$a\cdot b=a^{\mathrm T}b=b^{\mathrm T}a$$
       左边 $a^{\mathrm T}$ 是 $1\times n$ 的行向量，右边 $b$ 是 $n\times1$ 的列向量，$(1\times n)\times(n\times1)=1\times1$，结果自然是一个数——这也解释了为什么点积结果一定是标量：矩阵乘法的形状规则直接决定了这一点。</div>
@@ -5194,7 +5194,7 @@
         <strong>生活比喻：</strong>点积问的是"两个方向有多合拍"，叉积问的是完全不同的问题——"这两个方向撑起的平面，法线朝哪儿、这块平行四边形有多大"。拧螺丝时，右手四指从 $a$ 转向 $b$，大拇指指的方向就是 $a\times b$ 的方向（右手定则）。
       </div>
 
-      <h3 class="part"><span class="tag">定义</span>叉积是什么</h3>
+      <h3 class="part"><span class="tag">定义</span>叉积（cross product）是什么</h3>
       <div class="step">叉积（矢积、向量积）是<strong>仅在三维空间</strong>里定义的一种运算：两个三维向量 $a,b$ 的叉积 $a\times b$，结果是<strong>一个新的向量</strong>（这一点和点积恰好相反——点积吃两个向量吐出一个数，叉积吃两个向量吐出一个向量）。</div>
 
       <h3 class="part"><span class="tag">性质</span>核心几何性质</h3>
@@ -5206,7 +5206,7 @@
       $$a\times b=-(b\times a)$$
       这与点积的<strong>交换律</strong>（$a\cdot b=b\cdot a$，顺序不影响结果）形成鲜明对比，是叉积和点积最本质的区别之一：叉积记录了"从 $a$ 转向 $b$"这个<strong>有方向性</strong>的过程，颠倒过程自然反号。</div>
 
-      <h3 class="part"><span class="tag">规则</span>单位基底 $i,j,k$ 的运算表</h3>
+      <h3 class="part"><span class="tag">规则</span>单位基底（standard basis vectors） $i,j,k$ 的运算表</h3>
       <div class="step">把三维标准基记作 $i=(1,0,0)^{\mathrm T}$、$j=(0,1,0)^{\mathrm T}$、$k=(0,0,1)^{\mathrm T}$，它们两两之间的叉积遵循一套循环规则：
       $$i\times j=k,\quad j\times k=i,\quad k\times i=j$$
       $$j\times i=-k,\quad k\times j=-i,\quad i\times k=-j$$
@@ -5257,7 +5257,7 @@
             <td style="padding:8px;">内积（点积）</td>
             <td style="padding:8px;">$x^{\mathrm T}y$</td>
             <td style="padding:8px;">两个 $n$ 维向量</td>
-            <td style="padding:8px;"><strong>标量</strong></td>
+            <td style="padding:8px;"><strong>标量</strong>（scalar）</td>
             <td style="padding:8px;">任意维</td>
             <td style="padding:8px;">投影长度、夹角余弦</td>
           </tr>
@@ -5558,6 +5558,12 @@
   const ORDER_CN = ['','一','二','三','四','五','六','七','八','九','十'];
   function orderWord(n) { return ORDER_CN[n] || String(n); }
 
+  // 全书里 A^* 这个符号有两种不同含义：第12节"矩阵的秩"里指伴随矩阵（adj(A)），
+  // 第15节"谱定理与正规矩阵"里指共轭转置。同一符号、不同章节含义不同，
+  // 朗读时需要按当前所在章节切换念法，不能用一套全局规则。
+  const CONJUGATE_TRANSPOSE_CHAPTERS = new Set(['ch15']);
+  let CTX_MODE = 'adjugate'; // 'adjugate'（伴随矩阵）| 'conjugateTranspose'（共轭转置）——由 initReader 按章节 id 设置
+
   function speakify(latex) {
     latex = (latex || '').trim()
       .replace(/^\$+|\$+$/g, '')
@@ -5775,7 +5781,7 @@
           if (raw === '\\circ') { out += ' 度 '; }
           else if (/^\\mathrm\s*\{?\s*[Tt]\s*\}?$/.test(raw) || raw === 'T') { out += ' 的转置 '; }
           else if (raw === '-1') { out += ' 的逆 '; }
-          else if (raw === '*' || raw === '\\ast') { out += ' 的伴随 '; }
+          else if (raw === '*' || raw === '\\ast') { out += CTX_MODE === 'conjugateTranspose' ? ' 的共轭转置 ' : ' 的伴随 '; }
           else if (raw === '\\dagger') { out += ' 的共轭转置 '; }
           else if (/^-\d+$/.test(raw)) { out += ` 的负${raw.slice(1)}次方 `; }
           else if (raw === '2') { out += ' 的平方 '; }
@@ -5989,6 +5995,8 @@
     const progressEl = document.getElementById('fr-progress');
 
     formulas.forEach((f, idx) => {
+      const chapterSection = f.el.closest && f.el.closest('section.chapter');
+      CTX_MODE = (chapterSection && CONJUGATE_TRANSPOSE_CHAPTERS.has(chapterSection.id)) ? 'conjugateTranspose' : 'adjugate';
       f.text = speakify(f.tex) || '这是一个公式';
       const btn = document.createElement('span');
       btn.className = 'mj-speak-btn';
