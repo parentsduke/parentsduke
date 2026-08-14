@@ -4891,6 +4891,11 @@
       <div class="step">关键在于构造 $A^{\mathrm T}A$（$n$ 阶方阵）。这个矩阵总是<strong>对称且半正定</strong>的（对任意 $x$，$x^{\mathrm T}(A^{\mathrm T}A)x=\|Ax\|^2\ge0$），由第十节谱定理，它必可正交对角化，且特征值都非负。把这些非负特征值记作 $\sigma_1^2\ge\sigma_2^2\ge\cdots\ge0$，开根号就是奇异值 $\sigma_i$；对应的单位特征向量组成的正交基就是 $V$ 的列（叫做<strong>右奇异向量</strong>）。</div>
       <div class="step">$U$ 的列（<strong>左奇异向量</strong>）则由 $u_i=\dfrac{1}{\sigma_i}Av_i$（对 $\sigma_i\neq0$ 的部分）给出，可以验证这样构造出的 $u_i$ 两两正交、且长度为 1。</div>
 
+      <div class="note">
+        <strong>为什么一定要开根号：</strong>这是为了保证 $\sigma_i$ 和矩阵 $A$ 的"伸缩尺度"是同一量纲的。奇异值的本质定义是 $A$ 在某个方向上把向量拉伸的倍数：$\sigma_1=\max_{\|v\|=1}\|Av\|$。而 $A^{\mathrm T}A$ 在这个方向上相当于把 $A$ 的伸缩作用"做了两次"，所以它的特征值是伸缩倍数的<strong>平方</strong>，要开根号才能还原出真实的伸缩倍数。<br><br>
+        <strong>具体例子：</strong>取 $A=2I$（把平面上任意向量拉伸为原来的 2 倍）。算出 $A^{\mathrm T}A=(2I)^{\mathrm T}(2I)=4I$，特征值 $\lambda=4$。若不开根号直接把 $\lambda$ 当奇异值，会得到 $\sigma=4$——但 $A$ 明明只把向量拉伸了 2 倍，对不上；开根号后 $\sigma=\sqrt4=2$，才和 $A$ 的实际伸缩倍数一致。验证：取单位向量 $v=(1,0)^{\mathrm T}$，则 $Av=(2,0)^{\mathrm T}$，$\|Av\|=2=\sigma_1$，正好吻合。
+      </div>
+
       <div class="example">
         <div class="ex-label">具体例子：$A=\begin{pmatrix}1&1\\0&1\\1&0\end{pmatrix}$</div>
         先算 $A^{\mathrm T}A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$，特征值是 $3$ 和 $1$（迹为 4，行列式为 3，解一元二次方程即得），对应单位特征向量 $v_1=\frac{1}{\sqrt2}(1,1)^{\mathrm T}$，$v_2=\frac{1}{\sqrt2}(1,-1)^{\mathrm T}$。<br><br>
