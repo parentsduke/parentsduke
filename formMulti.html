@@ -1233,26 +1233,29 @@
       if (error) throw new Error(error.message);
       const insertedId = insertedData?.id;
 
-// ── 触发 notify-admin-multi ──
-try {
-  await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin-multi', {
+      // 数据已成功写入数据库，提交本身已经完成——先切换到"提交成功"页面，
+      // 不要让后面的管理员通知请求（网络慢/挂起）卡住用户看到的结果
+      document.getElementById('formArea').style.display = 'none';
+      document.getElementById('pendingScreen').style.display = 'block';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+// ── 触发 notify-admin-multi（不阻塞 UI，最多等 8 秒）──
+(function() {
+  const ctrl = new AbortController();
+  const timeoutId = setTimeout(() => ctrl.abort(), 8000);
+  fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin-multi', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
     },
     body: JSON.stringify({ record: payload }),
-  });
-} catch(e) {
-  console.warn('notify异常:', e.message);
-}
-      
-
-
-      document.getElementById('formArea').style.display = 'none';
-      document.getElementById('pendingScreen').style.display = 'block';
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    signal: ctrl.signal,
+  }).catch(e => {
+    console.warn('notify异常:', e.message);
+  }).finally(() => clearTimeout(timeoutId));
+})();
 
     } catch(e) {
       showError('❌ ' + e.message);
