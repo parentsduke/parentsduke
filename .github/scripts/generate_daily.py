@@ -90,13 +90,6 @@ HTML_SOURCES = {
     'visa_site':      {'urls': ['https://visaservices.duke.edu/updates',
                                 'https://visaservices.duke.edu/'],
                        'selectors': ['h2 a','h3 a','.views-row a','article a','.field-content a']},
-    'alumni_sendoff': {'urls': ['https://alumni.duke.edu/tags/send-party',
-                                'https://alumni.duke.edu/events-programs',
-                                'https://alumni.duke.edu/tags/new-student-send-party',
-                                'https://www.cvent.com/api/email/dispatch/v1/email/view/p2-x5djmm9vp9cj56-v65vry5w-avv-fl4q?view=html'],
-                       'selectors': ['h2 a','h3 a','.event-title a','.views-field-title a',
-                                     'article a','.card-title a','.field-content a',
-                                     '.views-row a','.item-list a']},
     'careerhub_outcomes': {'urls': ['https://careerhub.students.duke.edu/resources/senior-class-outcomes-2022-2025/'],
                            'selectors': ['h3 a','h2 a','.resource-title a','article a','p a']},
 }
@@ -126,8 +119,6 @@ PREMATRIC_PAGES = [
     'https://students.duke.edu/info-for/students/incoming-students/experiential-orientation/first-year-students/',
     'https://students.duke.edu/living/housing/annual-housing-calendar/',
     'https://students.duke.edu/living/housing/housing-assignments/fall26-housing/',
-    'https://alumni.duke.edu/tags/send-party',           # Send-Off Party 活动列表
-    'https://alumni.duke.edu/events-programs',           # 校友活动总览
     'https://students.duke.edu/wellness/student-health/health-insurance/smip-benefits/', # SMIP医疗保险
     'https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/', # DISC国际生提前搬入
 ]
@@ -262,58 +253,6 @@ PREMATRIC_HARDCODED = [
         'expire': (2026, 8, 24),
         'category': '体验式迎新周',
         'text': 'August 24 (Mon): 正式开学',
-    },
-    # ── 国际生专项 ──
-    {
-        'expire': (2026, 6, 11),
-        'category': '国际生专项',
-        'text': '国际生网络迎新 Zoom Session 1: 6月11日 8:30–10:00 AM EST（必须参加其中一场）',
-    },
-    {
-        'expire': (2026, 6, 23),
-        'category': '国际生专项',
-        'text': '国际生网络迎新 Zoom Session 2: 6月23日 8:30–10:00 AM EST',
-    },
-    {
-        'expire': (2026, 7, 2),
-        'category': '国际生专项',
-        'text': '国际生网络迎新 Zoom Session 3: 7月2日 8:30–10:00 AM EST',
-    },
-    {
-        'expire': (2026, 8, 24),
-        'category': '国际生专项',
-        'text': '需提前完成 ISSS 相关报到手续（开学前）',
-    },
-    {
-        'expire': (2026, 8, 13),
-        'category': '国际生专项',
-        'text': '【Passport to Duke & Durham】国际本科新生提前抵校报到：8月12日(Wed)–13日(Thu)（Arrival Process，含签证服务报到、I-20核验）——日期 subject to change，详情：intlstudents@duke.edu',
-    },
-    {
-        'expire': (2026, 8, 15),
-        'category': '国际生专项',
-        'text': '【Passport to Duke & Durham】线下活动：8月12日(Wed)–14日(Fri)（含银行开户、手机办理、DISC资源对接、适应时差等）',
-    },
-    {
-        'expire': (2026, 8, 15),
-        'category': '国际生专项',
-        'text': '【Passport to Duke & Durham】Resource Fair：8月14日(Fri)——主办：Duke International Student Center (DISC)；咨询：intlstudents@duke.edu',
-    },
-    # ── Send-Off Party（亚洲/全球）──
-    {
-        'expire': (2026, 6, 27),
-        'category': 'Send-Off Party',
-        'text': '🎉 6月27日(周六) 2:00-5:00 PM — 上海 Send-Off Party，Duke Kunshan University（主办：Joseph Zhang B.S.20）',
-    },
-    {
-        'expire': (2026, 7, 25),
-        'category': 'Send-Off Party',
-        'text': '🎉 7月25日(周六) 3:00-5:00 PM — 台北 Send-Off Party，Xinyi District（主办：Owen Chung & Ying Qi B.S.17）',
-    },
-    {
-        'expire': (2026, 9, 1),
-        'category': 'Send-Off Party',
-        'text': '🎉 香港 / 首尔 / 东京 Send-Off Party — 日期待定(TBA)，注册开放后请留意邮件通知',
     },
     # ── 医疗保险（SMIP）──
     {
@@ -1067,11 +1006,10 @@ def generate_prematric_section(page_text):
         "1. 优先列出【今天起90天内】的待办事项和截止日期\n"
         "2. 每条标注具体日期，用📌表示截止/重要节点，用📅表示一般节点\n"
         "3. 格式：<ul><li>📌/📅 X月X日 — 事项说明</li></ul>，最多10条\n"
-        "4. 【强制要求】所有 Send-Off Party 条目必须全部列出，不论日期远近，一条都不能省略\n"
-        "5. 其他事项优先列出今天起90天内的\n"
-        "6. 涉及住房分配、迎新周、搬入日、国际生网络迎新务必包含\n"
-        "7. 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
-        "8. 只输出HTML，不要其他文字"
+        "4. 其他事项优先列出今天起90天内的\n"
+        "5. 涉及住房分配、迎新周、搬入日、国际生网络迎新务必包含\n"
+        "6. 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
+        "7. 只输出HTML，不要其他文字"
     )
     return gemini(prompt) or FALLBACK_HTML
 
@@ -1280,7 +1218,6 @@ def main():
                 'interdisciplinary': ex.submit(fetch_source, 'interdisciplinary', 3),
                 'focus':           ex.submit(fetch_source, 'focus', 3),
                 'library':         ex.submit(fetch_source, 'library', 3),
-                'alumni_sendoff':  ex.submit(fetch_source, 'alumni_sendoff', 4),
                 'careerhub_outcomes': ex.submit(fetch_source, 'careerhub_outcomes', 4),
                 'chronicle':       ex.submit(fetch_source, 'chronicle', 8),
                 'research':        ex.submit(fetch_source, 'research', 3),
@@ -1325,7 +1262,7 @@ def main():
     basketball_items = _drop_expired_items(basketball_items)
     campus_items     = (r['campus'] + r['dsg'] + r['students'] + r['dukeengage'] +
                         r['undergrad'] + r['interdisciplinary'] + r['focus'] +
-                        r['library'] + r['alumni_sendoff'] + r['careerhub_outcomes'])
+                        r['library'] + r['careerhub_outcomes'])
     campus_items     = _drop_expired_items(campus_items)
     chronicle_items  = _drop_expired_items(r['chronicle'])
     research_items   = _drop_expired_items(r['research'] + r['pratt'] + r['trinity'])
@@ -1356,33 +1293,6 @@ def main():
     else:
         BASKETBALL_EXTRA = ""
 
-    # 国际生专项补充信息（Passport to Duke & Durham，按日期过滤）
-    # 来源：https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/
-    _visa_entries = [
-        (date(2026, 8, 13),
-         '【国际本科新生提前抵校】Arrival Process for Passport to Duke & Durham：'
-         '8月12日(Wed) & 8月13日(Thu)——须完成 Duke Visa Services 签证服务报到与I-20/DS-2019核验；'
-         '详情：https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/'),
-        (date(2026, 8, 14),
-         '【Passport to Duke & Durham 线下活动】8月12日(Wed)–14日(Fri)——'
-         '内容包括：银行开户、手机套餐办理、DISC资源对接、适应时差、熟悉美国文化；'
-         '主办：Duke International Student Center (DISC)'),
-        (date(2026, 8, 15),
-         '【Passport to Duke & Durham Resource Fair】8月14日(Fri)——'
-         '提供银行、手机运营商、DISC等多方资源一站式对接；'
-         '注意：以上日期 subject to change，最终安排5月初公布；咨询：intlstudents@duke.edu；'
-         '详情：https://students.duke.edu/belonging/icr/disc/orientations/international-undergraduate-earlymovein/'),
-    ]
-    _active_visa = [t for exp, t in _visa_entries if _today <= exp]
-    if _active_visa:
-        VISA_EXTRA = (
-            "【国际生开学前专项安排 · Passport to Duke & Durham（Class of 2030）】\n"
-            "（来源：Duke International Student Center，DISC官方页面）\n"
-            + "\n".join(f"- {t}" for t in _active_visa)
-        )
-    else:
-        VISA_EXTRA = ""
-
     tasks = {
         'weekly-school':       lambda: generate_section('学校新闻', school_items),
         'weekly-basketball':   lambda: generate_section('篮球/体育动态', basketball_items, extra=BASKETBALL_EXTRA),
@@ -1393,7 +1303,7 @@ def main():
         'weekly-campus':       lambda: generate_section('校园生活', campus_items),
         'weekly-chronicle':    lambda: generate_section('Chronicle学生报', chronicle_items),
         'weekly-research':     lambda: generate_section('科研动态', research_items),
-        'weekly-visa':         lambda: generate_section('签证与国际生动态', visa_items, extra=VISA_EXTRA, allow_political=True),
+        'weekly-visa':         lambda: generate_section('签证与国际生动态', visa_items, allow_political=True),
     }
 
     sections = {}
