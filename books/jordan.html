@@ -444,5 +444,575 @@
 
   <footer>线性代数 · 若尔当标准形 · 纯语言讲解</footer>
 
+<style id="reader-style">
+  .fr-reading{
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+    background: rgba(193,154,73,0.09);
+    border-radius: 4px;
+  }
+  .fr-clickable{ cursor: pointer; transition: background 0.15s ease; }
+  .fr-clickable:hover{ background: rgba(193,154,73,0.06); border-radius: 4px; }
+  .fr-clickable:active{ background: rgba(193,154,73,0.12); }
+
+  #fr-toggle{
+    position: fixed; right: 18px; bottom: 18px; z-index: 61;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(160deg, var(--gold) 0%, var(--room-suite) 100%);
+    color: #241d0e; border: none; box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+    font-size: 20px; cursor: pointer; display:flex; align-items:center; justify-content:center;
+  }
+  #fr-toggle:active{ transform: scale(0.94); }
+
+  #fr-panel{
+    position: fixed; right: 18px; bottom: 82px; z-index: 60;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    border: 1px solid rgba(193,154,73,0.4);
+    border-radius: 12px;
+    padding: 14px 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    font-family: "Noto Sans SC", sans-serif;
+    width: 216px;
+    display: none;
+  }
+  #fr-panel.open{ display:block; }
+  #fr-panel .fr-title{
+    font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+    color: var(--gold-pale); margin-bottom:10px; font-weight:500;
+  }
+  #fr-progress{ font-size:12px; color:#c3ccdd; margin-bottom:6px; }
+  #fr-bar-track{ height:4px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden; margin-bottom:11px;}
+  #fr-bar-fill{ height:100%; width:0%; background: var(--gold); transition: width 0.2s ease; }
+  .fr-row{ display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+  #fr-play{
+    flex:1; background: var(--gold); color:#241d0e; border:none;
+    border-radius:6px; padding:9px 10px; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  #fr-stop{
+    background: transparent; border:1px solid rgba(193,154,73,0.5);
+    color: var(--gold-pale); border-radius:6px; padding:9px 11px; font-size:13px; cursor:pointer;
+  }
+  #fr-rate-row{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:#c3ccdd; margin-bottom:2px; }
+  #fr-rate{ flex:1; accent-color: var(--gold); }
+
+  #fr-export{ margin-top:11px; border-top: 1px solid rgba(193,154,73,0.2); padding-top:9px; }
+  #fr-export summary{
+    font-size:11.5px; color: var(--gold-pale); cursor:pointer; list-style:none;
+    display:flex; align-items:center; gap:4px;
+  }
+  #fr-export summary::-webkit-details-marker{ display:none; }
+  #fr-export summary::before{ content:'▸'; color: var(--gold); }
+  #fr-export[open] summary::before{ content:'▾'; }
+  .fr-export-body{ margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+  #fr-export input[type="password"], #fr-export input[type="text"], #fr-export select{
+    background: rgba(0,0,0,0.25); border:1px solid rgba(193,154,73,0.35); color: var(--gold-pale);
+    border-radius:5px; padding:6px 8px; font-size:12px; width:100%;
+  }
+  .fr-row2{ display:flex; gap:6px; }
+  .fr-row2 input{ flex:1.2; }
+  .fr-row2 select{ flex:1; }
+  #fr-export-btn, #fr-export-cancel{
+    background: var(--gold); color:#241d0e; border:none; border-radius:6px;
+    padding:7px 10px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-export-cancel{ background: transparent; border:1px solid rgba(193,154,73,0.5); color: var(--gold-pale); }
+  #fr-export-progress{ font-size:11px; color:#c3ccdd; min-height:14px; }
+  #fr-download-link{
+    display:inline-block; text-align:center; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+  }
+  #fr-audio-preview{ width:100%; height:32px; }
+
+  #fr-record-btn{
+    width:100%; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:9px 10px;
+    font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-record-btn.recording{ background: #b3453f; border-color:#e88a84; color:#fff; }
+  #fr-record-status{ font-size:11px; color:#c3ccdd; min-height:14px; margin-top:4px; }
+  #fr-record-download{
+    display:inline-block; text-align:center; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+    margin-top:4px;
+  }
+  #fr-record-preview{ width:100%; height:32px; margin-top:4px; }
+  @media (max-width: 520px){ #fr-panel{ right:10px; bottom:74px; width:188px; padding:12px 13px; } #fr-toggle{ right:10px; bottom:10px; } }
+</style>
+
+<button id="fr-toggle" title="语音朗读">🔊</button>
+<div id="fr-panel">
+  <div class="fr-title">语音朗读全文</div>
+  <div id="fr-progress">正在扫描内容…</div>
+  <div id="fr-bar-track"><div id="fr-bar-fill"></div></div>
+  <div class="fr-row">
+    <button id="fr-play">▶ 朗读全文</button>
+    <button id="fr-stop">■</button>
+  </div>
+  <div id="fr-rate-row">
+    语速 <input type="range" id="fr-rate" min="0.6" max="1.6" step="0.1" value="0.95"> <span id="fr-rate-val">0.95x</span>
+  </div>
+  <div class="fr-row" style="margin-top:2px;">
+    <button id="fr-record-btn">🎙 录制音频文件（免注册）</button>
+  </div>
+  <div id="fr-record-status"></div>
+  <a id="fr-record-download" style="display:none;">↓ 下载录音</a>
+  <audio id="fr-record-preview" controls style="display:none;"></audio>
+  <details id="fr-export">
+    <summary>高级：导出 MP3（Azure 语音，需注册）</summary>
+    <div class="fr-export-body">
+      <input type="password" id="fr-azure-key" placeholder="Azure Speech Key">
+      <div class="fr-row2">
+        <input type="text" id="fr-azure-region" placeholder="区域 如 eastasia">
+        <select id="fr-azure-voice">
+          <option value="zh-CN-XiaoxiaoNeural">晓晓 女声</option>
+          <option value="zh-CN-YunxiNeural">云希 男声</option>
+          <option value="zh-CN-YunyangNeural">云扬 男声</option>
+        </select>
+      </div>
+      <button id="fr-export-btn">生成并下载 MP3</button>
+      <button id="fr-export-cancel" style="display:none;">取消</button>
+      <div id="fr-export-progress"></div>
+      <a id="fr-download-link" style="display:none;">↓ 下载 MP3</a>
+      <audio id="fr-audio-preview" controls style="display:none;"></audio>
+    </div>
+  </details>
+</div>
+
+<script id="reader-script">
+(function () {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function () {};
+  }
+
+  // ---------------------------------------------------------------
+  // 本页是纯语言讲解、不含公式，朗读逻辑比线代讲义那份简化很多：
+  // 只需要把正文按"段落/最小可读块"切开，逐块喂给浏览器自带的语音引擎。
+  // ---------------------------------------------------------------
+  const BLOCK_TAGS = new Set(['DIV','P','LI','TD','TH','TR','H1','H2','H3','H4','H5','H6',
+    'BLOCKQUOTE','SECTION','TABLE','THEAD','TBODY','UL','OL','FIGURE','FIGCAPTION','DT','DD',
+    'FOOTER','HEADER','ARTICLE']);
+  const SKIP_CLASSES = ['dorm', 'divider-rooms', 'door', 'room', 'suite-pair'];
+
+  function shouldSkipEl(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (el.getAttribute && el.getAttribute('aria-hidden') === 'true') return true;
+    for (const cls of SKIP_CLASSES) { if (el.classList && el.classList.contains(cls)) return true; }
+    return false;
+  }
+
+  function collectInline(el) {
+    const parts = [];
+    el.childNodes.forEach(node => {
+      if (node.nodeType === 3) {
+        const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+        if (t) parts.push(t);
+      } else if (node.nodeType === 1) {
+        if (shouldSkipEl(node)) return;
+        const inner = collectInline(node);
+        if (inner) parts.push(inner);
+      }
+    });
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function buildContentUnits(root) {
+    const units = [];
+    function walk(el) {
+      if (shouldSkipEl(el)) return;
+      let buffer = [];
+      const flush = () => {
+        const text = buffer.join(' ').replace(/\s+/g, ' ').trim();
+        if (text) units.push({ el, text });
+        buffer = [];
+      };
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+          if (t) buffer.push(t);
+        } else if (node.nodeType === 1) {
+          if (shouldSkipEl(node)) return;
+          if (BLOCK_TAGS.has(node.tagName)) {
+            flush();
+            walk(node);
+          } else {
+            const inner = collectInline(node);
+            if (inner) buffer.push(inner);
+          }
+        }
+      });
+      flush();
+    }
+    walk(root);
+    return units;
+  }
+
+  function initReader() {
+    const roots = [document.querySelector('.hero'), document.querySelector('.wrap')].filter(Boolean);
+    let units = [];
+    roots.forEach(r => { units = units.concat(buildContentUnits(r)); });
+
+    const progressEl = document.getElementById('fr-progress');
+    if (!units.length) { progressEl.textContent = '未找到可朗读内容'; return; }
+
+    const toggleBtn = document.getElementById('fr-toggle');
+    const panel = document.getElementById('fr-panel');
+    const playBtn = document.getElementById('fr-play');
+    const stopBtn = document.getElementById('fr-stop');
+    const barFill = document.getElementById('fr-bar-fill');
+    const rateInput = document.getElementById('fr-rate');
+    const rateVal = document.getElementById('fr-rate-val');
+
+    let playing = false;
+    let currentIdx = -1;
+    let stopRequested = false;
+
+    toggleBtn.addEventListener('click', () => { panel.classList.toggle('open'); });
+    rateInput.addEventListener('input', () => { rateVal.textContent = `${rateInput.value}x`; });
+
+    function updateProgressIdle() {
+      progressEl.textContent = `共 ${units.length} 段`;
+      barFill.style.width = '0%';
+    }
+
+    function updateProgress(idx) {
+      progressEl.textContent = `第 ${idx + 1} / ${units.length} 段`;
+      barFill.style.width = `${((idx + 1) / units.length) * 100}%`;
+    }
+
+    function clearHighlight() {
+      units.forEach(u => u.el.classList.remove('fr-reading'));
+    }
+
+    function speakOne(idx, chainNext) {
+      if (!('speechSynthesis' in window)) { alert('当前浏览器不支持语音朗读'); return; }
+      const item = units[idx];
+      clearHighlight();
+      item.el.classList.add('fr-reading');
+      item.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const spoken = item.text || '';
+      if (!spoken) {
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+        return;
+      }
+
+      const utter = new SpeechSynthesisUtterance(spoken);
+      utter.lang = 'zh-CN';
+      utter.rate = parseFloat(rateInput.value);
+      const voices = window.speechSynthesis.getVoices();
+      const v = voices.find(vv => vv.lang && vv.lang.toLowerCase().startsWith('zh'));
+      if (v) utter.voice = v;
+
+      utter.onend = () => {
+        item.el.classList.remove('fr-reading');
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+      };
+      utter.onerror = () => { if (chainNext) finishPlay(); };
+      window.speechSynthesis.speak(utter);
+    }
+
+    function finishPlay() {
+      playing = false; stopRequested = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      if (recordingActive) stopRecording();
+      releaseWakeLock();
+    }
+
+    function stopAll() {
+      window.speechSynthesis.cancel();
+      stopRequested = true; playing = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      releaseWakeLock();
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (playing) { stopAll(); return; }
+      startFrom(0);
+    });
+
+    // 屏幕唤醒锁：朗读期间尽量阻止系统自动熄屏
+    let wakeLock = null;
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      } catch (e) { /* 静默忽略 */ }
+    }
+    function releaseWakeLock() {
+      if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && playing && !wakeLock) requestWakeLock();
+    });
+
+    function startFrom(idx) {
+      if (playing) stopAll();
+      if (!units.length || idx < 0 || idx >= units.length) return;
+      checkChineseVoice();
+      playing = true; stopRequested = false;
+      playBtn.textContent = '⏸ 朗读中…';
+      currentIdx = idx;
+      updateProgress(currentIdx);
+      requestWakeLock();
+      speakOne(currentIdx, true);
+    }
+
+    let voiceWarned = false;
+    function checkChineseVoice() {
+      if (voiceWarned || !('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return;
+      const hasZh = voices.some(v => v.lang && v.lang.toLowerCase().startsWith('zh'));
+      if (!hasZh) {
+        voiceWarned = true;
+        alert('没检测到设备上的中文语音包，念出来的可能是别的语言。\n\n去 设置 → 语言和输入法 → 文字转语音输出，把引擎设为"Google 文字转语音"，进去下载"中文（中国）"语音包，装完刷新页面重试。');
+      }
+    }
+
+    // 点击任意一段正文，从那一段开始往下连续朗读
+    units.forEach((u, idx) => {
+      u.el.classList.add('fr-clickable');
+      u.el.addEventListener('click', (e) => {
+        const sel = window.getSelection ? window.getSelection().toString() : '';
+        if (sel) return;
+        panel.classList.add('open');
+        startFrom(idx);
+      });
+    });
+
+    stopBtn.addEventListener('click', stopAll);
+    updateProgressIdle();
+
+    // ---------------------------------------------------------------
+    // 免注册方案：录制当前标签页播放的朗读声音，存成音频文件
+    // ---------------------------------------------------------------
+    const recordBtn = document.getElementById('fr-record-btn');
+    const recordStatus = document.getElementById('fr-record-status');
+    const recordDownload = document.getElementById('fr-record-download');
+    const recordPreview = document.getElementById('fr-record-preview');
+
+    let recordingActive = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      recordingActive = false;
+      recordBtn.classList.remove('recording');
+      recordBtn.textContent = '🎙 录制音频文件（免注册）';
+    }
+
+    recordBtn.addEventListener('click', async () => {
+      if (recordingActive) { stopRecording(); recordStatus.textContent = '已手动停止'; return; }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        alert('当前浏览器不支持标签页音频录制，换 Chrome / Edge 试试'); return;
+      }
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      } catch (err) {
+        recordStatus.textContent = '未授权分享，已取消'; return;
+      }
+      const audioTracks = stream.getAudioTracks();
+      stream.getVideoTracks().forEach(t => t.stop());
+      if (!audioTracks.length) {
+        recordStatus.textContent = '没有捕获到音频 —— 分享时要勾选"分享标签页音频"';
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+
+      const audioStream = new MediaStream(audioTracks);
+      recordedChunks = [];
+      try {
+        mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+      } catch (err) {
+        mediaRecorder = new MediaRecorder(audioStream);
+      }
+      mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        audioTracks.forEach(t => t.stop());
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        const ext = (blob.type.indexOf('webm') !== -1) ? 'webm' : 'ogg';
+        recordDownload.href = url;
+        recordDownload.download = '若尔当标准形_朗读.' + ext;
+        recordDownload.style.display = 'inline-block';
+        recordPreview.src = url;
+        recordPreview.style.display = 'block';
+        recordStatus.textContent = `录制完成，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+      };
+
+      mediaRecorder.start();
+      recordingActive = true;
+      recordBtn.classList.add('recording');
+      recordBtn.textContent = '⏹ 停止录制';
+      recordStatus.textContent = '正在录制…请不要切走这个标签页或静音';
+      recordDownload.style.display = 'none';
+      recordPreview.style.display = 'none';
+
+      if (!playing) playBtn.click();
+    });
+
+    // ---------------------------------------------------------------
+    // 导出 MP3：把正文逐段发给 Azure 语音合成 REST API，拼成一个 MP3 文件
+    // ---------------------------------------------------------------
+    const keyInput = document.getElementById('fr-azure-key');
+    const regionInput = document.getElementById('fr-azure-region');
+    const voiceSelect = document.getElementById('fr-azure-voice');
+    const exportBtn = document.getElementById('fr-export-btn');
+    const exportCancelBtn = document.getElementById('fr-export-cancel');
+    const exportProgress = document.getElementById('fr-export-progress');
+    const downloadLink = document.getElementById('fr-download-link');
+    const audioPreview = document.getElementById('fr-audio-preview');
+
+    try {
+      keyInput.value = localStorage.getItem('fr-azure-key') || '';
+      regionInput.value = localStorage.getItem('fr-azure-region') || 'eastasia';
+      const savedVoice = localStorage.getItem('fr-azure-voice');
+      if (savedVoice) voiceSelect.value = savedVoice;
+    } catch (e) { /* localStorage 不可用则忽略 */ }
+
+    function escapeXml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    }
+
+    async function getAzureToken(key, region) {
+      const resp = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issuetoken`, {
+        method: 'POST',
+        headers: { 'Ocp-Apim-Subscription-Key': key, 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
+      if (!resp.ok) throw new Error(`认证失败（${resp.status}），请检查 Key 和区域是否正确`);
+      return await resp.text();
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function synthesizeOne(token, region, text, voice, rate) {
+      const ratePct = Math.round((rate - 1) * 100);
+      const ssml = `<speak version="1.0" xml:lang="zh-CN"><voice name="${voice}"><prosody rate="${ratePct}%">${escapeXml(text)}</prosody></voice></speak>`;
+      const resp = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/ssml+xml',
+          'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3'
+        },
+        body: ssml
+      });
+      if (!resp.ok) {
+        const errText = await resp.text().catch(() => '');
+        const err = new Error(`合成失败（${resp.status}）${errText.slice(0, 150)}`);
+        err.status = resp.status;
+        err.retryAfter = parseInt(resp.headers.get('Retry-After') || '', 10) || null;
+        throw err;
+      }
+      return await resp.arrayBuffer();
+    }
+
+    async function synthesizeWithRetry(token, region, text, voice, rate, onRetryMsg) {
+      const maxRetries = 5;
+      let attempt = 0;
+      while (true) {
+        try {
+          return await synthesizeOne(token, region, text, voice, rate);
+        } catch (err) {
+          if (err.status === 429 && attempt < maxRetries) {
+            attempt++;
+            const waitMs = err.retryAfter ? err.retryAfter * 1000 : Math.min(2000 * 2 ** (attempt - 1), 20000);
+            onRetryMsg(`触发限流(429)，${Math.round(waitMs / 1000)} 秒后自动重试（第 ${attempt}/${maxRetries} 次）…`);
+            await sleep(waitMs);
+            continue;
+          }
+          throw err;
+        }
+      }
+    }
+
+    let exportCancelled = false;
+
+    exportBtn.addEventListener('click', async () => {
+      const key = keyInput.value.trim();
+      const region = (regionInput.value.trim() || 'eastasia');
+      if (!key) { alert('请先填写 Azure Speech Key'); return; }
+
+      try {
+        localStorage.setItem('fr-azure-key', key);
+        localStorage.setItem('fr-azure-region', region);
+        localStorage.setItem('fr-azure-voice', voiceSelect.value);
+      } catch (e) { /* ignore */ }
+
+      const list = units.filter(it => it.text && it.text.trim());
+      if (!list.length) { alert('没有可朗读的内容'); return; }
+
+      if (playing) stopAll();
+
+      exportCancelled = false;
+      exportBtn.disabled = true;
+      exportBtn.textContent = '生成中…';
+      exportCancelBtn.style.display = 'inline-block';
+      downloadLink.style.display = 'none';
+      audioPreview.style.display = 'none';
+
+      const rate = parseFloat(rateInput.value);
+      const voice = voiceSelect.value;
+      const chunks = [];
+      let token = '', tokenTime = 0;
+
+      try {
+        for (let i = 0; i < list.length; i++) {
+          if (exportCancelled) { exportProgress.textContent = '已取消'; break; }
+          if (!token || Date.now() - tokenTime > 8 * 60 * 1000) {
+            token = await getAzureToken(key, region);
+            tokenTime = Date.now();
+          }
+          exportProgress.textContent = `正在合成第 ${i + 1} / ${list.length} 段…`;
+          const buf = await synthesizeWithRetry(token, region, list[i].text, voice, rate,
+            (msg) => { exportProgress.textContent = msg; });
+          chunks.push(new Uint8Array(buf));
+          if (i < list.length - 1) await sleep(250);
+        }
+
+        if (!exportCancelled && chunks.length) {
+          const blob = new Blob(chunks, { type: 'audio/mpeg' });
+          const url = URL.createObjectURL(blob);
+          downloadLink.href = url;
+          downloadLink.download = '若尔当标准形_朗读.mp3';
+          downloadLink.style.display = 'inline-block';
+          audioPreview.src = url;
+          audioPreview.style.display = 'block';
+          exportProgress.textContent = `完成，共 ${chunks.length} 段，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+        }
+      } catch (err) {
+        exportProgress.textContent = '出错：' + err.message;
+      } finally {
+        exportBtn.disabled = false;
+        exportBtn.textContent = '生成并下载 MP3';
+        exportCancelBtn.style.display = 'none';
+      }
+    });
+
+    exportCancelBtn.addEventListener('click', () => { exportCancelled = true; });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReader);
+  } else {
+    initReader();
+  }
+})();
+</script>
+
 </body>
 </html>
