@@ -4668,6 +4668,30 @@
         <p style="margin:10px 0 0">举例：若矩阵有两个不同特征值 $\lambda_1=2,\lambda_2=5$，且 $\dim V_2=2,\ \dim V_5=1$，则 $\lambda_1$ 对应 <strong>2 个</strong>若尔当块，$\lambda_2$ 对应 <strong>1 个</strong>若尔当块——每个特征值各自只有一个特征子空间，但这个子空间的维数可以不同，从而对应不同个数的块。</p>
       </div>
 
+      <div class="note">
+        <strong>速查表：几个核心概念到底对应着什么</strong>
+        <p style="margin:10px 0 0">前面散落在各处的结论，汇总成一张表方便复习：</p>
+        <table class="compare">
+          <tr><th>概念</th><th>几何 / 代数含义</th><th>在若尔当标准形里对应什么</th></tr>
+          <tr>
+            <td>代数重数</td>
+            <td>特征方程 $\det(A-\lambda I)=0$ 中 $\lambda$ 作为根的重数</td>
+            <td>特征值 $\lambda$ 占据的<strong>总主对角线元素个数</strong>（该特征值所有若尔当块阶数之和）</td>
+          </tr>
+          <tr>
+            <td>几何重数</td>
+            <td>真正的特征向量（满足 $A\xi=\lambda\xi$）张成空间的维数，即最大线性无关特征向量组的大小</td>
+            <td>特征值 $\lambda$ 对应的<strong>若尔当块的总个数</strong></td>
+          </tr>
+          <tr>
+            <td>代数重数 $-$ 几何重数</td>
+            <td>缺失的特征向量个数——单靠真正特征向量凑不齐的那部分维度</td>
+            <td>需要补充的<strong>广义特征向量个数</strong>（各条若尔当链中，链长减 1 后再求和 $\sum_i(m_i-1)$）</td>
+          </tr>
+        </table>
+        <p style="margin:10px 0 0">一句话记忆：代数重数管"占了多少格子"，几何重数管"分成了几间房"，两者之差就是"每间房里除了房主之外，还欠了几个广义住户"。</p>
+      </div>
+
       <h3 class="part"><span class="tag">应用</span>若尔当标准形求矩阵幂</h3>
       <div class="step">对角化能快速求 $A^k$，若尔当标准形也可以，只是若尔当块的幂需要用二项式展开处理"对角部分"与"耦合部分"：把 $J_m(\lambda)=\lambda I+N$（$N$ 是次对角线全 1、其余全 0 的<strong>幂零矩阵</strong>，见下一节），因为 $\lambda I$ 与 $N$ 可交换，可用二项式定理
       $$J_m(\lambda)^k=(\lambda I+N)^k=\sum_{i=0}^{m-1}\binom{k}{i}\lambda^{k-i}N^i$$
