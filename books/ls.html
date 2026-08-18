@@ -1,436 +1,398 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>最小二乘法完整讲义</title>
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <style>
-    body {
-      font-family: "宋体", "仿宋", serif;
-      margin: 0;
-      background-color: #f4f1ea;
-      line-height: 1.9;
-      color: #2b2b2b;
-    }
-    .wrap {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 50px 30px 100px;
-    }
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      color: #1a1a1a;
-      margin-bottom: 6px;
-    }
-    .subtitle {
-      text-align: center;
-      color: #888;
-      font-size: 15px;
-      margin-bottom: 45px;
-    }
-    section {
-      background: #fff;
-      padding: 20px 30px;
-      margin-bottom: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-    h2 {
-      font-size: 21px;
-      color: #1a1a1a;
-      border-left: 5px solid #7a5c3e;
-      padding-left: 12px;
-      margin-bottom: 18px;
-    }
-    h3 {
-      font-size: 16px;
-      color: #7a5c3e;
-      margin: 20px 0 8px;
-    }
-    p { margin: 10px 0; }
-    .eq {
-      text-align: center;
-      margin: 16px 0;
-      overflow-x: auto;
-    }
-    .box {
-      background: #fbfaf7;
-      border: 1px solid #e3ddd0;
-      border-radius: 6px;
-      padding: 16px 20px;
-      margin: 16px 0;
-    }
-    .proof {
-      background: #fbfaf7;
-      border-left: 3px solid #b0a58e;
-      padding: 12px 18px;
-      margin: 14px 0;
-      font-size: 15px;
-    }
-    .proof-title {
-      font-weight: bold;
-      color: #7a5c3e;
-      margin-bottom: 6px;
-    }
-    .key {
-      background: #f1e9dc;
-      border-radius: 6px;
-      padding: 14px 20px;
-      margin: 18px 0;
-      font-weight: bold;
-      text-align: center;
-    }
-    .remark {
-      font-size: 14px;
-      color: #666;
-      margin-top: 10px;
-    }
-    canvas {
-      border: 1px solid #333;
-      background: #fff;
-      margin-top: 20px;
-    }
-    #formula, #rss {
-      font-size: 18px;
-      color: #e74c3c;
-      margin-top: 10px;
-    }
-    .toggle-buttons {
-      margin-bottom: 15px;
-    }
-    .toggle-buttons button {
-      margin-right: 10px;
-      padding: 8px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      border: 1px solid #7a5c3e;
-      background: #fff;
-      color: #7a5c3e;
-      border-radius: 4px;
-    }
-    .toggle-buttons button:hover {
-      background: #7a5c3e;
-      color: #fff;
-    }
-    .hidden {
-      display: none;
-    }
-    hr {
-      border: none;
-      border-top: 1px solid #e3ddd0;
-      margin: 30px 0;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最小二乘法 · 一场关于"众口难调"的取舍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101b2d;
+    --navy-deep:#0a121e;
+    --navy-mid:#1c2d47;
+    --gold:#c19a49;
+    --gold-pale:#e8d9ae;
+    --paper:#f8f3e8;
+    --paper-warm:#f2ead9;
+    --ink:#20242c;
+    --ink-soft:#4a5163;
+    --rule:#ddd0a6;
+    --dot:#5c6f92;
+    --dot-off:#a5773a;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Serif SC","Songti SC","SimSun",serif;
+    line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- 顶部横幅 ---------- */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse at 82% -10%, rgba(193,154,73,0.16), transparent 55%),
+      linear-gradient(150deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:var(--gold-pale);
+    padding:88px 8vw 64px;
+    overflow:hidden;
+  }
+  .hero .eyebrow{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:12px;
+    letter-spacing:0.4em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 20px;
+  }
+  .hero h1{
+    margin:0;
+    font-size:clamp(30px,4.4vw,46px);
+    font-weight:700;
+    color:#fbf6e9;
+    max-width:16em;
+    letter-spacing:0.01em;
+  }
+  .hero .sub{
+    margin-top:18px;
+    font-family:"Noto Sans SC",sans-serif;
+    font-weight:300;
+    font-size:16px;
+    color:#c3ccdd;
+    max-width:36em;
+  }
+
+  /* 签名视觉：散点 + 一条穿过去的折中直线 */
+  .scatter-box{
+    margin-top:46px;
+    width:100%;
+    max-width:360px;
+  }
+  .scatter-caption{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    color:#9aa4bb;
+    margin-top:14px;
+  }
+  .scatter-caption b{color:var(--gold-pale);font-weight:500;}
+
+  /* ---------- 正文容器 ---------- */
+  .wrap{
+    max-width:700px;
+    margin:0 auto;
+    padding:0 8vw 120px;
+  }
+  @media (min-width:900px){ .wrap{ padding:0 24px 120px; margin:0 auto; } }
+
+  .stage{
+    margin-top:70px;
+  }
+  .stage-num{
+    font-family:"JetBrains Mono",monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    color:var(--dot-off);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  .stage-num::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg,var(--rule),transparent);
+  }
+  .stage h2{
+    font-size:24px;
+    font-weight:700;
+    margin:0 0 22px;
+    color:var(--navy);
+    letter-spacing:0.01em;
+  }
+  .stage p{
+    margin:0 0 18px;
+    font-size:16.5px;
+    color:var(--ink);
+  }
+  .stage p:last-child{margin-bottom:0;}
+
+  .lede{
+    font-size:19px;
+    color:var(--navy-mid);
+    font-weight:500;
+  }
+  .lede::first-letter{
+    font-size:2.6em;
+    font-weight:700;
+    color:var(--dot-off);
+    float:left;
+    line-height:0.8;
+    margin:6px 8px 0 0;
+  }
+
+  strong{color:var(--navy-mid);font-weight:600;}
+
+  .callout{
+    background:#fffdf7;
+    border:1px solid var(--rule);
+    border-left:3px solid var(--gold);
+    padding:20px 24px;
+    margin:26px 0;
+    font-size:15.5px;
+    color:var(--ink-soft);
+  }
+  .callout .tag{
+    display:inline-block;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#fff;
+    background:var(--dot-off);
+    padding:3px 9px;
+    border-radius:2px;
+    margin-bottom:10px;
+  }
+
+  .analogy{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    background:var(--navy);
+    color:#e6ecf5;
+    padding:26px 26px;
+    margin:30px 0;
+    border-radius:2px;
+  }
+  .analogy .mark{
+    font-family:"Noto Serif SC",serif;
+    font-size:34px;
+    color:var(--gold);
+    line-height:1;
+    flex-shrink:0;
+  }
+  .analogy p{
+    margin:0;
+    font-size:15.5px;
+    color:#dbe2ee;
+  }
+  .analogy strong{color:var(--gold-pale);}
+
+  .divider-dots{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:10px;
+    margin:56px 0 8px;
+  }
+  .divider-dots .d{
+    width:9px;height:9px;
+    border-radius:50%;
+    border:1px solid var(--rule);
+    background:transparent;
+  }
+  .divider-dots .d.off{border-color:var(--gold);background:rgba(193,154,73,0.18);}
+
+  .key-relation{
+    margin:44px 0;
+    background:var(--navy-deep);
+    border:1px solid rgba(193,154,73,0.35);
+    padding:34px 30px;
+    position:relative;
+  }
+  .key-relation::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg,var(--gold),var(--dot-off),var(--gold));
+  }
+  .key-relation .tag{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 18px;
+  }
+  .key-relation .rows{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .key-relation .row{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    font-family:"Noto Sans SC",sans-serif;
+    flex-wrap:wrap;
+  }
+  .key-relation .term{
+    font-family:"Noto Serif SC",serif;
+    font-weight:700;
+    font-size:17px;
+    color:#fbf6e9;
+    min-width:9.5em;
+  }
+  .key-relation .eq{color:var(--gold);font-size:15px;}
+  .key-relation .meaning{
+    color:#c3ccdd;
+    font-size:14.5px;
+    font-weight:300;
+  }
+  .key-relation .foot{
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid rgba(193,154,73,0.22);
+    font-size:14.5px;
+    color:#aeb8cc;
+  }
+  .key-relation .foot strong{color:var(--gold-pale);}
+
+  .closing{
+    margin-top:76px;
+    padding-top:36px;
+    border-top:1px solid var(--rule);
+  }
+  .closing h2{
+    font-size:22px;
+    color:var(--navy);
+    margin:0 0 18px;
+  }
+  .closing p{font-size:16.5px;}
+
+  footer{
+    text-align:center;
+    padding:40px 8vw 60px;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:#b3a878;
+  }
+
+  @media (max-width:520px){
+    .hero{padding:64px 22px 48px;}
+    .analogy{flex-direction:column;}
+  }
+</style>
 </head>
 <body>
-<div class="wrap">
 
-<h1>最小二乘法完整讲义</h1>
-<div class="subtitle">从一元回归的直接推导，到矩阵求导法的严格证明，再到交互式几何演示</div>
+  <header class="hero">
+    <p class="eyebrow">Linear Algebra · 深入讲解</p>
+    <h1>最小二乘法<br>一场关于"众口难调"的取舍</h1>
+    <p class="sub">不用一个公式，只用语言，把"为什么找不到完美答案、退而求其次求的到底是什么、为什么这个退法偏偏是平方"这几件事讲透。</p>
 
-<section>
-  <h2>一、一元情形：直接求偏导</h2>
-  <p>模型：\(y_i = a_0 + a_1 x_i + u_i\)，残差定义为：</p>
-  <div class="eq">\(u_i = y_i - a_0 - a_1 x_i\)</div>
-  <p>目标函数（残差平方和）：</p>
-  <div class="eq">\(S(a_0,a_1) = \sum_{i=1}^n u_i^2 = \sum_{i=1}^n (y_i - a_0 - a_1 x_i)^2\)</div>
-
-  <h3>对 \(a_0\) 求偏导</h3>
-  <div class="proof">
-    <div class="proof-title">推导</div>
-    <p>用链式法则，对求和式里每一项求偏导：</p>
-    <div class="eq">\(\dfrac{\partial S}{\partial a_0} = \sum_{i=1}^n 2(y_i - a_0 - a_1 x_i)\cdot(-1)\)</div>
-    <p>令其为零，两边除以 \(-2\)：</p>
-    <div class="eq">\(\sum_{i=1}^n (y_i - a_0 - a_1 x_i) = 0\)</div>
-    <p>拆开求和号，\(a_0\) 是常数，出现 \(n\) 次：</p>
-    <div class="eq">\(\sum y_i - n a_0 - a_1\sum x_i = 0 \;\Longrightarrow\; \sum y_i = n a_0 + a_1 \sum x_i\)</div>
-  </div>
-
-  <h3>对 \(a_1\) 求偏导</h3>
-  <div class="proof">
-    <div class="proof-title">推导</div>
-    <div class="eq">\(\dfrac{\partial S}{\partial a_1} = \sum_{i=1}^n 2(y_i - a_0 - a_1 x_i)\cdot(-x_i)\)</div>
-    <p>令其为零，两边除以 \(-2\)：</p>
-    <div class="eq">\(\sum_{i=1}^n x_i(y_i - a_0 - a_1 x_i) = 0\)</div>
-    <p>拆开求和号：</p>
-    <div class="eq">\(\sum x_i y_i - a_0\sum x_i - a_1\sum x_i^2 = 0 \;\Longrightarrow\; \sum x_i y_i = a_0 \sum x_i + a_1 \sum x_i^2\)</div>
-  </div>
-
-  <h3>法方程组</h3>
-  <p>于是得到两个方程（这就是最小二乘法的<strong>法方程</strong>）：</p>
-  <div class="box">
-    <p>\(\sum y_i = n a_0 + a_1 \sum x_i\)</p>
-    <p>\(\sum x_i y_i = a_0 \sum x_i + a_1 \sum x_i^2\)</p>
-  </div>
-  <p class="remark">直观理解：第一个方程保证残差的平均值为零；第二个方程保证残差与解释变量 \(x_i\) 不相关。</p>
-
-  <h3>解方程组</h3>
-  <div class="proof">
-    <div class="proof-title">推导</div>
-    <p>由第一个方程解出 \(a_0 = \bar{y} - a_1\bar{x}\)（两边同除以 \(n\) 即得），代入第二个方程：</p>
-    <div class="eq">\(\sum x_i y_i = (\bar{y}-a_1\bar{x})\sum x_i + a_1\sum x_i^2\)</div>
-    <p>整理含 \(a_1\) 的项：</p>
-    <div class="eq">\(\sum x_i y_i - \bar{y}\sum x_i = a_1\left(\sum x_i^2 - \bar{x}\sum x_i\right)\)</div>
-    <p>利用恒等式 \(\sum(x_i-\bar{x})(y_i-\bar{y}) = \sum x_i y_i - \bar{y}\sum x_i\)（因为 \(\sum(x_i-\bar x)=0\)），以及 \(\sum(x_i-\bar{x})^2 = \sum x_i^2 - \bar{x}\sum x_i\)，两边可以分别替换，得到：</p>
-  </div>
-  <p>解得：</p>
-  <div class="key">\(a_1 = \dfrac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}, \quad a_0 = \bar{y} - a_1 \bar{x}\)</div>
-</section>
-
-<section>
-  <h2>二、矩阵形式：问题设定</h2>
-  <p>把一元情形推广到多元，线性模型写成：\(Y = X\beta + u\)，其中 \(Y \in \mathbb{R}^n\)，\(X \in \mathbb{R}^{n\times p}\)，\(\beta \in \mathbb{R}^p\)，\(u\) 是残差向量。</p>
-  <p>目标：找到 \(\hat\beta\)，使得残差平方和</p>
-  <div class="eq">\(S(\beta) = \sum_{i=1}^n u_i^2 = u^T u = (Y-X\beta)^T(Y-X\beta)\)</div>
-  <p>最小。最小值点满足梯度为零，下面把 \(S(\beta)\) 对 \(\beta\) 的梯度算出来。</p>
-</section>
-
-<section>
-  <h2>三、展开目标函数</h2>
-  <div class="eq">\(S(\beta) = Y^TY - Y^TX\beta - \beta^TX^TY + \beta^TX^TX\beta\)</div>
-  <p>其中 \(Y^TX\beta\) 是一个 \(1\times1\) 的标量，标量转置等于自身，于是</p>
-  <div class="eq">\(Y^TX\beta = (Y^TX\beta)^T = \beta^TX^TY\)</div>
-  <p>两项合并，得到</p>
-  <div class="key">\(S(\beta) = Y^TY \;-\; 2\beta^TX^TY \;+\; \beta^TX^TX\beta\)</div>
-  <p>这是关于 \(\beta\) 的二次型：常数项 + 线性项 + 二次项，结构和一元二次函数 \(c - 2bx + ax^2\) 完全类似，只是把标量换成了向量和矩阵。</p>
-</section>
-
-<section>
-  <h2>四、矩阵求导的两条基本规则</h2>
-  <p>要对 \(S(\beta)\) 求梯度，只需要分别处理线性项和二次项。下面从分量定义出发证明这两条规则。</p>
-
-  <h3>规则 1：线性项 \(\nabla_\beta(a^T\beta) = a\)</h3>
-  <div class="proof">
-    <div class="proof-title">证明</div>
-    <p>设 \(a\in\mathbb{R}^p\)，则 \(a^T\beta = \sum_{j=1}^p a_j\beta_j\)。对第 \(k\) 个分量求偏导：</p>
-    <div class="eq">\(\dfrac{\partial}{\partial \beta_k}\sum_{j=1}^p a_j\beta_j = a_k\)</div>
-    <p>因为求和式里只有 \(j=k\) 那一项含 \(\beta_k\)，其余项对 \(\beta_k\) 求导都是零。把所有分量组合成向量，就得到 \(\nabla_\beta(a^T\beta)=a\)。</p>
-  </div>
-  <p>代入 \(a = X^TY\)，线性项 \(-2\beta^TX^TY\) 的梯度就是：</p>
-  <div class="eq">\(\nabla_\beta(-2\beta^TX^TY) = -2X^TY\)</div>
-
-  <h3>规则 2：二次型 \(\nabla_\beta(\beta^TA\beta) = (A+A^T)\beta\)</h3>
-  <div class="proof">
-    <div class="proof-title">证明</div>
-    <p>展开成分量求和：\(\beta^TA\beta = \sum_{i=1}^p\sum_{j=1}^p A_{ij}\beta_i\beta_j\)。对第 \(k\) 个分量求偏导，需要分两种情况讨论含 \(\beta_k\) 的项：</p>
-    <p>① \(i=k,\ j\neq k\) 的项：\(A_{kj}\beta_j\)，求和得 \(\sum_j A_{kj}\beta_j\)；</p>
-    <p>② \(j=k,\ i\neq k\) 的项：\(A_{ik}\beta_i\)，求和得 \(\sum_i A_{ik}\beta_i\)；</p>
-    <p>③ \(i=j=k\) 的项：\(A_{kk}\beta_k^2\)，求导得 \(2A_{kk}\beta_k\)，恰好等于把①②中 \(i=j=k\) 的部分重复计入一次的结果，所以①②已经涵盖了它。</p>
-    <p>合并①②，第 \(k\) 个分量的偏导数是：</p>
-    <div class="eq">\(\sum_j A_{kj}\beta_j + \sum_i A_{ik}\beta_i = (A\beta)_k + (A^T\beta)_k\)</div>
-    <p>组合成向量，就是 \(\nabla_\beta(\beta^TA\beta) = A\beta + A^T\beta = (A+A^T)\beta\)。</p>
-  </div>
-  <p>代入 \(A = X^TX\)。因为 \((X^TX)^T = X^TX\) 是对称矩阵，所以 \(A+A^T=2A\)，于是二次项的梯度是：</p>
-  <div class="eq">\(\nabla_\beta(\beta^TX^TX\beta) = 2X^TX\beta\)</div>
-</section>
-
-<section>
-  <h2>五、合并梯度，令其为零：法方程</h2>
-  <p>把常数项（求导为零）、线性项、二次项的梯度加在一起：</p>
-  <div class="key">\(\nabla_\beta S(\beta) = -2X^TY + 2X^TX\beta\)</div>
-  <p>极小值点必须满足梯度为零：</p>
-  <div class="eq">\(-2X^TY + 2X^TX\beta = 0 \quad\Longrightarrow\quad X^TX\beta = X^TY\)</div>
-  <div class="box">
-    <p>这就是<strong>法方程（Normal Equations）</strong>，是 \(p\) 个方程组成的线性方程组。</p>
-  </div>
-  <p>为什么梯度为零一定对应最小值？看 Hessian：</p>
-  <div class="eq">\(\nabla^2_\beta S(\beta) = 2X^TX\)</div>
-  <p class="remark">\(X^TX\) 对任意非零向量 \(v\) 都满足 \(v^TX^TXv = \|Xv\|^2 \geq 0\)，是半正定矩阵，所以 \(S(\beta)\) 是凸函数，梯度为零处一定是全局最小值（\(X\) 列满秩时是严格凸，最小值唯一）。</p>
-</section>
-
-<section>
-  <h2>六、解出显式公式</h2>
-  <p>当 \(X^TX\) 可逆（等价于 \(X\) 的列线性无关）时，两边左乘 \((X^TX)^{-1}\)：</p>
-  <div class="key">\(\hat\beta = (X^TX)^{-1}X^TY\)</div>
-</section>
-
-<section>
-  <h2>七、几何视角：残差与列空间正交</h2>
-  <p>法方程 \(X^TX\hat\beta = X^TY\) 可以改写成：</p>
-  <div class="eq">\(X^T(Y-X\hat\beta) = 0 \quad\Longleftrightarrow\quad X^T\hat u = 0\)</div>
-  <p>其中 \(\hat u = Y - X\hat\beta\) 是拟合残差。\(X^T\hat u = 0\) 意味着 \(\hat u\) 与 \(X\) 的每一列都正交，即残差向量与整个列空间 \(\mathrm{col}(X)\) 正交。</p>
-  <p>这正是投影的定义：\(X\hat\beta\) 是 \(Y\) 在列空间 \(\mathrm{col}(X)\) 上的正交投影，\(\hat u\) 是投影后剩下的、与该空间垂直的部分。最小二乘法在几何上，本质就是"找一个最近的投影点"。</p>
-</section>
-
-<hr>
-
-<section>
-  <h2>八、交互式演示</h2>
-
-  <h3>二维拟合演示</h3>
-  <div id="twoD" class="module">
-    <p>拖动散点，拟合直线、公式、残差线段、残差平方和和平均点会实时更新。</p>
-    <canvas id="plot" width="600" height="400"></canvas>
-    <div id="formula"></div>
-    <div id="rss"></div>
-  </div>
-
-  <h3 style="margin-top:35px;">三维投影演示</h3>
-  <div id="threeD" class="module">
-    <p>展示向量 \(Y=(2,3,4)\)，它在解释变量空间（这里取过原点、方向为 \(v=(1,1,1)\) 的直线，即"截距模型"的列空间）上的投影 \(\hat{Y}\)，以及与该空间正交的残差向量 \(r = Y - \hat{Y}\)。</p>
-    <div class="proof">
-      <div class="proof-title">投影系数 \(t\) 的推导</div>
-      <p>设 \(\hat{Y} = tv\)（\(t\) 是待求的标量），根据"残差与列空间正交"，\(r=Y-\hat Y\) 必须与 \(v\) 正交：</p>
-      <div class="eq">\((Y-tv)\cdot v = 0\)</div>
-      <p>展开：</p>
-      <div class="eq">\(Y\cdot v - t(v\cdot v) = 0 \;\Longrightarrow\; t = \dfrac{Y\cdot v}{v\cdot v} = \dfrac{Y\cdot v}{\|v\|^2}\)</div>
-      <p>这其实就是一元法方程 \(X^TX\beta=X^TY\) 在 \(X=v\)（单列矩阵）时的特例：\(t = (v^Tv)^{-1}v^TY\)。</p>
+    <div class="scatter-box" aria-hidden="true">
+      <svg viewBox="0 0 320 120" width="100%" height="120">
+        <line x1="10" y1="95" x2="300" y2="30" stroke="#c19a49" stroke-width="1.6"/>
+        <circle cx="28" cy="78" r="5" fill="#5c6f92"/>
+        <line x1="28" y1="78" x2="28" y2="89" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="70" cy="60" r="5" fill="#5c6f92"/>
+        <line x1="70" y1="60" x2="70" y2="80" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="118" cy="70" r="5" fill="#5c6f92"/>
+        <line x1="118" y1="70" x2="118" y2="66" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="165" cy="42" r="5" fill="#5c6f92"/>
+        <line x1="165" y1="42" x2="165" y2="53" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="210" cy="52" r="5" fill="#5c6f92"/>
+        <line x1="210" y1="52" x2="210" y2="41" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="255" cy="28" r="5" fill="#5c6f92"/>
+        <line x1="255" y1="28" x2="255" y2="35" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="285" cy="18" r="5" fill="#5c6f92"/>
+        <line x1="285" y1="18" x2="285" y2="32" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+      </svg>
     </div>
-    <div id="threeDPlot" style="width:100%;max-width:700px;height:500px;"></div>
-    <div id="threeDInfo" style="margin-top:10px; color:#e74c3c; font-size:16px;"></div>
+    <p class="scatter-caption">灰点是<b>众说纷纭的实际数据</b>，金线是那条谁都不完全服它、却<b>让所有人加起来最不冤枉</b>的折中直线；虚线是每个人和这条线之间，各自认下的那一点点误差。</p>
+  </header>
+
+  <div class="wrap">
+
+    <section class="stage">
+      <p class="lede">想凑出一条能让所有点都精确落在上面的直线，十有八九是奢望——点稍微一多，这件事几乎注定办不到。最小二乘法要回答的，正是这时候该怎么办：既然"人人满意"做不到，那就退而求其次，找一个让"所有人加起来最不满意的程度"降到最低的答案。</p>
+    </section>
+
+    <div class="divider-dots" aria-hidden="true">
+      <div class="d"></div><div class="d off"></div><div class="d off"></div><div class="d off"></div><div class="d"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">第一步 · 为什么"完全满足所有人"是奢望</div>
+      <h2>方程比未知数多，本身就是一种"强人所难"</h2>
+      <p>设想有好几组说法，每一组都在对同一件事下断言，而要找的答案只有寥寥几个未知量。断言的数目一旦超过未知量的数目，这件事的性质就变了——一开始你也许还能指望所有断言凑巧全部相容，可断言越多，凑巧的概率就越低。多数时候，你会发现：满足前面几条断言的答案，放到后面一条里就对不上了。这不是算错了，而是这些断言本身就没有一个共同的、精确的交点。</p>
+      <p>放到具体场景里最容易体会：几次测量同一个量，每次结果都有细微出入；几个人各自报出他们认为合适的会面时间，没有哪个时刻能让所有人都刚刚好；一组观测数据摆在坐标纸上，没有哪条直线能不偏不倚地穿过每一个点。这些都是同一件事的不同面目——要求的答案，比能满足的约束更"瘦"，硬凑没有出路。</p>
+      <div class="callout">
+        <span class="tag">类比</span>
+        这和若尔当标准形要面对的处境，其实是同一类"退而求其次"：那边是"矩阵配合不了、找不出足够多互不相干的特征方向"，这边是"数据配合不了、找不出一条能精确穿过所有点的直线"。两边都不纠结于硬求那个不存在的完美答案，而是老老实实退一步，问一句：在做不到完美的前提下，什么才是最合理的将就？
+      </div>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">第二步 · "最不满意的程度"到底怎么算</div>
+      <h2>每个人认下的偏差，不是直接相加，而是先平方再相加</h2>
+      <p>既然精确满足所有断言做不到，退一步的做法是：给定一个候选答案，看它跟每一条断言之间差了多少，把这些差距汇总成一个"总的不满意程度"，再去找那个能让这个总量降到最低的候选答案。这个思路听着简单，但汇总的方式大有讲究——为什么偏偏是"先平方、再相加"，而不是直接把差距加起来？</p>
+      <p>直接相加会出一个麻烦：正的偏差和负的偏差会互相抵消，一个"差太多"和一个"差太少"加在一起可能显得毫无问题，可实际上两头都错得不轻。于是很自然地想到先把每个差距的正负号抹掉。抹掉正负号的办法不止一种，但平方这个选择格外顺手：它不仅让所有差距都变成正数，还有一个更微妙的偏好——差距越大，平方之后被放大得越凶。也就是说，这种算法会对"错得离谱"格外敏感，不容许某一处偏差大到没边，却对无伤大雅的小偏差比较宽容。这种脾气，恰好对应了大多数人对"靠谱"这件事的直觉：宁可每处都错一点点，也不要有一处错得特别离谱。</p>
+      <p>还有一层技术上的方便：平方之后的总量，是一个处处光滑、只有一个最低点的"碗形"量——找它的最低点，靠的是一条干净利落的路径，不会像其他汇总方式那样，让"哪个候选答案最合适"变得难以捉摸。这也是"平方"最终胜出、成为约定俗成做法的重要原因。</p>
+    </section>
+
+    <div class="divider-dots" aria-hidden="true">
+      <div class="d"></div><div class="d off"></div><div class="d off"></div><div class="d off"></div><div class="d"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">第三步 · 那条"最合适的线"是怎么挑出来的</div>
+      <h2>不是试出来的，而是有一套必然指向它的道理</h2>
+      <p>既然总的不满意程度是一个"碗形"的量，候选答案沿着某个方向变化时，这个总量会先降后升，中间必然存在一个最低谷。要找到这个最低谷，不需要一个个候选答案去试——因为在最低谷这个特殊位置上，总量对任何方向的变化都不再敏感了：随便往哪个方向挪一点点，总量几乎都不会再往下掉。这个"哪个方向都挪不动"的状态，恰恰就是最低点的标志，顺着这条线索，能够直接把最低谷所在的位置严格地推算出来，不必依赖尝试和运气。</p>
+      <p>还有一种更几何的看法，同样直观：把每一条断言看作空间里的一根根轴，所有"理论上能被这些断言精确满足"的答案，共同撑起一整片平坦的区域；而实际的数据，因为互相不配合，落在了这片区域之外。最合适的答案，就是这片区域里离实际数据最近的那一点——从数据出发，垂直落到这片区域上，落脚的地方就是它。"垂直落下"这个动作保证了：往区域里任何其他方向挪动，都只会让距离变得更远，不会更近。这正是为什么这个答案不是碰运气凑出来的，而是几何上唯一、必然的落点。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">插曲 · 亲眼看一遍最小的例子</div>
+      <h2>三个不肯站成一条直线的点，最终会被安顿在哪里</h2>
+      <p>不妨想象最简单的情形：只有三个点，横着摆开，纵向的高度却各不相同、也配合不成一条直线——把前两个点连起来是一种倾斜程度，把后两个点连起来又是另一种倾斜程度，两者对不上。这时候要找的，不是"哪两个点连线更合理"这种取舍，而是一条压根不为迁就任何一个点而生、只为让三处偏差的平方和最小的直线。</p>
+      <p>直觉上能感受到它大致会落在哪：明显偏离大部队的那个点，会被这条直线"温柔地"稍微靠近一些，但不会为了迁就它而牺牲另外两个点——因为一旦为了这一个点大幅调整倾斜程度，另外两个点的偏差平方会跟着涨得更凶，总账反而更难看。反过来，如果三个点里有两个几乎步调一致、只有一个稍稍出格，最终这条直线会更贴近那两个一致的点，只把那唯一出格的点留下一点不算离谱的偏差。这就是"平方"这个选择在悄悄起作用：它不容忍某一处偏差被放得很大，宁可让直线在多数点上都稍稍将就一点，也不肯在任何单一点上放任不管。</p>
+      <div class="callout">
+        <span class="tag">对照</span>
+        如果三个点凑巧真的共线，那"最合适的直线"和"精确穿过所有点的直线"就完全重合，最小二乘法退化成了不需要退让的情形——每处偏差都是零，总不满意程度也降到了零，这是最理想、但通常不会发生的特例。
+      </div>
+    </section>
+
+    <div class="divider-dots" aria-hidden="true">
+      <div class="d"></div><div class="d off"></div><div class="d off"></div><div class="d off"></div><div class="d"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">回望 · 它和"取平均"到底什么关系</div>
+      <h2>求平均数，其实是最小二乘法里最朴素的那种情况</h2>
+      <p>如果把问题简化到极致——不去拟合一条线，只想找一个单独的数，去代表一组彼此不同的测量结果，这时候最小二乘法给出的答案，恰好就是这组数的平均数。这不是巧合：平均数正是那个让"每个数据到它的距离的平方"加起来最小的数，任何比它偏大或偏小的候选，总的平方偏差都会更大。</p>
+      <p>这样一来就能看得更清楚：拟合一条直线、拟合一个更复杂的曲面，本质上和求平均数是同一件事的不同规模——都是在"找一个最能代表一堆互不一致的数据的答案"，只是平均数只允许答案是一个不随位置变化的常数，而拟合直线、曲面则允许答案随着位置而变化。规模变大了，做法的骨架却没有变。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">再往深看 · 它和"投影"到底是什么关系</div>
+      <h2>找最合适的答案，本质上是在做一次垂直的靠近</h2>
+      <p>前面提到的"垂直落到那片平坦区域上"，其实有一个更正式的名字——<strong>投影</strong>。所有断言理论上能够精确满足的那些答案，共同构成一片规规矩矩的平坦区域；实际数据由于互相不配合，多半会落在这片区域之外。最小二乘法找到的答案，正是把实际数据垂直投影到这片区域上得到的落脚点，而投影之后剩下的那一小截——数据和它在区域上的落脚点之间的差距——恰好和整片区域"处处垂直"。</p>
+      <p>"处处垂直"这个条件，正是这套方法之所以靠谱、之所以答案唯一确定的根本原因：如果剩下的那截偏差和区域不垂直，就说明还能顺着区域挪一挪，让偏差进一步缩小，这就意味着当前的落脚点还不是最合适的；只有当偏差和整片区域再无瓜葛、彻底垂直的时候，才再挪不动、再降不下去了。换句话说，最小二乘法不是凭感觉去"凑一条看着顺眼的线"，而是严格地问一句：数据和候选答案之间剩下的这点误差，是不是已经跟所有能够解释的方向都不再相关？一旦答案是肯定的，这个候选就是唯一的、真正的答案。</p>
+      <div class="callout">
+        <span class="tag">回到那条金线</span>
+        用开头那条穿过散点的金线收个尾：它不是凭手感画上去的，而是那片"能被直线解释"的所有可能性里，离真实数据最近的一次垂直落地。每一条虚线，都是数据和这次落地之间剩下的那一点误差；这些误差之所以看起来东倒西歪、大小不一，正是因为它们已经被逼到了"再也挪不动"的位置——再往哪个方向调这条线，都只会让总账变得更难看。这条线不完美，但它是所有不完美里，最不冤枉所有点的那一个。
+      </div>
+    </section>
+
+    <section class="stage closing">
+      <h2>为什么值得把这套"将就"的道理讲这么细</h2>
+      <p>最小二乘法看着朴素，甚至有点"退而求其次"的委屈感，但它背后的道理并不将就：为什么用平方、答案为什么唯一、它和投影是什么关系，每一步都有干净的理由，不是拍脑袋定下的经验规则。也正因为这套道理讲得通，从测量误差的处理，到数据里找趋势，再到更复杂模型的拟合，几乎所有"面对一堆互不一致的证据、要找一个最站得住脚的答案"的场合，最终都会绕回到这同一套逻辑上来——先承认完美做不到，再把"最不冤枉大家"这件事，交给平方和距离，讲得明明白白。</p>
+    </section>
+
   </div>
-</section>
 
-</div>
-
-<script>
-// 二维交互式演示
-const canvas = document.getElementById("plot");
-const ctx = canvas.getContext("2d");
-const formulaDiv = document.getElementById("formula");
-const rssDiv = document.getElementById("rss");
-
-let points = [
-  {x:100,y:200}, {x:200,y:150}, {x:300,y:250}, {x:400,y:180}, {x:500,y:300}
-];
-let dragging = null;
-
-function updateFormula(a0,a1){
-  formulaDiv.innerHTML = `当前拟合公式: $$\\hat{y} = ${a0.toFixed(2)} + ${a1.toFixed(2)}x$$`;
-  MathJax.typesetPromise();
-}
-
-function updateRSS(rss){
-  rssDiv.innerHTML = `当前残差平方和: $$RSS = ${rss.toFixed(2)}$$`;
-  MathJax.typesetPromise();
-}
-
-function draw() {
-  ctx.clearRect(0,0,600,400);
-  ctx.fillStyle="black";
-  points.forEach(p=>{
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,6,0,2*Math.PI);
-    ctx.fill();
-  });
-  let xs = points.map(p=>p.x);
-  let ys = points.map(p=>400-p.y);
-  let n = xs.length;
-  let meanX = xs.reduce((a,b)=>a+b)/n;
-  let meanY = ys.reduce((a,b)=>a+b)/n;
-  let num=0,den=0;
-  for(let i=0;i<n;i++){
-    num += (xs[i]-meanX)*(ys[i]-meanY);
-    den += (xs[i]-meanX)*(xs[i]-meanX);
-  }
-  let a1 = num/den;
-  let a0 = meanY - a1*meanX;
-  ctx.strokeStyle="red";
-  ctx.beginPath();
-  for(let x=0;x<=600;x+=10){
-    let y = a0 + a1*x;
-    ctx.lineTo(x,400-y);
-  }
-  ctx.stroke();
-  ctx.strokeStyle="blue";
-  let rss=0;
-  points.forEach(p=>{
-    let yhat = a0 + a1*p.x;
-    let residual = (400-p.y) - yhat;
-    rss += residual*residual;
-    ctx.beginPath();
-    ctx.moveTo(p.x,p.y);
-    ctx.lineTo(p.x,400-yhat);
-    ctx.stroke();
-  });
-  ctx.fillStyle="green";
-  ctx.beginPath();
-  ctx.arc(meanX,400-meanY,6,0,2*Math.PI);
-  ctx.fill();
-  ctx.fillText("平均点", meanX+10, 400-meanY);
-  updateFormula(a0,a1);
-  updateRSS(rss);
-}
-
-canvas.addEventListener("mousedown",e=>{
-  let rect = canvas.getBoundingClientRect();
-  let mx = e.clientX-rect.left, my=e.clientY-rect.top;
-  points.forEach(p=>{
-    if(Math.hypot(p.x-mx,p.y-my)<8) dragging=p;
-  });
-});
-canvas.addEventListener("mousemove",e=>{
-  if(dragging){
-    let rect = canvas.getBoundingClientRect();
-    dragging.x = e.clientX-rect.left;
-    dragging.y = e.clientY-rect.top;
-    draw();
-  }
-});
-canvas.addEventListener("mouseup",()=>dragging=null);
-
-draw();
-window.addEventListener("load", drawThreeD);
-
-// 三维投影演示
-function drawThreeD(){
-  let Y = [2,3,4];
-  let v = [1,1,1];
-  let dot = Y[0]*v[0] + Y[1]*v[1] + Y[2]*v[2];
-  let vnorm2 = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
-  let t = dot / vnorm2;
-  let Yhat = [t*v[0], t*v[1], t*v[2]];
-  let r = [Y[0]-Yhat[0], Y[1]-Yhat[1], Y[2]-Yhat[2]];
-
-  let lineSpan = {
-    x:[-1*v[0], 5*v[0]], y:[-1*v[1], 5*v[1]], z:[-1*v[2], 5*v[2]],
-    mode:'lines', type:'scatter3d',
-    line:{color:'gray', width:3, dash:'dot'},
-    name:'列空间 span(v)'
-  };
-
-  let traceY = {
-    x:[0,Y[0]], y:[0,Y[1]], z:[0,Y[2]],
-    mode:'lines+markers', type:'scatter3d',
-    line:{color:'black', width:5}, marker:{size:4},
-    name:'Y'
-  };
-
-  let traceYhat = {
-    x:[0,Yhat[0]], y:[0,Yhat[1]], z:[0,Yhat[2]],
-    mode:'lines+markers', type:'scatter3d',
-    line:{color:'red', width:5}, marker:{size:4},
-    name:'Ŷ (投影)'
-  };
-
-  let traceR = {
-    x:[Yhat[0],Y[0]], y:[Yhat[1],Y[1]], z:[Yhat[2],Y[2]],
-    mode:'lines+markers', type:'scatter3d',
-    line:{color:'blue', width:5, dash:'dash'}, marker:{size:3},
-    name:'残差 r = Y - Ŷ'
-  };
-
-  let layout = {
-    margin:{l:0,r:0,b:0,t:0},
-    scene:{
-      xaxis:{title:'x', range:[-1,5]},
-      yaxis:{title:'y', range:[-1,5]},
-      zaxis:{title:'z', range:[-1,5]}
-    },
-    legend:{x:0, y:1}
-  };
-
-  Plotly.newPlot('threeDPlot', [lineSpan, traceY, traceYhat, traceR], layout);
-
-  document.getElementById('threeDInfo').innerHTML =
-    `Ŷ = (${Yhat.map(n=>n.toFixed(2)).join(', ')})，r = (${r.map(n=>n.toFixed(2)).join(', ')})，`
-    + `可验证 r 与 v 正交：r·v = ${(r[0]*v[0]+r[1]*v[1]+r[2]*v[2]).toFixed(4)}`;
-}
-</script>
+  <footer>最小二乘法 · 一份不含公式的推导笔记</footer>
 
 </body>
 </html>
