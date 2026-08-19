@@ -377,7 +377,7 @@
       <div class="stage-num">第三步 · 把整个动作拆成三步：转、拉、转</div>
       <h2>先摆正角度，再各自伸缩，最后摆到该有的朝向</h2>
       <p>现在手里已经有了两组正交坐标：输入空间里那组"来源方向"，输出空间里椭圆主轴对应的那组方向。把任意一个输入向量，先按第一组坐标展开，会发现矩阵作用在每一根坐标轴上的效果，就是把它单纯地拉长或压短某个固定倍数，再精确地落到第二组坐标对应的那根轴上——不发生任何额外的旋转或耦合，因为所有耦合早就被"挑对坐标"这件事清空了。</p>
-      <p>这意味着，原本看起来任意复杂的一个矩阵动作，可以被严格拆成三个首尾相接的简单步骤：<strong>先把输入按第一组正交方向摆正</strong>（一次纯粹的旋转或翻转），<strong>再沿着摆正后的每根轴各自独立伸缩</strong>（伸缩倍数就是所谓的<strong>奇异值</strong>，各轴互不干涉），<strong>最后把结果转到输出空间该有的朝向</strong>（第二次纯粹的旋转或翻转）。三步接力，中间没有一步是"斜着切"的，这正是奇异值分解——记作 $A=U\Sigma V^{\mathrm T}$——这个名字背后的全部含义。</p>
+      <p>这意味着，原本看起来任意复杂的一个矩阵动作，可以被严格拆成三个首尾相接的简单步骤：<strong>先把输入按第一组正交方向摆正</strong>（一次纯粹的旋转或翻转），<strong>再沿着摆正后的每根轴各自独立伸缩</strong>（伸缩倍数就是所谓的<strong>奇异值</strong>，各轴互不干涉），<strong>最后把结果转到输出空间该有的朝向</strong>（第二次纯粹的旋转或翻转）。三步接力，中间没有一步是"斜着切"的，这正是"奇异值分解"这个名字背后的全部含义——先转，再拉，最后再转一次。</p>
       <div class="analogy">
         <span class="mark">"</span>
         <p>可以把这想象成一条只有三道工序的流水线：第一道工序是一个只负责"摆正角度"的转盘，不改变任何长度；第二道工序是一台只做"独立伸缩"的机器，沿几条固定方向各拉各的，谁也不牵扯谁；第三道工序又是一个只负责"摆到最终朝向"的转盘。原料进去、成品出来，看起来经历了一次说不清道不明的复杂变形，拆开一看，不过是转一下、拉一下、再转一下。</p>
@@ -430,7 +430,7 @@
           <span class="meaning"><strong style="color:#fbf6e9;">非零奇异值的个数</strong>——像没有被压扁到零、真正撑起来的独立方向数。</span>
         </div>
       </div>
-      <p class="foot">一句话记住：<strong>V 管"往哪个方向量"，Σ 管"量出来多长"，U 管"落在哪个方向"</strong>——三件事各管一段，谁也不越界，拼起来就是 $A=U\Sigma V^{\mathrm T}$。</p>
+      <p class="foot">一句话记住：<strong>V 管"往哪个方向量"，Σ 管"量出来多长"，U 管"落在哪个方向"</strong>——三件事各管一段，谁也不越界，合起来就是"先转、再拉、最后再转一次"。</p>
     </div>
 
     <section class="stage">
@@ -865,7 +865,7 @@
         const url = URL.createObjectURL(blob);
         const ext = (blob.type.indexOf('webm') !== -1) ? 'webm' : 'ogg';
         recordDownload.href = url;
-        recordDownload.download = '若尔当标准形_朗读.' + ext;
+        recordDownload.download = '奇异值分解_朗读.' + ext;
         recordDownload.style.display = 'inline-block';
         recordPreview.src = url;
         recordPreview.style.display = 'block';
@@ -1006,7 +1006,7 @@
           const blob = new Blob(chunks, { type: 'audio/mpeg' });
           const url = URL.createObjectURL(blob);
           downloadLink.href = url;
-          downloadLink.download = '若尔当标准形_朗读.mp3';
+          downloadLink.download = '奇异值分解_朗读.mp3';
           downloadLink.style.display = 'inline-block';
           audioPreview.src = url;
           audioPreview.style.display = 'block';
