@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>奇异值分解 · 换两把尺子，任何矩阵都能摆成对角</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101b2d;
+    --navy-deep:#0a121e;
+    --navy-mid:#1c2d47;
+    --gold:#c19a49;
+    --gold-pale:#e8d9ae;
+    --paper:#f8f3e8;
+    --paper-warm:#f2ead9;
+    --ink:#20242c;
+    --ink-soft:#4a5163;
+    --rule:#ddd0a6;
+    --room:#5c6f92;
+    --room-suite:#a5773a;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Serif SC","Songti SC","SimSun",serif;
+    line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- 顶部横幅 ---------- */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse at 82% -10%, rgba(193,154,73,0.16), transparent 55%),
+      linear-gradient(150deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:var(--gold-pale);
+    padding:88px 8vw 64px;
+    overflow:hidden;
+  }
+  .hero .eyebrow{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:12px;
+    letter-spacing:0.4em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 20px;
+  }
+  .hero h1{
+    margin:0;
+    font-size:clamp(30px,4.4vw,46px);
+    font-weight:700;
+    color:#fbf6e9;
+    max-width:16em;
+    letter-spacing:0.01em;
+  }
+  .hero .sub{
+    margin-top:18px;
+    font-family:"Noto Sans SC",sans-serif;
+    font-weight:300;
+    font-size:16px;
+    color:#c3ccdd;
+    max-width:36em;
+  }
+
+  /* 签名视觉：一个圆，经过"转-拉-转"，变成一个椭圆 */
+  .svd-stages{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:46px;
+    flex-wrap:wrap;
+  }
+  .svd-shape{
+    width:50px;height:50px;
+    border:1.5px solid var(--room);
+    border-radius:50%;
+    position:relative;
+    background:rgba(92,111,146,0.12);
+    flex-shrink:0;
+  }
+  .svd-shape::after{
+    content:"";
+    position:absolute;
+    inset:9px;
+    border:1px solid rgba(197,205,224,0.32);
+    border-radius:50%;
+  }
+  .svd-shape.axis::after{
+    border-radius:0;
+    border:none;
+    border-top:1px solid rgba(197,205,224,0.4);
+    border-left:1px solid rgba(197,205,224,0.4);
+    inset:0;
+  }
+  .svd-shape.ellipse{
+    width:76px;height:40px;
+    border-color:var(--room-suite);
+    background:rgba(165,119,58,0.14);
+  }
+  .svd-shape.ellipse::after{ border-radius:50%; }
+  .svd-shape.tilt{ transform:rotate(-24deg); }
+  .svd-arrow{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:16px;
+    color:var(--gold);
+    flex-shrink:0;
+  }
+  .dorm-caption{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    color:#9aa4bb;
+    margin-top:14px;
+  }
+  .dorm-caption b{color:var(--gold-pale);font-weight:500;}
+
+  /* ---------- 正文容器 ---------- */
+  .wrap{
+    max-width:700px;
+    margin:0 auto;
+    padding:0 8vw 120px;
+  }
+  @media (min-width:900px){ .wrap{ padding:0 24px 120px; margin:0 auto; } }
+
+  .stage{
+    margin-top:70px;
+  }
+  .stage-num{
+    font-family:"JetBrains Mono",monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    color:var(--room-suite);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  .stage-num::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg,var(--rule),transparent);
+  }
+  .stage h2{
+    font-size:24px;
+    font-weight:700;
+    margin:0 0 22px;
+    color:var(--navy);
+    letter-spacing:0.01em;
+  }
+  .stage p{
+    margin:0 0 18px;
+    font-size:16.5px;
+    color:var(--ink);
+  }
+  .stage p:last-child{margin-bottom:0;}
+
+  .lede{
+    font-size:19px;
+    color:var(--navy-mid);
+    font-weight:500;
+  }
+  .lede::first-letter{
+    font-size:2.6em;
+    font-weight:700;
+    color:var(--room-suite);
+    float:left;
+    line-height:0.8;
+    margin:6px 8px 0 0;
+  }
+
+  strong{color:var(--navy-mid);font-weight:600;}
+
+  .callout{
+    background:#fffdf7;
+    border:1px solid var(--rule);
+    border-left:3px solid var(--gold);
+    padding:20px 24px;
+    margin:26px 0;
+    font-size:15.5px;
+    color:var(--ink-soft);
+  }
+  .callout .tag{
+    display:inline-block;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#fff;
+    background:var(--room-suite);
+    padding:3px 9px;
+    border-radius:2px;
+    margin-bottom:10px;
+  }
+
+  .analogy{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    background:var(--navy);
+    color:#e6ecf5;
+    padding:26px 26px;
+    margin:30px 0;
+    border-radius:2px;
+  }
+  .analogy .mark{
+    font-family:"Noto Serif SC",serif;
+    font-size:34px;
+    color:var(--gold);
+    line-height:1;
+    flex-shrink:0;
+  }
+  .analogy p{
+    margin:0;
+    font-size:15.5px;
+    color:#dbe2ee;
+  }
+  .analogy strong{color:var(--gold-pale);}
+
+  .divider-rooms{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:8px;
+    margin:56px 0 8px;
+  }
+  .divider-rooms .r{
+    width:16px;height:16px;
+    border:1px solid var(--rule);
+    border-radius:2px;
+  }
+  .divider-rooms .r.suite{border-color:var(--gold);background:rgba(193,154,73,0.14);}
+
+  .key-relation{
+    margin:44px 0;
+    background:var(--navy-deep);
+    border:1px solid rgba(193,154,73,0.35);
+    padding:34px 30px;
+    position:relative;
+  }
+  .key-relation::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg,var(--gold),var(--room-suite),var(--gold));
+  }
+  .key-relation .tag{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 18px;
+  }
+  .key-relation .rows{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .key-relation .row{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    font-family:"Noto Sans SC",sans-serif;
+    flex-wrap:wrap;
+  }
+  .key-relation .term{
+    font-family:"Noto Serif SC",serif;
+    font-weight:700;
+    font-size:17px;
+    color:#fbf6e9;
+    min-width:9.5em;
+  }
+  .key-relation .eq{color:var(--gold);font-size:15px;}
+  .key-relation .meaning{
+    color:#c3ccdd;
+    font-size:14.5px;
+    font-weight:300;
+  }
+  .key-relation .foot{
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid rgba(193,154,73,0.22);
+    font-size:14.5px;
+    color:#aeb8cc;
+  }
+  .key-relation .foot strong{color:var(--gold-pale);}
+
+  .closing{
+    margin-top:76px;
+    padding-top:36px;
+    border-top:1px solid var(--rule);
+  }
+  .closing h2{
+    font-size:22px;
+    color:var(--navy);
+    margin:0 0 18px;
+  }
+  .closing p{font-size:16.5px;}
+
+  footer{
+    text-align:center;
+    padding:40px 8vw 60px;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:#b3a878;
+  }
+
+  @media (max-width:520px){
+    .hero{padding:64px 22px 48px;}
+    .analogy{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <p class="eyebrow">Linear Algebra · 深入讲解</p>
+    <h1>奇异值分解<br>换两把尺子，任何矩阵都能摆成对角</h1>
+    <p class="sub">不用一个公式，只用语言，把"为什么需要它、它到底在做什么、为什么对任何矩阵都成立"这几件事讲透。</p>
+
+    <div class="svd-stages" aria-hidden="true">
+      <div class="svd-shape axis"></div>
+      <span class="svd-arrow">→</span>
+      <div class="svd-shape ellipse"></div>
+      <span class="svd-arrow">→</span>
+      <div class="svd-shape ellipse tilt"></div>
+    </div>
+    <p class="dorm-caption"><b>单位圆</b>——所有方向、所有长度都一视同仁；<b>像</b>——被拉伸又转过的椭圆，主轴却依旧互相垂直</p>
+  </header>
+
+  <main class="wrap">
+
+    <section class="stage">
+      <p class="lede">每一个矩阵，骨子里都想被摆成一个干净的对角矩阵——沿着几条互相垂直的轴，各管各地伸缩，谁也不打扰谁。可传统的对角化挑剔得很：矩阵必须是方的，还得刚好凑出足够多互相独立的特征方向，只要有一样不满足，这条路就走不通。但如果愿意松开一个看似不起眼的条件——不再要求"量进去"和"量出来"用同一把尺子——那么无论矩阵长什么形状、乖不乖，都总能被摆成对角。这多出来的一分自由，换来的就是奇异值分解。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">引子 · 对角化的天花板</div>
+      <h2>为什么"老办法"总有够不到的地方</h2>
+      <p>传统对角化的规矩，说穿了是这样的：找一组特征方向，矩阵作用在这些方向上时不发生任何旋转，只是单纯拉长或压短；把这组方向同时当作输入和输出的坐标轴，矩阵就变成了对角矩阵。注意这里悄悄藏着一个限制——<strong>输入用的坐标轴和输出用的坐标轴，必须是同一组</strong>。这就要求矩阵首先得是方的，输入空间和输出空间维数相同，否则"同一组坐标轴"这句话根本无从谈起。</p>
+      <p>即便矩阵是方的，麻烦也没有完全躲开。前面讲若尔当标准形时理清楚过，一个特征值理应贡献的独立方向数（代数重数）和它实际能凑出的独立方向数（几何重数）常常对不上，这时候就必须找广义特征向量来补位，矩阵最多只能摆成"准对角"，对角线右上角总免不了留下几道甩不掉的"1"。</p>
+      <p>更根本的是，现实里大量矩阵压根就不是方的——一张把三维数据投影到二维平面的矩阵，一张把上千个像素映射成几个特征分数的矩阵，输入和输出天生活在维数不同的两个空间里，连"特征值"这个概念本身都定义不出来。对角化，连同它更宽容的版本若尔当标准形，到这里就走到了尽头：它们能处理的，终究只是"输入输出共用一套坐标"这一种局面。</p>
+    </section>
+
+    <div class="divider-rooms" aria-hidden="true">
+      <div class="r"></div><div class="r"></div><div class="r suite"></div><div class="r suite"></div><div class="r"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">第一步 · 先别急着算，看看它对图形做了什么</div>
+      <h2>圆变成的，永远是椭圆</h2>
+      <p>暂时把特征值、代数计算都放到一边，换一个纯粹几何的角度重新出发。设想输入空间里那个最规矩的图形——单位圆（或者更高维的单位球）：所有方向都被一视同仁，长度统统是一。现在让矩阵作用在这整个圆上，圆周上的每一个点都各自被送到某个新位置，这些新位置连起来，会是一个什么形状？</p>
+      <p>答案出人意料地干净：不管这个矩阵是方的还是不方的、乖不乖、有没有完整的特征向量，圆的像永远是一个<strong>椭圆</strong>（更高维时是椭球）——从来不会是什么奇形怪状、坑坑洼洼的图形。这是线性变换本身带来的天然约束：直线变直线、平行变平行、原点不动，这些朴素的性质叠加起来，逼得"圆的像"只能是最规整的椭圆，不多不少。</p>
+      <div class="callout">
+        <span class="tag">直觉</span>
+        可以这样想象：线性变换对空间做的事，说到底只是沿着某些方向"匀速"拉伸或压缩，从不会在某个局部突然使坏、拐一个不讲理的弯。圆周上的每一点，感受到的都是这种平滑、成比例的挤压——挤压的结果自然只能是另一个光滑的、处处对称的凸形，也就是椭圆。想找到一个反例，比如指望圆被拉成一个五角星，在线性变换的世界里是不可能发生的。
+      </div>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">第二步 · 揪住这个椭圆的骨架</div>
+      <h2>椭圆的主轴互相垂直，而且它们的"来源"也互相垂直</h2>
+      <p>任何一个椭圆，不管被摆得多斜，都有一条最长的主轴和一条与它垂直的最短主轴（高维时是一组互相垂直的主轴）。这本身不算稀奇——椭圆的定义决定了这一点。真正精彩、也是整件事情的核心，藏在下一步追问里：<strong>圆周上究竟是哪些点，被送到了这些主轴的顶端？</strong></p>
+      <p>把这些"来源点"从圆心画出方向，会发现一个不是显然、却处处成立的事实——这些来源方向，彼此之间竟然也互相垂直，跟它们各自映出的那些主轴方向一样规整。也就是说，矩阵不仅把圆变成了带有一组正交主轴的椭圆，连"喂给它"的那组正交方向都能被找到——只不过输入端的这组正交方向，和输出端椭圆主轴的正交方向，通常并不是同一组。</p>
+      <p>这件事之所以必然成立，可以从<strong>矩阵乘以自己的转置</strong>这个组合入手看透：不管原矩阵长什么形状，这个组合出来的新矩阵永远是方的、对称的。前面讲谱定理时证过，任何对称矩阵都能被一组正交基彻底对角化——这组正交特征向量，正好就是圆周上那组"来源方向"。椭圆主轴的正交性，说到底不是巧合，而是对称矩阵天生自带的良好结构，借着这个组合被"借"到了原本可能完全不对称的矩阵身上。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">第三步 · 把整个动作拆成三步：转、拉、转</div>
+      <h2>先摆正角度，再各自伸缩，最后摆到该有的朝向</h2>
+      <p>现在手里已经有了两组正交坐标：输入空间里那组"来源方向"，输出空间里椭圆主轴对应的那组方向。把任意一个输入向量，先按第一组坐标展开，会发现矩阵作用在每一根坐标轴上的效果，就是把它单纯地拉长或压短某个固定倍数，再精确地落到第二组坐标对应的那根轴上——不发生任何额外的旋转或耦合，因为所有耦合早就被"挑对坐标"这件事清空了。</p>
+      <p>这意味着，原本看起来任意复杂的一个矩阵动作，可以被严格拆成三个首尾相接的简单步骤：<strong>先把输入按第一组正交方向摆正</strong>（一次纯粹的旋转或翻转），<strong>再沿着摆正后的每根轴各自独立伸缩</strong>（伸缩倍数就是所谓的<strong>奇异值</strong>，各轴互不干涉），<strong>最后把结果转到输出空间该有的朝向</strong>（第二次纯粹的旋转或翻转）。三步接力，中间没有一步是"斜着切"的，这正是奇异值分解——记作 $A=U\Sigma V^{\mathrm T}$——这个名字背后的全部含义。</p>
+      <div class="analogy">
+        <span class="mark">"</span>
+        <p>可以把这想象成一条只有三道工序的流水线：第一道工序是一个只负责"摆正角度"的转盘，不改变任何长度；第二道工序是一台只做"独立伸缩"的机器，沿几条固定方向各拉各的，谁也不牵扯谁；第三道工序又是一个只负责"摆到最终朝向"的转盘。原料进去、成品出来，看起来经历了一次说不清道不明的复杂变形，拆开一看，不过是转一下、拉一下、再转一下。</p>
+      </div>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">插曲 · 一个最不讲道理的矩阵，也逃不掉</div>
+      <h2>连特征向量都找不全的矩阵，奇异值分解照样成立</h2>
+      <p>不妨设想一个"最不配合"的例子：一个纯粹做剪切的矩阵，把一个方向轻轻推歪，却几乎不碰另一个方向。这类矩阵往往只有一个方向勉强称得上"特征方向"，找不出第二个真正独立的特征向量——用若尔当标准形的话说，它的几何重数天生就凑不满代数重数，只能靠广义特征向量、靠"连通套房"才能勉强摆成准对角。</p>
+      <p>可如果换成前面的几何视角，问题反而消失了：不管这个矩阵的特征向量多么不完整，它对单位圆的作用结果，照样是一个规规矩矩的椭圆；圆周上照样能找到一组互相垂直的"来源方向"，椭圆上照样有一组互相垂直的主轴方向。整个"转-拉-转"的拆解过程，从头到尾没有用到"特征向量是否凑得齐"这件事——它压根不需要矩阵本身可对角化，甚至不需要矩阵是方的。</p>
+      <div class="callout">
+        <span class="tag">对照</span>
+        反过来看一种最"和气"的特殊情况：如果矩阵本身是对称、且所有伸缩都朝着同一侧（半正定）的，输入端的正交方向和输出端的正交方向会自动重合成同一组——这时候奇异值分解会退化成大家熟悉的谱定理式对角化，奇异值就是特征值本身。这提示了一件事：奇异值分解不是跟以前学的对角化、谱定理唱反调的新东西，而是把它们能处理的那部分特殊情形，也严丝合缝地包含在内的更大框架。
+      </div>
+    </section>
+
+    <div class="divider-rooms" aria-hidden="true">
+      <div class="r"></div><div class="r suite"></div><div class="r suite"></div><div class="r suite"></div><div class="r"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">第四步 · 把结论推广到任意形状的矩阵</div>
+      <h2>不挑行数、不挑列数，人人都能摆成对角</h2>
+      <p>前面用来推导"转-拉-转"的整套论证——圆的像是椭圆、主轴正交、来源方向也正交——从头到尾都没有假设过输入空间和输出空间维数相同。一个把三维数据压扁成二维的矩阵，一个把二维平面撑到三维空间的矩阵，同样可以套用这套论证：单位球的像依然是一个椭球（只是可能活在维数不同的空间里），依然能找到成对的正交方向，依然能拆成"摆正—伸缩—摆到朝向"三步。奇异值分解因此对<strong>任意形状</strong>的矩阵都成立，不管是方的、瘦长的还是扁宽的。</p>
+      <p>伸缩倍数——也就是各个奇异值——按从大到小排好队，其中严格大于零的那些，个数正好等于矩阵能撑起的独立方向数，也就是矩阵的<strong>秩</strong>；如果某个方向被压扁成了零（矩阵在这个方向上没有任何"输出能力"），对应的奇异值也恰好是零，这条信息不多不少，被精确记录在了分解结果里，不会像若尔当标准形那样，还需要另外去追踪代数重数与几何重数的差额。</p>
+    </section>
+
+    <div class="key-relation">
+      <p class="tag">核心关系 · 全文最该记住的一条</p>
+      <div class="rows">
+        <div class="row">
+          <span class="term">奇异值 σᵢ</span>
+          <span class="eq">＝</span>
+          <span class="meaning">像（椭圆/椭球）<strong style="color:#fbf6e9;">第 i 条主轴的长度</strong>——也是"矩阵乘自身转置"这个对称矩阵，第 i 大特征值的平方根。</span>
+        </div>
+        <div class="row">
+          <span class="term">V 的列（右奇异向量）</span>
+          <span class="eq">＝</span>
+          <span class="meaning">输入空间里那组<strong style="color:#fbf6e9;">被"摆正"的正交来源方向</strong>——圆周上映到各条主轴顶端的那些点。</span>
+        </div>
+        <div class="row">
+          <span class="term">U 的列（左奇异向量）</span>
+          <span class="eq">＝</span>
+          <span class="meaning">输出空间里椭圆<strong style="color:#fbf6e9;">主轴对应的正交方向</strong>——伸缩之后最终落脚的朝向。</span>
+        </div>
+        <div class="row">
+          <span class="term">矩阵的秩</span>
+          <span class="eq">＝</span>
+          <span class="meaning"><strong style="color:#fbf6e9;">非零奇异值的个数</strong>——像没有被压扁到零、真正撑起来的独立方向数。</span>
+        </div>
+      </div>
+      <p class="foot">一句话记住：<strong>V 管"往哪个方向量"，Σ 管"量出来多长"，U 管"落在哪个方向"</strong>——三件事各管一段，谁也不越界，拼起来就是 $A=U\Sigma V^{\mathrm T}$。</p>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">回望 · 它和以前学的对角化到底什么关系</div>
+      <h2>老办法只用一把尺子，新办法允许换两把</h2>
+      <p>回头再看，传统对角化（以及它更宽容的版本若尔当标准形）之所以挑剔，根源就在于它坚持"输入坐标"和"输出坐标"必须是<strong>同一把尺子</strong>——用同一组基去描述变换前和变换后的向量。这个坚持一旦放开，允许输入端和输出端各自挑一把最合适自己的尺子，矩阵是不是方的、特征向量凑不凑得齐，这些曾经卡住整件事的障碍就统统失效了。</p>
+      <p>所以更准确的说法是：奇异值分解不是跟对角化平行的另一套理论，而是同一个"把变换摆成对角"的愿望，在放宽了"必须共用一把尺子"这个不必要限制之后，得到的更彻底的答案。凡是对角化、若尔当标准形能处理的方阵，奇异值分解照样能处理，而且往往处理得更干净；对角化束手无策的非方矩阵、以及若尔当形里那些甩不掉的"1"，奇异值分解则完全绕了过去。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">再往深看 · 奇异值分解和原矩阵到底是什么关系</div>
+      <h2>不是同一件事换个角度看，而是两个空间各自找到了最合适的语言</h2>
+      <p>若尔当标准形和原矩阵之间的关系叫"相似"——本质上是同一个坐标系统内部的一次换基，输入和输出从头到尾待在同一个空间里，只是挑了另一副眼镜去看。奇异值分解与原矩阵的关系，严格说来要更彻底一些：它压根不要求输入空间和输出空间是同一个空间，因此谈不上"换同一副眼镜"，而是<strong>输入端和输出端各自独立地挑选了一副最合身的眼镜</strong>——一个只管把话说清楚（V），一个只管把结果听明白（U），中间的奇异值矩阵才是真正记录"发生了什么"的那部分。</p>
+      <p>正因为如此，奇异值分解能触及一些相似变换永远碰不到的信息：矩阵把空间压扁到了几维（秩）、每个方向被拉伸或压缩了多少倍且这些倍数互不含糊（奇异值本身，而不是像特征值那样可能出现复数或干脆不存在）、以及在最小二乘、噪声较大的意义下，这个矩阵最该被近似成一个更简单的什么样子。这些问题在原矩阵杂乱的坐标系下常常无从下手，换到"转-拉-转"这套坐标下，答案往往一步就能读出来。</p>
+      <div class="callout">
+        <span class="tag">回到流水线</span>
+        用前面的流水线比喻收个尾：原矩阵，是这条流水线从外部看到的整体效果——原料进去，成品出来，中间那三道工序完全被"黑箱"了，外人只看得到一个说不清道不明的变形结果。奇异值分解，则是把这条流水线拆开，摆在你面前的三道独立工序：摆正角度的转盘、只管伸缩的机器、摆到最终朝向的另一个转盘。流水线本身自始至终没有变过，变的只是你有没有拆开黑箱去看——而奇异值分解的了不起之处在于，不管原来那台黑箱设备造得多么古怪、加工的原料和成品形状是否一致，它总能被拆成这三道最朴素的工序，不会有拆不开的意外。
+      </div>
+    </section>
+
+    <section class="stage closing">
+      <h2>为什么值得让整个数据科学都靠它</h2>
+      <p>奇异值分解的意义，并不只是"给对角化补上一块遗漏的拼图"这么简单。它相当于给"这个矩阵到底在做什么"这件事，出具了一份对任何矩阵都通用、从不会拒绝作答的说明书：往哪些方向输入最有效、每个方向的输出能力有多强、真正独立的输出方向有几个，全都被这一个结构清清楚楚地记录了下来，而且天生按重要性从大到小排好了队。</p>
+      <p>也正因为这份说明书永远写得出来，后续大量建立在"矩阵到底重不重要的方向在哪"之上的实际问题——压缩一张图片时该保留哪些信息、从一堆杂乱的数据里提炼出真正起作用的几个主成分、给一个没有逆矩阵（甚至不是方阵）的方程组找一个"最不离谱"的近似解——最终都可以绕开原始矩阵的复杂表象，直接在这组按重要性排好队的奇异值和两组正交基上完成，思路和当年学对角化时几乎一模一样，只是这一次，不会再遇到"这个矩阵不满足条件、这条路走不通"的意外。</p>
+      <p>说到底，从最初想把一个变换摆成对角，到这里发现只要愿意为输入和输出各自配一把尺子，几乎所有障碍都会消失，贯穿始终的都是同一个念头：再不讲道理的变换，也要想办法找到它最朴素的样子——找不到的时候，就换一个不那么苛刻的提问方式，直到答案总能给出来为止。奇异值分解，就是这个念头被推到最彻底之后，给出的最慷慨的答案。</p>
+    </section>
+
+  </main>
+
+  <footer>线性代数 · 奇异值分解 · 纯语言讲解</footer>
+
+<style id="reader-style">
+  .fr-reading{
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+    background: rgba(193,154,73,0.09);
+    border-radius: 4px;
+  }
+  .fr-clickable{ cursor: pointer; transition: background 0.15s ease; }
+  .fr-clickable:hover{ background: rgba(193,154,73,0.06); border-radius: 4px; }
+  .fr-clickable:active{ background: rgba(193,154,73,0.12); }
+
+  #fr-toggle{
+    position: fixed; right: 18px; bottom: 18px; z-index: 61;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(160deg, var(--gold) 0%, var(--room-suite) 100%);
+    color: #241d0e; border: none; box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+    font-size: 20px; cursor: pointer; display:flex; align-items:center; justify-content:center;
+  }
+  #fr-toggle:active{ transform: scale(0.94); }
+
+  #fr-panel{
+    position: fixed; right: 18px; bottom: 82px; z-index: 60;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    border: 1px solid rgba(193,154,73,0.4);
+    border-radius: 12px;
+    padding: 14px 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    font-family: "Noto Sans SC", sans-serif;
+    width: 216px;
+    display: none;
+  }
+  #fr-panel.open{ display:block; }
+  #fr-panel .fr-title{
+    font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+    color: var(--gold-pale); margin-bottom:10px; font-weight:500;
+  }
+  #fr-progress{ font-size:12px; color:#c3ccdd; margin-bottom:6px; }
+  #fr-bar-track{ height:4px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden; margin-bottom:11px;}
+  #fr-bar-fill{ height:100%; width:0%; background: var(--gold); transition: width 0.2s ease; }
+  .fr-row{ display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+  #fr-play{
+    flex:1; background: var(--gold); color:#241d0e; border:none;
+    border-radius:6px; padding:9px 10px; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  #fr-stop{
+    background: transparent; border:1px solid rgba(193,154,73,0.5);
+    color: var(--gold-pale); border-radius:6px; padding:9px 11px; font-size:13px; cursor:pointer;
+  }
+  #fr-rate-row{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:#c3ccdd; margin-bottom:2px; }
+  #fr-rate{ flex:1; accent-color: var(--gold); }
+
+  #fr-export{ margin-top:11px; border-top: 1px solid rgba(193,154,73,0.2); padding-top:9px; }
+  #fr-export summary{
+    font-size:11.5px; color: var(--gold-pale); cursor:pointer; list-style:none;
+    display:flex; align-items:center; gap:4px;
+  }
+  #fr-export summary::-webkit-details-marker{ display:none; }
+  #fr-export summary::before{ content:'▸'; color: var(--gold); }
+  #fr-export[open] summary::before{ content:'▾'; }
+  .fr-export-body{ margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+  #fr-export input[type="password"], #fr-export input[type="text"], #fr-export select{
+    background: rgba(0,0,0,0.25); border:1px solid rgba(193,154,73,0.35); color: var(--gold-pale);
+    border-radius:5px; padding:6px 8px; font-size:12px; width:100%;
+  }
+  .fr-row2{ display:flex; gap:6px; }
+  .fr-row2 input{ flex:1.2; }
+  .fr-row2 select{ flex:1; }
+  #fr-export-btn, #fr-export-cancel{
+    background: var(--gold); color:#241d0e; border:none; border-radius:6px;
+    padding:7px 10px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-export-cancel{ background: transparent; border:1px solid rgba(193,154,73,0.5); color: var(--gold-pale); }
+  #fr-export-progress{ font-size:11px; color:#c3ccdd; min-height:14px; }
+  #fr-download-link{
+    display:inline-block; text-align:center; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+  }
+  #fr-audio-preview{ width:100%; height:32px; }
+
+  #fr-record-btn{
+    width:100%; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:9px 10px;
+    font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-record-btn.recording{ background: #b3453f; border-color:#e88a84; color:#fff; }
+  #fr-record-status{ font-size:11px; color:#c3ccdd; min-height:14px; margin-top:4px; }
+  #fr-record-download{
+    display:inline-block; text-align:center; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+    margin-top:4px;
+  }
+  #fr-record-preview{ width:100%; height:32px; margin-top:4px; }
+  @media (max-width: 520px){ #fr-panel{ right:10px; bottom:74px; width:188px; padding:12px 13px; } #fr-toggle{ right:10px; bottom:10px; } }
+</style>
+
+<button id="fr-toggle" title="语音朗读">🔊</button>
+<div id="fr-panel">
+  <div class="fr-title">语音朗读全文</div>
+  <div id="fr-progress">正在扫描内容…</div>
+  <div id="fr-bar-track"><div id="fr-bar-fill"></div></div>
+  <div class="fr-row">
+    <button id="fr-play">▶ 朗读全文</button>
+    <button id="fr-stop">■</button>
+  </div>
+  <div id="fr-rate-row">
+    语速 <input type="range" id="fr-rate" min="0.6" max="1.6" step="0.1" value="0.95"> <span id="fr-rate-val">0.95x</span>
+  </div>
+  <div class="fr-row" style="margin-top:2px;">
+    <button id="fr-record-btn">🎙 录制音频文件（免注册）</button>
+  </div>
+  <div id="fr-record-status"></div>
+  <a id="fr-record-download" style="display:none;">↓ 下载录音</a>
+  <audio id="fr-record-preview" controls style="display:none;"></audio>
+  <details id="fr-export">
+    <summary>高级：导出 MP3（Azure 语音，需注册）</summary>
+    <div class="fr-export-body">
+      <input type="password" id="fr-azure-key" placeholder="Azure Speech Key">
+      <div class="fr-row2">
+        <input type="text" id="fr-azure-region" placeholder="区域 如 eastasia">
+        <select id="fr-azure-voice">
+          <option value="zh-CN-XiaoxiaoNeural">晓晓 女声</option>
+          <option value="zh-CN-YunxiNeural">云希 男声</option>
+          <option value="zh-CN-YunyangNeural">云扬 男声</option>
+        </select>
+      </div>
+      <button id="fr-export-btn">生成并下载 MP3</button>
+      <button id="fr-export-cancel" style="display:none;">取消</button>
+      <div id="fr-export-progress"></div>
+      <a id="fr-download-link" style="display:none;">↓ 下载 MP3</a>
+      <audio id="fr-audio-preview" controls style="display:none;"></audio>
+    </div>
+  </details>
+</div>
+
+<script id="reader-script">
+(function () {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function () {};
+  }
+
+  // ---------------------------------------------------------------
+  // 本页是纯语言讲解、不含公式，朗读逻辑比线代讲义那份简化很多：
+  // 只需要把正文按"段落/最小可读块"切开，逐块喂给浏览器自带的语音引擎。
+  // ---------------------------------------------------------------
+  const BLOCK_TAGS = new Set(['DIV','P','LI','TD','TH','TR','H1','H2','H3','H4','H5','H6',
+    'BLOCKQUOTE','SECTION','TABLE','THEAD','TBODY','UL','OL','FIGURE','FIGCAPTION','DT','DD',
+    'FOOTER','HEADER','ARTICLE']);
+  const SKIP_CLASSES = ['dorm', 'divider-rooms', 'door', 'room', 'suite-pair'];
+
+  function shouldSkipEl(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (el.getAttribute && el.getAttribute('aria-hidden') === 'true') return true;
+    for (const cls of SKIP_CLASSES) { if (el.classList && el.classList.contains(cls)) return true; }
+    return false;
+  }
+
+  function collectInline(el) {
+    const parts = [];
+    el.childNodes.forEach(node => {
+      if (node.nodeType === 3) {
+        const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+        if (t) parts.push(t);
+      } else if (node.nodeType === 1) {
+        if (shouldSkipEl(node)) return;
+        const inner = collectInline(node);
+        if (inner) parts.push(inner);
+      }
+    });
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function buildContentUnits(root) {
+    const units = [];
+    function walk(el) {
+      if (shouldSkipEl(el)) return;
+      let buffer = [];
+      const flush = () => {
+        const text = buffer.join(' ').replace(/\s+/g, ' ').trim();
+        if (text) units.push({ el, text });
+        buffer = [];
+      };
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+          if (t) buffer.push(t);
+        } else if (node.nodeType === 1) {
+          if (shouldSkipEl(node)) return;
+          if (BLOCK_TAGS.has(node.tagName)) {
+            flush();
+            walk(node);
+          } else {
+            const inner = collectInline(node);
+            if (inner) buffer.push(inner);
+          }
+        }
+      });
+      flush();
+    }
+    walk(root);
+    return units;
+  }
+
+  function initReader() {
+    const roots = [document.querySelector('.hero'), document.querySelector('.wrap')].filter(Boolean);
+    let units = [];
+    roots.forEach(r => { units = units.concat(buildContentUnits(r)); });
+
+    const progressEl = document.getElementById('fr-progress');
+    if (!units.length) { progressEl.textContent = '未找到可朗读内容'; return; }
+
+    const toggleBtn = document.getElementById('fr-toggle');
+    const panel = document.getElementById('fr-panel');
+    const playBtn = document.getElementById('fr-play');
+    const stopBtn = document.getElementById('fr-stop');
+    const barFill = document.getElementById('fr-bar-fill');
+    const rateInput = document.getElementById('fr-rate');
+    const rateVal = document.getElementById('fr-rate-val');
+
+    let playing = false;
+    let currentIdx = -1;
+    let stopRequested = false;
+
+    toggleBtn.addEventListener('click', () => { panel.classList.toggle('open'); });
+    rateInput.addEventListener('input', () => { rateVal.textContent = `${rateInput.value}x`; });
+
+    function updateProgressIdle() {
+      progressEl.textContent = `共 ${units.length} 段`;
+      barFill.style.width = '0%';
+    }
+
+    function updateProgress(idx) {
+      progressEl.textContent = `第 ${idx + 1} / ${units.length} 段`;
+      barFill.style.width = `${((idx + 1) / units.length) * 100}%`;
+    }
+
+    function clearHighlight() {
+      units.forEach(u => u.el.classList.remove('fr-reading'));
+    }
+
+    function speakOne(idx, chainNext) {
+      if (!('speechSynthesis' in window)) { alert('当前浏览器不支持语音朗读'); return; }
+      const item = units[idx];
+      clearHighlight();
+      item.el.classList.add('fr-reading');
+      item.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const spoken = item.text || '';
+      if (!spoken) {
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+        return;
+      }
+
+      const utter = new SpeechSynthesisUtterance(spoken);
+      utter.lang = 'zh-CN';
+      utter.rate = parseFloat(rateInput.value);
+      const voices = window.speechSynthesis.getVoices();
+      const v = voices.find(vv => vv.lang && vv.lang.toLowerCase().startsWith('zh'));
+      if (v) utter.voice = v;
+
+      utter.onend = () => {
+        item.el.classList.remove('fr-reading');
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+      };
+      utter.onerror = () => { if (chainNext) finishPlay(); };
+      window.speechSynthesis.speak(utter);
+    }
+
+    function finishPlay() {
+      playing = false; stopRequested = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      if (recordingActive) stopRecording();
+      releaseWakeLock();
+    }
+
+    function stopAll() {
+      window.speechSynthesis.cancel();
+      stopRequested = true; playing = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      releaseWakeLock();
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (playing) { stopAll(); return; }
+      startFrom(0);
+    });
+
+    // 屏幕唤醒锁：朗读期间尽量阻止系统自动熄屏
+    let wakeLock = null;
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      } catch (e) { /* 静默忽略 */ }
+    }
+    function releaseWakeLock() {
+      if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && playing && !wakeLock) requestWakeLock();
+    });
+
+    function startFrom(idx) {
+      if (playing) stopAll();
+      if (!units.length || idx < 0 || idx >= units.length) return;
+      checkChineseVoice();
+      playing = true; stopRequested = false;
+      playBtn.textContent = '⏸ 朗读中…';
+      currentIdx = idx;
+      updateProgress(currentIdx);
+      requestWakeLock();
+      speakOne(currentIdx, true);
+    }
+
+    let voiceWarned = false;
+    function checkChineseVoice() {
+      if (voiceWarned || !('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return;
+      const hasZh = voices.some(v => v.lang && v.lang.toLowerCase().startsWith('zh'));
+      if (!hasZh) {
+        voiceWarned = true;
+        alert('没检测到设备上的中文语音包，念出来的可能是别的语言。\n\n去 设置 → 语言和输入法 → 文字转语音输出，把引擎设为"Google 文字转语音"，进去下载"中文（中国）"语音包，装完刷新页面重试。');
+      }
+    }
+
+    // 点击任意一段正文，从那一段开始往下连续朗读
+    units.forEach((u, idx) => {
+      u.el.classList.add('fr-clickable');
+      u.el.addEventListener('click', (e) => {
+        const sel = window.getSelection ? window.getSelection().toString() : '';
+        if (sel) return;
+        panel.classList.add('open');
+        startFrom(idx);
+      });
+    });
+
+    stopBtn.addEventListener('click', stopAll);
+    updateProgressIdle();
+
+    // ---------------------------------------------------------------
+    // 免注册方案：录制当前标签页播放的朗读声音，存成音频文件
+    // ---------------------------------------------------------------
+    const recordBtn = document.getElementById('fr-record-btn');
+    const recordStatus = document.getElementById('fr-record-status');
+    const recordDownload = document.getElementById('fr-record-download');
+    const recordPreview = document.getElementById('fr-record-preview');
+
+    let recordingActive = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      recordingActive = false;
+      recordBtn.classList.remove('recording');
+      recordBtn.textContent = '🎙 录制音频文件（免注册）';
+    }
+
+    recordBtn.addEventListener('click', async () => {
+      if (recordingActive) { stopRecording(); recordStatus.textContent = '已手动停止'; return; }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        alert('当前浏览器不支持标签页音频录制，换 Chrome / Edge 试试'); return;
+      }
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      } catch (err) {
+        recordStatus.textContent = '未授权分享，已取消'; return;
+      }
+      const audioTracks = stream.getAudioTracks();
+      stream.getVideoTracks().forEach(t => t.stop());
+      if (!audioTracks.length) {
+        recordStatus.textContent = '没有捕获到音频 —— 分享时要勾选"分享标签页音频"';
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+
+      const audioStream = new MediaStream(audioTracks);
+      recordedChunks = [];
+      try {
+        mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+      } catch (err) {
+        mediaRecorder = new MediaRecorder(audioStream);
+      }
+      mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        audioTracks.forEach(t => t.stop());
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        const ext = (blob.type.indexOf('webm') !== -1) ? 'webm' : 'ogg';
+        recordDownload.href = url;
+        recordDownload.download = '若尔当标准形_朗读.' + ext;
+        recordDownload.style.display = 'inline-block';
+        recordPreview.src = url;
+        recordPreview.style.display = 'block';
+        recordStatus.textContent = `录制完成，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+      };
+
+      mediaRecorder.start();
+      recordingActive = true;
+      recordBtn.classList.add('recording');
+      recordBtn.textContent = '⏹ 停止录制';
+      recordStatus.textContent = '正在录制…请不要切走这个标签页或静音';
+      recordDownload.style.display = 'none';
+      recordPreview.style.display = 'none';
+
+      if (!playing) playBtn.click();
+    });
+
+    // ---------------------------------------------------------------
+    // 导出 MP3：把正文逐段发给 Azure 语音合成 REST API，拼成一个 MP3 文件
+    // ---------------------------------------------------------------
+    const keyInput = document.getElementById('fr-azure-key');
+    const regionInput = document.getElementById('fr-azure-region');
+    const voiceSelect = document.getElementById('fr-azure-voice');
+    const exportBtn = document.getElementById('fr-export-btn');
+    const exportCancelBtn = document.getElementById('fr-export-cancel');
+    const exportProgress = document.getElementById('fr-export-progress');
+    const downloadLink = document.getElementById('fr-download-link');
+    const audioPreview = document.getElementById('fr-audio-preview');
+
+    try {
+      keyInput.value = localStorage.getItem('fr-azure-key') || '';
+      regionInput.value = localStorage.getItem('fr-azure-region') || 'eastasia';
+      const savedVoice = localStorage.getItem('fr-azure-voice');
+      if (savedVoice) voiceSelect.value = savedVoice;
+    } catch (e) { /* localStorage 不可用则忽略 */ }
+
+    function escapeXml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    }
+
+    async function getAzureToken(key, region) {
+      const resp = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issuetoken`, {
+        method: 'POST',
+        headers: { 'Ocp-Apim-Subscription-Key': key, 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
+      if (!resp.ok) throw new Error(`认证失败（${resp.status}），请检查 Key 和区域是否正确`);
+      return await resp.text();
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function synthesizeOne(token, region, text, voice, rate) {
+      const ratePct = Math.round((rate - 1) * 100);
+      const ssml = `<speak version="1.0" xml:lang="zh-CN"><voice name="${voice}"><prosody rate="${ratePct}%">${escapeXml(text)}</prosody></voice></speak>`;
+      const resp = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/ssml+xml',
+          'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3'
+        },
+        body: ssml
+      });
+      if (!resp.ok) {
+        const errText = await resp.text().catch(() => '');
+        const err = new Error(`合成失败（${resp.status}）${errText.slice(0, 150)}`);
+        err.status = resp.status;
+        err.retryAfter = parseInt(resp.headers.get('Retry-After') || '', 10) || null;
+        throw err;
+      }
+      return await resp.arrayBuffer();
+    }
+
+    async function synthesizeWithRetry(token, region, text, voice, rate, onRetryMsg) {
+      const maxRetries = 5;
+      let attempt = 0;
+      while (true) {
+        try {
+          return await synthesizeOne(token, region, text, voice, rate);
+        } catch (err) {
+          if (err.status === 429 && attempt < maxRetries) {
+            attempt++;
+            const waitMs = err.retryAfter ? err.retryAfter * 1000 : Math.min(2000 * 2 ** (attempt - 1), 20000);
+            onRetryMsg(`触发限流(429)，${Math.round(waitMs / 1000)} 秒后自动重试（第 ${attempt}/${maxRetries} 次）…`);
+            await sleep(waitMs);
+            continue;
+          }
+          throw err;
+        }
+      }
+    }
+
+    let exportCancelled = false;
+
+    exportBtn.addEventListener('click', async () => {
+      const key = keyInput.value.trim();
+      const region = (regionInput.value.trim() || 'eastasia');
+      if (!key) { alert('请先填写 Azure Speech Key'); return; }
+
+      try {
+        localStorage.setItem('fr-azure-key', key);
+        localStorage.setItem('fr-azure-region', region);
+        localStorage.setItem('fr-azure-voice', voiceSelect.value);
+      } catch (e) { /* ignore */ }
+
+      const list = units.filter(it => it.text && it.text.trim());
+      if (!list.length) { alert('没有可朗读的内容'); return; }
+
+      if (playing) stopAll();
+
+      exportCancelled = false;
+      exportBtn.disabled = true;
+      exportBtn.textContent = '生成中…';
+      exportCancelBtn.style.display = 'inline-block';
+      downloadLink.style.display = 'none';
+      audioPreview.style.display = 'none';
+
+      const rate = parseFloat(rateInput.value);
+      const voice = voiceSelect.value;
+      const chunks = [];
+      let token = '', tokenTime = 0;
+
+      try {
+        for (let i = 0; i < list.length; i++) {
+          if (exportCancelled) { exportProgress.textContent = '已取消'; break; }
+          if (!token || Date.now() - tokenTime > 8 * 60 * 1000) {
+            token = await getAzureToken(key, region);
+            tokenTime = Date.now();
+          }
+          exportProgress.textContent = `正在合成第 ${i + 1} / ${list.length} 段…`;
+          const buf = await synthesizeWithRetry(token, region, list[i].text, voice, rate,
+            (msg) => { exportProgress.textContent = msg; });
+          chunks.push(new Uint8Array(buf));
+          if (i < list.length - 1) await sleep(250);
+        }
+
+        if (!exportCancelled && chunks.length) {
+          const blob = new Blob(chunks, { type: 'audio/mpeg' });
+          const url = URL.createObjectURL(blob);
+          downloadLink.href = url;
+          downloadLink.download = '若尔当标准形_朗读.mp3';
+          downloadLink.style.display = 'inline-block';
+          audioPreview.src = url;
+          audioPreview.style.display = 'block';
+          exportProgress.textContent = `完成，共 ${chunks.length} 段，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+        }
+      } catch (err) {
+        exportProgress.textContent = '出错：' + err.message;
+      } finally {
+        exportBtn.disabled = false;
+        exportBtn.textContent = '生成并下载 MP3';
+        exportCancelBtn.style.display = 'none';
+      }
+    });
+
+    exportCancelBtn.addEventListener('click', () => { exportCancelled = true; });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReader);
+  } else {
+    initReader();
+  }
+})();
+</script>
+
+</body>
+</html>
