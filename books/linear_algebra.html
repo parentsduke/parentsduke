@@ -4247,6 +4247,39 @@
     \[f(\mathbf{x})=\mathbf{x}^{\mathrm T}A^{\mathrm T}A\mathbf{x}-2\mathbf{b}^{\mathrm T}A\mathbf{x}+\mathbf{b}^{\mathrm T}\mathbf{b}\]
     这是一个"二次型 + 线性项 + 常数"的标准形式，接下来分别对这两类项求导。</p>
 
+    <div class="step">
+      <strong>把上面"展开"这一步拆到不能再拆：</strong>写成 \(\mathbf{b}-A\mathbf{x}\) 的形式更直观，逐项交代清楚。先把转置分配到括号内的两项上——转置满足 \((\mathbf{u}-\mathbf{v})^{\mathrm T}=\mathbf{u}^{\mathrm T}-\mathbf{v}^{\mathrm T}\)，且 \((A\mathbf{x})^{\mathrm T}=\mathbf{x}^{\mathrm T}A^{\mathrm T}\)（乘积转置要"倒过来"，见公式 \((XY)^{\mathrm T}=Y^{\mathrm T}X^{\mathrm T}\)），所以：
+      \[(\mathbf{b}-A\mathbf{x})^{\mathrm T}=\mathbf{b}^{\mathrm T}-(A\mathbf{x})^{\mathrm T}=\mathbf{b}^{\mathrm T}-\mathbf{x}^{\mathrm T}A^{\mathrm T}\]
+      代回 \(f(\mathbf{x})=(\mathbf{b}-A\mathbf{x})^{\mathrm T}(\mathbf{b}-A\mathbf{x})\)，得到两个括号相乘：
+      \[f(\mathbf{x})=(\mathbf{b}^{\mathrm T}-\mathbf{x}^{\mathrm T}A^{\mathrm T})(\mathbf{b}-A\mathbf{x})\]
+      按分配律逐项相乘（前 × 前、前 × 后、后 × 前、后 × 后，一共四项，和普通的 \((u-v)(p-q)=up-uq-vp+vq\) 展开方式完全一样，只是这里 \(u,v,p,q\) 全都换成了向量/矩阵）：
+      \[f(\mathbf{x})=\mathbf{b}^{\mathrm T}\mathbf{b}-\mathbf{b}^{\mathrm T}A\mathbf{x}-\mathbf{x}^{\mathrm T}A^{\mathrm T}\mathbf{b}+\mathbf{x}^{\mathrm T}A^{\mathrm T}A\mathbf{x}\]
+      四项依次是：\(\mathbf{b}^{\mathrm T}\mathbf{b}\)（常数项，不含 \(\mathbf{x}\)）、\(-\mathbf{b}^{\mathrm T}A\mathbf{x}\)、\(-\mathbf{x}^{\mathrm T}A^{\mathrm T}\mathbf{b}\)、\(\mathbf{x}^{\mathrm T}A^{\mathrm T}A\mathbf{x}\)（二次项）。中间那两项长得不完全一样——一个是 \(\mathbf{b}^{\mathrm T}A\mathbf{x}\)，一个是 \(\mathbf{x}^{\mathrm T}A^{\mathrm T}\mathbf{b}\)——接下来要证明它们其实是同一个数。
+    </div>
+
+    <div class="box verify">
+      <div class="label">为什么 \(\mathbf{b}^{\mathrm T}A\mathbf{x}=\mathbf{x}^{\mathrm T}A^{\mathrm T}\mathbf{b}\)？——标量转置等于自身的具体过程</div>
+      <p style="margin:0 0 12px"><strong>第一步，确认它是个标量：</strong>设 \(A\) 是 \(m\times n\)，则 \(\mathbf{b}\) 是 \(m\times1\)，\(\mathbf{x}\) 是 \(n\times1\)。逐段核对维度：\(\mathbf{b}^{\mathrm T}\) 是 \(1\times m\)，乘 \(A\)（\(m\times n\)）得到 \(1\times n\)，再乘 \(\mathbf{x}\)（\(n\times1\)）得到 \(1\times1\)——也就是说 \(\mathbf{b}^{\mathrm T}A\mathbf{x}\) 从头到尾就是一个普普通通的数，不是向量也不是矩阵。</p>
+      <p style="margin:0 0 12px"><strong>第二步，标量转置等于自身：</strong>对任何 \(1\times1\) 的"矩阵" \(c\)，转置只是把行和列互换——可 \(1\times1\) 只有一个位置，换来换去还是它本身，所以 \(c^{\mathrm T}=c\) 恒成立。这条规则和一元数字没有转置这回事是一致的：标量本来就无所谓"横放竖放"。
+      \[\mathbf{b}^{\mathrm T}A\mathbf{x}=(\mathbf{b}^{\mathrm T}A\mathbf{x})^{\mathrm T}\]
+      </p>
+      <p style="margin:0 0 12px"><strong>第三步，把转置展开到底：</strong>用乘积转置公式 \((XYZ)^{\mathrm T}=Z^{\mathrm T}Y^{\mathrm T}X^{\mathrm T}\)（把三个因子依次转置、再倒序排列），对 \(\mathbf{b}^{\mathrm T}A\mathbf{x}\) 取转置——这里 \(X=\mathbf{b}^{\mathrm T},\,Y=A,\,Z=\mathbf{x}\)：
+      \[(\mathbf{b}^{\mathrm T}A\mathbf{x})^{\mathrm T}=\mathbf{x}^{\mathrm T}A^{\mathrm T}(\mathbf{b}^{\mathrm T})^{\mathrm T}=\mathbf{x}^{\mathrm T}A^{\mathrm T}\mathbf{b}\]
+      最后一步用了 \((\mathbf{b}^{\mathrm T})^{\mathrm T}=\mathbf{b}\)（转置两次还原）。</p>
+      <p style="margin:0"><strong>拼起来：</strong>把第二步、第三步接在一起，
+      \[\mathbf{b}^{\mathrm T}A\mathbf{x}=(\mathbf{b}^{\mathrm T}A\mathbf{x})^{\mathrm T}=\mathbf{x}^{\mathrm T}A^{\mathrm T}\mathbf{b}\]
+      两个长得不一样的表达式，被证明其实是同一个数。回到展开式里，\(-\mathbf{b}^{\mathrm T}A\mathbf{x}-\mathbf{x}^{\mathrm T}A^{\mathrm T}\mathbf{b}\) 就是"同一个数的相反数，加两次"，合并成 \(-2\mathbf{b}^{\mathrm T}A\mathbf{x}\)（或者等价地写成 \(-2\mathbf{x}^{\mathrm T}A^{\mathrm T}\mathbf{b}\)），这正是前面 \(f(\mathbf{x})=\mathbf{x}^{\mathrm T}A^{\mathrm T}A\mathbf{x}-2\mathbf{b}^{\mathrm T}A\mathbf{x}+\mathbf{b}^{\mathrm T}\mathbf{b}\) 里那个 "\(-2\)" 系数的真正来源。</p>
+    </div>
+
+    <div class="example">
+      <div class="label">数值验证：取 \(m=n=2\) 亲眼看两项相等</div>
+      <p style="margin:0 0 10px">取 \(A=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)、\(\mathbf{b}=\begin{pmatrix}1\\1\end{pmatrix}\)、\(\mathbf{x}=\begin{pmatrix}1\\0\end{pmatrix}\)。先算 \(A\mathbf{x}=\begin{pmatrix}1\\3\end{pmatrix}\)，于是
+      \[\mathbf{b}^{\mathrm T}A\mathbf{x}=(1,1)\begin{pmatrix}1\\3\end{pmatrix}=1\times1+1\times3=4\]
+      再算另一边：\(A^{\mathrm T}=\begin{pmatrix}1&3\\2&4\end{pmatrix}\)，\(A^{\mathrm T}\mathbf{b}=\begin{pmatrix}1&3\\2&4\end{pmatrix}\begin{pmatrix}1\\1\end{pmatrix}=\begin{pmatrix}4\\6\end{pmatrix}\)，于是
+      \[\mathbf{x}^{\mathrm T}A^{\mathrm T}\mathbf{b}=(1,0)\begin{pmatrix}4\\6\end{pmatrix}=1\times4+0\times6=4\]
+      两边算出来都是 4——数字上直接验证了 \(\mathbf{b}^{\mathrm T}A\mathbf{x}=\mathbf{x}^{\mathrm T}A^{\mathrm T}\mathbf{b}\)，和上面的抽象证明完全吻合。</p>
+    </div>
+
     <div class="step">在证明公式 1 之前，先看清楚 \(\mathbf{x}^{\mathrm T}M\mathbf{x}=\sum_{i,j}M_{ij}x_ix_j\) 这个双重求和是怎么来的——它其实是"矩阵乘向量"再"向量乘向量"两步压成一步的结果。以 \(n=2\) 为例：先算 \(M\mathbf{x}\)，第 \(i\) 个分量是 \(M\) 的第 \(i\) 行与 \(\mathbf{x}\) 的内积，即 \((M\mathbf{x})_i=\sum_j M_{ij}x_j\)：
     \[M\mathbf{x}=\begin{pmatrix}M_{11}x_1+M_{12}x_2\\M_{21}x_1+M_{22}x_2\end{pmatrix}\]
     再左乘 \(\mathbf{x}^{\mathrm T}\)，即两个向量对应位置相乘再相加：
