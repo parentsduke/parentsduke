@@ -686,7 +686,7 @@
       const adminEmails = [
         'weihong_j@yahoo.com', 'lixiaobing@gmail.com', 'sws122003@yahoo.com',
         'sharonzhang92@gmail.com', 'vonnan@gmail.com', 'yyao28@gmail.com',
-        'jing.jane@gmail.com', 'china.snowpea@gmail.com',
+        'jing.jane@gmail.com',
       ];
 
       await Promise.all(adminEmails.map(email => fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
