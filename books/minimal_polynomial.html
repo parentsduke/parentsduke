@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最小多项式与 Cayley-Hamilton 定理 · 每个矩阵都躲不过的一份"验尸报告"</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101b2d;
+    --navy-deep:#0a121e;
+    --navy-mid:#1c2d47;
+    --gold:#c19a49;
+    --gold-pale:#e8d9ae;
+    --paper:#f8f3e8;
+    --paper-warm:#f2ead9;
+    --ink:#20242c;
+    --ink-soft:#4a5163;
+    --rule:#ddd0a6;
+    --room:#5c6f92;
+    --room-suite:#a5773a;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Serif SC","Songti SC","SimSun",serif;
+    line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- 顶部横幅 ---------- */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse at 82% -10%, rgba(193,154,73,0.16), transparent 55%),
+      linear-gradient(150deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:var(--gold-pale);
+    padding:88px 8vw 64px;
+    overflow:hidden;
+  }
+  .hero .eyebrow{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:12px;
+    letter-spacing:0.4em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 20px;
+  }
+  .hero h1{
+    margin:0;
+    font-size:clamp(30px,4.4vw,46px);
+    font-weight:700;
+    color:#fbf6e9;
+    max-width:16em;
+    letter-spacing:0.01em;
+  }
+  .hero .sub{
+    margin-top:18px;
+    font-family:"Noto Sans SC",sans-serif;
+    font-weight:300;
+    font-size:16px;
+    color:#c3ccdd;
+    max-width:36em;
+  }
+
+  /* 签名视觉：一个圆，经过"转-拉-转"，变成一个椭圆 */
+  .svd-stages{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:46px;
+    flex-wrap:wrap;
+  }
+  .svd-shape{
+    width:50px;height:50px;
+    border:1.5px solid var(--room);
+    border-radius:50%;
+    position:relative;
+    background:rgba(92,111,146,0.12);
+    flex-shrink:0;
+  }
+  .svd-shape::after{
+    content:"";
+    position:absolute;
+    inset:9px;
+    border:1px solid rgba(197,205,224,0.32);
+    border-radius:50%;
+  }
+  .svd-shape.axis::after{
+    border-radius:0;
+    border:none;
+    border-top:1px solid rgba(197,205,224,0.4);
+    border-left:1px solid rgba(197,205,224,0.4);
+    inset:0;
+  }
+  .svd-shape.ellipse{
+    width:76px;height:40px;
+    border-color:var(--room-suite);
+    background:rgba(165,119,58,0.14);
+  }
+  .svd-shape.ellipse::after{ border-radius:50%; }
+  .svd-shape.tilt{ transform:rotate(-24deg); }
+  .svd-arrow{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:16px;
+    color:var(--gold);
+    flex-shrink:0;
+  }
+  .dorm-caption{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    color:#9aa4bb;
+    margin-top:14px;
+  }
+  .dorm-caption b{color:var(--gold-pale);font-weight:500;}
+
+  /* ---------- 正文容器 ---------- */
+  .wrap{
+    max-width:700px;
+    margin:0 auto;
+    padding:0 8vw 120px;
+  }
+  @media (min-width:900px){ .wrap{ padding:0 24px 120px; margin:0 auto; } }
+
+  .stage{
+    margin-top:70px;
+  }
+  .stage-num{
+    font-family:"JetBrains Mono",monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    color:var(--room-suite);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  .stage-num::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg,var(--rule),transparent);
+  }
+  .stage h2{
+    font-size:24px;
+    font-weight:700;
+    margin:0 0 22px;
+    color:var(--navy);
+    letter-spacing:0.01em;
+  }
+  .stage p{
+    margin:0 0 18px;
+    font-size:16.5px;
+    color:var(--ink);
+  }
+  .stage p:last-child{margin-bottom:0;}
+
+  .lede{
+    font-size:19px;
+    color:var(--navy-mid);
+    font-weight:500;
+  }
+  .lede::first-letter{
+    font-size:2.6em;
+    font-weight:700;
+    color:var(--room-suite);
+    float:left;
+    line-height:0.8;
+    margin:6px 8px 0 0;
+  }
+
+  strong{color:var(--navy-mid);font-weight:600;}
+
+  .callout{
+    background:#fffdf7;
+    border:1px solid var(--rule);
+    border-left:3px solid var(--gold);
+    padding:20px 24px;
+    margin:26px 0;
+    font-size:15.5px;
+    color:var(--ink-soft);
+  }
+  .callout .tag{
+    display:inline-block;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#fff;
+    background:var(--room-suite);
+    padding:3px 9px;
+    border-radius:2px;
+    margin-bottom:10px;
+  }
+
+  .analogy{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    background:var(--navy);
+    color:#e6ecf5;
+    padding:26px 26px;
+    margin:30px 0;
+    border-radius:2px;
+  }
+  .analogy .mark{
+    font-family:"Noto Serif SC",serif;
+    font-size:34px;
+    color:var(--gold);
+    line-height:1;
+    flex-shrink:0;
+  }
+  .analogy p{
+    margin:0;
+    font-size:15.5px;
+    color:#dbe2ee;
+  }
+  .analogy strong{color:var(--gold-pale);}
+
+  .divider-rooms{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:8px;
+    margin:56px 0 8px;
+  }
+  .divider-rooms .r{
+    width:16px;height:16px;
+    border:1px solid var(--rule);
+    border-radius:2px;
+  }
+  .divider-rooms .r.suite{border-color:var(--gold);background:rgba(193,154,73,0.14);}
+
+  .key-relation{
+    margin:44px 0;
+    background:var(--navy-deep);
+    border:1px solid rgba(193,154,73,0.35);
+    padding:34px 30px;
+    position:relative;
+  }
+  .key-relation::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg,var(--gold),var(--room-suite),var(--gold));
+  }
+  .key-relation .tag{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 18px;
+  }
+  .key-relation .rows{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .key-relation .row{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    font-family:"Noto Sans SC",sans-serif;
+    flex-wrap:wrap;
+  }
+  .key-relation .term{
+    font-family:"Noto Serif SC",serif;
+    font-weight:700;
+    font-size:17px;
+    color:#fbf6e9;
+    min-width:9.5em;
+  }
+  .key-relation .eq{color:var(--gold);font-size:15px;}
+  .key-relation .meaning{
+    color:#c3ccdd;
+    font-size:14.5px;
+    font-weight:300;
+  }
+  .key-relation .foot{
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid rgba(193,154,73,0.22);
+    font-size:14.5px;
+    color:#aeb8cc;
+  }
+  .key-relation .foot strong{color:var(--gold-pale);}
+
+  .closing{
+    margin-top:76px;
+    padding-top:36px;
+    border-top:1px solid var(--rule);
+  }
+  .closing h2{
+    font-size:22px;
+    color:var(--navy);
+    margin:0 0 18px;
+  }
+  .closing p{font-size:16.5px;}
+
+  footer{
+    text-align:center;
+    padding:40px 8vw 60px;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:#b3a878;
+  }
+
+  @media (max-width:520px){
+    .hero{padding:64px 22px 48px;}
+    .analogy{flex-direction:column;}
+  }
+
+  /* ---------- 应用举例 ---------- */
+  .app-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:8px;
+  }
+  @media (max-width:640px){ .app-grid{ grid-template-columns:1fr; } }
+  .app-card{
+    background:#fffdf7;
+    border:1px solid var(--rule);
+    border-top:3px solid var(--room-suite);
+    padding:20px 22px;
+  }
+  .app-card .app-num{
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    color:var(--room-suite);
+    margin-bottom:8px;
+  }
+  .app-card h3{
+    font-size:16.5px;
+    margin:0 0 10px;
+    color:var(--navy);
+    font-weight:700;
+  }
+  .app-card p{
+    margin:0;
+    font-size:14.5px;
+    color:var(--ink-soft);
+    line-height:1.75;
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <p class="eyebrow">Linear Algebra · 深入讲解</p>
+    <h1>最小多项式与 Cayley-Hamilton 定理<br>每个矩阵都躲不过的一份"验尸报告"</h1>
+    <p class="sub">不用一个公式，只用语言，把"为什么每个矩阵都会被自己的特征多项式'杀死'、又为什么总能找到一份更精简的判决书"这几件事讲透。</p>
+
+    <div class="svd-stages" aria-hidden="true">
+      <div class="svd-shape axis"></div>
+      <span class="svd-arrow">→</span>
+      <div class="svd-shape ellipse"></div>
+      <span class="svd-arrow">→</span>
+      <div class="svd-shape axis" style="width:26px;height:26px;opacity:0.5;"></div>
+    </div>
+    <p class="dorm-caption"><b>矩阵 A</b>——反复自乘、层层叠加；<b>多项式</b>——专门为它调配的一剂配方；<b>归零</b>——配方喂下去之后，剩下的只有一整块空</p>
+  </header>
+
+  <main class="wrap">
+
+    <section class="stage">
+      <p class="lede">给任何一个方阵反复自乘，一次、两次、十次……表面上看，这串矩阵会越变越复杂，看不出丝毫要停下来的意思。可是有一件事，从一开始就是注定的：只要凑够合适的倍数，把这些不同次幂按某种固定配方加在一起，结果必定能精确地归零——不多不少，正正好好是一片空白。这个"必定能归零"的承诺，就是 Cayley-Hamilton 定理；而这份配方能开得多精简、多不浪费，答案就是最小多项式。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">引子 · 一句听起来像废话、其实极不平凡的话</div>
+      <h2>"矩阵满足自己的特征方程"，到底是什么意思</h2>
+      <p>对一个普通的数字来说，"它满足自己的特征方程"这句话近乎废话：如果λ是某个方程的根，那把λ本身代回这个方程，结果当然是零——这不用证明，是定义直接给的。可一旦把主角从一个数字换成一个矩阵，同一句话的分量就完全不一样了。</p>
+      <p>矩阵的特征多项式，原本是拿一个普通数字λ当变量写出来的一串式子。现在要做的事情，是把这个变量λ的位置，通通换成矩阵本身——数字的幂换成矩阵的幂，普通的加减换成矩阵的加减，式子里那个孤零零的常数项，也要换成"常数乘单位矩阵"。这已经不再是代一个数进一个方程那么简单了：这是把一整个矩阵，连同它所有的高次幂，混在一起做一次加权求和，赌的是这一大堆看似毫不相干的矩阵，加总起来会精确抵消成一片全零。这件事凭什么会发生，一点也不显然。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">第一步 · 为什么偏偏是"特征多项式"这份配方管用</div>
+      <h2>先从最规矩的方向下手：特征向量那条线</h2>
+      <p>不妨先只盯着矩阵的某一个特征方向来看。矩阵作用在这个方向上时，行为极其单纯——不发生任何旋转或者拉扯到别的方向，只是把这个方向上的向量，统一地放大或缩小某个固定倍数，这个倍数就是特征值。既然在这一条方向上，矩阵的所有高次幂，通通等价于把这同一个倍数反复自乘，那么把特征多项式里"数字的幂"全部换成"矩阵的幂"之后，效果在这条方向上跟直接把特征值代进原来那个数字版本的方程，其实没有任何区别。而特征值,按定义,恰恰就是让特征多项式等于零的那个数——于是在这一条方向上，换成矩阵版本之后的结果，同样精确地是零。</p>
+      <p>如果矩阵足够"配合"，能找出一整套互相独立、铺满整个空间的特征方向，那么上面这条论证在每一条方向上都成立，把它们拼在一起，就等于在整个空间的每一个角落，这份"矩阵版特征多项式"的作用结果都是零——合起来，就是作用在任何一个向量上都是零，也就是它本身是一个处处归零的矩阵。这正是 Cayley-Hamilton 定理最直观、也最容易被相信的那半边图景。</p>
+    </section>
+
+    <div class="divider-rooms" aria-hidden="true">
+      <div class="r"></div><div class="r"></div><div class="r suite"></div><div class="r suite"></div><div class="r"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">追问 · 特征向量凑不齐的矩阵，怎么办</div>
+      <h2>靠"连通套房"接力，缺口照样能补上</h2>
+      <p>麻烦在于，不是所有矩阵都配合。前面讲若尔当标准形时说清楚过：一部分矩阵的某个特征值，理应贡献的独立方向数（代数重数）和实际能凑出来的独立方向数（几何重数）对不上，缺口要靠一串"连通套房"式的广义特征向量来补位——矩阵作用在这串向量上，并不是单纯的放大缩小，而是把这一个向量送到链条里的前一环，外加一点点原有方向上的伸缩。</p>
+      <p>好消息是，这条链子再长，也逃不过同一份配方。只要把"矩阵减去这个特征值乘单位矩阵"这个动作，对着整条链子反复做上足够多次——次数等于链子本身的长度——链条就会被彻底压平，每一环都被送回零。特征多项式在这个特征值上留的那个指数，正好等于所有链条长度加起来的总数（也就是代数重数），一定绰绰有余，压平这一整片区域完全够用。把每个特征值各自对应的区域都这样处理一遍，加在一起，还是整个空间的每一个角落都被清空——所以哪怕矩阵的特征向量凑不整齐，Cayley-Hamilton 定理的结论照样成立，一个例外都没有。</p>
+      <div class="callout">
+        <span class="tag">小结</span>
+        整套证明的骨架说到底是一句话：特征多项式在每个特征值上留的指数，足够把这个特征值名下最难缠的那一整片区域（不管是干净的特征方向，还是拖着长长尾巴的连通套房）彻底压成零。既然空间里每一个角落都能被这样清空，代进矩阵之后的结果，自然是处处归零——这正是特征多项式生来就"够格"的原因。
+      </div>
+    </section>
+
+    <div class="key-relation">
+      <p class="tag">第一条核心结论 · Cayley-Hamilton 定理</p>
+      <div class="rows">
+        <div class="row">
+          <span class="term">陈述</span>
+          <span class="eq">＝</span>
+          <span class="meaning">把矩阵 <strong style="color:#fbf6e9;">A</strong> 代入它自己的特征多项式 <strong style="color:#fbf6e9;">p<sub>A</sub></strong>，结果永远是<strong style="color:#fbf6e9;">零矩阵</strong>——对任何方阵，不分乖不乖，无一例外。</span>
+        </div>
+        <div class="row">
+          <span class="term">直觉</span>
+          <span class="eq">＝</span>
+          <span class="meaning">特征多项式在每个特征值上留的指数，永远够用来把这个特征值名下<strong style="color:#fbf6e9;">最难缠的那条连通套房链</strong>彻底压平。</span>
+        </div>
+      </div>
+      <p class="foot">这份配方一定管用，但接下来要问的是：<strong>它是不是开得太"阔气"了</strong>——有没有更省、更精简、同样能把矩阵杀死的配方？</p>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">第二步 · 特征多项式这份配方，是不是有点"浪费"</div>
+      <h2>一个极端例子：矩阵本身早就是"零"的化身</h2>
+      <p>设想最省事的一种矩阵——一个已经是对角矩阵、而且对角线上全都是同一个数字的矩阵，说白了就是这个数字乘单位矩阵。这个矩阵的特征多项式，会把这同一个特征值，按矩阵的维数重复计入好多次，指数可以很高。但真要"杀死"这个矩阵，其实完全用不着那么费劲——矩阵本身减去这个特征值乘单位矩阵，一步到位就已经是零矩阵了，压根不需要按特征多项式那么高的指数来折腾。特征多项式当然还是管用的（毕竟高指数的操作在已经是零的东西上再乘多少次，结果还是零），但它开出的配方明显比实际需要的"够格线"要奢侈得多。</p>
+      <p>这提示了一件事：能让矩阵归零的配方，从来不止一份。特征多项式只是其中<strong>保证一定管用、却未必最省</strong>的那一份。真正值得追问的是——在所有能让这个矩阵归零的配方里，最精简的那一份长什么样？</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">第三步 · 什么样的配方才"够格"</div>
+      <h2>先把"能杀死矩阵的配方"这件事说清楚</h2>
+      <p>把"能让矩阵归零"的配方，正式起个名字，就是<strong>零化多项式</strong>——任何一个多项式，只要把矩阵代进去（幂换矩阵幂、常数项换常数乘单位矩阵）算出来的结果精确是零矩阵，它就有资格叫这个矩阵的零化多项式。特征多项式，只是这一整个家族里最容易证明存在、却未必是最精简的一名成员。</p>
+      <p>这个家族本身，还带着一份很规整的结构：如果两份配方各自都能让矩阵归零，把它们相加、相减，或者随便乘上一个新的多项式，结果照样能让矩阵归零——毕竟每一份配方代进矩阵之后本身就已经是零矩阵，零矩阵加零矩阵、零矩阵乘任何东西，还是零矩阵。这意味着，所有零化多项式凑在一起，构成一个进退有据、可以随意加减组合、还留得住的"账本"，而不是一堆七零八落、互不相干的孤立例子。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">第四步 · 从这个账本里，挑出最精简的那一份</div>
+      <h2>最小多项式：次数最低、独一无二的那份判决书</h2>
+      <p>既然所有零化多项式排在一起构成一个规规矩矩的账本，一个很自然的问题是：这个账本里，次数最低的那一份长什么样，能不能确定下来。答案是肯定的，而且这份最省的配方还有一个很干净的性质——只要把它的最高次项前面的系数统一归一化成 1（数学上称"首一"），这样的最低次配方是<strong>独一无二</strong>的，这就是<strong>最小多项式</strong>。</p>
+      <p>唯一性并不难想象：假如同时存在两份次数一样低、又都归一化过的零化多项式，把它们相减，次数会比原来还要低（最高次项恰好抵消掉了），而相减的结果，按前面"账本"的规矩，也必定还是一个零化多项式——除非这个次数更低的差恰好是零多项式本身，否则就意味着刚才那个"最低次数"根本不是真正的下限，这就自相矛盾了。于是唯一的出路，是两份配方从头到尾就是同一份，最小多项式因而只有一个，不会有"版本之争"。</p>
+      <div class="analogy">
+        <span class="mark">"</span>
+        <p>可以把整个账本想象成一间当铺开出的所有"能把这笔账清零"的还款组合——金额有大有小、期数有长有短，但只要能清零，都算数。最小多项式，就是这些组合里<strong>期数最短、一步都不多走</strong>的那一份还款计划：它照样能把账彻底清零，只是不留一分冗余。</p>
+      </div>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">紧接着 · 最小多项式凭什么能"管住"整个账本</div>
+      <h2>不止最短，还是所有其他配方的"公约数"</h2>
+      <p>最小多项式不仅是账本里次数最低的一份，它还有一个更厉害的身份：<strong>账本里任何一份零化多项式，都能被最小多项式整除，不留余数</strong>。原因并不复杂——如果拿账本里随便一份配方去除以最小多项式，用最普通的带余除法，会剩下一个次数比最小多项式还低的余式；而这个余式，恰好等于"原配方"减去"最小多项式乘上商式"，两边都是零化多项式（账本里的加减乘运算不会跑出账本），所以这个次数更低的余式，也必须是零化多项式。可最小多项式已经是账本里次数最低的那份了，比它还低次数的零化多项式，唯一的可能就是零多项式本身——也就是说，余数根本不存在，除法一定能除尽。</p>
+      <p>这条"整除"的性质，把特征多项式和最小多项式的关系彻底钉死了：既然特征多项式本身也是账本里的一名成员（Cayley-Hamilton 定理保证了这一点），它自然也逃不过被最小多项式整除的命运。<strong>最小多项式永远整除特征多项式</strong>，这是两者之间最根本、也最常被直接拿来用的一条关系。</p>
+    </section>
+
+    <div class="divider-rooms" aria-hidden="true">
+      <div class="r"></div><div class="r suite"></div><div class="r suite"></div><div class="r suite"></div><div class="r"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">回望 · 从若尔当标准形看清两者差在哪</div>
+      <h2>特征多项式数"总共多少"，最小多项式数"最长一条链"</h2>
+      <p>前面讲若尔当标准形时，每个特征值名下都可能拖着好几条长短不一的"连通套房"链，链条的总长度加起来，正好是这个特征值的代数重数——这也正是特征多项式在这个特征值上留的指数。而最小多项式在同一个特征值上留的指数，不是这些链条长度的<strong>总和</strong>，而是其中<strong>最长的那一条</strong>的长度。原因回到前面证明 Cayley-Hamilton 定理时用过的逻辑：把"矩阵减去这个特征值乘单位矩阵"反复作用，只要次数够压平最长的那条链，其余更短的链条自然也早就被压平了，用不着按总长度那么大手大脚地留指数。</p>
+      <p>这就解释了为什么前面那个"数字乘单位矩阵"的例子里最小多项式会这么短：每一条链长度都恰好是一——压根没有任何连通套房，特征向量本身就凑得整整齐齐——所以最长的那条链，长度也只有一，最小多项式自然只需要留下最低的指数。反过来，如果某个特征值名下有一条特别长的连通套房链，最小多项式在这个特征值上留的指数就会被这条最长链死死顶住，压不下来。</p>
+    </section>
+
+    <div class="key-relation">
+      <p class="tag">第二条核心结论 · 最小多项式与特征多项式的分工</p>
+      <div class="rows">
+        <div class="row">
+          <span class="term">特征多项式 p<sub>A</sub></span>
+          <span class="eq">＝</span>
+          <span class="meaning">每个特征值贡献的指数，是它名下<strong style="color:#fbf6e9;">所有连通套房链长度的总和</strong>（代数重数）——记录"总共牵扯多广"。</span>
+        </div>
+        <div class="row">
+          <span class="term">最小多项式 m<sub>A</sub></span>
+          <span class="eq">＝</span>
+          <span class="meaning">每个特征值贡献的指数，是它名下<strong style="color:#fbf6e9;">最长那一条连通套房链的长度</strong>——记录"最难缠的一条要拖多久"。</span>
+        </div>
+        <div class="row">
+          <span class="term">整除关系</span>
+          <span class="eq">＝</span>
+          <span class="meaning">m<sub>A</sub> 永远<strong style="color:#fbf6e9;">整除</strong> p<sub>A</sub>，且两者的根（也就是特征值）<strong style="color:#fbf6e9;">完全相同</strong>，只是重数可能不同。</span>
+        </div>
+      </div>
+      <p class="foot">一句话记住：<strong>特征多项式是完整病历，最小多项式是签字的死亡证明</strong>——前者把每一处都如实记录在案，后者只留下真正决定"归零"这件事所必须的那部分，一分不多，一分不少。</p>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">落地一 · 用最小多项式一眼判断能不能对角化</div>
+      <h2>没有重复根的最小多项式，等于宣告"没有连通套房"</h2>
+      <p>这条分工关系立刻带来一个非常实用的判据：一个矩阵能不能被彻底对角化（也就是若尔当标准形里完全不需要连通套房），只需要看它的最小多项式——<strong>如果最小多项式的每一个根都只出现一次，互不重复，这个矩阵就一定能对角化；只要有任何一个根重复出现，就一定存在至少一条长度超过一的连通套房链，对角化就无从谈起</strong>。原因直接对应前面的结论：最小多项式在某个特征值上的指数，等于这个特征值名下最长链条的长度——指数是一，说明最长的链条长度也是一，也就是压根没有链条，只有干净的特征方向。</p>
+      <p>这比直接去若尔当标准形里数格子要省事得多：不需要先把整个标准形算出来，只需要确认最小多项式有没有重复的根，一步到位。数值线性代数里判断矩阵是否"可对角化"，走的正是这条捷径。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">插一句 · 两者什么时候会长成一模一样</div>
+      <h2>并不总是"更省"，有时两份判决书恰好重合</h2>
+      <p>最小多项式未必总比特征多项式短一截。如果矩阵每一个特征值名下都<strong>只有一条</strong>连通套房链（这条链可以很长，占满这个特征值应得的全部重数），那么"最长链条"和"总长度"就是同一个数，最小多项式和特征多项式在这个特征值上留的指数完全一样——两份多项式其实是同一份，只是名字不同。这种矩阵在数学上有个专门的称呼叫"非循环矩阵"（non-derogatory），它的结构信息，从特征多项式一份文件里就能原原本本地读全，用不着再另外去查最小多项式。</p>
+      <div class="callout">
+        <span class="tag">对照</span>
+        两个极端最能说明问题：一端是"数字乘单位矩阵"，每条链长度都是一，最小多项式远比特征多项式短；另一端是只有一条连通套房、链条长度顶满整个空间维数的矩阵（专业说法叫"友矩阵"或"循环矩阵"），最小多项式和特征多项式完全重合，一个字都不能再省。绝大多数矩阵，落在这两个极端之间。
+      </div>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">落地二 · 从压缩矩阵幂，到设计控制系统，骨架都是它</div>
+      <h2>"矩阵能被自己的多项式杀死"这件事，能派上大用场</h2>
+      <p>Cayley-Hamilton 定理和最小多项式，听起来像是两条纯粹为了自我完备而存在的结论，可一旦把它们放进具体的计算和工程场景，立刻显出真正的分量——而且因为它们对<strong>任意方阵</strong>都成立，凡是要处理矩阵高次幂、矩阵函数的地方，几乎都绕不开这两条结论。</p>
+
+      <div class="app-grid">
+        <div class="app-card">
+          <div class="app-num">01</div>
+          <h3>把矩阵的高次幂"打折"</h3>
+          <p>Cayley-Hamilton 定理说，矩阵的最高次幂，永远可以被改写成更低次幂的线性组合——次数最多不超过矩阵的维数。这意味着不管要算矩阵的第几百次幂，最终都能折算成前面那有限几个低次幂的加权和，不必真的把矩阵乘上几百遍，这是很多快速求幂算法背后的底层原理。</p>
+        </div>
+        <div class="app-card">
+          <div class="app-num">02</div>
+          <h3>计算矩阵函数（矩阵指数等）</h3>
+          <p>像"矩阵的指数函数"这类原本要靠无穷级数定义的量，展开之后同样牵扯到矩阵的所有高次幂。借助最小多项式，这个无穷级数可以被精确地截断成一个有限次数的多项式——次数就等于最小多项式的次数——把一个理论上无穷步骤的计算，变成了有限几步就能封顶的实际运算。</p>
+        </div>
+        <div class="app-card">
+          <div class="app-num">03</div>
+          <h3>线性递推数列求通项</h3>
+          <p>把一个满足固定递推关系的数列（比如斐波那契数列）改写成矩阵反复自乘的形式之后，Cayley-Hamilton 定理保证这个矩阵满足一条固定次数的线性关系——这条关系直接翻译回数列本身，就是"数列自己也满足同样次数的线性递推式"，这正是求这类数列通项公式的标准套路之一。</p>
+        </div>
+        <div class="app-card">
+          <div class="app-num">04</div>
+          <h3>控制系统的最小实现</h3>
+          <p>在控制理论里，描述一个系统需要用到的最少状态个数，往往直接由系统矩阵最小多项式的次数决定——次数越低，说明这个系统背后真正独立的"记忆"越少，能用更精简的模型去描述和控制它，这是判断系统能不能"降阶"的核心依据之一。</p>
+        </div>
+        <div class="app-card">
+          <div class="app-num">05</div>
+          <h3>数值迭代方法的收敛步数</h3>
+          <p>共轭梯度法、GMRES 这类求解大规模方程组的迭代算法，理论上最多迭代多少步就能给出精确解，答案往往就写在系数矩阵最小多项式的次数里——次数越低，说明矩阵背后真正不同的"作用模式"越少，收敛所需要的步数也就越少，这是判断这类算法效率的重要理论依据。</p>
+        </div>
+        <div class="app-card">
+          <div class="app-num">06</div>
+          <h3>图论里判断图的结构</h3>
+          <p>把一张图的邻接关系摆成矩阵之后，这个矩阵的最小多项式次数，往往和图的"直径"（任意两点之间最远要走几步）密切相关——次数偏低，通常意味着图上任意两点之间都能通过比较少的步数互相连通，这是分析网络结构紧密程度的一条间接线索。</p>
+        </div>
+      </div>
+
+      <p style="margin-top:26px;">这六个场景横跨快速幂运算、矩阵函数、数列通项、控制系统、数值迭代、图论结构，看似互不相干，但拆到底，都只是同一件事的不同应用：<strong>矩阵的高次幂并不是无穷无尽、彼此独立的新信息，一旦次数超过最小多项式的度数，后面的每一次幂都能被前面已经出现过的那几次幂重新拼出来</strong>。这正是最小多项式真正的分量所在——它划定了一个矩阵"真正独立的信息"到底有多少。</p>
+    </section>
+
+    <section class="stage closing">
+      <h2>为什么这份"验尸报告"值得被单独讲一遍</h2>
+      <p>Cayley-Hamilton 定理和最小多项式的意义，并不只是"证明了一件早就该成立的事"这么简单。它们相当于给每一个矩阵，出具了一份从不会拒绝作答的判决书：这个矩阵反复自乘下去，到底会不会、又会在第几步产生"多余的新信息"；如果会归零，最精简的归零路径又该怎么走——全都被这两条结论清清楚楚地记录了下来。</p>
+      <p>也正因为这份判决书永远写得出来，后续大量建立在"矩阵的高次幂到底还剩多少独立信息"之上的实际问题——把理论上无穷步骤的矩阵函数算法折算成有限几步、判断一个系统能不能用更少的状态描述、估算一个迭代算法最多需要跑几轮——最终都可以绕开一次次笨拙地把矩阵乘来乘去，直接在最小多项式这一份最精简的判决书上完成，思路和当年学特征值、特征向量时几乎一模一样，只是这一次，答案被压缩到了不能再压缩的地步。</p>
+      <p>说到底，从最初怀疑"矩阵真的会被自己的某个多项式杀死吗"，到后来发现不仅一定会，还总能找到最精简的那一份配方，贯穿始终的都是同一个念头：再复杂的矩阵，反复自乘下去也逃不过某种规律的收束，找到这份规律最精简的表达，就是对这个矩阵最诚实的一次"验尸"。</p>
+    </section>
+
+  </main>
+
+
+  <footer>线性代数 · 最小多项式与 Cayley-Hamilton 定理 · 纯语言讲解</footer>
+
+<style id="reader-style">
+  .fr-reading{
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+    background: rgba(193,154,73,0.09);
+    border-radius: 4px;
+  }
+  .fr-clickable{ cursor: pointer; transition: background 0.15s ease; }
+  .fr-clickable:hover{ background: rgba(193,154,73,0.06); border-radius: 4px; }
+  .fr-clickable:active{ background: rgba(193,154,73,0.12); }
+
+  #fr-toggle{
+    position: fixed; right: 18px; bottom: 18px; z-index: 61;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(160deg, var(--gold) 0%, var(--room-suite) 100%);
+    color: #241d0e; border: none; box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+    font-size: 20px; cursor: pointer; display:flex; align-items:center; justify-content:center;
+  }
+  #fr-toggle:active{ transform: scale(0.94); }
+
+  #fr-panel{
+    position: fixed; right: 18px; bottom: 82px; z-index: 60;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    border: 1px solid rgba(193,154,73,0.4);
+    border-radius: 12px;
+    padding: 14px 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    font-family: "Noto Sans SC", sans-serif;
+    width: 216px;
+    display: none;
+  }
+  #fr-panel.open{ display:block; }
+  #fr-panel .fr-title{
+    font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+    color: var(--gold-pale); margin-bottom:10px; font-weight:500;
+  }
+  #fr-progress{ font-size:12px; color:#c3ccdd; margin-bottom:6px; }
+  #fr-bar-track{ height:4px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden; margin-bottom:11px;}
+  #fr-bar-fill{ height:100%; width:0%; background: var(--gold); transition: width 0.2s ease; }
+  .fr-row{ display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+  #fr-play{
+    flex:1; background: var(--gold); color:#241d0e; border:none;
+    border-radius:6px; padding:9px 10px; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  #fr-stop{
+    background: transparent; border:1px solid rgba(193,154,73,0.5);
+    color: var(--gold-pale); border-radius:6px; padding:9px 11px; font-size:13px; cursor:pointer;
+  }
+  #fr-rate-row{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:#c3ccdd; margin-bottom:2px; }
+  #fr-rate{ flex:1; accent-color: var(--gold); }
+
+  #fr-export{ margin-top:11px; border-top: 1px solid rgba(193,154,73,0.2); padding-top:9px; }
+  #fr-export summary{
+    font-size:11.5px; color: var(--gold-pale); cursor:pointer; list-style:none;
+    display:flex; align-items:center; gap:4px;
+  }
+  #fr-export summary::-webkit-details-marker{ display:none; }
+  #fr-export summary::before{ content:'▸'; color: var(--gold); }
+  #fr-export[open] summary::before{ content:'▾'; }
+  .fr-export-body{ margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+  #fr-export input[type="password"], #fr-export input[type="text"], #fr-export select{
+    background: rgba(0,0,0,0.25); border:1px solid rgba(193,154,73,0.35); color: var(--gold-pale);
+    border-radius:5px; padding:6px 8px; font-size:12px; width:100%;
+  }
+  .fr-row2{ display:flex; gap:6px; }
+  .fr-row2 input{ flex:1.2; }
+  .fr-row2 select{ flex:1; }
+  #fr-export-btn, #fr-export-cancel{
+    background: var(--gold); color:#241d0e; border:none; border-radius:6px;
+    padding:7px 10px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-export-cancel{ background: transparent; border:1px solid rgba(193,154,73,0.5); color: var(--gold-pale); }
+  #fr-export-progress{ font-size:11px; color:#c3ccdd; min-height:14px; }
+  #fr-download-link{
+    display:inline-block; text-align:center; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+  }
+  #fr-audio-preview{ width:100%; height:32px; }
+
+  #fr-record-btn{
+    width:100%; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:9px 10px;
+    font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-record-btn.recording{ background: #b3453f; border-color:#e88a84; color:#fff; }
+  #fr-record-status{ font-size:11px; color:#c3ccdd; min-height:14px; margin-top:4px; }
+  #fr-record-download{
+    display:inline-block; text-align:center; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+    margin-top:4px;
+  }
+  #fr-record-preview{ width:100%; height:32px; margin-top:4px; }
+  @media (max-width: 520px){ #fr-panel{ right:10px; bottom:74px; width:188px; padding:12px 13px; } #fr-toggle{ right:10px; bottom:10px; } }
+</style>
+
+<button id="fr-toggle" title="语音朗读">🔊</button>
+<div id="fr-panel">
+  <div class="fr-title">语音朗读全文</div>
+  <div id="fr-progress">正在扫描内容…</div>
+  <div id="fr-bar-track"><div id="fr-bar-fill"></div></div>
+  <div class="fr-row">
+    <button id="fr-play">▶ 朗读全文</button>
+    <button id="fr-stop">■</button>
+  </div>
+  <div id="fr-rate-row">
+    语速 <input type="range" id="fr-rate" min="0.6" max="1.6" step="0.1" value="0.95"> <span id="fr-rate-val">0.95x</span>
+  </div>
+  <div class="fr-row" style="margin-top:2px;">
+    <button id="fr-record-btn">🎙 录制音频文件（免注册）</button>
+  </div>
+  <div id="fr-record-status"></div>
+  <a id="fr-record-download" style="display:none;">↓ 下载录音</a>
+  <audio id="fr-record-preview" controls style="display:none;"></audio>
+  <details id="fr-export">
+    <summary>高级：导出 MP3（Azure 语音，需注册）</summary>
+    <div class="fr-export-body">
+      <input type="password" id="fr-azure-key" placeholder="Azure Speech Key">
+      <div class="fr-row2">
+        <input type="text" id="fr-azure-region" placeholder="区域 如 eastasia">
+        <select id="fr-azure-voice">
+          <option value="zh-CN-XiaoxiaoNeural">晓晓 女声</option>
+          <option value="zh-CN-YunxiNeural">云希 男声</option>
+          <option value="zh-CN-YunyangNeural">云扬 男声</option>
+        </select>
+      </div>
+      <button id="fr-export-btn">生成并下载 MP3</button>
+      <button id="fr-export-cancel" style="display:none;">取消</button>
+      <div id="fr-export-progress"></div>
+      <a id="fr-download-link" style="display:none;">↓ 下载 MP3</a>
+      <audio id="fr-audio-preview" controls style="display:none;"></audio>
+    </div>
+  </details>
+</div>
+
+<script id="reader-script">
+(function () {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function () {};
+  }
+
+  // ---------------------------------------------------------------
+  // 本页是纯语言讲解、不含公式，朗读逻辑比线代讲义那份简化很多，与"奇异值分解"一篇一致：
+  // 只需要把正文按"段落/最小可读块"切开，逐块喂给浏览器自带的语音引擎。
+  // ---------------------------------------------------------------
+  const BLOCK_TAGS = new Set(['DIV','P','LI','TD','TH','TR','H1','H2','H3','H4','H5','H6',
+    'BLOCKQUOTE','SECTION','TABLE','THEAD','TBODY','UL','OL','FIGURE','FIGCAPTION','DT','DD',
+    'FOOTER','HEADER','ARTICLE']);
+  const SKIP_CLASSES = ['dorm', 'divider-rooms', 'door', 'room', 'suite-pair'];
+
+  function shouldSkipEl(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (el.getAttribute && el.getAttribute('aria-hidden') === 'true') return true;
+    for (const cls of SKIP_CLASSES) { if (el.classList && el.classList.contains(cls)) return true; }
+    return false;
+  }
+
+  function collectInline(el) {
+    const parts = [];
+    el.childNodes.forEach(node => {
+      if (node.nodeType === 3) {
+        const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+        if (t) parts.push(t);
+      } else if (node.nodeType === 1) {
+        if (shouldSkipEl(node)) return;
+        const inner = collectInline(node);
+        if (inner) parts.push(inner);
+      }
+    });
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function buildContentUnits(root) {
+    const units = [];
+    function walk(el) {
+      if (shouldSkipEl(el)) return;
+      let buffer = [];
+      const flush = () => {
+        const text = buffer.join(' ').replace(/\s+/g, ' ').trim();
+        if (text) units.push({ el, text });
+        buffer = [];
+      };
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+          if (t) buffer.push(t);
+        } else if (node.nodeType === 1) {
+          if (shouldSkipEl(node)) return;
+          if (BLOCK_TAGS.has(node.tagName)) {
+            flush();
+            walk(node);
+          } else {
+            const inner = collectInline(node);
+            if (inner) buffer.push(inner);
+          }
+        }
+      });
+      flush();
+    }
+    walk(root);
+    return units;
+  }
+
+  function initReader() {
+    const roots = [document.querySelector('.hero'), document.querySelector('.wrap')].filter(Boolean);
+    let units = [];
+    roots.forEach(r => { units = units.concat(buildContentUnits(r)); });
+
+    const progressEl = document.getElementById('fr-progress');
+    if (!units.length) { progressEl.textContent = '未找到可朗读内容'; return; }
+
+    const toggleBtn = document.getElementById('fr-toggle');
+    const panel = document.getElementById('fr-panel');
+    const playBtn = document.getElementById('fr-play');
+    const stopBtn = document.getElementById('fr-stop');
+    const barFill = document.getElementById('fr-bar-fill');
+    const rateInput = document.getElementById('fr-rate');
+    const rateVal = document.getElementById('fr-rate-val');
+
+    let playing = false;
+    let currentIdx = -1;
+    let stopRequested = false;
+
+    toggleBtn.addEventListener('click', () => { panel.classList.toggle('open'); });
+    rateInput.addEventListener('input', () => { rateVal.textContent = `${rateInput.value}x`; });
+
+    function updateProgressIdle() {
+      progressEl.textContent = `共 ${units.length} 段`;
+      barFill.style.width = '0%';
+    }
+
+    function updateProgress(idx) {
+      progressEl.textContent = `第 ${idx + 1} / ${units.length} 段`;
+      barFill.style.width = `${((idx + 1) / units.length) * 100}%`;
+    }
+
+    function clearHighlight() {
+      units.forEach(u => u.el.classList.remove('fr-reading'));
+    }
+
+    function speakOne(idx, chainNext) {
+      if (!('speechSynthesis' in window)) { alert('当前浏览器不支持语音朗读'); return; }
+      const item = units[idx];
+      clearHighlight();
+      item.el.classList.add('fr-reading');
+      item.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const spoken = item.text || '';
+      if (!spoken) {
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+        return;
+      }
+
+      const utter = new SpeechSynthesisUtterance(spoken);
+      utter.lang = 'zh-CN';
+      utter.rate = parseFloat(rateInput.value);
+      const voices = window.speechSynthesis.getVoices();
+      const v = voices.find(vv => vv.lang && vv.lang.toLowerCase().startsWith('zh'));
+      if (v) utter.voice = v;
+
+      utter.onend = () => {
+        item.el.classList.remove('fr-reading');
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+      };
+      utter.onerror = () => { if (chainNext) finishPlay(); };
+      window.speechSynthesis.speak(utter);
+    }
+
+    function finishPlay() {
+      playing = false; stopRequested = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      if (recordingActive) stopRecording();
+      releaseWakeLock();
+    }
+
+    function stopAll() {
+      window.speechSynthesis.cancel();
+      stopRequested = true; playing = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      releaseWakeLock();
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (playing) { stopAll(); return; }
+      startFrom(0);
+    });
+
+    // 屏幕唤醒锁：朗读期间尽量阻止系统自动熄屏
+    let wakeLock = null;
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      } catch (e) { /* 静默忽略 */ }
+    }
+    function releaseWakeLock() {
+      if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && playing && !wakeLock) requestWakeLock();
+    });
+
+    function startFrom(idx) {
+      if (playing) stopAll();
+      if (!units.length || idx < 0 || idx >= units.length) return;
+      checkChineseVoice();
+      playing = true; stopRequested = false;
+      playBtn.textContent = '⏸ 朗读中…';
+      currentIdx = idx;
+      updateProgress(currentIdx);
+      requestWakeLock();
+      speakOne(currentIdx, true);
+    }
+
+    let voiceWarned = false;
+    function checkChineseVoice() {
+      if (voiceWarned || !('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return;
+      const hasZh = voices.some(v => v.lang && v.lang.toLowerCase().startsWith('zh'));
+      if (!hasZh) {
+        voiceWarned = true;
+        alert('没检测到设备上的中文语音包，念出来的可能是别的语言。\n\n去 设置 → 语言和输入法 → 文字转语音输出，把引擎设为"Google 文字转语音"，进去下载"中文（中国）"语音包，装完刷新页面重试。');
+      }
+    }
+
+    // 点击任意一段正文，从那一段开始往下连续朗读
+    units.forEach((u, idx) => {
+      u.el.classList.add('fr-clickable');
+      u.el.addEventListener('click', (e) => {
+        const sel = window.getSelection ? window.getSelection().toString() : '';
+        if (sel) return;
+        panel.classList.add('open');
+        startFrom(idx);
+      });
+    });
+
+    stopBtn.addEventListener('click', stopAll);
+    updateProgressIdle();
+
+    // ---------------------------------------------------------------
+    // 免注册方案：录制当前标签页播放的朗读声音，存成音频文件
+    // ---------------------------------------------------------------
+    const recordBtn = document.getElementById('fr-record-btn');
+    const recordStatus = document.getElementById('fr-record-status');
+    const recordDownload = document.getElementById('fr-record-download');
+    const recordPreview = document.getElementById('fr-record-preview');
+
+    let recordingActive = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      recordingActive = false;
+      recordBtn.classList.remove('recording');
+      recordBtn.textContent = '🎙 录制音频文件（免注册）';
+    }
+
+    recordBtn.addEventListener('click', async () => {
+      if (recordingActive) { stopRecording(); recordStatus.textContent = '已手动停止'; return; }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        alert('当前浏览器不支持标签页音频录制，换 Chrome / Edge 试试'); return;
+      }
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      } catch (err) {
+        recordStatus.textContent = '未授权分享，已取消'; return;
+      }
+      const audioTracks = stream.getAudioTracks();
+      stream.getVideoTracks().forEach(t => t.stop());
+      if (!audioTracks.length) {
+        recordStatus.textContent = '没有捕获到音频 —— 分享时要勾选"分享标签页音频"';
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+
+      const audioStream = new MediaStream(audioTracks);
+      recordedChunks = [];
+      try {
+        mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+      } catch (err) {
+        mediaRecorder = new MediaRecorder(audioStream);
+      }
+      mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        audioTracks.forEach(t => t.stop());
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        const ext = (blob.type.indexOf('webm') !== -1) ? 'webm' : 'ogg';
+        recordDownload.href = url;
+        recordDownload.download = '最小多项式_朗读.' + ext;
+        recordDownload.style.display = 'inline-block';
+        recordPreview.src = url;
+        recordPreview.style.display = 'block';
+        recordStatus.textContent = `录制完成，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+      };
+
+      mediaRecorder.start();
+      recordingActive = true;
+      recordBtn.classList.add('recording');
+      recordBtn.textContent = '⏹ 停止录制';
+      recordStatus.textContent = '正在录制…请不要切走这个标签页或静音';
+      recordDownload.style.display = 'none';
+      recordPreview.style.display = 'none';
+
+      if (!playing) playBtn.click();
+    });
+
+    // ---------------------------------------------------------------
+    // 导出 MP3：把正文逐段发给 Azure 语音合成 REST API，拼成一个 MP3 文件
+    // ---------------------------------------------------------------
+    const keyInput = document.getElementById('fr-azure-key');
+    const regionInput = document.getElementById('fr-azure-region');
+    const voiceSelect = document.getElementById('fr-azure-voice');
+    const exportBtn = document.getElementById('fr-export-btn');
+    const exportCancelBtn = document.getElementById('fr-export-cancel');
+    const exportProgress = document.getElementById('fr-export-progress');
+    const downloadLink = document.getElementById('fr-download-link');
+    const audioPreview = document.getElementById('fr-audio-preview');
+
+    try {
+      keyInput.value = localStorage.getItem('fr-azure-key') || '';
+      regionInput.value = localStorage.getItem('fr-azure-region') || 'eastasia';
+      const savedVoice = localStorage.getItem('fr-azure-voice');
+      if (savedVoice) voiceSelect.value = savedVoice;
+    } catch (e) { /* localStorage 不可用则忽略 */ }
+
+    function escapeXml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    }
+
+    async function getAzureToken(key, region) {
+      const resp = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issuetoken`, {
+        method: 'POST',
+        headers: { 'Ocp-Apim-Subscription-Key': key, 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
+      if (!resp.ok) throw new Error(`认证失败（${resp.status}），请检查 Key 和区域是否正确`);
+      return await resp.text();
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function synthesizeOne(token, region, text, voice, rate) {
+      const ratePct = Math.round((rate - 1) * 100);
+      const ssml = `<speak version="1.0" xml:lang="zh-CN"><voice name="${voice}"><prosody rate="${ratePct}%">${escapeXml(text)}</prosody></voice></speak>`;
+      const resp = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/ssml+xml',
+          'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3'
+        },
+        body: ssml
+      });
+      if (!resp.ok) {
+        const errText = await resp.text().catch(() => '');
+        const err = new Error(`合成失败（${resp.status}）${errText.slice(0, 150)}`);
+        err.status = resp.status;
+        err.retryAfter = parseInt(resp.headers.get('Retry-After') || '', 10) || null;
+        throw err;
+      }
+      return await resp.arrayBuffer();
+    }
+
+    async function synthesizeWithRetry(token, region, text, voice, rate, onRetryMsg) {
+      const maxRetries = 5;
+      let attempt = 0;
+      while (true) {
+        try {
+          return await synthesizeOne(token, region, text, voice, rate);
+        } catch (err) {
+          if (err.status === 429 && attempt < maxRetries) {
+            attempt++;
+            const waitMs = err.retryAfter ? err.retryAfter * 1000 : Math.min(2000 * 2 ** (attempt - 1), 20000);
+            onRetryMsg(`触发限流(429)，${Math.round(waitMs / 1000)} 秒后自动重试（第 ${attempt}/${maxRetries} 次）…`);
+            await sleep(waitMs);
+            continue;
+          }
+          throw err;
+        }
+      }
+    }
+
+    let exportCancelled = false;
+
+    exportBtn.addEventListener('click', async () => {
+      const key = keyInput.value.trim();
+      const region = (regionInput.value.trim() || 'eastasia');
+      if (!key) { alert('请先填写 Azure Speech Key'); return; }
+
+      try {
+        localStorage.setItem('fr-azure-key', key);
+        localStorage.setItem('fr-azure-region', region);
+        localStorage.setItem('fr-azure-voice', voiceSelect.value);
+      } catch (e) { /* ignore */ }
+
+      const list = units.filter(it => it.text && it.text.trim());
+      if (!list.length) { alert('没有可朗读的内容'); return; }
+
+      if (playing) stopAll();
+
+      exportCancelled = false;
+      exportBtn.disabled = true;
+      exportBtn.textContent = '生成中…';
+      exportCancelBtn.style.display = 'inline-block';
+      downloadLink.style.display = 'none';
+      audioPreview.style.display = 'none';
+
+      const rate = parseFloat(rateInput.value);
+      const voice = voiceSelect.value;
+      const chunks = [];
+      let token = '', tokenTime = 0;
+
+      try {
+        for (let i = 0; i < list.length; i++) {
+          if (exportCancelled) { exportProgress.textContent = '已取消'; break; }
+          if (!token || Date.now() - tokenTime > 8 * 60 * 1000) {
+            token = await getAzureToken(key, region);
+            tokenTime = Date.now();
+          }
+          exportProgress.textContent = `正在合成第 ${i + 1} / ${list.length} 段…`;
+          const buf = await synthesizeWithRetry(token, region, list[i].text, voice, rate,
+            (msg) => { exportProgress.textContent = msg; });
+          chunks.push(new Uint8Array(buf));
+          if (i < list.length - 1) await sleep(250);
+        }
+
+        if (!exportCancelled && chunks.length) {
+          const blob = new Blob(chunks, { type: 'audio/mpeg' });
+          const url = URL.createObjectURL(blob);
+          downloadLink.href = url;
+          downloadLink.download = '最小多项式_朗读.mp3';
+          downloadLink.style.display = 'inline-block';
+          audioPreview.src = url;
+          audioPreview.style.display = 'block';
+          exportProgress.textContent = `完成，共 ${chunks.length} 段，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+        }
+      } catch (err) {
+        exportProgress.textContent = '出错：' + err.message;
+      } finally {
+        exportBtn.disabled = false;
+        exportBtn.textContent = '生成并下载 MP3';
+        exportCancelBtn.style.display = 'none';
+      }
+    });
+
+    exportCancelBtn.addEventListener('click', () => { exportCancelled = true; });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReader);
+  } else {
+    initReader();
+  }
+})();
+</script>
+
+</body>
+</html>
