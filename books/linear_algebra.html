@@ -4944,6 +4944,20 @@
         <strong>和特征值分解的关系：</strong>特征值分解 $A=P\Lambda P^{-1}$ 只对可对角化的方阵成立，且用的是同一个 $P$（一次换基）；SVD 用两个不同的正交矩阵 $U,V$（进门换一次、出门换一次），对<strong>任意形状、任意矩阵</strong>都成立，是远比特征值分解普适的工具。
       </div>
 
+      <h3 class="part"><span class="tag">直观</span>"一把尺子"和"两把尺子"，到底差在哪</h3>
+      <div class="step">所谓"一个坐标系"还是"两个坐标系"，核心在于：起点和终点，是在同一张地图上看，还是跨越了两张不同的地图。</div>
+
+      <div class="step"><strong>一、一个坐标系（对角化）—— 始终在同一个空间、同一张网格纸上说话。</strong>假设你在一个操场上，操场地面上画好了统一的格子（这就是坐标系）。你站在格子 $(1,2)$ 的位置（输入），向前跳了一步，落在格子 $(3,5)$ 的位置（输出）——测量"跳跃前"和"跳跃后"的，是操场地面上同一套格子，这正是"一个坐标系"的含义。</div>
+      <div class="note">
+        那"换基（对角化）"是什么意思？换基就像是擦掉地面上原有的格子，在同一个操场上重新画了一套倾斜的格子。在这套新格子下，你的起点变成了 $(1.5,0.5)$，终点变成了 $(4,1)$——数字换了，但依然是一套格子贯穿到底，测量起点的和测量终点的，还是同一个坐标网格。
+      </div>
+
+      <div class="step"><strong>二、两个坐标系（SVD）—— 跨越了两个不同空间、两张完全独立的网格纸。</strong>假设你手里拿着一部摄像头（输入空间），连接着一台电视屏幕（输出空间）。输入端：物体在房间里，坐标是按摄像头自己的像素网格（坐标系 $V$）来算的，比如摄像头画面第 $(100,200)$ 像素；输出端：图像处理后投到电视屏幕，坐标是按屏幕自己的像素网格（坐标系 $U$）来算的，比如电视画面第 $(1920,1080)$ 像素。摄像头的网格和电视的网格，天生就是两套独立的系统，维数甚至可以不一样（三维空间里的摄像头，对应的可以是二维屏幕）——你没法拿摄像头上的格子，直接去量电视屏幕上的位置。</div>
+
+      <div class="life">
+        <strong>极简对比：</strong>对角化（一个坐标系）：你在同一个房间里换了一双眼睛去看物体移动前后的位置——起点和终点，共享同一个空间网格。奇异值分解（两个坐标系）：你把房间 A（输入空间）里的物体，映射到了房间 B（输出空间）里——起点在房间 A 的网格里，终点在房间 B 的网格里。这也正是上面"和特征值分解的关系"里说的那句话——SVD 不再要求进门和出门用同一把尺子——最直白的画面。
+      </div>
+
       <h3 class="part"><span class="tag">方法</span>奇异值从哪里来</h3>
       <div class="step">关键在于构造 $A^{\mathrm T}A$（$n$ 阶方阵）。这个矩阵总是<strong>对称且半正定</strong>的（对任意 $x$，$x^{\mathrm T}(A^{\mathrm T}A)x=\|Ax\|^2\ge0$），由第十节谱定理，它必可正交对角化，且特征值都非负。把这些非负特征值记作 $\sigma_1^2\ge\sigma_2^2\ge\cdots\ge0$，开根号就是奇异值 $\sigma_i$；对应的单位特征向量组成的正交基就是 $V$ 的列（叫做<strong>右奇异向量</strong>）。</div>
       <div class="step">$U$ 的列（<strong>左奇异向量</strong>）则由 $u_i=\dfrac{1}{\sigma_i}Av_i$（对 $\sigma_i\neq0$ 的部分）给出，可以验证这样构造出的 $u_i$ 两两正交、且长度为 1。</div>
@@ -5475,8 +5489,17 @@
   .fr-clickable:hover{ background: rgba(201,168,76,0.05); border-radius: 4px; }
   .fr-clickable:active{ background: rgba(201,168,76,0.12); }
 
+  #fr-toggle{
+    position: fixed; right: 18px; bottom: 18px; z-index: 61;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(160deg, var(--gold) 0%, #a5773a 100%);
+    color: #2a2110; border: none; box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+    font-size: 20px; cursor: pointer; display:flex; align-items:center; justify-content:center;
+  }
+  #fr-toggle:active{ transform: scale(0.94); }
+
   #fr-panel{
-    position: fixed; right: 18px; bottom: 18px; z-index: 60;
+    position: fixed; right: 18px; bottom: 82px; z-index: 60;
     background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
     border: 1px solid rgba(201,168,76,0.4);
     border-radius: 10px;
@@ -5485,7 +5508,9 @@
     color: var(--gold-soft);
     font-family: "Helvetica Neue", Arial, sans-serif;
     width: 210px;
+    display: none;
   }
+  #fr-panel.open{ display:block; }
   #fr-panel .fr-title{
     font-size:10.5px; letter-spacing:0.15em; text-transform:uppercase;
     color: var(--gold); margin-bottom:8px;
@@ -5552,9 +5577,10 @@
     margin-top:4px;
   }
   #fr-record-preview{ width:100%; height:32px; margin-top:4px; }
-  @media (max-width: 640px){ #fr-panel{ right:10px; bottom:10px; width:180px; padding:10px 12px; } }
+  @media (max-width: 640px){ #fr-panel{ right:10px; bottom:74px; width:180px; padding:10px 12px; } #fr-toggle{ right:10px; bottom:10px; } }
 </style>
 
+<button id="fr-toggle" title="语音朗读">🔊</button>
 <div id="fr-panel">
   <div class="fr-title">朗读全文 · 含公式</div>
   <div id="fr-mode-row">
@@ -6075,6 +6101,7 @@
       btn.title = '朗读这条公式';
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
+        panel.classList.add('open');
         stopAll();
         setMode('formula');
         currentIdx = idx;
@@ -6089,12 +6116,16 @@
 
     if (!units.length && !formulas.length) { progressEl.textContent = '未找到可朗读内容'; return; }
 
+    const toggleBtn = document.getElementById('fr-toggle');
+    const panel = document.getElementById('fr-panel');
     const playBtn = document.getElementById('fr-play');
     const stopBtn = document.getElementById('fr-stop');
     const barFill = document.getElementById('fr-bar-fill');
     const rateInput = document.getElementById('fr-rate');
     const rateVal = document.getElementById('fr-rate-val');
     const modeBtns = document.querySelectorAll('.fr-mode-btn');
+
+    toggleBtn.addEventListener('click', () => { panel.classList.toggle('open'); });
 
     let mode = 'full'; // 'full' = 全文+公式, 'formula' = 仅公式
     let playing = false;
@@ -6246,6 +6277,7 @@
         if (e.target.closest('.mj-speak-btn')) return;
         const sel = window.getSelection ? window.getSelection().toString() : '';
         if (sel) return;
+        panel.classList.add('open');
         if (mode !== 'full') setMode('full');
         startFrom(idx);
       });
