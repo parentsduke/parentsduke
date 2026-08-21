@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二次型的正定性判别 · 一个对称矩阵，到底是"处处向上凸"还是"歪七扭八"</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101b2d;
+    --navy-deep:#0a121e;
+    --navy-mid:#1c2d47;
+    --gold:#c19a49;
+    --gold-pale:#e8d9ae;
+    --paper:#f8f3e8;
+    --paper-warm:#f2ead9;
+    --ink:#20242c;
+    --ink-soft:#4a5163;
+    --rule:#ddd0a6;
+    --room:#5c6f92;
+    --room-suite:#a5773a;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Serif SC","Songti SC","SimSun",serif;
+    line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- 顶部横幅 ---------- */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse at 82% -10%, rgba(193,154,73,0.16), transparent 55%),
+      linear-gradient(150deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:var(--gold-pale);
+    padding:88px 8vw 64px;
+    overflow:hidden;
+  }
+  .hero .eyebrow{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:12px;
+    letter-spacing:0.4em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 20px;
+  }
+  .hero h1{
+    margin:0;
+    font-size:clamp(30px,4.4vw,46px);
+    font-weight:700;
+    color:#fbf6e9;
+    max-width:16em;
+    letter-spacing:0.01em;
+  }
+  .hero .sub{
+    margin-top:18px;
+    font-family:"Noto Sans SC",sans-serif;
+    font-weight:300;
+    font-size:16px;
+    color:#c3ccdd;
+    max-width:36em;
+  }
+
+  /* 签名视觉：一个圆，经过"转-拉-转"，变成一个椭圆 */
+  .svd-stages{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:46px;
+    flex-wrap:wrap;
+  }
+  .svd-shape{
+    width:50px;height:50px;
+    border:1.5px solid var(--room);
+    border-radius:50%;
+    position:relative;
+    background:rgba(92,111,146,0.12);
+    flex-shrink:0;
+  }
+  .svd-shape::after{
+    content:"";
+    position:absolute;
+    inset:9px;
+    border:1px solid rgba(197,205,224,0.32);
+    border-radius:50%;
+  }
+  .svd-shape.axis::after{
+    border-radius:0;
+    border:none;
+    border-top:1px solid rgba(197,205,224,0.4);
+    border-left:1px solid rgba(197,205,224,0.4);
+    inset:0;
+  }
+  .svd-shape.ellipse{
+    width:76px;height:40px;
+    border-color:var(--room-suite);
+    background:rgba(165,119,58,0.14);
+  }
+  .svd-shape.ellipse::after{ border-radius:50%; }
+  .svd-shape.tilt{ transform:rotate(-24deg); }
+  .svd-arrow{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:16px;
+    color:var(--gold);
+    flex-shrink:0;
+  }
+  .dorm-caption{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    color:#9aa4bb;
+    margin-top:14px;
+  }
+  .dorm-caption b{color:var(--gold-pale);font-weight:500;}
+
+  /* ---------- 正文容器 ---------- */
+  .wrap{
+    max-width:700px;
+    margin:0 auto;
+    padding:0 8vw 120px;
+  }
+  @media (min-width:900px){ .wrap{ padding:0 24px 120px; margin:0 auto; } }
+
+  .stage{
+    margin-top:70px;
+  }
+  .stage-num{
+    font-family:"JetBrains Mono",monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    color:var(--room-suite);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  .stage-num::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg,var(--rule),transparent);
+  }
+  .stage h2{
+    font-size:24px;
+    font-weight:700;
+    margin:0 0 22px;
+    color:var(--navy);
+    letter-spacing:0.01em;
+  }
+  .stage p{
+    margin:0 0 18px;
+    font-size:16.5px;
+    color:var(--ink);
+  }
+  .stage p:last-child{margin-bottom:0;}
+
+  .lede{
+    font-size:19px;
+    color:var(--navy-mid);
+    font-weight:500;
+  }
+  .lede::first-letter{
+    font-size:2.6em;
+    font-weight:700;
+    color:var(--room-suite);
+    float:left;
+    line-height:0.8;
+    margin:6px 8px 0 0;
+  }
+
+  strong{color:var(--navy-mid);font-weight:600;}
+
+  .callout{
+    background:#fffdf7;
+    border:1px solid var(--rule);
+    border-left:3px solid var(--gold);
+    padding:20px 24px;
+    margin:26px 0;
+    font-size:15.5px;
+    color:var(--ink-soft);
+  }
+  .callout .tag{
+    display:inline-block;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#fff;
+    background:var(--room-suite);
+    padding:3px 9px;
+    border-radius:2px;
+    margin-bottom:10px;
+  }
+
+  .analogy{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    background:var(--navy);
+    color:#e6ecf5;
+    padding:26px 26px;
+    margin:30px 0;
+    border-radius:2px;
+  }
+  .analogy .mark{
+    font-family:"Noto Serif SC",serif;
+    font-size:34px;
+    color:var(--gold);
+    line-height:1;
+    flex-shrink:0;
+  }
+  .analogy p{
+    margin:0;
+    font-size:15.5px;
+    color:#dbe2ee;
+  }
+  .analogy strong{color:var(--gold-pale);}
+
+  .divider-rooms{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:8px;
+    margin:56px 0 8px;
+  }
+  .divider-rooms .r{
+    width:16px;height:16px;
+    border:1px solid var(--rule);
+    border-radius:2px;
+  }
+  .divider-rooms .r.suite{border-color:var(--gold);background:rgba(193,154,73,0.14);}
+
+  .key-relation{
+    margin:44px 0;
+    background:var(--navy-deep);
+    border:1px solid rgba(193,154,73,0.35);
+    padding:34px 30px;
+    position:relative;
+  }
+  .key-relation::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg,var(--gold),var(--room-suite),var(--gold));
+  }
+  .key-relation .tag{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 18px;
+  }
+  .key-relation .rows{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .key-relation .row{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    font-family:"Noto Sans SC",sans-serif;
+    flex-wrap:wrap;
+  }
+  .key-relation .term{
+    font-family:"Noto Serif SC",serif;
+    font-weight:700;
+    font-size:17px;
+    color:#fbf6e9;
+    min-width:9.5em;
+  }
+  .key-relation .eq{color:var(--gold);font-size:15px;}
+  .key-relation .meaning{
+    color:#c3ccdd;
+    font-size:14.5px;
+    font-weight:300;
+  }
+  .key-relation .foot{
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid rgba(193,154,73,0.22);
+    font-size:14.5px;
+    color:#aeb8cc;
+  }
+  .key-relation .foot strong{color:var(--gold-pale);}
+
+  .closing{
+    margin-top:76px;
+    padding-top:36px;
+    border-top:1px solid var(--rule);
+  }
+  .closing h2{
+    font-size:22px;
+    color:var(--navy);
+    margin:0 0 18px;
+  }
+  .closing p{font-size:16.5px;}
+
+  footer{
+    text-align:center;
+    padding:40px 8vw 60px;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:#b3a878;
+  }
+
+  @media (max-width:520px){
+    .hero{padding:64px 22px 48px;}
+    .analogy{flex-direction:column;}
+  }
+
+  /* ---------- 应用举例 ---------- */
+  .app-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:8px;
+  }
+  @media (max-width:640px){ .app-grid{ grid-template-columns:1fr; } }
+  .app-card{
+    background:#fffdf7;
+    border:1px solid var(--rule);
+    border-top:3px solid var(--room-suite);
+    padding:20px 22px;
+  }
+  .app-card .app-num{
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    color:var(--room-suite);
+    margin-bottom:8px;
+  }
+  .app-card h3{
+    font-size:16.5px;
+    margin:0 0 10px;
+    color:var(--navy);
+    font-weight:700;
+  }
+  .app-card p{
+    margin:0;
+    font-size:14.5px;
+    color:var(--ink-soft);
+    line-height:1.75;
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <p class="eyebrow">Linear Algebra · 深入讲解</p>
+    <h1>二次型的正定性判别<br>一个对称矩阵，到底是"处处向上凸"还是"歪七扭八"</h1>
+    <p class="sub">不用一个公式，只用语言，把"怎么判断一个二次型永远为正、永远为负，还是忽正忽负"这几件事讲透，以及几种判别法各自的原理。</p>
+
+    <div class="svd-stages" aria-hidden="true">
+      <div class="svd-shape ellipse"></div>
+      <span class="svd-arrow">→</span>
+      <div class="svd-shape"></div>
+      <span class="svd-arrow">→</span>
+      <div class="svd-shape tilt"></div>
+    </div>
+    <p class="dorm-caption"><b>二次型 x*Ax</b>——一个由对称矩阵定的曲面；<b>正定性</b>——曲面是碗形、鞍形还是别的什么；<b>判别法</b>——不用真的画出曲面，也能读出答案</p>
+  </header>
+
+  <main class="wrap">
+    <section class="stage">
+      <p class="lede">二次型是形如 x*Ax（A 为对称矩阵）的一类特殊函数，几何上对应一个由 A 决定的曲面——可能处处向上凸（像碗底），也可能中间凹两边翘（像马鞍）。正定性判别要回答的问题是：不用真的把这个曲面画出来，只看 A 本身，能不能一眼断定这个曲面到底是哪种形状。答案是可以，而且判别的路径还不止一条——从特征值符号，到顺序主子式，到消元过程里主元的正负，几条看似风马牛不相及的路径，其实殊途同归。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">引子 · 什么是二次型，又为什么要关心它的"正定性"</div>
+      <h2>从一元二次函数，到多元的"碗"和"鞍"</h2>
+      <p>最简单的二次型是一元的 ax²——如果 a>0，这是一条开口向上的抛物线，处处非负，只有 x=0 处取到最小值；如果 a<0，方向反过来。多元的情形结构完全类似：给定一个对称矩阵 A，x*Ax 把一个 n 维向量 x 映射成一个标量，这个函数在几何上画出来的曲面，形状完全由 A 的结构决定——可能像一个碗底（正定），可能像倒扣的碗（负定），也可能中间凹两头翘，像一副马鞍（不定）。</p>
+      <p>关心一个二次型是不是"正定"（除了 x=0 之外处处大于零），原因很实际：优化问题里判断一个驻点是极小值还是鞍点，靠的正是黑塞矩阵（二阶导数矩阵）的正定性；统计里协方差矩阵必须正定，否则"方差"这个概念就失去了意义；数值计算里选不选 Cholesky 分解、某些迭代算法能不能保证收敛，前提也都是矩阵正定与否。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">第一步 · 最直接的判据：看特征值的符号</div>
+      <h2>谱定理帮了大忙——正定性直接写在特征值上</h2>
+      <p>前面讲过谱定理：任意实对称矩阵 A 都能被正交矩阵对角化，A ＝ QΛQ*，Λ 的对角线上放着 A 的全部特征值（全是实数）。把这套对角化代入二次型，x*Ax ＝ x*QΛQ*x，令 y ＝ Q*x（y 只是 x 换了一套正交坐标，长度不变），整个式子就化简成 <strong>Σλᵢyᵢ²</strong>——一个"没有交叉项"的纯平方和，每一项前面的系数，恰好就是对应的特征值。</p>
+      <p>这个化简立刻给出了最直接的判据：二次型对所有非零 x 恒为正（正定），当且仅当 A 的全部特征值都为正；恒为负（负定），当且仅当全部特征值都为负；有正有负（不定），对应特征值有正有负；如果有特征值恰好为零、其余同号，则是半正定或半负定，曲面在某个方向上是"平的"。</p>
+      <p>这条判据在理论上极其干净，但实际计算时未必是首选——求全部特征值本身的计算量不小，如果只是想判断"正不正定"这一个是非题，未必需要把每个特征值都精确算出来。</p>
+    </section>
+
+    <div class="divider-rooms" aria-hidden="true">
+      <div class="r"></div><div class="r"></div><div class="r suite"></div><div class="r suite"></div><div class="r"></div>
+    </div>
+
+    <div class="key-relation">
+      <p class="tag">第一条核心结论 · 特征值判别法</p>
+      <div class="rows">
+        <div class="row">
+          <span class="term">正定</span>
+          <span class="eq">＝</span>
+          <span class="meaning">全部特征值 <strong style="color:#fbf6e9;">＞0</strong>，曲面处处向上凸，x*Ax＞0 对所有非零 x 成立。</span>
+        </div>
+        <div class="row">
+          <span class="term">负定</span>
+          <span class="eq">＝</span>
+          <span class="meaning">全部特征值 <strong style="color:#fbf6e9;">＜0</strong>，曲面处处向下凹。</span>
+        </div>
+        <div class="row">
+          <span class="term">不定</span>
+          <span class="eq">＝</span>
+          <span class="meaning">特征值<strong style="color:#fbf6e9;">有正有负</strong>，曲面在不同方向上一半向上一半向下，呈马鞍形。</span>
+        </div>
+        <div class="row">
+          <span class="term">半正定／半负定</span>
+          <span class="eq">＝</span>
+          <span class="meaning">特征值非负（或非正）、但至少有一个<strong style="color:#fbf6e9;">为零</strong>，曲面在某些方向上完全"平掉"。</span>
+        </div>
+      </div>
+      <p class="foot">这条判据把"正定性"这个几何问题，精确翻译成了"特征值符号"这个代数问题——谱定理保证了这个翻译总是成立、没有例外。</p>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">第二步 · 不求特征值也能判断：顺序主子式判据</div>
+      <h2>Sylvester 判据：只看几个行列式的符号</h2>
+      <p>求特征值往往比较费事，而 Sylvester 判据（也叫赫尔维茨判据）提供了一条更省力的路径：把矩阵 A 左上角依次截出 1×1、2×2、……、n×n 的子矩阵（顺序主子式所在的子矩阵），分别算出它们的行列式。判据是：A 正定，当且仅当所有顺序主子式的行列式都<strong>严格为正</strong>；A 负定，当且仅当这些行列式的符号<strong>严格正负交替</strong>（1×1 为负，2×2 为正，3×3 为负……）。</p>
+      <p>这条判据背后的直觉，和消元法有很深的联系：一个矩阵能不能顺利做 Cholesky 分解（不需要选主元），取决于消元过程中每一步的主元是否为正，而每一步的主元，恰好就是相邻两个顺序主子式行列式之比。换句话说，Sylvester 判据本质上是在用一串行列式的比值，间接检验消元过程里主元的符号。</p>
+      <p>需要留意的是，这条判据对"负定"的符号规律容易记错，也对"半正定"这种边界情形不完全适用——如果某个顺序主子式恰好为零，判据本身就失效了，这时候只能退回特征值判据或者更细致的分析。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">第三步 · 顺手可得的判据：能不能做 Cholesky 分解</div>
+      <h2>分解一旦成功，正定性自动就有了答案</h2>
+      <p>前面讲矩阵分解时提到过，Cholesky 分解 A ＝ LL* 只对对称正定矩阵才总能顺利做出来（不需要选主元、主元恒为正）。这意味着反过来也成立：如果尝试对一个对称矩阵做 Cholesky 分解，过程中一路顺利、没有在任何一步碰到非正的主元，这个矩阵就一定是正定的；一旦某一步的主元变成零或负数，分解立刻失败，矩阵也就不是正定的。</p>
+      <p>更常见的实现方式是 LDL 分解（A ＝ LDL*，L 是对角线为 1 的下三角矩阵，D 是对角矩阵）——这个版本不需要开平方，数值上更稳，而且 D 对角线上元素的符号，直接就是正定性判据本身：全部为正对应正定，全部为负对应负定，有正有负对应不定。</p>
+      <p>从工程实现的角度看，这条判据几乎是"免费"的——很多数值库在为了别的目的（比如求解线性方程组）对矩阵做分解时，顺手就能检查出矩阵是不是正定，不需要额外单独跑一次特征值分解或者行列式计算。</p>
+    </section>
+
+    <div class="key-relation">
+      <p class="tag">第二条核心结论 · 三种判别法的对照</p>
+      <div class="rows">
+        <div class="row">
+          <span class="term">特征值判别法</span>
+          <span class="eq">＝</span>
+          <span class="meaning">理论上<strong style="color:#fbf6e9;">最直接</strong>，直接翻译几何直觉，但计算全部特征值代价较高。</span>
+        </div>
+        <div class="row">
+          <span class="term">Sylvester 判据</span>
+          <span class="eq">＝</span>
+          <span class="meaning">只需要计算 n 个行列式，<strong style="color:#fbf6e9;">不需要分解或求特征值</strong>，但对半正定等边界情形不适用。</span>
+        </div>
+        <div class="row">
+          <span class="term">Cholesky／LDL 判据</span>
+          <span class="eq">＝</span>
+          <span class="meaning">借助分解过程<strong style="color:#fbf6e9;">顺手判断</strong>，数值实现里最常用，还能同时得到解方程组所需的分解结果。</span>
+        </div>
+      </div>
+      <p class="foot">三条路径最终给出的都是同一个答案，只是"绕的路"不一样——选哪一条，取决于手头已经有什么、还愿意为"判断正定性"这一件事额外付出多少计算。</p>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">插一句 · 正定性和前面讲过的谱定理、Cholesky 分解是什么关系</div>
+      <h2>正定性其实是把前几篇内容串起来的那根线</h2>
+      <p>谱定理保证了实对称矩阵总能被正交对角化，这是特征值判别法成立的根基；Cholesky 分解则专门为对称正定矩阵准备，是判别法里最省事的一条捷径——某种意义上，"正定性"这个概念，正是谱定理和矩阵分解这两块分开讲的内容，在实际问题里最常碰面的交汇点。</p>
+      <div class="callout">
+        <span class="tag">对照</span>
+        谱定理告诉我们"正交坐标系下二次型没有交叉项"，Sylvester 判据告诉我们"消元过程的主元符号就是答案"，Cholesky 分解则把两者连在了一起——分解成功与否，本质上就是在问"消元能不能一路保持正号地做到底"。
+      </div>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">落地 · 从优化判据，到结构稳定性分析，骨架都是它</div>
+      <h2>"判断曲面是不是处处向上凸"这件事，能派上大用场</h2>
+      <p>正定性判别听起来像是一条纯粹为了给二次型分类而存在的结论，可一旦把它放进具体的计算和工程场景，立刻显出真正的分量——而且因为它精确刻画了"一个二次型有没有唯一的最小值方向"，凡是涉及优化、稳定性、协方差合法性的地方，几乎都绕不开这条结论。</p>
+
+      <div class="app-grid">
+        <div class="app-card">
+          <div class="app-num">01</div>
+          <h3>优化问题里判断极值类型</h3>
+          <p>多元函数在驻点处的黑塞矩阵是正定，该点就是局部极小值；是负定，是局部极大值；是不定，则是鞍点——这是多元微积分和优化理论里判断驻点类型最基础的工具。</p>
+        </div>
+        <div class="app-card">
+          <div class="app-num">02</div>
+          <h3>凸优化的可行性判断</h3>
+          <p>一个二次规划问题是否是凸问题（能不能保证全局最优解唯一可求），直接取决于目标函数里那个二次项对应的矩阵是不是半正定，这是凸优化理论的起点性判据。</p>
+        </div>
+        <div class="app-card">
+          <div class="app-num">03</div>
+          <h3>协方差矩阵的合法性检验</h3>
+          <p>任何一个合法的协方差矩阵都必须是半正定的，否则会推出"某个线性组合的方差为负"这种荒谬结论，金融、统计建模里经常需要检验一份估计出来的协方差矩阵是否满足这一条件。</p>
+        </div>
+        <div class="app-card">
+          <div class="app-num">04</div>
+          <h3>数值算法的收敛性保证</h3>
+          <p>共轭梯度法等迭代算法，只有在系数矩阵正定的前提下才保证收敛，不少数值线性代数库在调用这类算法前，会先做一次快速的正定性检验。</p>
+        </div>
+        <div class="app-card">
+          <div class="app-num">05</div>
+          <h3>机器学习里的凸损失函数设计</h3>
+          <p>许多机器学习模型（如岭回归、支持向量机）的目标函数设计成二次型加正则项，保证这个二次型对应的矩阵正定或半正定，是保证训练过程有唯一解、优化算法能稳定收敛的关键前提。</p>
+        </div>
+        <div class="app-card">
+          <div class="app-num">06</div>
+          <h3>结构力学的稳定性分析</h3>
+          <p>结构系统的势能函数在平衡位置附近展开成二次型，这个二次型对应的刚度矩阵正定，意味着这个平衡位置是稳定的；一旦出现负的特征值，结构就存在会失稳的方向。</p>
+        </div>
+      </div>
+
+      <p style="margin-top:26px;">这六个场景横跨优化理论、凸分析、统计建模、数值算法、机器学习、结构力学，看似互不相干，但拆到底，都只是同一件事的不同应用：<strong>一个对称矩阵的正定性，决定了它对应的二次型是不是"处处只有一个方向能往下走"</strong>。这正是正定性判别真正的分量所在——它把"这个曲面形状好不好"这个几何问题，变成了一个可以直接算出来的代数是非题。</p>
+    </section>
+
+    <section class="stage closing">
+      <h2>为什么正定性判别值得单独讲一遍</h2>
+      <p>正定性判别的意义，不只是"给二次型分了个类"这么简单。它把一个几何直觉——曲面是不是处处向上凸——变成了三条可以互相验证、各有侧重的代数判据，不管手头是想求特征值、算行列式，还是顺手做一次分解，总有一条路径能给出答案。</p>
+      <p>也正因为这几条判据背后共享同一个几何事实，后续大量建立在"这个矩阵到底是不是正定"之上的实际问题——一个驻点是不是极小值、一份协方差矩阵是不是合法、一个迭代算法会不会收敛——最终都可以归结到同一件事：检验一个对称矩阵的正定性，而检验的路径，可以根据手头已有的信息自由切换。</p>
+      <p>说到底，从最初怀疑"怎么判断一个多元二次函数到底是碗形还是鞍形"，到后来发现特征值、顺序主子式、分解主元这三条看似毫不相干的路径其实指向同一个答案，贯穿始终的都是同一个念头：一个几何性质，只要找对了代数上的等价说法，就能不用画图、只靠计算，精确地读出来。</p>
+    </section>
+
+  </main>
+
+
+  <footer>线性代数 · 二次型的正定性判别 · 纯语言讲解</footer>
+
+<style id="reader-style">
+  .fr-reading{
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+    background: rgba(193,154,73,0.09);
+    border-radius: 4px;
+  }
+  .fr-clickable{ cursor: pointer; transition: background 0.15s ease; }
+  .fr-clickable:hover{ background: rgba(193,154,73,0.06); border-radius: 4px; }
+  .fr-clickable:active{ background: rgba(193,154,73,0.12); }
+
+  #fr-toggle{
+    position: fixed; right: 18px; bottom: 18px; z-index: 61;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(160deg, var(--gold) 0%, var(--room-suite) 100%);
+    color: #241d0e; border: none; box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+    font-size: 20px; cursor: pointer; display:flex; align-items:center; justify-content:center;
+  }
+  #fr-toggle:active{ transform: scale(0.94); }
+
+  #fr-panel{
+    position: fixed; right: 18px; bottom: 82px; z-index: 60;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    border: 1px solid rgba(193,154,73,0.4);
+    border-radius: 12px;
+    padding: 14px 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    font-family: "Noto Sans SC", sans-serif;
+    width: 216px;
+    display: none;
+  }
+  #fr-panel.open{ display:block; }
+  #fr-panel .fr-title{
+    font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+    color: var(--gold-pale); margin-bottom:10px; font-weight:500;
+  }
+  #fr-progress{ font-size:12px; color:#c3ccdd; margin-bottom:6px; }
+  #fr-bar-track{ height:4px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden; margin-bottom:11px;}
+  #fr-bar-fill{ height:100%; width:0%; background: var(--gold); transition: width 0.2s ease; }
+  .fr-row{ display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+  #fr-play{
+    flex:1; background: var(--gold); color:#241d0e; border:none;
+    border-radius:6px; padding:9px 10px; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  #fr-stop{
+    background: transparent; border:1px solid rgba(193,154,73,0.5);
+    color: var(--gold-pale); border-radius:6px; padding:9px 11px; font-size:13px; cursor:pointer;
+  }
+  #fr-rate-row{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:#c3ccdd; margin-bottom:2px; }
+  #fr-rate{ flex:1; accent-color: var(--gold); }
+
+  #fr-export{ margin-top:11px; border-top: 1px solid rgba(193,154,73,0.2); padding-top:9px; }
+  #fr-export summary{
+    font-size:11.5px; color: var(--gold-pale); cursor:pointer; list-style:none;
+    display:flex; align-items:center; gap:4px;
+  }
+  #fr-export summary::-webkit-details-marker{ display:none; }
+  #fr-export summary::before{ content:'▸'; color: var(--gold); }
+  #fr-export[open] summary::before{ content:'▾'; }
+  .fr-export-body{ margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+  #fr-export input[type="password"], #fr-export input[type="text"], #fr-export select{
+    background: rgba(0,0,0,0.25); border:1px solid rgba(193,154,73,0.35); color: var(--gold-pale);
+    border-radius:5px; padding:6px 8px; font-size:12px; width:100%;
+  }
+  .fr-row2{ display:flex; gap:6px; }
+  .fr-row2 input{ flex:1.2; }
+  .fr-row2 select{ flex:1; }
+  #fr-export-btn, #fr-export-cancel{
+    background: var(--gold); color:#241d0e; border:none; border-radius:6px;
+    padding:7px 10px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-export-cancel{ background: transparent; border:1px solid rgba(193,154,73,0.5); color: var(--gold-pale); }
+  #fr-export-progress{ font-size:11px; color:#c3ccdd; min-height:14px; }
+  #fr-download-link{
+    display:inline-block; text-align:center; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+  }
+  #fr-audio-preview{ width:100%; height:32px; }
+
+  #fr-record-btn{
+    width:100%; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:9px 10px;
+    font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-record-btn.recording{ background: #b3453f; border-color:#e88a84; color:#fff; }
+  #fr-record-status{ font-size:11px; color:#c3ccdd; min-height:14px; margin-top:4px; }
+  #fr-record-download{
+    display:inline-block; text-align:center; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+    margin-top:4px;
+  }
+  #fr-record-preview{ width:100%; height:32px; margin-top:4px; }
+  @media (max-width: 520px){ #fr-panel{ right:10px; bottom:74px; width:188px; padding:12px 13px; } #fr-toggle{ right:10px; bottom:10px; } }
+</style>
+
+<button id="fr-toggle" title="语音朗读">🔊</button>
+<div id="fr-panel">
+  <div class="fr-title">语音朗读全文</div>
+  <div id="fr-progress">正在扫描内容…</div>
+  <div id="fr-bar-track"><div id="fr-bar-fill"></div></div>
+  <div class="fr-row">
+    <button id="fr-play">▶ 朗读全文</button>
+    <button id="fr-stop">■</button>
+  </div>
+  <div id="fr-rate-row">
+    语速 <input type="range" id="fr-rate" min="0.6" max="1.6" step="0.1" value="0.95"> <span id="fr-rate-val">0.95x</span>
+  </div>
+  <div class="fr-row" style="margin-top:2px;">
+    <button id="fr-record-btn">🎙 录制音频文件（免注册）</button>
+  </div>
+  <div id="fr-record-status"></div>
+  <a id="fr-record-download" style="display:none;">↓ 下载录音</a>
+  <audio id="fr-record-preview" controls style="display:none;"></audio>
+  <details id="fr-export">
+    <summary>高级：导出 MP3（Azure 语音，需注册）</summary>
+    <div class="fr-export-body">
+      <input type="password" id="fr-azure-key" placeholder="Azure Speech Key">
+      <div class="fr-row2">
+        <input type="text" id="fr-azure-region" placeholder="区域 如 eastasia">
+        <select id="fr-azure-voice">
+          <option value="zh-CN-XiaoxiaoNeural">晓晓 女声</option>
+          <option value="zh-CN-YunxiNeural">云希 男声</option>
+          <option value="zh-CN-YunyangNeural">云扬 男声</option>
+        </select>
+      </div>
+      <button id="fr-export-btn">生成并下载 MP3</button>
+      <button id="fr-export-cancel" style="display:none;">取消</button>
+      <div id="fr-export-progress"></div>
+      <a id="fr-download-link" style="display:none;">↓ 下载 MP3</a>
+      <audio id="fr-audio-preview" controls style="display:none;"></audio>
+    </div>
+  </details>
+</div>
+
+<script id="reader-script">
+(function () {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function () {};
+  }
+
+  // ---------------------------------------------------------------
+  // 本页是纯语言讲解、不含公式，朗读逻辑比线代讲义那份简化很多，与"奇异值分解"一篇一致：
+  // 只需要把正文按"段落/最小可读块"切开，逐块喂给浏览器自带的语音引擎。
+  // ---------------------------------------------------------------
+  const BLOCK_TAGS = new Set(['DIV','P','LI','TD','TH','TR','H1','H2','H3','H4','H5','H6',
+    'BLOCKQUOTE','SECTION','TABLE','THEAD','TBODY','UL','OL','FIGURE','FIGCAPTION','DT','DD',
+    'FOOTER','HEADER','ARTICLE']);
+  const SKIP_CLASSES = ['dorm', 'divider-rooms', 'door', 'room', 'suite-pair'];
+
+  function shouldSkipEl(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (el.getAttribute && el.getAttribute('aria-hidden') === 'true') return true;
+    for (const cls of SKIP_CLASSES) { if (el.classList && el.classList.contains(cls)) return true; }
+    return false;
+  }
+
+  function collectInline(el) {
+    const parts = [];
+    el.childNodes.forEach(node => {
+      if (node.nodeType === 3) {
+        const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+        if (t) parts.push(t);
+      } else if (node.nodeType === 1) {
+        if (shouldSkipEl(node)) return;
+        const inner = collectInline(node);
+        if (inner) parts.push(inner);
+      }
+    });
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function buildContentUnits(root) {
+    const units = [];
+    function walk(el) {
+      if (shouldSkipEl(el)) return;
+      let buffer = [];
+      const flush = () => {
+        const text = buffer.join(' ').replace(/\s+/g, ' ').trim();
+        if (text) units.push({ el, text });
+        buffer = [];
+      };
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+          if (t) buffer.push(t);
+        } else if (node.nodeType === 1) {
+          if (shouldSkipEl(node)) return;
+          if (BLOCK_TAGS.has(node.tagName)) {
+            flush();
+            walk(node);
+          } else {
+            const inner = collectInline(node);
+            if (inner) buffer.push(inner);
+          }
+        }
+      });
+      flush();
+    }
+    walk(root);
+    return units;
+  }
+
+  function initReader() {
+    const roots = [document.querySelector('.hero'), document.querySelector('.wrap')].filter(Boolean);
+    let units = [];
+    roots.forEach(r => { units = units.concat(buildContentUnits(r)); });
+
+    const progressEl = document.getElementById('fr-progress');
+    if (!units.length) { progressEl.textContent = '未找到可朗读内容'; return; }
+
+    const toggleBtn = document.getElementById('fr-toggle');
+    const panel = document.getElementById('fr-panel');
+    const playBtn = document.getElementById('fr-play');
+    const stopBtn = document.getElementById('fr-stop');
+    const barFill = document.getElementById('fr-bar-fill');
+    const rateInput = document.getElementById('fr-rate');
+    const rateVal = document.getElementById('fr-rate-val');
+
+    let playing = false;
+    let currentIdx = -1;
+    let stopRequested = false;
+
+    toggleBtn.addEventListener('click', () => { panel.classList.toggle('open'); });
+    rateInput.addEventListener('input', () => { rateVal.textContent = `${rateInput.value}x`; });
+
+    function updateProgressIdle() {
+      progressEl.textContent = `共 ${units.length} 段`;
+      barFill.style.width = '0%';
+    }
+
+    function updateProgress(idx) {
+      progressEl.textContent = `第 ${idx + 1} / ${units.length} 段`;
+      barFill.style.width = `${((idx + 1) / units.length) * 100}%`;
+    }
+
+    function clearHighlight() {
+      units.forEach(u => u.el.classList.remove('fr-reading'));
+    }
+
+    function speakOne(idx, chainNext) {
+      if (!('speechSynthesis' in window)) { alert('当前浏览器不支持语音朗读'); return; }
+      const item = units[idx];
+      clearHighlight();
+      item.el.classList.add('fr-reading');
+      item.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const spoken = item.text || '';
+      if (!spoken) {
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+        return;
+      }
+
+      const utter = new SpeechSynthesisUtterance(spoken);
+      utter.lang = 'zh-CN';
+      utter.rate = parseFloat(rateInput.value);
+      const voices = window.speechSynthesis.getVoices();
+      const v = voices.find(vv => vv.lang && vv.lang.toLowerCase().startsWith('zh'));
+      if (v) utter.voice = v;
+
+      utter.onend = () => {
+        item.el.classList.remove('fr-reading');
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+      };
+      utter.onerror = () => { if (chainNext) finishPlay(); };
+      window.speechSynthesis.speak(utter);
+    }
+
+    function finishPlay() {
+      playing = false; stopRequested = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      if (recordingActive) stopRecording();
+      releaseWakeLock();
+    }
+
+    function stopAll() {
+      window.speechSynthesis.cancel();
+      stopRequested = true; playing = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      releaseWakeLock();
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (playing) { stopAll(); return; }
+      startFrom(0);
+    });
+
+    // 屏幕唤醒锁：朗读期间尽量阻止系统自动熄屏
+    let wakeLock = null;
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      } catch (e) { /* 静默忽略 */ }
+    }
+    function releaseWakeLock() {
+      if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && playing && !wakeLock) requestWakeLock();
+    });
+
+    function startFrom(idx) {
+      if (playing) stopAll();
+      if (!units.length || idx < 0 || idx >= units.length) return;
+      checkChineseVoice();
+      playing = true; stopRequested = false;
+      playBtn.textContent = '⏸ 朗读中…';
+      currentIdx = idx;
+      updateProgress(currentIdx);
+      requestWakeLock();
+      speakOne(currentIdx, true);
+    }
+
+    let voiceWarned = false;
+    function checkChineseVoice() {
+      if (voiceWarned || !('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return;
+      const hasZh = voices.some(v => v.lang && v.lang.toLowerCase().startsWith('zh'));
+      if (!hasZh) {
+        voiceWarned = true;
+        alert('没检测到设备上的中文语音包，念出来的可能是别的语言。\n\n去 设置 → 语言和输入法 → 文字转语音输出，把引擎设为"Google 文字转语音"，进去下载"中文（中国）"语音包，装完刷新页面重试。');
+      }
+    }
+
+    // 点击任意一段正文，从那一段开始往下连续朗读
+    units.forEach((u, idx) => {
+      u.el.classList.add('fr-clickable');
+      u.el.addEventListener('click', (e) => {
+        const sel = window.getSelection ? window.getSelection().toString() : '';
+        if (sel) return;
+        panel.classList.add('open');
+        startFrom(idx);
+      });
+    });
+
+    stopBtn.addEventListener('click', stopAll);
+    updateProgressIdle();
+
+    // ---------------------------------------------------------------
+    // 免注册方案：录制当前标签页播放的朗读声音，存成音频文件
+    // ---------------------------------------------------------------
+    const recordBtn = document.getElementById('fr-record-btn');
+    const recordStatus = document.getElementById('fr-record-status');
+    const recordDownload = document.getElementById('fr-record-download');
+    const recordPreview = document.getElementById('fr-record-preview');
+
+    let recordingActive = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      recordingActive = false;
+      recordBtn.classList.remove('recording');
+      recordBtn.textContent = '🎙 录制音频文件（免注册）';
+    }
+
+    recordBtn.addEventListener('click', async () => {
+      if (recordingActive) { stopRecording(); recordStatus.textContent = '已手动停止'; return; }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        alert('当前浏览器不支持标签页音频录制，换 Chrome / Edge 试试'); return;
+      }
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      } catch (err) {
+        recordStatus.textContent = '未授权分享，已取消'; return;
+      }
+      const audioTracks = stream.getAudioTracks();
+      stream.getVideoTracks().forEach(t => t.stop());
+      if (!audioTracks.length) {
+        recordStatus.textContent = '没有捕获到音频 —— 分享时要勾选"分享标签页音频"';
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+
+      const audioStream = new MediaStream(audioTracks);
+      recordedChunks = [];
+      try {
+        mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+      } catch (err) {
+        mediaRecorder = new MediaRecorder(audioStream);
+      }
+      mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        audioTracks.forEach(t => t.stop());
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        const ext = (blob.type.indexOf('webm') !== -1) ? 'webm' : 'ogg';
+        recordDownload.href = url;
+        recordDownload.download = '二次型正定性_朗读.' + ext;
+        recordDownload.style.display = 'inline-block';
+        recordPreview.src = url;
+        recordPreview.style.display = 'block';
+        recordStatus.textContent = `录制完成，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+      };
+
+      mediaRecorder.start();
+      recordingActive = true;
+      recordBtn.classList.add('recording');
+      recordBtn.textContent = '⏹ 停止录制';
+      recordStatus.textContent = '正在录制…请不要切走这个标签页或静音';
+      recordDownload.style.display = 'none';
+      recordPreview.style.display = 'none';
+
+      if (!playing) playBtn.click();
+    });
+
+    // ---------------------------------------------------------------
+    // 导出 MP3：把正文逐段发给 Azure 语音合成 REST API，拼成一个 MP3 文件
+    // ---------------------------------------------------------------
+    const keyInput = document.getElementById('fr-azure-key');
+    const regionInput = document.getElementById('fr-azure-region');
+    const voiceSelect = document.getElementById('fr-azure-voice');
+    const exportBtn = document.getElementById('fr-export-btn');
+    const exportCancelBtn = document.getElementById('fr-export-cancel');
+    const exportProgress = document.getElementById('fr-export-progress');
+    const downloadLink = document.getElementById('fr-download-link');
+    const audioPreview = document.getElementById('fr-audio-preview');
+
+    try {
+      keyInput.value = localStorage.getItem('fr-azure-key') || '';
+      regionInput.value = localStorage.getItem('fr-azure-region') || 'eastasia';
+      const savedVoice = localStorage.getItem('fr-azure-voice');
+      if (savedVoice) voiceSelect.value = savedVoice;
+    } catch (e) { /* localStorage 不可用则忽略 */ }
+
+    function escapeXml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    }
+
+    async function getAzureToken(key, region) {
+      const resp = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issuetoken`, {
+        method: 'POST',
+        headers: { 'Ocp-Apim-Subscription-Key': key, 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
+      if (!resp.ok) throw new Error(`认证失败（${resp.status}），请检查 Key 和区域是否正确`);
+      return await resp.text();
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function synthesizeOne(token, region, text, voice, rate) {
+      const ratePct = Math.round((rate - 1) * 100);
+      const ssml = `<speak version="1.0" xml:lang="zh-CN"><voice name="${voice}"><prosody rate="${ratePct}%">${escapeXml(text)}</prosody></voice></speak>`;
+      const resp = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/ssml+xml',
+          'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3'
+        },
+        body: ssml
+      });
+      if (!resp.ok) {
+        const errText = await resp.text().catch(() => '');
+        const err = new Error(`合成失败（${resp.status}）${errText.slice(0, 150)}`);
+        err.status = resp.status;
+        err.retryAfter = parseInt(resp.headers.get('Retry-After') || '', 10) || null;
+        throw err;
+      }
+      return await resp.arrayBuffer();
+    }
+
+    async function synthesizeWithRetry(token, region, text, voice, rate, onRetryMsg) {
+      const maxRetries = 5;
+      let attempt = 0;
+      while (true) {
+        try {
+          return await synthesizeOne(token, region, text, voice, rate);
+        } catch (err) {
+          if (err.status === 429 && attempt < maxRetries) {
+            attempt++;
+            const waitMs = err.retryAfter ? err.retryAfter * 1000 : Math.min(2000 * 2 ** (attempt - 1), 20000);
+            onRetryMsg(`触发限流(429)，${Math.round(waitMs / 1000)} 秒后自动重试（第 ${attempt}/${maxRetries} 次）…`);
+            await sleep(waitMs);
+            continue;
+          }
+          throw err;
+        }
+      }
+    }
+
+    let exportCancelled = false;
+
+    exportBtn.addEventListener('click', async () => {
+      const key = keyInput.value.trim();
+      const region = (regionInput.value.trim() || 'eastasia');
+      if (!key) { alert('请先填写 Azure Speech Key'); return; }
+
+      try {
+        localStorage.setItem('fr-azure-key', key);
+        localStorage.setItem('fr-azure-region', region);
+        localStorage.setItem('fr-azure-voice', voiceSelect.value);
+      } catch (e) { /* ignore */ }
+
+      const list = units.filter(it => it.text && it.text.trim());
+      if (!list.length) { alert('没有可朗读的内容'); return; }
+
+      if (playing) stopAll();
+
+      exportCancelled = false;
+      exportBtn.disabled = true;
+      exportBtn.textContent = '生成中…';
+      exportCancelBtn.style.display = 'inline-block';
+      downloadLink.style.display = 'none';
+      audioPreview.style.display = 'none';
+
+      const rate = parseFloat(rateInput.value);
+      const voice = voiceSelect.value;
+      const chunks = [];
+      let token = '', tokenTime = 0;
+
+      try {
+        for (let i = 0; i < list.length; i++) {
+          if (exportCancelled) { exportProgress.textContent = '已取消'; break; }
+          if (!token || Date.now() - tokenTime > 8 * 60 * 1000) {
+            token = await getAzureToken(key, region);
+            tokenTime = Date.now();
+          }
+          exportProgress.textContent = `正在合成第 ${i + 1} / ${list.length} 段…`;
+          const buf = await synthesizeWithRetry(token, region, list[i].text, voice, rate,
+            (msg) => { exportProgress.textContent = msg; });
+          chunks.push(new Uint8Array(buf));
+          if (i < list.length - 1) await sleep(250);
+        }
+
+        if (!exportCancelled && chunks.length) {
+          const blob = new Blob(chunks, { type: 'audio/mpeg' });
+          const url = URL.createObjectURL(blob);
+          downloadLink.href = url;
+          downloadLink.download = '二次型正定性_朗读.mp3';
+          downloadLink.style.display = 'inline-block';
+          audioPreview.src = url;
+          audioPreview.style.display = 'block';
+          exportProgress.textContent = `完成，共 ${chunks.length} 段，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+        }
+      } catch (err) {
+        exportProgress.textContent = '出错：' + err.message;
+      } finally {
+        exportBtn.disabled = false;
+        exportBtn.textContent = '生成并下载 MP3';
+        exportCancelBtn.style.display = 'none';
+      }
+    });
+
+    exportCancelBtn.addEventListener('click', () => { exportCancelled = true; });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReader);
+  } else {
+    initReader();
+  }
+})();
+</script>
+
+</body>
+</html>
