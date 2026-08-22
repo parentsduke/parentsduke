@@ -1,317 +1,162 @@
-import os, re, time, requests, feedparser
-from datetime import datetime
+"""
+美股每日动态生成脚本
+用法：
+  python generate_stocks.py premarket   # 盘前预览（美东时间早上8点，美股开盘前）
+  python generate_stocks.py close       # 收盘总结（美东时间下午5点，美股收盘后）
+
+时间对齐说明：
+  美东时间有夏令时（EDT/EST差1小时），GitHub Actions的cron只能写UTC，
+  没法直接跟着DST自动漂移。所以做法是：workflow在UTC 12:00/13:00（覆盖
+  premarket两种时区可能性）和 21:00/22:00（覆盖close两种时区可能性）各跑一次，
+  脚本自己用 zoneinfo 换算出当前的美东时间，只有真正等于目标小时（8点/17点）
+  才会真正生成和提交，另外两次会直接跳过退出——这样无论现在是EST还是EDT，
+  实际生效的那一次都会准时落在美东8am/5pm，不用手动改cron。
+
+与 generate_daily.py 保持一致的约定：
+  - AI 调用复用同一套 GEMINI_API_KEY（Google AI Studio 的免费 key），
+    失败自动降级到 Groq/OpenRouter/Cerebras/Mistral（如果配置了对应 secret，没配就跳过）。
+  - 输出直接写回 market.html 里对应 id 的 <div>，用正则替换，不改动页面其余部分。
+
+行情数据来源：Yahoo Finance 的 chart API（query1.finance.yahoo.com），
+不需要 API key，免费无限制（有礼貌地控制并发/频率即可）。
+"""
+import os, re, sys, time, json
+import requests
+import feedparser
+from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
+from concurrent.futures import ThreadPoolExecutor
+
+ET = ZoneInfo('America/New_York')
+TARGET_HOUR = {'premarket': 8, 'close': 17}  # 美东时间目标小时
 
 GEMINI_KEY     = os.environ.get('GEMINI_API_KEY', '')
-RESEND_KEY     = os.environ.get('RESEND_API_KEY', '')
-EMAIL_TO       = 'weihong_j@yahoo.com'
-EMAIL_FROM     = 'stocks@dukeparents.org'
 GROQ_KEY       = os.environ.get('GROQ_API_KEY', '')
 OPENROUTER_KEY = os.environ.get('OPENROUTER_API_KEY', '')
+CEREBRAS_KEY   = os.environ.get('CEREBRAS_API_KEY', '')
+MISTRAL_KEY    = os.environ.get('MISTRAL_API_KEY', '')
+BREVO_KEY      = os.environ.get('BREVO_API_KEY', '')
+RESEND_KEY     = os.environ.get('RESEND_API_KEY', '')
+SUPABASE_URL   = os.environ.get('SUPABASE_URL', '')
+SUPABASE_KEY   = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
+EMAIL_FROM     = 'daily@dukeparents.org'
+SITE_URL       = 'https://dukeparents.org'
+
+HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                         'AppleWebKit/537.36 (KHTML, like Gecko) '
+                         'Chrome/124.0.0.0 Safari/537.36'}
+
+PAGE_FILE = 'market.html'
 
 # ══════════════════════════════════════════════════════════════
-#  行情配置（按需增减）
+#  财经新闻抓取（Google News RSS，和 generate_daily.py 的 fetch_rss 同一套路子）
 # ══════════════════════════════════════════════════════════════
-TICKERS = {
-    'us_indices': [
-        ('^GSPC',  'S&P 500'),
-        ('^IXIC',  '纳斯达克'),
-        ('^DJI',   '道琼斯'),
-        ('^RUT',   '罗素2000'),
-        ('^VIX',   'VIX恐慌指数'),
-    ],
-    'us_stocks': [
-        ('AAPL',  'Apple'),
-        ('NVDA',  'NVIDIA'),
-        ('TSLA',  'Tesla'),
-        ('MSFT',  'Microsoft'),
-        ('GOOGL', 'Google'),
-        ('AMZN',  'Amazon'),
-        ('META',  'Meta'),
-        ('LLY',   'Eli Lilly'),
-    ],
-    'futures': [
-        ('ES=F',  'S&P 500期货'),
-        ('YM=F',  '道琼斯期货'),
-        ('NQ=F',  '纳斯达克期货'),
-        ('RTY=F', '罗素2000期货'),
-    ],
-    'hk': [
-        ('^HSI',  '恒生指数'),
-    ],
-    'asia_europe': [
-        ('^N225',  '日经225'),
-        ('^KS11',  '韩国KOSPI'),
-        ('^STOXX50E', '欧元区STOXX50'),
-        ('^FTSE',  '英国富时100'),
-    ],
-    'china': [
-        ('000001.SS', '上证综指'),
-        ('399001.SZ', '深证成指'),
-        ('000300.SS', '沪深300'),
-    ],
-    'fx': [
-        ('USDCNY=X', 'USD/CNY'),
-        ('USDHKD=X', 'USD/HKD'),
-        ('EURUSD=X', 'EUR/USD'),
-        ('USDJPY=X', 'USD/JPY'),
-    ],
-    'commodities': [
-        ('GC=F',    '黄金'),
-        ('CL=F',    '原油'),
-        ('SI=F',    '白银'),
-    ],
-    'crypto': [
-        ('BTC-USD', 'Bitcoin'),
-    ],
-    'bonds': [
-        ('^TNX',  '10年期美债收益率'),
-        ('^TYX',  '30年期美债收益率'),
-        ('^SP600','S&P 600小盘股'),
-        ('^FVX',  '5年期美债收益率'),
-    ],
-    'ai_tech': [
-        ('PLTR',  'Palantir'),
-        ('AMD',   'AMD'),
-        ('AVGO',  'Broadcom'),
-    ],
-    'mutual_funds': [
-        ('VIEIX', 'Vanguard 扩展市场'),
-        ('VPMAX', 'Vanguard 优质股票'),
-        ('VFTNX', 'Vanguard 联邦货币'),
-        ('VINIX', 'Vanguard 机构指数'),
-        ('VGELX', 'Vanguard 能源基金'),
-        ('BTSMX', 'BTC 全市场'),
-        ('VTSNX', 'Vanguard 全球股票'),
-        ('PTTRX', 'PIMCO 债券基金'),
-        ('DHLYX', 'DoubleLine 贷款'),
-        ('PIRMX', 'PIMCO 房产基金'),
-        ('VWENX', 'Vanguard 惠灵顿'),
-        ('VSVNX', 'Vanguard 2065目标'),
-        ('VGHAX', 'Vanguard 医疗基金'),
-    ],
+_BARE_AMP_RE = re.compile(r'&(?!#\d+;|#x[0-9a-fA-F]+;|[a-zA-Z]+;)')
+_XML_INVALID_CTRL_RE = re.compile(r'[\x00-\x08\x0B\x0C\x0E-\x1F]')
+
+def _sanitize_xml_text(text):
+    text = _XML_INVALID_CTRL_RE.sub('', text)
+    return _BARE_AMP_RE.sub('&amp;', text)
+
+NEWS_QUERY = {
+    'close':     'US stock market close Dow S%26P Nasdaq today',
+    'premarket': 'US stock futures premarket today',
+}
+
+def fetch_news_headlines(mode, max_items=8):
+    q = NEWS_QUERY[mode]
+    url = f'https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en'
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=15)
+        cleaned = _sanitize_xml_text(r.text)
+        feed = feedparser.parse(cleaned)
+        items = []
+        for e in feed.entries[:max_items]:
+            title = getattr(e, 'title', '').strip()
+            if title:
+                items.append(title)
+        return items
+    except Exception as ex:
+        print(f'  新闻抓取失败: {ex}')
+        return []
+
+def format_news_text(headlines):
+    if not headlines:
+        return '（今日暂未抓取到相关新闻标题）'
+    return '\n'.join(f'- {h}' for h in headlines)
+
+# ══════════════════════════════════════════════════════════════
+#  行情标的
+# ══════════════════════════════════════════════════════════════
+# 收盘总结：三大指数 + 11个SPDR板块ETF（覆盖"各板块"）
+INDEX_SYMBOLS = {
+    '^DJI':  '道琼斯指数',
+    '^GSPC': '标普500',
+    '^IXIC': '纳斯达克综合指数',
+}
+SECTOR_SYMBOLS = {
+    'XLK':  '科技',
+    'XLF':  '金融',
+    'XLV':  '医疗保健',
+    'XLE':  '能源',
+    'XLY':  '非必需消费品',
+    'XLP':  '日常消费品',
+    'XLI':  '工业',
+    'XLB':  '原材料',
+    'XLU':  '公用事业',
+    'XLRE': '房地产',
+    'XLC':  '通讯服务',
+}
+# 盘前预览：期货（美股未开盘时指数本身没有实时价，用期货代替）
+FUTURES_SYMBOLS = {
+    'YM=F': '道指期货',
+    'ES=F': '标普期货',
+    'NQ=F': '纳指期货',
 }
 
 # ══════════════════════════════════════════════════════════════
-#  新闻 RSS 源
-# ══════════════════════════════════════════════════════════════
-NEWS_FEEDS = [
-    # 美国
-    ('Reuters',      'https://feeds.reuters.com/reuters/businessNews'),
-    ('MarketWatch',  'https://feeds.marketwatch.com/marketwatch/topstories/'),
-    ('Yahoo金融',    'https://finance.yahoo.com/news/rssindex'),
-    ('Bloomberg',    'https://feeds.bloomberg.com/markets/news.rss'),
-    # 欧洲
-    ('FT',           'https://www.ft.com/rss/home/uk'),
-    ('Reuters欧洲',  'https://feeds.reuters.com/reuters/EuropeanBusiness'),
-    # 亚洲
-    ('Reuters亚洲',  'https://feeds.reuters.com/reuters/AsianBusinessNews'),
-    ('日经英文',     'https://asia.nikkei.com/rss/feed/nar'),
-    ('南华早报',     'https://www.scmp.com/rss/92/feed'),
-    # 中国经济
-    ('新华财经',     'http://www.xinhuanet.com/fortune/news_fortune.xml'),
-    # 国际时事
-    ('BBC',          'http://feeds.bbci.co.uk/news/world/rss.xml'),
-    ('CNN',          'http://rss.cnn.com/rss/edition_world.rss'),
-    ('AP',           'https://feeds.apnews.com/rss/apf-topnews'),
-    # 科技
-    ('TechCrunch',   'https://techcrunch.com/feed/'),
-    ('The Verge',    'https://www.theverge.com/rss/index.xml'),
-]
-
-HEADERS = {'User-Agent': 'Mozilla/5.0 (compatible; StocksBot/1.0)'}
-
-# ══════════════════════════════════════════════════════════════
-#  抓取行情（Yahoo Finance）
+#  行情抓取（Yahoo Finance chart API，免key）
 # ══════════════════════════════════════════════════════════════
 def fetch_quote(symbol):
-    url = f'https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=5d'
+    url = f'https://query1.finance.yahoo.com/v8/finance/chart/{symbol}'
     try:
-        r = requests.get(url, headers=HEADERS, timeout=10)
+        r = requests.get(url, headers=HEADERS, params={'interval': '1d', 'range': '5d'}, timeout=15)
         data = r.json()
-        result = data['chart']['result'][0]
-        meta   = result['meta']
-        market_state = meta.get('marketState', 'CLOSED')
-
-        # 从 OHLC 历史取最近两根K线收盘价
-        closes = result.get('indicators', {}).get('quote', [{}])[0].get('close', [])
-        closes = [c for c in closes if c is not None]
-
-        if len(closes) >= 2:
-            # 前收：倒数第二根K线（历史已成交，永不变）
-            prev  = closes[-2]
-            # 收盘价：倒数第一根K线（收盘后写入，盘中/盘前用meta的regularMarketPrice）
-            price = closes[-1] if market_state in ('CLOSED', 'POST') else meta.get('regularMarketPrice', closes[-1])
-        else:
-            prev  = meta.get('regularMarketPreviousClose', 0)
-            price = meta.get('regularMarketPrice', 0)
-
-        chg = price - prev
-        pct = (chg / prev * 100) if prev else 0
-
-        # 盘前/盘后扩展行（相对当日收盘的变化）
-        if market_state == 'POST':
-            ext_price = meta.get('postMarketPrice')
-            ext_chg   = meta.get('postMarketChange')
-            ext_pct_r = meta.get('postMarketChangePercent')
-            ext_label = '盘后'
-        elif market_state == 'PRE':
-            ext_price = meta.get('preMarketPrice')
-            ext_chg   = meta.get('preMarketChange')
-            ext_pct_r = meta.get('preMarketChangePercent')
-            ext_label = '盘前'
-        else:
-            ext_price = ext_chg = ext_pct_r = ext_label = None
-
-        return {
-            'symbol':       symbol,
-            'price':        price,
-            'prev_close':   prev,
-            'change':       chg,
-            'change_pct':   pct,
-            'currency':     meta.get('currency', 'USD'),
-            'market_state': market_state,
-            'ext_price':    ext_price,
-            'ext_chg':      ext_chg,
-            'ext_pct':      (ext_pct_r * 100) if ext_pct_r else None,
-            'ext_label':    ext_label,
-        }
-    except Exception as ex:
-        print(f'  抓取失败 {symbol}: {ex}')
-        return None
-
-def fetch_dji_from_stooq():
-    """从 stooq.com 抓道琼斯准确收盘数据"""
-    try:
-        url = 'https://stooq.com/q/d/l/?s=%5Edji&i=d'
-        r = requests.get(url, headers=HEADERS, timeout=10)
-        lines = r.text.strip().split('\n')
-        if len(lines) < 3:
+        meta = data['chart']['result'][0]['meta']
+        price = meta.get('regularMarketPrice')
+        prev  = meta.get('previousClose') or meta.get('chartPreviousClose')
+        if price is None or prev is None:
             return None
-        def parse_row(line):
-            parts = line.split(',')
-            return float(parts[4])
-        price = parse_row(lines[-1])
-        prev  = parse_row(lines[-2])
-        chg   = price - prev
-        pct   = (chg / prev * 100) if prev else 0
-        print(f'  stooq ^DJI: price={price} prev={prev} pct={pct:.2f}%')
-        return {
-            'symbol':       '^DJI',
-            'price':        price,
-            'prev_close':   prev,
-            'change':       chg,
-            'change_pct':   pct,
-            'currency':     'USD',
-            'market_state': 'CLOSED',
-            'ext_price':    None,
-            'ext_chg':      None,
-            'ext_pct':      None,
-            'ext_label':    None,
-        }
+        pct = (price - prev) / prev * 100
+        return {'symbol': symbol, 'price': price, 'prev': prev, 'pct': pct}
     except Exception as ex:
-        print(f'  stooq ^DJI 失败: {ex}')
+        print(f'  行情抓取失败 {symbol}: {ex}')
         return None
 
-def fetch_all_quotes():
-    results = {}
-    # 抓取中行汇率
-    boc = fetch_boc_rates()
-    results['boc_rates'] = boc
-    # 先用stooq抓准确的道琼斯数据
-    dji_stooq = fetch_dji_from_stooq()
-    for group, items in TICKERS.items():
-        results[group] = []
-        for symbol, label in items:
-            q = fetch_quote(symbol)
+def fetch_all(symbol_map, max_workers=8):
+    out = {}
+    with ThreadPoolExecutor(max_workers=max_workers) as ex:
+        futs = {ex.submit(fetch_quote, sym): sym for sym in symbol_map}
+        for fut in futs:
+            sym = futs[fut]
+            q = fut.result()
             if q:
-                q['label'] = label
-                # 用stooq的准确数据覆盖道琼斯
-                if symbol == '^DJI' and dji_stooq:
-                    dji_stooq['label'] = label
-                    q = dji_stooq
-                results[group].append(q)
-                print(f'  ✓ {symbol}: {q["price"]:.4g} ({q["change_pct"]:+.2f}%)')
-            time.sleep(0.3)
-    return results
+                q['name'] = symbol_map[sym]
+                out[sym] = q
+    return out
 
-
-# ══════════════════════════════════════════════════════════════
-#  中国银行美元汇率
-# ══════════════════════════════════════════════════════════════
-def fetch_boc_rates():
-    """抓取中国银行当日美元汇率（现汇买入、现汇卖出、中间价）"""
-    try:
-        url = 'https://srh.bankofchina.com/search/whpj/search_cn.jsp'
-        payload = {
-            'erectDate': '',
-            'nothing':   '',
-            'pjname':    '美元',
-        }
-        r = requests.post(url, data=payload, headers=HEADERS, timeout=10)
-        r.encoding = 'utf-8'
-        from html.parser import HTMLParser
-
-        class RateParser(HTMLParser):
-            def __init__(self):
-                super().__init__()
-                self.in_td = False
-                self.cells = []
-                self.current = ''
-            def handle_starttag(self, tag, attrs):
-                if tag == 'td':
-                    self.in_td = True
-                    self.current = ''
-            def handle_endtag(self, tag):
-                if tag == 'td':
-                    self.in_td = False
-                    self.cells.append(self.current.strip())
-            def handle_data(self, data):
-                if self.in_td:
-                    self.current += data
-
-        parser = RateParser()
-        parser.feed(r.text)
-        cells = [c for c in parser.cells if c]
-
-        # 中行表格列顺序：货币名称 | 现汇买入 | 现钞买入 | 现汇卖出 | 现钞卖出 | 中间价 | 发布时间
-        # 找到"美元"那一行
-        for i, cell in enumerate(cells):
-            if '美元' in cell and i + 6 < len(cells):
-                buy  = float(cells[i + 1])   # 现汇买入
-                sell = float(cells[i + 3])   # 现汇卖出
-                mid  = float(cells[i + 5])   # 中间价
-                pub_time = cells[i + 6]       # 发布时间
-                print(f'  ✓ 中行美元: 买入={buy} 卖出={sell} 中间价={mid} 时间={pub_time}')
-                return {'buy': buy, 'sell': sell, 'mid': mid, 'pub_time': pub_time}
-        print('  ✗ 中行汇率：未找到美元行')
-        return None
-    except Exception as ex:
-        print(f'  ✗ 中行汇率抓取失败: {ex}')
-        return None
+def format_quotes_text(quotes, symbol_map):
+    lines = []
+    for sym, name in symbol_map.items():
+        q = quotes.get(sym)
+        if not q:
+            continue
+        sign = '+' if q['pct'] >= 0 else ''
+        lines.append(f"- {name}（{sym}）：{q['price']:.2f}，{sign}{q['pct']:.2f}%")
+    return '\n'.join(lines)
 
 # ══════════════════════════════════════════════════════════════
-#  抓取新闻
-# ══════════════════════════════════════════════════════════════
-def fetch_news(max_per_source=5):
-    all_items = []
-    for source, url in NEWS_FEEDS:
-        try:
-            feed = feedparser.parse(url)
-            for entry in feed.entries[:max_per_source]:
-                title   = entry.get('title', '').strip()
-                link    = entry.get('link', '')
-                summary = re.sub(r'<[^>]+>', '', entry.get('summary', ''))[:200].strip()
-                if title:
-                    all_items.append({'source': source, 'title': title,
-                                      'link': link, 'summary': summary})
-            print(f'  ✓ {source}: {min(max_per_source, len(feed.entries))}条')
-        except Exception as ex:
-            print(f'  ✗ {source}: {ex}')
-    return all_items
-
-# ══════════════════════════════════════════════════════════════
-#  AI
+#  AI 调用（与 generate_daily.py 相同的降级链）
 # ══════════════════════════════════════════════════════════════
 def call_gemini(prompt):
     if not GEMINI_KEY:
@@ -322,12 +167,8 @@ def call_gemini(prompt):
         r = requests.post(url, json={'contents': [{'parts': [{'text': prompt}]}]}, timeout=60)
         data = r.json()
         if 'candidates' in data:
-            time.sleep(13)
-            return data['candidates'][0]['content']['parts'][0]['text']
-        if r.status_code == 429:
-            print('  Gemini超限，降级')
-            return None
-        print(f'  Gemini错误: {r.status_code}')
+            return clean_ai_html(data['candidates'][0]['content']['parts'][0]['text'])
+        print(f'  Gemini错误: {r.status_code} {str(data)[:150]}')
         return None
     except Exception as ex:
         print(f'  Gemini异常: {ex}')
@@ -338,430 +179,270 @@ def call_groq(prompt):
         return None
     try:
         r = requests.post('https://api.groq.com/openai/v1/chat/completions',
-                          headers={'Authorization': f'Bearer {GROQ_KEY}',
-                                   'Content-Type': 'application/json'},
-                          json={'model': 'llama-3.3-70b-versatile', 'max_tokens': 800,
-                                'messages': [{'role': 'user', 'content': prompt}]},
-                          timeout=30)
+                           headers={'Authorization': f'Bearer {GROQ_KEY}'},
+                           json={'model': 'llama-3.3-70b-versatile',
+                                 'messages': [{'role': 'user', 'content': prompt}],
+                                 'max_tokens': 1200},
+                           timeout=60)
         data = r.json()
-        return data['choices'][0]['message']['content']
+        if 'choices' in data:
+            return clean_ai_html(data['choices'][0]['message']['content'])
     except Exception as ex:
         print(f'  Groq异常: {ex}')
-        return None
+    return None
 
 def call_openrouter(prompt):
     if not OPENROUTER_KEY:
         return None
     try:
         r = requests.post('https://openrouter.ai/api/v1/chat/completions',
-                          headers={'Authorization': f'Bearer {OPENROUTER_KEY}',
-                                   'Content-Type': 'application/json'},
-                          json={'model': 'mistralai/mistral-7b-instruct:free',
-                                'max_tokens': 800,
-                                'messages': [{'role': 'user', 'content': prompt}]},
-                          timeout=30)
+                           headers={'Authorization': f'Bearer {OPENROUTER_KEY}',
+                                    'HTTP-Referer': 'https://dukeparents.org'},
+                           json={'model': 'openrouter/auto',
+                                 'messages': [{'role': 'user', 'content': prompt}],
+                                 'max_tokens': 1200},
+                           timeout=60)
         data = r.json()
-        return data['choices'][0]['message']['content']
+        if 'choices' in data:
+            return clean_ai_html(data['choices'][0]['message']['content'])
     except Exception as ex:
         print(f'  OpenRouter异常: {ex}')
-        return None
-
-def ai(prompt):
-    for name, fn in [('Gemini', call_gemini), ('Groq', call_groq), ('OpenRouter', call_openrouter)]:
-        result = fn(prompt)
-        if result:
-            print(f'  ✓ {name} 返回成功')
-            result = re.sub(r'^```html\s*', '', result.strip(), flags=re.IGNORECASE)
-            result = re.sub(r'\s*```$', '', result.strip())
-            return result.strip()
-        print(f'  ✗ {name} 失败')
     return None
 
-# ══════════════════════════════════════════════════════════════
-#  AI 生成：市场点评
-# ══════════════════════════════════════════════════════════════
-def generate_commentary(data):
-    now_et = datetime.now(ZoneInfo('America/New_York'))
-    date_hint = f"{now_et.year}年{now_et.month}月{now_et.day}日 {now_et.strftime('%H:%M')} ET"
-
-    lines = []
-    for group, items in data.items():
-        if not isinstance(items, list):  # ← 加这里
-            continue
-        for q in items:
-            sign = '+' if q['change_pct'] >= 0 else ''
-            lines.append(f"{q['label']}({q['symbol']}): {q['price']:.4g} {sign}{q['change_pct']:.2f}%")
-
-    prompt = (
-        f"你是杜克大学家长社区的金融编辑。现在是{date_hint}。\n"
-        f"以下是今日全球主要市场行情数据：\n\n" + '\n'.join(lines) + "\n\n"
-        "请生成一段简洁的中文市场点评（面向关注孩子在美留学的中国家长），要求：\n"
-        "- 3-5句话，简明易懂\n"
-        "- 点出今日最大涨跌和可能原因\n"
-        "- 提及人民币汇率对留学家庭汇款的实际影响\n"
-        "- 语气平实，不夸张\n"
-        "- 只输出纯文本，不要HTML标签，不要其他内容"
-    )
-    return ai(prompt) or '今日市场数据已更新，请查看下方详情。'
-
-# ══════════════════════════════════════════════════════════════
-#  AI 生成：新闻摘要 HTML
-# ══════════════════════════════════════════════════════════════
-def generate_news_html(news_items):
-    if not news_items:
-        return '<p class="no-data">暂无新闻数据</p>'
-
-    text = '\n'.join([
-        f"[{i['source']}] {i['title']} — {i['summary']} ({i['link']})"
-        for i in news_items[:15]
-    ])
-
-    now_et = datetime.now(ZoneInfo('America/New_York'))
-    date_hint = f"{now_et.year}年{now_et.month}月{now_et.day}日"
-
-    prompt = (
-        f"你是杜克大学家长社区的金融编辑。今天是{date_hint}。\n"
-        f"以下是来自全球财经媒体（美国/欧洲/亚洲）的最新新闻：\n\n{text}\n\n"
-        "请整理成12-16条中文摘要，供关注国际动态的中国家长阅读。要求：\n"
-        "- 按4个板块分组：📈 财经市场、🌍 国际时事、💻 科技动态、🌏 亚洲动态，每组至少2条\n"
-        "- 每条用一个<li>，格式：<ul><li>[来源] 中文标题摘要 <a href=\"链接\" target=\"_blank\">原文</a></li></ul>\n"
-        "- 简洁，每条不超过50字\n"
-        "- 板块标题用<b>📈 财经市场</b>等加粗标签单独一行\n"
-        "- 只输出HTML，不要其他文字"
-    )
-    return ai(prompt) or '<p class="no-data">新闻生成失败</p>'
-
-# ══════════════════════════════════════════════════════════════
-#  格式化工具
-# ══════════════════════════════════════════════════════════════
-def fmt(price):
-    if price is None:
-        return '—'
-    if price >= 1000:
-        return f'{price:,.2f}'
-    return f'{price:.4g}'
-
-def change_class(pct):
-    if pct > 0: return 'up'
-    if pct < 0: return 'down'
-    return 'flat'
-
-def change_str(chg, pct):
-    sign = '+' if pct >= 0 else ''
-    return f'{sign}{chg:.2f} ({sign}{pct:.2f}%)'
-
-def market_state_label(state):
-    mapping = {'REGULAR': '🟢 交易中', 'PRE': '🟡 盘前交易',
-               'POST': '🟠 盘后交易', 'CLOSED': '⚪ 已收盘'}
-    return mapping.get(state, state)
-
-# ══════════════════════════════════════════════════════════════
-#  生成 stocks.html
-# ══════════════════════════════════════════════════════════════
-def build_card(q, big=False):
-    cls = change_class(q['change_pct'])
-    price_size = '24px' if big else '18px'
-    # 盘后/盘前扩展行
-    ext_html = ''
-    if q.get('ext_price') and q.get('ext_pct') is not None:
-        ext_cls = change_class(q['ext_pct'])
-        ext_sign = '+' if q['ext_chg'] >= 0 else ''
-        ext_html = (f'<div class="q-ext">'
-                    f'<span class="q-ext-label">{q["ext_label"]}</span>'
-                    f'<span class="{ext_cls}">'
-                    f'{fmt(q["ext_price"])} '
-                    f'{ext_sign}{q["ext_chg"]:+.2f} ({ext_sign}{q["ext_pct"]:.2f}%)'
-                    f'</span></div>')
-    return (f'<div class="q-card {cls}-border">'
-            f'<div class="q-label">{q["label"]}</div>'
-            f'<div class="q-symbol">{q["symbol"]}</div>'
-            f'<div class="q-price" style="font-size:{price_size}">{fmt(q["price"])}</div>'
-            f'<div class="q-change {cls}">{change_str(q["change"], q["change_pct"])}</div>'
-            f'{ext_html}'
-            f'</div>')
-
-TV_CHARTS = {
-    'us_indices': [
-        ('SP:SPX',      'S&P 500'),
-        ('DJ:DJI',      '道琼斯'),
-        ('NASDAQ:IXIC', '纳斯达克'),
-    ],
-    'futures': [
-        ('CME_MINI:ES1!', 'S&P 500期货'),
-        ('CBOT_MINI:YM1!','道琼斯期货'),
-        ('CME_MINI:NQ1!', '纳斯达克期货'),
-        ('CME_MINI:RTY1!','罗素2000期货'),
-    ],
-    'ai_tech': [
-        ('NASDAQ:PLTR', 'Palantir'),
-        ('NASDAQ:AMD',  'AMD'),
-        ('NASDAQ:AVGO', 'Broadcom'),
-    ],
-    'fx': [
-        ('FX:USDCNH', 'USD/CNY'),
-        ('FX:USDHKD', 'USD/HKD'),
-        ('FX:EURUSD', 'EUR/USD'),
-        ('FX:USDJPY', 'USD/JPY'),
-    ],
-    'commodities': [
-        ('COMEX:GC1!', '黄金'),
-        ('NYMEX:CL1!', '原油'),
-        ('COMEX:SI1!', '白银'),
-    ],
-    'us_stocks': [
-        ('NASDAQ:AAPL', 'Apple'),
-        ('NASDAQ:NVDA', 'NVIDIA'),
-        ('NASDAQ:TSLA', 'Tesla'),
-        ('NASDAQ:MSFT', 'Microsoft'),
-        ('NASDAQ:GOOGL','Google'),
-        ('NASDAQ:AMZN', 'Amazon'),
-        ('NASDAQ:META', 'Meta'),
-        ('NYSE:LLY',    'Eli Lilly'),
-    ],
-}
-
-def build_tv_chart(tv_symbol, label, chart_id):
-    return f'''<div class="tv-chart-wrap">
-  <div id="{chart_id}" class="tv-chart-box"></div>
-  <script>
-  (function(){{
-    var s=document.createElement('script');
-    s.src='https://s3.tradingview.com/tv.js';
-    s.onload=function(){{
-      new TradingView.widget({{
-        autosize:true,height:200,symbol:"{tv_symbol}",
-        interval:"D",timezone:"America/New_York",
-        theme:"dark",style:"1",locale:"zh_CN",
-        hide_top_toolbar:true,hide_legend:true,
-        save_image:false,container_id:"{chart_id}"
-      }});
-    }};
-    document.head.appendChild(s);
-  }})();
-  </script>
-</div>'''
-
-def build_section(title, key, items, big=False):
-    cards = ''.join(build_card(q, big) for q in items)
-    charts_html = ''
-    if key in TV_CHARTS:
-        chart_divs = ''
-        for i, (tv_sym, lbl) in enumerate(TV_CHARTS[key]):
-            chart_id = f'tv-{key}-{i}'
-            chart_divs += f'<div class="tv-chart-item"><div class="tv-chart-label">{lbl}</div>{build_tv_chart(tv_sym, lbl, chart_id)}</div>'
-        charts_html = f'<div class="tv-chart-row">{chart_divs}</div>'
-    return f'<div class="section-title">{title}</div><div class="card-grid">{cards}</div>{charts_html}'
-
-def generate_html(data, commentary, news_html):
-    now_et = datetime.now(ZoneInfo('America/New_York'))
-    now_cn = datetime.now(ZoneInfo('Asia/Shanghai'))
-    et_str = now_et.strftime('%Y-%m-%d %H:%M ET')
-    cn_str = now_cn.strftime('%H:%M 北京时间')
-
-    spx = next((q for q in data.get('us_indices', []) if q['symbol'] == '^GSPC'), None)
-    market_state = market_state_label(spx['market_state']) if spx else ''
-
-    # 把中行汇率转成卡片格式
-    boc = data.get('boc_rates')
-    if boc:
-        data['boc_usd'] = [
-            {'symbol': 'BOC-BUY',  'label': '现汇买入', 'price': boc['buy'],  'change': 0, 'change_pct': 0, 'currency': 'CNY', 'market_state': 'CLOSED', 'prev_close': boc['buy'],  'ext_price': None, 'ext_chg': None, 'ext_pct': None, 'ext_label': None},
-            {'symbol': 'BOC-SELL', 'label': '现汇卖出', 'price': boc['sell'], 'change': 0, 'change_pct': 0, 'currency': 'CNY', 'market_state': 'CLOSED', 'prev_close': boc['sell'], 'ext_price': None, 'ext_chg': None, 'ext_pct': None, 'ext_label': None},
-            {'symbol': 'BOC-MID',  'label': '中间价',   'price': boc['mid'],  'change': 0, 'change_pct': 0, 'currency': 'CNY', 'market_state': 'CLOSED', 'prev_close': boc['mid'],  'ext_price': None, 'ext_chg': None, 'ext_pct': None, 'ext_label': None},
-        ]
-        # 在标题后加发布时间
-        data['boc_pub_time'] = boc.get('pub_time', '')
-    else:
-        data['boc_usd'] = []
-
-    sections_html = ''
-    for title, key, big in [
-        ('🇺🇸 美股指数',  'us_indices',   True),
-        ('📈 期货指数',   'futures',      True),
-        ('📱 美股科技',   'us_stocks',    False),
-        ('🤖 AI科技股',   'ai_tech',      False),
-        ('🇭🇰 港股',      'hk',           False),
-        ('🌏 亚太/欧洲',  'asia_europe',  False),
-        ('🇨🇳 A股',       'china',        False),
-        ('💱 外汇',       'fx',           False),
-        ('🏦 中行美元汇率', 'boc_usd',      False),
-        ('🛢 大宗商品',   'commodities',  False),
-        ('₿ 加密货币',   'crypto',        False),
-        ('📊 美债/指数',  'bonds',         False),
-        ('💼 共同基金',   'mutual_funds',  False),
-    ]:
-        items = data.get(key, [])
-        if items:
-            sections_html += build_section(title, key, items, big)
-
-    return f'''<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>全球市场行情 — 扯谈Duke群</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-(function() {{
-  const ADMIN = 'weihong_j@yahoo.com';
-  const client = window.supabase.createClient(
-    'https://ritglkwqpwlcjwemhfqd.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8'
-  );
-  client.auth.getSession().then(function({{ data }}) {{
-    if (!data.session || data.session.user.email !== ADMIN) {{
-      window.location.href = 'index.html';
-    }}
-  }});
-}})();
-</script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=JetBrains+Mono:wght@400;600&display=swap');
-:root {{
-  --bg:#0d1117; --card:#161b22; --border:#30363d;
-  --gold:#d4a843; --green:#3fb950; --red:#f85149; --flat:#8b949e;
-  --text:#e6edf3; --muted:#8b949e;
-}}
-*{{box-sizing:border-box;margin:0;padding:0}}
-body{{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;min-height:100vh;padding-bottom:60px}}
-.top-bar{{background:linear-gradient(135deg,#0d1117 0%,#012169 100%);border-bottom:1px solid var(--gold);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:99}}
-.top-bar h1{{font-size:17px;font-weight:700;color:#fff;letter-spacing:0.08em}}
-.top-bar .meta{{text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.6}}
-.market-state{{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--gold);margin-bottom:2px}}
-.container{{max-width:960px;margin:0 auto;padding:20px 16px}}
-.commentary{{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:6px;padding:14px 18px;margin-bottom:24px;font-size:14px;line-height:1.8;color:#cdd9e5}}
-.commentary-label{{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--gold);margin-bottom:8px;letter-spacing:0.1em}}
-.section-title{{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--gold);letter-spacing:0.15em;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #21262d}}
-.card-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:4px}}
-.q-card{{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 14px;transition:border-color 0.15s}}
-.q-card:hover{{border-color:var(--gold)}}
-.up-border{{border-top:2px solid var(--green)}}
-.down-border{{border-top:2px solid var(--red)}}
-.flat-border{{border-top:2px solid var(--flat)}}
-.q-label{{font-size:12px;color:var(--muted);margin-bottom:2px}}
-.q-symbol{{font-size:10px;font-family:'JetBrains Mono',monospace;color:#444d56;margin-bottom:6px}}
-.q-price{{font-family:'JetBrains Mono',monospace;font-weight:600;color:#fff;margin-bottom:4px}}
-.q-change{{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}.q-ext{{margin-top:6px;padding-top:6px;border-top:1px solid #2a2a2a;font-size:11px;font-family:'JetBrains Mono',monospace}}.q-ext-label{{color:#666;margin-right:4px}}
-.tv-chart-row{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin:12px 0 20px}}
-.tv-chart-item{{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px}}
-.tv-chart-label{{font-size:12px;color:var(--muted);margin-bottom:6px}}
-.tv-chart-box{{width:100%;height:200px}}
-.up{{color:var(--green)}}.down{{color:var(--red)}}.flat{{color:var(--flat)}}
-.news-wrap{{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-top:4px}}
-.news-wrap ul{{list-style:none;padding:0}}
-.news-wrap li{{padding:9px 0;border-bottom:1px solid #21262d;font-size:13px;line-height:1.6;color:#cdd9e5}}
-.news-wrap li:last-child{{border-bottom:none}}
-.news-wrap a{{color:var(--gold);text-decoration:none;font-size:11px;margin-left:6px}}
-.news-wrap a:hover{{text-decoration:underline}}
-.no-data{{color:var(--muted);font-size:13px;padding:8px 0}}
-footer{{text-align:center;padding:24px 16px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);border-top:1px solid #21262d;margin-top:32px}}
-footer a{{color:var(--gold);text-decoration:none}}
-@media(max-width:480px){{.card-grid{{grid-template-columns:repeat(2,1fr)}}.top-bar h1{{font-size:14px}}}}
-</style>
-</head>
-<body>
-<div class="top-bar">
-  <div>
-    <div class="market-state">{market_state}</div>
-    <h1>📈 全球市场行情</h1>
-  </div>
-  <div class="meta">{et_str}<br>{cn_str}</div>
-</div>
-<div class="container">
-  <div class="commentary">
-    <div class="commentary-label">▸ AI 市场点评</div>
-    {commentary}
-  </div>
-  {sections_html}
-  <div class="section-title">📰 财经新闻摘要</div>
-  <div class="news-wrap">{news_html}</div>
-</div>
-<footer>
-  数据来源：Yahoo Finance · Reuters · MarketWatch · Yahoo金融<br>
-  仅供参考，不构成投资建议 · 每日自动更新5次<br><br>
-  <a href="index.html">← 返回扯谈Duke群主页</a>
-</footer>
-</body>
-</html>'''
-
-
-# ══════════════════════════════════════════════════════════════
-#  发送邮件（Resend）
-# ══════════════════════════════════════════════════════════════
-def send_email(html):
-    if not RESEND_KEY:
-        print('  跳过邮件：未设置 RESEND_API_KEY')
-        return
-    from zoneinfo import ZoneInfo
-    now_et = datetime.now(ZoneInfo('America/New_York'))
-    subject = f"📈 全球市场日报 · {now_et.strftime('%Y-%m-%d')}"
-
-    # 邮件客户端不支持CSS变量，替换为硬编码颜色
-    email_html = html
-    replacements = {
-        'var(--bg)':      '#0d1117',
-        'var(--card)':    '#161b22',
-        'var(--border)':  '#30363d',
-        'var(--text)':    '#e6edf3',
-        'var(--muted)':   '#8b949e',
-        'color:#fff':     'color:#e6edf3',
-        'background:#0d1117': 'background:#0d1117',
-        # 去掉TradingView图表（邮件里不支持JS）
-    }
-    for old, new in replacements.items():
-        email_html = email_html.replace(old, new)
-
-    # 移除TradingView图表块（邮件不支持JS）
-    import re
-    email_html = re.sub(r'<div class="tv-chart-row">.*?</div>\s*</div>', '', email_html, flags=re.DOTALL)
-
+def call_cerebras(prompt):
+    if not CEREBRAS_KEY:
+        return None
     try:
-        r = requests.post(
-            'https://api.resend.com/emails',
-            headers={
-                'Authorization': f'Bearer {RESEND_KEY}',
-                'Content-Type': 'application/json',
-            },
-            json={
-                'from':    EMAIL_FROM,
-                'to':      [EMAIL_TO],
-                'subject': subject,
-                'html':    email_html,
-            },
-            timeout=15,
-        )
-        if r.status_code in (200, 201):
-            print(f'  ✓ 邮件已发送至 {EMAIL_TO}')
-        else:
-            print(f'  ✗ 邮件发送失败: {r.status_code} {r.text}')
+        r = requests.post('https://api.cerebras.ai/v1/chat/completions',
+                           headers={'Authorization': f'Bearer {CEREBRAS_KEY}'},
+                           json={'model': 'llama3.1-8b',
+                                 'messages': [{'role': 'user', 'content': prompt}],
+                                 'max_tokens': 1200},
+                           timeout=30)
+        data = r.json()
+        if 'choices' in data:
+            return clean_ai_html(data['choices'][0]['message']['content'])
     except Exception as ex:
-        print(f'  ✗ 邮件异常: {ex}')
+        print(f'  Cerebras异常: {ex}')
+    return None
+
+def call_mistral(prompt):
+    if not MISTRAL_KEY:
+        return None
+    try:
+        r = requests.post('https://api.mistral.ai/v1/chat/completions',
+                           headers={'Authorization': f'Bearer {MISTRAL_KEY}'},
+                           json={'model': 'mistral-small-latest',
+                                 'messages': [{'role': 'user', 'content': prompt}],
+                                 'max_tokens': 1200},
+                           timeout=30)
+        data = r.json()
+        if 'choices' in data:
+            return clean_ai_html(data['choices'][0]['message']['content'])
+    except Exception as ex:
+        print(f'  Mistral异常: {ex}')
+    return None
+
+_AI_CHAIN = [call_gemini, call_groq, call_openrouter, call_cerebras, call_mistral]
+
+def ai(prompt):
+    for fn in _AI_CHAIN:
+        result = fn(prompt)
+        if result:
+            return result
+        print(f'  {fn.__name__} 失败，降级...')
+    return None
+
+def clean_ai_html(text):
+    if not text:
+        return text
+    text = re.sub(r'^```[a-zA-Z]*\s*', '', text.strip())
+    text = re.sub(r'\s*```$', '', text.strip())
+    return text.replace('```', '').strip()
+
+FALLBACK_HTML = '<p style="color:rgba(255,255,255,0.4);font-size:13px;">今日数据生成失败，请稍后刷新</p>'
+
+# ══════════════════════════════════════════════════════════════
+#  生成内容
+# ══════════════════════════════════════════════════════════════
+def generate_close_section():
+    idx = fetch_all(INDEX_SYMBOLS)
+    sec = fetch_all(SECTOR_SYMBOLS)
+    idx_text = format_quotes_text(idx, INDEX_SYMBOLS)
+    sec_text = format_quotes_text(sec, SECTOR_SYMBOLS)
+    news_text = format_news_text(fetch_news_headlines('close'))
+    today = datetime.now()
+
+    prompt = (
+        f"你是杜克大学家长社区（面向中国家长）的中文财经编辑。今天是{today.year}年{today.month}月{today.day}日，"
+        "以下是今天美股收盘的真实行情数据（数据已确认准确，直接使用，不要编造或修改数字）：\n\n"
+        f"【三大指数】\n{idx_text}\n\n【11个板块ETF涨跌幅】\n{sec_text}\n\n"
+        f"【今日相关英文新闻标题（供你判断驱动因素用，不要逐条翻译罗列，只用来支撑你的总览判断）】\n{news_text}\n\n"
+        "请生成收盘总结，要求：\n"
+        "1. 开头一句话总览（大盘方向+关键驱动因素，只依据上面的新闻标题判断，不确定就不要编）\n"
+        "2. 三大指数用一个<ul><li>列表列出，格式：指数名：点位，涨跌幅（涨用🔺，跌用🔻）\n"
+        "3. 板块表现用一个<ul><li>列表列出全部11个板块，按涨跌幅从高到低排序，同样用🔺🔻标注\n"
+        "4. 新增一段【今日财经要闻】，从新闻标题里提炼2-4条最重要的，翻译成中文，一句话一条，用<ul><li>列出\n"
+        "5. 最后一句简短点评，哪些板块领涨/领跌，不给具体买卖建议\n"
+        "6. 只输出HTML（用<p>和<ul><li>），不要markdown代码块标记，不要免责声明\n"
+        "7. 行情数字必须原样使用我给你的，不得四舍五入之外做任何修改"
+    )
+    html = ai(prompt) or FALLBACK_HTML
+    return html
+
+def generate_premarket_section():
+    fut = fetch_all(FUTURES_SYMBOLS)
+    fut_text = format_quotes_text(fut, FUTURES_SYMBOLS)
+    news_text = format_news_text(fetch_news_headlines('premarket'))
+    today = datetime.now()
+
+    prompt = (
+        f"你是杜克大学家长社区（面向中国家长）的中文财经编辑。今天是{today.year}年{today.month}月{today.day}日，"
+        "美股即将开盘。以下是当前期货真实数据（数据已确认准确，直接使用）：\n\n"
+        f"{fut_text}\n\n"
+        f"【今日相关英文新闻标题（供你判断市场情绪用，不要逐条翻译罗列）】\n{news_text}\n\n"
+        "请生成盘前预览，要求：\n"
+        "1. 开头一句话总览今晚市场情绪（根据期货涨跌方向+新闻判断，不确定的具体原因不要编）\n"
+        "2. 用<ul><li>列出三个期货数据，格式：名称：点位，涨跌幅（涨🔺跌🔻）\n"
+        "3. 新增一段【今日看点】，从新闻标题里提炼2-4条最重要的，翻译成中文，一句话一条，用<ul><li>列出\n"
+        "4. 最后一句提醒：期货数据仅供参考，实际开盘后可能变化\n"
+        "5. 只输出HTML（<p>和<ul><li>），不要markdown代码块标记"
+    )
+    html = ai(prompt) or FALLBACK_HTML
+    return html
+
+# ══════════════════════════════════════════════════════════════
+#  订阅者邮件推送
+# ══════════════════════════════════════════════════════════════
+SUB_FIELD = {'premarket': 'sub_stock_premarket', 'close': 'sub_stock_close'}
+SUBJECT   = {'premarket': '📈 美股盘前预览', 'close': '📈 美股收盘总结'}
+
+def fetch_stock_subscribers(mode):
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        print('  跳过订阅者：未设置 SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY')
+        return []
+    field = SUB_FIELD[mode]
+    try:
+        r = requests.get(
+            f'{SUPABASE_URL}/rest/v1/subscribers',
+            headers={'apikey': SUPABASE_KEY, 'Authorization': f'Bearer {SUPABASE_KEY}'},
+            params={field: 'eq.true', 'confirmed': 'eq.true', 'unsubscribed_at': 'is.null',
+                    'select': 'email,unsubscribe_token'},
+            timeout=10,
+        )
+        if r.status_code == 200:
+            data = r.json()
+            print(f'  {mode} 订阅者：{len(data)} 人')
+            return data
+        print(f'  ✗ 读取订阅者失败: {r.status_code} {r.text}')
+        return []
+    except Exception as ex:
+        print(f'  ✗ 订阅者请求异常: {ex}')
+        return []
+
+def build_stock_email_html(content_html, mode, unsubscribe_token=''):
+    unsub_url = f'{SITE_URL}/subscribe?action=unsubscribe&token={unsubscribe_token}'
+    return f"""
+<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#0a1128;color:#fff;">
+<h2 style="color:#f0c040;">{SUBJECT[mode]}</h2>
+<div style="font-size:15px;line-height:1.7;">{content_html}</div>
+<p style="margin-top:24px;font-size:12px;color:rgba(255,255,255,0.4);">
+数据仅供参考，不构成投资建议。<br>
+<a href="{SITE_URL}/market.html" style="color:#f0c040;">在网页查看</a> ·
+<a href="{unsub_url}" style="color:rgba(255,255,255,0.4);">退订</a>
+</p>
+</div>"""
+
+def send_via_brevo(to_email, subject, html):
+    if not BREVO_KEY:
+        return False
+    r = requests.post('https://api.brevo.com/v3/smtp/email',
+                       headers={'api-key': BREVO_KEY, 'Content-Type': 'application/json'},
+                       json={'sender': {'name': '扯谈 Duke 群', 'email': EMAIL_FROM},
+                             'to': [{'email': to_email}], 'subject': subject, 'htmlContent': html},
+                       timeout=15)
+    return r.status_code in (200, 201)
+
+def send_via_resend(to_email, subject, html):
+    if not RESEND_KEY:
+        return False
+    r = requests.post('https://api.resend.com/emails',
+                       headers={'Authorization': f'Bearer {RESEND_KEY}', 'Content-Type': 'application/json'},
+                       json={'from': EMAIL_FROM, 'to': [to_email], 'subject': subject, 'html': html},
+                       timeout=15)
+    return r.status_code in (200, 201)
+
+def send_stock_email(mode, content_html):
+    subscribers = fetch_stock_subscribers(mode)
+    if not subscribers:
+        return
+    ok_count = 0
+    for sub in subscribers:
+        email = sub.get('email', '')
+        token = sub.get('unsubscribe_token', '')
+        if not email:
+            continue
+        html = build_stock_email_html(content_html, mode, unsubscribe_token=token)
+        sent = send_via_brevo(email, SUBJECT[mode], html) or send_via_resend(email, SUBJECT[mode], html)
+        if sent:
+            ok_count += 1
+        else:
+            print(f'  ✗ 发送失败: {email}')
+        time.sleep(0.1)
+    print(f'  ✓ 已发送 {ok_count}/{len(subscribers)} 封（{mode}）')
+
+
+def update_page(section_id, time_id, html):
+    if not os.path.exists(PAGE_FILE):
+        print(f'  找不到 {PAGE_FILE}，请确认脚本运行目录 / 文件是否已提交到仓库')
+        sys.exit(1)
+    with open(PAGE_FILE, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    pattern = rf'(<div[^>]*id="{section_id}"[^>]*>)(.*?)(</div>)'
+    new_content, n = re.subn(pattern, rf'\g<1>{html}\3', content, flags=re.DOTALL, count=1)
+    if n == 0:
+        print(f'  警告：没找到 id="{section_id}" 的<div>，请检查 market.html 模板')
+    else:
+        content = new_content
+
+    now_beijing = datetime.now(timezone(timedelta(hours=8)))
+    stamp = f"{now_beijing.year}年{now_beijing.month}月{now_beijing.day}日 {now_beijing.strftime('%H:%M')}（北京时间）"
+    time_pattern = rf'(<span[^>]*id="{time_id}"[^>]*>)[^<]*(</span>)'
+    content = re.sub(time_pattern, rf'\g<1>{stamp}\2', content)
+
+    with open(PAGE_FILE, 'w', encoding='utf-8') as f:
+        f.write(content)
+    print(f'  {PAGE_FILE} 已更新（{section_id}）')
 
 # ══════════════════════════════════════════════════════════════
 #  主流程
 # ══════════════════════════════════════════════════════════════
 def main():
-    print('── 抓取行情 ──')
-    data = fetch_all_quotes()
+    mode = sys.argv[1] if len(sys.argv) > 1 else ''
+    if mode not in TARGET_HOUR:
+        print('用法: python generate_stocks.py [premarket|close]')
+        sys.exit(1)
 
-    print('── 抓取新闻 ──')
-    news_items = fetch_news(max_per_source=5)
+    now_et = datetime.now(ET)
+    if now_et.hour != TARGET_HOUR[mode]:
+        print(f'  当前美东时间 {now_et.strftime("%H:%M")}，非{mode}目标小时'
+              f'（{TARGET_HOUR[mode]}点），跳过本次运行（DST占位触发）')
+        return
+    if now_et.weekday() >= 5:  # 5=Sat, 6=Sun
+        print('  今天是周末，美股不开盘，跳过')
+        return
 
-    print('── AI 生成市场点评 ──')
-    commentary = generate_commentary(data)
-
-    print('── AI 生成新闻摘要 ──')
-    news_html = generate_news_html(news_items)
-
-    print('── 写入 stocks.html ──')
-    html = generate_html(data, commentary, news_html)
-    with open('stocks.html', 'w', encoding='utf-8') as f:
-        f.write(html)
-    print('  stocks.html 已更新')
-
-    print('── 发送每日邮件 ──')
-    send_email(html)
+    if mode == 'close':
+        print('── 生成收盘总结 ──')
+        html = generate_close_section()
+        update_page('market-close-content', 'market-close-time', html)
+        send_stock_email('close', html)
+    else:
+        print('── 生成盘前预览 ──')
+        html = generate_premarket_section()
+        update_page('market-premarket-content', 'market-premarket-time', html)
+        send_stock_email('premarket', html)
 
 if __name__ == '__main__':
     main()
-
