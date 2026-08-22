@@ -14629,7 +14629,7 @@ async function submitSubscribe() {
     const res = await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, class_year: classYear })
+      body: JSON.stringify({ email, class_year: classYear, sub_duke: true })
     });
     const data = await res.json();
     if (data.ok) {
