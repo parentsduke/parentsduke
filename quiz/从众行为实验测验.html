@@ -11,10 +11,60 @@
 <meta property="og:type" content="website">
 <!-- 把下面这行的 og:image 换成你自己托管的一张封面图链接（建议 3:2 或 1:1，jpg/png），
      没有的话先留空或删掉这一行，微信会退而用网页里第一张图/纯文字卡片 -->
-<meta property="og:image" content="https://dukeparents.org/quiz/cover.jpg">
+<meta property="og:image" content="https://YOUR-DOMAIN/cover.jpg">
 <meta name="description" content="心理学小测验｜群体从众实验，点击选项直接作答">
 
+<!-- 留档配置：填入你们 Supabase 项目的 URL 和 anon public key（跟 form.html 用的是同一个项目就行）
+     在 Supabase 后台 Project Settings -> API 里能找到这两个值 -->
+<script>
+  const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+  const SUPABASE_ANON_KEY = "YOUR-ANON-PUBLIC-KEY";
+</script>
+
 <style>
+  .gate{
+    background:#fff;
+    margin:14px;
+    padding:20px 16px;
+    border-radius:10px;
+    border:1px solid var(--line);
+  }
+  .gate p{
+    margin:0 0 12px;
+    font-size:14px;
+    line-height:1.7;
+    color:#555;
+  }
+  .gate input{
+    width:100%;
+    padding:11px 12px;
+    font-size:15px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:10px;
+    box-sizing:border-box;
+  }
+  .gate button{
+    width:100%;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:12px;
+    border-radius:8px;
+    font-size:15px;
+  }
+  .gate .err{
+    color:var(--red);
+    font-size:13px;
+    margin:-4px 0 10px;
+    display:none;
+  }
+  .hidden{display:none !important;}
+  .submit-note{
+    font-size:13px;
+    color:#666;
+    margin-top:10px;
+  }
   :root{
     --navy:#1b2a4a;
     --cream:#f3ede0;
@@ -187,6 +237,15 @@
   <p>点击选项即可作答，答完可查看解析</p>
 </header>
 
+<div class="gate" id="gate">
+  <p>作答前请先填写微信昵称，方便统计（不会公开显示）</p>
+  <input type="text" id="nameInput" placeholder="请输入微信昵称" maxlength="20">
+  <div class="err" id="nameErr">请先填写微信昵称再开始作答</div>
+  <button onclick="startQuiz()">开始答题</button>
+</div>
+
+<div id="mainContent" class="hidden">
+
 <div class="intro">
 研究者设计了一项实验，考察群体规模对从众行为（conformity）的影响。被试被随机分配至不同条件组：每一轮试验中判断线段长度，其余成员均为实验助手（confederate），在特定试次故意给出明显错误答案；真被试作答顺序被安排在最后。研究者操纵了两个自变量：实验助手人数（1人、3人、7人），以及答案是公开报告还是私下书面报告。
 <table>
@@ -207,6 +266,8 @@
   <div id="scoreComment"></div>
   <button class="retry" onclick="restart()">重新作答</button>
 </div>
+
+</div><!-- /mainContent -->
 
 <script>
 const questions = [
@@ -270,6 +331,19 @@ const questions = [
 let current = 0;
 let answered = new Array(questions.length).fill(false);
 let selected = new Array(questions.length).fill(-1);
+let respondentName = '';
+
+function startQuiz(){
+  const val = document.getElementById('nameInput').value.trim();
+  if(!val){
+    document.getElementById('nameErr').style.display = 'block';
+    return;
+  }
+  respondentName = val;
+  document.getElementById('gate').classList.add('hidden');
+  document.getElementById('mainContent').classList.remove('hidden');
+  render();
+}
 
 function render(){
   const quizEl = document.getElementById('quiz');
@@ -360,6 +434,48 @@ function showResult(){
   else if(score >= 3) comment = '基本掌握，可以回看解析巩固一下～';
   else comment = '建议重新阅读题目和解析，理解自变量、混淆变量与两种社会影响的区别。';
   document.getElementById('scoreComment').textContent = comment;
+
+  submitResult(score);
+}
+
+async function submitResult(score){
+  const noteId = 'submitNote';
+  let note = document.getElementById(noteId);
+  if(!note){
+    note = document.createElement('div');
+    note.id = noteId;
+    note.className = 'submit-note';
+    document.getElementById('result').insertBefore(note, document.getElementById('scoreComment').nextSibling);
+  }
+  note.textContent = '正在提交作答记录…';
+
+  const payload = {
+    name: respondentName,
+    score: score,
+    total: questions.length,
+    answers: selected.map((s, i) => ({
+      question: i + 1,
+      selected: s,
+      correct: questions[i].correct
+    })),
+    submitted_at: new Date().toISOString()
+  };
+
+  try{
+    const res = await fetch(SUPABASE_URL + '/rest/v1/quiz_responses', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+    note.textContent = res.ok ? '已记录，谢谢作答！' : '提交失败，请截图告知管理员（错误码 ' + res.status + '）';
+  }catch(e){
+    note.textContent = '提交失败，请检查网络后重试。';
+  }
 }
 
 function restart(){
