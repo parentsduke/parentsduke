@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>从众行为实验 · 测验</title>
+
+<!-- 分享卡片信息：微信/QQ等会读取下面这些标签，把链接显示成带标题+简介+缩略图的卡片 -->
+<meta property="og:title" content="心理学小测验｜群体从众实验">
+<meta property="og:description" content="5道单选题，点一下就能选，测测你对从众实验的理解">
+<meta property="og:type" content="website">
+<!-- 把下面这行的 og:image 换成你自己托管的一张封面图链接（建议 3:2 或 1:1，jpg/png），
+     没有的话先留空或删掉这一行，微信会退而用网页里第一张图/纯文字卡片 -->
+<meta property="og:image" content="https://dukeparents.org/quiz/cover.jpg">
+<meta name="description" content="心理学小测验｜群体从众实验，点击选项直接作答">
+
+<!-- 留档配置：填入你们 Supabase 项目的 URL 和 anon public key（跟 form.html 用的是同一个项目就行）
+     在 Supabase 后台 Project Settings -> API 里能找到这两个值 -->
+<script>
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+</script>
+
+<style>
+  .gate{
+    background:#fff;
+    margin:14px;
+    padding:20px 16px;
+    border-radius:10px;
+    border:1px solid var(--line);
+  }
+  .gate p{
+    margin:0 0 12px;
+    font-size:14px;
+    line-height:1.7;
+    color:#555;
+  }
+  .gate input, .gate select{
+    width:100%;
+    padding:11px 12px;
+    font-size:15px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:10px;
+    box-sizing:border-box;
+    background:#fff;
+    color:var(--text);
+  }
+  .gate button{
+    width:100%;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:12px;
+    border-radius:8px;
+    font-size:15px;
+  }
+  .gate .err{
+    color:var(--red);
+    font-size:13px;
+    margin:-4px 0 10px;
+    display:none;
+  }
+  .hidden{display:none !important;}
+  .submit-note{
+    font-size:13px;
+    color:#666;
+    margin-top:10px;
+  }
+  :root{
+    --navy:#1b2a4a;
+    --cream:#f3ede0;
+    --line:#d8d2c2;
+    --green:#2e7d4f;
+    --red:#b3392c;
+    --text:#22252b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+    background:#f7f5ef;
+    color:var(--text);
+    padding-bottom:40px;
+  }
+  header{
+    background:var(--navy);
+    color:#fff;
+    padding:18px 16px;
+  }
+  header h1{
+    margin:0;
+    font-size:18px;
+    line-height:1.5;
+    font-weight:600;
+  }
+  header p{
+    margin:6px 0 0;
+    font-size:13px;
+    color:#c9d0e0;
+  }
+  .intro{
+    background:#fff;
+    margin:14px;
+    padding:14px 16px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    font-size:14px;
+    line-height:1.75;
+  }
+  .intro table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    font-size:13px;
+  }
+  .intro th, .intro td{
+    border:1px solid var(--line);
+    padding:6px 4px;
+    text-align:center;
+  }
+  .intro th{
+    background:var(--cream);
+  }
+  .progress{
+    margin:0 14px 6px;
+    font-size:13px;
+    color:#666;
+    text-align:right;
+  }
+  .card{
+    background:#fff;
+    margin:14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    padding:16px;
+    display:none;
+  }
+  .card.active{display:block;}
+  .qnum{
+    display:inline-block;
+    background:var(--navy);
+    color:#fff;
+    font-size:12px;
+    padding:2px 8px;
+    border-radius:12px;
+    margin-bottom:8px;
+  }
+  .qtext{
+    font-size:15px;
+    line-height:1.7;
+    font-weight:600;
+    margin:0 0 12px;
+  }
+  .opt{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fafaf7;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:11px 12px;
+    margin-bottom:9px;
+    font-size:14px;
+    line-height:1.55;
+    color:var(--text);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .opt:active{background:#f0eee6;}
+  .opt.correct{
+    background:#e8f5ec;
+    border-color:var(--green);
+    color:#1c5c37;
+    font-weight:600;
+  }
+  .opt.wrong{
+    background:#fbeae7;
+    border-color:var(--red);
+    color:#8f2c21;
+    font-weight:600;
+  }
+  .opt[disabled]{opacity:1;}
+  .explain{
+    display:none;
+    margin-top:10px;
+    padding:12px;
+    background:var(--cream);
+    border-radius:8px;
+    font-size:13.5px;
+    line-height:1.75;
+  }
+  .explain.show{display:block;}
+  .explain b{color:var(--navy);}
+  .nav{
+    display:flex;
+    justify-content:space-between;
+    margin-top:16px;
+  }
+  .navbtn{
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:9px 18px;
+    border-radius:8px;
+    font-size:14px;
+  }
+  .navbtn[disabled]{opacity:.35;}
+  .result{
+    display:none;
+    margin:14px;
+    padding:20px 16px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    text-align:center;
+  }
+  .result.show{display:block;}
+  .result .score{
+    font-size:32px;
+    font-weight:700;
+    color:var(--navy);
+    margin:6px 0;
+  }
+  .retry{
+    margin-top:14px;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:9px 20px;
+    border-radius:8px;
+    font-size:14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>心理学实验分析｜群体规模与从众行为</h1>
+  <p>点击选项即可作答，答完可查看解析</p>
+</header>
+
+<div class="gate" id="gate">
+  <p>作答前请先选择你的昵称</p>
+  <select id="nameInput">
+    <option value="">请选择昵称</option>
+    <option value="奕">奕</option>
+    <option value="笑">笑</option>
+    <option value="静">静</option>
+    <option value="VON">VON</option>
+    <option value="Sharon">Sharon</option>
+    <option value="伟">伟</option>
+  </select>
+  <div class="err" id="nameErr">请先选择昵称再开始作答</div>
+  <button onclick="startQuiz()">开始答题</button>
+</div>
+
+<div id="mainContent" class="hidden">
+
+<div class="intro">
+研究者设计了一项实验，考察群体规模对从众行为（conformity）的影响。被试被随机分配至不同条件组：每一轮试验中判断线段长度，其余成员均为实验助手（confederate），在特定试次故意给出明显错误答案；真被试作答顺序被安排在最后。研究者操纵了两个自变量：实验助手人数（1人、3人、7人），以及答案是公开报告还是私下书面报告。
+<table>
+<tr><th>助手人数</th><th>公开报告-从众率</th><th>私下书面报告-从众率</th></tr>
+<tr><td>1人</td><td>5%</td><td>4%</td></tr>
+<tr><td>3人</td><td>32%</td><td>12%</td></tr>
+<tr><td>7人</td><td>35%</td><td>13%</td></tr>
+</table>
+</div>
+
+<div class="progress" id="progress">第 1 / 5 题</div>
+
+<div id="quiz"></div>
+
+<div class="result" id="result">
+  <div>测验完成！</div>
+  <div class="score" id="scoreText">0 / 5</div>
+  <div id="scoreComment"></div>
+  <button class="retry" onclick="restart()">重新作答</button>
+</div>
+
+</div><!-- /mainContent -->
+
+<script>
+const questions = [
+  {
+    q: "1. 该实验的自变量是什么？",
+    options: [
+      "A. 被试给出错误答案的比例",
+      "B. 实验助手的人数与作答方式（公开/私下）",
+      "C. 线段的实际长度",
+      "D. 被试的年龄"
+    ],
+    correct: 1,
+    explain: "自变量是研究者主动操纵的变量。本实验中研究者操纵了「实验助手人数（1/3/7人）」和「作答方式（公开/私下）」，这两个是自变量；从众率是因变量，线段长度是控制变量（保持客观明显），年龄未被操纵。"
+  },
+  {
+    q: "2. 从1人增到3人时从众率显著上升，但从3人增到7人时仅略微上升，这一模式最能说明：",
+    options: [
+      "A. 从众行为与群体规模呈完全线性关系，人数越多从众率必然等比例上升",
+      "B. 群体规模对从众行为的影响存在边际递减效应，超过一定人数后增加群体规模的额外影响有限",
+      "C. 群体规模对从众行为完全没有影响",
+      "D. 该实验数据存在明显矛盾，无法解释"
+    ],
+    correct: 1,
+    explain: "这正是Asch经典从众实验的重要发现：群体规模的影响并非线性无限增长，而是存在「边际递减」——从1人到3人的增量效应远大于从3人到7人，说明少数几个人的一致意见就足以产生较强的群体压力，人数再增加边际作用变小。"
+  },
+  {
+    q: "3. 公开报告条件下的从众率普遍高于私下书面报告条件，这一差异最适合用以下哪一理论解释？",
+    options: [
+      "A. 被试在公开条件下受到规范性社会影响（normative social influence）的作用更强，即为了获得群体认可或避免被拒绝而附和多数意见，而在私下报告时这种压力大幅减弱",
+      "B. 被试在私下条件下视力显著下降",
+      "C. 公开报告条件下线段实际长度发生了变化",
+      "D. 该差异纯属随机误差，不具有理论意义"
+    ],
+    correct: 0,
+    explain: "规范性社会影响指个体为了被群体接纳、避免冲突或负面评价而顺从多数意见，即使内心并不认同。公开报告时这种社会压力最大，因此从众率更高；私下书面作答时不必面对群体的即时评价，从众率明显下降，这正是区分「规范性从众」与「信息性从众」的经典证据。"
+  },
+  {
+    q: "4. 将真被试的作答顺序始终安排在实验助手之后，这样设计的主要目的最可能是：",
+    options: [
+      "A. 确保被试有机会先听到（或看到）实验助手一致的错误答案，从而制造群体压力情境，这是该实验操纵的关键环节",
+      "B. 为了让被试更快完成实验",
+      "C. 与研究假设无关，只是随机安排",
+      "D. 为了避免实验助手看到被试的答案"
+    ],
+    correct: 0,
+    explain: "这是实验操纵的核心步骤：只有让真被试在听到/看到多名助手给出一致的错误答案之后再作答，才能真正制造「群体一致意见 vs. 个人判断」的冲突情境，从而观察从众行为是否发生。顺序安排绝非随意，而是实验设计的关键环节。"
+  },
+  {
+    q: "5. 若「被试年龄」是潜在混淆变量，且不同条件组间年龄分布存在系统性差异（如7人组平均年龄更大），这将如何影响该研究的结论？",
+    options: [
+      "A. 不会有任何影响，因为年龄与从众行为无关",
+      "B. 会削弱因果推断的效度，因为从众率的组间差异可能部分或全部由年龄差异而非助手人数造成，二者被混淆在一起，难以区分",
+      "C. 会使实验结果更加可信",
+      "D. 只会影响私下报告条件，不影响公开报告条件"
+    ],
+    correct: 1,
+    explain: "混淆变量（confounding variable）是指与自变量相关、同时也可能影响因变量的第三变量。如果不同人数组的被试年龄本身就有系统性差异，那么组间从众率的差异就无法单纯归因于「助手人数」——年龄本身可能才是真正原因，这会严重削弱因果推断的内部效度。良好的实验设计应通过随机分配来避免此类混淆。"
+  }
+];
+
+let current = 0;
+let answered = new Array(questions.length).fill(false);
+let selected = new Array(questions.length).fill(-1);
+let respondentName = '';
+
+function startQuiz(){
+  const val = document.getElementById('nameInput').value.trim();
+  if(!val){
+    document.getElementById('nameErr').style.display = 'block';
+    return;
+  }
+  respondentName = val;
+  document.getElementById('gate').classList.add('hidden');
+  document.getElementById('mainContent').classList.remove('hidden');
+  render();
+}
+
+function render(){
+  const quizEl = document.getElementById('quiz');
+  quizEl.innerHTML = '';
+  questions.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card' + (idx === current ? ' active' : '');
+    card.id = 'card-' + idx;
+
+    const qnum = document.createElement('div');
+    qnum.className = 'qnum';
+    qnum.textContent = '第 ' + (idx+1) + ' 题';
+    card.appendChild(qnum);
+
+    const qtext = document.createElement('div');
+    qtext.className = 'qtext';
+    qtext.textContent = item.q;
+    card.appendChild(qtext);
+
+    item.options.forEach((opt, oidx) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.textContent = opt;
+      btn.onclick = () => selectAnswer(idx, oidx);
+      if(answered[idx]){
+        btn.disabled = true;
+        if(oidx === item.correct) btn.classList.add('correct');
+        else if(oidx === selected[idx]) btn.classList.add('wrong');
+      }
+      card.appendChild(btn);
+    });
+
+    const explain = document.createElement('div');
+    explain.className = 'explain' + (answered[idx] ? ' show' : '');
+    explain.innerHTML = '<b>解析：</b>' + item.explain;
+    card.appendChild(explain);
+
+    const nav = document.createElement('div');
+    nav.className = 'nav';
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'navbtn';
+    prevBtn.textContent = '上一题';
+    prevBtn.disabled = idx === 0;
+    prevBtn.onclick = () => goTo(idx-1);
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'navbtn';
+    nextBtn.textContent = idx === questions.length-1 ? '查看结果' : '下一题';
+    nextBtn.onclick = () => {
+      if(idx === questions.length-1){
+        showResult();
+      } else {
+        goTo(idx+1);
+      }
+    };
+    nav.appendChild(prevBtn);
+    nav.appendChild(nextBtn);
+    card.appendChild(nav);
+
+    quizEl.appendChild(card);
+  });
+  document.getElementById('progress').textContent = '第 ' + (current+1) + ' / ' + questions.length + ' 题';
+}
+
+function selectAnswer(idx, oidx){
+  if(answered[idx]) return;
+  answered[idx] = true;
+  selected[idx] = oidx;
+  render();
+}
+
+function goTo(idx){
+  current = idx;
+  render();
+}
+
+function showResult(){
+  let score = 0;
+  questions.forEach((item, idx) => {
+    if(selected[idx] === item.correct) score++;
+  });
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('progress').style.display = 'none';
+  const resultEl = document.getElementById('result');
+  resultEl.classList.add('show');
+  document.getElementById('scoreText').textContent = score + ' / ' + questions.length;
+  let comment = '';
+  if(score === questions.length) comment = '全对！对从众实验的关键设计理解得很透彻 👏';
+  else if(score >= 3) comment = '基本掌握，可以回看解析巩固一下～';
+  else comment = '建议重新阅读题目和解析，理解自变量、混淆变量与两种社会影响的区别。';
+  document.getElementById('scoreComment').textContent = comment;
+
+  submitResult(score);
+}
+
+async function submitResult(score){
+  const noteId = 'submitNote';
+  let note = document.getElementById(noteId);
+  if(!note){
+    note = document.createElement('div');
+    note.id = noteId;
+    note.className = 'submit-note';
+    document.getElementById('result').insertBefore(note, document.getElementById('scoreComment').nextSibling);
+  }
+  note.textContent = '正在提交作答记录…';
+
+  const payload = {
+    name: respondentName,
+    score: score,
+    total: questions.length,
+    answers: selected.map((s, i) => ({
+      question: i + 1,
+      selected: s,
+      correct: questions[i].correct
+    })),
+    submitted_at: new Date().toISOString()
+  };
+
+  try{
+    const res = await fetch(SUPABASE_URL + '/rest/v1/quiz_responses', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+    note.textContent = res.ok ? '已记录，谢谢作答！' : '提交失败，请截图告知管理员（错误码 ' + res.status + '）';
+  }catch(e){
+    note.textContent = '提交失败，请检查网络后重试。';
+  }
+}
+
+function restart(){
+  answered = new Array(questions.length).fill(false);
+  selected = new Array(questions.length).fill(-1);
+  current = 0;
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('quiz').style.display = 'block';
+  document.getElementById('progress').style.display = 'block';
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
