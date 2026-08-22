@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>杜克小测验 · 结果公布</title>
+
+<meta property="og:title" content="杜克小测验｜结果公布啦">
+<meta property="og:description" content="大家的正确率统计出炉，答案与解析也一并揭晓">
+<meta property="og:type" content="website">
+
+<!-- 留档配置：与测验页用同一个 Supabase 项目 -->
+<script>
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+</script>
+
+<style>
+  :root{
+    --navy:#1b2a4a;
+    --cream:#f3ede0;
+    --line:#d8d2c2;
+    --green:#2e7d4f;
+    --red:#b3392c;
+    --text:#22252b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+    background:#f7f5ef;
+    color:var(--text);
+    padding-bottom:40px;
+  }
+  header{
+    background:var(--navy);
+    color:#fff;
+    padding:18px 16px;
+  }
+  header h1{
+    margin:0;
+    font-size:18px;
+    line-height:1.5;
+    font-weight:600;
+  }
+  header p{
+    margin:6px 0 0;
+    font-size:13px;
+    color:#c9d0e0;
+  }
+  .card{
+    background:#fff;
+    margin:14px;
+    padding:16px;
+    border-radius:10px;
+    border:1px solid var(--line);
+  }
+  .loading{
+    text-align:center;
+    padding:40px 16px;
+    color:#888;
+    font-size:14px;
+  }
+  .summary{
+    display:flex;
+    justify-content:space-around;
+    text-align:center;
+    margin-bottom:6px;
+  }
+  .summary .num{
+    font-size:24px;
+    font-weight:700;
+    color:var(--navy);
+  }
+  .summary .lbl{
+    font-size:12px;
+    color:#888;
+    margin-top:2px;
+  }
+  .chart-title{
+    font-size:15px;
+    font-weight:600;
+    margin:4px 0 14px;
+    color:var(--navy);
+  }
+  .bar-row{
+    margin-bottom:14px;
+  }
+  .bar-row .q{
+    font-size:13px;
+    color:var(--text);
+    margin-bottom:5px;
+    line-height:1.5;
+  }
+  .bar-track{
+    background:var(--cream);
+    border-radius:6px;
+    height:22px;
+    overflow:hidden;
+    position:relative;
+  }
+  .bar-fill{
+    background:var(--navy);
+    height:100%;
+    border-radius:6px 0 0 6px;
+    transition:width .6s ease;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    min-width:2px;
+  }
+  .bar-fill.high{background:var(--green);}
+  .bar-fill.low{background:var(--red);}
+  .bar-pct{
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    padding-right:6px;
+    white-space:nowrap;
+  }
+  .bar-pct.outside{
+    color:var(--text);
+    padding-left:6px;
+  }
+  .answer-block{
+    margin-bottom:16px;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .answer-block:last-child{
+    border-bottom:none;
+    margin-bottom:0;
+    padding-bottom:0;
+  }
+  .qnum{
+    display:inline-block;
+    background:var(--navy);
+    color:#fff;
+    font-size:12px;
+    padding:2px 8px;
+    border-radius:12px;
+    margin-bottom:6px;
+  }
+  .qtext{
+    font-size:14.5px;
+    font-weight:600;
+    margin:0 0 8px;
+    line-height:1.6;
+  }
+  .opt-line{
+    font-size:13.5px;
+    line-height:1.9;
+    padding-left:2px;
+  }
+  .opt-line.correct{
+    color:#1c5c37;
+    font-weight:700;
+  }
+  .opt-line .check{
+    display:inline-block;
+    width:16px;
+  }
+  .explain{
+    margin-top:8px;
+    padding:10px 12px;
+    background:var(--cream);
+    border-radius:8px;
+    font-size:13px;
+    line-height:1.75;
+  }
+  .explain b{color:var(--navy);}
+  .section-title{
+    font-size:15px;
+    font-weight:600;
+    margin:20px 14px 4px;
+    color:var(--navy);
+  }
+  .note{
+    font-size:12px;
+    color:#999;
+    text-align:center;
+    margin-top:14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>杜克小测验 · 结果公布</h1>
+  <p>大家的正确率统计出炉，答案与解析也一并揭晓</p>
+</header>
+
+<div class="card" id="loadingCard">
+  <div class="loading">正在统计大家的作答记录…</div>
+</div>
+
+<div id="statsSection" style="display:none;">
+  <div class="card">
+    <div class="summary">
+      <div>
+        <div class="num" id="totalCount">0</div>
+        <div class="lbl">参与人数</div>
+      </div>
+      <div>
+        <div class="num" id="avgScore">0</div>
+        <div class="lbl">平均正确题数</div>
+      </div>
+      <div>
+        <div class="num" id="bestQ">-</div>
+        <div class="lbl">正确率最高题</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chart-title">每题正确率</div>
+    <div id="chartArea"></div>
+  </div>
+</div>
+
+<div class="section-title" id="answerTitle" style="display:none;">正确答案与解析</div>
+<div class="card" id="answerCard" style="display:none;"></div>
+
+<div class="note">数据来自大家在测验页提交的作答记录，实时统计</div>
+
+<script>
+const questions = [
+  {
+    q: "1. 杜克大学是哪一年由「三一学院」（Trinity College）改名而来的？",
+    options: ["A. 1892年","B. 1924年","C. 1938年","D. 1951年"],
+    correct: 1,
+    explain: "1924年，James B. Duke（詹姆斯·B·杜克）设立「杜克基金会」（The Duke Endowment），向三一学院注入巨额捐赠，学校随后改名为杜克大学，以纪念其父Washington Duke。每年秋季的Founders' Day正是纪念这一历史时刻。"
+  },
+  {
+    q: "2. 杜克大学的前身「三一学院」最早创立于哪一年，当时叫什么名字？",
+    options: ["A. 1838年，Brown's Schoolhouse","B. 1859年，Trinity College","C. 1924年，Duke University","D. 1900年，Normal College"],
+    correct: 0,
+    explain: "学校最早可追溯到1838年，由当地卫理公会（Methodist）和贵格会（Quaker）家庭创办的「Brown's Schoolhouse」，后历经Union Institute、Normal College等名称变更，1859年才改名「Trinity College」，1892年迁至Durham。"
+  },
+  {
+    q: "3. 杜克大学的吉祥物「蓝魔」（Blue Devils）这一名字最初是如何确定的？",
+    options: ["A. 由校董事会正式投票选出","B. 由校学生报编辑自行采用，后约定俗成成为官方名称","C. 源自一位早期橄榄球明星的绰号","D. 由捐赠人James B. Duke亲自命名"],
+    correct: 1,
+    explain: "1920年代初，校学生报《Trinity Chronicle》曾向师生征集队名，「Blue Devils」只是候选名单之一，并无明确共识。后来学生报编辑William H. Lander和Mike Bradshaw开始在报道中直接使用这个名字，久而久之就成了事实上的官方吉祥物。"
+  },
+  {
+    q: "4. Cameron室内体育馆（Cameron Indoor Stadium）是以谁的名字命名的？",
+    options: ["A. James B. Duke","B. Mike Krzyzewski（K教练）","C. Eddie Cameron","D. William P. Few"],
+    correct: 2,
+    explain: "体育馆1940年开馆时名为「Duke Indoor Stadium」，1972年为纪念长期担任篮球教练、橄榄球教练及体育主任的Eddie Cameron而改名。中心球场「Coach K Court」才是纪念传奇教练Mike Krzyzewski的。"
+  },
+  {
+    q: "5. 「K-Ville」（Krzyzewskiville）扎帐篷排队看球的传统起源于哪一年，最初是为哪场比赛？",
+    options: ["A. 1972年，对阵Wake Forest","B. 1986年，对阵UNC","C. 1992年，对阵Virginia","D. 2000年，对阵Maryland"],
+    correct: 1,
+    explain: "1986年一群学生为了看杜克对北卡（UNC）的比赛提前搭帐篷排队，起初只有四五顶帐篷，最后发展到70多顶，被USA Today和电视新闻报道，从此成为杜克延续至今的经典传统。"
+  },
+  {
+    q: "6. Cameron室内体育馆目前的座位容量大约是多少？",
+    options: ["A. 约6,000人","B. 约9,314人","C. 约15,000人","D. 约20,000人"],
+    correct: 1,
+    explain: "体育馆1940年开馆时可容纳8,800人，1987-88年翻新后座位增至9,314个，是全美最「小而凶」的传奇主场之一，曾被USA Today评为「全美最难客场作战的球馆之一」。"
+  },
+  {
+    q: "7. 杜克大学的拉丁文校训「Eruditio et Religio」翻译成中文最贴切的意思是？",
+    options: ["A. 真理与自由","B. 知识与信仰（religio也译作「虔诚/宗教」）","C. 服务与荣誉","D. 光明与智慧"],
+    correct: 1,
+    explain: "校训出自Charles Wesley（卫斯理宗创始人John Wesley之兄）的一首赞美诗，原意接近「知识与虔诚的合一」，体现了杜克源自卫理公会教育传统的历史背景，至今仍刻在校徽与校印上。"
+  },
+  {
+    q: "8. 杜克主校区（西校区）哥特式建筑的实际首席设计师是谁？",
+    options: ["A. Julian Abele，一位非裔美国建筑师","B. Horace Trumbauer本人亲自设计","C. James B. Duke本人","D. 一位无名工匠团队"],
+    correct: 0,
+    explain: "项目挂名建筑事务所主理人Horace Trumbauer，但真正的首席设计师是非裔建筑师Julian Abele——在种族隔离年代，他甚至未曾公开到访自己设计的校园，直到多年后才获得应有的认可。"
+  },
+  {
+    q: "9. 杜克与北卡教堂山（UNC）的男篮对抗赛（俗称「Battle of the Blues」）最早可追溯到哪一年？",
+    options: ["A. 1920年","B. 1940年","C. 1960年","D. 1986年"],
+    correct: 0,
+    explain: "杜克-北卡对抗赛的历史可追溯到1920年1月24日，是全美历史最悠久、最激烈的校际体育竞争之一，远早于K-Ville扎帐篷传统的诞生。"
+  },
+  {
+    q: "10. Cameron Indoor Stadium里最著名的学生球迷团体被称为什么？",
+    options: ["A. Blue Zone","B. Cameron Crazies","C. Devil's Advocates","D. Iron Dukes"],
+    correct: 1,
+    explain: "Cameron Crazies是杜克著名的学生球迷方阵，主要集中在场边第17区，以创意标语、整齐呼喊和极具压迫感的助威闻名，是杜克主场优势的重要组成部分。"
+  }
+];
+
+async function loadResults(){
+  try{
+    const res = await fetch(SUPABASE_URL + '/rest/v1/quiz_responses?select=name,answers,total,submitted_at', {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      }
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const rows = await res.json();
+    render(rows);
+  }catch(e){
+    document.getElementById('loadingCard').innerHTML =
+      '<div class="loading">加载失败，请稍后重试（' + e.message + '）</div>';
+  }
+}
+
+function render(rows){
+  document.getElementById('loadingCard').style.display = 'none';
+  document.getElementById('statsSection').style.display = 'block';
+  document.getElementById('answerTitle').style.display = 'block';
+  document.getElementById('answerCard').style.display = 'block';
+
+  const totalRespondents = rows.length;
+  document.getElementById('totalCount').textContent = totalRespondents;
+
+  // 每题正确人数统计
+  const correctCounts = new Array(questions.length).fill(0);
+  let sumScorePerPerson = 0;
+
+  rows.forEach(row => {
+    let personScore = 0;
+    const answers = row.answers || [];
+    answers.forEach(a => {
+      const qIdx = a.question - 1;
+      if(qIdx >= 0 && qIdx < questions.length && a.selected === questions[qIdx].correct){
+        correctCounts[qIdx]++;
+        personScore++;
+      }
+    });
+    sumScorePerPerson += personScore;
+  });
+
+  const avgScore = totalRespondents > 0 ? (sumScorePerPerson / totalRespondents).toFixed(1) : '0';
+  document.getElementById('avgScore').textContent = avgScore;
+
+  // 找正确率最高的题
+  let bestIdx = 0;
+  correctCounts.forEach((c, i) => { if(c > correctCounts[bestIdx]) bestIdx = i; });
+  document.getElementById('bestQ').textContent = totalRespondents > 0 ? ('第' + (bestIdx+1) + '题') : '-';
+
+  // 画柱状图
+  const chartArea = document.getElementById('chartArea');
+  chartArea.innerHTML = '';
+  questions.forEach((item, idx) => {
+    const pct = totalRespondents > 0 ? Math.round((correctCounts[idx] / totalRespondents) * 100) : 0;
+    const rowEl = document.createElement('div');
+    rowEl.className = 'bar-row';
+
+    const qLine = document.createElement('div');
+    qLine.className = 'q';
+    qLine.textContent = '第' + (idx+1) + '题 · ' + correctCounts[idx] + '/' + totalRespondents + ' 人答对';
+    rowEl.appendChild(qLine);
+
+    const track = document.createElement('div');
+    track.className = 'bar-track';
+    const fill = document.createElement('div');
+    fill.className = 'bar-fill' + (pct >= 70 ? ' high' : (pct <= 30 ? ' low' : ''));
+    fill.style.width = pct + '%';
+
+    const pctLabel = document.createElement('span');
+    pctLabel.textContent = pct + '%';
+    if(pct >= 18){
+      pctLabel.className = 'bar-pct';
+    } else {
+      pctLabel.className = 'bar-pct outside';
+      pctLabel.style.position = 'absolute';
+      pctLabel.style.left = 'calc(' + pct + '% + 4px)';
+    }
+    fill.appendChild(pct >= 18 ? pctLabel : document.createTextNode(''));
+    track.appendChild(fill);
+    if(pct < 18) track.appendChild(pctLabel);
+
+    rowEl.appendChild(track);
+    chartArea.appendChild(rowEl);
+  });
+
+  // 揭晓答案
+  const answerCard = document.getElementById('answerCard');
+  answerCard.innerHTML = '';
+  questions.forEach((item, idx) => {
+    const block = document.createElement('div');
+    block.className = 'answer-block';
+
+    const qnum = document.createElement('div');
+    qnum.className = 'qnum';
+    qnum.textContent = '第 ' + (idx+1) + ' 题';
+    block.appendChild(qnum);
+
+    const qtext = document.createElement('div');
+    qtext.className = 'qtext';
+    qtext.textContent = item.q;
+    block.appendChild(qtext);
+
+    item.options.forEach((opt, oidx) => {
+      const line = document.createElement('div');
+      line.className = 'opt-line' + (oidx === item.correct ? ' correct' : '');
+      line.innerHTML = '<span class="check">' + (oidx === item.correct ? '✓' : '') + '</span>' + opt;
+      block.appendChild(line);
+    });
+
+    const explain = document.createElement('div');
+    explain.className = 'explain';
+    explain.innerHTML = '<b>解析：</b>' + item.explain;
+    block.appendChild(explain);
+
+    answerCard.appendChild(block);
+  });
+}
+
+loadResults();
+</script>
+
+</body>
+</html>
