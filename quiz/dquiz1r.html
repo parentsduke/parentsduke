@@ -122,6 +122,43 @@
     color:var(--text);
     padding-left:6px;
   }
+  .lb-row{
+    display:flex;
+    align-items:center;
+    padding:9px 4px;
+    border-bottom:1px solid var(--line);
+    font-size:14px;
+  }
+  .lb-row:last-child{border-bottom:none;}
+  .lb-rank{
+    width:26px;
+    flex:0 0 26px;
+    font-weight:700;
+    color:var(--navy);
+    font-size:14px;
+    text-align:center;
+  }
+  .lb-rank.medal{font-size:17px;}
+  .lb-name{
+    flex:1 1 auto;
+    padding:0 8px;
+    color:var(--text);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .lb-score{
+    flex:0 0 auto;
+    font-weight:700;
+    color:var(--green);
+    font-size:13.5px;
+  }
+  .lb-empty{
+    padding:12px 4px;
+    font-size:13px;
+    color:#999;
+    text-align:center;
+  }
   .answer-block{
     margin-bottom:16px;
     padding-bottom:16px;
@@ -210,6 +247,11 @@
         <div class="lbl">正确率最高题</div>
       </div>
     </div>
+  </div>
+
+  <div class="card">
+    <div class="chart-title">🏆 答得最准的几位</div>
+    <div id="leaderboardArea"></div>
   </div>
 
   <div class="card">
@@ -313,9 +355,10 @@ function render(rows){
   const totalRespondents = rows.length;
   document.getElementById('totalCount').textContent = totalRespondents;
 
-  // 每题正确人数统计
+  // 每题正确人数统计 + 每人得分（用于排行榜，按昵称去重，保留最新一次提交）
   const correctCounts = new Array(questions.length).fill(0);
   let sumScorePerPerson = 0;
+  const personLatest = {}; // name -> {score, submitted_at}
 
   rows.forEach(row => {
     let personScore = 0;
@@ -328,6 +371,12 @@ function render(rows){
       }
     });
     sumScorePerPerson += personScore;
+
+    const name = (row.name || '匿名').trim() || '匿名';
+    const ts = row.submitted_at || '';
+    if(!personLatest[name] || ts >= personLatest[name].submitted_at){
+      personLatest[name] = { score: personScore, submitted_at: ts };
+    }
   });
 
   const avgScore = totalRespondents > 0 ? (sumScorePerPerson / totalRespondents).toFixed(1) : '0';
@@ -337,6 +386,48 @@ function render(rows){
   let bestIdx = 0;
   correctCounts.forEach((c, i) => { if(c > correctCounts[bestIdx]) bestIdx = i; });
   document.getElementById('bestQ').textContent = totalRespondents > 0 ? ('第' + (bestIdx+1) + '题') : '-';
+
+  // 排行榜：按得分从高到低，取前几名（含并列）
+  const lbArea = document.getElementById('leaderboardArea');
+  lbArea.innerHTML = '';
+  const ranking = Object.keys(personLatest)
+    .map(name => ({ name, score: personLatest[name].score }))
+    .sort((a, b) => b.score - a.score);
+
+  if(ranking.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'lb-empty';
+    empty.textContent = '还没有人提交作答';
+    lbArea.appendChild(empty);
+  } else {
+    const medals = ['🥇','🥈','🥉'];
+    const SHOW_MIN = 5;
+    // 展示前5名；若第5名之后与第5名同分，一并显示（避免临界并列被截断）
+    let cutoffScore = ranking[Math.min(SHOW_MIN, ranking.length) - 1].score;
+    const shown = ranking.filter((r, i) => i < SHOW_MIN || r.score === cutoffScore);
+
+    shown.forEach((r, i) => {
+      const row = document.createElement('div');
+      row.className = 'lb-row';
+
+      const rank = document.createElement('div');
+      rank.className = 'lb-rank' + (i < 3 ? ' medal' : '');
+      rank.textContent = i < 3 ? medals[i] : (i+1);
+      row.appendChild(rank);
+
+      const name = document.createElement('div');
+      name.className = 'lb-name';
+      name.textContent = r.name;
+      row.appendChild(name);
+
+      const score = document.createElement('div');
+      score.className = 'lb-score';
+      score.textContent = r.score + ' / ' + questions.length;
+      row.appendChild(score);
+
+      lbArea.appendChild(row);
+    });
+  }
 
   // 画柱状图
   const chartArea = document.getElementById('chartArea');
