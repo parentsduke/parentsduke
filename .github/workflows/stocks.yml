@@ -1,42 +1,64 @@
-name: Generate Stocks Page
+name: 美股每日动态
 
 on:
   schedule:
-    # 每日3次（UTC时间），对应美国东部时间（夏令时 ET = UTC-4）
-    - cron: '30 13 * * *'  # ET 09:30（开盘）
-    - cron: '0 16 * * *'   # ET 12:00（午间）
-    - cron: '0 23 * * *'   # ET 19:00（收盘后）
-  workflow_dispatch:        # 允许手动触发
+    # 目标：美东时间 8:00am（盘前）和 5:00pm（收盘后），周一至周五。
+    # 美东有夏令时，cron只能写UTC，所以每个目标各排两个候选时间
+    # （分别对应EST/EDT），实际是否执行由脚本内部按真实美东时间判断，
+    # 命中的那一次才会跑，另一次自动跳过——不用手动改这个文件。
+    - cron: '0 12 * * 1-5'   # 8am EDT
+    - cron: '0 13 * * 1-5'   # 8am EST
+    - cron: '0 21 * * 1-5'   # 5pm EDT
+    - cron: '0 22 * * 1-5'   # 5pm EST
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '手动触发时选择模式'
+        required: true
+        default: 'close'
+        type: choice
+        options: [premarket, close]
 
 jobs:
-  generate:
+  update-market:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: pip install requests feedparser
+      - run: pip install requests feedparser
 
-      - name: Run generate_stocks.py
-        env:
-          GEMINI_API_KEY:     ${{ secrets.GEMINI_API_KEY }}
-          GROQ_API_KEY:       ${{ secrets.GROQ_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          RESEND_API_KEY:     ${{ secrets.RESEND_API_KEY }}
-        run: python .github/scripts/generate_stocks.py
-
-      - name: Commit and push stocks.html
+      - name: 判断运行模式
+        id: mode
         run: |
-          git config user.name  "github-actions[bot]"
+          if [ -n "${{ github.event.inputs.mode }}" ]; then
+            echo "mode=${{ github.event.inputs.mode }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "0 12 * * 1-5" ] || [ "${{ github.event.schedule }}" = "0 13 * * 1-5" ]; then
+            echo "mode=premarket" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=close" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 生成美股动态
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python generate_stocks.py ${{ steps.mode.outputs.mode }}
+
+      - name: 提交更新
+        run: |
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add stocks.html
-          git diff --cached --quiet || git commit -m "auto: update stocks.html $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git pull --rebase origin main
+          git add market.html
+          git diff --cached --quiet || git commit -m "自动更新美股动态 (${{ steps.mode.outputs.mode }})"
           git push
