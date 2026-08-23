@@ -402,6 +402,7 @@ function render(rows){
     lbArea.appendChild(empty);
   } else {
     const medals = ['🥇','🥈','🥉'];
+    const PERFECT = questions.length;
     const SHOW_MIN = 5;
     // 展示前5名；若第5名之后与第5名同分，一并显示（避免临界并列被截断）
     let cutoffScore = ranking[Math.min(SHOW_MIN, ranking.length) - 1].score;
@@ -411,9 +412,10 @@ function render(rows){
       const row = document.createElement('div');
       row.className = 'lb-row';
 
+      const isPerfect = r.score === PERFECT;
       const rank = document.createElement('div');
-      rank.className = 'lb-rank' + (i < 3 ? ' medal' : '');
-      rank.textContent = i < 3 ? medals[i] : (i+1);
+      rank.className = 'lb-rank' + ((i < 3 || isPerfect) ? ' medal' : '');
+      rank.textContent = i < 3 ? medals[i] : (isPerfect ? '🏅' : (i+1));
       row.appendChild(rank);
 
       const name = document.createElement('div');
