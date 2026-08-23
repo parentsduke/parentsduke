@@ -403,8 +403,8 @@ function render(rows){
   } else {
     const medals = ['🥇','🥈','🥉'];
     const PERFECT = questions.length;
-    const SHOW_MIN = 5;
-    // 展示前5名；若第5名之后与第5名同分，一并显示（避免临界并列被截断）
+    const SHOW_MIN = 10;
+    // 展示前10名；若第10名之后与第10名同分，一并显示（避免临界并列被截断）
     let cutoffScore = ranking[Math.min(SHOW_MIN, ranking.length) - 1].score;
     const shown = ranking.filter((r, i) => i < SHOW_MIN || r.score === cutoffScore);
 
