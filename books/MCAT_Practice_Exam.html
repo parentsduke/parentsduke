@@ -1,0 +1,3786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>MCAT 模拟测试卷（全真难度）</title>
+<style>
+  :root {
+    --navy: #1b2a4a;
+    --gold: #b08d57;
+    --bg: #faf8f4;
+    --line: #ddd6c9;
+  }
+  body {
+    font-family: "Georgia", "Songti SC", "STSong", serif;
+    background: var(--bg);
+    color: #222;
+    margin: 0;
+    padding: 0;
+    line-height: 1.65;
+  }
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  header h1 { margin: 0 0 8px 0; font-size: 1.8em; letter-spacing: 1px; }
+  header p { margin: 4px 0; color: #d8d8e0; font-size: 0.95em; }
+  nav {
+    background: #24345c;
+    padding: 12px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 14px;
+    font-size: 0.95em;
+    font-family: sans-serif;
+    border-bottom: 1px solid transparent;
+  }
+  nav a:hover { border-bottom: 1px solid var(--gold); }
+  .container { max-width: 850px; margin: 0 auto; padding: 20px 24px 80px; }
+  .section-header {
+    border-top: 3px solid var(--gold);
+    margin-top: 60px;
+    padding-top: 20px;
+  }
+  .section-header h2 { color: var(--navy); font-size: 1.5em; margin-bottom: 2px; }
+  .section-meta { font-family: sans-serif; font-size: 0.85em; color: #666; margin-bottom: 20px; }
+  .passage {
+    background: white;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--navy);
+    padding: 18px 22px;
+    margin: 22px 0;
+    border-radius: 3px;
+  }
+  .passage h3 { color: var(--navy); margin-top: 0; font-size: 1.1em; }
+  .data-table {
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-family: sans-serif;
+    font-size: 0.9em;
+    width: 100%;
+  }
+  .data-table th, .data-table td {
+    border: 1px solid #bbb;
+    padding: 6px 10px;
+    text-align: center;
+  }
+  .data-table th { background: #eee6d8; }
+  .question {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 14px 20px;
+    margin: 14px 0;
+    border-radius: 3px;
+  }
+  .question p.qtext { font-weight: bold; margin-bottom: 8px; }
+  .question ol { margin-top: 4px; padding-left: 26px; }
+  .question ol li { margin-bottom: 4px; }
+  details {
+    margin-top: 10px;
+    background: #f4f0e6;
+    border-radius: 3px;
+    padding: 8px 12px;
+  }
+  summary {
+    cursor: pointer;
+    color: var(--navy);
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 0.9em;
+  }
+  .answer-block { margin-top: 8px; font-size: 0.95em; }
+  .answer-block .ans { color: #a04000; font-weight: bold; }
+  .discrete-block { margin-top: 30px; }
+  .discrete-block h4 { color: var(--navy); font-family: sans-serif; }
+  .instructions {
+    background: #fff8ea;
+    border: 1px solid var(--gold);
+    padding: 16px 22px;
+    margin: 20px 0;
+    border-radius: 4px;
+    font-size: 0.95em;
+  }
+  footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 0.85em;
+    color: #888;
+    font-family: sans-serif;
+  }
+  .toc {
+    font-family: sans-serif;
+    background: white;
+    border: 1px solid var(--line);
+    padding: 16px 24px;
+    margin: 20px 0;
+  }
+  .toc a { color: var(--navy); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>MCAT 模拟测试卷</h1>
+  <p>难度参照官方 AAMC 真题标准编写 · 共四个部分</p>
+  <p>Chemical/Physical · CARS · Biological/Biochemical · Psychological/Social</p>
+</header>
+
+<nav>
+  <a href="#section1">C/P 化学物理</a>
+  <a href="#section2">CARS 批判性分析</a>
+  <a href="#section3">Bio/Biochem 生物生化</a>
+  <a href="#section4">Psych/Soc 心理社会</a>
+</nav>
+
+<div class="container">
+
+<div class="instructions">
+<strong>说明 / Instructions：</strong> 本套模拟题共 230 题，四个部分（C/P 59题、CARS 53题、Bio/Biochem 59题、Psych/Soc 59题）均已扩展为官方全长，题型、篇幅结构与官方 MCAT 一致（文章 + 题组 + 独立题）。每题下方有可展开的"答案与解析"（点击即可查看），建议先完整作答后再查看解析，以模拟真实考试体验。本套题为原创模拟内容，非 AAMC 官方真题，但严格参照官方大纲的知识点分布、题干长度与推理难度设计。
+</div>
+
+<div class="toc">
+<strong>目录：</strong><br>
+<a href="#section1">第一部分：化学与物理基础 (C/P) — 59题（已扩展为官方全长）</a><br>
+<a href="#section2">第二部分：批判性分析与推理 (CARS) — 53题（官方全长）</a><br>
+<a href="#section3">第三部分：生物与生物化学基础 (Bio/Biochem) — 59题（官方全长）</a><br>
+<a href="#section4">第四部分：心理、社会与行为基础 (Psych/Soc) — 59题（官方全长）</a>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: C/P -->
+<!-- ============================================================ -->
+<div class="section-header" id="section1">
+  <h2>第一部分：化学与物理基础 (Chemical and Physical Foundations of Biological Systems)</h2>
+  <div class="section-meta">59 题（官方全长） · 建议用时 95 分钟</div>
+</div>
+
+<div class="passage">
+<h3>文章 1（第 1–5 题）：碳酸氢盐缓冲系统</h3>
+<p>人体血浆中最重要的细胞外缓冲系统是碳酸氢盐缓冲系统，它使血液 pH 维持在 7.35–7.45 的狭窄生理范围内。该系统涉及溶解的二氧化碳（CO₂）、碳酸（H₂CO₃）与碳酸氢根离子（HCO₃⁻）之间的平衡：</p>
+<p style="text-align:center; font-family:sans-serif;">CO₂(aq) + H₂O ⇌ H₂CO₃ ⇌ H⁺ + HCO₃⁻</p>
+<p>碳酸解离的表观 pKa 约为 6.1。根据 Henderson–Hasselbalch 方程：</p>
+<p style="text-align:center; font-family:sans-serif;">pH = pKa + log([HCO₃⁻] / [CO₂]dissolved)</p>
+<p>其中溶解 CO₂ 浓度可通过亨利定律由 PCO₂ 估算：[CO₂]dissolved = 0.03 × PCO₂（单位 mmol/L，PCO₂ 单位 mmHg）。正常生理状态下 [HCO₃⁻]:[CO₂] 比值约为 20:1。碳酸氢盐系统之所以在远离其 pKa 的生理 pH（7.4）下仍能有效缓冲，是因为它是一个"开放系统"——肺持续通过呼吸调节 CO₂ 的排出，肾脏则调节 HCO₃⁻ 的重吸收与排泄。</p>
+<p>下表为一名因慢性阻塞性肺病入院患者的动脉血气分析结果：</p>
+<table class="data-table">
+<tr><th>指标</th><th>患者数值</th><th>正常范围</th></tr>
+<tr><td>pH</td><td>7.25</td><td>7.35–7.45</td></tr>
+<tr><td>PCO₂</td><td>60 mmHg</td><td>35–45 mmHg</td></tr>
+<tr><td>[HCO₃⁻]</td><td>25 mEq/L</td><td>22–26 mEq/L</td></tr>
+</table>
+</div>
+
+<div class="question">
+<p class="qtext">1. 根据表中数据，该患者最可能属于以下哪种酸碱失衡类型？</p>
+<ol type="A">
+<li>代谢性酸中毒</li>
+<li>代谢性碱中毒</li>
+<li>呼吸性酸中毒</li>
+<li>呼吸性碱中毒</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+PCO₂ 显著升高（60 mmHg）而 HCO₃⁻ 仍接近正常，说明原发问题是 CO₂ 潴留（通气不足），属于呼吸性酸中毒。COPD 患者常因气体交换障碍导致 CO₂ 排出受阻，符合此机制。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">2. 使用文中给出的亨利定律近似公式，该患者的溶解 CO₂ 浓度约为多少？</p>
+<ol type="A">
+<li>0.6 mmol/L</li>
+<li>1.8 mmol/L</li>
+<li>3.6 mmol/L</li>
+<li>60 mmol/L</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+[CO₂]dissolved = 0.03 × 60 = 1.8 mmol/L。代入 Henderson–Hasselbalch：pH = 6.1 + log(25/1.8) = 6.1 + log(13.9) ≈ 6.1 + 1.14 = 7.24，与患者实际 pH 7.25 基本吻合。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">3. 若肾脏对该患者进行代偿，最可能出现的生理反应是什么？</p>
+<ol type="A">
+<li>增加 HCO₃⁻ 的重吸收，减少 H⁺ 排泄</li>
+<li>增加 HCO₃⁻ 的重吸收，增加 H⁺ 排泄</li>
+<li>减少 HCO₃⁻ 的重吸收，增加 H⁺ 排泄</li>
+<li>减少 HCO₃⁻ 的重吸收，减少 H⁺ 排泄</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+为代偿呼吸性酸中毒（H⁺ 过多），肾脏近曲小管与集合管会增加 H⁺ 的分泌排泄，同时增加 HCO₃⁻ 的重吸收，以提高血浆 [HCO₃⁻]，使 pH 回升。这是一个持续数天才能完成的慢性代偿过程。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">4. 若该患者突然过度通气（hyperventilation），根据勒夏特列原理（Le Chatelier's principle），平衡系统 CO₂ + H₂O ⇌ H₂CO₃ ⇌ H⁺ + HCO₃⁻ 将如何移动？</p>
+<ol type="A">
+<li>向右移动，H⁺ 浓度升高，pH 下降</li>
+<li>向左移动，H⁺ 浓度降低，pH 升高</li>
+<li>向右移动，HCO₃⁻ 浓度降低，pH 下降</li>
+<li>平衡不发生移动，因为该系统与呼吸速率无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+过度通气会加速 CO₂ 呼出，降低血液中 CO₂ 浓度。根据勒夏特列原理，产物侧（此处 CO₂ 为反应物）的减少会使平衡向左移动以补充 CO₂，从而消耗 H⁺，H⁺ 浓度降低，pH 升高，形成呼吸性碱中毒。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">5. 碳酸氢盐系统的 pKa（6.1）远离生理 pH（7.4），但它仍是人体最重要的血液缓冲系统之一。最能解释这一现象的原因是：</p>
+<ol type="A">
+<li>HCO₃⁻ 在血浆中浓度极高，足以抵消 pKa 偏离的影响</li>
+<li>该系统是开放系统，肺可持续排出 CO₂，使缓冲容量不受 Henderson–Hasselbalch 方程限制</li>
+<li>H₂CO₃ 的解离速率远快于其他弱酸</li>
+<li>血浆蛋白质对该系统起到催化作用，加快平衡建立</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+一般缓冲对在 pH = pKa ± 1 范围内效果最佳（"封闭系统"规则），但碳酸氢盐缓冲系统之所以例外，是因为它是"开放系统"：CO₂ 可通过肺持续排出体外，不断补充/移除反应物，使系统能有效抵抗 pH 变化，而不受限于其固有 pKa。</div>
+</details>
+</div>
+
+<div class="passage">
+<h3>文章 2（第 6–10 题）：血管中的流体力学</h3>
+<p>血液在血管中的流动可用流体动力学原理近似描述。根据泊肃叶定律（Poiseuille's Law），层流条件下的体积流量 Q 为：</p>
+<p style="text-align:center; font-family:sans-serif;">Q = (πΔPr⁴) / (8ηL)</p>
+<p>其中 ΔP 为压力差，r 为血管半径，η 为血液黏度，L 为血管长度。由该公式可知，流量对半径的四次方极为敏感。</p>
+<p>此外，根据连续性方程 A₁v₁ = A₂v₂ 及伯努利原理（Bernoulli's principle），在血管狭窄处，横截面积减小导致流速增大，而流速增大又导致该处压力降低。当流速过高、血管几何形状不规则时，层流可能转变为湍流，此时雷诺数（Reynolds number，Re = ρvd/η）通常超过约 2000，湍流会产生可听的血管杂音（bruit）。</p>
+<p>下表展示了不同程度动脉粥样硬化斑块对血管半径的影响（假设其他条件不变）：</p>
+<table class="data-table">
+<tr><th>狭窄程度</th><th>相对半径 r</th><th>相对流量 Q（ΔP 不变时）</th></tr>
+<tr><td>无狭窄</td><td>1.0 r₀</td><td>1.0 Q₀</td></tr>
+<tr><td>轻度</td><td>0.75 r₀</td><td>0.32 Q₀</td></tr>
+<tr><td>中度</td><td>0.5 r₀</td><td>0.0625 Q₀</td></tr>
+</table>
+</div>
+
+<div class="question">
+<p class="qtext">6. 若血管半径减小为原来的一半，其他条件不变，流量将变为原来的多少倍？</p>
+<ol type="A">
+<li>1/2</li>
+<li>1/4</li>
+<li>1/8</li>
+<li>1/16</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：D</span><br>
+Q 与 r⁴ 成正比，(1/2)⁴ = 1/16。这与表格中"中度狭窄"时流量降为 0.0625（即 1/16）Q₀ 一致。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">7. 承上题，若要在半径减半的情况下维持原有流量 Q₀ 不变，压力差 ΔP 需增加至原来的多少倍？</p>
+<ol type="A">
+<li>2 倍</li>
+<li>4 倍</li>
+<li>8 倍</li>
+<li>16 倍</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：D</span><br>
+由 Q = πΔPr⁴/(8ηL)，若 r 减半使 r⁴ 项变为原来的 1/16，要使 Q 保持不变，ΔP 必须增大 16 倍以抵消该效应。这也是高血压常伴随动脉狭窄的生理机制之一。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">8. 血液流经狭窄处时，根据连续性方程与伯努利原理，狭窄处的流速与压力将分别如何变化？</p>
+<ol type="A">
+<li>流速增大，压力增大</li>
+<li>流速增大，压力降低</li>
+<li>流速降低，压力增大</li>
+<li>流速降低，压力降低</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+连续性方程 A₁v₁ = A₂v₂ 表明截面积减小时流速必然增大；伯努利方程表明流速与压力呈反比关系（在同一流线上，动能增加则压能减少），因此狭窄处压力降低。这正是动脉瘤或血管塌陷等病理现象的力学基础之一。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">9. 以下哪种情况最可能提高血流转变为湍流（湍流杂音）的风险？</p>
+<ol type="A">
+<li>血管半径增大，流速降低</li>
+<li>血液黏度显著升高</li>
+<li>血管狭窄导致局部流速显著升高</li>
+<li>心率降低，心输出量减少</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+雷诺数 Re = ρvd/η 与流速 v 成正比。血管狭窄处流速显著增大会提高雷诺数，超过临界值（约2000）时层流转变为湍流，产生杂音。选项B中黏度升高会使Re降低，不利于湍流形成，与题意相反。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">10. 真性红细胞增多症（polycythemia vera）患者血液黏度显著升高。假设血管半径、长度及压力差均不变，根据泊肃叶定律，患者的血流量将如何变化？</p>
+<ol type="A">
+<li>增大，因为红细胞增多提高了携氧能力</li>
+<li>减小，因为黏度 η 与流量成反比</li>
+<li>不变，因为泊肃叶定律不涉及黏度</li>
+<li>先增大后减小</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+由 Q = πΔPr⁴/(8ηL) 可知，Q 与 η 成反比。黏度升高、其余变量不变时，流量必然下降，这也是真性红细胞增多症患者血栓风险增加的机制之一。</div>
+</details>
+</div>
+
+<div class="passage">
+<h3>文章：有机反应机理（SN1/SN2/E1/E2）</h3>
+<p>卤代烷烃的亲核取代与消除反应机理（SN1、SN2、E1、E2）受底物结构、亲核试剂/碱的强度、溶剂极性等多重因素影响。SN2反应为单步协同机理，亲核试剂从离去基团背面进攻，反应速率同时依赖于亲核试剂与底物浓度（二级动力学），且在位阻较小的伯卤代烷中最易发生，并伴随构型翻转（Walden inversion）。SN1反应则经历一个平面型碳正离子中间体，反应速率仅依赖于底物浓度（一级动力学），在叔卤代烷中最有利，通常生成外消旋（或接近外消旋）产物。</p>
+<p>研究者比较了三种卤代烷烃（伯、仲、叔）分别在强亲核/弱碱性试剂（如NaI/丙酮，极性非质子溶剂）与强碱性试剂（如NaOH/乙醇）中的主要产物，结果如下：</p>
+<table class="data-table">
+<tr><th>底物</th><th>NaI/丙酮（强亲核弱碱）主要产物</th><th>NaOH/乙醇（强碱）主要产物</th></tr>
+<tr><td>1-溴丁烷（伯）</td><td>SN2取代产物为主</td><td>SN2取代产物为主（少量E2）</td></tr>
+<tr><td>2-溴丁烷（仲）</td><td>SN2取代产物为主</td><td>E2消除产物为主</td></tr>
+<tr><td>2-溴-2-甲基丙烷（叔）</td><td>SN1取代产物为主</td><td>E2消除产物几乎为唯一产物</td></tr>
+</table>
+</div>
+
+<div class="question">
+<p class="qtext">11. 叔卤代烷在强碱性试剂（NaOH/乙醇）中主要生成E2消除产物而非取代产物，最合理的解释是：</p>
+<ol type="A">
+<li>叔碳原子位阻过大，强碱难以从背面进行SN2进攻，而强碱更倾向于夺取β-氢引发消除反应</li>
+<li>叔卤代烷中不存在可离去的卤素原子</li>
+<li>NaOH无法作为碱使用</li>
+<li>叔卤代烷的碳正离子中间体极不稳定</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+叔碳周围位阻显著，强碱（如OH⁻）难以从背面完成SN2的协同进攻；同时强碱性试剂更倾向于攻击β-氢原子引发E2消除，而非进行亲核取代，因此叔卤代烷在强碱条件下几乎只生成消除产物。叔碳正离子实际上是相对稳定的（超共轭效应），并非选项D所述不稳定。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">12. 2-溴丁烷（仲卤代烷）在SN2条件下反应，产物的立体化学构型相对于起始底物将：</p>
+<ol type="A">
+<li>完全保持不变</li>
+<li>发生构型翻转（Walden inversion）</li>
+<li>生成外消旋混合物</li>
+<li>无法预测</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+SN2机理中亲核试剂从离去基团的背面进攻中心碳原子，这一协同的背面进攻会导致该碳原子的构型发生翻转（类似雨伞在风中翻转），因此产物构型与底物相反，而非外消旋（外消旋是SN1机理的典型特征）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">13. 若将反应溶剂由极性非质子溶剂（如丙酮）换为极性质子溶剂（如乙醇），对SN2反应速率最可能产生的影响是：</p>
+<ol type="A">
+<li>反应速率显著提高，因为质子溶剂更利于稳定过渡态</li>
+<li>反应速率降低，因为质子溶剂通过氢键强烈溶剂化亲核试剂，降低其亲核性</li>
+<li>反应速率不受影响</li>
+<li>反应机理会从SN2转变为SN1，与溶剂极性无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+极性质子溶剂（如乙醇、水）能通过氢键与亲核试剂（尤其是带负电荷的亲核试剂）强烈溶剂化，"包裹"亲核试剂并削弱其亲核性，从而减慢SN2反应速率；而极性非质子溶剂（如丙酮、DMSO）不能形成氢键溶剂化阴离子，因此更利于SN2反应快速进行。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">14. 一个SN1反应的速率方程实验测得为 rate = k[底物]，与亲核试剂浓度无关。这一结果最直接支持以下哪一机理特征？</p>
+<ol type="A">
+<li>反应的决速步骤（rate-determining step）只涉及底物的解离，形成碳正离子中间体，随后亲核试剂快速进攻该中间体</li>
+<li>反应为协同的一步机理</li>
+<li>亲核试剂根本不参与反应</li>
+<li>该反应必然是E2机理</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+一级动力学（速率只依赖底物浓度）说明决速步骤中只有底物参与，这正是SN1机理的特征：第一步（决速步）为C–X键异裂生成碳正离子中间体，第二步亲核试剂快速进攻该中间体，由于第二步远快于第一步，总反应速率仅由第一步（底物解离）决定。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">15. 消除反应E1与E2最主要的机理区别在于：</p>
+<ol type="A">
+<li>E1经历碳正离子中间体（分步机理），而E2为协同的一步机理，二者均需要脱去β-氢与离去基团</li>
+<li>E1不需要碱，E2需要强酸</li>
+<li>E1只能发生在伯卤代烷上</li>
+<li>E2的反应速率与碱的浓度无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+E1机理与SN1类似，先生成碳正离子中间体，随后碱（甚至弱碱/溶剂）夺取β-氢形成双键，为分步机理；E2机理则是碱夺取β-氢与离去基团离去协同发生的一步机理，通常需要强碱且反应速率同时依赖底物与碱的浓度（二级动力学）。两者都涉及脱去β-氢及离去基团以形成烯烃。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章：热化学与量热法</h3>
+<p>量热法（calorimetry）用于测定化学反应或物理过程中释放或吸收的热量。在恒压条件下，某反应释放的热量等于反应焓变 ΔH 的负值（放热反应 ΔH&lt;0）。根据盖斯定律（Hess's Law），一个反应的总焓变与反应途径无关，只取决于起始和终止状态，因此可通过已知反应的焓变组合计算目标反应的焓变。</p>
+<p>某学生使用简易量热计测定金属块比热容。将质量为 m 的金属块加热至已知温度后投入已知质量与初始温度的水中，测量平衡时的温度变化，并利用能量守恒 q(金属放出) = −q(水吸收) 求解金属比热容 c，公式为 q = mcΔT。</p>
+<p>实验数据如下：</p>
+<table class="data-table">
+<tr><th>物质</th><th>质量 (g)</th><th>初始温度 (°C)</th><th>末态平衡温度 (°C)</th></tr>
+<tr><td>金属块</td><td>50.0</td><td>100.0</td><td>—</td></tr>
+<tr><td>水</td><td>100.0</td><td>20.0</td><td>24.0</td></tr>
+</table>
+<p>（水的比热容 c(水) = 4.18 J/(g·°C)）</p>
+</div>
+
+<div class="question">
+<p class="qtext">16. 根据上表数据，水吸收的热量约为多少？</p>
+<ol type="A">
+<li>418 J</li>
+<li>1672 J</li>
+<li>4180 J</li>
+<li>8360 J</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+q(水) = mcΔT = 100.0 g × 4.18 J/(g·°C) × (24.0−20.0)°C = 100 × 4.18 × 4 = 1672 J。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">17. 该实验中，金属块释放的热量与水吸收的热量之间的关系，最符合以下哪一物理原理？</p>
+<ol type="A">
+<li>热力学第一定律（能量守恒）：在孤立系统中，金属释放的热量等于水（及量热计）吸收的热量，二者数值相等、符号相反</li>
+<li>热力学第二定律：熵总是增加</li>
+<li>阿伏伽德罗定律</li>
+<li>理想气体状态方程</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+假设量热计为孤立（绝热）系统，根据能量守恒（热力学第一定律），金属块损失的热量必然等于水（及容器）获得的热量，即 q(金属) = −q(水)，这是本实验计算比热容的理论基础。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">18. 若已知反应 A→B 的 ΔH₁ = +30 kJ/mol，反应 B→C 的 ΔH₂ = −50 kJ/mol，根据盖斯定律，反应 A→C 的焓变 ΔH 是多少？</p>
+<ol type="A">
+<li>+80 kJ/mol</li>
+<li>+20 kJ/mol</li>
+<li>−20 kJ/mol</li>
+<li>−80 kJ/mol</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+根据盖斯定律，反应途径可叠加：A→C 的总焓变等于各分步焓变之和，即 ΔH = ΔH₁ + ΔH₂ = (+30) + (−50) = −20 kJ/mol，与反应经由何种中间步骤无关，只取决于始末状态。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">19. 若该量热实验中热量确实存在向周围环境散失（并非完全绝热），这将如何影响所计算出的金属比热容数值？</p>
+<ol type="A">
+<li>计算得到的金属比热容会比真实值偏低</li>
+<li>计算得到的金属比热容会比真实值偏高，因为实际测得的水温升高值会小于理想情况，导致按公式反推出的金属放热量被低估，进而使算出的比热容偏低——需重新审视：实际上若热量散失到环境，水吸收的热量少于金属实际释放的热量，代入公式会使计算出的金属比热容偏低</li>
+<li>散热不会对计算结果造成任何影响</li>
+<li>散热只影响水的比热容测定，不影响金属</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+若部分热量散失到环境中而未被水吸收，则实测的水温升高 ΔT 会小于"理想绝热"情况下应有的升高值。由于计算金属放出的热量是基于水吸收的热量（q金属=−q水）反推，水吸收热量被低估会导致反推出的金属放热量也偏低，从而使计算出的比热容 c(金属)=q/(mΔT) 低于真实值。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">20. 已知某反应为放热反应，其熵变 ΔS &lt; 0（熵减）。该反应最可能在什么温度条件下自发进行？</p>
+<ol type="A">
+<li>仅在高温下自发</li>
+<li>仅在低温下自发</li>
+<li>在所有温度下均自发</li>
+<li>在所有温度下均不自发</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+ΔG = ΔH − TΔS，此处 ΔH&lt;0（放热），ΔS&lt;0（熵减，−TΔS项为正）。当温度较低时，−TΔS项较小，ΔG主要由负的ΔH主导，整体为负（自发）；温度升高时，−TΔS的正值项增大，可能使ΔG转为正值（非自发）。因此该反应仅在较低温度下自发。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章：原电池与电化学</h3>
+<p>原电池（galvanic cell）利用自发的氧化还原反应将化学能转化为电能。电池由两个半电池组成，每个半电池含有一电极浸于相应电解质溶液中，两半电池通过盐桥连接以维持电荷平衡，外电路则通过导线连接两电极形成电流回路。电池电动势（E°cell）可由标准还原电位计算：E°cell = E°(阴极，还原) − E°(阳极，还原)。电子在外电路中自阳极（氧化发生处）流向阴极（还原发生处）。</p>
+<p>下表列出了几种半反应的标准还原电位：</p>
+<table class="data-table">
+<tr><th>半反应</th><th>E°（V）</th></tr>
+<tr><td>Cu²⁺ + 2e⁻ → Cu</td><td>+0.34</td></tr>
+<tr><td>Zn²⁺ + 2e⁻ → Zn</td><td>−0.76</td></tr>
+<tr><td>Ag⁺ + e⁻ → Ag</td><td>+0.80</td></tr>
+</table>
+<p>此外，能斯特方程（Nernst equation）描述了非标准条件下电池电动势与反应物/产物浓度的关系：E = E° − (RT/nF)lnQ，其中Q为反应商。</p>
+</div>
+
+<div class="question">
+<p class="qtext">21. 由Zn与Cu²⁺构成的原电池（Zn|Zn²⁺||Cu²⁺|Cu），其标准电动势 E°cell 是多少？</p>
+<ol type="A">
+<li>+0.42 V</li>
+<li>+1.10 V</li>
+<li>−0.42 V</li>
+<li>−1.10 V</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+Cu²⁺/Cu电位更高（+0.34V），作为阴极（还原）；Zn²⁺/Zn电位更低（−0.76V），作为阳极（氧化）。E°cell = E°(阴极) − E°(阳极) = 0.34 − (−0.76) = +1.10 V，正值表明该反应自发进行，与Zn置换Cu²⁺的实验现象一致。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">22. 在上述Zn-Cu原电池中，电子在外电路中的流动方向是：</p>
+<ol type="A">
+<li>从Cu电极流向Zn电极</li>
+<li>从Zn电极流向Cu电极</li>
+<li>电子不流动，只有离子在盐桥中移动</li>
+<li>电子在两电极间振荡</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+Zn作为阳极被氧化（Zn→Zn²⁺+2e⁻），释放电子；电子经外电路流向作为阴极的Cu电极，在Cu电极处Cu²⁺被还原为Cu（Cu²⁺+2e⁻→Cu）。电流方向（传统定义）则与电子流动方向相反，从Cu流向Zn。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">23. 若将Cu电极替换为Ag电极（构成Zn-Ag原电池），新电池的标准电动势相较于原Zn-Cu电池将：</p>
+<ol type="A">
+<li>更小，因为Ag的还原电位低于Cu</li>
+<li>更大，因为Ag的还原电位（+0.80V）高于Cu（+0.34V），E°cell = 0.80−(−0.76) = 1.56V</li>
+<li>相同，电极材料不影响电动势</li>
+<li>变为负值，反应不再自发</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+Ag⁺/Ag的标准还原电位（+0.80V）高于Cu²⁺/Cu（+0.34V），作为阴极时提供更大的电位差。新电池E°cell = 0.80−(−0.76) = 1.56V，大于原Zn-Cu电池的1.10V。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">24. 根据能斯特方程，当反应商Q增大（即产物浓度相对反应物浓度升高）时，电池的实际电动势E将如何变化？</p>
+<ol type="A">
+<li>E增大</li>
+<li>E减小，因为方程中−(RT/nF)lnQ项随Q增大而变得更负</li>
+<li>E不受Q影响，始终等于E°</li>
+<li>E变为零后又重新升高</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+由 E = E° − (RT/nF)lnQ 可知，Q增大时 lnQ增大，−(RT/nF)lnQ这一项变得更负，使E相对于E°减小。这符合直觉：产物浓度相对越高，反应越接近平衡（此时驱动力减弱），电动势随之降低。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">25. 与原电池（自发反应，化学能转化为电能）相对的电解池（electrolytic cell）的主要特征是：</p>
+<ol type="A">
+<li>反应自发进行，无需外部电源</li>
+<li>需要外部电源提供电能以驱动非自发的氧化还原反应</li>
+<li>不涉及任何氧化还原反应</li>
+<li>阳极与阴极的定义与原电池完全相反，不适用相同术语</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+电解池中的氧化还原反应是非自发的（ΔG&gt;0，E°cell&lt;0），必须依靠外部电源提供电能驱动反应进行，这与原电池（自发放电，化学能→电能）形成对比。需要注意，在电解池中阳极仍是氧化发生处、阴极仍是还原发生处，术语定义未变，但电子被外部电源"强制"逆向驱动。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章：机械波与多普勒效应</h3>
+<p>声波是一种纵波，其传播速度取决于介质的性质（如密度、弹性模量），在空气中约为343 m/s（20°C）。当声源与观察者之间存在相对运动时，观察者感知到的频率会与声源发出的实际频率不同，这一现象称为多普勒效应（Doppler effect）。当声源接近观察者时，观察者感知频率升高；声源远离时，感知频率降低。多普勒效应的一般公式为：</p>
+<p style="text-align:center; font-family:sans-serif;">f观 = f源 × (v ± v观)/(v ∓ v源)</p>
+<p>其中v为声速，v观、v源分别为观察者与声源相对于介质的速度（符号根据相对运动方向确定）。此外，当波源频率与介质或物体的固有频率相匹配时会发生共振（resonance），振幅显著增大，这一原理广泛应用于乐器发声及医学超声成像设备的设计中。</p>
+</div>
+
+<div class="question">
+<p class="qtext">26. 一辆救护车鸣笛（固有频率700 Hz）朝静止的行人驶来，根据多普勒效应，行人听到的频率将：</p>
+<ol type="A">
+<li>低于700 Hz</li>
+<li>高于700 Hz</li>
+<li>恰好等于700 Hz</li>
+<li>频率变化与救护车运动无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+声源（救护车）朝观察者（行人）靠近时，声波在行进方向上被"压缩"，波长变短，观察者接收到的频率因而高于声源固有频率，这是多普勒效应的典型表现（救护车驶近时鸣笛声变尖）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">27. 该救护车驶过行人后逐渐远离，此时行人听到的频率相较于救护车静止时的固有频率（700 Hz）将：</p>
+<ol type="A">
+<li>升高</li>
+<li>降低</li>
+<li>不变</li>
+<li>先升高后降低</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+声源远离观察者时，声波被"拉伸"，波长变长，观察者接收到的频率低于声源固有频率，这解释了救护车驶离后鸣笛声调变低沉的现象。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">28. 若声源与观察者均保持静止，但介质温度升高（导致声速v增大），声源发出的频率保持不变。此情况下观察者感知到的频率将：</p>
+<ol type="A">
+<li>升高</li>
+<li>降低</li>
+<li>基本不变，因为源和观察者都静止，声速变化不引起多普勒频移</li>
+<li>无法确定</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+多普勒频移的产生依赖于声源与观察者之间的相对运动。若二者均静止（v观=v源=0），无论介质中声速v如何变化，代入公式 f观 = f源×(v±0)/(v∓0) = f源，感知频率始终等于声源频率，不发生频移（尽管波长会因声速变化而改变）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">29. 医学超声多普勒常用于测量血流速度，其基本原理是向血管发射超声波，并检测被红细胞反射回来的超声波频率变化。若血流朝向探头方向运动，反射波的频率相对于发射波将：</p>
+<ol type="A">
+<li>升高，因为运动的红细胞相当于向探头"靠近"的移动声源/观察者组合，产生正向多普勒频移</li>
+<li>降低</li>
+<li>保持不变</li>
+<li>变为零</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+在此过程中，红细胞先作为"观察者"接收超声波（因朝探头运动而接收到更高频率），随后作为"声源"将波反射回探头（因继续朝探头运动而使反射波频率进一步升高），最终探头接收到的反射频率高于发射频率，这一频移量可用于计算血流速度，是多普勒超声诊断技术的物理基础。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">30. 一根两端固定的弦以其基频振动。若要使该弦振动的基频升高，以下哪种调整最有效？</p>
+<ol type="A">
+<li>增加弦的张力</li>
+<li>增加弦的长度</li>
+<li>增加弦的线密度（单位长度质量）</li>
+<li>降低弦的张力</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+两端固定弦的基频公式为 f = (1/2L)√(T/μ)，其中T为张力，μ为线密度，L为弦长。频率与张力的平方根成正比，因此增加张力可提高基频（这正是调弦时拧紧琴弦提高音高的原理）；增加弦长或线密度则会降低基频。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章：分离与纯化技术</h3>
+<p>有机化学实验中常用多种技术分离和纯化化合物混合物。萃取（extraction）利用目标化合物在两种互不相溶溶剂（通常为水相与有机相）中溶解度的差异，通过分液漏斗将其分配到不同相中；调节水相pH可选择性地将酸性或碱性有机化合物转化为带电荷的盐类形式，使其滞留于水相，从而实现酸性、碱性与中性化合物的分离。蒸馏（distillation）则利用化合物沸点差异进行分离，简单蒸馏适用于沸点差异较大（通常&gt;25°C）的混合物，而分馏（fractional distillation）通过多次气液平衡更适合分离沸点接近的混合物。薄层色谱（TLC）根据化合物在固定相（如硅胶，极性）与流动相（洗脱剂）之间分配系数的差异，实现分离与鉴定，极性较小的化合物通常随流动相移动得更远（滞留因子Rf值更大）。</p>
+</div>
+
+<div class="question">
+<p class="qtext">31. 某混合物含有中性化合物与羧酸类化合物（弱酸）。若用乙醚萃取该混合物，并向乙醚层中加入NaHCO₃水溶液振荡分液，最可能实现的分离效果是：</p>
+<ol type="A">
+<li>羧酸被去质子化形成羧酸盐，转移至水相，而中性化合物仍保留在乙醚（有机）相中</li>
+<li>两种化合物都会转移到水相</li>
+<li>两种化合物都仍保留在有机相中，NaHCO₃不起作用</li>
+<li>中性化合物会转移到水相，羧酸留在有机相</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+NaHCO₃是弱碱，足以使羧酸（较强的有机酸，pKa通常约4-5）去质子化形成带负电荷的羧酸盐，该带电物种极性大幅增加，因而更易溶于水相；而中性化合物不与NaHCO₃反应，仍保留在有机（乙醚）相中，从而实现两者的分离。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">32. 两种化合物沸点分别为78°C与82°C（相差仅4°C），若要有效分离二者，最合适的方法是：</p>
+<ol type="A">
+<li>简单蒸馏</li>
+<li>分馏，因为沸点差异很小，需要多次气液平衡才能实现有效分离</li>
+<li>直接过滤</li>
+<li>重结晶</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+简单蒸馏通常只适用于沸点差异较大（一般大于约25°C）的混合物分离；对于沸点差异很小（如本例4°C）的混合物，需要通过分馏柱实现多次连续的气液平衡（相当于多次"微蒸馏"叠加），才能获得较纯的分离效果。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">33. 在TLC实验中，某化合物极性较大，使用中等极性洗脱剂展开后，其Rf值最可能：</p>
+<ol type="A">
+<li>较大（接近1），因为极性大的化合物更易随流动相移动</li>
+<li>较小（接近0），因为极性大的化合物与极性固定相（硅胶）之间相互作用更强，更倾向于滞留在原点附近</li>
+<li>Rf值恒等于1，与极性无关</li>
+<li>无法用TLC研究极性化合物</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+硅胶TLC的固定相为极性物质。极性较大的化合物与极性固定相之间的相互作用（如氢键、偶极作用）更强，因而更倾向于滞留在固定相上，随流动相移动的距离较短，Rf值（化合物移动距离/溶剂前沿移动距离）较小；非极性化合物则更易随流动相迁移，Rf值较大。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">34. 重结晶（recrystallization）纯化固体化合物的基本原理是：</p>
+<ol type="A">
+<li>利用目标化合物与杂质在某溶剂中溶解度随温度变化的差异——热溶液冷却时目标化合物优先结晶析出，而杂质仍留在母液中</li>
+<li>利用化合物的沸点差异</li>
+<li>利用化合物的分子量差异进行离心分离</li>
+<li>利用化合物的颜色差异进行肉眼分选</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+重结晶的基本策略是选择一种合适溶剂，使目标化合物在高温下高度溶解、在低温下溶解度大幅降低，而杂质在整个温度范围内溶解度相对较低（留在母液中）或含量极少；缓慢冷却热的饱和溶液可使目标化合物优先、以较高纯度结晶析出。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">35. 若某有机化合物同时含有碱性氨基（如伯胺）与非极性烷基链，欲将其从中性化合物混合物中萃取分离出来，应向有机相中加入哪种水溶液？</p>
+<ol type="A">
+<li>NaHCO₃水溶液</li>
+<li>NaOH水溶液</li>
+<li>盐酸（HCl）水溶液，使氨基质子化形成铵盐，从而转移至水相</li>
+<li>纯水</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+胺类化合物具有碱性，加入盐酸可使氨基质子化（R-NH₂ + HCl → R-NH₃⁺Cl⁻），生成的铵盐带正电荷、极性大幅增加，因而优先分配至水相，从而与中性（不含可离子化基团）化合物分离，后者仍保留在有机相中。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章：放射性衰变与核物理</h3>
+<p>放射性同位素通过自发核衰变转变为更稳定的核素，主要衰变方式包括α衰变（释放氦核，质量数减4、原子序数减2）、β⁻衰变（中子转变为质子并释放电子，质量数不变、原子序数加1）及γ衰变（释放高能光子，质量数与原子序数均不变，通常伴随其他衰变方式发生以释放多余能量）。放射性衰变遵循一级动力学规律，其特征是半衰期（half-life, t½）恒定——即样品中放射性核素数量衰减至初始值一半所需的时间不随剩余量变化。剩余量与时间的关系为：</p>
+<p style="text-align:center; font-family:sans-serif;">N(t) = N₀ × (1/2)^(t/t½)</p>
+<p>某放射性核素的半衰期为8天，初始样品量为80 mg。</p>
+</div>
+
+<div class="question">
+<p class="qtext">36. 经过24天后，该样品剩余量约为多少？</p>
+<ol type="A">
+<li>40 mg</li>
+<li>20 mg</li>
+<li>10 mg</li>
+<li>5 mg</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+24天相当于经过 24/8 = 3个半衰期。每经过一个半衰期，剩余量减半：80→40→20→10 mg。因此三个半衰期后剩余量为10 mg。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">37. 某核素经历一次α衰变后，其质量数与原子序数将分别如何变化？</p>
+<ol type="A">
+<li>质量数减4，原子序数减2</li>
+<li>质量数不变，原子序数加1</li>
+<li>质量数减2，原子序数减4</li>
+<li>质量数和原子序数均不变</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+α粒子即氦核（²⁴He，质量数4，原子序数2）。母核释放一个α粒子后，质量数减少4，原子序数（质子数）减少2，例如 ²³⁸U → ²³⁴Th + ⁴He。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">38. 某核素经历β⁻衰变，其原子核内的变化过程最准确的描述是：</p>
+<ol type="A">
+<li>一个质子转变为中子，释放正电子</li>
+<li>一个中子转变为质子，同时释放一个电子（β⁻粒子）与反中微子，原子序数因而增加1，质量数不变</li>
+<li>原子核释放一个中子，质量数减1</li>
+<li>原子核吸收一个电子，转变为不同元素</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+β⁻衰变的核内变化是中子转变为质子，同时释放一个电子（即β⁻粒子）和一个反中微子。由于质子数增加1而核子总数（质量数）不变，衰变后原子序数加1、质量数保持不变，例如 ¹⁴C → ¹⁴N + e⁻ + ν̄。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">39. 放射性衰变的半衰期具有以下哪一特性？</p>
+<ol type="A">
+<li>半衰期会随样品剩余量的减少而逐渐延长</li>
+<li>半衰期是恒定值，与样品当前剩余量无关，这是一级动力学过程的典型特征</li>
+<li>半衰期只取决于样品的初始质量，质量越大半衰期越长</li>
+<li>半衰期会因外界温度或压强变化而显著改变</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+放射性衰变遵循一级动力学，其半衰期是该核素的固有属性，是一个恒定常数，不随样品剩余量、初始质量或（通常）外部物理条件（温度、压强）而改变，这与化学反应中某些受温度显著影响的过程不同。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">40. γ衰变与α、β衰变的主要区别在于：</p>
+<ol type="A">
+<li>γ衰变会改变原子核的质量数与原子序数</li>
+<li>γ衰变只涉及原子核释放高能光子以降低自身能量状态，通常不改变质量数或原子序数，且常伴随α或β衰变之后发生</li>
+<li>γ衰变只发生在气态物质中</li>
+<li>γ衰变的辐射粒子带有质量与电荷</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+γ射线是高能电磁波（光子），不带质量也不带电荷。γ衰变通常发生在核素经历α或β衰变后，子核仍处于激发态（能量偏高）时，通过释放γ光子回到基态，此过程不改变原子核的质子数或核子总数，因此质量数与原子序数均保持不变。</div>
+</details>
+</div>
+
+</div>
+
+<div class="discrete-block">
+<h4>独立题</h4>
+
+<div class="question">
+<p class="qtext">41. 下列哪一组量子数是不可能存在的合法电子量子态？</p>
+<ol type="A">
+<li>n=3, l=2, ml=-1, ms=+1/2</li>
+<li>n=2, l=1, ml=0, ms=-1/2</li>
+<li>n=2, l=2, ml=1, ms=+1/2</li>
+<li>n=4, l=0, ml=0, ms=-1/2</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+角量子数 l 的取值范围是 0 到 n−1。当 n=2 时，l 只能取 0 或 1，不可能等于 2，因此选项C非法。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">42. 在反应 Zn(s) + Cu²⁺(aq) → Zn²⁺(aq) + Cu(s) 中，哪一物种被氧化，哪一物种是氧化剂？</p>
+<ol type="A">
+<li>Zn 被氧化；Zn²⁺ 是氧化剂</li>
+<li>Zn 被氧化；Cu²⁺ 是氧化剂</li>
+<li>Cu²⁺ 被氧化；Zn 是氧化剂</li>
+<li>Cu 被氧化；Zn²⁺ 是氧化剂</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+Zn 从 0 价变为 +2 价，失去电子，被氧化（是还原剂）；Cu²⁺ 从 +2 价变为 0 价，获得电子，被还原，因此 Cu²⁺ 是氧化剂（自身被还原，使对方被氧化）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">43. 某反应 ΔH > 0（吸热），ΔS > 0（熵增）。该反应在什么条件下最可能自发进行？</p>
+<ol type="A">
+<li>仅在低温下自发</li>
+<li>仅在高温下自发</li>
+<li>在所有温度下均自发</li>
+<li>在所有温度下均不自发</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+由 ΔG = ΔH − TΔS，当 ΔH>0 且 ΔS>0 时，−TΔS 项随温度升高而越来越负，只有当 T 足够大、TΔS 超过 ΔH 时，ΔG 才会变为负值（自发）。因此该反应仅在高温下自发。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">44. 一物体置于凸透镜焦距之外两倍焦距以内（即 f &lt; do &lt; 2f）。所成的像具有以下哪种性质？</p>
+<ol type="A">
+<li>正立、缩小、虚像</li>
+<li>倒立、放大、实像</li>
+<li>倒立、缩小、实像</li>
+<li>正立、放大、虚像</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+对凸透镜而言，当物距在 f 和 2f 之间时，像距大于 2f，所成的像为倒立、放大的实像，可投射在屏幕上。这是投影仪等光学器件的基本原理。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">45. 一定量理想气体最初处于状态 P₁=2 atm, V₁=4 L, T₁=300 K。若温度升至 600 K，压强变为 4 atm，则末态体积 V₂ 是多少？</p>
+<ol type="A">
+<li>2 L</li>
+<li>4 L</li>
+<li>8 L</li>
+<li>16 L</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+使用合并气体定律 P₁V₁/T₁ = P₂V₂/T₂：(2×4)/300 = (4×V₂)/600 → V₂ = (2×4×600)/(300×4) = 4 L。温度加倍与压强加倍的效应恰好相互抵消，体积不变。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">46. 反应 N₂(g) + 3H₂(g) → 2NH₃(g) 中，若有4 mol N₂与9 mol H₂混合反应，哪一种是限制反应物？</p>
+<ol type="A">
+<li>N₂，因为其摩尔数较少</li>
+<li>H₂，因为按化学计量比4 mol N₂需要12 mol H₂，而实际只有9 mol，H₂不足会先耗尽</li>
+<li>两者同时耗尽，无限制反应物</li>
+<li>无法判断，需要已知反应速率</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+按化学计量比，1 mol N₂需要3 mol H₂。4 mol N₂理论上需要12 mol H₂，但实际只提供了9 mol H₂，因此H₂会先被消耗完，是限制反应物；反之，若以9 mol H₂计算，只需3 mol N₂即可完全反应，说明N₂过量（4 mol&gt;3 mol）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">47. 某可逆反应在某时刻测得反应商 Q &lt; K（平衡常数）。此时反应最可能向哪个方向进行以趋近平衡？</p>
+<ol type="A">
+<li>正向进行（向生成物方向），因为Q小于K说明当前生成物相对不足</li>
+<li>逆向进行（向反应物方向）</li>
+<li>反应已处于平衡，不再移动</li>
+<li>无法判断方向</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+Q&lt;K意味着当前生成物浓度（相对于反应物）低于平衡时应有的比例，反应会自发正向进行以生成更多产物，使Q增大直至等于K，达到平衡状态。若Q&gt;K则反应会逆向进行。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">48. 在强酸滴定强碱的滴定曲线中，化学计量点（equivalence point）处溶液的pH最接近：</p>
+<ol type="A">
+<li>pH &lt; 7</li>
+<li>pH = 7</li>
+<li>pH &gt; 7</li>
+<li>pH无法预测</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+强酸与强碱完全中和后生成的盐（如NaCl）不发生水解，溶液呈中性，化学计量点处pH约等于7。（若为弱酸滴定强碱，则化学计量点处pH会大于7，因为生成的共轭碱会发生水解；反之弱碱滴定强酸则pH小于7。）</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">49. 根据分子轨道理论，O₂分子中存在未成对电子于反键π*轨道中，这一特性最直接解释了O₂的哪一实验现象？</p>
+<ol type="A">
+<li>O₂具有顺磁性（paramagnetic），能被磁场吸引</li>
+<li>O₂是无色气体</li>
+<li>O₂的沸点高于水</li>
+<li>O₂不能支持燃烧</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+分子轨道理论预测O₂的反键π*轨道中含有两个未成对电子（分占两个简并轨道，遵循洪特规则），未成对电子的存在使物质具有顺磁性，能被外部磁场微弱吸引，这一预测与O₂的实验观测（液氧可被磁铁吸引）相符，而经典路易斯结构式无法解释这一现象。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">50. 一个质量为2 kg的物体以3 m/s的速度运动，与一个静止的1 kg物体发生完全非弹性碰撞（碰后合为一体）。碰撞后二者共同运动的速度是多少？</p>
+<ol type="A">
+<li>1 m/s</li>
+<li>2 m/s</li>
+<li>3 m/s</li>
+<li>6 m/s</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+根据动量守恒：m₁v₁ + m₂v₂ = (m₁+m₂)v'，(2×3) + (1×0) = (2+1)v' → 6 = 3v' → v' = 2 m/s。完全非弹性碰撞中动量守恒，但动能不守恒（部分动能转化为热能/形变能）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">51. 在一个由两个10Ω电阻并联组成的电路中，若外加电压为10V，通过该并联组合的总电流是多少？</p>
+<ol type="A">
+<li>0.5 A</li>
+<li>1 A</li>
+<li>2 A</li>
+<li>5 A</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+两个10Ω电阻并联的等效电阻为：1/R = 1/10 + 1/10 = 2/10，R = 5Ω。由欧姆定律 I = V/R = 10V/5Ω = 2 A。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">52. 根据法拉第电磁感应定律，一个闭合导线环中感应电动势的大小取决于：</p>
+<ol type="A">
+<li>穿过该环的磁通量的绝对大小</li>
+<li>穿过该环的磁通量随时间变化的速率（dΦ/dt）</li>
+<li>导线环的电阻大小</li>
+<li>导线环所处环境的温度</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+法拉第电磁感应定律指出，感应电动势 ε = −dΦ/dt，即感应电动势的大小取决于磁通量随时间变化的速率，而非磁通量本身的静态大小——即使磁通量很大，只要其保持恒定不变（dΦ/dt=0），也不会产生感应电动势。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">53. 红外光谱（IR spectroscopy）中，羰基（C=O）的特征伸缩振动吸收峰通常出现在以下哪一波数范围？</p>
+<ol type="A">
+<li>约3300 cm⁻¹（O-H伸缩）</li>
+<li>约1700 cm⁻¹（C=O伸缩）</li>
+<li>约2900 cm⁻¹（C-H伸缩）</li>
+<li>约500 cm⁻¹（指纹区）</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+羰基（C=O）的伸缩振动是IR光谱中最具诊断性的特征峰之一，通常出现在约1650-1750 cm⁻¹范围内（强吸收），常用于判断化合物中是否含有醛、酮、羧酸或酯等官能团；具体波数还会因所处官能团环境（如共轭、氢键）略有偏移。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">54. 某微溶盐MX₂的溶度积常数 Ksp = 4×10⁻¹²。该盐在纯水中的摩尔溶解度 s 最接近多少？（Ksp = s×(2s)² = 4s³）</p>
+<ol type="A">
+<li>1×10⁻⁴ mol/L</li>
+<li>1×10⁻⁶ mol/L</li>
+<li>2×10⁻⁴ mol/L</li>
+<li>4×10⁻⁴ mol/L</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+Ksp = 4s³ = 4×10⁻¹² → s³ = 1×10⁻¹² → s = (1×10⁻¹²)^(1/3) = 1×10⁻⁴ mol/L。这是典型的MX₂型（如Mg(OH)₂）溶度积计算，需注意阴离子系数带来的化学计量关系（[X⁻]=2s）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">55. 一个含有单一手性碳原子的化合物具有R构型。若将该手性碳上四个取代基中优先级最低的基团与次低的基团互换位置，所得化合物的构型将变为：</p>
+<ol type="A">
+<li>仍为R构型</li>
+<li>变为S构型，因为任意两个取代基互换会使手性中心的构型发生翻转</li>
+<li>变为非手性（achiral）化合物</li>
+<li>无法确定</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+手性中心上任意两个取代基的位置互换（一次互换）都会导致该中心的R/S构型发生翻转（因为这相当于产生了原化合物的对映异构体的一个中间态）。若为R构型，互换后即变为S构型；若再次互换（两次互换）则会恢复原构型。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">56. 一个缓冲溶液由等浓度的弱酸HA及其共轭碱A⁻组成。缓冲容量（buffer capacity）最大的情况是：</p>
+<ol type="A">
+<li>当溶液pH远高于弱酸pKa时</li>
+<li>当溶液pH远低于弱酸pKa时</li>
+<li>当[HA]=[A⁻]（即pH=pKa）且二者绝对浓度较高时，缓冲容量达到最大</li>
+<li>缓冲容量与HA和A⁻的浓度无关，恒定不变</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+缓冲溶液在pH等于其pKa附近（[HA]=[A⁻]）时，对加入的酸或碱的中和能力最强，即缓冲容量最大；此外，HA与A⁻的绝对浓度越高，可供中和的"储备量"越大，缓冲容量也越大。远离pKa（如pH与pKa相差超过1个单位）时，缓冲能力显著下降。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">57. 一个质量为2 kg的物体在光滑水平面上，受到10 N的恒定水平力作用，从静止开始移动了5 m。根据功-能定理，该物体在这5 m末端的动能是多少？</p>
+<ol type="A">
+<li>10 J</li>
+<li>25 J</li>
+<li>50 J</li>
+<li>100 J</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+根据功-能定理，力做的功等于动能的变化：W = F×d = 10 N × 5 m = 50 J。由于物体从静止开始（初动能为0），末动能即等于所做的功，为50 J。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">58. 一列横波沿绳传播，波速为v，波长为λ，频率为f。若保持绳的张力不变，但将波源振动频率提高一倍，波速与波长将分别如何变化？</p>
+<ol type="A">
+<li>波速加倍，波长不变</li>
+<li>波速不变，波长减半，因为波速由介质性质（张力、线密度）决定，与频率无关，而v=fλ要求λ随f成反比变化</li>
+<li>波速与波长均加倍</li>
+<li>波速与波长均减半</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+在给定介质（张力、线密度不变）中，波速v仅由介质的物理性质决定，与波源频率无关，因此v保持不变。根据波速公式 v=fλ，v不变时，若f加倍，则λ必须减半以维持乘积v不变。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">59. 向纯水中加入不挥发性溶质（如蔗糖）会使溶液的依数性质发生改变。以下哪一变化是正确的？</p>
+<ol type="A">
+<li>沸点升高，凝固点降低，蒸气压降低</li>
+<li>沸点降低，凝固点升高，蒸气压升高</li>
+<li>沸点与凝固点均不受影响</li>
+<li>只有蒸气压发生变化，沸点凝固点不变</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+依数性质取决于溶质粒子的数目而非其种类。加入不挥发性溶质会降低溶剂的蒸气压（拉乌尔定律），从而导致沸点升高（需要更高温度才能使蒸气压达到大气压）与凝固点降低（这也是道路撒盐融雪、汽车防冻液的原理）。</div>
+</details>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: CARS -->
+<!-- ============================================================ -->
+<div class="section-header" id="section2">
+  <h2>第二部分：批判性分析与推理技能 (Critical Analysis and Reasoning Skills)</h2>
+  <div class="section-meta">53 题（官方全长） · 建议用时 90 分钟 · 本部分全部为文章题，无独立题</div>
+</div>
+
+<div class="passage">
+<h3>文章 1（第 1–6 题）：集体记忆与纪念性建筑</h3></h3>
+<p>社会如何记住自身的历史，往往并非一个被动的过程，而是持续的建构。历史学家所称的"集体记忆"，并非个体记忆的简单加总，而是通过公共纪念仪式、教科书叙述与纪念性建筑等媒介，在一代代人之间被主动塑造、协商乃至争夺的产物。纪念碑因此从不只是对过去事件的中立记录；它们同时也是当下政治与道德立场的宣言。</p>
+<p>这种建构性在纪念碑的选址、形式与措辞上体现得尤为明显。选择纪念谁、以何种方式纪念、又将哪些历史片段悄然略去，本身就是一种权力行为。批评者指出，许多纪念碑将复杂、充满争议的历史事件简化为单一、令人安心的叙事，从而抹去了当时社会内部真实存在的分歧与暴力。支持者则反驳称，纪念碑的功能本就不是提供详尽的历史教育，而是为公众哀悼与集体身份认同提供一个象征性的焦点；若要求每座纪念碑都承载全部历史复杂性，反而会削弱其应有的仪式功能。</p>
+<p>值得注意的是，集体记忆并非一成不变。随着社会价值观的演变，曾经被视为理所当然的纪念对象，可能会被重新审视、迁移，乃至拆除。这一现象本身颇具启示：它表明纪念碑与其说是"过去"的固定见证者，不如说是每个时代借由过去讲述自己故事的镜子。也正因如此，围绕纪念碑存废的争论，其激烈程度往往超出建筑本身的历史价值——因为这些争论的实质，是不同群体对"我们是谁""该被记住的是谁"这一问题的现实较量。</p>
+</div>
+
+<div class="question">
+<p class="qtext">1. 本文的主旨最准确的概括是：</p>
+<ol type="A">
+<li>纪念碑应当被拆除，因为它们无法呈现历史的全部复杂性</li>
+<li>集体记忆及其物质载体（如纪念碑）是被主动建构、并随时代变化而不断重新协商的产物，而非对过去的中立记录</li>
+<li>历史学家对纪念碑的功能持完全一致的看法</li>
+<li>公众哀悼是纪念碑唯一合理的功能</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+全文核心论点在首段即点明："集体记忆...是...被主动塑造、协商乃至争夺的产物"，并在末段呼应"纪念碑与其说是'过去'的固定见证者，不如说是每个时代讲述自己故事的镜子"。选项A、D是文中提及的某一方观点，并非全文主旨；选项C与文意相反（文中呈现的是对立观点）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">2. 作者提到"批评者"与"支持者"两种立场，其主要写作目的是：</p>
+<ol type="A">
+<li>证明批评者的观点更具说服力</li>
+<li>展示围绕纪念碑功能存在的合理分歧，以支撑集体记忆具有争议性、建构性这一整体论点</li>
+<li>说明纪念碑的历史价值无法被评估</li>
+<li>暗示支持者的立场缺乏事实依据</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+作者以平衡的方式呈现两种立场（"批评者指出...支持者则反驳称..."），并未明显偏向任何一方，其功能是为末段"围绕纪念碑存废的争论...是不同群体对...现实较量"这一论点提供具体例证。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">3. 根据文章，以下哪项如果为真，最能强化作者在末段提出的论点（纪念碑反映的是当下而非单纯的过去）？</p>
+<ol type="A">
+<li>某座建于19世纪的纪念碑近年来因社会观念变化被移入博物馆重新诠释，而非被简单拆除或保留</li>
+<li>所有国家的纪念碑数量近年来均大幅增加</li>
+<li>某历史学家证明某纪念碑所纪念的事件确有其事</li>
+<li>公众对纪念碑的选址普遍缺乏关注</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+末段论点是纪念碑会随时代重新协商而非固定不变。选项A直接展示了这种"重新诠释"的动态过程，是最贴切的支持性证据。选项C反而强调纪念碑记录史实的一面，与作者论点方向不符。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">4. 文中"象征性的焦点"（symbolic focal point）一词最可能指代：</p>
+<ol type="A">
+<li>纪念碑作为详尽历史教育材料的功能</li>
+<li>纪念碑为集体哀悼与身份认同提供的凝聚性象征作用，而非史实的完整呈现</li>
+<li>纪念碑在建筑学上的美学中心地位</li>
+<li>纪念碑所在地理位置的军事重要性</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+该词出现在"支持者"立场的论述中，紧接着的语境是"纪念碑的功能本就不是提供详尽的历史教育，而是为公众哀悼与集体身份认同提供一个象征性的焦点"，因此该词指的正是这种凝聚性、象征性功能。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">5. 作者对"批评者"与"支持者"两种观点的态度，最恰当的描述是：</p>
+<ol type="A">
+<li>明显偏袒批评者一方</li>
+<li>明显偏袒支持者一方</li>
+<li>以相对中立、分析性的语气呈现双方观点，未明确表态支持任一方</li>
+<li>对双方观点均持嘲讽态度</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+全文语言克制、学术化，使用"批评者指出""支持者则反驳称"等中性引述方式，未流露明显褒贬，属于典型的分析性、平衡性语气。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">6. 若某地新建了一座纪念碑，其设计特意保留了历史事件的多重、彼此矛盾的叙述，而非提供单一定论。根据本文逻辑，这一设计最可能被视为：</p>
+<ol type="A">
+<li>对"支持者"立场的直接反驳，因为它拒绝提供单一的象征性焦点</li>
+<li>与"批评者"关切的一种回应尝试，即避免将复杂历史简化为单一叙事</li>
+<li>与本文论点完全无关的孤立案例</li>
+<li>证明集体记忆已不再具有建构性</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文中"批评者"的核心关切是纪念碑"将复杂、充满争议的历史事件简化为单一...叙事"。题干所述设计恰恰试图保留历史的多重性，可被理解为对这一关切的回应，故B最贴切。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 2（第 7–12 题）：有效利他主义之辩</h3></h3>
+<p>近年来，"有效利他主义"（effective altruism）运动主张，慈善捐助应当以严格的成本效益分析为导向：捐赠者应将资源投向那些能以最低成本挽救最多生命或缓解最大痛苦的项目，而不应仅凭情感亲近或地域联系做出捐赠决定。这一立场的支持者认为，若两个慈善项目所需成本相同，而其中一个项目所能带来的可验证效益远高于另一个，那么在道德上，捐助前者显然优于后者——无论捐赠者对哪个项目"感觉"更亲近。
+
+</p>
+<p>然而，这一框架招致了若干严肃的反驳。其一，批评者指出，将复杂的人类福祉简化为可量化的"效益单位"，本身便预设了某种存在争议的价值排序——例如，这类计算往往难以充分捕捉诸如尊严、社群自主性或历史正义等难以量化的价值维度。其二，也有学者提出，地方性、关系性的慈善参与本身具有一种独立的道德价值：它培养公民之间的责任感与社群纽带，而这种纽带的价值未必能被单纯的效益计算所取代。若捐助完全由抽象的全球效益最大化逻辑主导，个体与其所处社群之间具体的、面对面的道德联系可能被削弱。</p>
+<p>有效利他主义的支持者对此回应称，上述担忧虽有其合理之处，却不构成反对该框架本身的理由，而只是提示我们在具体测算效益时，应当将"社群纽带的维系"也纳入更广义的效益考量之中。换言之，真正的分歧或许并不在于是否应追求效益最大化，而在于效益应当如何被定义、又该由谁来定义。</p>
+</div>
+
+<div class="question">
+<p class="qtext">7. 本文最主要探讨的问题是：</p>
+<ol type="A">
+<li>有效利他主义在实践中是否真正挽救了更多生命</li>
+<li>以效益最大化为导向的慈善捐助框架，在道德与实践层面遭遇的核心争议及其可能的调和方式</li>
+<li>地方性慈善是否应当被完全废除</li>
+<li>捐赠者的情感反应是否应被彻底忽视</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文章依次呈现有效利他主义的核心主张、两类批评意见，并在末段提出可能的调和方向（"效益应当如何被定义"），整体围绕该框架的争议及其调和展开，B最全面概括了这一结构。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">8. 文中提到的第一类批评（关于"效益单位"）的核心论点是：</p>
+<ol type="A">
+<li>效益最大化框架在数学上存在计算错误</li>
+<li>将人类福祉量化本身即隐含了有争议的价值预设，可能遗漏难以量化的价值（如尊严、社群自主性）</li>
+<li>捐助者根本不关心效益</li>
+<li>所有慈善项目的效益实际上都相等</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文明确指出该批评在于"将复杂的人类福祉简化为可量化的'效益单位'，本身便预设了某种存在争议的价值排序"，并列举了尊严、社群自主性等难以量化的维度，B准确对应此意。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">9. 末段中有效利他主义支持者的回应策略，最恰当的描述是：</p>
+<ol type="A">
+<li>完全否认批评者提出的担忧具有任何合理性</li>
+<li>承认部分担忧的合理性，但主张可通过扩展效益定义的方式将其纳入框架内部，而非放弃框架本身</li>
+<li>建议放弃效益最大化原则，转而完全依赖情感判断</li>
+<li>拒绝回应，将问题留给读者自行判断</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文写道"上述担忧虽有其合理之处，却不构成反对该框架本身的理由，而只是提示我们...应当将'社群纽带的维系'也纳入更广义的效益考量之中"，正是B所述的策略。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">10. 假设有确凿证据表明，参与地方性慈善活动的公民在其他公共事务（如投票、志愿服务）中的参与度也显著更高。这一发现最能支持文中哪一方的论点？</p>
+<ol type="A">
+<li>支持有效利他主义者忽视社群价值的观点</li>
+<li>支持第二类批评者，即地方性慈善具有效益计算之外的独立社会价值</li>
+<li>与本文任何论点均无关</li>
+<li>证明效益最大化计算存在数学错误</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+第二类批评者主张地方性慈善"培养公民之间的责任感与社群纽带"，题干所述证据（更高的公共参与度）恰好从实证角度支持了这一论点，B最贴切。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">11. 作者在文中对有效利他主义的态度，最准确的描述是：</p>
+<ol type="A">
+<li>全盘支持，未提出任何保留意见</li>
+<li>全盘否定，认为该框架毫无价值</li>
+<li>呈现该框架的主张与批评，并在结尾暗示分歧或可通过重新定义"效益"来调和，态度较为分析性、非评判性</li>
+<li>认为该辩论已有明确定论，无需进一步讨论</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+文章依次陈述支持者主张、两类批评、以及支持者的回应，末句以"真正的分歧或许...在于效益应当如何被定义"收尾，语气开放、分析性，并未给出明确的价值判断，符合C的描述。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">12. 根据文章逻辑，以下哪一说法最能代表"效益应当如何被定义"这一未决问题的实质？</p>
+<ol type="A">
+<li>该问题实质上是一个纯粹的会计核算问题，与价值判断无关</li>
+<li>该问题触及了效益计算是否应当、以及如何纳入难以量化的价值（如社群纽带）这一深层的价值判断分歧</li>
+<li>该问题已经被支持者一方彻底解决</li>
+<li>该问题与捐赠者的具体选择无实际关联</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文章通篇论证效益计算涉及"尊严""社群自主性""社群纽带"等难以量化的维度，末句所留的未决问题正是关于这些价值维度应如何、以及能否被纳入效益定义，B准确把握了这一实质。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 3（第 13–18 题）：艺术修复中的真实性之辩</h3></h3>
+<p>当一幅数百年历史的油画因颜料剥落、画布老化而亟需修复时，修复师面临一个表面技术性、实则深具哲学意味的抉择：修复的目标究竟是恢复作品"原初"的视觉面貌，还是忠实保留其历经岁月留下的物质痕迹？这一分歧折射出艺术界对"真实性"（authenticity）概念的两种截然不同理解。</p>
+<p>一派观点主张，艺术品的价值很大程度上系于其作为特定历史时刻创作者意图的物质见证；修复应当尽可能"隐形"，通过精细手法恢复画面原有的色彩与细节，使观者得以接近艺术家最初设想的视觉体验。持此立场者常援引音乐演奏的类比：一部乐谱经过精心校订、去除历代传抄讹误后演奏，被认为更接近作曲家本意，而非因保留讹误而"更真实"。</p>
+<p>另一派观点则提出异议，认为绘画不同于乐谱——一幅历经数百年的油画，其表面的裂纹、色彩的自然氧化、甚至历代修复者留下的痕迹，本身已成为该作品物质历史不可分割的一部分。若强行"抹去"这些痕迹以还原设想中的"原初"面貌，修复师实际上是在创作一件新的、掺杂了当代审美判断与技术手段的混合物，而非单纯"恢复"了历史真实。更棘手的是，许多古代画作根本没有可靠的文献或影像记录能证明其"原初"色彩究竟如何，任何声称"恢复原貌"的修复，都无可避免地掺入了修复师本人的推测与当代审美偏好。</p>
+<p>这场争论的现实意义在于，博物馆与修复机构必须在两种价值——即视觉上更"完整"的观赏体验，与保留物质历史证据链完整性——之间做出取舍，而这一取舍本身即是一种无法被纯技术标准所化解的价值判断。</p>
+</div>
+
+<div class="question">
+<p class="qtext">13. 本文的主旨最准确的概括是：</p>
+<ol type="A">
+<li>油画修复在技术上远比乐谱校订困难</li>
+<li>围绕艺术修复"真实性"存在两种彼此冲突的理解——恢复创作者原初意图与保留物质历史痕迹，二者的取舍涉及无法被技术标准化解的价值判断</li>
+<li>所有艺术修复都应当被禁止</li>
+<li>博物馆缺乏足够资金进行专业修复</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文章依次呈现两派观点及其理由，并在末段点明"这一取舍本身即是一种无法被纯技术标准所化解的价值判断"，B完整概括了这一核心张力与结论。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">14. 作者引入"乐谱校订"类比的主要目的是：</p>
+<ol type="A">
+<li>证明音乐比绘画更具艺术价值</li>
+<li>为第一派观点（主张恢复原初面貌）提供一个类比性论据，说明"去除后世讹误以接近原意"在其他艺术门类中也被视为合理做法</li>
+<li>说明修复师普遍缺乏音乐素养</li>
+<li>反驳第二派观点</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+该类比紧接在"持此立场者常援引"之后，明确是为第一派观点提供支持性论据，而非用于反驳第二派（文章随后才转向呈现第二派的反驳）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">15. 第二派观点对"乐谱类比"最可能提出的反驳是：</p>
+<ol type="A">
+<li>乐谱与绘画在物质载体上完全相同，类比完全成立</li>
+<li>乐谱的"讹误"是抄写过程中的偶然错误，而绘画表面的裂纹、氧化等痕迹是作品物质历史本身不可分割的一部分，二者的"真实性"逻辑不能简单类比</li>
+<li>音乐作品根本不需要校订</li>
+<li>绘画作品从不会随时间产生物理变化</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+第二派的核心论点是"绘画不同于乐谱"，强调油画表面痕迹是"该作品物质历史不可分割的一部分"，这与乐谱中的"讹误"（被视为可剔除的偶然错误）性质不同，故二者不能简单类比，B准确反映了这一潜在反驳逻辑。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">16. 文中提到"许多古代画作根本没有可靠的文献或影像记录能证明其'原初'色彩究竟如何"，这一事实主要用于支持：</p>
+<ol type="A">
+<li>第一派观点，证明恢复原貌在技术上完全可行</li>
+<li>第二派观点，说明任何"恢复原貌"的修复都难免掺入修复师的推测与当代审美偏好，因而"原初真实"本身即难以确证</li>
+<li>该事实与全文论点无关，只是背景信息</li>
+<li>证明所有古代画作都应被销毁</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+该句紧接"更棘手的是"，属于第二派论证的延伸，直接支持"任何声称'恢复原貌'的修复，都无可避免地掺入了修复师本人的推测与当代审美偏好"这一结论。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">17. 假设科学家利用先进光谱技术，确凿还原出某画作各处颜料的原始化学成分与色彩数值。这一发现最可能对文中的争论产生何种影响？</p>
+<ol type="A">
+<li>彻底终结争论，因为它证明第二派的顾虑（推测性、缺乏依据）在此情形下不再适用于色彩还原本身，但修复是否应当据此"抹去"历史痕迹这一价值判断本身仍未被解决</li>
+<li>完全证明第一派错误</li>
+<li>完全证明第二派错误</li>
+<li>与本文讨论的争论毫无关系</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+该技术进步确实能消解第二派提出的"推测性"顾虑之一（即缺乏可靠原始色彩证据），但文章末段强调的核心张力——是否应当抹去历史痕迹以换取"完整"视觉体验——是一种价值判断，并不会因技术精度提高而自动解决，故A最为审慎准确。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">18. 全文的论证结构最恰当的描述是：</p>
+<ol type="A">
+<li>先提出问题，再依次呈现两派对立观点及其理由，最后指出该分歧的本质是价值判断而非技术问题</li>
+<li>先给出结论，再用一个例子草草证明</li>
+<li>纯粹罗列历史事实，不含任何论证</li>
+<li>只呈现一方观点，未提及任何反对意见</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+文章开篇提出修复面临的抉择（问题），随后分别用两段呈现两派观点及其支持理由，末段总结指出这一取舍"无法被纯技术标准所化解"，是典型的问题—对立观点—升华结论的论证结构。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 4（第 19–23 题）：科学理论的证据不完全决定性</h3></h3>
+<p>科学哲学中一个持久的议题是：现有的观测证据，是否总能唯一确定我们应当接受哪一种理论？这一问题被称为"证据对理论的不完全决定性"（underdetermination of theory by evidence）。其基本论证是：对于任何一组有限的观测数据，原则上总存在不止一种理论体系能够同样成功地解释这些数据——换言之，证据本身往往无法在逻辑上排除所有竞争性理论，只留下唯一"正确"的一个。</p>
+<p>这一论点若被推向极端，似乎会导致一种令人不安的相对主义结论：理论选择最终并非由证据单独决定，而是掺入了诸如简洁性、解释力的广度、与其他既有理论的融贯性等"额外标准"，而这些标准本身的权重分配又带有一定的价值判断色彩。批评者据此担忧，这可能为"怎么说都行"式的科学相对主义打开方便之门，削弱科学方法本应具有的客观性。</p>
+<p>然而，多数科学哲学家指出，"证据不完全决定理论"这一逻辑可能性，与"科学实践中理论选择因此变得任意"是两回事。在实际科学史中，尽管两个理论在某一时间点可能同样"兼容"于已有证据，二者在预测新现象、经受进一步检验方面的表现几乎从未长期保持相同：新的观测、新的实验技术往往会逐渐拉开二者的表现差距，使得科学共同体最终能够以高度收敛的方式淘汰其中一方。因此，不完全决定性更适合被理解为一种关于特定时间截面的逻辑限制，而非对科学长期认知进步能力的否定。</p>
+</div>
+
+<div class="question">
+<p class="qtext">19. 本文的主旨最准确概括为：</p>
+<ol type="A">
+<li>科学理论从未被证据证实过</li>
+<li>"证据不完全决定理论"这一逻辑论点虽真实存在，但不应被等同于科学理论选择在实践中是任意的，因为长期的检验过程通常能使理论选择趋于收敛</li>
+<li>所有科学理论最终都会被推翻</li>
+<li>简洁性是选择理论的唯一标准</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文章先介绍不完全决定性论点，再指出其可能导致的相对主义担忧，最后在末段明确区分"逻辑可能性"与"实践任意性"，主张长期检验能使理论选择收敛，B完整把握了这一论证走向。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">20. 文中提到的"额外标准"（如简洁性、解释力广度、融贯性）在整体论证中的作用是：</p>
+<ol type="A">
+<li>证明科学完全客观，不受任何价值判断影响</li>
+<li>说明当证据本身无法唯一确定理论时，科学家在实践中仍需依赖某些超出纯粹经验证据的判断准则来做出选择，这正是引发相对主义担忧的原因</li>
+<li>与理论选择过程完全无关</li>
+<li>证明所有理论都同样正确</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+这些"额外标准"被引入用于解释：既然证据本身不能唯一确定理论，科学家实际选择时还依赖简洁性等准则；正是这一点引出了下一段"批评者据此担忧"的相对主义忧虑，B准确描述了其论证功能。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">21. 作者对"科学相对主义"这一担忧的最终态度是：</p>
+<ol type="A">
+<li>完全认同该担忧，认为科学理论选择确实是任意的</li>
+<li>认为该担忧混淆了"某一时间截面上证据不完全决定理论"这一逻辑事实，与"科学长期实践中理论选择趋于任意"这一经验主张，二者不能等同</li>
+<li>拒绝讨论这一担忧</li>
+<li>认为该担忧只适用于社会科学，不适用于自然科学</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+末段明确写道"不完全决定性更适合被理解为一种关于特定时间截面的逻辑限制，而非对科学长期认知进步能力的否定"，这正是对相对主义担忧的回应——区分逻辑可能性与实践任意性，B准确概括。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">22. 若历史上确实存在某一对理论长期（超过一个世纪）保持同等程度地兼容所有可获得证据、且始终未能被任何新实验区分开来，这一事实将对本文末段的论点产生何种影响？</p>
+<ol type="A">
+<li>该论点会被显著削弱，因为末段主张长期检验通常能使理论选择趋于收敛，而这一反例恰恰展示了长期未收敛的情形</li>
+<li>该论点会被显著加强</li>
+<li>该论点与此类反例完全无关</li>
+<li>这类反例根本不可能在逻辑上存在</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+末段论点的核心是"长期检验过程通常能使理论选择趋于收敛"，若存在一个长期未被任何新证据区分的反例，恰恰是对这一经验性主张的直接挑战，会削弱（尽管未必彻底推翻，因为原文用词是"通常"）该论点的说服力，A最贴切。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">23. 本文作者的写作语气最适合被描述为：</p>
+<ol type="A">
+<li>激烈批判科学界的傲慢</li>
+<li>审慎、分析性，在呈现哲学论点及其引发的担忧后，倾向于对该担忧提出有节制的限定性回应</li>
+<li>完全中立，未表达任何倾向</li>
+<li>讽刺挖苦</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文章虽以中性学术语言呈现不完全决定性论点及相对主义担忧，但末段"然而，多数科学哲学家指出..."显示出作者倾向于对该担忧进行限定性回应，语气审慎但并非完全无倾向，B最准确。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 5（第 24–29 题）：行为经济学与"轻推"式政策的伦理争议</h3></h3>
+<p>行为经济学的研究揭示，人类决策常系统性偏离传统经济学所假设的完全理性模型：人们会因选项的呈现方式（框架效应）、默认选项的设置（默认效应）等看似无关紧要的因素而做出不同选择。基于这些发现，一些政策制定者提出"轻推"（nudge）式干预——即通过调整选择环境的呈现方式（例如将"参与养老金计划"设为默认选项，而非要求人们主动选择加入），在不禁止任何选项、保留个人选择自由的前提下，引导人们做出被认为对自身更有利的决定。</p>
+<p>支持者认为，这类干预相较于传统的强制性法规（如禁令或高额税收）更为温和，因为它保留了"选择的自由"——任何人仍可主动选择退出默认安排；同时它又能利用人类决策的已知心理规律，帮助人们克服拖延、惯性等自身也认为不理想的倾向，从而实现某种"自由主义式家长主义"（libertarian paternalism）的折中。</p>
+<p>然而，批评者提出了几点质疑。其一，"轻推"设计者本身依据何种标准判断什么选择"对个人更有利"？这一判断本身难免带有政策制定者的价值预设，可能与被干预者本人真实的偏好并不一致。其二，即便保留了名义上的选择自由，行为经济学的研究恰恰证明了人们的选择极易受到默认设置等因素的操纵；若"操纵"人们决策的心理机制本身就是轻推得以奏效的原因，那么轻推与更明显的强制手段之间的伦理界限，或许并不像支持者所声称的那样清晰。批评者进一步指出，一旦政府或机构默认可以合法地利用心理学规律引导公民决策，这一权力本身便存在被滥用于服务狭隘政治或商业利益、而非公民真实福祉的风险。</p>
+</div>
+
+<div class="question">
+<p class="qtext">24. 本文的核心议题是：</p>
+<ol type="A">
+<li>行为经济学的实验方法是否可靠</li>
+<li>"轻推"式政策干预在保留选择自由的同时利用心理规律引导决策，这一做法在实践与伦理层面引发的争议</li>
+<li>养老金制度应当如何改革</li>
+<li>传统经济学的理性人假设是否正确</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文章依次介绍轻推概念、支持者理由与批评者质疑，核心围绕这一干预方式的实践效果与伦理争议展开，B最全面概括了全文议题。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">25. "自由主义式家长主义"（libertarian paternalism）这一术语在文中最可能指代：</p>
+<ol type="A">
+<li>完全禁止政府干预个人选择的立场</li>
+<li>一种试图调和"保留个人选择自由"与"引导个人做出对自身更有利决定"这两个看似矛盾目标的政策取向</li>
+<li>只允许富人做出自由选择的制度</li>
+<li>要求所有公民必须参加养老金计划的强制性规定</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+该词紧接在"保留了'选择的自由'...同时又能...帮助人们克服...倾向"之后，用于概括这种试图兼顾自由与家长式引导的折中立场，B准确把握其含义。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">26. 批评者提出的第二点质疑（关于"操纵"与"强制"界限）的核心逻辑是：</p>
+<ol type="A">
+<li>轻推完全无效，根本不会改变任何人的行为</li>
+<li>轻推之所以能够奏效，恰恰依赖于利用人们决策易受默认设置等因素影响这一心理弱点，这使得轻推与更直接的操纵手段之间的伦理区别变得模糊，而非像支持者所说的那样泾渭分明</li>
+<li>轻推只在养老金领域有效，在其他领域完全无用</li>
+<li>该质疑与"选择自由"这一概念完全无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文写道"行为经济学的研究恰恰证明了人们的选择极易受到默认设置等因素的操纵；若'操纵'人们决策的心理机制本身就是轻推得以奏效的原因，那么轻推与更明显的强制手段之间的伦理界限...或许并不像支持者所声称的那样清晰"，B准确复述了这一逻辑链条。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">27. 若某研究发现，被"轻推"引导选择某默认养老金方案的人群中，事后被问及是否认同该选择时，绝大多数人明确表示满意且愿意主动做出同样选择。这一发现最能缓解文中哪一项批评？</p>
+<ol type="A">
+<li>缓解"轻推设计者的判断可能与被干预者真实偏好不一致"这一批评，因为事后反馈显示该判断确实与大多数人的真实偏好相符</li>
+<li>缓解"轻推可能被滥用于服务狭隘利益"这一批评</li>
+<li>该发现与文中任何批评均无关</li>
+<li>该发现证明轻推完全不涉及心理操纵</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+批评之一是"轻推设计者本身依据何种标准判断什么选择'对个人更有利'？这一判断本身难免带有...价值预设，可能与被干预者本人真实的偏好并不一致"。若事后调查显示大多数人确实认同并愿意主动选择该方案，说明设计者的判断与真实偏好基本吻合，从而缓解（而非完全消除）这一具体批评，A最贴切；该发现并不直接涉及"滥用于狭隘利益"或"心理操纵"的问题。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">28. 作者呈现支持者与批评者观点的方式，最恰当的描述是：</p>
+<ol type="A">
+<li>明显偏向支持者，弱化批评意见</li>
+<li>较为平衡地依次呈现支持理由与多层次的批评意见，未在文中明确给出自己的最终立场</li>
+<li>只呈现批评者观点，未提及任何支持理由</li>
+<li>使用讽刺语言嘲讽双方</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文章先以一段呈现支持者理由，再以较长篇幅呈现批评者的两层质疑，语言始终保持学术中立，未见作者明确表态支持任何一方，B准确描述了这种平衡呈现的写作方式。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">29. 根据文章逻辑，支持者与批评者的分歧，最根本地体现在对以下哪一问题的不同判断上？</p>
+<ol type="A">
+<li>行为经济学的实验数据是否准确</li>
+<li>利用已知的心理决策规律引导公民选择，是否仍然充分尊重了个人自主性，还是已经实质上构成了一种操纵</li>
+<li>养老金制度是否应该存在</li>
+<li>默认选项设置的具体技术实现方式</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+支持者强调"保留选择自由"意味着尊重自主性，批评者则质疑这种"自由"是否名不副实、实质上已构成心理操纵，二者分歧的根本焦点正是B所述的问题，而非数据准确性或具体技术细节等表层议题。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 6（第 30–34 题）：作者意图与文本解释之争</h3></h3>
+<p>在文学批评史上，一个长期存在的争论是：解读一部文学作品的意义时，作者本人的创作意图应占据多大权重？二十世纪中叶，一批批评家提出了颇具争议的主张：探究作者"原本想表达什么"，既在方法论上不可靠（因为我们通常无法直接进入作者的内心），也在理论上不必要（因为文本一旦完成、进入公共流通，其意义便独立于作者的私人意图而存在，向所有具备相应阅读能力的读者开放）。这一立场后来被称为"意图谬误"（intentional fallacy）论。</p>
+<p>反对者则认为，完全摒弃作者意图会带来一种解释上的放纵：若文本意义可以完全脱离作者意图而被任意解读，那么理论上任何解释似乎都同样"合法"，批评便丧失了区分"合理解读"与"过度诠释"的客观依据。他们进一步指出，理解一部作品所处的历史语境、作者的创作背景，往往能帮助读者避免明显的时代错置式误读——例如，若不了解某一历史时期特定词汇的实际含义，读者可能会将现代含义强加于文本，从而产生作者原本完全无意表达的解读。</p>
+<p>晚近的一些批评家试图调和这一分歧，提出区分"意图"的不同层次：一方面，完全依赖对作者私人心理状态的猜测（如"作者写这句话时具体在想什么"）确实方法论上存疑；但另一方面，将文本置于其产生的历史、语言与体裁惯例语境中加以理解——这更接近于重建文本在其原初语境下可能具有的公共意义，而非窥探作者的私人意图——则被认为是解读文学作品时几乎不可或缺的基础工作。</p>
+</div>
+
+<div class="question">
+<p class="qtext">30. "意图谬误"论的核心主张是：</p>
+<ol type="A">
+<li>作者的创作意图是理解文本意义的唯一合法依据</li>
+<li>探究作者的私人创作意图既方法论上不可靠、也在理论上非必要，因为文本意义一旦完成便独立于作者意图而向读者开放</li>
+<li>所有文学作品都应当匿名发表</li>
+<li>作者意图与文本语境完全相同</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文明确定义该立场为"探究作者'原本想表达什么'，既在方法论上不可靠...也在理论上不必要...文本...其意义便独立于作者的私人意图而存在"，B准确复述了这一定义。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">31. 反对者提出"解释放纵"这一担忧，其论证逻辑最接近：</p>
+<ol type="A">
+<li>若完全放弃某一约束解读的客观标准（作者意图），批评实践将失去区分合理与过度诠释的依据，从而导致解释的随意化</li>
+<li>作者意图是唯一能被科学验证的事物</li>
+<li>所有读者的解读都必然相同</li>
+<li>文学批评应当被完全废除</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+原文写道"若文本意义可以完全脱离作者意图而被任意解读，那么理论上任何解释似乎都同样'合法'，批评便丧失了区分'合理解读'与'过度诠释'的客观依据"，A准确复述了这一担忧的逻辑结构。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">32. 末段提出的"调和"方案，其关键区分在于：</p>
+<ol type="A">
+<li>区分作者的私人心理状态（被认为方法论存疑）与文本产生时的历史语言语境（被认为是解读的必要基础），二者不应被混为一谈</li>
+<li>完全否定意图谬误论与其反对者双方的所有观点</li>
+<li>主张唯一可靠的方法是直接采访作者本人</li>
+<li>认为所有历史语境都与文本解读无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+末段明确写道"完全依赖对作者私人心理状态的猜测...确实方法论上存疑；但另一方面，将文本置于其产生的历史、语言与体裁惯例语境中加以理解...被认为是解读文学作品时几乎不可或缺的基础工作"，A准确概括了这一区分。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">33. 文中"时代错置式误读"的例子（不了解特定历史时期词汇含义）主要用于支持：</p>
+<ol type="A">
+<li>意图谬误论的核心主张</li>
+<li>反对者的论点，即了解作者所处的历史语境有助于避免将现代含义错误地强加于文本</li>
+<li>证明所有历史文献都已失传</li>
+<li>与全文论点无关的插曲</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+该例子紧接"理解一部作品所处的历史语境...往往能帮助读者避免明显的时代错置式误读"，是反对者论证"语境重要性"的具体例证，B准确对应。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">34. 根据末段的调和立场，以下哪种解读实践最可能被认为是可接受的？</p>
+<ol type="A">
+<li>批评家通过研究某历史时期的语言用法词典，判断文本中某一词语在写作年代最可能的公共含义，并据此解读该词在文中的作用</li>
+<li>批评家声称通过灵媒与已故作者对话，得知其"真实"创作意图</li>
+<li>批评家完全忽略文本产生的任何历史背景，仅凭个人当下感受随意解读</li>
+<li>批评家坚持认为只有作者本人的解释才是唯一正确答案</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+末段调和立场认可"将文本置于其产生的历史、语言与体裁惯例语境中加以理解"，选项A正是这种基于历史语言语境（而非猜测作者私人心理）的解读实践，符合该立场；选项B、D则涉及对作者私人意图的直接诉诸，被文中认为方法论存疑。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 7（第 35–39 题）：历史书写中的"进步"叙事及其局限</h3></h3>
+<p>许多传统历史叙述倾向于将历史进程描绘为一条大体朝向"进步"（如科学理性的胜利、道德观念的持续改善、政治制度日趋民主）演进的连续轨迹。这种"进步叙事"具有强大的直觉吸引力：它为纷繁复杂的历史事件提供了一条清晰的意义线索，使读者能够将过去理解为通往当下（往往被默认为更优越状态）的必经阶段。</p>
+<p>然而，二十世纪后半叶以来，不少历史学家对这种叙事模式提出了系统性质疑。其一，进步叙事往往隐含一种目的论视角——仿佛历史进程本身"朝向"某个既定终点前进，但这种目的论预设本身缺乏独立于叙事者当下立场的客观依据：判断某一变化是否构成"进步"，本身已预设了叙事者自己关于何为"更优越"的价值标准，而这一标准往往悄然将当下社会奉为不言自明的评判尺度。其二，进步叙事容易掩盖历史进程中并非单向线性的复杂性——许多领域的历史实际呈现出反复、倒退、多线并行乃至相互矛盾的图景，将其强行纳入单一的"进步"框架，可能抹去那些不符合该框架、但同样重要的历史经验。</p>
+<p>批评进步叙事并不必然导向历史虚无主义（即认为一切历史评价都同样站不住脚、毫无意义）。相反，许多持批评立场的历史学家主张，更审慎的做法是承认任何历史评价标准本身都需要被明确论证、而非被默认为客观真理，同时保持对历史复杂性、多线性与偶然性的敏感，而非急于将纷繁的过去整理进一条单一、令人安心的叙事主线。</p>
+</div>
+
+<div class="question">
+<p class="qtext">35. 本文对"进步叙事"的整体态度最恰当的描述是：</p>
+<ol type="A">
+<li>全盘接受进步叙事，认为其完全客观</li>
+<li>呈现进步叙事的吸引力，随后系统呈现批评意见，并在结尾澄清批评并非导向历史虚无主义，而是呼吁更审慎、明确论证评价标准并保持对复杂性的敏感</li>
+<li>认为历史学毫无意义，所有历史书写都应停止</li>
+<li>主张唯一正确的历史叙事就是进步叙事的反面（即"退步叙事"）</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文章先说明进步叙事的直觉吸引力，再依次列出目的论预设与掩盖复杂性两点批评，末段明确指出这并不导向历史虚无主义，而是主张更审慎的评价方式，B完整概括了这一论证走向。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">36. 文中所述"目的论预设"的问题，其核心在于：</p>
+<ol type="A">
+<li>历史事件的发生完全没有原因</li>
+<li>判断某段历史是否"朝向进步"演进，本身已预设了评判者关于"何为更优越"的价值标准，而该标准常被悄然当作不言自明的客观真理，未经明确论证</li>
+<li>历史学家从不使用任何价值判断</li>
+<li>进步叙事完全不涉及任何目的论假设</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文写道，判断某一变化是否构成"进步"，"本身已预设了叙事者自己关于何为'更优越'的价值标准，而这一标准往往悄然将当下社会奉为不言自明的评判尺度"，B准确复述了这一批评的核心。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">37. 末段区分"批评进步叙事"与"历史虚无主义"，这一区分的主要作用是：</p>
+<ol type="A">
+<li>说明批评进步叙事本身也是完全站不住脚的</li>
+<li>澄清对进步叙事的批评并不等同于否定一切历史评价的可能性，而是主张评价标准需要被明确论证，从而避免读者将该批评误解为一种彻底的相对主义立场</li>
+<li>证明历史学家之间从无分歧</li>
+<li>与全文论点完全无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+该区分紧接在两点批评之后，其功能正是防止读者将"批评进步叙事"过度推论为"一切历史评价都毫无意义"，转而强调更审慎、需要论证的评价方式，B准确把握了这一段落功能。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">38. 以下哪一历史书写实践，最符合文末所倡导的"更审慎"立场？</p>
+<ol type="A">
+<li>直接宣称"人类历史总体上是不断进步的"，无需进一步说明判断依据</li>
+<li>历史学家在评价某项制度变革时，明确说明自己采用的评判标准（如某类具体的福祉指标），并同时呈现该变革在不同群体、不同地区所产生的复杂、乃至相互矛盾的影响</li>
+<li>完全拒绝对任何历史事件做出评价</li>
+<li>只叙述历史事件的时间顺序，不做任何解释</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文末立场是"承认任何历史评价标准本身都需要被明确论证...同时保持对历史复杂性、多线性与偶然性的敏感"，选项B同时满足"明确论证评价标准"与"呈现复杂多线的影响"两个要求，最符合这一立场。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">39. 作者提及"许多领域的历史实际呈现出反复、倒退、多线并行乃至相互矛盾的图景"，这句话在文中的主要功能是：</p>
+<ol type="A">
+<li>为第二点批评（进步叙事掩盖历史复杂性）提供具体内容支撑</li>
+<li>反驳第一点批评（目的论预设）</li>
+<li>证明历史学是一门伪科学</li>
+<li>与文章主旨无关的题外话</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+该句紧承"进步叙事容易掩盖历史进程中并非单向线性的复杂性"这一论点，是对第二点批评的具体展开与内容支撑，而非针对第一点（目的论）的反驳，A最贴切。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 8（第 40–44 题）：公民不服从的道德正当性</h3></h3>
+<p>公民不服从（civil disobedience）——即公开、非暴力地违反某项被认为不义的法律，并甘愿承担相应法律后果，以此表达抗议并寻求推动法律或政策变革——在民主社会的政治伦理讨论中始终占据重要位置。支持者认为，在一个总体上尊重法治的社会中，公民不服从并非对法治本身的否定，而恰恰体现了对法治精神更深层次的忠诚：行动者甘愿承受法律惩罚这一事实，本身即表明其并非要煽动无政府状态，而是试图以极具道德说服力的方式，促使更广泛的公众与立法者正视某项法律的不义之处。</p>
+<p>然而，这一辩护面临若干限制条件的争议。首先，谁有权判定某项法律"不义"？若允许任何个人仅凭自身的道德判断便可选择性违法，社会秩序的稳定性是否会受到威胁？对此，许多理论家提出，公民不服从的正当性通常需要满足一定条件：其诉求应针对严重、明确的不正义（而非任意的政策分歧）；应以非暴力方式进行；应在用尽（或已充分尝试）常规合法申诉渠道后方才诉诸；且行动者应公开、透明地承担法律后果，而非试图逃避惩罚。其次，一些学者进一步追问：这些限制条件是否本身就预设了社会已具备基本可运作的合法申诉渠道——而这一预设在某些高度压迫性的政治体制下可能并不成立，此时公民不服从的适用条件又该如何调整，仍存在争议。</p>
+</div>
+
+<div class="question">
+<p class="qtext">40. 支持者认为公民不服从"体现了对法治精神更深层次的忠诚"，这一论点的核心依据是：</p>
+<ol type="A">
+<li>行动者试图完全推翻现有法律体系</li>
+<li>行动者甘愿公开承受法律惩罚这一事实，表明其行动意在通过道德说服推动法律变革，而非煽动无政府状态或否定法治本身</li>
+<li>行动者从不违反任何法律</li>
+<li>行动者的行为完全不会受到任何后果</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文明确指出"行动者甘愿承受法律惩罚这一事实，本身即表明其并非要煽动无政府状态，而是试图以极具道德说服力的方式，促使...正视某项法律的不义之处"，B准确复述了该论证依据。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">41. 文中提出的公民不服从正当性限制条件，不包括以下哪一项？</p>
+<ol type="A">
+<li>诉求针对严重、明确的不正义</li>
+<li>以非暴力方式进行</li>
+<li>行动者应设法逃避法律惩罚以保全自身</li>
+<li>应在充分尝试常规合法申诉渠道之后进行</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+原文明确要求"行动者应公开、透明地承担法律后果，而非试图逃避惩罚"，选项C与此直接相反，因此不属于文中列出的限制条件，反而是被明确排除的做法。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">42. 文末提出的追问（限制条件是否预设了合法申诉渠道的存在）主要用于：</p>
+<ol type="A">
+<li>彻底否定公民不服从理论的全部内容</li>
+<li>指出前述限制条件框架本身可能存在适用范围上的局限——它可能默认了一种在高度压迫性体制下并不成立的政治前提，从而为该理论在极端情境下的适用性留下未决问题</li>
+<li>证明公民不服从在任何情境下都完全不受限制</li>
+<li>与全文讨论的主题无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+该追问紧接在限制条件之后，指出"这些限制条件是否本身就预设了社会已具备基本可运作的合法申诉渠道——而这一预设...在某些高度压迫性的政治体制下可能并不成立"，B准确概括了这一段的功能：揭示该理论框架的潜在局限与未决问题。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">43. 假设某行动者秘密破坏公共设施并试图逃避追查以避免被捕，根据文中所述的正当性条件，这一行为最可能被归类为：</p>
+<ol type="A">
+<li>典型的公民不服从，完全符合文中标准</li>
+<li>不符合文中所述公民不服从的正当性标准，因为该行为既非公开进行，也未表现出甘愿承担法律后果的姿态，且涉及对财产的破坏，与"非暴力"原则存在张力</li>
+<li>与公民不服从的定义完全无关的合法行为</li>
+<li>无法根据文中信息做出任何判断</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文中定义公民不服从需"公开、非暴力"并"甘愿承担相应法律后果"，题干所述行为是秘密进行且试图逃避追查，明显不满足"公开"与"承担后果"这两项核心特征，且"破坏公共设施"也可能与非暴力原则存在张力，故不符合文中标准，B最贴切。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">44. 全文围绕公民不服从展开论述的逻辑顺序最准确的描述是：</p>
+<ol type="A">
+<li>先定义公民不服从并给出支持性论证，再讨论其正当性所需满足的限制条件，最后指出该条件框架本身存在的潜在局限</li>
+<li>先给出结论"公民不服从应被禁止"，再论证该结论</li>
+<li>全文没有任何逻辑顺序，只是若干观点的随意堆砌</li>
+<li>先讨论限制条件的局限，再定义公民不服从</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+文章第一段定义公民不服从并给出支持性论证（体现对法治精神的忠诚），第二段转向讨论正当性所需的限制条件，并在段末进一步追问该条件框架的潜在局限，A准确概括了这一递进式论述顺序。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 9（第 45–49 题）：语言相对论之争</h3></h3>
+<p>语言是否会塑造使用者的思维方式，甚至限定其可能形成的概念？这一问题被称为"语言相对论"（linguistic relativity），其较强版本——有时被称为"萨丕尔-沃尔夫假说"的极端形式——主张语言不仅影响而且在相当程度上决定了使用者的认知结构：若某语言缺乏表达某一概念的词汇或语法范畴，其使用者将难以（甚至无法）形成该概念本身。这一强版本在二十世纪中期一度颇具影响力，但因缺乏严谨实证支持、且逻辑上难以自洽（毕竟译者能够将陌生概念译入译出，本身即说明语言并未构成不可逾越的认知牢笔），逐渐被主流语言学界扬弃。</p>
+<p>然而，一种更为温和的版本近年来重新获得关注，得到了若干严谨实证研究的支持：语言未必"决定"思维的边界，却可能影响某些认知任务中信息被加工、注意或记忆的默认方式。例如，某些语言要求说话者在几乎每句话中都标注方位（如"东边的杯子"而非"你左边的杯子"），使用此类语言的族群在方位判断任务中的表现，往往优于依赖自我中心参照系（左/右）的语言使用者，这提示语言的语法强制性范畴可能训练并强化某些认知习惯，而非仅仅反映既有思维方式。</p>
+<p>批评者提醒，这类实证发现仍需谨慎解读：观察到语言使用者在特定任务上的表现差异，并不必然意味着该差异源于语言本身，而可能同时受文化实践、环境经验等因素影响，这些因素往往与特定语言的使用高度共变，难以在自然语言比较研究中被完全剥离。</p>
+</div>
+
+<div class="question">
+<p class="qtext">45. 本文对"语言相对论"这一议题的整体论述结构最准确的概括是：</p>
+<ol type="A">
+<li>先驳斥该假说的强版本，再呈现温和版本获得的实证支持，最后提出方法论上的谨慎提醒</li>
+<li>全文只支持强版本，未提及任何反对意见</li>
+<li>全文完全否定语言与思维之间存在任何关联</li>
+<li>只描述实验方法，不涉及任何理论争议</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+文章依次说明强版本因缺乏实证支持及逻辑问题被扬弃，随后呈现温和版本的实证证据（方位判断任务），末段又提出解读这些证据时应有的方法论谨慎，A完整概括了这一论述脉络。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">46. 作者提及"译者能够将陌生概念译入译出"这一事实，其论证功能是：</p>
+<ol type="A">
+<li>证明所有语言在语法结构上完全相同</li>
+<li>作为反驳强版本语言相对论的一个逻辑论据，说明语言并未构成使用者认知上不可逾越的边界</li>
+<li>说明翻译工作毫无难度</li>
+<li>支持强版本语言相对论</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+该句紧跟在强版本"逻辑上难以自洽"之后，作为具体理由展开：若语言真的严格限定可形成的概念，翻译陌生概念应当不可能，但翻译实践的存在本身即反驳了这一强主张，B准确把握了该论据的功能。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">47. 根据文中关于方位表达语言的实证研究，以下哪一发现若为真，将最直接支持温和版本语言相对论？</p>
+<ol type="A">
+<li>使用方位强制语言的儿童在尚未熟练掌握该语法范畴前，其方位判断能力与其他儿童并无差异；但掌握后表现显著提升</li>
+<li>所有语言使用者在方位判断任务中表现完全相同</li>
+<li>方位判断能力完全由基因决定，与语言无关</li>
+<li>该语言族群从不进行方位判断任务</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+温和版本主张语言的语法强制性范畴"训练并强化"认知习惯。若能证明该能力的提升恰好伴随该语法范畴的习得而出现（习得前无差异，习得后表现提升），将为"语言训练认知习惯"这一因果机制提供有力的直接支持，比单纯的族群间静态比较更具说服力。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">48. 末段提出的方法论担忧，其核心逻辑最接近以下哪一说法？</p>
+<ol type="A">
+<li>相关性观察到的语言—认知表现差异，可能是由与该语言高度共变的文化或环境因素造成，而非语言本身的直接作用，即相关不等于因果</li>
+<li>该研究方法在统计学上完全无效</li>
+<li>方位判断任务本身设计有误</li>
+<li>该担忧只适用于强版本语言相对论，与温和版本无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+末段明确指出"该差异...可能同时受文化实践、环境经验等因素影响，这些因素往往与特定语言的使用高度共变，难以...被完全剥离"，这正是经典的"相关不等于因果"式方法论担忧，A准确概括了这一逻辑。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">49. 作者对温和版本语言相对论的态度，最恰当的描述是：</p>
+<ol type="A">
+<li>全盘拒绝，认为其与强版本一样站不住脚</li>
+<li>审慎地承认其获得了一定实证支持，同时提醒读者注意现有证据在因果推断上的局限</li>
+<li>毫无保留地全盘接受，未提出任何限定</li>
+<li>认为该问题已有确凿定论，无需进一步研究</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文章使用"近年来重新获得关注，得到了若干严谨实证研究的支持"等措辞承认温和版本的证据基础，但随即在末段提出方法论上的谨慎提醒，整体呈现出审慎、留有余地的态度，而非全盘接受或拒绝，B最贴切。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 10（第 50–53 题）：电子游戏能否被视为艺术</h3></h3>
+<p>围绕电子游戏能否被纳入"艺术"范畴的争论，近年来在美学界持续发酵。反对者常援引一种关于艺术本质的经典论点：真正的艺术作品应当由创作者完整地、单向地向观众传达某种既定的审美意图或情感体验，观众的角色本质上是被动的接受者与诠释者。电子游戏则从根本上颠覆了这一单向结构——玩家的选择、操作乃至失败，都会实质性地改变作品的呈现内容与体验节奏，因而反对者认为，电子游戏更接近一种被高度设计过的"互动系统"或"娱乐产品"，而非严格意义上的艺术品，因为其最终呈现的体验并非完全由创作者所掌控。</p>
+<p>支持者则反驳称，这一论证预设了一种过于狭隘的艺术定义，且这种定义本身在艺术史上也并非从未受到挑战：即兴爵士乐表演、参与式装置艺术、乃至观众可自由走动决定观展顺序的展览空间，都在不同程度上引入了观众的能动性，却从未因此被逐出艺术范畴。支持者进一步指出，恰恰是电子游戏能够将玩家的能动选择本身转化为叙事与情感体验的有机组成部分——例如某些游戏刻意设计让玩家在特定情境下亲手做出艰难道德抉择，从而使玩家对随之而来的情感冲击的体认，远比被动观看同样情节的电影更为深刻——这正是电子游戏作为一种独特艺术媒介所具有的、其他艺术形式难以复制的表现力。</p>
+<p>这场争论的深层分歧，或许并不在于电子游戏是否"足够严肃"或"制作精良"，而在于我们究竟应当将互动性视为对艺术传统单向传达模式的背离，还是将其视为艺术表现手段的一种全新拓展。</p>
+</div>
+
+<div class="question">
+<p class="qtext">50. 反对者认为电子游戏不属于严格意义上的艺术，其核心论据是：</p>
+<ol type="A">
+<li>电子游戏的画面制作水平普遍低劣</li>
+<li>艺术品应由创作者单向、完整地传达既定审美意图，而电子游戏的最终呈现因玩家的选择而改变，不完全由创作者掌控</li>
+<li>电子游戏缺乏商业价值</li>
+<li>电子游戏的受众数量过少</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文明确写道反对者的论点核心在于"艺术作品应当由创作者完整地、单向地向观众传达某种既定的审美意图"，而电子游戏因玩家的选择"实质性地改变作品的呈现内容"而不符合这一定义，B准确复述了该论据。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">51. 支持者提到"即兴爵士乐表演""参与式装置艺术"等例子，其论证目的是：</p>
+<ol type="A">
+<li>证明音乐比电子游戏更具艺术价值</li>
+<li>说明反对者所预设的"单向传达"艺术定义本身在艺术史上并非普适标准，从而削弱反对者论证的前提</li>
+<li>证明所有互动性作品都毫无艺术价值</li>
+<li>与文章论点完全无关的举例</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+这些例子被用来说明"引入观众能动性"并不必然导致某作品被排除在艺术范畴之外，其功能是质疑并削弱反对者所依赖的"艺术必须单向传达"这一前提假设，属于经典的"反例削弱前提"论证策略。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">52. 文中提到"某些游戏刻意设计让玩家亲手做出艰难道德抉择"，这一例子主要用于支持：</p>
+<ol type="A">
+<li>支持者的论点，即互动性可以成为电子游戏独有的、能强化情感体验的艺术表现手段，而非艺术性的减损</li>
+<li>反对者的论点，证明电子游戏无法传达任何情感</li>
+<li>证明所有电影都不如电子游戏感人</li>
+<li>与全文论点无关的娱乐性描述</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+该例子紧接在"恰恰是电子游戏能够将玩家的能动选择本身转化为叙事与情感体验的有机组成部分"之后，用以论证互动性并非对传统艺术传达模式的削弱，反而可能成就一种"其他艺术形式难以复制的表现力"，直接支持支持者一方的论点。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">53. 根据末段，作者认为这场争论真正的分歧焦点在于：</p>
+<ol type="A">
+<li>电子游戏的制作成本高低</li>
+<li>互动性究竟应被视为对艺术单向传达传统的背离，还是艺术表现手段的一种拓展，而非仅仅关乎"是否足够严肃或精良"</li>
+<li>电子游戏行业的商业规模</li>
+<li>该争论其实并无实质分歧，纯属文字游戏</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+末段明确指出，深层分歧"并不在于电子游戏是否'足够严肃'或'制作精良'，而在于我们究竟应当将互动性视为...背离，还是...一种全新拓展"，B准确复述了这一论点。</div>
+</details>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: Bio/Biochem -->
+<!-- ============================================================ -->
+<div class="section-header" id="section3">
+  <h2>第三部分：生物与生物化学基础 (Biological and Biochemical Foundations of Living Systems)</h2>
+  <div class="section-meta">59 题（官方全长） · 建议用时 95 分钟</div>
+</div>
+
+<div class="passage">
+<h3>文章 3（第 1–5 题）：细菌操纵子的基因调控</h3>
+<p>色氨酸操纵子（trp operon）是细菌通过负反馈调控氨基酸合成基因表达的经典例证。当环境中色氨酸浓度较低时，色氨酸合成相关基因（trpE、trpD、trpC、trpB、trpA）被转录；而当色氨酸浓度较高时，色氨酸作为辅阻遏物（corepressor）与阻遏蛋白结合，使阻遏蛋白构象改变后能够结合操纵子的操纵基因（operator）区域，从而阻止 RNA 聚合酶转录相关结构基因。</p>
+<p>研究人员构建了野生型菌株及三种突变菌株，分别测定在高色氨酸与低色氨酸培养基中 trp 结构基因的相对表达水平（以任意单位表示），结果如下：</p>
+<table class="data-table">
+<tr><th>菌株</th><th>低色氨酸培养基表达水平</th><th>高色氨酸培养基表达水平</th></tr>
+<tr><td>野生型</td><td>100</td><td>5</td></tr>
+<tr><td>突变体 1（操纵基因区域突变，阻遏蛋白无法结合）</td><td>98</td><td>95</td></tr>
+<tr><td>突变体 2（阻遏蛋白基因缺失）</td><td>102</td><td>97</td></tr>
+<tr><td>突变体 3（阻遏蛋白组成型激活突变，无需色氨酸结合即可结合操纵基因）</td><td>4</td><td>3</td></tr>
+</table>
+</div>
+
+<div class="question">
+<p class="qtext">1. 野生型菌株在低色氨酸培养基中表达水平远高于高色氨酸培养基，这一现象最能说明：</p>
+<ol type="A">
+<li>色氨酸直接激活 RNA 聚合酶的活性</li>
+<li>色氨酸作为辅阻遏物，与阻遏蛋白结合后抑制结构基因转录，形成负反馈调控</li>
+<li>色氨酸浓度与操纵子表达水平无关</li>
+<li>低色氨酸浓度会破坏操纵基因的DNA结构</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+这正是文中描述的机制：高色氨酸时，色氨酸与阻遏蛋白结合并激活其DNA结合能力，从而抑制转录（表达降低）；低色氨酸时，阻遏蛋白不结合操纵基因，转录得以进行（表达升高），是典型的负反馈调控。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">2. 突变体1（操纵基因区域突变）在高低色氨酸条件下均保持高表达，最合理的解释是：</p>
+<ol type="A">
+<li>阻遏蛋白无法与已突变的操纵基因结合，因此无论色氨酸浓度如何，转录均不受抑制</li>
+<li>该菌株完全丧失了RNA聚合酶</li>
+<li>该菌株的色氨酸合成能力已经丧失</li>
+<li>操纵基因突变增强了启动子活性</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+操纵基因（operator）是阻遏蛋白的结合位点。若该区域发生突变导致阻遏蛋白无法结合，则无论色氨酸浓度高低，阻遏蛋白都无法发挥抑制作用，转录持续处于"开启"状态，与表格数据吻合。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">3. 突变体2（阻遏蛋白基因缺失）与突变体1相比，表型高度相似，这说明：</p>
+<ol type="A">
+<li>阻遏蛋白与操纵基因的相互作用是负调控发挥作用的必要环节，缺少阻遏蛋白或阻遏蛋白结合位点均会导致持续表达</li>
+<li>两个突变体实际上是同一突变</li>
+<li>阻遏蛋白对操纵子表达没有实际影响</li>
+<li>该操纵子的调控完全依赖启动子强度</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+无论是缺失阻遏蛋白本身（突变体2），还是缺失阻遏蛋白的结合位点（突变体1），负反馈抑制机制都会失效，导致操纵子在两种条件下均维持高表达，二者殊途同归，印证了阻遏蛋白—操纵基因相互作用是负调控的核心环节。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">4. 突变体3的阻遏蛋白无需与色氨酸结合即可结合操纵基因，其在低色氨酸与高色氨酸条件下均表现为低表达（4和3），最合理的解释是：</p>
+<ol type="A">
+<li>该突变使阻遏蛋白丧失了DNA结合能力</li>
+<li>该突变使阻遏蛋白处于组成型（constitutive）激活状态，无论色氨酸是否存在均持续结合操纵基因并抑制转录</li>
+<li>该突变体的色氨酸浓度天然较高</li>
+<li>该突变体完全无法合成阻遏蛋白</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+题干已说明该突变使阻遏蛋白"无需色氨酸结合即可结合操纵基因"，即阻遏蛋白处于持续激活状态，因此无论环境中色氨酸浓度如何，转录均被持续抑制，两种条件下表达水平都很低，与数据吻合。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">5. 该实验中设置"野生型菌株"作为对照组的主要目的是：</p>
+<ol type="A">
+<li>确定正常调控机制下操纵子对色氨酸浓度变化的正常应答模式，为解读突变体表型提供比较基准</li>
+<li>提供培养基的营养来源</li>
+<li>验证色氨酸的化学结构</li>
+<li>确保实验在无菌条件下进行</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+野生型对照组建立了"正常"调控行为的基准（低色氨酸高表达、高色氨酸低表达），使研究者能够将各突变体的异常表现与之比较，从而推断每个突变影响了调控通路的哪个环节，这是实验设计中对照组的核心作用。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 4（第 6–10 题）：肾单位中的物质转运</h3>
+<p>肾单位（nephron）通过肾小球滤过、肾小管重吸收与分泌三个过程共同调节体液成分。滤液流经近曲小管时，大部分水、葡萄糖、氨基酸及电解质被重吸收。滤液随后进入髓袢（loop of Henle），其中降支细段对水高度通透而对溶质相对不通透，升支粗段则相反——对水不通透，但主动重吸收 Na⁺、K⁺、Cl⁻，这一特性是肾脏建立髓质高渗梯度（逆流倍增机制）的关键。</p>
+<p>滤液最终到达远曲小管与集合管，此处的重吸收受到激素精细调节：抗利尿激素（ADH）促使集合管上皮细胞插入水通道蛋白（aquaporin-2），增加集合管对水的通透性，从而根据机体水合状态调节尿液浓缩程度；醛固酮（aldosterone）则作用于远曲小管与集合管主细胞，促进 Na⁺ 重吸收的同时促进 K⁺ 分泌。</p>
+<p>下表列出了肾单位不同节段滤液渗透压的大致数值（正常抗利尿状态下）：</p>
+<table class="data-table">
+<tr><th>部位</th><th>渗透压（mOsm/kg）</th></tr>
+<tr><td>肾小囊滤液（刚滤过）</td><td>300</td></tr>
+<tr><td>髓袢降支细段末端</td><td>1200</td></tr>
+<tr><td>髓袢升支粗段末端（进入远曲小管前）</td><td>100</td></tr>
+<tr><td>集合管末端（有ADH存在）</td><td>1200</td></tr>
+</table>
+</div>
+
+<div class="question">
+<p class="qtext">6. 滤液流经髓袢升支粗段后渗透压由高变低（表中降至100 mOsm/kg），最主要的原因是：</p>
+<ol type="A">
+<li>该段对水高度通透，水被大量重吸收</li>
+<li>该段对水不通透，但主动转运Na⁺、K⁺、Cl⁻离开管腔，使滤液变得稀释</li>
+<li>该段主动分泌大量水分进入管腔</li>
+<li>该段对所有物质均不通透</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文中明确指出升支粗段"对水不通透，但主动重吸收 Na⁺、K⁺、Cl⁻"。溶质被移除而水分不能跟随移除，导致管腔内滤液渗透压持续下降，形成"稀释段"，这是逆流倍增机制中建立髓质高渗梯度的关键步骤之一。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">7. 若某患者体内ADH分泌完全缺失（如中枢性尿崩症），集合管末端的渗透压最可能会：</p>
+<ol type="A">
+<li>接近1200 mOsm/kg，与正常抗利尿状态相同</li>
+<li>显著低于1200 mOsm/kg，接近远曲小管滤液的渗透压，因为缺乏水通道蛋白插入，水无法被重吸收</li>
+<li>渗透压无法预测</li>
+<li>渗透压会高于1200 mOsm/kg</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+ADH缺失时，集合管上皮细胞无法插入水通道蛋白（aquaporin-2），对水的通透性大幅降低，尽管周围髓质渗透压仍然很高，管腔内的水却无法被重吸收，导致排出大量稀释尿液，集合管内滤液渗透压将接近远曲小管出口处的低渗透压水平，而非1200。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">8. 醛固酮分泌增加时，血浆中最可能观察到的电解质变化趋势是：</p>
+<ol type="A">
+<li>Na⁺升高，K⁺升高</li>
+<li>Na⁺升高，K⁺降低</li>
+<li>Na⁺降低，K⁺升高</li>
+<li>Na⁺降低，K⁺降低</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+醛固酮促进远曲小管与集合管主细胞对Na⁺的重吸收（血Na⁺趋于升高）并同时促进K⁺的分泌（血K⁺趋于降低）。这也是醛固酮增多症（如原发性醛固酮增多症）患者常见高血压合并低钾血症的机制。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">9. 髓袢降支细段对水高度通透而对溶质相对不通透，这一特性在逆流倍增机制中的主要作用是：</p>
+<ol type="A">
+<li>使管腔内滤液随着深入髓质、渗透压逐渐升高，与周围高渗间质达到渗透平衡</li>
+<li>主动将Na⁺泵入管腔</li>
+<li>阻止滤液向下流动</li>
+<li>使滤液渗透压保持恒定不变</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+由于降支细段对水通透而对溶质相对不通透，水会顺渗透压梯度被动流出管腔进入周围高渗间质，使管腔内滤液渗透压随深度增加而逐渐升高，最终在髓袢底部达到最高值（如表中1200 mOsm/kg），这是逆流倍增机制建立髓质高渗梯度的重要一环。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">10. 若某药物选择性阻断髓袢升支粗段的 Na⁺-K⁺-2Cl⁻ 共转运体（如袢利尿剂的作用机制），最直接的生理后果是：</p>
+<ol type="A">
+<li>髓质高渗梯度增强，尿液浓缩能力提高</li>
+<li>髓质高渗梯度减弱，肾脏浓缩尿液的能力下降，尿量增加（利尿作用）</li>
+<li>对肾脏功能没有影响</li>
+<li>集合管对水的通透性直接增加</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+阻断升支粗段的Na⁺-K⁺-2Cl⁻共转运体会削弱该段对溶质的主动重吸收，从而减弱逆流倍增机制建立的髓质高渗梯度，使集合管周围渗透压梯度减小，即使有ADH存在，水的重吸收驱动力也会下降，导致尿量增加，这正是袢利尿剂（如呋塞米）的作用原理。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 5（第 11–15 题）：酶动力学与抑制作用</h3>
+<p>酶催化反应速率与底物浓度的关系可用米氏方程（Michaelis-Menten equation）描述：v = (Vmax[S])/(Km+[S])，其中Vmax为最大反应速率，Km为米氏常数（数值上等于反应速率达到Vmax一半时的底物浓度），Km越小通常表示酶对底物的亲和力越高。竞争性抑制剂（competitive inhibitor）在结构上与底物相似，与底物竞争酶的活性位点，其效应可通过提高底物浓度而被部分克服，表现为表观Km升高而Vmax不变；非竞争性抑制剂（noncompetitive inhibitor）则结合于活性位点以外的别构位点，不与底物竞争结合，其效应无法通过增加底物浓度克服，表现为Vmax降低而Km不变。</p>
+<p>研究者测定了某酶在无抑制剂、加入竞争性抑制剂、加入非竞争性抑制剂三种条件下的反应动力学参数：</p>
+<table class="data-table">
+<tr><th>条件</th><th>Km (mM)</th><th>Vmax (μmol/min)</th></tr>
+<tr><td>无抑制剂</td><td>2.0</td><td>10.0</td></tr>
+<tr><td>+竞争性抑制剂</td><td>8.0</td><td>10.0</td></tr>
+<tr><td>+非竞争性抑制剂</td><td>2.0</td><td>5.0</td></tr>
+</table>
+</div>
+
+<div class="question">
+<p class="qtext">11. 根据表中数据，竞争性抑制剂存在时Km由2.0升高至8.0 mM，而Vmax保持不变，这一模式最能说明：</p>
+<ol type="A">
+<li>抑制剂与底物竞争同一活性位点，通过提高底物浓度足以将其从活性位点竞争性置换，最终仍可达到原有的最大反应速率</li>
+<li>抑制剂与酶发生了不可逆共价结合</li>
+<li>该抑制剂实际上是非竞争性抑制剂</li>
+<li>酶的活性位点已被永久破坏</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+竞争性抑制的经典动力学特征正是"Km升高、Vmax不变"：由于抑制剂与底物竞争同一活性位点，只要底物浓度足够高，就能通过质量作用将抑制剂竞争性排除出活性位点，因此在极高底物浓度下仍可达到与无抑制剂时相同的Vmax，但达到半数最大速率所需的底物浓度（Km）升高，反映出表观亲和力下降。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">12. 非竞争性抑制剂使Vmax由10.0降至5.0 μmol/min，而Km保持不变，这最能说明该抑制剂的作用机制是：</p>
+<ol type="A">
+<li>结合于活性位点以外的别构位点，不影响酶对底物的亲和力，但降低了酶-底物复合物转化为产物的催化效率，且无法通过提高底物浓度克服</li>
+<li>与底物直接竞争活性位点</li>
+<li>提高了酶对底物的亲和力</li>
+<li>使酶完全失去催化活性，Vmax应降为0</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+非竞争性抑制剂结合于别构位点而非活性位点，因此不干扰底物与酶的结合（Km不变，亲和力不变），但会降低酶-底物复合物的催化转化效率，导致Vmax下降；由于抑制剂并非通过与底物竞争活性位点起作用，增加底物浓度无法逆转其抑制效应。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">13. 若某酶的Km值很小（如0.1 mM），这最直接说明该酶对其底物具有：</p>
+<ol type="A">
+<li>较低的亲和力，需要很高的底物浓度才能达到半数最大速率</li>
+<li>较高的亲和力，只需较低的底物浓度即可达到半数最大速率</li>
+<li>Km与亲和力无关</li>
+<li>该酶不遵循米氏动力学</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+Km在数值上等于反应速率达到Vmax一半时所需的底物浓度。Km值越小，意味着达到半数最大速率所需的底物浓度越低，通常被解释为酶对该底物具有较高的结合亲和力。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">14. 在双倒数（Lineweaver-Burk）作图中，以1/v对1/[S]作图，竞争性抑制剂存在时的直线相较于无抑制剂时将呈现：</p>
+<ol type="A">
+<li>相同的y轴截距（1/Vmax不变），但斜率更大、x轴截距更接近零（即绝对值|−1/Km|更小，因为Km增大）</li>
+<li>相同的斜率，不同的y轴截距</li>
+<li>两条完全平行的直线</li>
+<li>两条完全重合的直线</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+双倒数方程为 1/v = (Km/Vmax)(1/[S]) + 1/Vmax。竞争性抑制时Vmax不变（y轴截距1/Vmax不变），但Km增大使斜率（Km/Vmax）增大，两条直线相交于y轴上同一点，但竞争性抑制剂存在时的直线更陡，x轴截距（−1/Km）的绝对值更小。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">15. 一种不可逆抑制剂通过与酶活性位点的关键氨基酸残基形成共价键而使酶永久失活。这种抑制作用的动力学效应最接近：</p>
+<ol type="A">
+<li>类似竞争性抑制，可被高浓度底物完全逆转</li>
+<li>类似非竞争性抑制，表现为有效酶浓度降低，Vmax下降，且无法通过增加底物浓度逆转，因为失活的酶分子已无法恢复功能</li>
+<li>对酶动力学完全没有影响</li>
+<li>会使Km显著降低</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+不可逆抑制剂通过共价修饰永久性地使部分酶分子失活，相当于降低了体系中有功能的酶的有效浓度，从动力学表现上类似于非竞争性抑制（Vmax降低），且由于共价键的不可逆性，无法通过提高底物浓度使已失活的酶恢复活性。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 6（第 16–20 题）：体液免疫应答动力学</h3>
+<p>适应性免疫系统中，B淋巴细胞在识别抗原后可分化为浆细胞，分泌特异性抗体。初次接触某抗原引发的免疫应答称为初次应答（primary response），其特点是潜伏期较长、抗体滴度上升较慢且峰值相对较低，产生的抗体主要为IgM，随后逐渐转换为IgG。当机体再次接触同一抗原时，由于初次应答中已产生的记忆B细胞的存在，会引发更快速、更强烈的再次应答（secondary response），其特点是潜伏期显著缩短、抗体滴度上升更快、峰值更高，且以IgG为主。</p>
+<p>下表比较了初次与再次免疫应答的关键动力学参数：</p>
+<table class="data-table">
+<tr><th>参数</th><th>初次应答</th><th>再次应答</th></tr>
+<tr><td>潜伏期</td><td>5–10天</td><td>1–3天</td></tr>
+<tr><td>抗体滴度峰值</td><td>较低</td><td>显著更高（可达10–100倍）</td></tr>
+<tr><td>主要抗体类型</td><td>先IgM后IgG</td><td>以IgG为主</td></tr>
+</table>
+</div>
+
+<div class="question">
+<p class="qtext">16. 再次应答相较于初次应答潜伏期显著缩短、抗体滴度更高，最主要的原因是：</p>
+<ol type="A">
+<li>初次应答中产生的记忆B细胞在体内长期存留，再次遇到同一抗原时可迅速活化、增殖并分化为浆细胞，无需重新经历初次应答中缓慢的克隆选择与扩增过程</li>
+<li>再次应答完全不依赖B细胞</li>
+<li>抗原第二次进入体内时毒性会自然减弱</li>
+<li>初次应答会永久破坏免疫系统的记忆能力</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+适应性免疫的核心特征之一是免疫记忆：初次应答后，部分活化的B细胞分化为长寿命的记忆B细胞而非浆细胞，这些记忆细胞数量更多、活化阈值更低，再次遇到相同抗原时能迅速增殖分化为浆细胞并大量分泌抗体，因而再次应答的潜伏期更短、强度更高。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">17. 疫苗接种（主动免疫）的免疫学基础，最直接依赖于以下哪一机制？</p>
+<ol type="A">
+<li>通过引发一次可控的初次应答，诱导记忆B细胞（及记忆T细胞）的形成，使个体在未来真正暴露于病原体时能够迅速启动强效的再次应答</li>
+<li>直接向体内注射现成的抗体</li>
+<li>疫苗通过物理屏障阻止病原体进入体内</li>
+<li>疫苗完全不涉及适应性免疫系统</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+（选项B所述"直接注射现成抗体"实际上是被动免疫的机制，而非疫苗接种/主动免疫。）疫苗通过引入减毒或灭活的病原体成分，诱发一次相对温和可控的初次免疫应答，其核心目的正是诱导记忆细胞的形成，从而在未来真实感染发生时，机体能够依托已有的免疫记忆迅速产生强效的再次应答，及时清除病原体。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">18. 初次应答中抗体类型"先IgM后IgG"的转换过程被称为：</p>
+<ol type="A">
+<li>类别转换重组（class switch recombination）</li>
+<li>体细胞高频突变（somatic hypermutation）</li>
+<li>阴性选择（negative selection）</li>
+<li>补体激活</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+B细胞在免疫应答过程中，其重链恒定区基因可通过类别转换重组，从最初表达的IgM转变为表达IgG（或IgA、IgE等）而抗原特异性（可变区）保持不变，这一机制使抗体能够在保持特异性的同时获得不同的效应功能。体细胞高频突变则是另一独立机制，主要用于提高抗体的亲和力。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">19. 若某新生儿因先天性免疫缺陷完全无法产生功能性B细胞，最可能观察到的直接后果是：</p>
+<ol type="A">
+<li>细胞免疫（T细胞介导）功能正常，但体液免疫（抗体产生）严重受损，患儿对细菌等细胞外病原体的易感性显著增加</li>
+<li>完全不受任何感染的影响</li>
+<li>只影响皮肤屏障功能</li>
+<li>T细胞与B细胞功能会同时代偿性增强</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+B细胞是体液免疫（抗体介导）的核心执行者。若B细胞功能完全缺失，患者虽然细胞免疫（依赖T细胞）可能相对保留，但无法产生抗体，导致对需要抗体调理、中和作用才能有效清除的细胞外病原体（如多种细菌）的易感性大幅增加，这与临床上观察到的X连锁无丙种球蛋白血症等原发性体液免疫缺陷病的表现一致。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">20. 母体IgG抗体可通过胎盘转移给胎儿，为新生儿提供出生后最初几个月的保护，这种免疫形式属于：</p>
+<ol type="A">
+<li>主动人工免疫</li>
+<li>被动自然免疫，因为新生儿并未自主产生免疫应答，而是被动获得了他人（母体）产生的现成抗体</li>
+<li>主动自然免疫</li>
+<li>细胞免疫</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+被动免疫是指个体未经自身免疫系统的主动应答，而是直接获得他人（或外源）产生的现成抗体；"自然"是指这一过程通过自然生理途径（胎盘转移、母乳喂养）发生，而非人工注射，因此母体IgG经胎盘转移给胎儿属于被动自然免疫的经典例子。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 7（第 21–25 题）：心动周期与心肌生理</h3>
+<p>心动周期（cardiac cycle）由收缩期（systole）与舒张期（diastole）组成，涉及心房、心室压力与容积的周期性变化，并与心音、心电图特征性波形相对应。心室收缩期开始时，心室压力迅速上升但容积不变（等容收缩期），直至心室压力超过主动脉压，主动脉瓣开放，血液被射出（射血期）；心室舒张期开始时，心室压力迅速下降但容积不变（等容舒张期），直至心室压力低于心房压力，二尖瓣/三尖瓣开放，血液充盈心室。</p>
+<p>心肌细胞的收缩遵循滑动细丝理论：动作电位触发肌浆网释放Ca²⁺，Ca²⁺与肌钙蛋白结合，解除原肌球蛋白对肌动蛋白-肌球蛋白相互作用的抑制，肌球蛋白头部通过ATP水解驱动的横桥循环，牵拉肌动蛋白细丝相对于肌球蛋白细丝滑动，使肌节缩短而细丝本身长度不变。</p>
+</div>
+
+<div class="question">
+<p class="qtext">21. 在等容收缩期，心室压力显著升高而心室容积保持不变，这是因为：</p>
+<ol type="A">
+<li>此阶段房室瓣与半月瓣均处于关闭状态，心室内的血液无法流出（半月瓣未开）也无法反流回心房（房室瓣已关闭），心肌收缩产生的压力因而只能表现为压力上升而非容积变化</li>
+<li>此阶段所有瓣膜都处于开放状态</li>
+<li>此阶段心室完全停止收缩</li>
+<li>此阶段血液正大量流入心室</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+等容收缩期得名于此阶段心室容积恒定："等容"。此时房室瓣因心室压力已超过心房压力而关闭，半月瓣则因心室压力尚未超过主动脉/肺动脉压力而未开放，心室处于完全封闭状态，心肌收缩只能表现为压力急剧上升，而无血液进出、容积不变。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">22. 根据滑动细丝理论，肌节在收缩过程中缩短，这一变化最主要体现为：</p>
+<ol type="A">
+<li>肌动蛋白细丝与肌球蛋白细丝本身的长度均缩短</li>
+<li>肌动蛋白细丝与肌球蛋白细丝的长度保持不变，二者之间发生相对滑动，使细丝重叠区域增加、肌节整体长度缩短</li>
+<li>只有肌球蛋白细丝缩短</li>
+<li>肌节缩短是因为细丝被降解</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+滑动细丝理论的核心是"滑动"而非"缩短"：肌动蛋白与肌球蛋白细丝各自的长度在收缩过程中保持不变，肌节缩短是由于肌球蛋白头部横桥循环牵拉肌动蛋白细丝相对于肌球蛋白细丝滑动，使二者重叠区域增大，从而使整个肌节（Z线到Z线的距离）缩短。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">23. Ca²⁺与肌钙蛋白结合后，在心肌收缩的分子机制中起到的作用是：</p>
+<ol type="A">
+<li>直接水解ATP为收缩提供能量</li>
+<li>使原肌球蛋白构象改变，暴露出肌动蛋白上原本被遮蔽的肌球蛋白结合位点，从而允许横桥循环启动</li>
+<li>直接切断肌动蛋白细丝</li>
+<li>抑制肌球蛋白头部的ATP酶活性</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+在静息状态下，原肌球蛋白覆盖在肌动蛋白细丝上的肌球蛋白结合位点，阻止二者相互作用。Ca²⁺与肌钙蛋白结合后引发肌钙蛋白-原肌球蛋白复合体构象变化，使原肌球蛋白从结合位点上移开，暴露出这些位点，从而允许肌球蛋白头部结合并启动横桥循环（ATP水解由肌球蛋白头部自身的ATP酶完成，并非由Ca²⁺直接催化）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">24. 若某药物选择性阻断心肌细胞肌浆网上的Ca²⁺释放通道，最直接的生理后果是：</p>
+<ol type="A">
+<li>心肌收缩力增强</li>
+<li>心肌收缩力减弱甚至丧失，因为胞质Ca²⁺浓度无法充分升高，肌钙蛋白无法被有效激活，横桥循环难以启动</li>
+<li>心率显著加快，与收缩力无关</li>
+<li>对心肌功能没有任何影响</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+心肌兴奋-收缩耦联高度依赖于动作电位触发肌浆网释放Ca²⁺（钙诱导钙释放机制）。若该释放通道被阻断，胞质Ca²⁺浓度无法充分升高，肌钙蛋白-原肌球蛋白复合体无法被有效激活，横桥循环启动受阻，心肌收缩力将显著减弱甚至完全丧失。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">25. 心电图中QRS波群主要代表的电生理事件是：</p>
+<ol type="A">
+<li>心房去极化</li>
+<li>心室去极化，随即触发心室收缩</li>
+<li>心室复极化</li>
+<li>房室结的传导延迟</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+QRS波群对应心室肌细胞的快速去极化过程，这一电活动几乎同步触发心室的机械收缩（收缩期开始）；P波对应心房去极化，T波对应心室复极化，而房室结的传导延迟则体现为PR间期。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 8（第 26–30 题）：群体遗传学与哈迪-温伯格平衡</h3>
+<p>哈迪-温伯格平衡（Hardy-Weinberg equilibrium）描述了在一个理想化的大种群中，若不存在突变、迁移、非随机交配及自然选择，且种群足够大以忽略遗传漂变，则等位基因频率与基因型频率将代代保持恒定。对于一个具有两个等位基因（A与a，频率分别为p和q，p+q=1）的基因位点，基因型频率满足：p²（AA）+ 2pq（Aa）+ q²（aa）=1。该模型常被用作"零假设"，通过比较实际种群的基因型频率与理论预期值的偏离程度，推断种群是否正经历某种进化压力（如自然选择）。</p>
+<p>研究者调查了某岛屿种群中一种隐性遗传病（基因型aa表现患病）的发病情况，测得该种群中患病个体（aa）占总人口的4%。</p>
+</div>
+
+<div class="question">
+<p class="qtext">26. 根据哈迪-温伯格模型，该种群中隐性等位基因a的频率（q）约为多少？</p>
+<ol type="A">
+<li>0.04</li>
+<li>0.16</li>
+<li>0.2</li>
+<li>0.4</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+患病个体基因型为aa，其频率即为q²。已知q²=0.04，故q=√0.04=0.2。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">27. 承上题，该种群中杂合子携带者（Aa）的理论频率约为多少？</p>
+<ol type="A">
+<li>0.16</li>
+<li>0.32</li>
+<li>0.64</li>
+<li>0.8</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+已知q=0.2，故p=1−q=0.8。杂合子频率=2pq=2×0.8×0.2=0.32。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">28. 若该隐性遗传病携带者（杂合子Aa）在某种环境压力下相较于纯合显性个体（AA）具有生存优势（类似镰刀型细胞贫血症携带者对疟疾的抵抗力），这种现象最可能导致种群中等位基因a的频率：</p>
+<ol type="A">
+<li>逐渐趋近于0，因为致病等位基因终将被自然选择淘汰</li>
+<li>在自然选择作用下保持在某一中间水平的平衡状态（杂合子优势，heterozygote advantage），而非被完全淘汰或固定</li>
+<li>迅速上升至1</li>
+<li>完全不受自然选择影响</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+当杂合子相对于两种纯合子均具有适应度优势时（杂合子优势），自然选择不会使任一等位基因被完全清除或固定，而是会在种群中维持一个平衡的等位基因频率，使得杂合子比例保持较高水平，这正是镰刀型细胞贫血症等位基因在疟疾流行地区得以持续存在的经典进化解释。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">29. 以下哪一情形最可能违反哈迪-温伯格平衡的假设，从而使实际观测到的基因型频率偏离理论预期？</p>
+<ol type="A">
+<li>种群中个体完全随机交配，且种群规模极大</li>
+<li>该岛屿种群规模很小，且近期有大量携带特定等位基因的个体从大陆迁入</li>
+<li>该基因位点不受自然选择影响</li>
+<li>该种群不存在任何突变</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+哈迪-温伯格平衡要求种群足够大（无显著遗传漂变）、无迁移（基因流）、随机交配、无突变、无自然选择。小种群规模会引入遗传漂变，而外来个体的迁入（基因流）会直接改变种群等位基因频率，二者均是选项B所描述情形中会违反哈迪-温伯格假设的因素。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">30. 哈迪-温伯格模型在进化生物学研究中最主要的应用价值在于：</p>
+<ol type="A">
+<li>直接证明所有种群都处于遗传平衡状态</li>
+<li>作为一个理论"零假设"（无进化压力的基准状态），使研究者能够通过比较实际种群数据与理论预期的偏离程度，推断该种群可能正在经历何种进化力量的作用</li>
+<li>用于计算种群的绝对个体数量</li>
+<li>只适用于人类种群，不适用于其他物种</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+哈迪-温伯格模型本质上描述的是"不发生进化"的理想化基准状态。其核心应用价值并非断言真实种群确实处于平衡，而是提供一个可供比较的零假设：当观测到的基因型频率显著偏离该模型预期时，研究者便可推断该种群可能正受到自然选择、遗传漂变、基因流或非随机交配等因素的影响。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 9（第 31–35 题）：细胞周期检验点与调控</h3>
+<p>真核细胞周期由G1、S、G2、M四个时期依次组成，其推进受到细胞周期蛋白（cyclin）与细胞周期蛋白依赖性激酶（CDK）复合物的精密调控，并在若干关键节点设有"检验点"（checkpoint），以确保前一阶段已正确完成后才允许进入下一阶段。G1/S检验点（也称限制点）确保细胞在进入S期（DNA复制）前具备充足的营养、生长信号且DNA未受损；G2/M检验点确保DNA复制已完整完成且无损伤，才允许细胞进入有丝分裂；纺锤体组装检验点（spindle assembly checkpoint）则确保所有染色体的着丝粒都已正确附着到纺锤体微管上，才允许细胞从中期进入后期。</p>
+<p>肿瘤抑制蛋白p53在DNA损伤应答中起核心作用：当细胞检测到DNA损伤时，p53水平升高，可诱导细胞周期蛋白依赖性激酶抑制蛋白（如p21）的表达，从而阻滞细胞周期于G1/S检验点，为DNA修复争取时间；若损伤过于严重无法修复，p53还可诱导细胞凋亡。</p>
+</div>
+
+<div class="question">
+<p class="qtext">31. 纺锤体组装检验点的主要功能是防止细胞在以下哪种情况下继续进入有丝分裂后期？</p>
+<ol type="A">
+<li>DNA尚未完成复制</li>
+<li>染色体存在损伤但尚未修复</li>
+<li>仍有染色体的着丝粒未正确附着到纺锤体微管上，以防止姐妹染色单体分离错误，导致子细胞染色体数目异常</li>
+<li>细胞体积尚未增大到足够大小</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+纺锤体组装检验点专门监控染色体着丝粒与纺锤体微管的附着状态。只要仍有染色体未正确附着，该检验点会阻止细胞从中期进入后期，防止姐妹染色单体在附着不完全的情况下发生错误分离，这正是防止非整倍体（染色体数目异常）产生的关键保护机制。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">32. 若某细胞的p53基因发生功能丧失性突变，最可能导致的后果是：</p>
+<ol type="A">
+<li>细胞对DNA损伤的检验点应答能力受损，携带损伤DNA的细胞更可能继续分裂，增加基因组不稳定性和癌变风险</li>
+<li>细胞周期完全停止，无法再进行任何分裂</li>
+<li>细胞对DNA损伤的修复能力完全不受影响</li>
+<li>细胞将立即凋亡</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+p53是DNA损伤应答的核心枢纽，正常情况下可阻滞细胞周期以便修复损伤，或在损伤过重时诱导凋亡以清除潜在危险细胞。若p53功能丧失，这一"看门人"机制失效，携带DNA损伤（包括致癌突变）的细胞可能绕过检验点继续分裂增殖，是p53在多种人类肿瘤中高频突变、被称为"基因组守护者"的原因。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">33. G2/M检验点在细胞周期调控中的主要作用是：</p>
+<ol type="A">
+<li>确保细胞已获得足够的生长信号以启动DNA复制</li>
+<li>确保DNA复制已完整、准确地完成且无明显损伤，才允许细胞进入有丝分裂，防止携带不完整或受损DNA的细胞分裂</li>
+<li>监控纺锤体微管与着丝粒的附着</li>
+<li>只在减数分裂中起作用，有丝分裂中不存在该检验点</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+G2/M检验点位于DNA复制完成（S期结束）与有丝分裂开始之间，其核心功能是确认DNA复制的完整性与准确性，若检测到复制不完全或存在损伤，会阻滞细胞周期以避免受损或不完整的遗传物质被分配到子细胞中。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">34. p21蛋白作为CDK抑制蛋白，其在p53介导的细胞周期阻滞中所起的作用是：</p>
+<ol type="A">
+<li>直接修复受损的DNA双链</li>
+<li>抑制细胞周期蛋白-CDK复合物的激酶活性，阻止细胞周期蛋白-CDK复合物磷酸化其下游底物，从而阻滞细胞周期进程</li>
+<li>直接降解p53蛋白本身</li>
+<li>促进细胞立即进入有丝分裂</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+p21是p53的下游效应蛋白之一，作为CDK抑制蛋白，通过结合并抑制细胞周期蛋白-CDK复合物的激酶活性，阻止其磷酸化推动细胞周期进程所需的下游底物，从而在G1/S检验点处阻滞细胞周期，为DNA修复争取时间。p21本身不直接参与DNA修复过程。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">35. 癌细胞的一个共同特征是细胞周期检验点功能受损，导致细胞不受控制地持续分裂。以下哪一现象最直接体现了这一特征？</p>
+<ol type="A">
+<li>癌细胞即使存在DNA损伤或染色体分离错误，仍能继续通过检验点完成分裂，导致基因组不稳定性（如非整倍体）在细胞群体中不断累积</li>
+<li>癌细胞的细胞周期比正常细胞更长</li>
+<li>癌细胞完全无法进行DNA复制</li>
+<li>癌细胞的检验点功能比正常细胞更严格</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+检验点功能受损是癌细胞的标志性特征之一：正常细胞在检测到DNA损伤或染色体分离异常时会被阻滞甚至启动凋亡，而检验点失效的癌细胞能够绕过这些"质量控制"关卡继续分裂，使基因组不稳定性（点突变、染色体数目/结构异常）在细胞谱系中不断累积，进一步驱动恶性转化。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 10（第 36–39 题）：呼吸系统气体交换与酸碱调节</h3>
+<p>肺泡是气体交换的主要场所，O₂与CO₂依靠肺泡与肺毛细血管之间的分压差，通过单纯扩散跨过呼吸膜。呼吸膜极薄且表面积巨大，有利于气体快速交换。血液中的CO₂以三种形式运输：约7%溶解于血浆，约23%与血红蛋白结合形成氨基甲酸血红蛋白，约70%以HCO₃⁻形式存在于血浆中（经红细胞内碳酸酐酶催化CO₂+H₂O→H₂CO₃→H⁺+HCO₃⁻后，HCO₃⁻被转运出红细胞进入血浆，同时Cl⁻内流以维持电荷平衡，这一过程称为"氯转移"）。</p>
+<p>呼吸运动受延髓呼吸中枢调控，中枢化学感受器主要对脑脊液中H⁺浓度（间接反映血液CO₂水平）变化敏感，外周化学感受器（颈动脉体、主动脉体）则主要对血液O₂分压显著降低（及一定程度上CO₂、pH变化）敏感。血液CO₂水平升高是驱动通气增加最主要、最敏感的生理刺激。</p>
+</div>
+
+<div class="question">
+<p class="qtext">36. 血液中大部分CO₂以何种形式运输至肺部排出？</p>
+<ol type="A">
+<li>直接溶解于血浆</li>
+<li>以HCO₃⁻形式存在于血浆中，约占总运输量的70%</li>
+<li>完全以气态CO₂形式存在于红细胞内</li>
+<li>与白细胞结合运输</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+血液中约70%的CO₂经红细胞内碳酸酐酶催化转化为碳酸并解离为HCO₃⁻与H⁺后，以HCO₃⁻形式存在于血浆中运输，这是CO₂运输的主要形式，其余部分以氨基甲酸血红蛋白（约23%）及溶解CO₂（约7%）形式运输。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">37. "氯转移"（chloride shift）现象是指：</p>
+<ol type="A">
+<li>红细胞内生成的HCO₃⁻转运出细胞进入血浆的同时，Cl⁻由血浆进入红细胞内，以维持细胞内外电荷平衡</li>
+<li>Cl⁻直接参与CO₂与O₂的交换</li>
+<li>该现象只发生在肺部，不发生在外周组织</li>
+<li>该现象与碳酸酐酶完全无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+红细胞内HCO₃⁻生成后需经特异性转运蛋白运出细胞进入血浆，为维持红细胞膜内外电荷平衡，Cl⁻同时由血浆反向进入红细胞内，这一过程即为氯转移，在外周组织（CO₂生成、HCO₃⁻净流出红细胞）与肺部（CO₂释放、HCO₃⁻净流入红细胞与Cl⁻流出）均会发生，方向相反。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">38. 中枢化学感受器主要通过感知以下哪一变化来调节呼吸频率与深度？</p>
+<ol type="A">
+<li>血液O₂分压的绝对水平</li>
+<li>脑脊液中H⁺浓度的变化，这间接反映了血液CO₂水平（CO₂能自由透过血脑屏障并在脑脊液中生成H⁺），是驱动通气最敏感的生理信号</li>
+<li>血液pH的直接测量，与CO₂完全无关</li>
+<li>血红蛋白的氧饱和度</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+CO₂能自由穿过血脑屏障进入脑脊液，并在脑脊液中的碳酸酐酶作用下生成H⁺，中枢化学感受器直接感知脑脊液H⁺浓度的变化，这是调节通气最敏感、最主要的生理刺激；而外周化学感受器则主要对血液O₂分压显著降低更为敏感，二者共同但侧重不同地调控呼吸。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">39. 若某人因肺气肿导致长期存在慢性CO₂潴留，其呼吸驱动可能逐渐更多依赖以下哪一机制（"低氧驱动"现象）？</p>
+<ol type="A">
+<li>中枢化学感受器对慢性升高的CO₂逐渐脱敏，此时外周化学感受器对低O₂分压的感知可能成为维持呼吸驱动的相对更重要的因素</li>
+<li>完全丧失呼吸能力，无法自主呼吸</li>
+<li>呼吸完全不再受任何化学感受器调控</li>
+<li>血液pH不再对呼吸产生任何影响</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+慢性CO₂潴留患者的中枢化学感受器长期暴露于高CO₂环境，其敏感性可能逐渐下降（脱敏），此时呼吸驱动可能更多依赖外周化学感受器对低血氧的感知，这一现象即临床上所称的"低氧驱动"，也是对此类患者给氧需谨慎控制流量的生理学基础（过度给氧可能削弱其主要呼吸驱动力）。</div>
+</details>
+</div>
+
+</div>
+
+<div class="discrete-block">
+<h4>独立题（第 40–59 题）</h4>
+
+<div class="question">
+<p class="qtext">40. 谷氨酸（glutamate）在生理pH（约7.4）下，其侧链最可能带有以下哪种电荷？</p>
+<ol type="A">
+<li>侧链羧基去质子化，带负电荷</li>
+<li>侧链氨基质子化，带正电荷</li>
+<li>侧链不带电荷，呈中性</li>
+<li>侧链电荷随温度变化而非pH变化</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+谷氨酸侧链含有一个羧基，其pKa约为4.1，远低于生理pH 7.4，因此在生理条件下该羧基几乎完全去质子化，带负电荷，使谷氨酸成为酸性氨基酸。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">41. 一分子葡萄糖经糖酵解途径完全代谢为两分子丙酮酸，净生成的ATP分子数是多少？</p>
+<ol type="A">
+<li>2</li>
+<li>4</li>
+<li>36</li>
+<li>38</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+糖酵解过程中，投入阶段消耗2分子ATP，产出阶段生成4分子ATP，净生成 4−2=2分子ATP（另生成2分子NADH），这是糖酵解本身（不含后续三羧酸循环与氧化磷酸化）的净ATP产量。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">42. 在真核生物基因表达中，负责将DNA模板转录为mRNA前体的酶是：</p>
+<ol type="A">
+<li>DNA聚合酶</li>
+<li>RNA聚合酶II</li>
+<li>逆转录酶</li>
+<li>解旋酶</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+真核生物中，RNA聚合酶II负责转录编码蛋白质的基因，生成前体mRNA（pre-mRNA），随后经过5'加帽、剪接与3'多聚腺苷酸化等加工步骤成熟为mRNA。DNA聚合酶负责DNA复制而非转录。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">43. 两个双杂合子（AaBb × AaBb，两对基因独立遗传）杂交，后代中表现为双隐性性状（aabb）的理论比例是多少？</p>
+<ol type="A">
+<li>1/4</li>
+<li>1/8</li>
+<li>1/16</li>
+<li>9/16</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+两对基因独立遗传时，每对基因单独产生aa或bb的概率均为1/4，根据乘法法则，同时出现aabb的概率为 1/4 × 1/4 = 1/16，这与经典9:3:3:1双因子杂交比例中的"1"份完全一致。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">44. 小肠上皮细胞通过Na⁺/葡萄糖协同转运体（SGLT1）将葡萄糖逆浓度梯度摄入细胞内，这一过程属于：</p>
+<ol type="A">
+<li>单纯扩散</li>
+<li>原发性主动转运（primary active transport）</li>
+<li>继发性主动转运（secondary active transport），利用Na⁺-K⁺-ATP酶建立的Na⁺梯度作为驱动力</li>
+<li>易化扩散</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+SGLT1本身不直接水解ATP，而是利用由Na⁺-K⁺-ATP酶（原发性主动转运）预先建立的跨膜Na⁺电化学梯度，驱动葡萄糖逆浓度梯度进入细胞，这种间接依赖ATP水解建立的梯度进行转运的方式即为继发性主动转运。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">45. 蛋白质的二级结构（如α螺旋、β折叠）主要由以下哪种相互作用维持？</p>
+<ol type="A">
+<li>肽键骨架中N-H与C=O基团之间形成的规律性氢键</li>
+<li>疏水侧链之间的范德华力</li>
+<li>二硫键（disulfide bond）</li>
+<li>离子键（盐桥）</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+蛋白质二级结构（α螺旋、β折叠）主要由多肽骨架上肽键的N-H基团与C=O基团之间规律排列形成的氢键维持，这种氢键模式不涉及氨基酸侧链，因此二级结构的形成与具体侧链种类相对无关；三级结构则涉及疏水作用、二硫键、离子键等侧链间相互作用。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">46. 细胞膜的流动镶嵌模型（fluid mosaic model）中，胆固醇分子嵌入磷脂双分子层的主要生理作用是：</p>
+<ol type="A">
+<li>在较高温度下降低膜流动性，在较低温度下防止膜过度凝固变硬，从而在一定温度范围内调节并稳定膜的流动性</li>
+<li>完全阻止所有物质跨膜运输</li>
+<li>只在细胞膜外侧存在，不影响膜内部结构</li>
+<li>使细胞膜带上净正电荷</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+胆固醇分子插入磷脂双分子层中，其刚性环状结构在较高温度下能限制磷脂脂肪酸链的过度运动、降低膜流动性；而在较低温度下，胆固醇又能阻止脂肪酸链紧密排列结晶，防止膜过度僵化，因此胆固醇总体上起到"流动性缓冲剂"的作用，使膜在较宽的温度范围内保持适宜的流动性。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">47. DNA复制过程中，前导链（leading strand）与后随链（lagging strand）合成方式不同，其根本原因是：</p>
+<ol type="A">
+<li>DNA聚合酶只能以5'→3'方向合成新链，而两条模板链走向相反，导致其中一条链只能连续合成（前导链），另一条链必须以不连续的冈崎片段形式合成（后随链）</li>
+<li>细胞内DNA聚合酶数量不足</li>
+<li>前导链的模板碱基组成与后随链完全不同</li>
+<li>后随链根本不需要引物</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+DNA聚合酶只能沿模板链的3'→5'方向移动、合成5'→3'方向的新链。由于两条模板链方向相反，复制叉打开时，一条模板链能使新链朝复制叉推进方向连续合成（前导链），另一条模板链上新链合成方向与复制叉推进方向相反，只能不连续地合成一系列短片段（冈崎片段），再由DNA连接酶连接，形成后随链。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">48. 在蛋白质翻译过程中，tRNA的反密码子（anticodon）与mRNA上的密码子（codon）通过什么方式配对？</p>
+<ol type="A">
+<li>通过共价键直接连接</li>
+<li>通过碱基互补配对（氢键），按照反平行方向与mRNA密码子配对，从而将正确的氨基酸带到核糖体</li>
+<li>通过疏水相互作用结合</li>
+<li>不需要配对，tRNA随机结合核糖体</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+tRNA的反密码子通过碱基互补配对（A-U、G-C，氢键作用）以反平行方向与mRNA上的密码子结合，这种精确配对确保了携带特定氨基酸的tRNA只会在与其反密码子匹配的密码子处停靠，从而保证遗传密码被准确翻译为对应的氨基酸序列。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">49. 三羧酸循环（TCA循环，又称柠檬酸循环）中唯一一步通过底物水平磷酸化直接生成高能磷酸化合物（GTP或ATP）的反应是：</p>
+<ol type="A">
+<li>柠檬酸合酶催化的反应</li>
+<li>琥珀酰辅酶A转化为琥珀酸的反应</li>
+<li>苹果酸脱氢为草酰乙酸的反应</li>
+<li>异柠檬酸脱氢为α-酮戊二酸的反应</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+在TCA循环中，琥珀酰辅酶A合成酶催化琥珀酰辅酶A转化为琥珀酸的反应，通过底物水平磷酸化直接生成一分子GTP（在某些组织中为ATP），这是TCA循环中唯一直接生成高能磷酸化合物的步骤；循环中其他多数步骤主要产生NADH或FADH2，供电子传递链使用以生成ATP。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">50. 电子传递链中质子（H⁺）被主动泵出线粒体基质、进入膜间隙，建立跨内膜的电化学梯度，这一梯度随后主要用于：</p>
+<ol type="A">
+<li>驱动ATP合酶（chemiosmosis化学渗透机制），使ADP与无机磷酸结合生成ATP</li>
+<li>直接被用作DNA复制的能量来源</li>
+<li>直接驱动葡萄糖分解为丙酮酸</li>
+<li>该梯度对细胞代谢没有实际功能</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+电子传递链复合体利用电子传递释放的能量将H⁺泵出线粒体基质，在内膜两侧建立电化学梯度（质子动力）。根据化学渗透理论（chemiosmosis），H⁺顺梯度通过ATP合酶回流至基质时释放的能量驱动ATP合酶将ADP与无机磷酸结合，合成ATP，这是氧化磷酸化生成绝大部分细胞ATP的核心机制。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">51. 神经元静息电位主要由细胞膜对哪种离子的相对高通透性所决定？</p>
+<ol type="A">
+<li>Na⁺</li>
+<li>K⁺，因为静息状态下细胞膜上存在大量持续开放的K⁺漏通道，使膜电位接近K⁺的平衡电位</li>
+<li>Ca²⁺</li>
+<li>Cl⁻</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+静息状态下，神经元细胞膜上K⁺漏通道大量持续开放，使膜对K⁺的通透性远高于其他离子（如Na⁺），因此静息膜电位（约−70mV）主要接近（但不完全等于）K⁺的平衡电位，可用戈德曼方程更精确地描述多离子的综合贡献，但K⁺通透性占主导地位。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">52. 胃蛋白酶原（pepsinogen）在胃腔中被激活为具有活性的胃蛋白酶（pepsin），这一激活过程主要依赖于：</p>
+<ol type="A">
+<li>胃酸（HCl）造成的酸性环境使胃蛋白酶原发生构象改变并自我催化切除部分肽段，从而暴露活性位点</li>
+<li>胆汁的作用</li>
+<li>胰蛋白酶的作用</li>
+<li>唾液淀粉酶的作用</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+胃主细胞分泌无活性的胃蛋白酶原，进入胃腔后，胃壁细胞分泌的盐酸造成的强酸性环境（pH约2）促使胃蛋白酶原发生构象改变，切除N端一段肽段而转化为具有蛋白水解活性的胃蛋白酶，该过程一旦启动还可被已生成的胃蛋白酶自我催化加速（正反馈激活）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">53. 血红蛋白氧解离曲线呈S形（sigmoidal）而非双曲线形，这一特性最直接反映了：</p>
+<ol type="A">
+<li>血红蛋白四个亚基之间存在协同效应——一个亚基结合氧后会提高其余亚基对氧的亲和力，使曲线在中等氧分压范围内异常陡峭</li>
+<li>血红蛋白只能结合一个氧分子</li>
+<li>血红蛋白与氧的结合完全不受氧分压影响</li>
+<li>该曲线形状纯属实验误差</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+血红蛋白由四个亚基组成，具有协同结合特性：第一个氧分子的结合会诱导血红蛋白构象由低亲和力的T态向高亲和力的R态转变，从而提高后续亚基结合氧的亲和力，这种正协同效应使氧解离曲线呈特征性的S形，有利于血红蛋白在肺部（高氧分压）高效结合氧、在组织（低氧分压）高效释放氧。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">54. 两个基因位于同一条染色体上、彼此距离较近（连锁），在减数分裂中，这两个基因的等位基因组合最可能表现出以下哪种遗传模式？</p>
+<ol type="A">
+<li>完全独立遗传，符合自由组合定律</li>
+<li>倾向于一起遗传（连锁），重组型后代比例低于非连锁基因的自由组合预期，且两基因间距离越近，重组频率通常越低</li>
+<li>两基因必然100%连锁，绝不发生重组</li>
+<li>连锁基因的遗传与染色体交换完全无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+位于同一染色体上彼此距离较近的基因倾向于作为一个整体一起遗传（连锁），偏离孟德尔自由组合定律的独立遗传预期。但由于减数分裂I前期同源染色体之间可能发生交叉互换（crossing over），仍可能产生一定比例的重组型配子；两基因在染色体上的物理距离越近，发生交换的概率越低，重组频率也越低，这一关系是构建基因连锁图谱的基础。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">55. 革兰氏染色法（Gram staining）用于区分细菌，其染色结果差异的分子基础主要在于：</p>
+<ol type="A">
+<li>革兰氏阳性菌细胞壁含有厚层肽聚糖，能够保留结晶紫-碘复合物而呈紫色；革兰氏阴性菌细胞壁肽聚糖层薄且外覆脂多糖外膜，脱色后呈现复染剂（番红）的红色</li>
+<li>革兰氏染色只能区分细菌的形状（球菌与杆菌）</li>
+<li>所有细菌染色结果完全相同</li>
+<li>革兰氏染色反映细菌的运动能力</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+革兰氏阳性菌细胞壁的厚肽聚糖层能有效锁住结晶紫-碘复合物，酒精脱色时不易被洗脱，因而保持紫色；革兰氏阴性菌肽聚糖层薄，且被外层脂多糖膜包裹，酒精处理会破坏外膜并使结晶紫复合物容易被洗脱，脱色后需依赖复染剂（如番红）染成红色/粉色，这一细胞壁结构差异是革兰氏染色法区分细菌的分子基础。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">56. 脂肪酸β氧化（β-oxidation）的主要生理功能是：</p>
+<ol type="A">
+<li>将长链脂肪酸逐步分解为乙酰辅酶A单元，同时生成NADH与FADH2，乙酰辅酶A可进入TCA循环，为细胞提供大量能量，尤其在长时间空腹或耐力运动时是重要供能途径</li>
+<li>将葡萄糖转化为糖原储存</li>
+<li>合成新的脂肪酸链</li>
+<li>只发生在细胞核内</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+β氧化发生于线粒体基质，脂肪酸经活化后每一轮循环从羧基端切下一个二碳单位（乙酰辅酶A），同时生成一分子NADH与一分子FADH2；生成的乙酰辅酶A可进入TCA循环进一步氧化供能，NADH与FADH2则供电子传递链使用，这使β氧化成为长时间饥饿或耐力运动等情况下重要的能量来源。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">57. G蛋白偶联受体（GPCR）介导的细胞信号转导中，配体结合受体后触发的典型早期事件是：</p>
+<ol type="A">
+<li>受体构象改变，激活与其偶联的G蛋白，使G蛋白的Gα亚基与GDP解离、结合GTP而被激活，进而调节下游效应酶（如腺苷酸环化酶）的活性，产生第二信使（如cAMP）</li>
+<li>受体直接进入细胞核调控基因转录，不涉及任何中间步骤</li>
+<li>配体结合后受体立即被降解，信号无法传递</li>
+<li>GPCR信号转导完全不依赖G蛋白</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+配体结合GPCR后，受体发生构象改变并激活其偶联的异源三聚体G蛋白，促使Gα亚基释放GDP并结合GTP而活化，活化的Gα亚基（或Gβγ）随后调节下游效应酶（如腺苷酸环化酶、磷脂酶C等）的活性，生成cAMP、IP3/DAG等第二信使，将细胞外信号逐级放大并传递至细胞内部，引发相应的生理反应。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">58. 肝脏在糖异生（gluconeogenesis）过程中，主要利用哪些非糖前体物质合成葡萄糖，以在长时间空腹状态下维持血糖水平？</p>
+<ol type="A">
+<li>乳酸、甘油、生糖氨基酸等非糖前体，通过糖异生途径转化为葡萄糖，供大脑及红细胞等主要依赖葡萄糖供能的组织使用</li>
+<li>只能利用葡萄糖本身作为原料</li>
+<li>只能利用脂肪酸作为原料</li>
+<li>糖异生只发生在肌肉组织中</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+糖异生主要在肝脏（及一定程度上肾脏）中进行，利用乳酸（如运动产生的Cori循环）、甘油（脂肪分解产物）及生糖氨基酸等非糖前体物质，经一系列酶促反应逆向合成葡萄糖，以维持长时间空腹或剧烈运动后血糖水平的稳定，供大脑、红细胞等高度依赖葡萄糖供能的组织持续使用（需注意脂肪酸在人体内通常不能作为糖异生的净碳源）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">59. 减数分裂（meiosis）与有丝分裂（mitosis）相比，其最主要的遗传学意义在于：</p>
+<ol type="A">
+<li>减数分裂通过同源染色体分离与姐妹染色单体分离两轮分裂，将染色体数目减半，并通过交叉互换与同源染色体自由组合产生遗传多样性，为有性生殖提供遗传变异的物质基础</li>
+<li>减数分裂产生的子细胞与亲代细胞染色体数目完全相同</li>
+<li>减数分裂不涉及任何染色体重组</li>
+<li>减数分裂只发生在体细胞中</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+减数分裂经历一次DNA复制后进行两轮连续分裂（减数分裂I分离同源染色体，减数分裂II分离姐妹染色单体），最终产生染色体数目减半的配子；减数分裂I前期的交叉互换以及同源染色体的随机组合，共同产生了丰富的遗传多样性，这是有性生殖后代遗传变异的主要来源，与有丝分裂（产生染色体数目和遗传组成与亲代完全相同的子细胞）在遗传学意义上截然不同。</div>
+</details>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: Psych/Soc -->
+<!-- ============================================================ -->
+<div class="section-header" id="section4">
+  <h2>第四部分：心理、社会与行为基础 (Psychological, Social, and Biological Foundations of Behavior)</h2>
+  <div class="section-meta">59 题（官方全长） · 建议用时 95 分钟</div>
+</div>
+
+<div class="passage">
+<h3>文章 5（第 1–5 题）：群体压力与从众行为实验</h3>
+<p>研究者设计了一项实验，考察群体规模对从众行为（conformity）的影响。被试被随机分配至不同条件组：在每一轮试验中，被试需判断一条线段的长度，并从三条备选线段中选出长度相同的一条（正确答案客观且明显）。在"实验组"中，除真被试外，其余成员均为实验助手（confederate），并被要求在特定试次中故意给出明显错误的答案；被试作答顺序被安排在最后，以观察其是否会因群体压力而附和错误答案。研究者操纵了两个自变量：群体中实验助手的人数（1人、3人、7人），以及被试的答案是公开报告还是私下书面报告。</p>
+<p>下表为不同条件下被试给出与多数人相同（错误）答案的比例：</p>
+<table class="data-table">
+<tr><th>助手人数</th><th>公开报告-从众率</th><th>私下书面报告-从众率</th></tr>
+<tr><td>1人</td><td>5%</td><td>4%</td></tr>
+<tr><td>3人</td><td>32%</td><td>12%</td></tr>
+<tr><td>7人</td><td>35%</td><td>13%</td></tr>
+</table>
+</div>
+
+<div class="question">
+<p class="qtext">1. 该实验的自变量是什么？</p>
+<ol type="A">
+<li>被试给出错误答案的比例</li>
+<li>实验助手的人数与作答方式（公开/私下）</li>
+<li>线段的实际长度</li>
+<li>被试的年龄</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+自变量是研究者主动操纵的变量，本实验中研究者操纵了实验助手人数（1、3、7人）与作答方式（公开或私下），二者均为自变量；从众率则是因变量（被测量的结果）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">2. 根据表中数据，从助手人数为1人增加到3人时从众率显著上升，但从3人增加到7人时从众率仅略微上升。这一模式最能说明：</p>
+<ol type="A">
+<li>从众行为与群体规模呈完全线性关系，人数越多从众率必然等比例上升</li>
+<li>群体规模对从众行为的影响存在边际递减效应，超过一定人数后增加群体规模的额外影响有限</li>
+<li>群体规模对从众行为完全没有影响</li>
+<li>该实验数据存在明显矛盾，无法解释</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+数据显示从1人到3人从众率大幅提升（如公开报告下由5%升至32%），但从3人到7人提升幅度很小（32%到35%），提示群体规模效应存在阈值或边际递减效应，而非无限线性增长，这与经典从众研究（如Asch范式的后续拓展研究）的发现一致。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">3. 公开报告条件下的从众率普遍高于私下书面报告条件，这一差异最适合用以下哪一理论解释？</p>
+<ol type="A">
+<li>被试在公开条件下受到规范性社会影响（normative social influence）的作用更强，即为了获得群体认可或避免被拒绝而附和多数意见，而在私下报告时这种压力大幅减弱</li>
+<li>被试在私下条件下视力显著下降</li>
+<li>公开报告条件下线段实际长度发生了变化</li>
+<li>该差异纯属随机误差，不具有理论意义</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+规范性社会影响指个体为了被群体接纳、避免社会性排斥而顺从多数意见，即使内心并不认同。由于私下书面报告不会被群体成员看到，这种"被评价"的社会压力大幅减弱，从众率随之下降，而信息性社会影响（认为多数人可能掌握更准确信息）在此例中影响较小，因为正确答案客观明显。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">4. 该实验设计中，将真被试的作答顺序始终安排在实验助手之后，这样设计的主要目的最可能是：</p>
+<ol type="A">
+<li>确保被试有机会先听到（或看到）实验助手一致的错误答案，从而制造群体压力情境，这是该实验操纵的关键环节</li>
+<li>为了让被试更快完成实验</li>
+<li>与研究假设无关，只是随机安排</li>
+<li>为了避免实验助手看到被试的答案</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+从众实验的核心操纵在于让真被试暴露于"多数人一致给出错误答案"的情境中，因此必须安排被试在助手之后作答，这样才能观察其是否会因已知的群体（错误）共识而改变自己原本正确的判断，这是实验内部效度的关键设计要素。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">5. 若该实验的一个潜在混淆变量是"被试年龄"，且不同条件组之间年龄分布存在系统性差异（如7人组被试平均年龄显著更大），这将如何影响该研究的结论？</p>
+<ol type="A">
+<li>不会有任何影响，因为年龄与从众行为无关</li>
+<li>会削弱因果推断的效度，因为从众率的组间差异可能部分或全部由年龄差异而非助手人数造成，二者被混淆在一起，难以区分</li>
+<li>会使实验结果更加可信</li>
+<li>只会影响私下报告条件，不影响公开报告条件</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+混淆变量是指与自变量相关、同时也可能影响因变量的额外变量。若年龄与助手人数分组存在系统性关联，则观察到的从众率差异可能并非（或不完全）由助手人数造成，而是年龄这一混淆因素的作用，这会削弱研究者对"群体规模导致从众行为变化"这一因果结论的把握。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 6（第 6–10 题）：社会经济地位与健康结果</h3>
+<p>大量流行病学研究表明，社会经济地位（socioeconomic status, SES）与健康结果之间存在稳定且呈梯度分布的关联：教育水平、收入与职业声望越高的群体，其预期寿命、慢性病发病率等健康指标通常也越好，且这种关联并非仅存在于贫困与非贫困人群之间的简单二分，而是在整个社会经济阶梯上均可观察到连续的梯度效应。</p>
+<p>社会学家从不同理论视角解释这一现象。结构功能主义视角倾向于将健康不平等部分归因于社会分工中不同职业角色所伴随的资源与风险差异；冲突理论视角则强调，健康不平等根植于社会资源分配不均的结构性权力关系，认为医疗资源与健康相关的社会资本（如获取优质医疗信息与服务的能力）本身就是阶层再生产的一部分。此外，"文化资本"（cultural capital）这一概念也常被用于解释健康行为的阶层差异：拥有更多文化资本的个体（例如更熟悉如何与医疗系统互动、更擅长获取与解读健康信息）往往能更有效地将其转化为实际的健康优势，即便在收入水平相近的群体之间也是如此。</p>
+<p>值得注意的是，SES与健康之间的关联可能存在双向因果关系：一方面较低的SES可能通过压力、居住环境、医疗可及性等途径损害健康；另一方面，慢性疾病本身也可能导致收入下降或职业地位受损（即"健康选择"效应），这使得单纯的横断面相关性研究难以厘清因果方向。</p>
+</div>
+
+<div class="question">
+<p class="qtext">6. 文中所述SES与健康结果之间的"梯度效应"是指：</p>
+<ol type="A">
+<li>只有贫困人口与非贫困人口之间存在健康差异，中间阶层无差异</li>
+<li>健康结果随社会经济地位在整个阶梯上连续变化，而非仅存在于贫困与非贫困的简单二分之间</li>
+<li>健康结果与SES完全无关</li>
+<li>只有最高收入阶层才享有健康优势</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文明确指出该关联"并非仅存在于贫困与非贫困人群之间的简单二分，而是在整个社会经济阶梯上均可观察到连续的梯度效应"，B准确复述了这一定义。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">7. 冲突理论视角对健康不平等的解释，与结构功能主义视角相比，最主要的区别在于：</p>
+<ol type="A">
+<li>冲突理论完全否认职业分工的存在</li>
+<li>冲突理论更强调资源分配不均背后的结构性权力关系及阶层再生产机制，而非单纯将差异归因于职业角色本身的功能性分工</li>
+<li>两种视角实质完全相同，只是用词不同</li>
+<li>结构功能主义认为健康不平等完全不存在</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文中指出结构功能主义"倾向于将健康不平等部分归因于社会分工中不同职业角色所伴随的资源与风险差异"，而冲突理论"强调健康不平等根植于社会资源分配不均的结构性权力关系"，二者的核心区别在于是否强调权力与阶层再生产这一结构性视角，B准确把握了这一区别。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">8. "文化资本"概念在文中被用来解释：</p>
+<ol type="A">
+<li>即使收入水平相近，拥有更多文化资本（如更擅长获取和解读健康信息）的个体也可能获得更好的健康结果</li>
+<li>文化资本与健康结果完全无关</li>
+<li>只有高收入群体才拥有文化资本</li>
+<li>文化资本是医疗保险覆盖率的同义词</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+原文写道"即便在收入水平相近的群体之间"，拥有更多文化资本的个体也能更有效地将其转化为健康优势，说明文化资本是独立于（或不完全等同于）收入的一种解释变量，A准确复述了这一论点。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">9. 文中提到的"健康选择"效应是指：</p>
+<ol type="A">
+<li>个体主动选择健康的生活方式</li>
+<li>慢性疾病本身可能导致收入下降或职业地位受损，即因果方向从健康流向SES，而非仅由SES流向健康</li>
+<li>医生根据健康状况选择病人</li>
+<li>健康保险公司筛选投保人</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文明确定义："慢性疾病本身也可能导致收入下降或职业地位受损（即'健康选择'效应）"，这描述的是因果方向从健康状况反向影响社会经济地位的现象，B准确对应此定义。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">10. 作者提出SES与健康之间可能存在"双向因果关系"，这一论述在文中的主要作用是：</p>
+<ol type="A">
+<li>证明SES与健康之间根本不存在任何关联</li>
+<li>提醒读者横断面相关性研究难以单独确定因果方向，从而为解读前文所述的梯度效应增加必要的方法论谨慎</li>
+<li>支持结构功能主义是唯一正确的理论视角</li>
+<li>否定文化资本概念的解释力</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+该段紧接在理论解释之后，明确指出"这使得单纯的横断面相关性研究难以厘清因果方向"，其功能是提醒读者在解读SES-健康关联时保持方法论上的谨慎，而非否定前述任一理论或关联本身，B最准确概括了这一段落功能。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 7（第 11–15 题）：抑郁症的生物心理社会模型</h3>
+<p>重性抑郁障碍（major depressive disorder）的病因学研究普遍采用"生物-心理-社会"（biopsychosocial）整合模型，认为该障碍并非单一因素所致，而是生物易感性（如neurotransmitter系统功能失调、遗传易感性）、心理因素（如消极认知模式、应对方式）与社会环境因素（如慢性压力、社会支持缺乏、重大生活事件）交互作用的结果。经典的"单胺假说"（monoamine hypothesis）认为抑郁症与5-羟色胺（血清素）、去甲肾上腺素等单胺类神经递质水平或功能低下有关，这也是选择性5-羟色胺再摄取抑制剂（SSRIs）等药物治疗的理论基础。</p>
+<p>然而，单胺假说面临的一项经典质疑是：SSRIs类药物通常在服药后数小时内即可提高突触间隙5-羟色胺浓度，但患者情绪症状的显著改善往往需要数周时间才会出现，这一"时间滞后"现象提示，单纯的神经递质浓度变化可能不足以完整解释抗抑郁药的起效机制，可能还涉及下游神经可塑性变化（如海马神经再生、突触重塑）等更缓慢的适应性过程。认知理论则从另一角度补充解释：贝克（Beck）提出的"认知三联征"（消极看待自我、世界与未来）及相应的认知偏差，可能是抑郁症状维持与复发的重要心理机制，这也是认知行为疗法（CBT）作为循证心理治疗手段的理论基础。</p>
+</div>
+
+<div class="question">
+<p class="qtext">11. 单胺假说面临的"时间滞后"质疑，其核心逻辑是：</p>
+<ol type="A">
+<li>SSRIs药物根本不会提高突触间隙5-羟色胺浓度</li>
+<li>SSRIs提高神经递质浓度的作用发生得很快，但临床症状改善却需数周，提示单纯的神经递质浓度变化不足以完整解释抗抑郁效应的起效机制</li>
+<li>该质疑证明抑郁症与神经递质完全无关</li>
+<li>该质疑只适用于双相情感障碍，与抑郁症无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文中明确指出SSRIs"服药后数小时内即可提高突触间隙5-羟色胺浓度"，但"情绪症状的显著改善往往需要数周时间才会出现"，这种时间上的不匹配提示单纯的神经递质浓度升高本身不足以解释起效机制，可能还需要更缓慢的下游神经适应性变化，B准确复述了这一逻辑。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">12. 根据生物-心理-社会模型，以下哪一情形最能体现"社会因素"对抑郁症发病风险的影响？</p>
+<ol type="A">
+<li>某人携带与5-羟色胺转运体相关的特定基因型</li>
+<li>某人长期经历慢性失业压力及社会支持网络薄弱</li>
+<li>某人大脑海马体体积因长期应激而缩小</li>
+<li>某人存在消极的自我评价认知模式</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+生物-心理-社会模型中的"社会因素"特指外部环境与社会环境层面的影响，如慢性压力源（失业）与社会支持缺乏，直接对应B选项；选项A属于生物学（遗传）因素，选项C属于生物学（神经生物学）因素，选项D属于心理（认知）因素。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">13. 贝克提出的"认知三联征"，其核心内容是指患者倾向于对以下哪三个方面持消极看法？</p>
+<ol type="A">
+<li>自我、他人、未来</li>
+<li>自我、世界、未来</li>
+<li>过去、现在、未来</li>
+<li>家庭、工作、健康</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+贝克提出的认知三联征具体是指抑郁症患者倾向于对"自我"（认为自己毫无价值）、"世界"（认为周遭环境充满挫折）与"未来"（认为前景无望）三个方面持系统性消极看法，这一认知模式被认为在抑郁症状的维持中起核心作用。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">14. 认知行为疗法（CBT）作为抑郁症的循证心理治疗手段，其理论基础与以下哪一机制最直接相关？</p>
+<ol type="A">
+<li>通过药物直接调节神经递质水平</li>
+<li>通过识别并系统性挑战患者的消极自动思维与认知偏差，帮助患者建立更具适应性的思维模式，从而改善情绪症状</li>
+<li>完全依靠电休克治疗改变脑功能</li>
+<li>CBT与认知理论完全无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+CBT的理论基础直接来源于认知理论对抑郁症的解释：既然消极认知模式（如认知三联征）在症状维持中起核心作用，CBT便通过帮助患者识别、检验并重构这些消极自动思维与认知偏差，来改善情绪症状，这与单纯的药物干预（选项A）机制不同。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">15. 生物-心理-社会模型相较于单一的"神经递质失衡"解释，其主要优势在于：</p>
+<ol type="A">
+<li>它完全否定生物学因素在抑郁症中的作用</li>
+<li>它能够整合遗传/神经生物学、认知/心理及社会环境等多层面因素，更全面地解释个体发病风险与病程的差异，而非将复杂疾病简化为单一病因</li>
+<li>它使治疗方案变得更加简单统一</li>
+<li>它证明心理治疗完全优于药物治疗</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+生物-心理-社会模型的核心价值在于承认精神障碍通常是多层面因素交互作用的结果，而非可被单一维度（如仅神经递质失衡）完全解释，这种整合视角有助于理解个体差异（为何相似神经生物学背景的人未必都会发病），并为多元化的治疗策略（药物、心理治疗、社会支持干预相结合）提供理论依据。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 8（第 16–20 题）：信号检测论与感觉阈限</h3>
+<p>信号检测论（signal detection theory, SDT）为研究感觉判断提供了一个重要框架，它将个体在噪声背景中检测微弱信号的表现，拆分为两个独立成分：感知敏感性（perceptual sensitivity，通常以d'表示，反映个体实际区分信号与噪声的能力）与反应偏向（response bias，反映个体在不确定情况下倾向于回答"有信号"还是"无信号"的决策倾向，与个体的动机、预期及错误代价的权衡有关）。这一框架的优势在于，它能够将"感觉能力"本身与"决策标准"这两个此前常被混淆的心理过程区分开来。</p>
+<p>在信号检测实验中，被试的判断结果可归为四类：命中（hit，信号存在且被正确报告）、漏报（miss，信号存在但未被报告）、虚报（false alarm，信号不存在却被报告存在）与正确拒斥（correct rejection，信号不存在且被正确报告不存在）。研究者可通过系统改变信号出现的"收益"与"代价"（如奖励正确命中、惩罚虚报），观察被试反应偏向的变化，而不改变其真实的感知敏感性。</p>
+</div>
+
+<div class="question">
+<p class="qtext">16. 根据信号检测论，"感知敏感性（d'）"与"反应偏向"这两个成分的关系最准确的描述是：</p>
+<ol type="A">
+<li>二者本质上是同一心理过程，无法被区分</li>
+<li>二者是相互独立的成分：感知敏感性反映个体区分信号与噪声的真实感觉能力，反应偏向则反映其决策标准，二者可以独立变化</li>
+<li>反应偏向完全决定感知敏感性的数值</li>
+<li>感知敏感性只受生理因素影响，与实验设置无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+信号检测论的核心贡献正是将感觉判断分解为两个相互独立的成分：d'反映纯粹的感觉辨别能力，不受决策标准影响；反应偏向反映个体在不确定情境下的决策倾向（保守或宽松），二者可以独立测量与独立变化，这正是文中强调的"区分感觉能力与决策过程"的核心价值。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">17. 若研究者大幅提高"虚报"（错误报告信号存在）的惩罚力度，同时保持信号本身的物理强度不变，最可能观察到的结果是：</p>
+<ol type="A">
+<li>被试的感知敏感性d'显著提高，同时反应偏向变得更保守（更倾向于回答"无信号"）</li>
+<li>被试的反应偏向变得更保守（更倾向于回答"无信号"），而其真实的感知敏感性d'基本不受影响</li>
+<li>被试的感知敏感性d'显著下降</li>
+<li>虚报惩罚力度对被试的任何判断行为都没有影响</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+加重虚报的惩罚会改变被试的决策标准（反应偏向），使其在不确定时更倾向于保守回答"无信号"以避免受罚，但这一操纵并未改变信号本身的物理强度或被试的神经感觉加工能力，因此其真实的感知敏感性d'理论上应保持基本不变，这正是信号检测论区分两个成分实用价值的体现。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">18. 一名放射科医生在阅读乳腺X光片时，将实际存在的微小肿瘤判断为"未见异常"，这属于信号检测论中的哪一类反应？</p>
+<ol type="A">
+<li>命中（hit）</li>
+<li>漏报（miss）</li>
+<li>虚报（false alarm）</li>
+<li>正确拒斥（correct rejection）</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+"漏报"是指信号（此处为实际存在的肿瘤）确实存在，但被试（医生）未能检测到并报告为"无异常"，这正是题干所描述的情况；若医生正确识别出肿瘤则为命中，若健康组织被误判为肿瘤则为虚报，若健康组织被正确判断为无异常则为正确拒斥。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">19. 感觉适应（sensory adaptation）是指感受器对持续不变的刺激逐渐降低反应性的现象（如长时间佩戴手表后感觉不到其存在）。这一现象与信号检测论中的哪一成分关系最为密切？</p>
+<ol type="A">
+<li>感觉适应主要影响感知敏感性本身（可能使d'下降），因为感受器对持续刺激的实际神经反应发生了衰减，而非单纯的决策标准改变</li>
+<li>感觉适应完全属于反应偏向的范畴，与感觉能力无关</li>
+<li>感觉适应与信号检测论完全无关</li>
+<li>感觉适应只发生在视觉系统中</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+感觉适应涉及感受器层面对持续刺激的实际神经反应性下降（生理机制），这会直接影响个体对该刺激的真实检测能力，因此更适合归类为感知敏感性（d'）层面的变化，而非单纯的决策标准（反应偏向）调整。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">20. 信号检测论相较于传统的"绝对阈限"（absolute threshold）概念，其主要理论优势在于：</p>
+<ol type="A">
+<li>绝对阈限概念假设存在一个固定不变的、纯粹由刺激物理强度决定的感知界限，而信号检测论认识到被试的判断还受到决策标准（动机、预期、代价权衡）的影响，因而能更准确地分离"能否感知"与"是否报告"这两个过程</li>
+<li>信号检测论完全否认感觉阈限的存在</li>
+<li>绝对阈限概念在所有情况下都比信号检测论更准确</li>
+<li>两种理论完全等价，只是术语不同</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+传统绝对阈限概念隐含地假设存在一个固定的、纯生理决定的感知界限，忽视了被试报告行为本身也受到非感觉性因素（决策标准、动机、奖惩结构）的影响。信号检测论通过将判断拆分为d'与反应偏向两个独立成分，能够更精确地分离出"真实的感觉能力"，避免将决策偏向的变化误认为感觉能力本身的变化。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 9（第 21–25 题）：教育获得与社会分层</h3>
+<p>社会学中的社会分层研究关注社会资源（财富、权力、声望）在不同群体间的不平等分布及其代际传递机制。教育获得（educational attainment）常被视为社会流动的重要中介变量：一方面，教育被期望具有"平等化"功能，为不同社会经济背景的个体提供向上流动的机会；另一方面，大量实证研究却发现，家庭社会经济背景仍能显著预测子女的教育获得水平及后续职业地位，这提示教育系统本身可能在一定程度上复制而非消解了既有的社会不平等。</p>
+<p>社会学家布迪厄（Bourdieu）提出的"文化资本"概念，是解释这一现象的重要理论工具：来自优势阶层家庭的儿童往往从小便通过家庭日常互动习得与主流教育体系高度契合的语言风格、知识储备与行为规范（"惯习"，habitus），这使他们在学校教育情境中更容易获得教师认可与更高的学业表现评价，即便其"先天认知能力"与其他阶层儿童并无系统性差异。这意味着，学校表面上以"客观""择优"的标准评价所有学生，但这些标准本身可能已经隐含地更契合优势阶层的文化资本，从而在不自觉中延续了阶层再生产。</p>
+</div>
+
+<div class="question">
+<p class="qtext">21. 本文提出的核心论点最准确的概括是：</p>
+<ol type="A">
+<li>教育系统完全没有任何促进社会流动的功能</li>
+<li>教育虽被期望具有平等化功能，但家庭社会经济背景（尤其是通过文化资本机制）仍可能使教育系统在实际运作中部分复制既有的社会阶层结构，而非单纯消解不平等</li>
+<li>所有学生的先天认知能力存在系统性阶层差异</li>
+<li>学校的评价标准完全客观公正，不受任何社会因素影响</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文章开篇即点明教育"平等化"期望与"复制不平等"现实之间的张力，随后以文化资本理论说明这一现象的可能机制，B完整概括了这一核心论点，且文中明确指出这与"先天认知能力"无系统性关联（排除C）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">22. 布迪厄提出的"文化资本"概念，在本文语境中主要用于解释：</p>
+<ol type="A">
+<li>为何富裕家庭子女在学业表现评价中往往更具优势——因其从小习得的语言风格、知识储备与行为规范恰好与主流教育体系的评价标准高度契合</li>
+<li>为何贫困家庭子女的认知能力天生较低</li>
+<li>文化资本只能通过购买获得，与家庭日常互动无关</li>
+<li>学校教育与家庭背景完全无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+原文明确指出优势阶层儿童"从小便通过家庭日常互动习得与主流教育体系高度契合的语言风格、知识储备与行为规范"，这使其"更容易获得教师认可与更高的学业表现评价"，A准确复述了这一解释机制。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">23. 文中提到"学校表面上以'客观''择优'的标准评价所有学生"，作者使用引号强调这两个词，最可能的用意是：</p>
+<ol type="A">
+<li>完全认同这些标准确实客观公正</li>
+<li>暗示性地质疑这些看似中立的评价标准本身可能已隐含地偏向优势阶层的文化资本，因而并非真正意义上的客观、纯粹择优</li>
+<li>强调所有教师都存在故意歧视行为</li>
+<li>与全文论点无关，只是修辞习惯</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+使用引号是一种常见的修辞手法，用以对某说法的表面有效性提出质疑或保留态度。此处紧接的下文即指出这些标准"可能已经隐含地更契合优势阶层的文化资本"，说明作者是在暗示这些标准的"客观性"值得商榷，而非全盘认同。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">24. 若某项追踪研究发现，在严格控制学生标准化考试分数（客观学业能力指标）相同的情况下，来自高社会经济地位家庭的学生仍显著更可能获得教师的正面评价与推荐，这一发现将如何影响本文论点？</p>
+<ol type="A">
+<li>削弱本文论点，因为它证明评价标准完全基于客观能力</li>
+<li>强化本文论点，因为它提供了直接证据表明，在能力已被统计控制的情况下，社会经济背景（及其伴随的文化资本表现）仍独立影响教育系统内的主观评价，与"教育系统部分复制阶层结构"的论点相符</li>
+<li>与本文论点完全无关</li>
+<li>证明文化资本概念应被弃用</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+若在客观能力（标准化考试分数）已被控制的情况下，社会经济背景仍能独立预测教师的主观评价，这恰好排除了"差异纯粹源于能力差异"的替代解释，为"评价标准隐含偏向优势阶层文化资本"这一论点提供了更有力的支持证据，B准确把握了这一逻辑关系。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">25. 本文对教育系统功能的论述，最适合被归类为以下哪一社会学理论视角？</p>
+<ol type="A">
+<li>结构功能主义视角，强调教育系统促进社会整体和谐运作</li>
+<li>冲突理论/再生产理论视角，关注教育系统如何在表面中立的外衣下维系并再生产既有的权力与资源不平等结构</li>
+<li>纯粹的生物决定论视角</li>
+<li>该论述不属于任何社会学理论范畴</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+本文（及布迪厄的文化资本理论）的核心关切是教育系统如何在表面"客观""择优"的外衣下，实际上延续和再生产了既有的阶层不平等结构，这正是冲突理论传统（尤其是"社会再生产"理论）的典型分析视角，而非强调社会整体和谐运作的结构功能主义。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 10（第 26–30 题）：工作动机的自我决定理论</h3>
+<p>自我决定理论（self-determination theory, SDT）是当代动机心理学中最具影响力的理论框架之一，其核心主张是：人类行为动机可依其"自主性"程度分布于一个连续谱系上，从完全受外部控制的"外在动机"（extrinsic motivation，如单纯为获得奖金或避免惩罚而工作）到完全出于兴趣与享受的"内在动机"（intrinsic motivation，如单纯因喜爱工作本身而投入）。该理论进一步提出，人类存在三种基本心理需求——自主感（autonomy，感到自己的行为出于自身意愿而非被迫）、胜任感（competence，感到自己有能力完成任务并获得成长）与归属感（relatedness，感到与他人建立有意义的联结）——这三种需求的满足程度，直接影响个体动机是趋向内在化还是持续依赖外部控制。</p>
+<p>该理论一个颇具争议但获得诸多实证支持的推论是"过度理由效应"（overjustification effect）：当个体原本出于内在兴趣从事某项活动，若此后被给予与该活动表现挂钩的外部奖励，其内在动机反而可能因此下降——因为个体可能将自己继续参与该活动的原因，重新归因于外部奖励，而非原有的内在兴趣本身，尤其是当奖励被感知为具有"控制性"（如"做好了才给钱"）而非单纯的"信息性"（如仅作为能力反馈）时，这种削弱效应更为明显。</p>
+</div>
+
+<div class="question">
+<p class="qtext">26. 根据自我决定理论，以下哪一情形最能体现"内在动机"？</p>
+<ol type="A">
+<li>员工每完成一单便获得额外提成，因而努力多完成订单</li>
+<li>员工纯粹因为享受解决技术难题本身带来的乐趣而投入工作，即使没有额外奖励</li>
+<li>员工因担心被解雇而勉强完成工作任务</li>
+<li>员工为了在同事面前显得能力出众而加班</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+内在动机的核心特征是行为本身即是目的——个体单纯因活动本身带来的兴趣、乐趣或满足感而参与，不依赖外部奖励或惩罚。选项A、C、D均涉及外部结果（金钱、避免惩罚、他人评价）作为行为驱动力，属于外在动机的不同表现形式，只有B完全符合内在动机的定义。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">27. "过度理由效应"预测，若给予一名原本单纯出于兴趣绘画的儿童一项与绘画表现挂钩的金钱奖励，随后取消该奖励，最可能观察到的结果是：</p>
+<ol type="A">
+<li>儿童此后绘画的内在兴趣与动机可能低于从未获得过奖励前的水平，因其可能已将绘画行为部分归因于外部奖励而非纯粹兴趣</li>
+<li>儿童此后绘画的兴趣会显著高于获得奖励前</li>
+<li>取消奖励对儿童的绘画兴趣完全没有任何影响</li>
+<li>儿童会立即彻底放弃绘画</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+过度理由效应的经典预测是：外部奖励可能使个体将其参与活动的原因重新归因于外部因素而非内在兴趣，一旦奖励被撤销，由于原有的内在兴趣已在一定程度上被"挤出"，个体继续从事该活动的动机可能低于从未获得外部奖励时的基线水平，这与A所述一致。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">28. 根据文中论述，奖励被感知为"控制性"（做好了才给钱）与被感知为"信息性"（仅作为能力反馈）相比，二者对内在动机的影响有何不同？</p>
+<ol type="A">
+<li>两种感知方式对内在动机的削弱效应完全相同</li>
+<li>控制性奖励更可能削弱个体的自主感，从而更显著地削弱内在动机；信息性奖励因主要满足胜任感需求，对内在动机的削弱效应相对较弱</li>
+<li>信息性奖励反而会比控制性奖励更严重地削弱内在动机</li>
+<li>奖励的感知方式与三种基本心理需求完全无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文中明确指出"这种削弱效应"在奖励被感知为"控制性"时"更为明显"。根据自我决定理论，控制性奖励更容易让个体感到自己的行为受外部力量支配，从而损害其自主感需求的满足；而信息性奖励主要提供能力反馈，更多满足胜任感需求，对自主感的威胁较小，因而对内在动机的削弱效应相对温和。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">29. 某公司管理层希望根据自我决定理论提升员工的长期工作投入度与满意度，以下哪一管理策略最符合该理论的核心主张？</p>
+<ol type="A">
+<li>取消所有员工的自主决策空间，所有任务细节均由上级严格规定，以确保标准化</li>
+<li>为员工提供更多自主安排工作方式的空间、给予有意义的能力发展反馈，并营造团队归属感，以同时满足自主感、胜任感与归属感三种基本心理需求</li>
+<li>仅通过提高奖金比例来激励员工，不涉及其他管理措施</li>
+<li>让员工完全独立工作，避免任何团队协作与人际联结</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+自我决定理论主张三种基本心理需求（自主感、胜任感、归属感）的满足是促进内在动机与长期心理健康的核心机制。选项B同时对应满足这三种需求（自主安排空间→自主感；能力发展反馈→胜任感；团队归属感→归属感），是最符合该理论核心主张的管理策略，而选项A、C、D均只强调外部控制或单一维度，与理论主张相悖或不完整。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">30. 自我决定理论将动机描述为分布于一个"连续谱系"而非简单的"内在/外在"二元对立，这一理论设计的主要意义在于：</p>
+<ol type="A">
+<li>承认外在动机本身也存在不同的内化程度（例如个体可能已将某外部要求的价值观"内化"为自己认同的目标，即便行为最初由外部要求引发），从而更细致地描述动机状态的多样性，而非简单地将所有非纯粹内在动机归为同一类别</li>
+<li>证明内在动机与外在动机实际上完全相同，没有区别</li>
+<li>该连续谱系设计纯粹是为了理论表述上的美观，不具有实际解释力</li>
+<li>否定内在动机的存在</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+自我决定理论的连续谱系设计承认外在动机内部也存在不同的自主性/内化程度差异——例如个体可能逐渐认同并内化了某项原本外部施加的目标或价值观，使其行为虽然最初由外部要求引发，却逐渐带有一定的自主性色彩，这种更精细的刻画比简单二元对立更能捕捉真实动机状态的复杂性与动态性。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 11（第 31–35 题）：群体决策中的社会懈怠与群体思维</h3>
+<p>个体在群体情境中的行为表现与其独自行动时往往存在系统性差异。"社会懈怠"（social loafing）现象是指，当个体在群体中共同完成某项任务、且个人贡献难以被单独识别与追责时，其付出的努力程度往往低于单独完成同一任务时的水平——这一现象在需要"叠加"个人努力（如拔河、集体讨论）的任务中尤为显著，但在个人贡献可被清晰识别、或任务本身具有高度个人意义感的情境中则明显减弱。</p>
+<p>与社会懈怠不同，"群体思维"（groupthink）描述的是一种发生在高凝聚力、决策情境紧迫或存在强势领导意见的群体中的病态决策过程：为维持群体表面的和谐一致，成员倾向于压制自己的异议、避免提出批判性意见，甚至出现自我审查与对异见者施加从众压力等现象，最终导致群体未能充分评估所有可行方案及潜在风险，做出较差的集体决策。历史上多起重大决策失误（如某些政府或企业的灾难性决策）常被事后归因于群体思维过程。研究者提出，可通过引入"魔鬼代言人"角色（专门负责提出反对意见）、鼓励匿名意见征集、邀请外部专家评估等方式，降低群体思维发生的风险。</p>
+</div>
+
+<div class="question">
+<p class="qtext">31. 社会懈怠现象最可能在以下哪种任务情境中表现得最为显著？</p>
+<ol type="A">
+<li>八人拔河比赛，个人拉力大小无法被单独测量与追责</li>
+<li>个人独立完成的书面考试</li>
+<li>个人贡献可被清晰识别并单独评价的独唱表演</li>
+<li>对个体具有极高个人意义、被高度重视的私人项目</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+社会懈怠的关键触发条件是"个人贡献难以被单独识别与追责"，八人拔河中每个人的实际拉力无法被单独测量，个体因而更可能产生"搭便车"心理、降低努力投入，是社会懈怠最典型的情境；而选项B、C、D中个人贡献均可被清晰识别或具有高度个人意义，社会懈怠效应会相应减弱。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">32. 群体思维现象最容易在以下哪种群体特征组合中出现？</p>
+<ol type="A">
+<li>群体凝聚力低、成员意见高度多元化、决策时间充裕</li>
+<li>群体凝聚力高、存在强势的主导意见（如权威领导的立场）、决策情境紧迫</li>
+<li>群体完全由匿名陌生人临时组成，彼此无任何联系</li>
+<li>群体不存在任何领导角色</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文明确指出群体思维"发生在高凝聚力、决策情境紧迫或存在强势领导意见的群体中"，这三个条件的组合最容易促成成员压制异议、追求表面一致的病态决策过程，B准确对应这一描述。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">33. 引入"魔鬼代言人"角色作为降低群体思维风险的策略，其作用机制最可能是：</p>
+<ol type="A">
+<li>通过指定专人系统性地提出反对意见与质疑，制度化地引入批判性视角，从而对抗群体成员因追求表面和谐而自我审查异议的倾向</li>
+<li>通过增加群体凝聚力来降低风险</li>
+<li>通过缩短决策时间来避免群体思维</li>
+<li>该策略与群体思维的成因完全无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+群体思维的核心成因之一是成员因追求群体和谐而自我压制异议。指定专人（魔鬼代言人）的职责就是系统性地提出反对意见，这种制度化安排能够在不依赖个体成员"主动挑战权威"的情况下，仍确保批判性视角被纳入讨论，从而降低群体思维发生的风险，直接针对其核心成因。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">34. 社会懈怠与群体思维这两种现象的一个重要共同点是：</p>
+<ol type="A">
+<li>二者都是群体情境对个体行为或群体决策质量产生的系统性负面影响，尽管其具体作用机制（个人努力投入 vs. 集体决策质量）不同</li>
+<li>二者的成因、表现与后果完全相同，只是名称不同</li>
+<li>二者只发生在陌生人组成的群体中，不发生在熟悉的团队中</li>
+<li>二者对群体表现完全没有实际负面影响</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+社会懈怠影响的是个体在群体任务中的努力投入水平，群体思维影响的是群体集体决策的质量，二者作用的具体层面与机制不同，但共同点在于都揭示了群体情境可能对个体行为或集体表现产生系统性的、往往是负面的影响，这与"独自行动时的理性个体"假设形成对比。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">35. 若某公司在做出一项重大战略决策前，邀请多位持不同意见的外部行业专家参与评估讨论，这一做法最直接针对以下哪一群体决策风险？</p>
+<ol type="A">
+<li>社会懈怠</li>
+<li>群体思维，因为引入外部、多元且不受内部群体凝聚力与忠诚压力影响的意见来源，有助于打破内部意见趋同的封闭循环</li>
+<li>该做法对任何群体决策风险都没有实际作用</li>
+<li>该做法只能降低社会懈怠，与群体思维无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+原文明确将"邀请外部专家评估"列为降低群体思维风险的策略之一。外部专家不受内部群体凝聚力、对领导的忠诚压力或维持和谐的社会性动机所影响，能够提供更独立、多元的视角，有助于打破群体思维中意见趋同、批判性缺失的封闭循环，而这与社会懈怠（关乎个人努力投入而非决策质量）的作用机制不同。</div>
+</details>
+</div>
+
+</div>
+
+<div class="passage">
+<h3>文章 12（第 36–40 题）：依恋理论与陌生情境实验</h3>
+<p>依恋理论（attachment theory）由鲍尔比（Bowlby）提出，主张婴儿与主要抚养者之间形成的情感联结对其后续社会性与情绪发展具有深远影响。安斯沃斯（Ainsworth）设计的"陌生情境"（Strange Situation）实验程序，通过观察婴儿在与抚养者短暂分离、与陌生人相处及重聚等一系列标准化情境下的行为反应，将婴儿依恋类型划分为安全型、回避型、矛盾/抵抗型，后续研究者又补充了混乱型依恋。</p>
+<p>安全型依恋的婴儿在抚养者在场时能自由探索环境，分离时表现出适度的痛苦，抚养者返回后能迅速寻求安慰并平静下来；回避型依恋的婴儿则表现出对分离与重聚相对冷漠、较少寻求接触的行为模式；矛盾型依恋的婴儿在重聚时表现出既寻求接触又抗拒安慰的矛盾行为。研究者普遍认为，抚养者对婴儿信号的敏感性与反应一致性，是塑造依恋类型的重要因素之一，早期依恋模式还被认为可能与个体成年后的人际关系模式存在一定关联（内部工作模型假说）。</p>
+</div>
+
+<div class="question">
+<p class="qtext">36. 陌生情境实验中，"安全型依恋"婴儿的典型行为特征是：</p>
+<ol type="A">
+<li>抚养者在场时积极探索环境，分离时表现适度痛苦，重聚后能迅速被安慰并恢复平静</li>
+<li>对抚养者的离开与返回都表现出完全的冷漠</li>
+<li>重聚时既寻求接触又抗拒被安慰，表现出矛盾行为</li>
+<li>无论抚养者在场与否，行为表现完全相同</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+安全型依恋的核心特征是将抚养者视为可信赖的"安全基地"：抚养者在场时能自由探索环境，分离时表现出正常范围内的痛苦（而非极端冷漠或过度抗拒），抚养者返回后能迅速从其安慰中恢复平静，这与选项B（回避型）、C（矛盾型）的模式形成对比。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">37. 研究者普遍认为，抚养者的哪一特质是塑造婴儿依恋类型的重要影响因素？</p>
+<ol type="A">
+<li>抚养者的经济收入水平</li>
+<li>抚养者对婴儿信号的敏感性与反应的一致性</li>
+<li>抚养者的身高与外貌</li>
+<li>抚养者是否为婴儿的生物学父母</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+文中明确指出"抚养者对婴儿信号的敏感性与反应一致性，是塑造依恋类型的重要因素之一"，即抚养者能否及时、恰当且一致地回应婴儿发出的需求信号（如哭闹、微笑），被认为是形成安全型依恋的关键条件，而非选项A、C所述的表面特质。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">38. "内部工作模型"（internal working model）假说主要用于解释：</p>
+<ol type="A">
+<li>婴儿早期形成的依恋模式，可能作为一种认知与情感模板，持续影响个体成年后建立与维系人际关系的方式</li>
+<li>婴儿的语言习得过程</li>
+<li>婴儿的运动发育里程碑</li>
+<li>该假说与依恋理论完全无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+内部工作模型假说主张，早期依恋经验会内化为个体关于"自我是否值得被爱""他人是否可信赖"的认知与情感模板，这一模板可能持续影响个体成年后在亲密关系、友谊等人际互动中的期待与行为模式，是依恋理论中连接早期发展与成年后社会功能的核心概念。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">39. 若某研究者观察到，某婴儿在抚养者离开时几乎不表现出任何痛苦迹象，抚养者返回后也很少主动寻求身体接触，这一模式最符合以下哪种依恋类型？</p>
+<ol type="A">
+<li>安全型依恋</li>
+<li>回避型依恋</li>
+<li>矛盾/抵抗型依恋</li>
+<li>混乱型依恋</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+回避型依恋婴儿的典型特征正是对分离与重聚都表现出相对冷漠、较少寻求接触的行为模式，题干所述"几乎不表现出痛苦""很少主动寻求接触"与此高度吻合，区别于安全型（适度痛苦、积极寻求安慰）与矛盾型（既寻求又抗拒接触）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">40. 陌生情境实验作为一种标准化观察程序，其研究方法上的主要优势在于：</p>
+<ol type="A">
+<li>通过对所有被试施加相同的一系列标准化情境（分离、陌生人在场、重聚），使不同婴儿的行为反应具有可比性，便于系统性地对依恋类型进行分类与跨研究比较</li>
+<li>该方法完全不需要事先设计任何实验流程</li>
+<li>该方法只能用于观察单一婴儿，无法用于群体研究</li>
+<li>该方法完全避免了观察者主观判断的介入</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+陌生情境实验的方法学价值在于其高度标准化的程序设计：每名婴儿都经历相同顺序、相同时长的情境变化，这种标准化使研究者能够在可控条件下比较不同婴儿的行为反应模式，从而系统地划分依恋类型，并使不同实验室、不同研究之间的结果具有可比性（尽管观察者评分仍不可避免地涉及一定的训练与主观判断成分）。</div>
+</details>
+</div>
+
+</div>
+
+<div class="discrete-block">
+<h4>独立题（第 41–59 题）</h4>
+
+<div class="question">
+<p class="qtext">41. 长期记忆的巩固（consolidation）过程与以下哪一脑区的功能关系最为密切？</p>
+<ol type="A">
+<li>小脑</li>
+<li>海马体</li>
+<li>初级视觉皮层</li>
+<li>延髓</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+海马体在陈述性（外显）长期记忆的形成与巩固中起核心作用，负责将短期记忆逐步转化为稳定的长期记忆并促进其向大脑皮层的分布式存储转移。经典病例（如HM病例）显示海马体受损会导致严重的顺行性遗忘。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">42. 大五人格模型（Big Five）中的"神经质"（neuroticism）维度得分较高的个体，最典型的特征是：</p>
+<ol type="A">
+<li>情绪相对稳定，较少体验负性情绪</li>
+<li>更容易体验焦虑、情绪波动等负性情绪，情绪稳定性较低</li>
+<li>高度外向、善于社交</li>
+<li>对新经验高度开放</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+神经质维度衡量的是个体情绪不稳定性及体验负性情绪（如焦虑、抑郁情绪、易怒）的倾向，高神经质得分者情绪波动更大、更容易感受到压力与负性情绪，与选项A（情绪稳定）恰好相反。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">43. 一只狗听到铃声后开始分泌唾液（因铃声此前多次与喂食配对出现），这属于哪种学习类型？</p>
+<ol type="A">
+<li>操作性条件反射</li>
+<li>经典条件反射</li>
+<li>观察学习</li>
+<li>习惯化</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+这是经典条件反射（巴甫洛夫条件反射）的典型例子：中性刺激（铃声）通过与非条件刺激（食物）反复配对，最终能够单独引发原本只由非条件刺激引起的反应（唾液分泌），铃声成为条件刺激。操作性条件反射则涉及行为与后果（强化/惩罚）之间的关联，与此例不同。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">44. "基本归因错误"（fundamental attribution error）是指：</p>
+<ol type="A">
+<li>在解释他人行为时，倾向于高估其人格/性格等内在因素的作用，而低估情境因素的影响</li>
+<li>在解释自己行为时，倾向于高估内在因素的作用</li>
+<li>完全不考虑他人行为的任何原因</li>
+<li>只在解释群体行为时才会出现的偏差</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+基本归因错误指人们在解释他人行为原因时，系统性地倾向于归因于对方的人格特质等内在（性格）因素，而相对忽视情境（外部）因素的作用；值得注意的是，人们在解释自己的行为时则常呈现相反的模式（更强调情境因素），这一不对称现象被称为"行动者-观察者偏差"。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">45. 根据符号互动论（symbolic interactionism），社会现实最主要是通过什么过程被建构的？</p>
+<ol type="A">
+<li>由宏观社会结构与制度自上而下单方面决定，个体互动无关紧要</li>
+<li>个体在日常互动中通过共享符号（如语言、姿态）对情境进行主观解释与意义赋予，社会现实由此在微观互动层面被持续建构</li>
+<li>完全由生物遗传因素决定，与社会互动无关</li>
+<li>由国家法律条文单方面规定</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+符号互动论是一种微观社会学理论视角，强调个体通过对符号（语言、手势等）的共享理解，在日常面对面互动中主动解释情境、赋予意义，社会现实（如身份、角色、规范）正是在这种持续的互动过程中被建构和再协商的，而非仅仅是宏观结构自上而下强加的结果。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">46. 根据皮亚杰（Piaget）的认知发展阶段理论，儿童在"具体运算阶段"（concrete operational stage）最主要获得的认知能力是：</p>
+<ol type="A">
+<li>理解物体守恒（conservation）概念，即认识到物体的数量、体积等属性不会因形状或排列方式改变而改变，并能进行具体事物的逻辑运算</li>
+<li>掌握抽象假设性推理能力</li>
+<li>形成客体永久性（object permanence）概念</li>
+<li>掌握语言的基本语法规则</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+具体运算阶段（约7-11岁）儿童的核心认知成就是掌握守恒概念（如认识到将水从矮胖杯倒入高瘦杯，水量并未改变）以及对具体事物进行逻辑分类、排序等运算，但尚不能进行脱离具体情境的抽象假设性推理（这是下一阶段"形式运算阶段"的特征）；客体永久性则是更早的"感知运动阶段"所获得的能力。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">47. 根据埃里克森（Erikson）的心理社会发展阶段理论，青春期（青少年期）面临的核心发展任务/危机是：</p>
+<ol type="A">
+<li>信任对不信任</li>
+<li>自主对羞怯怀疑</li>
+<li>自我同一性对角色混乱，即青少年需要探索并整合"我是谁"这一自我认同感，否则可能陷入角色混乱</li>
+<li>亲密对孤独</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：C</span><br>
+埃里克森理论中，青春期对应的核心危机是"自我同一性对角色混乱"：青少年需要通过探索不同的价值观、角色与目标，逐步整合形成稳定、连贯的自我认同感；若未能成功完成这一任务，可能导致角色混乱（对自我身份感到迷茫）。"信任对不信任"对应婴儿期，"亲密对孤独"则对应成年早期。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">48. 快速眼动睡眠（REM sleep）阶段最典型的生理与心理特征是：</p>
+<ol type="A">
+<li>脑电波呈现慢波、高振幅特征，肌肉张力显著增强</li>
+<li>脑电活动接近清醒状态、眼球快速转动、骨骼肌几乎完全瘫痪（肌张力丧失），且是生动梦境最常发生的阶段</li>
+<li>完全没有任何脑电活动</li>
+<li>是深度睡眠中最难被唤醒的阶段，与做梦无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+REM睡眠阶段的脑电图模式与清醒时相近（去同步化、低振幅、高频），同时伴随特征性的快速眼球运动，骨骼肌张力几乎完全丧失（防止个体将梦境内容付诸躯体动作），且是最常报告生动、叙事性梦境的睡眠阶段，这与非快速眼动（NREM）睡眠中的慢波深睡阶段（选项A所述特征）形成鲜明对比。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">49. 在操作性条件反射中，"间歇强化"（相较于连续强化）产生的行为反应最典型的特点是：</p>
+<ol type="A">
+<li>行为习得速度更快，但消退速度也更快</li>
+<li>行为习得速度可能较慢，但一旦建立，对消退（extinction）具有更强的抵抗力，即"部分强化效应"</li>
+<li>间歇强化对行为习得与消退均无任何影响</li>
+<li>间歇强化只适用于经典条件反射，不适用于操作性条件反射</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+"部分强化效应"（partial reinforcement effect）指出，相较于每次反应都被强化（连续强化），按间歇性规则（如固定比率、可变比率等强化程式）给予强化所建立的行为，在强化停止后往往表现出更强的抵抗消退能力，这也是老虎机等按可变比率强化的行为极难被戒除的心理学解释之一。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">50. "可得性启发式"（availability heuristic）是指人们在判断某事件发生概率时：</p>
+<ol type="A">
+<li>依据严谨的统计数据进行精确计算</li>
+<li>依赖该类事件在记忆中被回忆起的难易程度作为判断依据，容易被最近发生、生动或媒体高度报道的事件影响，从而高估其实际发生概率</li>
+<li>完全随机猜测，不受任何认知捷径影响</li>
+<li>只依据个人过去的直接经验，从不受媒体报道影响</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+可得性启发式是一种认知捷径：人们倾向于用"某类事件的例子有多容易从记忆中被提取"来估计其发生概率，而非进行严谨统计推理。由于生动、近期或经媒体大量报道的事件（如空难）更容易被回忆起，人们常因此系统性高估这类事件的实际发生概率（相对于统计上更常见但不那么"抓人眼球"的事件，如车祸）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">51. 根据社会认同理论（social identity theory），个体倾向于将自己归属的群体（内群体）评价得比外群体更为积极，这一现象最主要用于解释：</p>
+<ol type="A">
+<li>个体如何通过群体归属获得积极的自我概念，并可能因此产生群体偏袒（in-group favoritism）乃至群际偏见与歧视</li>
+<li>个体完全不受群体归属影响，判断始终保持客观中立</li>
+<li>社会认同理论只适用于解释个体行为，不涉及群体层面现象</li>
+<li>该理论认为所有群体间关系天然都是敌对的</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+社会认同理论认为，个体的自我概念部分来自其所属的社会群体（群体身份），为维护并提升积极的自我评价，个体倾向于将内群体评价得更积极（内群体偏袒），并可能相应地贬低外群体，这一心理机制被认为是群际偏见、歧视乃至群体冲突的重要社会心理学根源之一。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">52. 涂尔干（Durkheim）从结构功能主义视角出发，提出越轨行为（deviance）对社会具有以下哪种功能？</p>
+<ol type="A">
+<li>越轨行为对社会毫无功能，纯属病态现象应被彻底消除</li>
+<li>通过对越轨行为的集体谴责，社会得以重申并强化其共享的道德边界与规范，从而增强社会凝聚力，这是越轨行为客观上具有的正功能之一</li>
+<li>越轨行为总是导致社会结构的彻底瓦解</li>
+<li>越轨行为只对越轨者个人产生影响，与整个社会无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+涂尔干的结构功能主义视角认为，即使越轨行为本身带来负面后果，其存在客观上也可能发挥某种社会功能：社会成员对越轨行为的集体反应（谴责、惩罚）有助于清晰界定并强化群体共享的道德规范边界，从而在这一过程中增强社会成员之间的团结与凝聚力，这一"越轨的功能"是结构功能主义分析越轨现象的经典视角。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">53. "人口转变理论"（demographic transition theory）描述了一个社会随经济发展通常经历的人口变化模式，其典型顺序最接近：</p>
+<ol type="A">
+<li>高出生率、高死亡率（阶段1）→死亡率下降、出生率仍高，人口快速增长（阶段2）→出生率随之下降（阶段3）→低出生率、低死亡率，人口增长趋缓（阶段4）</li>
+<li>出生率与死亡率始终保持恒定，不随经济发展变化</li>
+<li>死亡率先于出生率下降的现象从未在任何社会中被观察到</li>
+<li>该理论认为人口增长与经济发展完全无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+人口转变理论描述的典型模式是：工业化前社会出生率与死亡率均高，人口增长缓慢（阶段1）；随着医疗卫生、营养条件改善，死亡率率先下降而出生率仍维持高位，导致人口快速增长（阶段2）；随后由于教育普及、城市化、女性劳动参与等因素，出生率也逐渐下降（阶段3）；最终社会进入出生率与死亡率均低、人口增长趋缓甚至停滞的阶段（阶段4），这是人口社会学中描述经济发展与人口结构关系的经典理论框架。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">54. 社会学中所称的"社会化的媒介"（agents of socialization）主要是指：</p>
+<ol type="A">
+<li>只包括正规的学校教育机构</li>
+<li>家庭、学校、同辈群体、大众媒体等对个体价值观、规范与社会角色的习得产生持续影响的社会机构与关系网络</li>
+<li>只指个体的生物遗传特征</li>
+<li>该概念仅适用于儿童，与成年人的社会化过程无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+社会化的媒介是指个体在成长过程中，通过与之持续互动而习得社会规范、价值观与角色期待的各类社会机构与关系网络，家庭通常被视为最早、最基础的社会化媒介，此外学校、同辈群体、大众媒体乃至工作场所，都在个体不同人生阶段持续发挥社会化功能（成年人也持续经历"再社会化"过程，如进入新职业或组织时）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">55. 塞里（Selye）提出的"一般适应综合征"（general adaptation syndrome）描述了机体应对持续应激源时依次经历的三个阶段，其正确顺序是：</p>
+<ol type="A">
+<li>警觉反应期→抵抗期→衰竭期</li>
+<li>抵抗期→警觉反应期→衰竭期</li>
+<li>衰竭期→警觉反应期→抵抗期</li>
+<li>三个阶段没有固定顺序，随机发生</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：A</span><br>
+一般适应综合征描述机体对持续应激源的生理反应依次经历：警觉反应期（交感神经系统被迅速激活，出现"战斗或逃跑"反应）→抵抗期（机体动员资源尝试适应并应对持续存在的应激源，各项生理指标趋于代偿性稳定）→若应激源持续存在超出机体代偿能力，则进入衰竭期（生理资源耗竭，机体易感性显著增加），这是应激生理学中的经典阶段模型。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">56. "内隐偏见"（implicit bias）与外显（明确表达的）偏见相比，其主要特点是：</p>
+<ol type="A">
+<li>个体完全能够清晰意识到并主动承认这种偏见的存在</li>
+<li>一种个体可能并未明确意识到、却仍在潜移默化中影响其判断与行为的自动化、无意识态度或联想</li>
+<li>内隐偏见与外显偏见在心理学上完全是同一概念，没有区别</li>
+<li>内隐偏见只存在于特定文化中，具有普遍生物学基础的偏见不属于此类</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+内隐偏见指个体可能并未在意识层面察觉、甚至可能与其明确表达的价值观相悖，却仍会在特定情境下自动化地影响知觉、判断或行为的态度或联想，这与个体能清晰意识并主动表达的外显偏见形成对比；内隐联想测验（IAT）等工具常被用于间接测量此类无意识态度。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">57. "标签理论"（labeling theory）在解释越轨行为的持续与升级方面，其核心论点是：</p>
+<ol type="A">
+<li>越轨行为完全由个体的生物遗传因素决定，与他人反应无关</li>
+<li>社会（尤其是权威机构）对某个体贴上"越轨者"标签的过程本身，可能通过改变该个体的自我认同与他人对待方式，反而促使其进一步内化并持续从事越轨行为，形成自我实现预言</li>
+<li>被贴标签的个体总能迅速摆脱该标签的影响，不受长期困扰</li>
+<li>标签理论认为越轨行为完全是个体自由意志的产物，与社会互动无关</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+标签理论强调，越轨行为在很大程度上是一种社会建构的产物：当社会（尤其是执法、司法等权威机构）将某行为或个体正式贴上"越轨者"标签后，这一标签可能改变他人对该个体的对待方式，并被该个体逐渐内化为自我认同的一部分，从而形成一种自我实现预言，使其更可能持续甚至升级从事越轨行为，这与将越轨完全归因于个体内在特质的视角（选项A）形成对比。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">58. 马斯洛需求层次理论（Maslow's hierarchy of needs）中，"归属与爱的需求"位于以下哪两层需求之间？</p>
+<ol type="A">
+<li>位于生理需求与安全需求之间</li>
+<li>位于安全需求与尊重需求之间</li>
+<li>位于尊重需求与自我实现需求之间</li>
+<li>归属与爱的需求是层次结构中的最高层</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+马斯洛需求层次由低到高依次为：生理需求、安全需求、归属与爱的需求、尊重需求、自我实现需求。因此"归属与爱的需求"位于安全需求之上、尊重需求之下，该理论认为个体通常需要先满足较低层次的需求，才会更主动地追求更高层次需求的满足（尽管该顺序性假设本身也受到后续研究的一定质疑）。</div>
+</details>
+</div>
+
+<div class="question">
+<p class="qtext">59. 韦伯（Weber）提出的社会分层三元视角中，除经济阶级（class）外，还包括以下哪两个独立维度？</p>
+<ol type="A">
+<li>种族与国籍</li>
+<li>地位（status，即社会声望）与权力（power，即影响他人或资源分配的能力）</li>
+<li>年龄与性别</li>
+<li>教育与职业，与阶级完全重合，不构成独立维度</li>
+</ol>
+<details><summary>查看答案与解析</summary>
+<div class="answer-block"><span class="ans">答案：B</span><br>
+韦伯的社会分层理论突破了单纯以经济因素（阶级）划分社会分层的马克思式框架，提出社会分层应从三个相对独立的维度综合理解：阶级（经济资源与市场地位）、地位（社会声望与生活方式认同）、权力（影响政治决策与资源分配的能力），三者虽常相互关联，但并不总是完全重合（例如某些职业声望高但经济收入相对有限）。</div>
+</details>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+
+<footer>
+本模拟卷为原创练习材料，参照 AAMC 官方 MCAT 大纲的知识点分布与题型难度编写，非官方真题。<br>
+建议按官方时限（C/P 95分钟・CARS 90分钟・Bio/Biochem 95分钟・Psych/Soc 95分钟）计时模拟作答，以获得最真实的备考体验。
+</footer>
+
+</body>
+</html>
