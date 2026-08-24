@@ -156,15 +156,38 @@
   }
   .lb-tier{
     flex:0 0 auto;
-    font-size:11px;
+    font-size:11.5px;
     font-weight:700;
-    color:#6b7280;
-    background:#f0f1f3;
-    border:1px solid #e2e4e8;
     border-radius:10px;
-    padding:2px 7px;
+    padding:3px 8px;
     margin-left:6px;
     white-space:nowrap;
+    letter-spacing:0.3px;
+  }
+  .lb-tier.tier-top{
+    color:#9a6a00;
+    background:#fff6df;
+    border:1px solid #f3ddaa;
+  }
+  .lb-tier.tier-genius{
+    color:#7a4fa8;
+    background:#f6f0fd;
+    border:1px solid #ddc7f2;
+  }
+  .lb-tier.tier-star{
+    color:#3c72b0;
+    background:#eef5fc;
+    border:1px solid #c9dff0;
+  }
+  .lb-tier.tier-caring{
+    color:#3d8a5c;
+    background:#eef8f1;
+    border:1px solid #c8e6d3;
+  }
+  .lb-tier.tier-newbie{
+    color:#c07a2e;
+    background:#fef3e7;
+    border:1px solid #f3d8b3;
   }
   .my-score-search{
     display:flex;
@@ -577,12 +600,12 @@ medalMap[SILVER_SCORE] = '🥈';
 medalMap[BRONZE_SCORE] = '🥉';
 
 function getTier(score){
-  if(score === PERFECT) return '最强家长';
-  if(score === SILVER_SCORE) return '学神家长';
+  if(score === PERFECT) return { label: '👑最强家长', cls: 'tier-top' };
+  if(score === SILVER_SCORE) return { label: '✨学神家长', cls: 'tier-genius' };
   const ratio = score / PERFECT;
-  if(ratio >= 0.7) return '学霸家长';
-  if(ratio >= 0.4) return '用心家长';
-  return '萌新家长';
+  if(ratio >= 0.7) return { label: '📚学霸家长', cls: 'tier-star' };
+  if(ratio >= 0.4) return { label: '🌷用心家长', cls: 'tier-caring' };
+  return { label: '🌱萌新家长', cls: 'tier-newbie' };
 }
 
 function escapeHtml(s){
@@ -614,7 +637,7 @@ function showMyScore(name){
     '<div class="my-score-card">' +
       '<div class="msc-name">' + (medal ? medal + ' ' : '') + escapeHtml(matchName) + '</div>' +
       '<div class="msc-score">' + myScore + ' / ' + questions.length + '</div>' +
-      '<div class="lb-tier">' + getTier(myScore) + '</div>' +
+      '<div class="lb-tier ' + getTier(myScore).cls + '">' + getTier(myScore).label + '</div>' +
       '<div class="msc-rank">当前排名第 ' + rankPos + ' 名（共 ' + rankingGlobal.length + ' 人参与）</div>' +
     '</div>';
 }
@@ -818,9 +841,10 @@ function render(rows){
       score.textContent = r.score + ' / ' + questions.length;
       row.appendChild(score);
 
+      const tierInfo = getTier(r.score);
       const tier = document.createElement('div');
-      tier.className = 'lb-tier';
-      tier.textContent = getTier(r.score);
+      tier.className = 'lb-tier ' + tierInfo.cls;
+      tier.textContent = tierInfo.label;
       row.appendChild(tier);
 
       lbArea.appendChild(row);
