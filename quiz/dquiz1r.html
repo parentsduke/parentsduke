@@ -414,25 +414,27 @@ function render(rows){
     lbArea.appendChild(empty);
   } else {
     const medals = ['🥇','🥈','🥉'];
-    const CERT_MIN = 9; // 9分及以上（含满分）都算获证书
+    const PERFECT = questions.length;
+    const CERT_SCORE = PERFECT - 1; // 9分（非满分）展示证书徽章，满分直接给奖牌
     const SHOW_MIN = 10;
-    // 展示前10名；若第10名之后与第10名同分，或分数达到证书门槛，一并显示（避免遗漏应得证书的人）
+    // 展示前10名；若第10名之后与第10名同分，或分数达到9分门槛，一并显示（避免遗漏应得奖励的人）
     let cutoffScore = ranking[Math.min(SHOW_MIN, ranking.length) - 1].score;
-    const shown = ranking.filter((r, i) => i < SHOW_MIN || r.score === cutoffScore || r.score >= CERT_MIN);
+    const shown = ranking.filter((r, i) => i < SHOW_MIN || r.score === cutoffScore || r.score >= CERT_SCORE);
 
     shown.forEach((r, i) => {
       const row = document.createElement('div');
       row.className = 'lb-row';
 
+      const isPerfect = r.score === PERFECT;
       const rank = document.createElement('div');
-      rank.className = 'lb-rank' + (i < 3 ? ' medal' : '');
-      rank.textContent = i < 3 ? medals[i] : (i+1);
+      rank.className = 'lb-rank' + ((i < 3 || isPerfect) ? ' medal' : '');
+      rank.textContent = i < 3 ? medals[i] : (isPerfect ? '🏅' : (i+1));
       row.appendChild(rank);
 
-      if(r.score >= CERT_MIN){
+      if(r.score === CERT_SCORE){
         const badge = document.createElement('div');
         badge.className = 'lb-badge';
-        badge.textContent = '🏅证书';
+        badge.textContent = '🎖️证书';
         row.appendChild(badge);
       }
 
