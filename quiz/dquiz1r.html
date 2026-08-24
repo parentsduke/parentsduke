@@ -154,17 +154,80 @@
     color:var(--green);
     font-size:13.5px;
   }
-  .lb-badge{
+  .lb-tier{
     flex:0 0 auto;
     font-size:11px;
     font-weight:700;
-    color:#a8790a;
-    background:#fdf1d6;
-    border:1px solid #eecf8a;
+    color:#6b7280;
+    background:#f0f1f3;
+    border:1px solid #e2e4e8;
     border-radius:10px;
     padding:2px 7px;
     margin-left:6px;
     white-space:nowrap;
+  }
+  .my-score-search{
+    display:flex;
+    gap:8px;
+    margin-top:4px;
+  }
+  .my-score-search input{
+    flex:1;
+    min-width:0;
+    padding:9px 12px;
+    border:1px solid #dcdfe4;
+    border-radius:8px;
+    font-size:14px;
+    outline:none;
+  }
+  .my-score-search input:focus{
+    border-color:#2c5cc5;
+  }
+  .my-score-search button{
+    flex:0 0 auto;
+    padding:9px 16px;
+    border:none;
+    border-radius:8px;
+    background:#2c5cc5;
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .my-score-search button:active{
+    opacity:0.85;
+  }
+  #myScoreResult{
+    margin-top:12px;
+  }
+  .my-score-card{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 14px;
+    background:#f5f8ff;
+    border:1px solid #dbe4fb;
+    border-radius:10px;
+    flex-wrap:wrap;
+  }
+  .my-score-card .msc-name{
+    font-weight:700;
+    font-size:15px;
+    color:#1f2a44;
+  }
+  .my-score-card .msc-score{
+    font-weight:700;
+    color:var(--green);
+    font-size:15px;
+  }
+  .my-score-card .msc-rank{
+    font-size:12.5px;
+    color:#666;
+  }
+  .my-score-empty{
+    font-size:13.5px;
+    color:#999;
+    padding:6px 2px;
   }
   .lb-empty{
     padding:12px 4px;
@@ -231,6 +294,144 @@
     text-align:center;
     margin-top:14px;
   }
+  .picker-trigger{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    padding:11px 12px;
+    font-size:15px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    box-sizing:border-box;
+    background:#fff;
+    color:#999;
+    text-align:left;
+  }
+  .picker-trigger.picked{color:var(--text);}
+  .picker-trigger .arrow{color:#bbb; font-size:13px;}
+  .picker-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#fff;
+    z-index:999;
+    flex-direction:column;
+  }
+  .picker-overlay.show{display:flex;}
+  .picker-head{
+    display:flex;
+    align-items:center;
+    padding:14px 12px;
+    border-bottom:1px solid var(--line);
+    flex:0 0 auto;
+  }
+  .picker-back{
+    background:none;
+    border:none;
+    font-size:22px;
+    color:var(--navy);
+    padding:0 10px 0 0;
+    line-height:1;
+  }
+  .picker-head-title{
+    font-size:16px;
+    font-weight:600;
+    color:var(--text);
+  }
+  .picker-search-wrap{
+    padding:10px 12px;
+    flex:0 0 auto;
+  }
+  .picker-search-wrap input{
+    width:100%;
+    padding:9px 12px;
+    font-size:14px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    box-sizing:border-box;
+    background:var(--cream);
+    color:var(--text);
+  }
+  .picker-body{
+    flex:1 1 auto;
+    position:relative;
+    overflow:hidden;
+  }
+  .picker-list{
+    height:100%;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-right:26px;
+    box-sizing:border-box;
+  }
+  .picker-section-label{
+    padding:6px 14px;
+    font-size:12px;
+    color:#888;
+    background:#f7f5ef;
+    font-weight:600;
+  }
+  .picker-item{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border:none;
+    border-bottom:1px solid var(--line);
+    padding:12px 14px;
+    font-size:14.5px;
+    color:var(--text);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .picker-item:active{background:#f7f5ef;}
+  .picker-empty{
+    padding:24px 14px;
+    font-size:13px;
+    color:#999;
+    text-align:center;
+  }
+  .picker-idx{
+    position:absolute;
+    right:2px;
+    top:0;
+    bottom:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:2;
+  }
+  .picker-idx span{
+    font-size:11px;
+    line-height:1.5;
+    color:var(--navy);
+    padding:0 4px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .picker-idx span.active-hint{
+    color:var(--green);
+    font-weight:700;
+  }
+  .picker-jump-bubble{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(27,42,74,0.85);
+    color:#fff;
+    font-size:32px;
+    font-weight:700;
+    width:64px;
+    height:64px;
+    border-radius:12px;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    pointer-events:none;
+  }
+  .picker-jump-bubble.show{display:flex;}
 </style>
 </head>
 <body>
@@ -261,6 +462,30 @@
       </div>
     </div>
   </div>
+
+  <div class="card">
+    <div class="chart-title">🔍 查自己的分数</div>
+    <button type="button" class="picker-trigger" id="pickerTrigger" onclick="openPicker()">
+      <span id="pickerTriggerText">点击选择你的微信昵称</span>
+      <span class="arrow">▸</span>
+    </button>
+    <div id="myScoreResult"></div>
+  </div>
+
+  <div class="picker-overlay" id="pickerOverlay">
+    <div class="picker-head">
+      <button class="picker-back" onclick="closePicker()">‹</button>
+      <div class="picker-head-title">选择昵称</div>
+    </div>
+    <div class="picker-search-wrap">
+      <input type="text" id="pickerSearch" placeholder="搜索昵称" oninput="renderPickerList()">
+    </div>
+    <div class="picker-body">
+      <div class="picker-list" id="pickerList"></div>
+      <div class="picker-idx" id="pickerIdx"></div>
+    </div>
+  </div>
+  <div class="picker-jump-bubble" id="pickerJumpBubble"></div>
 
   <div class="card">
     <div class="chart-title">🏆 答得最准的几位</div>
@@ -342,6 +567,147 @@ const questions = [
   }
 ];
 
+// 分数相关的共用常量与函数
+const PERFECT = questions.length;
+const SILVER_SCORE = PERFECT - 1; // 9分：并列亚军
+const BRONZE_SCORE = PERFECT - 2; // 8分：并列季军
+const medalMap = {};
+medalMap[PERFECT] = '🥇';
+medalMap[SILVER_SCORE] = '🥈';
+medalMap[BRONZE_SCORE] = '🥉';
+
+function getTier(score){
+  if(score === PERFECT) return '最强家长';
+  if(score === SILVER_SCORE) return '学神家长';
+  const ratio = score / PERFECT;
+  if(ratio >= 0.7) return '学霸家长';
+  if(ratio >= 0.4) return '用心家长';
+  return '萌新家长';
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+let personLatestGlobal = {};
+let rankingGlobal = [];
+
+function showMyScore(name){
+  const myResultEl = document.getElementById('myScoreResult');
+  if(rankingGlobal.length === 0){
+    myResultEl.innerHTML = '<div class="my-score-empty">还没有人提交作答</div>';
+    return;
+  }
+  let matchName = personLatestGlobal[name] ? name : null;
+  if(!matchName){
+    const lower = name.toLowerCase();
+    matchName = Object.keys(personLatestGlobal).find(n => n.toLowerCase() === lower) || null;
+  }
+  if(!matchName){
+    myResultEl.innerHTML = '<div class="my-score-empty">没有找到「' + escapeHtml(name) + '」的作答记录，可能还没有提交过测验</div>';
+    return;
+  }
+  const myScore = personLatestGlobal[matchName].score;
+  const medal = medalMap[myScore] || '';
+  const rankPos = rankingGlobal.filter(r => r.score > myScore).length + 1;
+  myResultEl.innerHTML =
+    '<div class="my-score-card">' +
+      '<div class="msc-name">' + (medal ? medal + ' ' : '') + escapeHtml(matchName) + '</div>' +
+      '<div class="msc-score">' + myScore + ' / ' + questions.length + '</div>' +
+      '<div class="lb-tier">' + getTier(myScore) + '</div>' +
+      '<div class="msc-rank">当前排名第 ' + rankPos + ' 名（共 ' + rankingGlobal.length + ' 人参与）</div>' +
+    '</div>';
+}
+
+// 群成员昵称数据：n=昵称，l=索引字母（英文首字母 / 中文按拼音首字母归类）
+const MEMBERS = [{"n": "Ada杜妈-Eileen'29Trinity-CA", "l": "A"}, {"n": "Aileen(mom)-Allison'29-Trinity-", "l": "A"}, {"n": "Alice 杜妈-Daniel-30T-NY-C", "l": "A"}, {"n": "Alice-杜妈-Alina28-T-TX", "l": "A"}, {"n": "Amy 杜妈-Gary29P-CA", "l": "A"}, {"n": "岸 杜妈- Tony-30T-HK-BJ", "l": "A"}, {"n": "Andy杜爸Brenton29TrinityMA", "l": "A"}, {"n": "Angel Mom-Helen2029-T-GZ", "l": "A"}, {"n": "Angela 杜妈Julia-2029Trinity -Ho", "l": "A"}, {"n": "Anny-杜妈-Eileen 29-T-WA", "l": "A"}, {"n": "Belinda杜妈-Zijie 2029-P-Mo", "l": "B"}, {"n": "Ben-杜爸-Ashley-30T-上海", "l": "B"}, {"n": "Beth-Mom-Aidan-29-T-NC", "l": "B"}, {"n": "BillGui-杜爸-Chara29-T-上海", "l": "B"}, {"n": "Bing-杜爸-Sophie'29-T-MI", "l": "B"}, {"n": "Brian杜爸-Kevin 30P-CA", "l": "B"}, {"n": "蔡启昌 杜爸-Noah28-T-上海", "l": "C"}, {"n": "Caixia杜妈-Janet2027Trinity-CA", "l": "C"}, {"n": "Camilla-杜妈- Catherine30-T-上海", "l": "C"}, {"n": "Cécile-杜妈-Daniel 29-Prett-SH", "l": "C"}, {"n": "Cecilia 杜妈Angela30T NJ&BJ", "l": "C"}, {"n": "Cent-Dad-Clarissa29-T-TX", "l": "C"}, {"n": "Chenchen杜妈_Daniel29-pratt-BJ", "l": "C"}, {"n": "cherry杜妈- Diego Trinity29 Sh", "l": "C"}, {"n": "Chi-Dad-Leah28-T-HK", "l": "C"}, {"n": "Cindy-杜妈-Wendy28−T-SH", "l": "C"}, {"n": "Cindy杜媽 Caroline28T NC", "l": "C"}, {"n": "Cindy杜妈- Nicole29P-Toronto", "l": "C"}, {"n": "CL-mom-Rachel29-T-IL", "l": "C"}, {"n": "Colin 杜爸- Derek 29 bt- NY", "l": "C"}, {"n": "Conney杜妈-Vivi29-T-NY", "l": "C"}, {"n": "Connie-杜妈-Debbie28-P-WA", "l": "C"}, {"n": "connie杜妈-Mohan29-P-WA", "l": "C"}, {"n": "covo-mom Eric27-P-NC", "l": "C"}, {"n": "Cruz-杜妈-James28-T-BJ", "l": "C"}, {"n": "Dafu杜爸-Daphne-29T-CA", "l": "D"}, {"n": "丹 Mom-JACK 2030 Pratt-武汉", "l": "D"}, {"n": "David 杜爸-Thomas 30T-FS-C", "l": "D"}, {"n": "David-杜Dad-Chloe29-T-NJ", "l": "D"}, {"n": "大望杜爸Jasmine 29Trinity 多伦多", "l": "D"}, {"n": "Diana 杜妈-Ashley 30T- SH", "l": "D"}, {"n": "Ding Dad-Max30T-NC", "l": "D"}, {"n": "董玲玲-杜妈-Michael-29-T北京", "l": "D"}, {"n": "Dongmei-杜妈-Matthew-29-P-NY", "l": "D"}, {"n": "杜爸_Jackz30P_武汉", "l": "D"}, {"n": "Duduqian-杜妈-Sophie C-29-MI", "l": "D"}, {"n": "Dun-杜爸-Mohan29-T-WA", "l": "D"}, {"n": "Eileen杜妈-Nicole2029T-新加坡", "l": "E"}, {"n": "Enhua杜妈-Katherine29-Trinity-NH", "l": "E"}, {"n": "Enhui-杜妈-Ethan29-Trinity-NY", "l": "E"}, {"n": "Eva 杜媽- Melinda 30T-CA", "l": "E"}, {"n": "Fang 杜妈−Tom 30 Trinity−安徽", "l": "F"}, {"n": "飞扬-杜妈-Young2030 Trinity-NY", "l": "F"}, {"n": "Felicia杜妈- Harley2029-T-上海", "l": "F"}, {"n": "Feng杜妈-Maggie29-T-SH", "l": "F"}, {"n": "冯文来-爸-Allen-28-T-TN", "l": "F"}, {"n": "Fiona - 杜妈-Daniel 26 - NC", "l": "F"}, {"n": "Fisher 杜爸- Tony'29-Trinity-MN", "l": "F"}, {"n": "Ge Dad-Jerry27T-MI", "l": "G"}, {"n": "Grace Mom - Angel G28 - T-CA", "l": "G"}, {"n": "Grace_杜妈_Diego 27 T-SH", "l": "G"}, {"n": "Grace杜妈—Eric 29Trinity 上海", "l": "G"}, {"n": "GraceMom-Gloria29-Trinity-hk", "l": "G"}, {"n": "guanfang杜妈_Andy2029trinity_NC", "l": "G"}, {"n": "guang-杜爸-Keria-30-t-TX", "l": "G"}, {"n": "GuDu妈-Daniel28-T-北京", "l": "G"}, {"n": "Haiqiao-杜爸-Diego27-T- 上海", "l": "H"}, {"n": "haiyan--杜妈-Aura29-P-Nanjing", "l": "H"}, {"n": "Hanbing杜妈-Melinda2030T-TN-C", "l": "H"}, {"n": "happy杜妈-Stephen2028Pratt-NC", "l": "H"}, {"n": "荷-杜妈-Lucy27-T-桂", "l": "H"}, {"n": "HH杜妈-Kevin29-P-CT", "l": "H"}, {"n": "hjsmile杜妈-daphne29T-CA", "l": "H"}, {"n": "弘 杜妈JAZ 2029 Trinity 多伦多", "l": "H"}, {"n": "hong-杜妈-Amy27-Pratt-PA", "l": "H"}, {"n": "鸿雁杜妈-Nicholas29-T-NC", "l": "H"}, {"n": "黄爸-Michael-30届-深圳", "l": "H"}, {"n": "黄亮杜爸-kiana27-T-深圳", "l": "H"}, {"n": "辉-杜爸-Gianna27-T-TX", "l": "H"}, {"n": "Hui杜妈 -Zara29-Pratt-GA", "l": "H"}, {"n": "Hui杜妈-EllieT30-Tx", "l": "H"}, {"n": "Hui杜妈-Fanghao28Trinity-北京", "l": "H"}, {"n": "Irene杜妈-Eva29P-深圳", "l": "I"}, {"n": "Isa杜妈-28NoahT-SH", "l": "I"}, {"n": "J.Y-杜爸-Beatrice29-HZ", "l": "J"}, {"n": "Jack - 杜爸- Josh - 29 - T- NC", "l": "J"}, {"n": "Jacqueline-杜妈-Josh29-T-NC", "l": "J"}, {"n": "James-杜爸-Jeffrey-29-T-FL", "l": "J"}, {"n": "james杜爸- Diego2029-T-上海", "l": "J"}, {"n": "Jane - 杜妈 - 2030Trinity-CA(加拿大)", "l": "J"}, {"n": "Jane 杜妈-Evelyn27-T-MD", "l": "J"}, {"n": "Jane-杜妈-Andrew30-Pratt-NJ", "l": "J"}, {"n": "Janet杜妈-Claire'28-P-NC", "l": "J"}, {"n": "Janet杜妈-Zane2029Trinity-SH", "l": "J"}, {"n": "Jasmine-杜妈-Samuel29-T-Fl", "l": "J"}, {"n": "Jason杜妈-李子2028Trinity-sh", "l": "J"}, {"n": "Jay杜爸-Eileen'29Trinity-CA", "l": "J"}, {"n": "Jay杜爸-Jacob 2030-Trinity-HK", "l": "J"}, {"n": "Jeff Dad-Tenne2030 Trinity-Beiji", "l": "J"}, {"n": "Jen杜妈-29KevinTrinity-Shanghai", "l": "J"}, {"n": "Jennifer 杜妈-Justin 30T-NY", "l": "J"}, {"n": "Jennifer-杜妈-Felix-29-P-IL", "l": "J"}, {"n": "Jenny Du Mom Cynthea 29 T MD", "l": "J"}, {"n": "Jenny Mom- Isabella 30-T-NC", "l": "J"}, {"n": "Jessica", "l": "J"}, {"n": "Jiajia杜妈-Anna2029Pratt-SC", "l": "J"}, {"n": "健 杜妈-Cindy 2030 Trinity -TX", "l": "J"}, {"n": "姜冰+杜妈+2029Michael+北京", "l": "J"}, {"n": "Jianhong-杜妈-Jennifer29-T-SC", "l": "J"}, {"n": "瑾杜妈- April2029trinity-纽约", "l": "J"}, {"n": "Jin杜妈-Anya2030-Pratt-NC", "l": "J"}, {"n": "Jing", "l": "J"}, {"n": "Jing+杜妈+Derek27T+Toronto", "l": "J"}, {"n": "静- 杜妈-Jerry27-T-WA", "l": "J"}, {"n": "Jing杜妈Carol-T29-BJ", "l": "J"}, {"n": "Jinong-杜妈-Carol -T-29 NC", "l": "J"}, {"n": "Joanna杜妈-Kevin 30P-CA", "l": "J"}, {"n": "Joanne-Mom-Katherine27-T-CA", "l": "J"}, {"n": "Joanne妈-Kendra29-T-CT", "l": "J"}, {"n": "JohnDad-Jeanette2029Pratt-BC", "l": "J"}, {"n": "Jolie- 杜妈-Harry-2029-T-OH", "l": "J"}, {"n": "Joyce-杜妈-Lucy30P-VA", "l": "J"}, {"n": "Joyce-Mom-Joseph'28-T-HK", "l": "J"}, {"n": "JR杜妈-Hanna29-trinity-NJ", "l": "J"}, {"n": "Ju杜妈-Alayna29Trinity-MD", "l": "J"}, {"n": "Judy-Michael 2030T-深圳", "l": "J"}, {"n": "Julie Mom—Joshua 2030 Trinity C", "l": "J"}, {"n": "Jun", "l": "J"}, {"n": "Kai-杜妈-Kyle28-Pratt-TX", "l": "K"}, {"n": "Kathy 杜妈-Sky & Yvonne 30T-MD", "l": "K"}, {"n": "Kelly Z", "l": "K"}, {"n": "Kelly Mom—Angela2030 T-VA", "l": "K"}, {"n": "Ken-杜爸-Matthew29Trinity-NC", "l": "K"}, {"n": "Kevin 杜爸-David29-P-NY", "l": "K"}, {"n": "L.L", "l": "L"}, {"n": "Lan-杜妈-Eileen27-T-CA", "l": "L"}, {"n": "Lanny - 杜妈- Sikai28 - T - CA", "l": "L"}, {"n": "老陈 杜爸-jimmy 2030-Trinity-NC", "l": "L"}, {"n": "lavern杜妈-文沛涵2027T-SH", "l": "L"}, {"n": "Lee-杜爸-Susan-29T-SC", "l": "L"}, {"n": "Lee杜妈-Sylvie29届-Pratt-安徽", "l": "L"}, {"n": "Lei-杜爸-Ethan29-Trinity-NC", "l": "L"}, {"n": "Lei-杜妈-Sophie2028Trinity-NC", "l": "L"}, {"n": "LeoDad-Harley29-T-SH", "l": "L"}, {"n": "黎 - 杜妈 - Miles -30P - WA", "l": "L"}, {"n": "li 杜妈 Austin2027trinity ca", "l": "L"}, {"n": "Li Mom-Alex29-Trinity-TX", "l": "L"}, {"n": "li-杜妈-Joyce2030Trinity-NY", "l": "L"}, {"n": "Lian杜妈-Jiahan28-T-Nanjing", "l": "L"}, {"n": "Libin-Dad-Alina28-T-TX", "l": "L"}, {"n": "Li杜妈- Caroline 30T-NC-C", "l": "L"}, {"n": "Li杜妈-Chloe27T-NJ", "l": "L"}, {"n": "Lili -杜妈-Raymond2030- MD", "l": "L"}, {"n": "Lily杜妈-Rebecca29-T-NC", "l": "L"}, {"n": "Lily杜妈-Zack2029T-上海", "l": "L"}, {"n": "Lily杜妈-Zimo2029Brown-SZ", "l": "L"}, {"n": "LilyH-杜妈-Angela29-T-NC", "l": "L"}, {"n": "林- 杜爸-Erick29-T-南京", "l": "L"}, {"n": "Linda-杜妈-Erick29-T-南京", "l": "L"}, {"n": "Ling 杜妈 Jolin 2030Trinity 上海", "l": "L"}, {"n": "Ling 杜妈-Stella2030 Trinity-WI", "l": "L"}, {"n": "林岩-媽-Carina29-P-NJ", "l": "L"}, {"n": "Lixia 杜妈 Amanda27T NC", "l": "L"}, {"n": "Losa- 杜媽-Veronica28-T-H", "l": "L"}, {"n": "Lucy-Jeremy29Trinity~BJ", "l": "L"}, {"n": "Lucy杜妈-Corrine2025Trinity上海", "l": "L"}, {"n": "Lynn杜妈-Eric28-T-KS", "l": "L"}, {"n": "Maggie杜妈-Cecilia29-T-BJ", "l": "M"}, {"n": "Mandy杜妈-Jason2029Trinity -上海", "l": "M"}, {"n": "Manman杜妈-Kate2029-P-IL", "l": "M"}, {"n": "Mark 杜爸-Walter-30 Pratt-MD", "l": "M"}, {"n": "MaryMom-Eddie-27T-NC", "l": "M"}, {"n": "Maya-杜妈-Edward-30P-TX", "l": "M"}, {"n": "Mei-杜妈-Ethan29-T-NC", "l": "M"}, {"n": "Melannie杜妈Timothy2030tri.TX", "l": "M"}, {"n": "Mengxiang-Mom Ashley 27T-CA", "l": "M"}, {"n": "苗妈-Jillian29-P-北京", "l": "M"}, {"n": "Michelle+杜妈-Elaine+29-T-CAN", "l": "M"}, {"n": "Michelle-M-Thomas28-T-Canada", "l": "M"}, {"n": "Min-杜妈 Eric27 - T- NC", "l": "M"}, {"n": "敏-杜妈- Kaijing29-P-CA", "l": "M"}, {"n": "敏-杜妈-Ethan2030-T-TX", "l": "M"}, {"n": "Ming杜妈Brenton29TrinityMA", "l": "M"}, {"n": "Mingli-杜妈-Mia29-T-PA", "l": "M"}, {"n": "明（妈） Annie Ming28P&T Sydney ", "l": "M"}, {"n": "牟红漫杜妈-2029王天逸Trinity-MA", "l": "M"}, {"n": "neo 杜爸 - Tina27-Trinity-BJ", "l": "N"}, {"n": "ouyangMOM- Cathy27-T-NC", "l": "O"}, {"n": "Pansy杜妈-Ellen30T-GZ", "l": "P"}, {"n": "Peggi-杜妈-Henry29-T-VA", "l": "P"}, {"n": "Peixin-Dad-Evan27-T-CA", "l": "P"}, {"n": "彭", "l": "P"}, {"n": "Pengpeng杜妈-Grace29Trinity-NC", "l": "P"}, {"n": "Peter-Dad-James28-P-NC", "l": "P"}, {"n": "平平- Du妈-Emily27 - Pratt- MN", "l": "P"}, {"n": "Qingsong-杜爸-Angela29-T-NC", "l": "Q"}, {"n": "QL-杜妈-Niuniu28-P-VA", "l": "Q"}, {"n": "泉-杜妈-Lola-2029-T-北京", "l": "Q"}, {"n": "QY-Mom-David-30P-NC", "l": "Q"}, {"n": "Rae-杜妈-Zack29-T-TX", "l": "R"}, {"n": "RC杜爸-Kendra29-CT", "l": "R"}, {"n": "Renee-杜妈-Keria-30-Trinity-TX", "l": "R"}, {"n": "Richard-杜爸-Benny30-T-AZ", "l": "R"}, {"n": "Richard-杜爸-gloria2029-T-HK", "l": "R"}, {"n": "Ron爸-Corrine29-T-SH", "l": "R"}, {"n": "Ronda杜妈-Jerry29-T-Toronto", "l": "R"}, {"n": "Rong mom-Madeline-28-T-TN", "l": "R"}, {"n": "RongMom-Matt27-T-NC", "l": "R"}, {"n": "rose+杜妈-Iris-28-Trinity-北京", "l": "R"}, {"n": "RosyMom-Noella29Pratt-Vancouver", "l": "R"}, {"n": "桑圣民- Dad-Sophia-28-T-NC", "l": "S"}, {"n": "Sara-杜妈-Matthew-29-T-Wa", "l": "S"}, {"n": "Sara-杜妈-Vanessa27-Pratt-BJ", "l": "S"}, {"n": "Sarah杜妈 Jennifer29-Trinity-TX", "l": "S"}, {"n": "Sean杜爸-Sherry27Trinity-上海", "l": "S"}, {"n": "Selena杜妈-Taili29-T-MA", "l": "S"}, {"n": "Selina_杜妈28 Celina_T_SH", "l": "S"}, {"n": "Shang杜妈-Jennifer27-P-PA", "l": "S"}, {"n": "Sharon 杜妈-James28-P-NC", "l": "S"}, {"n": "Sharon- 杜妈-James29T-NC", "l": "S"}, {"n": "Shawn杜爸-Andy30P-GZ", "l": "S"}, {"n": "Sheila", "l": "S"}, {"n": "沈婵娟杜妈-Bella2029Trinity-浙江", "l": "S"}, {"n": "Sichun-杜妈-Aaron27- P-UT", "l": "S"}, {"n": "Simin杜妈-Andrew2029-P-NC", "l": "S"}, {"n": "Simon杜爸-Nicole29-T-Toronto", "l": "S"}, {"n": "sny杜妈—Cody 2030 Trinity—TX", "l": "S"}, {"n": "Sophia 杜妈-Liliana 30T-BJ", "l": "S"}, {"n": "随遇而安-杜爸-Matthew29T-加州", "l": "S"}, {"n": "Summit杜爸-Jason2029Trinity-上海", "l": "S"}, {"n": "Suri杜妈-Tom-29T-NC", "l": "S"}, {"n": "Susan Tang_mom_Chloe29TX_P", "l": "S"}, {"n": "汤杨杜妈-Thomas28T-GZ", "l": "T"}, {"n": "Tenne-杜爸-30-Pratt-BJ", "l": "T"}, {"n": "Tina杜妈-Justin2029-p-In", "l": "T"}, {"n": "Tong-杜妈-Chloe29-T-NJ", "l": "T"}, {"n": "Traci-杜妈-Ryan-29Pratt-CA", "l": "T"}, {"n": "Tracy-杜媽-Emily27-T-NC", "l": "T"}, {"n": "Tracy-杜妈-Jacky29T-CQ", "l": "T"}, {"n": "Varilla Yang Mom-Ethan29-T-NJ", "l": "V"}, {"n": "Vicky-Mom-Eric26Daniel29-P-MD", "l": "V"}, {"n": "Vivian-杜妈-29Sophie-Pratt-SH", "l": "V"}, {"n": "Vivian杜妈-Jacob 2030 Trinity-HK", "l": "V"}, {"n": "VON", "l": "V"}, {"n": "王斌-杜爸-王祺越-29-T-广州", "l": "W"}, {"n": "王静 杜妈-Angela2030-Trinity-MD", "l": "W"}, {"n": "王元- 杜爸-Daniel-2029-P-SH", "l": "W"}, {"n": "王Yu杜妈-Ben27Trinity-BJ", "l": "W"}, {"n": "Wanli-杜妈-Jeslyn27-Trinity-CT", "l": "W"}, {"n": "Water-杜妈-Isabel29-P-CO", "l": "W"}, {"n": "Wayne杜爸-Derek27 Trinity-SH", "l": "W"}, {"n": "wei-杜爸-Sky&Yvonne-30T-北京", "l": "W"}, {"n": "Wei-杜妈-eleana27-T-oh", "l": "W"}, {"n": "Weina-mom-Alayna28-HK", "l": "W"}, {"n": "Wen 杜爸-Isabella30T-NC-C", "l": "W"}, {"n": "wendy-mom- Emma'28-T-HK", "l": "W"}, {"n": "Wendy_Mom-David29-P-NY", "l": "W"}, {"n": "Wenhao 杜爸-Joshua2030T-CA", "l": "W"}, {"n": "WF-DadVictoria27-P-NC", "l": "W"}, {"n": "Winnie杜妈-Allen27-T-NC", "l": "W"}, {"n": "WQin-mom-Colin29-T-NC", "l": "W"}, {"n": "XH杜妈-Jessica29-A-MD", "l": "X"}, {"n": "Xia-杜妈-Brooke27-T-VA", "l": "X"}, {"n": "Xia杜妈Fiona28TrinityChapel Hill", "l": "X"}, {"n": "xiangwei 杜爸 Joyce2030 T-NY", "l": "X"}, {"n": "Xiao 杜妈-Ming2029-Pratt-NJ", "l": "X"}, {"n": "Xiaoling 杜妈-Lucas30P-CA", "l": "X"}, {"n": "鑫-杜妈−Jason30-T-NC", "l": "X"}, {"n": "行深杜妈-Tina27-T-BJ", "l": "X"}, {"n": "Xiu 杜妈-Emily27 Trinity-TX", "l": "X"}, {"n": "Xiumin杜妈Dylan29-P-TX", "l": "X"}, {"n": "喜杨杨-杜妈-Kevin29-T-上海", "l": "X"}, {"n": "细雨杜媽-Dylan28TrinityTOFL", "l": "X"}, {"n": "Yange 杜妈-Allan-2030 Pratt-NJ", "l": "Y"}, {"n": "Yanping杜妈-Alec28Pratt-NC", "l": "Y"}, {"n": "燕茹-杜妈-HZ27-Pratt-Canton", "l": "Y"}, {"n": "Yanting-杜妈-Anthony29-P-KY", "l": "Y"}, {"n": "yao 杜妈-Leo29-trinity-tn", "l": "Y"}, {"n": "Yao杜妈-Alex29Pratt-VA", "l": "Y"}, {"n": "yeqing-杜妈-Evan27-T-CA", "l": "Y"}, {"n": "Yi-Du爸-Matthew29-T-WA", "l": "Y"}, {"n": "Yi杜妈-Matt26-T-NY", "l": "Y"}, {"n": "Ying-杜妈-Eric2029-T-杭州", "l": "Y"}, {"n": "Ying-Mom-Ethan29-T-NC", "l": "Y"}, {"n": "Yong-杜爸-Leran29-T-SC", "l": "Y"}, {"n": "Yongchen Lu杜爸-Zack29-P-上海", "l": "Y"}, {"n": "Yonghua 杜爸-Eric29 Trinity-CT", "l": "Y"}, {"n": "咏梅-杜妈-王祺越-29-T-广州", "l": "Y"}, {"n": "Yongyong - 杜妈-Nathan29 - T-SC", "l": "Y"}, {"n": "Young Gao-杜妈-Sean28届-T-上海", "l": "Y"}, {"n": "Yu-杜妈-Alex29-Trinity-NY", "l": "Y"}, {"n": "郁-杜妈David29-P-MA深圳", "l": "Y"}, {"n": "yuan-杜妈-Beatrice29-T-hz", "l": "Y"}, {"n": "Yubin 杜妈-Dianhao29-T-NC", "l": "Y"}, {"n": "Yu杜妈-Nicholas-2030T-HK", "l": "Y"}, {"n": "跃跃喻世℃杜妈-Tina30T-上海-C", "l": "Y"}, {"n": "玉峰-杜爸-Andrew26T-NC", "l": "Y"}, {"n": "Yun-杜妈- Annie30-T-OH", "l": "Y"}, {"n": "Yunkai-Dad-Mia-T29-PA", "l": "Y"}, {"n": "Yushen杜妈-Grace-29P-NC", "l": "Y"}, {"n": "ZhengDad-Sophia-2029-T-NC", "l": "Z"}, {"n": "周建林", "l": "Z"}, {"n": "ZJ-杜爸-Eric29-T-Hangzhou", "l": "Z"}, {"n": "Zoe", "l": "Z"}];
+
+function buildLetterOrder(list){
+  const seen = [];
+  list.forEach(m => { if(!seen.includes(m.l)) seen.push(m.l); });
+  return seen;
+}
+let PICKER_MEMBERS = MEMBERS; // 加载完提交数据后会替换为“只含已参与家长”的列表
+let LETTER_ORDER = buildLetterOrder(PICKER_MEMBERS);
+
+function openPicker(){
+  document.getElementById('pickerOverlay').classList.add('show');
+  document.getElementById('pickerSearch').value = '';
+  renderPickerList();
+}
+
+function closePicker(){
+  document.getElementById('pickerOverlay').classList.remove('show');
+}
+
+function renderPickerList(){
+  const kw = document.getElementById('pickerSearch').value.trim().toLowerCase();
+  const listEl = document.getElementById('pickerList');
+  const idxEl = document.getElementById('pickerIdx');
+  listEl.innerHTML = '';
+  idxEl.innerHTML = '';
+
+  if(kw){
+    const filtered = PICKER_MEMBERS.filter(m => m.n.toLowerCase().includes(kw));
+    if(filtered.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'picker-empty';
+      empty.textContent = '没有找到匹配的昵称';
+      listEl.appendChild(empty);
+    } else {
+      filtered.forEach(m => listEl.appendChild(makeItem(m.n)));
+    }
+    return;
+  }
+
+  let lastLetter = null;
+  PICKER_MEMBERS.forEach(m => {
+    if(m.l !== lastLetter){
+      lastLetter = m.l;
+      const label = document.createElement('div');
+      label.className = 'picker-section-label';
+      label.id = 'sec-' + m.l;
+      label.textContent = m.l;
+      listEl.appendChild(label);
+    }
+    listEl.appendChild(makeItem(m.n));
+  });
+
+  LETTER_ORDER.forEach(letter => {
+    const span = document.createElement('span');
+    span.textContent = letter;
+    span.onclick = () => jumpToLetter(letter);
+    idxEl.appendChild(span);
+  });
+}
+
+function makeItem(name){
+  const btn = document.createElement('button');
+  btn.className = 'picker-item';
+  btn.textContent = name;
+  btn.onclick = () => pickName(name);
+  return btn;
+}
+
+function jumpToLetter(letter){
+  const sec = document.getElementById('sec-' + letter);
+  if(sec){
+    sec.scrollIntoView({block:'start'});
+  }
+  const bubble = document.getElementById('pickerJumpBubble');
+  bubble.textContent = letter;
+  bubble.classList.add('show');
+  clearTimeout(window._jumpBubbleTimer);
+  window._jumpBubbleTimer = setTimeout(() => bubble.classList.remove('show'), 400);
+}
+
+function pickName(name){
+  document.getElementById('pickerTriggerText').textContent = name;
+  document.getElementById('pickerTrigger').classList.add('picked');
+  closePicker();
+  showMyScore(name);
+}
+
 async function loadResults(){
   try{
     const res = await fetch(SUPABASE_URL + '/rest/v1/quiz_responses?select=name,answers,total,submitted_at', {
@@ -391,6 +757,18 @@ function render(rows){
       personLatest[name] = { score: personScore, submitted_at: ts };
     }
   });
+  personLatestGlobal = personLatest;
+
+  // 只在昵称选择器里列出实际参与过测验的家长，减少滚动/查找成本
+  const participantNames = new Set(Object.keys(personLatest));
+  const filteredMembers = MEMBERS.filter(m => participantNames.has(m.n));
+  const matchedSet = new Set(filteredMembers.map(m => m.n));
+  const extraNames = Array.from(participantNames)
+    .filter(n => !matchedSet.has(n))
+    .sort((a, b) => a.localeCompare(b));
+  extraNames.forEach(n => filteredMembers.push({ n, l: (n[0] || '#').toUpperCase() }));
+  PICKER_MEMBERS = filteredMembers;
+  LETTER_ORDER = buildLetterOrder(PICKER_MEMBERS);
 
   const avgScore = totalRespondents > 0 ? (sumScorePerPerson / totalRespondents).toFixed(1) : '0';
   document.getElementById('avgScore').textContent = avgScore;
@@ -406,6 +784,7 @@ function render(rows){
   const ranking = Object.keys(personLatest)
     .map(name => ({ name, score: personLatest[name].score }))
     .sort((a, b) => b.score - a.score);
+  rankingGlobal = ranking;
 
   if(ranking.length === 0){
     const empty = document.createElement('div');
@@ -413,30 +792,21 @@ function render(rows){
     empty.textContent = '还没有人提交作答';
     lbArea.appendChild(empty);
   } else {
-    const medals = ['🥇','🥈','🥉'];
-    const PERFECT = questions.length;
-    const CERT_SCORE = PERFECT - 1; // 9分（非满分）展示证书徽章，满分直接给奖牌
     const SHOW_MIN = 10;
-    // 展示前10名；若第10名之后与第10名同分，或分数达到9分门槛，一并显示（避免遗漏应得奖励的人）
+    // 展示前10名；若第10名之后与第10名同分，或分数达到季军门槛（8分），一并显示（避免遗漏应得奖牌的人）
     let cutoffScore = ranking[Math.min(SHOW_MIN, ranking.length) - 1].score;
-    const shown = ranking.filter((r, i) => i < SHOW_MIN || r.score === cutoffScore || r.score >= CERT_SCORE);
+    const shown = ranking.filter((r, i) => i < SHOW_MIN || r.score === cutoffScore || r.score >= BRONZE_SCORE);
 
     shown.forEach((r, i) => {
       const row = document.createElement('div');
       row.className = 'lb-row';
 
-      const isPerfect = r.score === PERFECT;
+      const medal = medalMap[r.score];
+      const rankNum = ranking.filter(x => x.score > r.score).length + 1;
       const rank = document.createElement('div');
-      rank.className = 'lb-rank' + ((i < 3 || isPerfect) ? ' medal' : '');
-      rank.textContent = i < 3 ? medals[i] : (isPerfect ? '🏅' : (i+1));
+      rank.className = 'lb-rank' + (medal ? ' medal' : '');
+      rank.textContent = medal ? medal : rankNum;
       row.appendChild(rank);
-
-      if(r.score === CERT_SCORE){
-        const badge = document.createElement('div');
-        badge.className = 'lb-badge';
-        badge.textContent = '🎖️证书';
-        row.appendChild(badge);
-      }
 
       const name = document.createElement('div');
       name.className = 'lb-name';
@@ -447,6 +817,11 @@ function render(rows){
       score.className = 'lb-score';
       score.textContent = r.score + ' / ' + questions.length;
       row.appendChild(score);
+
+      const tier = document.createElement('div');
+      tier.className = 'lb-tier';
+      tier.textContent = getTier(r.score);
+      row.appendChild(tier);
 
       lbArea.appendChild(row);
     });
