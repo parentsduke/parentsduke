@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Duke知识 · 测验</title>
+
+<!-- 分享卡片信息：微信/QQ等会读取下面这些标签，把链接显示成带标题+简介+缩略图的卡片 -->
+<meta property="og:title" content="Duke小测验第二弹｜你对Duke了解多少？">
+<meta property="og:description" content="全新10道单选题，点一下就能选，测测你对Duke历史与传统的了解">
+<meta property="og:type" content="website">
+<!-- 把下面这行的 og:image 换成你自己托管的一张封面图链接（建议 3:2 或 1:1，jpg/png），
+     没有的话先留空或删掉这一行，微信会退而用网页里第一张图/纯文字卡片 -->
+<meta property="og:image" content="https://dukeparents.org/quiz/dquizcover.jpg">
+<meta name="description" content="Duke知识小测验，点击选项直接作答">
+
+<!-- 留档配置：填入你们 Supabase 项目的 URL 和 anon public key（跟 form.html 用的是同一个项目就行）
+     在 Supabase 后台 Project Settings -> API 里能找到这两个值 -->
+<script>
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+</script>
+
+<style>
+  .gate{
+    background:#fff;
+    margin:14px;
+    padding:20px 16px;
+    border-radius:10px;
+    border:1px solid var(--line);
+  }
+  .gate p{
+    margin:0 0 12px;
+    font-size:14px;
+    line-height:1.7;
+    color:#555;
+  }
+  .gate input, .gate select{
+    width:100%;
+    padding:11px 12px;
+    font-size:15px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:10px;
+    box-sizing:border-box;
+    background:#fff;
+    color:var(--text);
+  }
+  .gate button{
+    width:100%;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:12px;
+    border-radius:8px;
+    font-size:15px;
+  }
+  .gate .err{
+    color:var(--red);
+    font-size:13px;
+    margin:-4px 0 10px;
+    display:none;
+  }
+  .hidden{display:none !important;}
+  .picker-trigger{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    padding:11px 12px;
+    font-size:15px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:10px;
+    box-sizing:border-box;
+    background:#fff;
+    color:#999;
+    text-align:left;
+  }
+  .picker-trigger.picked{color:var(--text);}
+  .picker-trigger .arrow{color:#bbb; font-size:13px;}
+  .picker-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#fff;
+    z-index:999;
+    flex-direction:column;
+  }
+  .picker-overlay.show{display:flex;}
+  .picker-head{
+    display:flex;
+    align-items:center;
+    padding:14px 12px;
+    border-bottom:1px solid var(--line);
+    flex:0 0 auto;
+  }
+  .picker-back{
+    background:none;
+    border:none;
+    font-size:22px;
+    color:var(--navy);
+    padding:0 10px 0 0;
+    line-height:1;
+  }
+  .picker-head-title{
+    font-size:16px;
+    font-weight:600;
+    color:var(--text);
+  }
+  .picker-search-wrap{
+    padding:10px 12px;
+    flex:0 0 auto;
+  }
+  .picker-search-wrap input{
+    width:100%;
+    padding:9px 12px;
+    font-size:14px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    box-sizing:border-box;
+    background:var(--cream);
+    color:var(--text);
+  }
+  .picker-body{
+    flex:1 1 auto;
+    position:relative;
+    overflow:hidden;
+  }
+  .picker-list{
+    height:100%;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-right:26px;
+    box-sizing:border-box;
+  }
+  .picker-section-label{
+    padding:6px 14px;
+    font-size:12px;
+    color:#888;
+    background:#f7f5ef;
+    font-weight:600;
+  }
+  .picker-item{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border:none;
+    border-bottom:1px solid var(--line);
+    padding:12px 14px;
+    font-size:14.5px;
+    color:var(--text);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .picker-item:active{background:#f7f5ef;}
+  .picker-empty{
+    padding:24px 14px;
+    font-size:13px;
+    color:#999;
+    text-align:center;
+  }
+  .picker-idx{
+    position:absolute;
+    right:2px;
+    top:0;
+    bottom:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:2;
+  }
+  .picker-idx span{
+    font-size:11px;
+    line-height:1.5;
+    color:var(--navy);
+    padding:0 4px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .picker-idx span.active-hint{
+    color:var(--green);
+    font-weight:700;
+  }
+  .picker-jump-bubble{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(27,42,74,0.85);
+    color:#fff;
+    font-size:32px;
+    font-weight:700;
+    width:64px;
+    height:64px;
+    border-radius:12px;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    pointer-events:none;
+  }
+  .picker-jump-bubble.show{display:flex;}
+  .submit-note{
+    font-size:13px;
+    color:#666;
+    margin-top:10px;
+  }
+  :root{
+    --navy:#1b2a4a;
+    --cream:#f3ede0;
+    --line:#d8d2c2;
+    --green:#2e7d4f;
+    --red:#b3392c;
+    --text:#22252b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+    background:#f7f5ef;
+    color:var(--text);
+    padding-bottom:40px;
+  }
+  header{
+    background:var(--navy);
+    color:#fff;
+    padding:18px 16px;
+  }
+  header h1{
+    margin:0;
+    font-size:18px;
+    line-height:1.5;
+    font-weight:600;
+  }
+  header p{
+    margin:6px 0 0;
+    font-size:13px;
+    color:#c9d0e0;
+  }
+  .intro{
+    background:#fff;
+    margin:14px;
+    padding:14px 16px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    font-size:14px;
+    line-height:1.75;
+  }
+  .intro table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    font-size:13px;
+  }
+  .intro th, .intro td{
+    border:1px solid var(--line);
+    padding:6px 4px;
+    text-align:center;
+  }
+  .intro th{
+    background:var(--cream);
+  }
+  .progress{
+    margin:0 14px 6px;
+    font-size:13px;
+    color:#666;
+    text-align:right;
+  }
+  .card{
+    background:#fff;
+    margin:14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    padding:16px;
+    display:none;
+  }
+  .card.active{display:block;}
+  .qnum{
+    display:inline-block;
+    background:var(--navy);
+    color:#fff;
+    font-size:12px;
+    padding:2px 8px;
+    border-radius:12px;
+    margin-bottom:8px;
+  }
+  .qtext{
+    font-size:15px;
+    line-height:1.7;
+    font-weight:600;
+    margin:0 0 12px;
+  }
+  .opt{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fafaf7;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:11px 12px;
+    margin-bottom:9px;
+    font-size:14px;
+    line-height:1.55;
+    color:var(--text);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .opt:active{background:#f0eee6;}
+  .opt.picked{
+    background:#eef1f8;
+    border-color:var(--navy);
+    color:var(--navy);
+    font-weight:600;
+  }
+  .nav{
+    display:flex;
+    justify-content:space-between;
+    margin-top:16px;
+  }
+  .navbtn{
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:9px 18px;
+    border-radius:8px;
+    font-size:14px;
+  }
+  .navbtn[disabled]{opacity:.35;}
+  .result{
+    display:none;
+    margin:14px;
+    padding:20px 16px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    text-align:center;
+  }
+  .result.show{display:block;}
+  .result .score{
+    font-size:32px;
+    font-weight:700;
+    color:var(--navy);
+    margin:6px 0;
+  }
+  .retry{
+    margin-top:14px;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:9px 20px;
+    border-radius:8px;
+    font-size:14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Duke小测验 第二弹｜历史、传统与那些你未必知道的冷知识</h1>
+  <p>点击选项即可作答，全部提交后统一公布答案</p>
+</header>
+
+<div class="gate" id="gate">
+  <p>作答前请先选择你的昵称（点击下方框，可用右侧字母快速跳转，或直接搜索）</p>
+  <button type="button" class="picker-trigger" id="pickerTrigger" onclick="openPicker()">
+    <span id="pickerTriggerText">请选择昵称</span>
+    <span class="arrow">▸</span>
+  </button>
+  <div class="err" id="nameErr">请先选择昵称再开始作答</div>
+  <button onclick="startQuiz()">开始答题</button>
+</div>
+
+<div class="picker-overlay" id="pickerOverlay">
+  <div class="picker-head">
+    <button class="picker-back" onclick="closePicker()">‹</button>
+    <div class="picker-head-title">选择昵称</div>
+  </div>
+  <div class="picker-search-wrap">
+    <input type="text" id="pickerSearch" placeholder="搜索昵称" oninput="renderPickerList()">
+  </div>
+  <div class="picker-body">
+    <div class="picker-list" id="pickerList"></div>
+    <div class="picker-idx" id="pickerIdx"></div>
+  </div>
+</div>
+<div class="picker-jump-bubble" id="pickerJumpBubble"></div>
+
+<div id="mainContent" class="hidden">
+
+<div class="intro">
+从"三一学院"到今天的Duke大学，从一顶顶帐篷搭起的K-Ville，到Cameron体育馆里震耳欲聋的Crazies呐喊——这些历史与传统，你了解多少？10道单选题，凭第一印象作答即可。本次不会立即公布对错——所有人作答后，我们会统一公布大家的正确率统计图，随后再揭晓正确答案与解析，敬请期待～
+</div>
+
+<div class="progress" id="progress">第 1 / 10 题</div>
+
+<div id="quiz"></div>
+
+<div class="result" id="result">
+  <div style="font-size:17px;font-weight:600;color:var(--navy);">🎉 已提交，谢谢作答！</div>
+  <div style="margin-top:10px;font-size:14px;line-height:1.8;color:#555;">
+    答案暂不公布——等大家都答完后，我们会统一发布一张「全员正确率统计图」，然后再揭晓正确答案和解析，敬请留意群里通知～
+  </div>
+</div>
+
+</div><!-- /mainContent -->
+
+<script>
+// 群成员昵称数据：n=昵称，l=索引字母（英文首字母 / 中文按拼音首字母归类）
+const MEMBERS = [{"n": "Aiye杜妈-Daniel30-T-SC", "l": "A"}, {"n": "Alain 杜爸_Wendi30 T_Shanghai", "l": "A"}, {"n": "Alicia 杜妈-Justin 29-Pratt-MO", "l": "A"}, {"n": "AmandaMom - Edwin27 - P - NV", "l": "A"}, {"n": "Amelia 杜妈-James'27-T-NJ", "l": "A"}, {"n": "AN安宁杜妈- Annie Sheng30P-VA", "l": "A"}, {"n": "an杜妈-Olivia-30T-NC", "l": "A"}, {"n": "Annie杜妈-Jessica-28T-Vancouv...", "l": "A"}, {"n": "Annie-杜妈-Kevin27-T-NJ", "l": "A"}, {"n": "安顺Mom-angela27-T-HK", "l": "A"}, {"n": "Bin 杜妈- Ian2028 Pratt - 纽约", "l": "B"}, {"n": "Brent 杜爸 Ethan 30P HK", "l": "B"}, {"n": "Carol 杜妈-Cecilia 30T-SH", "l": "C"}, {"n": "Carol杜妈-Weiwei 30T-SH", "l": "C"}, {"n": "c-Dad-Amy'28-T-NY", "l": "C"}, {"n": "陈-杜妈-Zack 30T-Chapel Hill-C", "l": "C"}, {"n": "Chenyu-杜妈Rachel 2030-Trinity...", "l": "C"}, {"n": "Christina Lai媽-Cayden28Pratt-...", "l": "C"}, {"n": "陈利杜妈- Aleena2030-Trinity-NJ", "l": "C"}, {"n": "crystal-杜妈-Dominic30P-深圳", "l": "C"}, {"n": "扯谈入群Wayne-KevT24", "l": "C"}, {"n": "Cui 杜妈-Stephen-30T-sy", "l": "C"}, {"n": "陈燕 杜妈-艺霏-2027 NY", "l": "C"}, {"n": "弛宜妈-Ura2028-Trinity-北京", "l": "C"}, {"n": "Dan 杜妈-Maggie 30T-OH", "l": "D"}, {"n": "杜爸-zimiao27-Wisconsin", "l": "D"}, {"n": "Debbie-mom- Peyton30-T-TX", "l": "D"}, {"n": "大狗熊杜爸-Grace29-NC-义工", "l": "D"}, {"n": "DT-DAD-JT28P-CA", "l": "D"}, {"n": "Elaine 杜妈-Jiayu28-Trinity-NY", "l": "E"}, {"n": "Elinor杜妈-Chelsea2030-Pratt-MD", "l": "E"}, {"n": "Fan-杜妈-J-2028-Trinity-TX", "l": "F"}, {"n": "Fangmom-Hanlin27-P-BJ", "l": "F"}, {"n": "Feng-杜爸-Kayla-30T-NJ", "l": "F"}, {"n": "Feng杜爸- Youlan30T - Vancouver", "l": "F"}, {"n": "feng峰-dad-Eddie27-T-WA", "l": "F"}, {"n": "Fenghai Guo -杜爸 Maggie 30T-...", "l": "F"}, {"n": "Flora-杜妈-Maggie Guo-T30-NC", "l": "F"}, {"n": "Forest杜爸，Austin - 30T", "l": "F"}, {"n": "Fu 杜爸- Justin 29- Pratt MO", "l": "F"}, {"n": "Gary 杜爸-Michael-28-T-NJ", "l": "G"}, {"n": "George Lee 杜爸-Meghan-P30-C...", "l": "G"}, {"n": "甘 Gan 杜妈- Eiry28 - T - 上海", "l": "G"}, {"n": "Gina杜妈-Melissa28 -T-SC", "l": "G"}, {"n": "Grace杜妈- Youlan 30T -Vancou...", "l": "G"}, {"n": "Guanghui杜妈-Logan28-Pratt-WA", "l": "G"}, {"n": "Haixia（杜妈）- William 30-P-MD", "l": "H"}, {"n": "海斌杜爸-Chelsea2030-Pratt-MD", "l": "H"}, {"n": "黄超杜爸-David2028-Trinity-NY", "l": "H"}, {"n": "珩 -杜妈-Amy28-T-NY", "l": "H"}, {"n": "Helen杜妈-Leo30-P-PA", "l": "H"}, {"n": "黄江杜妈-Cierra28-Pratt VA", "l": "H"}, {"n": "黄娟杜妈-杨子健2027-Trinity-广州", "l": "H"}, {"n": "Hongbin-Claire2028-Trinity-MD", "l": "H"}, {"n": "Hong杜妈-Emily30T-IL", "l": "H"}, {"n": "Hui杜爸-Cindy-2030-Trinity-NC", "l": "H"}, {"n": "Huimin杜妈-Hannah27-T-NC", "l": "H"}, {"n": "海文 杜爸 Kevin T30-AZ", "l": "H"}, {"n": "Isa-杜妈-Noah 28T-SH", "l": "I"}, {"n": "Jane杜妈-Merissa-30T-TX", "l": "J"}, {"n": "Jas-Jas 杜妈-Jasmine  30T-NC-C", "l": "J"}, {"n": "槿杜妈-🍀🦌Alice2027🦌🍀-Pra...", "l": "J"}, {"n": "静杜妈- Jerry27-T-WA", "l": "J"}, {"n": "jean杜妈 - Jacob30T - AZ", "l": "J"}, {"n": "Jeff-D-Brian28-P-BJ", "l": "J"}, {"n": "Jenny 杜妈 Sofia C 30 T NJ", "l": "J"}, {"n": "Jessica 杜妈- Austin30 - T - TO", "l": "J"}, {"n": "Jessica 杜妈-Howell30-T-TX", "l": "J"}, {"n": "Jessie杜妈-Kaylyn27-T-GA", "l": "J"}, {"n": "Jessie许妈- Jonathan 30T-SH", "l": "J"}, {"n": "JianDad-Edwin27-P-NV", "l": "J"}, {"n": "Jiang-杜爸-Rachel30P-TX", "l": "J"}, {"n": "Jian杨爸- Alisa30-MD", "l": "J"}, {"n": "Jie杜妈-Chris2028-T-SH", "l": "J"}, {"n": "Joanna Mom - Eddie 27 - T - WA", "l": "J"}, {"n": "Joanne 杜妈 Rocky30-T-BJ", "l": "J"}, {"n": "Jo杜爸-Jake27-Trinity-CA", "l": "J"}, {"n": "Joelyn杜妈-Adelle27Eunice29-T-...", "l": "J"}, {"n": "Jolie杜妈-Harry29-T-OH", "l": "J"}, {"n": "Josh 杜爸-Rachel 30T-MA", "l": "J"}, {"n": "Joyce -mom-2030Larry-trinity-CA", "l": "J"}, {"n": "JoyceMom-Michele 2029 Trinity...", "l": "J"}, {"n": "Julie 杜妈- Nathanael '27P- WI", "l": "J"}, {"n": "Justin妈妈-April2028-Trinity-BJ", "l": "J"}, {"n": "kevin 杜爸 Gary T30 FL", "l": "K"}, {"n": "Kit杜爸-Weiwei 30T-SH", "l": "K"}, {"n": "Kwan-Marvin-23-HK", "l": "K"}, {"n": "开心果杜妈-Anna 2028-T-NC", "l": "K"}, {"n": "空一杜妈-Ray'29-P-SC", "l": "K"}, {"n": "Lan-杜爸-Merissa-30T-TX-C", "l": "L"}, {"n": "LauraMom-Stella2028-Trinity-OR", "l": "L"}, {"n": "林-杜妈- Eric'28-T-OK", "l": "L"}, {"n": "leiwenDad-David28-T-RI", "l": "L"}, {"n": "Leo 杜爸-Maggie2030-Trinity-OH", "l": "L"}, {"n": "Leqin-Mom-David28-T-VA", "l": "L"}, {"n": "李红杜妈- Lex-2029-Pratt-NC", "l": "L"}, {"n": "Li-杜妈- Michael28-BJ", "l": "L"}, {"n": "Lillina杜妈-Grace2028 T-SZ", "l": "L"}, {"n": "Lily-杜妈-Shelly -T27 NC", "l": "L"}, {"n": "Li mom-Iris28-P-TN", "l": "L"}, {"n": "Linda Mom-Grace 27- T-PA", "l": "L"}, {"n": "LindaMom-Jamie27-T-CA", "l": "L"}, {"n": "Ling-杜妈-Kev'27-T-TX", "l": "L"}, {"n": "Liping Mom-Emily27-T-GA", "l": "L"}, {"n": "李剑锋-Dad-Stephanie29-Pratt-...", "l": "L"}, {"n": "李家瑞-杜爸- Olivia-30T-NC", "l": "L"}, {"n": "老刘 杜爸-Yuki30-T-SH", "l": "L"}, {"n": "林美眉杜妈-Jerry29-P-CA", "l": "L"}, {"n": "Lucy杜妈-Tony30T -SH-C", "l": "L"}, {"n": "林文杜妈-Derek2027-Trinity-TX", "l": "L"}, {"n": "理智杜妈-Rally 2027-pratt 多伦多", "l": "L"}, {"n": "Maggiemom29David BJ", "l": "M"}, {"n": "Mary杜妈- Aiden30T-OH", "l": "M"}, {"n": "May杜妈-Brianna2028-Trinity-纽...", "l": "M"}, {"n": "may杜妈-Zimiao27-P-Wi and Be...", "l": "M"}, {"n": "MeiL-杜妈-Daniel28-T-AL", "l": "M"}, {"n": "meng 杜妈 yinuo 28 T BJ", "l": "M"}, {"n": "芒果布丁 杜妈 Katharine30 T NJ", "l": "M"}, {"n": "Michael 杜爸-Rachel 30T-SH", "l": "M"}, {"n": "Mina杜妈-Zaria2029 Trinity南京", "l": "M"}, {"n": "Min 杜爸- Emily30T-IL", "l": "M"}, {"n": "Ming杜爸- Aiden30T-OH", "l": "M"}, {"n": "Ming杜妈-Rachel28Johnathan3...", "l": "M"}, {"n": "淼淼杜妈-Cindy29-Trinity天津", "l": "M"}, {"n": "Nancy杜妈- Wendi2030-trinity-SH", "l": "N"}, {"n": "宁杜爸-Jill28P- NY", "l": "N"}, {"n": "Ningmom-Rachel28-p-NC", "l": "N"}, {"n": "娜 mom 27 prat Justin", "l": "N"}, {"n": "Noel杜妈-Leah28-HK", "l": "N"}, {"n": "Ocean杜爸-Dominic-30P-深圳", "l": "O"}, {"n": "Peifang-Mom-Albert 27-T-CA", "l": "P"}, {"n": "Philip-John2028-Toronto", "l": "P"}, {"n": "PingMom-Stephanie'28-T-SC", "l": "P"}, {"n": "潘军杜爸-Justin潘2027-trinity-北...", "l": "P"}, {"n": "倩-杜妈- Ryan27-T-NY", "l": "Q"}, {"n": "QH杜爸Janie28-P-VA", "l": "Q"}, {"n": "Qian-杜妈- Ann-30P🇨🇦", "l": "Q"}, {"n": "QQ 杜妈 AK 27T  28P NC", "l": "Q"}, {"n": "卿卿杜妈–Yvonne2030-Trinity-NC", "l": "Q"}, {"n": "Qunna-杜妈-Jason28-Trinity-GA", "l": "Q"}, {"n": "qw3Dad-Ben28-T-NY", "l": "Q"}, {"n": "Rachel-Katie27-FL", "l": "R"}, {"n": "RC杜妈-Allen2030-T-NC", "l": "R"}, {"n": "Redden杜爸-Victor 30T-SH", "l": "R"}, {"n": "Ren杜妈 - Jill 2028 Pratt - NY", "l": "R"}, {"n": "RYAN-D-Lawrence27T-Toronto", "l": "R"}, {"n": "Sarah杜妈-Josh29-Pratt-CA", "l": "S"}, {"n": "Sarah-杜妈-Tengle28-T-GA", "l": "S"}, {"n": "Selena 杜妈-Rachel 30T-SH", "l": "S"}, {"n": "Selina 杜妈-sonic29-TBD-HK", "l": "S"}, {"n": "Sharon杜妈-James28-Pratt-NC", "l": "S"}, {"n": "Shirley杜媽-Meghan-P30-CA-C", "l": "S"}, {"n": "Shuanglin 杜爸-Hannah27-T-NC", "l": "S"}, {"n": "SL-妈-29-VA", "l": "S"}, {"n": "Sophia 杜妈-Victor 30T-SH", "l": "S"}, {"n": "Sophie_杜妈_Josh_T30_NC", "l": "S"}, {"n": "SteveDad-Claire27-Trinity-CA", "l": "S"}, {"n": "Steve-Jamie27-CA", "l": "S"}, {"n": "Suri（杜妈）-Tom29T-NC", "l": "S"}, {"n": "肆丫头-杜妈-Rachel 2030-P-TX", "l": "S"}, {"n": "Tang杜妈-Krystal28-P-Suzhou", "l": "T"}, {"n": "Tao杜妈-Rose 30T-SC", "l": "T"}, {"n": "Teresa 杜妈 Gary T30 FL", "l": "T"}, {"n": "Teresa杜媽Kaden27T&Kaitlyn3...", "l": "T"}, {"n": "天罡北斗杜爸-Ryan2027-Trinity-...", "l": "T"}, {"n": "Tina 杜媽 S 30T CA", "l": "T"}, {"n": "Ulysse杜爸 James 27-Trinity NJ", "l": "U"}, {"n": "Victoria杜妈JohnHu 28Prat-Tor...", "l": "V"}, {"n": "Vivian杜媽-Jessica28-Trinity-NC", "l": "V"}, {"n": "Vivian 杜妈-Vanessa-30T-CA", "l": "V"}, {"n": "VON_杜妈_Leo'27_T_NJ", "l": "V"}, {"n": "Watson杜爸-Jimmy27-Trinity-重...", "l": "W"}, {"n": "文 杜妈-Sabrina 30T-CO", "l": "W"}, {"n": "Wei L-杜妈-Brooke-30T-WA", "l": "W"}, {"n": "wendy－Jimmy27-重庆", "l": "W"}, {"n": "王耕D-Charlotte29P-NY", "l": "W"}, {"n": "Will杜爸-Jerry2030-Trinity-深圳", "l": "W"}, {"n": "王平", "l": "W"}, {"n": "wren 杜妈 - Kevin27-T-TX", "l": "W"}, {"n": "WS-杜爸-Kev'27-T-TX", "l": "W"}, {"n": "Xiao 杜妈-Ming2029-Pratt-NJ", "l": "X"}, {"n": "Xin Zhang", "l": "X"}, {"n": "解青 杜妈Kevin T30-AZ", "l": "X"}, {"n": "Xw-杜妈-JW28P-NY", "l": "X"}, {"n": "徐炜 杜妈-Kiana2027-trinity-深圳", "l": "X"}, {"n": "Yanhua杜妈-Mia2030-Trinity-TX", "l": "Y"}, {"n": "Yanhui杜妈-Alisa 30T-MD", "l": "Y"}, {"n": "Yanshun 杜爸-Allen-30T-NC", "l": "Y"}, {"n": "豫栋 杜爸-Daniel 30T-SC", "l": "Y"}, {"n": "奕-杜妈- Matt26-T-NY", "l": "Y"}, {"n": "琰Duke Mom- August 27-Pratt-...", "l": "Y"}, {"n": "Ying 杜妈- Cindy-30T-NC", "l": "Y"}, {"n": "Ying杜妈-Sophie30-T-MD", "l": "Y"}, {"n": "一默-杜妈-Blaine27-T-苏州", "l": "Y"}, {"n": "yoyo杜妈-Yuki2030-T-上海", "l": "Y"}, {"n": "颜强", "l": "Y"}, {"n": "Yu-杜妈-Albert27Claire29-P-TN", "l": "Y"}, {"n": "Yuebing 杜爸-Mia 30T-TX", "l": "Y"}, {"n": "Yue Mom-Leah 2028-Trinity-OH", "l": "Y"}, {"n": "yuki-杜妈-Tiffany 2027-T-PA", "l": "Y"}, {"n": "袁野杜爸–袁艺珈2028Trinity重庆", "l": "Y"}, {"n": "鱼羊鲜Dad-Kevin-27-P-GA", "l": "Y"}, {"n": "周杜爸- Brianna 2028-Trinity-NYC", "l": "Z"}, {"n": "ZhibinDad-Nathanael'27-P-WI", "l": "Z"}, {"n": "Zhiqiang-Dad-Katherine-T'28-AZ", "l": "Z"}, {"n": "zhu 杜爸- Cecilia 30T -SH", "l": "Z"}, {"n": "Zoe 杜妈- Xiao 30T-NY", "l": "Z"}, {"n": "张昕-杜爸-Aleena 2030-T-NJ", "l": "Z"}, {"n": "曾燵杜妈-Cynthia2030-Trinity-NJ", "l": "Z"}, {"n": "庄庄-杜妈Cecilia袁艺珈 28-重庆", "l": "Z"}];
+
+let selectedName = '';
+
+function buildLetterOrder(){
+  const seen = [];
+  MEMBERS.forEach(m => { if(!seen.includes(m.l)) seen.push(m.l); });
+  return seen;
+}
+const LETTER_ORDER = buildLetterOrder();
+
+function openPicker(){
+  document.getElementById('pickerOverlay').classList.add('show');
+  document.getElementById('pickerSearch').value = '';
+  renderPickerList();
+}
+
+function closePicker(){
+  document.getElementById('pickerOverlay').classList.remove('show');
+}
+
+function renderPickerList(){
+  const kw = document.getElementById('pickerSearch').value.trim().toLowerCase();
+  const listEl = document.getElementById('pickerList');
+  const idxEl = document.getElementById('pickerIdx');
+  listEl.innerHTML = '';
+  idxEl.innerHTML = '';
+
+  if(kw){
+    // 搜索模式：不分组，扁平列表
+    const filtered = MEMBERS.filter(m => m.n.toLowerCase().includes(kw));
+    if(filtered.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'picker-empty';
+      empty.textContent = '没有找到匹配的昵称';
+      listEl.appendChild(empty);
+    } else {
+      filtered.forEach(m => listEl.appendChild(makeItem(m.n)));
+    }
+    return;
+  }
+
+  // 正常模式：按字母分组 + 右侧索引栏
+  let lastLetter = null;
+  MEMBERS.forEach(m => {
+    if(m.l !== lastLetter){
+      lastLetter = m.l;
+      const label = document.createElement('div');
+      label.className = 'picker-section-label';
+      label.id = 'sec-' + m.l;
+      label.textContent = m.l;
+      listEl.appendChild(label);
+    }
+    listEl.appendChild(makeItem(m.n));
+  });
+
+  LETTER_ORDER.forEach(letter => {
+    const span = document.createElement('span');
+    span.textContent = letter;
+    span.onclick = () => jumpToLetter(letter);
+    idxEl.appendChild(span);
+  });
+}
+
+function makeItem(name){
+  const btn = document.createElement('button');
+  btn.className = 'picker-item';
+  btn.textContent = name;
+  btn.onclick = () => pickName(name);
+  return btn;
+}
+
+function jumpToLetter(letter){
+  const sec = document.getElementById('sec-' + letter);
+  if(sec){
+    sec.scrollIntoView({block:'start'});
+  }
+  const bubble = document.getElementById('pickerJumpBubble');
+  bubble.textContent = letter;
+  bubble.classList.add('show');
+  clearTimeout(window._jumpBubbleTimer);
+  window._jumpBubbleTimer = setTimeout(() => bubble.classList.remove('show'), 400);
+}
+
+function pickName(name){
+  selectedName = name;
+  document.getElementById('pickerTriggerText').textContent = name;
+  document.getElementById('pickerTrigger').classList.add('picked');
+  document.getElementById('nameErr').style.display = 'none';
+  closePicker();
+}
+
+const questions = [
+  {
+    q: "1. Duke Chapel从1930年奠基到正式「献堂」（dedicated），一共花了大约多少年？献堂是在哪一年？",
+    options: [
+      "A. 2年，1932年",
+      "B. 5年，1935年",
+      "C. 10年，1940年",
+      "D. 1年，1931年"
+    ],
+    correct: 1,
+    explain: "Duke Chapel的奠基石于1930年10月22日安放，历时约5年建成，1932年即投入使用举行毕业典礼，但正式献堂仪式是在1935年6月2日举行的。"
+  },
+  {
+    q: "2. 1992年Christian Laettner那记绝杀肯塔基大学的经典转身跳投前，那记贯穿全场底线的传球是谁传出的？",
+    options: [
+      "A. Grant Hill",
+      "B. Bobby Hurley",
+      "C. Thomas Hill",
+      "D. Mike Krzyzewski"
+    ],
+    correct: 0,
+    explain: "1992年NCAA东区决赛加时赛还剩2.1秒时，Grant Hill在底线发球，一记近乎贯穿全场的长传精准送到罚球线附近的Christian Laettner手中，Laettner接球后转身跳投绝杀，帮助Duke以104-103淘汰肯塔基，晋级最终四强并最终蝉联全国冠军。"
+  },
+  {
+    q: "3. 传奇教练Mike Krzyzewski（K教练）在Duke一共执教了多少个赛季，于2022年卸任？",
+    options: [
+      "A. 30个赛季",
+      "B. 35个赛季",
+      "C. 42个赛季",
+      "D. 46个赛季"
+    ],
+    correct: 2,
+    explain: "K教练自1980年起执掌Duke男篮教鞭，一直到2022年退休，共计42个赛季，期间带队五次夺得NCAA全国冠军，是男篮历史上胜场数最多的主教练，接班人是他的老队员及助教Jon Scheyer。"
+  },
+  {
+    q: "4. Duke狐猴中心（Duke Lemur Center）成立于哪一年，是马达加斯加本土之外狐猴种类最丰富的收容与研究机构？",
+    options: [
+      "A. 1924年",
+      "B. 1966年",
+      "C. 1980年",
+      "D. 2005年"
+    ],
+    correct: 1,
+    explain: "Duke狐猴中心成立于1966年，如今收容着十余种、约两百多只狐猴，是马达加斯加以外狐猴种类最丰富的种群所在地，同时也是重要的非侵入性灵长类研究与保育基地，向公众开放预约参观。"
+  },
+  {
+    q: "5. Duke校色「Duke Blue」这种深蓝色，最早的渊源来自哪里？",
+    options: [
+      "A. 1888年三一学院橄榄球队为致敬耶鲁大学「耶鲁蓝」而选用的队服颜色",
+      "B. 捐赠人James B. Duke个人最喜欢的颜色",
+      "C. 学生会公开投票选出的颜色",
+      "D. Duke Chapel彩色玻璃窗的主色调"
+    ],
+    correct: 0,
+    explain: "1888年三一学院（Duke前身）橄榄球队首次与北卡大学交手时，选用了一种偏灰的深蓝色队服，是为了向时任校长John Franklin Crowell的母校耶鲁大学「耶鲁蓝」致敬，这便是「Duke Blue」的最初渊源，1965年校董事会正式将普鲁士蓝定为官方校色。"
+  },
+  {
+    q: "6. Duke橄榄球队的主场Wallace Wade Stadium目前的座位容量大约是多少？",
+    options: [
+      "A. 约20,018人",
+      "B. 约25,018人",
+      "C. 约35,018人",
+      "D. 约50,018人"
+    ],
+    correct: 2,
+    explain: "Wallace Wade Stadium目前可容纳约35,018名观众，是Duke橄榄球队的主场，体育馆以带领Duke队夺得多次联盟冠军的传奇教练Wallace Wade命名。"
+  },
+  {
+    q: "7. Duke本科生主要隶属两所学院：文理学院「Trinity College of Arts & Sciences」和哪一所工程学院？",
+    options: [
+      "A. Pratt School of Engineering",
+      "B. Fuqua School of Business",
+      "C. Sanford School of Public Policy",
+      "D. Nicholas School of the Environment"
+    ],
+    correct: 0,
+    explain: "Duke本科生分别隶属于文理学院Trinity College of Arts & Sciences，和工程学院Pratt School of Engineering，这也是群里许多昵称后缀「T」（Trinity）或「P」（Pratt）的由来。Fuqua商学院、Sanford公共政策学院等则主要招收研究生。"
+  },
+  {
+    q: "8. Duke创始家族——Duke家族——的财富主要来自于哪个产业？",
+    options: [
+      "A. 烟草",
+      "B. 纺织",
+      "C. 铁路",
+      "D. 石油"
+    ],
+    correct: 0,
+    explain: "Washington Duke和他的儿子们靠创办美国烟草公司（American Tobacco Company）积累了巨额财富，James B. Duke后来正是用这笔烟草产业的财富设立Duke基金会，资助三一学院并促成其改名为Duke大学。"
+  },
+  {
+    q: "9. Duke是哪一年离开南方联盟（Southern Conference），成为大西洋沿岸联盟（ACC）的创始成员之一？",
+    options: [
+      "A. 1929年",
+      "B. 1953年",
+      "C. 1961年",
+      "D. 1975年"
+    ],
+    correct: 1,
+    explain: "Duke于1929年加入南方联盟，1953年脱离并作为创始成员之一参与组建了ACC（大西洋沿岸联盟），也就是如今Duke篮球、橄榄球等各项运动队所在的联盟。"
+  },
+  {
+    q: "10. Nasher艺术博物馆（Nasher Museum of Art）现今的新馆建筑是在哪一年正式开馆的？",
+    options: [
+      "A. 1969年",
+      "B. 1995年",
+      "C. 2005年",
+      "D. 2010年"
+    ],
+    correct: 2,
+    explain: "博物馆的前身「Duke University Museum of Art」早在1969年就已成立，最初收藏于东校区一栋旧科学楼内；如今这栋由建筑师Rafael Viñoly设计的新馆则是在2005年落成开馆，并以捐赠人Raymond D. Nasher的名字重新命名。"
+  }
+];
+
+let current = 0;
+let selected = new Array(questions.length).fill(-1);
+let respondentName = '';
+
+function startQuiz(){
+  if(!selectedName){
+    document.getElementById('nameErr').style.display = 'block';
+    return;
+  }
+  respondentName = selectedName;
+  document.getElementById('gate').classList.add('hidden');
+  document.getElementById('mainContent').classList.remove('hidden');
+  render();
+}
+
+function render(){
+  const quizEl = document.getElementById('quiz');
+  quizEl.innerHTML = '';
+  questions.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card' + (idx === current ? ' active' : '');
+    card.id = 'card-' + idx;
+
+    const qnum = document.createElement('div');
+    qnum.className = 'qnum';
+    qnum.textContent = '第 ' + (idx+1) + ' 题';
+    card.appendChild(qnum);
+
+    const qtext = document.createElement('div');
+    qtext.className = 'qtext';
+    qtext.textContent = item.q;
+    card.appendChild(qtext);
+
+    item.options.forEach((opt, oidx) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt' + (selected[idx] === oidx ? ' picked' : '');
+      btn.textContent = opt;
+      btn.onclick = () => selectAnswer(idx, oidx);
+      card.appendChild(btn);
+    });
+
+    const nav = document.createElement('div');
+    nav.className = 'nav';
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'navbtn';
+    prevBtn.textContent = '上一题';
+    prevBtn.disabled = idx === 0;
+    prevBtn.onclick = () => goTo(idx-1);
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'navbtn';
+    nextBtn.textContent = idx === questions.length-1 ? '提交答案' : '下一题';
+    nextBtn.onclick = () => {
+      if(idx === questions.length-1){
+        finishQuiz();
+      } else {
+        goTo(idx+1);
+      }
+    };
+    nav.appendChild(prevBtn);
+    nav.appendChild(nextBtn);
+    card.appendChild(nav);
+
+    quizEl.appendChild(card);
+  });
+  document.getElementById('progress').textContent = '第 ' + (current+1) + ' / ' + questions.length + ' 题';
+}
+
+function selectAnswer(idx, oidx){
+  selected[idx] = oidx;
+  render();
+}
+
+function goTo(idx){
+  current = idx;
+  render();
+}
+
+function finishQuiz(){
+  const unanswered = selected.findIndex(s => s === -1);
+  if(unanswered !== -1){
+    goTo(unanswered);
+    alert('第 ' + (unanswered+1) + ' 题还没有作答，请先完成所有题目');
+    return;
+  }
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('progress').style.display = 'none';
+  document.getElementById('result').classList.add('show');
+  submitAnswers();
+}
+
+async function submitAnswers(){
+  const noteId = 'submitNote';
+  let note = document.getElementById(noteId);
+  if(!note){
+    note = document.createElement('div');
+    note.id = noteId;
+    note.className = 'submit-note';
+    document.getElementById('result').appendChild(note);
+  }
+  note.textContent = '正在提交作答记录…';
+
+  const payload = {
+    name: respondentName,
+    total: questions.length,
+    answers: selected.map((s, i) => ({
+      question: i + 1,
+      selected: s
+    })),
+    submitted_at: new Date().toISOString()
+  };
+
+  try{
+    const res = await fetch(SUPABASE_URL + '/rest/v1/quiz_responses_2', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+    note.textContent = res.ok ? '已记录，谢谢作答！' : '提交失败，请截图告知管理员（错误码 ' + res.status + '）';
+  }catch(e){
+    note.textContent = '提交失败，请检查网络后重试。';
+  }
+}
+
+render();
+</script>
+
+</body>
+</html>
