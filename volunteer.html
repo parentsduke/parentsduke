@@ -120,6 +120,15 @@
     vertical-align: middle;
   }
 
+  .role-name .quota{
+    float: right;
+    font-family: 'SimLi','KaiTi', sans-serif;
+    font-size: 13px;
+    color: var(--gold-dim);
+    font-weight: normal;
+    letter-spacing: 0.5px;
+  }
+
   .role-desc{
     font-size: 15px;
     color: var(--white);
@@ -335,30 +344,38 @@
     <div class="roles">
 
       <div class="role">
-        <div class="role-name"><span class="tag">审核</span>入群审核 / 信息核实</div>
+        <div class="role-name"><span class="tag">审核</span>入群审核 / 信息核实<span class="quota">招募 2 人</span></div>
         <div class="role-desc">协助审核新成员申请，核实 Duke 家长身份信息，及时处理入群请求，保持群内成员的真实性。</div>
       </div>
 
       <div class="role">
-        <div class="role-name"><span class="tag">内容</span>资讯编辑</div>
+        <div class="role-name"><span class="tag">内容</span>资讯编辑<span class="quota">招募 2 人</span></div>
         <div class="role-desc">关注 Duke 校园动态、招生信息、活动通知，整理成中文简讯，帮助不方便刷英文信息的家长第一时间了解情况。</div>
       </div>
 
       <div class="role">
-        <div class="role-name"><span class="tag">答疑</span>群内答疑 / 新人接待</div>
+        <div class="role-name"><span class="tag">答疑</span>群内答疑 / 新人接待<span class="quota">招募 5 人</span></div>
         <div class="role-desc">解答新加入家长的常见问题，分享经验，帮大家更快熟悉群规和资源，让新人不觉得孤单。</div>
       </div>
 
       <div class="role">
-        <div class="role-name"><span class="tag">活动</span>线下 / 线上活动组织</div>
+        <div class="role-name"><span class="tag">活动</span>线下 / 线上活动组织<span class="quota">招募 10 人</span></div>
         <div class="role-desc">协助策划家长聚会、新生分享会等，负责联络报名、场地或流程安排。</div>
       </div>
 
       <div class="role">
-        <div class="role-name"><span class="tag">技术</span>网站维护</div>
+        <div class="role-name"><span class="tag">技术</span>网站维护<span class="quota">招募 1 人</span></div>
         <div class="role-desc">有一定前端或后端开发经验，愿意帮忙优化网站功能、修复问题、参与新功能开发。</div>
       </div>
 
+    </div>
+
+    <h2 class="section-title">招募期限</h2>
+    <div class="box">
+      <ul>
+        <li>本次招募的志愿期为一年，到 2031 届新生开学后告一段落</li>
+        <li>届时会启动新一届（2031 届）家长志愿者的招募，完成交接</li>
+      </ul>
     </div>
 
     <h2 class="section-title">我们希望你</h2>
@@ -378,7 +395,7 @@
         <li>发言和处理事务代表的是扯谈 Duke 群，保持中立、友善，不发表可能引起争议的个人立场</li>
         <li>遇到无法判断或处理的情况，及时同步给其他管理员，不擅自决定</li>
         <li>认领的事务尽量按时完成；如临时没有时间，提前告知一声即可，不必有压力</li>
-        <li>如中途想暂停或退出，随时可以说，我们会妥善做好交接</li>
+        <li>如中途想暂停或退出，随时可以说，我们会妥善做好交接，但请交接完成后退出</li>
       </ul>
     </div>
 
@@ -466,14 +483,33 @@
       btn.textContent = '提交中…';
 
       try {
-        const { error } = await db.from('volunteer_signups').insert({
+        const payload = {
           name: name,
           contact: contact,
           roles: roles,
           notes: notes || null
-        });
+        };
 
+        const { error } = await db.from('volunteer_signups').insert(payload);
         if (error) throw error;
+
+        // ── 触发 notify-admin（邮件通知）──
+        try {
+          await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({
+              type: 'volunteer_signup',
+              recipients: ['weihong_j@yahoo.com', 'lixiaobing@gmail.com'],
+              record: payload
+            }),
+          });
+        } catch(e) {
+          console.warn('通知发送失败:', e);
+        }
 
         form.style.display = 'none';
         document.getElementById('fSuccess').classList.add('show');
