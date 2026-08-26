@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>志愿者招募 · 扯谈 Duke 群</title>
+<style>
+  @font-face {
+    font-family: 'SimLi';
+    src: url('https://raw.githubusercontent.com/dukeparents/assets/main/fonts/SIMLI.TTF') format('truetype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Kaiti';
+    src: url('https://raw.githubusercontent.com/dukeparents/assets/main/fonts/STKAITI.TTF') format('truetype');
+    font-display: swap;
+  }
+
+  :root{
+    --navy: #0a1128;
+    --navy-deep: #060a1a;
+    --gold: #f0c040;
+    --gold-dim: #b89131;
+    --white: #f5f6fa;
+    --line: rgba(240,192,64,0.25);
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color: var(--white);
+    font-family: 'Kaiti','STKaiti','KaiTi', -apple-system, sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 64px 28px 40px;
+  }
+
+  .eyebrow{
+    font-family: 'SimLi','KaiTi', sans-serif;
+    color: var(--gold);
+    font-size: 14px;
+    letter-spacing: 4px;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  h1{
+    font-family: 'SimLi','KaiTi', sans-serif;
+    font-size: clamp(32px, 6vw, 48px);
+    text-align: center;
+    margin: 0 0 8px;
+    color: var(--white);
+    letter-spacing: 2px;
+  }
+
+  .subtitle{
+    text-align:center;
+    color: var(--gold);
+    font-size: 15px;
+    margin-bottom: 48px;
+    letter-spacing: 1px;
+  }
+
+  .intro{
+    font-size: 17px;
+    color: var(--white);
+    opacity: 0.92;
+    margin-bottom: 44px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .intro p{ margin: 0 0 14px; }
+
+  h2.section-title{
+    font-family:'SimLi','KaiTi', sans-serif;
+    color: var(--gold);
+    font-size: 22px;
+    letter-spacing: 3px;
+    margin: 0 0 24px;
+  }
+
+  .roles{
+    display: grid;
+    gap: 18px;
+    margin-bottom: 48px;
+  }
+
+  .role{
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 22px;
+    background: rgba(240,192,64,0.03);
+  }
+
+  .role-name{
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .role-name .tag{
+    display:inline-block;
+    font-family: 'SimLi','KaiTi', sans-serif;
+    font-size: 12px;
+    color: var(--navy-deep);
+    background: var(--gold);
+    padding: 2px 9px;
+    border-radius: 20px;
+    margin-right: 10px;
+    letter-spacing: 1px;
+    vertical-align: middle;
+  }
+
+  .role-desc{
+    font-size: 15px;
+    color: var(--white);
+    opacity: 0.85;
+  }
+
+  .box{
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px 26px;
+    margin-bottom: 44px;
+  }
+
+  .box ul{
+    margin: 0;
+    padding-left: 20px;
+  }
+
+  .box li{
+    margin-bottom: 8px;
+    font-size: 15px;
+    opacity: 0.9;
+  }
+
+  .cta{
+    text-align: center;
+    padding: 36px 20px;
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .cta p{
+    margin: 0 0 18px;
+    font-size: 16px;
+  }
+
+  .cta .highlight{
+    color: var(--gold);
+    font-size: 20px;
+    font-family: 'SimLi','KaiTi', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  .cta small{
+    display:block;
+    margin-top: 14px;
+    color: var(--gold-dim);
+    font-size: 13px;
+  }
+
+  footer{
+    text-align: center;
+    padding: 30px 0 10px;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  footer a{
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--gold-dim);
+  }
+
+  /* ── 报名表单 ── */
+  .form-box{
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 30px 26px 26px;
+    margin-bottom: 20px;
+  }
+
+  .form-box h2.section-title{ margin-bottom: 6px; }
+
+  .form-hint{
+    font-size: 14px;
+    color: var(--white);
+    opacity: 0.7;
+    margin-bottom: 24px;
+  }
+
+  .field{ margin-bottom: 18px; }
+
+  .field label{
+    display: block;
+    font-size: 14px;
+    color: var(--gold);
+    margin-bottom: 7px;
+    letter-spacing: 0.5px;
+  }
+
+  .field label .req{ color: #e08a8a; margin-left: 3px; }
+
+  .field input[type="text"],
+  .field input[type="tel"],
+  .field textarea{
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: 11px 13px;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .field input:focus, .field textarea:focus{
+    border-color: var(--gold);
+  }
+
+  .field textarea{ resize: vertical; min-height: 70px; }
+
+  .checks{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .check-pill{
+    position: relative;
+  }
+
+  .check-pill input{
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .check-pill span{
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1.5px solid var(--line);
+    border-radius: 20px;
+    font-size: 14px;
+    color: var(--white);
+    opacity: 0.75;
+    transition: all 0.15s;
+  }
+
+  .check-pill input:checked + span{
+    border-color: var(--gold);
+    background: rgba(240,192,64,0.15);
+    color: var(--gold);
+    opacity: 1;
+  }
+
+  .submit-btn{
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    border-radius: 8px;
+    border: none;
+    background: var(--gold);
+    color: var(--navy-deep);
+    font-family: 'SimLi','KaiTi', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .submit-btn:hover{ opacity: 0.88; }
+  .submit-btn:disabled{ opacity: 0.5; cursor: not-allowed; }
+
+  .form-msg{
+    margin-top: 14px;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+  }
+
+  .form-msg.show{ display: block; }
+  .form-msg.ok{ color: #7bd68a; }
+  .form-msg.err{ color: #e08a8a; }
+
+  .success-view{
+    display: none;
+    text-align: center;
+    padding: 20px 10px 6px;
+  }
+
+  .success-view.show{ display: block; }
+
+  .success-view .mark{
+    font-size: 34px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .success-view p{
+    font-size: 15px;
+    opacity: 0.85;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="eyebrow">扯 谈 D U K E 群</div>
+    <h1>招募志愿者</h1>
+    <div class="subtitle">一群人,一件事,一点点时间</div>
+
+    <div class="intro">
+      <p>扯谈 Duke 群从几个热心家长的自发互助，慢慢长成了今天大家熟悉的社区平台。审核、答疑、内容更新、活动组织……这些事一直都是靠志愿者们抽空撑起来的。</p>
+      <p>群越来越大，需要照看的事也越来越多。如果你愿意每周挤出一点时间，为大家做点实事，我们非常欢迎你加入这个小小的幕后团队。</p>
+    </div>
+
+    <h2 class="section-title">招募方向</h2>
+    <div class="roles">
+
+      <div class="role">
+        <div class="role-name"><span class="tag">审核</span>入群审核 / 信息核实</div>
+        <div class="role-desc">协助审核新成员申请，核实 Duke 家长身份信息，及时处理入群请求，保持群内成员的真实性。</div>
+      </div>
+
+      <div class="role">
+        <div class="role-name"><span class="tag">内容</span>资讯编辑</div>
+        <div class="role-desc">关注 Duke 校园动态、招生信息、活动通知，整理成中文简讯，帮助不方便刷英文信息的家长第一时间了解情况。</div>
+      </div>
+
+      <div class="role">
+        <div class="role-name"><span class="tag">答疑</span>群内答疑 / 新人接待</div>
+        <div class="role-desc">解答新加入家长的常见问题，分享经验，帮大家更快熟悉群规和资源，让新人不觉得孤单。</div>
+      </div>
+
+      <div class="role">
+        <div class="role-name"><span class="tag">活动</span>线下 / 线上活动组织</div>
+        <div class="role-desc">协助策划家长聚会、新生分享会等，负责联络报名、场地或流程安排。</div>
+      </div>
+
+      <div class="role">
+        <div class="role-name"><span class="tag">技术</span>网站维护</div>
+        <div class="role-desc">有一定前端或后端开发经验，愿意帮忙优化网站功能、修复问题、参与新功能开发。</div>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">我们希望你</h2>
+    <div class="box">
+      <ul>
+        <li>是 Duke 在读学生的家长</li>
+        <li>愿意每周投入一些零散时间，长期稳定地参与</li>
+        <li>做事细心、靠谱，能按时回应群里的事务</li>
+        <li>不需要专业背景，热心和责任心比经验更重要</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">志愿者守则</h2>
+    <div class="box">
+      <ul>
+        <li>对审核和沟通中接触到的家庭信息、联系方式严格保密，不外传、不用于其他用途</li>
+        <li>发言和处理事务代表的是扯谈 Duke 群，保持中立、友善，不发表可能引起争议的个人立场</li>
+        <li>遇到无法判断或处理的情况，及时同步给其他管理员，不擅自决定</li>
+        <li>认领的事务尽量按时完成；如临时没有时间，提前告知一声即可，不必有压力</li>
+        <li>如中途想暂停或退出，随时可以说，我们会妥善做好交接</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">在线报名</h2>
+    <div class="form-box">
+      <div class="form-hint">填一下基本信息，我们会尽快联系你</div>
+
+      <form id="volForm">
+        <div class="field">
+          <label>姓名 <span class="req">*</span></label>
+          <input type="text" id="fName" required maxlength="40">
+        </div>
+
+        <div class="field">
+          <label>微信号 / 联系方式 <span class="req">*</span></label>
+          <input type="text" id="fContact" required maxlength="60">
+        </div>
+
+        <div class="field">
+          <label>意向方向 <span class="req">*</span>（可多选）</label>
+          <div class="checks" id="fRoles">
+            <label class="check-pill"><input type="checkbox" value="审核"><span>审核</span></label>
+            <label class="check-pill"><input type="checkbox" value="内容"><span>内容</span></label>
+            <label class="check-pill"><input type="checkbox" value="答疑"><span>答疑</span></label>
+            <label class="check-pill"><input type="checkbox" value="活动"><span>活动</span></label>
+            <label class="check-pill"><input type="checkbox" value="技术"><span>技术</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>备注</label>
+          <textarea id="fNotes" maxlength="300" placeholder="可以简单说说你的想法或空闲时间"></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="fSubmitBtn">提 交 报 名</button>
+        <div class="form-msg" id="fMsg"></div>
+      </form>
+
+      <div class="success-view" id="fSuccess">
+        <div class="mark">已收到</div>
+        <p>谢谢你的报名，我们会尽快联系你～</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    扯谈 Duke 群 · <a href="https://dukeparents.org">dukeparents.org</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById('volForm');
+    const msgEl = document.getElementById('fMsg');
+    const btn = document.getElementById('fSubmitBtn');
+
+    function showMsg(text, ok){
+      msgEl.textContent = text;
+      msgEl.className = 'form-msg show ' + (ok ? 'ok' : 'err');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('fName').value.trim();
+      const contact = document.getElementById('fContact').value.trim();
+      const notes = document.getElementById('fNotes').value.trim();
+      const roles = Array.from(document.querySelectorAll('#fRoles input:checked')).map(el => el.value);
+
+      if (!name || !contact){
+        showMsg('请填写姓名和联系方式', false);
+        return;
+      }
+      if (roles.length === 0){
+        showMsg('请至少选择一个意向方向', false);
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = '提交中…';
+
+      try {
+        const { error } = await db.from('volunteer_signups').insert({
+          name: name,
+          contact: contact,
+          roles: roles,
+          notes: notes || null
+        });
+
+        if (error) throw error;
+
+        form.style.display = 'none';
+        document.getElementById('fSuccess').classList.add('show');
+      } catch(err){
+        showMsg('提交失败，请稍后再试或直接联系管理员（' + err.message + '）', false);
+        btn.disabled = false;
+        btn.textContent = '提 交 报 名';
+      }
+    });
+  </script>
+</body>
+</html>
