@@ -123,9 +123,9 @@
   .role-name .quota{
     float: right;
     font-family: 'SimLi','KaiTi', sans-serif;
-    font-size: 13px;
-    color: var(--gold-dim);
-    font-weight: normal;
+    font-size: 15px;
+    color: var(--gold);
+    font-weight: bold;
     letter-spacing: 0.5px;
   }
 
@@ -360,7 +360,7 @@
 
       <div class="role">
         <div class="role-name"><span class="tag">活动</span>线下 / 线上活动组织<span class="quota">招募 5 人</span></div>
-        <div class="role-desc">协助策划家长聚会、新生分享会等，负责联络报名、场地或流程安排。</div>
+        <div class="role-desc">协助策划新生分享会、家长聚会，特别是 Family Weekend 家长聚会等，负责联络报名、场地或流程安排。</div>
       </div>
 
       <div class="role">
@@ -415,13 +415,13 @@
         </div>
 
         <div class="field">
-          <label>意向方向 <span class="req">*</span>（可多选）</label>
+          <label>意向方向 <span class="req">*</span></label>
           <div class="checks" id="fRoles">
-            <label class="check-pill"><input type="checkbox" value="审核"><span>审核</span></label>
-            <label class="check-pill"><input type="checkbox" value="内容"><span>内容</span></label>
-            <label class="check-pill"><input type="checkbox" value="答疑"><span>答疑</span></label>
-            <label class="check-pill"><input type="checkbox" value="活动"><span>活动</span></label>
-            <label class="check-pill"><input type="checkbox" value="技术"><span>技术</span></label>
+            <label class="check-pill"><input type="radio" name="fRole" value="审核"><span>审核</span></label>
+            <label class="check-pill"><input type="radio" name="fRole" value="内容"><span>内容</span></label>
+            <label class="check-pill"><input type="radio" name="fRole" value="答疑"><span>答疑</span></label>
+            <label class="check-pill"><input type="radio" name="fRole" value="活动"><span>活动</span></label>
+            <label class="check-pill"><input type="radio" name="fRole" value="技术"><span>技术</span></label>
           </div>
         </div>
 
@@ -468,14 +468,15 @@
       const name = document.getElementById('fName').value.trim();
       const contact = document.getElementById('fContact').value.trim();
       const notes = document.getElementById('fNotes').value.trim();
-      const roles = Array.from(document.querySelectorAll('#fRoles input:checked')).map(el => el.value);
+      const roleEl = document.querySelector('#fRoles input:checked');
+      const role = roleEl ? roleEl.value : '';
 
       if (!name || !contact){
         showMsg('请填写姓名和联系方式', false);
         return;
       }
-      if (roles.length === 0){
-        showMsg('请至少选择一个意向方向', false);
+      if (!role){
+        showMsg('请选择一个意向方向', false);
         return;
       }
 
@@ -486,7 +487,7 @@
         const payload = {
           name: name,
           contact: contact,
-          roles: roles,
+          roles: [role],
           notes: notes || null
         };
 
