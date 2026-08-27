@@ -349,21 +349,24 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
     recordId = params.get('id');
     pageMode = ['dorm','portal','sid','all'].includes(params.get('mode')) ? params.get('mode') : 'cl';
 
-    const cfg = MODE_CONFIG[pageMode];
+    // all 模式：先展示类型选择页，不需要提前套用某一个具体模式的文案
+    if (pageMode !== 'all') {
+      const cfg = MODE_CONFIG[pageMode];
 
-    // 应用文案
-    document.getElementById('headerTitle').textContent = cfg.headerTitle;
-    document.getElementById('cardTitle').textContent   = cfg.cardTitle;
-    document.getElementById('cardSub').innerHTML       = cfg.cardSub;
-    document.getElementById('fileLabel').innerHTML     = `${cfg.fileLabel} <span style="color:var(--red)">*</span>`;
-    document.getElementById('uploadIcon').textContent  = cfg.uploadIcon;
-    document.getElementById('uploadHint').innerHTML    = cfg.uploadHint;
-    document.getElementById('fileInput').accept        = cfg.accept;
-    document.getElementById('screenSuccess').querySelector('.state-sub').innerHTML = cfg.successSub;
+      // 应用文案
+      document.getElementById('headerTitle').textContent = cfg.headerTitle;
+      document.getElementById('cardTitle').textContent   = cfg.cardTitle;
+      document.getElementById('cardSub').innerHTML       = cfg.cardSub;
+      document.getElementById('fileLabel').innerHTML     = `${cfg.fileLabel} <span style="color:var(--red)">*</span>`;
+      document.getElementById('uploadIcon').textContent  = cfg.uploadIcon;
+      document.getElementById('uploadHint').innerHTML    = cfg.uploadHint;
+      document.getElementById('fileInput').accept        = cfg.accept;
+      document.getElementById('screenSuccess').querySelector('.state-sub').innerHTML = cfg.successSub;
 
-    // 宿舍模式显示楼名输入框
-    if (pageMode === 'dorm') {
-      document.getElementById('dormBuildingWrap').style.display = 'block';
+      // 宿舍模式显示楼名输入框
+      if (pageMode === 'dorm') {
+        document.getElementById('dormBuildingWrap').style.display = 'block';
+      }
     }
 
     if (!recordId) {
