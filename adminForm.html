@@ -1902,9 +1902,10 @@
   }
 
   // ── 催信发送后通知 weihong_j ──
-  async function notifyAdminReminderSent(studentName, email, reminderSubject, extraCount) {
+  async function notifyAdminReminderSent(studentName, email, reminderSubject, extraCount, uploadUrl) {
     try {
       const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
+      const extraLine = extraCount > 0 ? `含 ${extraCount} 条附加询问\n` : '';
       await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
@@ -1915,7 +1916,8 @@
           subject:    `📧 催信已发送：${studentName}`,
           replyTo:    'parentsduke@gmail.com',
           bodyLine1:  `已向 ${studentName}（${email}）发送催信：「${reminderSubject}」。`,
-          bodyLine2:  extraCount > 0 ? `含 ${extraCount} 条附加询问\n时间：${now}（美东）` : `时间：${now}（美东）`,
+          bodyLine2:  `${extraLine}时间：${now}（美东）`,
+          bodyLine3:  uploadUrl ? `本次发给家长的链接：\n${uploadUrl}` : '',
           buttonText: '进入审批页面',
           noButton:   true,
         }),
@@ -2004,7 +2006,7 @@
       applyFilters();
 
       closeCataModal();
-      notifyAdminReminderSent(studentName, email, subject, checked.length);
+      notifyAdminReminderSent(studentName, email, subject, checked.length, uploadUrl);
       alert(`✅ 已向 ${email} 发送催信${checked.length > 0 ? `（含 ${checked.length} 条附加询问）` : ''}`);
     } catch(e) {
       btn.disabled = false;
