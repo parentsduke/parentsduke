@@ -279,6 +279,22 @@
     opacity: 1;
   }
 
+  .check-pill.full input{
+    cursor: not-allowed;
+  }
+
+  .check-pill.full span{
+    opacity: 0.35;
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+
+  .check-pill.full span::after{
+    content: '（已满）';
+    text-decoration: none;
+    font-size: 11px;
+  }
+
   .submit-btn{
     width: 100%;
     margin-top: 10px;
@@ -451,10 +467,42 @@
     const msgEl = document.getElementById('fMsg');
     const btn = document.getElementById('fSubmitBtn');
 
+    const QUOTAS = { '审核': 2, '内容/答疑': 5, '活动': 5, '技术': 1 };
+
     function showMsg(text, ok){
       msgEl.textContent = text;
       msgEl.className = 'form-msg show ' + (ok ? 'ok' : 'err');
     }
+
+    // ── 统计各方向已报名人数，把招满的选项禁用 ──
+    async function refreshQuotas(){
+      const counts = {};
+      Object.keys(QUOTAS).forEach(k => counts[k] = 0);
+
+      const { data, error } = await db.from('volunteer_role_counts').select('role, cnt');
+      if (error){
+        console.warn('读取报名人数失败:', error.message);
+        return;
+      }
+
+      (data || []).forEach(row => {
+        if (counts[row.role] !== undefined) counts[row.role] = row.cnt;
+      });
+
+      document.querySelectorAll('#fRoles .check-pill').forEach(pill => {
+        const input = pill.querySelector('input');
+        const role = input.value;
+        const full = counts[role] !== undefined && counts[role] >= QUOTAS[role];
+
+        pill.classList.toggle('full', full);
+        input.disabled = full;
+        if (full && input.checked) input.checked = false;
+      });
+
+      return counts;
+    }
+
+    refreshQuotas();
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -476,6 +524,15 @@
 
       btn.disabled = true;
       btn.textContent = '提交中…';
+
+      // 提交前再次确认该方向没有在这期间被别人报满
+      const counts = await refreshQuotas();
+      if (counts && counts[role] !== undefined && counts[role] >= QUOTAS[role]){
+        showMsg('手慢了，这个方向刚好招满了，换一个试试吧', false);
+        btn.disabled = false;
+        btn.textContent = '提 交 报 名';
+        return;
+      }
 
       try {
         const payload = {
@@ -508,6 +565,7 @@
 
         form.style.display = 'none';
         document.getElementById('fSuccess').classList.add('show');
+        refreshQuotas();
       } catch(err){
         showMsg('提交失败，请稍后再试或直接联系管理员（' + err.message + '）', false);
         btn.disabled = false;
