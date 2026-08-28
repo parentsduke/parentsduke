@@ -426,16 +426,6 @@
         </div>
 
         <div class="field">
-          <label>意向方向 <span class="req">*</span></label>
-          <div class="checks" id="fRoles">
-            <label class="check-pill"><input type="radio" name="fRole" value="审核"><span>审核</span></label>
-            <label class="check-pill"><input type="radio" name="fRole" value="内容/答疑"><span>内容/答疑</span></label>
-            <label class="check-pill"><input type="radio" name="fRole" value="活动"><span>活动</span></label>
-            <label class="check-pill"><input type="radio" name="fRole" value="技术"><span>技术</span></label>
-          </div>
-        </div>
-
-        <div class="field">
           <label>备注</label>
           <textarea id="fNotes" maxlength="300" placeholder="可以简单说说你的想法或空闲时间"></textarea>
         </div>
@@ -467,42 +457,10 @@
     const msgEl = document.getElementById('fMsg');
     const btn = document.getElementById('fSubmitBtn');
 
-    const QUOTAS = { '审核': 2, '内容/答疑': 5, '活动': 5, '技术': 1 };
-
     function showMsg(text, ok){
       msgEl.textContent = text;
       msgEl.className = 'form-msg show ' + (ok ? 'ok' : 'err');
     }
-
-    // ── 统计各方向已报名人数，把招满的选项禁用 ──
-    async function refreshQuotas(){
-      const counts = {};
-      Object.keys(QUOTAS).forEach(k => counts[k] = 0);
-
-      const { data, error } = await db.from('volunteer_role_counts').select('role, cnt');
-      if (error){
-        console.warn('读取报名人数失败:', error.message);
-        return;
-      }
-
-      (data || []).forEach(row => {
-        if (counts[row.role] !== undefined) counts[row.role] = row.cnt;
-      });
-
-      document.querySelectorAll('#fRoles .check-pill').forEach(pill => {
-        const input = pill.querySelector('input');
-        const role = input.value;
-        const full = counts[role] !== undefined && counts[role] >= QUOTAS[role];
-
-        pill.classList.toggle('full', full);
-        input.disabled = full;
-        if (full && input.checked) input.checked = false;
-      });
-
-      return counts;
-    }
-
-    refreshQuotas();
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -510,35 +468,20 @@
       const name = document.getElementById('fName').value.trim();
       const contact = document.getElementById('fContact').value.trim();
       const notes = document.getElementById('fNotes').value.trim();
-      const roleEl = document.querySelector('#fRoles input:checked');
-      const role = roleEl ? roleEl.value : '';
 
       if (!name || !contact){
         showMsg('请填写姓名和联系方式', false);
-        return;
-      }
-      if (!role){
-        showMsg('请选择一个意向方向', false);
         return;
       }
 
       btn.disabled = true;
       btn.textContent = '提交中…';
 
-      // 提交前再次确认该方向没有在这期间被别人报满
-      const counts = await refreshQuotas();
-      if (counts && counts[role] !== undefined && counts[role] >= QUOTAS[role]){
-        showMsg('手慢了，这个方向刚好招满了，换一个试试吧', false);
-        btn.disabled = false;
-        btn.textContent = '提 交 报 名';
-        return;
-      }
-
       try {
         const payload = {
           name: name,
           contact: contact,
-          roles: [role],
+          roles: [],
           notes: notes || null
         };
 
@@ -565,7 +508,6 @@
 
         form.style.display = 'none';
         document.getElementById('fSuccess').classList.add('show');
-        refreshQuotas();
       } catch(err){
         showMsg('提交失败，请稍后再试或直接联系管理员（' + err.message + '）', false);
         btn.disabled = false;
