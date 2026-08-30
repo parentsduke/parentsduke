@@ -290,13 +290,17 @@ PREMATRIC_HARDCODED = [
 
 def build_prematric_text(today=None):
     """把结构化硬编码按日期过滤，输出文本块供 AI 使用。
-    过了 expire_date 当天结束后才移除（即当天仍保留）。"""
+    过了 expire_date 当天结束后才移除（即当天仍保留）。
+    返回 (text, has_substantive_content)：has_substantive_content 表示除
+    "联系方式"（expire=None，永不过期）以外是否还有真正有时效性的条目——
+    没有的话说明所有真实开学节点都已过去，不该再让 AI 硬凑清单。"""
     if today is None:
         today = datetime.now().date()
     # 硬性下限：超出最近15天窗口的条目，无论today参数为何，一律不显示
     effective_cutoff = max(today, GLOBAL_MIN_DATE)
     active = [e for e in PREMATRIC_HARDCODED
               if e['expire'] is None or datetime(*e['expire']).date() >= effective_cutoff]
+    has_substantive_content = any(e['expire'] is not None for e in active)
 
     # 按 category 分组输出
     from collections import OrderedDict
@@ -314,7 +318,7 @@ def build_prematric_text(today=None):
     removed = len(PREMATRIC_HARDCODED) - len(active)
     if removed:
         print(f'  开学前节点：{len(active)} 条有效，{removed} 条已过期移除')
-    return '\n'.join(lines)
+    return '\n'.join(lines), has_substantive_content
 
 ACADEMIC_CALENDAR_URL = 'https://registrar.duke.edu/2025-2026-academic-calendar/'
 DUKE_EVENTS_CALENDAR_URL = ('https://calendar.duke.edu/index?cf[]=Academic+Calendar+Dates'
@@ -895,6 +899,14 @@ def generate_section(section_name, items, extra='', allow_political=False):
     if extra:
         news_text += '\n\n' + extra
 
+    # 修复点：_drop_expired_items() 之前只检查了标题，没检查摘要正文——
+    # 过期日期（比如"转学申请截止日3月15日/5月1日"这类藏在summary里的信息）
+    # 完全没被Python层过滤，只能靠AI自己在prompt里判断，结果并不总是可靠。
+    # 这里对拼好的完整文本（标题+摘要+extra）统一做一次逐行日期过滤，
+    # 双保险：无论过期日期出现在标题、摘要还是官网正文里都会被剔除，
+    # 不再单纯依赖AI自觉遵守"严格日期过滤"的文字规则。
+    news_text = filter_expired_text(news_text, today.date())
+
     political_rule = (
         "- 内容必须如实翻译，不要过滤任何内容\n" if allow_political else
         "- 严格过滤政治内容（政治人物、党派、抗议、移民政策、联邦拨款争议等），只保留学术/体育/校园相关\n"
@@ -989,10 +1001,24 @@ def generate_registration_section(registration_text, housing_text):
     )
     return gemini(prompt) or FALLBACK_HTML
 
+PREMATRIC_DONE_HTML = (
+    '<p>Class of 2030 的开学前重要节点（搬入日、迎新周、正式开学等）均已完成，'
+    '本板块暂无新的待办事项。近期学术日历、选课与住房安排请参考下方相应板块。</p>'
+)
+
 def generate_prematric_section(page_text):
     """开学前安排：专项板块，面向 Class of 2030 家长"""
     today = datetime.now()
-    combined = build_prematric_text(today.date())
+    combined, has_substantive_content = build_prematric_text(today.date())
+
+    # 修复点①：硬编码里真正有时效性的条目全部过期后（比如开学后），
+    # 不再硬塞给AI去"凑"清单，直接返回固定提示，避免AI在缺乏真实素材时编造
+    # 不存在的日期/事项（曾出现过把"9月1日搬入日""8月30日Blue Devil Days"等
+    # 全部编造出来、和真实的8/15搬入、8/24开学完全对不上的问题）。
+    # 官网实时抓取内容(page_text)如果有实质内容，仍然可以继续生成。
+    if not has_substantive_content and not page_text:
+        return PREMATRIC_DONE_HTML
+
     if page_text:
         combined += '\n\n[官网实时内容]\n' + page_text
 
@@ -1003,11 +1029,15 @@ def generate_prematric_section(page_text):
         "请按紧迫程度整理成中文清单，规则：\n"
         f"0. 【严格日期过滤】{GLOBAL_MIN_DATE.year}年{GLOBAL_MIN_DATE.month}月{GLOBAL_MIN_DATE.day}日"
         f"之前的事项一律视为过期，绝对不得出现（联系方式等无日期条目除外）\n"
+        "0.5.【绝对禁止编造】只能使用上面提供的信息源中明确出现的日期和事项，"
+        "禁止根据经验、常识或往年惯例推测、编造、补充任何未在源文本中出现的日期、"
+        "事项名称或活动（例如不得凭空写出'Blue Devil Days'、猜测的搬入日/选课截止日等）。"
+        "如果源信息不足以列出某个时间段的内容，就不要为了凑数而编造，宁可少列。\n"
         "1. 优先列出【今天起90天内】的待办事项和截止日期\n"
         "2. 每条标注具体日期，用📌表示截止/重要节点，用📅表示一般节点\n"
         "3. 格式：<ul><li>📌/📅 X月X日 — 事项说明</li></ul>，最多10条\n"
         "4. 其他事项优先列出今天起90天内的\n"
-        "5. 涉及住房分配、迎新周、搬入日、国际生网络迎新务必包含\n"
+        "5. 涉及住房分配、迎新周、搬入日、国际生网络迎新务必包含（仅限源文本中确有的信息）\n"
         "6. 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
         "7. 只输出HTML，不要其他文字"
     )
