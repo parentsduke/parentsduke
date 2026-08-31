@@ -4618,9 +4618,25 @@
       </div>
 
       <div class="note">
-        <strong>为什么链上的向量线性无关？</strong>
-        <p style="margin:10px 0 0">记 $N=A-\lambda I$，链的定义翻译成算子语言就是 $N\xi_1=0,\ N\xi_2=\xi_1,\ \dots,\ N\xi_m=\xi_{m-1}$。直观上看，链上每个向量"扛住 $N$反复作用而不归零的次数"两两不同：$\xi_1$ 被 $N$ 作用<strong>1次</strong>就归零；$\xi_2$ 要作用<strong>2次</strong>才归零；一般地 $\xi_k$ 要作用 <strong>$k$ 次</strong>才归零（因为 $N^{k-1}\xi_k=\xi_1\neq0$，再多作用一次即为零，即 $N^k\xi_k=0$）。这种逐级递增的"消灭深度"两两不同，正是它们不可能线性相关的根源。</p>
-        <p style="margin:10px 0 0"><strong>严格证明（反证 + 用 $N^{m-1}$ 筛选）：</strong>设 $c_1\xi_1+c_2\xi_2+\cdots+c_m\xi_m=0$。两边同时作用 $N^{m-1}$：由于 $k&lt;m$ 时 $N^{m-1}\xi_k=0$（作用次数早已超过消灭 $\xi_k$ 所需的 $k$ 次），只有 $k=m$ 那一项存活且 $N^{m-1}\xi_m=\xi_1\neq0$，代入后其余项全部消失，只剩 $c_m\xi_1=0$。因为 $\xi_1\neq0$，得 $c_m=0$。把这一项去掉后重复同样的论证（这次用 $N^{m-2}$ 作用剩下 $m-1$ 项），逐层剥离，最终推出 $c_1=c_2=\cdots=c_m=0$——只有全零系数才能让组合为零，链上向量线性无关。</p>
+        <strong>"消灭深度"的精确定义</strong>
+        <p style="margin:10px 0 0">记 $N=A-\lambda I$。对幂零算子 $N$ 和非零向量 $v$，定义它关于 $N$ 的<strong>零化指数</strong>为最小的正整数 $j$，使得 $N^jv=0$ 但 $N^{j-1}v\neq0$。在若尔当链 $\xi_m\xrightarrow{N}\xi_{m-1}\xrightarrow{N}\cdots\xrightarrow{N}\xi_1$（即 $\xi_{i-1}=N\xi_i$，也可以写成 $\xi_i=N^{m-i}\xi_m$）中：</p>
+        <p style="margin:10px 0 0">$\xi_1$ 的零化指数是 $1$；$\xi_2$ 的零化指数是 $2$；……；$\xi_m$ 的零化指数是 $m$。这 $m$ 个向量的零化指数恰好是 $1,2,\dots,m$，两两不同——这正是下面证明线性无关的出发点。</p>
+      </div>
+
+      <div class="note">
+        <strong>完整证明：逐级剥离系数</strong>
+        <p style="margin:10px 0 0">设 $c_1\xi_1+c_2\xi_2+\cdots+c_m\xi_m=0\quad(\ast)$。</p>
+        <p style="margin:10px 0 0"><strong>第一步（提取 $c_m$）：</strong>对 $(\ast)$ 两边作用 $N^{m-1}$。因为 $i&lt;m$ 时 $\xi_i$ 的零化指数 $\le m-1$，所以 $N^{m-1}\xi_i=0$，只剩 $N^{m-1}(c_m\xi_m)=c_mN^{m-1}\xi_m=c_m\xi_1=0$。因为 $\xi_1\neq0$，得 $c_m=0$。</p>
+        <p style="margin:10px 0 0"><strong>为什么 $N^{m-1}\xi_i=0\ (i&lt;m)$：</strong>设 $\xi_i$ 的零化指数是 $i$，即 $N^i\xi_i=0$。只要 $m-1\ge i$（这对所有 $i&lt;m$ 都成立），就可以把指数拆开：$N^{m-1}\xi_i=N^{(m-1-i)}\big(N^i\xi_i\big)=N^{m-1-i}(0)=0$。也就是说，$N$ 作用在零向量上永远还是零，不会因为多作用了 $m-1-i$ 次 $N$，零向量又"变回"非零向量。这一步与 $i,m$ 的具体数值无关，只要求 $i&lt;m$（例如 $m=4,i=2$ 时，$N^3\xi_2=N^1(N^2\xi_2)=N^1(0)=0$，同样成立）。</p>
+        <p style="margin:10px 0 0"><strong>第二步（提取 $c_{m-1}$）：</strong>代回 $c_m=0$，剩下 $c_1\xi_1+\cdots+c_{m-1}\xi_{m-1}=0$，两边作用 $N^{m-2}$，同理只剩 $i=m-1$ 项：$c_{m-1}N^{m-2}\xi_{m-1}=c_{m-1}\xi_1=0\Rightarrow c_{m-1}=0$。依此类推，作用 $N^{m-3},N^{m-4},\dots,N^0$，逐个剥离出 $c_{m-2}=0,\dots,c_1=0$。</p>
+        <p style="margin:10px 0 0">最终所有系数为零，故 $\xi_1,\dots,\xi_m$ 线性无关。这就是"消灭深度不同"真正起作用的地方：深度差异保证每次作用合适次数的 $N$，能精确筛掉深度较低的项，只留下深度最高的一项，从而把系数逐个孤立出来。</p>
+      </div>
+
+      <div class="note">
+        <strong>为什么要强调"链式"，不能只说"深度不同"</strong>
+        <p style="margin:10px 0 0">光是深度不同，并不足以保证线性无关——除非这些向量是通过 $\xi_{i-1}=N\xi_i$ 这种链式关系由<strong>同一个</strong> $N$ 生成的。</p>
+        <p style="margin:10px 0 0">如果两个向量 $u_1,u_2$ 分别属于两个互不相关的若尔当块，零化指数分别是 $1,2$，但不满足 $u_1=Nu_2$ 这种链式关系，那么"深度不同"本身并不能直接推出它们无关——它们的无关性其实来自另一个更直接的原因（分属不同的不变子空间，构成直和）。</p>
+        <p style="margin:10px 0 0">也就是说，"深度递增"这个论证专门适用于同一条链内部；如果要证明不同链之间也无关（合起来构成整个若尔当基），需要额外一步论证（即不同特征值/不同块对应的不变子空间构成直和）。</p>
       </div>
 
       <div class="example">
