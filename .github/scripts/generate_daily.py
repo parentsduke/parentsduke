@@ -320,7 +320,7 @@ def build_prematric_text(today=None):
         print(f'  开学前节点：{len(active)} 条有效，{removed} 条已过期移除')
     return '\n'.join(lines), has_substantive_content
 
-ACADEMIC_CALENDAR_URL = 'https://registrar.duke.edu/2025-2026-academic-calendar/'
+ACADEMIC_CALENDAR_URL = 'https://registrar.duke.edu/2026-2027-academic-calendar/'
 DUKE_EVENTS_CALENDAR_URL = ('https://calendar.duke.edu/index?cf[]=Academic+Calendar+Dates'
                              '&future=1&feed=rss')
 
@@ -532,8 +532,43 @@ def fetch_html_source(name, max_items=6):
             deduped.append(i)
     return deduped[:max_items]
 
+_YEAR_RANGE_RE = re.compile(r'\b(20\d{2})\s*[-–—]\s*(20\d{2})\b')
+_BARE_YEAR_RE = re.compile(r'\b(20\d{2})\b')
+
+def _looks_like_stale_year_page(text, current_date):
+    """检测页面是否明确标注了早于"本学年"的年份区间——例如
+    annual-housing-calendar 页面常年挂着"August 2025 - July 2026"这种
+    杜克官网还没来得及更新的旧学年标题。命中此类页面直接整页丢弃，
+    不能指望后面的日期过滤逐行清理（那些页面里的日期常是"8/25""9/1"
+    这种不带年份的斜杠格式，本来就识别不出是哪一年，混进AI prompt后
+    会被当成"今年"的日期，产生看似合理实则张冠李戴的错误日期）。
+
+    实测发现：真实页面在标注学年之前，往往有几百字符的版权声明/面包屑
+    导航（实测约400+字符），如果只看文本开头一小段很容易把关键年份漏
+    掉——所以这里不限定扫描范围，而是优先在全文里找"20XX-20XX"这种
+    明确的学年区间模式（更精准，误判概率低）；找不到这种模式时才退回
+    "全文最早出现的年份"作为弱一点的兜底信号。
+
+    判断基准是"本学年应该从哪一年开始"：8-12月本学年起始年是今年，
+    1-7月本学年起始年是去年；只要检测到的起始年比这个还早，就判定为
+    过期学年页面。什么年份都没找到则无法判断，保留原文（避免误伤）。"""
+    expected_start_year = current_date.year if current_date.month >= 8 else current_date.year - 1
+
+    range_matches = _YEAR_RANGE_RE.findall(text)
+    if range_matches:
+        # 优先信号：明确的"起始年-结束年"区间，直接用起始年判断
+        return any(int(start) < expected_start_year for start, _ in range_matches)
+
+    bare_years = [int(y) for y in _BARE_YEAR_RE.findall(text)]
+    if not bare_years:
+        return False
+    # 弱兜底信号：没有找到明确区间格式时，才用全文最早年份判断，
+    # 避免仅因页面里提到某个早年份（如历史沿革介绍）就误判为过期。
+    return min(bare_years) < expected_start_year
+
 def fetch_pages_text(urls, max_chars=1200):
     texts = []
+    _today = datetime.now().date()
     for url in urls:
         try:
             r = requests.get(url, headers=HEADERS, timeout=15)
@@ -548,12 +583,18 @@ def fetch_pages_text(urls, max_chars=1200):
                 text = (main or soup).get_text(separator=' ', strip=True)[:max_chars]
                 print(f'  抓取OK: {url}')
             if text:
+                if _looks_like_stale_year_page(text, _today):
+                    print(f'  跳过（页面标注的是往年学年，未更新）: {url}')
+                    continue
                 texts.append(f'[{url}]\n{text}')
         except Exception as ex:
             # 抓取失败，尝试 Jina
             text = fetch_jina_text(url, max_chars)
             if text:
-                texts.append(f'[{url}]\n{text}')
+                if _looks_like_stale_year_page(text, _today):
+                    print(f'  跳过（页面标注的是往年学年，未更新）: {url}')
+                else:
+                    texts.append(f'[{url}]\n{text}')
             else:
                 print(f'  抓取失败 {url}: {ex}')
     return '\n\n'.join(texts)
@@ -949,39 +990,100 @@ def generate_section(section_name, items, extra='', allow_political=False):
     )
     return gemini(prompt) or FALLBACK_HTML
 
+_CAL_MONTH_MAP = {
+    'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
+    'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12,
+}
+_CAL_WEEKDAY_CN = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']  # date.weekday(): Mon=0
+
+# 只匹配 "Mon DD (任意文字): 描述" 或 "Mon DD-DD (任意文字): 描述" 这种规整行；
+# 括号里的星期文字只是人工参考、完全不采信——星期几一律由 Python 的 date()
+# 重新计算，日期同理由 Python 精确匹配。格式不规整、无法确定具体日期的行
+# （如 "Jun (early): ..." 这种只写月份不写日的）会被跳过，而不是交给 AI 去猜。
+_CAL_LINE_RE = re.compile(r'^([A-Za-z]{3}) (\d{1,2})(?:-(\d{1,2}))? \([^)]*\): (.*)$')
+
+def _parse_academic_calendar_entries(text, year=2026):
+    """把 ACADEMIC_CALENDAR_HARDCODED 逐行解析成结构化事件（date对象+描述）。
+    只处理"=== AAMC ..."之前的 Duke 官方学术日历部分——这部分格式规整、
+    人工核对过日期，可以放心程序化解析；AAMC 医学院申请日历格式不统一
+    （很多行没有具体"日"），不在此处强行解析，避免为了凑数而猜测日期。"""
+    duke_block = text.split('=== AAMC', 1)[0]
+    entries = []
+    for line in duke_block.splitlines():
+        line = line.strip()
+        if not line or line.startswith('==='):
+            continue
+        m = _CAL_LINE_RE.match(line)
+        if not m:
+            continue
+        mon_str, d1, d2, desc = m.groups()
+        month = _CAL_MONTH_MAP.get(mon_str)
+        if not month:
+            continue
+        try:
+            start = date(year, month, int(d1))
+            end = date(year, month, int(d2)) if d2 else start
+        except ValueError:
+            continue
+        entries.append({'start': start, 'end': end, 'desc': desc.strip()})
+    return entries
+
+def _format_cal_date(start, end):
+    start_s = f"{start.month}月{start.day}日（{_CAL_WEEKDAY_CN[start.weekday()]}）"
+    if end == start:
+        return start_s
+    if end.month == start.month:
+        end_s = f"{end.day}日（{_CAL_WEEKDAY_CN[end.weekday()]}）"
+    else:
+        end_s = f"{end.month}月{end.day}日（{_CAL_WEEKDAY_CN[end.weekday()]}）"
+    return f"{start_s}–{end_s}"
+
 def generate_calendar_section(items):
-    today = datetime.now()
+    """学术日历板块。核心原则：日期和星期几完全由 Python 计算并锁定，绝不
+    交给 AI 去猜或"翻译"——AI 唯一的工作是把已经核对好日期的英文事项描述
+    译成通顺中文，禁止改动日期/星期，也禁止编造列表之外的条目。
 
-    page_text = ''
-    try:
-        r = requests.get(ACADEMIC_CALENDAR_URL, headers=HEADERS, timeout=10)
-        soup = BeautifulSoup(r.text, 'html.parser')
-        for tag in soup.select('nav,footer,header,script,style'):
-            tag.decompose()
-        main = soup.select_one('main,#main,.main-content,article,.field-items,table')
-        page_text = (main or soup).get_text(separator=' ', strip=True)[:2000]
-        print(f'  Registrar页面抓取OK: {len(page_text)} chars')
-    except Exception as ex:
-        print(f'  Registrar页面抓取失败({ex})，使用硬编码日历')
+    只依赖上面人工核对过的 ACADEMIC_CALENDAR_HARDCODED（当前是 Fall 2026
+    学年），不再实时抓取 Registrar 网页——此前那个抓取用的是去年
+    （2025-2026）的 URL，把旧数据当"官网最新内容"喂给 AI，才导致开学日期
+    和劳动节日期全部算错。"""
+    today = datetime.now().date()
+    entries = _parse_academic_calendar_entries(ACADEMIC_CALENDAR_HARDCODED)
 
-    combined = ACADEMIC_CALENDAR_HARDCODED
-    if page_text:
-        combined += '\n\n[官网最新内容]\n' + page_text
+    upcoming = []
+    for e in entries:
+        if e['end'] < today:
+            continue  # 已完全结束，丢弃
+        ongoing = e['start'] <= today <= e['end']
+        days_until = 0 if ongoing else (e['start'] - today).days
+        upcoming.append({**e, 'ongoing': ongoing, 'days_until': days_until})
+
+    upcoming.sort(key=lambda x: (x['days_until'], x['start']))
+
+    within_week = [e for e in upcoming if e['ongoing'] or e['days_until'] <= 7]
+    chosen = within_week if within_week else upcoming[:3]
+
+    if not chosen:
+        return FALLBACK_HTML
+
+    lines_for_ai = []
+    for e in chosen:
+        date_label = _format_cal_date(e['start'], e['end'])
+        tag = '【今日/进行中】' if e['ongoing'] else ''
+        lines_for_ai.append(f"- {date_label}{tag}：{e['desc']}")
+    combined = '\n'.join(lines_for_ai)
 
     prompt = (
-        f"你是杜克大学家长社区的中文编辑。今天是{today.year}年{today.month}月{today.day}日。\n"
-        f"以下是 Duke Registrar 2025-2026学术日历：\n\n{combined}\n\n"
-        f"请严格按照以下规则输出：\n"
-        f"0. 【严格日期过滤】{GLOBAL_MIN_DATE.year}年{GLOBAL_MIN_DATE.month}月{GLOBAL_MIN_DATE.day}日"
-        f"之前发生的任何事项一律视为过期，绝对不得出现在输出中\n"
-        "1. 只列出【今天及今天起7天内】日历中明确记载的事项\n"
-        "2. 今天的事项必须列出并标注'【今日】'\n"
-        "3. 如果今天处于某个持续性时间段内（如期末考试、迎新周、开学典礼周等），必须标注该事项（例如：📅 期末考试进行中），绝对不能写'无特定事项'或'无具体事项'\n"
-        "4. 如果7天内没有任何事项，列出日历中最近3条即将到来的事项\n"
-        "5. 绝对不要写'没有重要事项'或'无特定事项'或'无具体事项'或列出空日期\n"
-        "6. AAMC医学院申请日历中7天内的事项也必须列出，用🏥图标标注，例如：🏥 X月X日 — AMCAS申请开放 / PREview Window X考试日\n"
-        "7. 格式：<ul><li>📅/🏥 X月X日 — 具体事项（中文翻译）</li></ul>\n"
-        "8. 只输出HTML，不要其他文字"
+        "你是杜克大学家长社区的中文编辑。下面每一条都已经带有【程序核对好、"
+        "绝对准确】的日期和星期几，你唯一的任务是把英文事项描述翻译成通顺"
+        "中文，并按格式整理输出。\n\n"
+        "【严格规则，必须遵守】\n"
+        "1. 禁止修改、重新计算或猜测任何日期、星期几——原样照抄给定的日期和星期\n"
+        "2. 禁止添加任何未在下面列表中出现的条目，禁止编造日期或事项\n"
+        "3. 一条对应一行输出，不要合并或拆分\n"
+        "4. 格式：<ul><li>📅 X月X日（周X） — 中文翻译后的事项</li></ul>\n"
+        "5. 只输出HTML，不要其他文字\n\n"
+        f"以下是需要翻译整理的条目：\n{combined}"
     )
     return gemini(prompt) or FALLBACK_HTML
 
@@ -989,12 +1091,30 @@ def generate_registration_section(registration_text, housing_text):
     today = datetime.now()
     if not registration_text and not housing_text:
         return FALLBACK_HTML
+
+    # 用已经人工核对过的 Fall 2026 官方日期做"事实基准"，供 AI 交叉核对——
+    # 网页抓取内容只能用来补充这里没有的细节（比如具体链接、流程说明），
+    # 不能凭抓取文本自己编日期；万一抓取到的页面日期和这里冲突，以这里为准。
+    ground_truth_entries = _parse_academic_calendar_entries(ACADEMIC_CALENDAR_HARDCODED)
+    ground_truth_entries = [e for e in ground_truth_entries if e['end'] >= today.date()]
+    ground_truth_entries.sort(key=lambda x: x['start'])
+    ground_truth_lines = '\n'.join(
+        f"- {_format_cal_date(e['start'], e['end'])}：{e['desc']}"
+        for e in ground_truth_entries
+    ) or '（无）'
+
     prompt = (
-        f"你是杜克大学家长社区的中文编辑。今天是{today.year}年{today.month}月{today.day}日。\n"
-        f"【选课信息】\n{registration_text}\n\n【宿舍信息】\n{housing_text}\n\n"
+        f"你是杜克大学家长社区的中文编辑。今天是{today.year}年{today.month}月{today.day}日。\n\n"
+        f"【已核实的官方关键日期——绝对准确，可直接引用，不得改动】\n{ground_truth_lines}\n\n"
+        f"【网页抓取的选课信息，仅作补充细节参考】\n{registration_text or '（无内容）'}\n\n"
+        f"【网页抓取的宿舍信息，仅作补充细节参考】\n{housing_text or '（无内容）'}\n\n"
         "请提取近期最重要的截止日期和流程节点：\n"
         f"- 【严格日期过滤】{GLOBAL_MIN_DATE.year}年{GLOBAL_MIN_DATE.month}月{GLOBAL_MIN_DATE.day}日"
         f"之前的截止日期/事项一律视为过期，不得出现在输出中\n"
+        "- 【绝对禁止编造日期】只能使用上面【已核实的官方关键日期】里给出的日期，"
+        "或【网页抓取信息】原文中明确出现的日期；如果两者都没有具体日期支撑某个说法，"
+        "宁可不写这一条，也绝对不能自己推算、拼凑或猜测日期\n"
+        "- 如果网页抓取信息和已核实日期矛盾，以已核实日期为准，忽略网页里冲突的说法\n"
         "- 格式：<ul><li>📌 X月X日 — 事项</li></ul>，最多8条，按紧迫程度排序\n"
         "- 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
         "- 只输出HTML"
