@@ -4655,6 +4655,16 @@
       </div>
 
       <div class="note">
+        <strong>辨析：$P$、$J$、$AP$、$PJ$ 各自到底是"谁在哪个坐标系下"</strong>
+        <p style="margin:10px 0 0">这组符号最容易让人绕晕的地方，是分不清哪个量用的是哪套坐标。把三个角色拆开看：</p>
+        <p style="margin:10px 0 0"><strong>$P$ 就是基本身：</strong>$P=(\xi_1,\dots,\xi_m)$ 的每一列，就是要找的那组新基向量——但这些 $\xi_i$ 通常是<strong>用旧基（标准基）坐标</strong>写出来的具体列向量，比如前面例子里 $\xi_1=(1,1)^{\mathrm T}$，这个 $(1,1)^{\mathrm T}$ 就是旧基坐标。</p>
+        <p style="margin:10px 0 0"><strong>$J$ 才是"$T$ 在新基下"的样子：</strong>$A$ 是变换 $T$ 在旧基下的矩阵，$J$ 是同一个 $T$ 换到新基 $\xi_1,\dots,\xi_m$ 下的矩阵表示——这才是"$T$ 在新基下长什么样"。</p>
+        <p style="margin:10px 0 0"><strong>$AP$ 第 $i$ 列 $=A\xi_i$，结果是旧基坐标：</strong>矩阵乘向量的规则是"旧基矩阵 $\times$ 旧基坐标 $=$ 旧基坐标"。$\xi_i$ 本身是旧基坐标，$A$ 又是旧基下的矩阵，所以 $A\xi_i$ 算出来的，是"$T(\xi_i)$ 这个向量、用旧基坐标表示"的结果。</p>
+        <p style="margin:10px 0 0"><strong>$PJ$ 第 $i$ 列 $=\xi_{i-1}+\lambda\xi_i$，其实是"新基坐标翻译回旧基坐标"：</strong>$J$ 的第 $i$ 列 $(0,\dots,1,\lambda,0,\dots)^{\mathrm T}$，是"$T(\xi_i)$ 用新基坐标表示"的结果（即 $T(\xi_i)=1\cdot\xi_{i-1}+\lambda\cdot\xi_i$，系数就是新基坐标）。再左乘 $P$，相当于把这个新基坐标翻译回旧基坐标——因为 $P$ 的列本身就是各新基向量在旧基下的坐标，$P\times(\text{新基坐标})$ 算出来的正是该向量在旧基下的坐标。</p>
+        <p style="margin:10px 0 0"><strong>为什么两边能对齐：</strong>$AP$ 和 $PJ$ 的第 $i$ 列，算的是<strong>同一个向量 $T(\xi_i)$、用同一套坐标（旧基坐标）表示</strong>的结果——一个是直接算，一个是"先用新基坐标描述、再翻译回旧基坐标"，殊途同归，所以相等，才能对齐推出 $A\xi_i=\xi_{i-1}+\lambda\xi_i$。一句话说：$AP$ 走的是"标准基规则直接算"，$PJ$ 走的是"新基视角描述、再换算回标准基"，$AP=PJ$ 正是矩阵表示这套理论自洽的地方。</p>
+      </div>
+
+      <div class="note">
         <strong>辨析：$\xi_1$ 与 $\xi_2$ 之间到底是什么关系</strong>
         <p style="margin:10px 0 0">两者是同一条若尔当链上前后相邻的两环，靠 $(A-\lambda I)$ 这个算子串联起来。</p>
         <p style="margin:10px 0 0"><strong>各自的身份：</strong>$\xi_1$ 是<strong>普通特征向量</strong>，满足 $(A-\lambda I)\xi_1=0$，本身就落在 $\ker(A-\lambda I)$ 里，是链的"根"。$\xi_2$ 是 <strong>2 阶广义特征向量</strong>，满足 $(A-\lambda I)^2\xi_2=0$ 但 $(A-\lambda I)\xi_2\neq0$——用 $(A-\lambda I)$ 打一次不会归零，打两次才归零。</p>
