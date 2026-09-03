@@ -1775,9 +1775,16 @@
         <strong>和第六节 $T(\xi)=\sum_i(Ax)_i\,\alpha_i$ 对比着看：</strong>这两个公式的"外形"其实一模一样——都是"拿一列数字，配上同一组基向量，加权求和拼出一个向量"：
         <ul style="margin:8px 0 0;padding-left:22px">
           <li style="margin-bottom:6px"><strong>本节（换基）</strong>：$\xi=\sum_i x_i\alpha_i=\sum_i (Py)_i\,\alpha_i$，即 $x=Py$——拿"新基下的坐标" $y$，通过 $P$ 换算出"旧基下的坐标" $x$，两套坐标描述的是<strong>同一个向量</strong> $\xi$，只是换了一把尺子去读它（被动变换，点没动）。</li>
-          <li><strong>第六节（变换）</strong>：$T(\xi)=\sum_i (Ax)_i\,\alpha_i$——拿"新坐标" $Ax$，配上<strong>同一组基</strong> $\{\alpha_i\}$，拼出<strong>变换后的新向量</strong> $T(\xi)$，坐标和基都没换尺子，是向量本身被搬动了（主动变换，点被移动）。</li>
+          <li><strong>第六节（变换）</strong>：$T(\xi)=\sum_i (Ax)_i\,\alpha_i$——拿"新向量的坐标" $Ax$，配上<strong>同一组基</strong> $\{\alpha_i\}$，拼出<strong>变换后的新向量</strong> $T(\xi)$，坐标和基都没换尺子，是向量本身被搬动了（主动变换，点被移动）。</li>
         </ul>
         两者形式相同，是因为矩阵乘法本身就是"把一串数字变成另一串数字"这一件事，至于新数字代表什么——是同一个向量换个尺子的坐标，还是另一个向量用同一把尺子量出的坐标——取决于你怎么解释这个矩阵，而不是公式本身的形状（后面"更深一层"那条追问会再展开这一点）。
+
+        <p style="margin:10px 0 0"><strong>提醒：这两处"新"字修饰的对象完全不同，别混着用。</strong></p>
+        <ul style="margin:0;padding-left:22px">
+          <li style="margin-bottom:6px">"<strong>新坐标</strong>"（第六节的 $Ax$）：基<strong>没有换</strong>，还是原来那组 $\{\alpha_i\}$；"新"指的是<strong>向量变了</strong>——$Ax$ 是<strong>新向量</strong> $T(\xi)$ 在这组旧基下的坐标。</li>
+          <li>"<strong>新基下的坐标</strong>"（本节的 $y$）：向量<strong>没有变</strong>，还是原来那个 $\xi$；"新"指的是<strong>基变了</strong>——$y$ 是<strong>同一个向量</strong> $\xi$ 在另一组基 $\{\beta_j\}$ 下的坐标。</li>
+        </ul>
+        一句话区分：一个是"尺子不变，量了个新东西"；一个是"东西不变，换了把新尺子去量"。
       </div>
 
       <div class="note">
