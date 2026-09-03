@@ -1772,6 +1772,15 @@
       <div class="step">矩阵 $P=(p_{ij})$ 称为由基 $\{\alpha_i\}$ 到基 $\{\beta_j\}$ 的<strong>过渡矩阵</strong>。同一向量 $\xi$ 在两组基下的坐标 $x$（旧）、$y$（新）满足 $x=Py$。</div>
 
       <div class="note">
+        <strong>和第六节 $T(\xi)=\sum_i(Ax)_i\,\alpha_i$ 对比着看：</strong>这两个公式的"外形"其实一模一样——都是"拿一列数字，配上同一组基向量，加权求和拼出一个向量"：
+        <ul style="margin:8px 0 0;padding-left:22px">
+          <li style="margin-bottom:6px"><strong>本节（换基）</strong>：$\xi=\sum_i x_i\alpha_i=\sum_i (Py)_i\,\alpha_i$，即 $x=Py$——拿"新基下的坐标" $y$，通过 $P$ 换算出"旧基下的坐标" $x$，两套坐标描述的是<strong>同一个向量</strong> $\xi$，只是换了一把尺子去读它（被动变换，点没动）。</li>
+          <li><strong>第六节（变换）</strong>：$T(\xi)=\sum_i (Ax)_i\,\alpha_i$——拿"新坐标" $Ax$，配上<strong>同一组基</strong> $\{\alpha_i\}$，拼出<strong>变换后的新向量</strong> $T(\xi)$，坐标和基都没换尺子，是向量本身被搬动了（主动变换，点被移动）。</li>
+        </ul>
+        两者形式相同，是因为矩阵乘法本身就是"把一串数字变成另一串数字"这一件事，至于新数字代表什么——是同一个向量换个尺子的坐标，还是另一个向量用同一把尺子量出的坐标——取决于你怎么解释这个矩阵，而不是公式本身的形状（后面"更深一层"那条追问会再展开这一点）。
+      </div>
+
+      <div class="note">
         <strong>追问：基变换里 P 到底在左边还是右边？</strong> 把 $\beta_j=\sum_i p_{ij}\alpha_i$ 这 $n$ 条式子写成矩阵形式，会发现 $P$ 其实在<strong>右边</strong>：
         $$(\beta_1,\dots,\beta_n)=(\alpha_1,\dots,\alpha_n)P$$
         这里把基向量组看成一个"由向量组成的行"，$P$ 乘在右边。而坐标变换公式 $x=Py$ 里 $P$ 却在<strong>左边</strong>——因为 $x,y$ 是竖着排的列向量。同一个 $P$，在两种写法里位置不同，并不矛盾：
