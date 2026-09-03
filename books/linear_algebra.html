@@ -1632,7 +1632,7 @@
       <div class="center-block">
         $$T(\xi)=T(x_1\alpha_1+\cdots+x_n\alpha_n)=x_1T(\alpha_1)+\cdots+x_nT(\alpha_n)=\sum_{i=1}^n\left(\sum_{j=1}^n a_{ij}x_j\right)\alpha_i$$
       </div>
-      <div class="step">括号里 $\sum_j a_{ij}x_j$ 正是矩阵 $A$ 乘向量 $x$ 的第 $i$ 行结果，所以 $T(\xi)$ 在旧基下的坐标 $y=(y_1,\ldots,y_n)^T$ 满足</div>
+      <div class="step">括号里 $\sum_j a_{ij}x_j$ 正是矩阵 $A$ 乘向量 $x$ 的第 $i$ 行结果，所以 $T(\xi)$ 在旧基下坐标 $y=(y_1,\ldots,y_n)^T$ 满足</div>
       <div class="center-block">$$y=Ax$$</div>
       <div class="step">把 $\xi$ 换回基向量 $\alpha_j$ 本身（坐标是 $x=(0,\ldots,1,\ldots,0)^T$，第 $j$ 位是1），代入 $y=Ax$ 恰好取出 $A$ 的第 $j$ 列——和最初的定义完全对上，说明 $T(\alpha_j)=\sum_i a_{ij}\alpha_i$ 只是这个一般式的特例。</div>
 
@@ -1694,7 +1694,7 @@
         <p style="margin:10px 0 0">两层对应关系可以这样看：</p>
         $$\xi\xrightarrow{\ T\ }T(\xi)\qquad\text{（向量层面，真正发生的变换）}$$
         $$x\xrightarrow{\ A\ }y=Ax\qquad\text{（坐标层面，具体的计算）}$$
-        <p style="margin:10px 0 0">矩阵 $A$ 是"变换 $T$"翻译成坐标语言之后的计算工具——$Ax$ 不是取代了 $T(\xi)$，而是 $T(\xi)$ 在坐标层面的忠实翻版，算出来的 $y$ 恰好就是 $T(\xi)$ 的坐标。说"$T$ 变换向量"和说"$Ax$ 算坐标"，说的是同一件事的两个角度，并不矛盾。$x$ 全程都是坐标（$\xi$ 在旧基下的坐标），身份没有中途切换过，切换的只是"坐标属于哪个向量"。</p>
+        <p style="margin:10px 0 0">矩阵 $A$ 是"变换 $T$"翻译成坐标语言之后的计算工具——$Ax$ 不是取代了 $T(\xi)$，而是 $T(\xi)$ 在坐标层面的忠实翻版，算出来的 $y$ 恰好就是 $T(\xi)$ 的坐标。说"$T$ 变换向量"和说"$Ax$ 算坐标"，说的是同一件事的两个角度，并不矛盾。$x$ 全程都是坐标（$\xi$ 在旧基下坐标），身份没有中途切换过，切换的只是"坐标属于哪个向量"。</p>
       </div>
 
       <h3 class="part"><span class="tag">验证</span>矩阵乘法 = 变换复合</h3>
@@ -1774,14 +1774,14 @@
       <div class="note">
         <strong>和第六节 $T(\xi)=\sum_i(Ax)_i\,\alpha_i$ 对比着看：</strong>这两个公式的"外形"其实一模一样——都是"拿一列数字，配上同一组基向量，加权求和拼出一个向量"：
         <ul style="margin:8px 0 0;padding-left:22px">
-          <li style="margin-bottom:6px"><strong>本节（换基）</strong>：$\xi=\sum_i x_i\alpha_i=\sum_i (Py)_i\,\alpha_i$，即 $x=Py$——拿"新基下坐标" $y$，通过 $P$ 换算出"旧基下的坐标" $x$，两套坐标描述的是<strong>同一个向量</strong> $\xi$，只是换了一把尺子去读它（被动变换，点没动）。</li>
+          <li style="margin-bottom:6px"><strong>本节（换基）</strong>：$\xi=\sum_i x_i\alpha_i=\sum_i (Py)_i\,\alpha_i$，即 $x=Py$——拿"新基下坐标" $y$，通过 $P$ 换算出"旧基下坐标" $x$，两套坐标描述的是<strong>同一个向量</strong> $\xi$，只是换了一把尺子去读它（被动变换，点没动）。</li>
           <li><strong>第六节（变换）</strong>：$T(\xi)=\sum_i (Ax)_i\,\alpha_i$——拿"新向量的坐标" $Ax$，配上<strong>同一组基</strong> $\{\alpha_i\}$，拼出<strong>变换后的新向量</strong> $T(\xi)$，坐标和基都没换尺子，是向量本身被搬动了（主动变换，点被移动）。</li>
         </ul>
         两者形式相同，是因为矩阵乘法本身就是"把一串数字变成另一串数字"这一件事，至于新数字代表什么——是同一个向量换个尺子的坐标，还是另一个向量用同一把尺子量出的坐标——取决于你怎么解释这个矩阵，而不是公式本身的形状（后面"更深一层"那条追问会再展开这一点）。
 
         <p style="margin:10px 0 0"><strong>提醒：这两处"新"字修饰的对象完全不同，别混着用。</strong></p>
         <ul style="margin:0;padding-left:22px">
-          <li style="margin-bottom:6px">"<strong>新坐标</strong>"（第六节的 $Ax$）：基<strong>没有换</strong>，还是原来那组 $\{\alpha_i\}$；"新"指的是<strong>向量变了</strong>——$Ax$ 是<strong>新向量</strong> $T(\xi)$ 在这组旧基下的坐标。</li>
+          <li style="margin-bottom:6px">"<strong>新坐标</strong>"（第六节的 $Ax$）：基<strong>没有换</strong>，还是原来那组 $\{\alpha_i\}$；"新"指的是<strong>向量变了</strong>——$Ax$ 是<strong>新向量</strong> $T(\xi)$ 在这组旧基下坐标。</li>
           <li>"<strong>新基下坐标</strong>"（本节的 $y$）：向量<strong>没有变</strong>，还是原来那个 $\xi$；"新"指的是<strong>基变了</strong>——$y$ 是<strong>同一个向量</strong> $\xi$ 在另一组基 $\{\beta_j\}$ 下的坐标。</li>
         </ul>
         一句话区分：一个是"尺子不变，量了个新东西"；一个是"东西不变，换了把新尺子去量"。
@@ -1808,11 +1808,11 @@
           <li>在新基 $\{\beta_i\}$（它自己所在的基）下：坐标是标准单位向量 $e_j=(0,\dots,1,\dots,0)^T$（第 $j$ 位是1，其余为0）——这是"基向量在自己所在的基下坐标最简单"这一事实决定的，不需要计算。</li>
         </ul>
 
-        <p style="margin:10px 0"><strong>定义式 $\beta_j=\sum_i p_{ij}\alpha_i$ 的意义</strong>：因为 $\{\alpha_i\}$ 是 $V$ 的一组基，空间里任何向量（包括新基向量 $\beta_j$）都能被它线性表示——这是基"能生成整个空间"这条性质保证的。这个式子把 $\beta_j$ 用旧基"翻译"出来，翻译得到的系数 $(p_{1j},\dots,p_{nj})$ 就是 $\beta_j$ 在旧基下的坐标；把 $n$ 个 $\beta_j$ 的坐标当作 $n$ 列拼起来，就是整个过渡矩阵 $P$。</p>
+        <p style="margin:10px 0"><strong>定义式 $\beta_j=\sum_i p_{ij}\alpha_i$ 的意义</strong>：因为 $\{\alpha_i\}$ 是 $V$ 的一组基，空间里任何向量（包括新基向量 $\beta_j$）都能被它线性表示——这是基"能生成整个空间"这条性质保证的。这个式子把 $\beta_j$ 用旧基"翻译"出来，翻译得到的系数 $(p_{1j},\dots,p_{nj})$ 就是 $\beta_j$ 在旧基下坐标；把 $n$ 个 $\beta_j$ 的坐标当作 $n$ 列拼起来，就是整个过渡矩阵 $P$。</p>
 
         <p style="margin:0"><strong>为什么要把 $\beta_j$ 表示出来？</strong>因为这是唯一能把"新基"和"旧基"联系起来、变成可计算对象（矩阵 $P$）的办法——否则"换一套参照方向"只是个空想法，没法推出坐标怎么变（$x=Py$）、矩阵怎么变（$B=P^{-1}AP$）。这一步是后面"对角化"（换一组基让矩阵变简单）等所有换基应用的前提：先把新旧基的关系写成 $P$，才能精确计算换基之后一切量会如何变化。</p>
 
-        <p style="margin:10px 0 0"><strong>和"变换矩阵"对比着看会更清楚：</strong>两者结构其实很像——都是"某个向量，用旧基展开，系数排成一列"。区别只在于展开的是谁：变换矩阵 $A$（第6节）的第 $j$ 列是 $T(\alpha_j)$（<strong>变换出来的新向量</strong>）在旧基下的坐标；过渡矩阵 $P$ 的第 $j$ 列是 $\beta_j$（<strong>新基里的向量</strong>，压根没经过什么变换，只是恰好也能用旧基表示出来）在旧基下的坐标。所以不能笼统地说"过渡矩阵就是原基的坐标"——准确地说，它是"<strong>新基的每个向量，在原基下的坐标</strong>"拼成的矩阵。</p>
+        <p style="margin:10px 0 0"><strong>和"变换矩阵"对比着看会更清楚：</strong>两者结构其实很像——都是"某个向量，用旧基展开，系数排成一列"。区别只在于展开的是谁：变换矩阵 $A$（第6节）的第 $j$ 列是 $T(\alpha_j)$（<strong>变换出来的新向量</strong>）在旧基下坐标；过渡矩阵 $P$ 的第 $j$ 列是 $\beta_j$（<strong>新基里的向量</strong>，压根没经过什么变换，只是恰好也能用旧基表示出来）在旧基下坐标。所以不能笼统地说"过渡矩阵就是原基的坐标"——准确地说，它是"<strong>新基的每个向量，在原基下的坐标</strong>"拼成的矩阵。</p>
       </div>
 
       <h3 class="part"><span class="tag">定理</span>矩阵随基变换的规律</h3>
@@ -2865,7 +2865,7 @@
 
     <div class="box note">
       <div class="label">一句话总结</div>
-      <p style="margin:0">这个 \(P\) 在后面换基理论里有个正式名字——<strong>过渡矩阵</strong>（从标准基到新基的过渡矩阵），它的列就是新基向量在旧基下的坐标（详见第七节"过渡矩阵"）。</p>
+      <p style="margin:0">这个 \(P\) 在后面换基理论里有个正式名字——<strong>过渡矩阵</strong>（从标准基到新基的过渡矩阵），它的列就是新基向量在旧基下坐标（详见第七节"过渡矩阵"）。</p>
     </div>
   </div>
 
@@ -4733,7 +4733,7 @@
         <p style="margin:10px 0 0"><strong>$P$ 就是基本身：</strong>$P=(\xi_1,\dots,\xi_m)$ 的每一列，就是要找的那组新基向量——但这些 $\xi_i$ 通常是<strong>用旧基（标准基）坐标</strong>写出来的具体列向量，比如前面例子里 $\xi_1=(1,1)^{\mathrm T}$，这个 $(1,1)^{\mathrm T}$ 就是旧基坐标。</p>
         <p style="margin:10px 0 0"><strong>$J$ 才是"$T$ 在新基下"的样子：</strong>$A$ 是变换 $T$ 在旧基下的矩阵，$J$ 是同一个 $T$ 换到新基 $\xi_1,\dots,\xi_m$ 下的矩阵表示——这才是"$T$ 在新基下长什么样"。</p>
         <p style="margin:10px 0 0"><strong>$AP$ 第 $i$ 列 $=A\xi_i$，结果是旧基坐标：</strong>矩阵乘向量的规则是"旧基矩阵 $\times$ 旧基坐标 $=$ 旧基坐标"。$\xi_i$ 本身是旧基坐标，$A$ 又是旧基下的矩阵，所以 $A\xi_i$ 算出来的，是"$T(\xi_i)$ 这个向量、用旧基坐标表示"的结果。</p>
-        <p style="margin:10px 0 0"><strong>$PJ$ 第 $i$ 列 $=\xi_{i-1}+\lambda\xi_i$，其实是"新基坐标翻译回旧基坐标"：</strong>$J$ 的第 $i$ 列 $(0,\dots,1,\lambda,0,\dots)^{\mathrm T}$，是"$T(\xi_i)$ 用新基坐标表示"的结果（即 $T(\xi_i)=1\cdot\xi_{i-1}+\lambda\cdot\xi_i$，系数就是新基坐标）。再左乘 $P$，相当于把这个新基坐标翻译回旧基坐标——因为 $P$ 的列本身就是各新基向量在旧基下的坐标，$P\times(\text{新基坐标})$ 算出来的正是该向量在旧基下的坐标。</p>
+        <p style="margin:10px 0 0"><strong>$PJ$ 第 $i$ 列 $=\xi_{i-1}+\lambda\xi_i$，其实是"新基坐标翻译回旧基坐标"：</strong>$J$ 的第 $i$ 列 $(0,\dots,1,\lambda,0,\dots)^{\mathrm T}$，是"$T(\xi_i)$ 用新基坐标表示"的结果（即 $T(\xi_i)=1\cdot\xi_{i-1}+\lambda\cdot\xi_i$，系数就是新基坐标）。再左乘 $P$，相当于把这个新基坐标翻译回旧基坐标——因为 $P$ 的列本身就是各新基向量在旧基下坐标，$P\times(\text{新基坐标})$ 算出来的正是该向量在旧基下坐标。</p>
         <p style="margin:10px 0 0"><strong>为什么两边能对齐：</strong>$AP$ 和 $PJ$ 的第 $i$ 列，算的是<strong>同一个向量 $T(\xi_i)$、用同一套坐标（旧基坐标）表示</strong>的结果——一个是直接算，一个是"先用新基坐标描述、再翻译回旧基坐标"，殊途同归，所以相等，才能对齐推出 $A\xi_i=\xi_{i-1}+\lambda\xi_i$。一句话说：$AP$ 走的是"标准基规则直接算"，$PJ$ 走的是"新基视角描述、再换算回标准基"，$AP=PJ$ 正是矩阵表示这套理论自洽的地方。</p>
       </div>
 
