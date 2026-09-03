@@ -1732,6 +1732,11 @@
         <p style="margin:6px 0 0">这个展开式的系数 $(a_{1j},\ldots,a_{nj})^T$，正是 $T(\alpha_j)$ 这个向量（按①的定义）在这组基下的<strong>坐标</strong>。把 $j=1,\ldots,n$ 这 $n$ 组坐标按列拼起来，就是矩阵 $A$。</p>
         <p style="margin:14px 0 0"><strong>三者怎么接起来：</strong>③里"$A$ 的第 $j$ 列"就是"$T(\alpha_j)$ 的坐标"（用了①）；有了 $A$ 之后，它作用在坐标 $x=(x_1,\ldots,x_n)^T$ 上就是矩阵乘法 $Ax$（②的形式）——可以验证，若 $\xi=x_1\alpha_1+\cdots+x_n\alpha_n$，则 $T(\xi)=x_1T(\alpha_1)+\cdots+x_nT(\alpha_n)$，把每个 $T(\alpha_j)$ 按①展开、合并同类项，系数正好是 $Ax$（推导见前面 $T(\xi)=\sum_i\left(\sum_j a_{ij}x_j\right)\alpha_i$ 那一步）。也就是说，<strong>"$T(\xi)$ 的坐标" $=A\cdot$ "$\xi$ 的坐标"</strong>。</p>
         <p style="margin:14px 0 0">逻辑链是：<strong>①坐标</strong>是基础语言 → <strong>③矩阵 $A$</strong> 是把线性变换翻译成"坐标对坐标"规则的产物（靠把 $T(\alpha_j)$ 的坐标一列列拼起来）→ <strong>②$Ax=b$</strong> 则是这套"系数乘向量求和"的写法，用在"解方程组"这个具体场景下的应用，列向量 $\beta_j$ 取代了抽象的 $\alpha_j$。一句话总结：<strong>矩阵乘法 $Ax$，无论出现在哪个场景，做的都是同一件事——用 $x$ 里的系数，把 $A$ 的列（或者说一组给定的向量）加权求和。</strong></p>
+        <div class="note" style="margin-top:14px">
+          <strong>易错提醒：是"$T(\xi)$ 的坐标"相当于 $b$，不是 $T(\xi)$ 本身相当于 $b$。</strong>$b$ 天生就是一列<strong>具体数字</strong>；而 $T(\xi)$ 是抽象空间 $V$ 里的<strong>一个真实向量</strong>（可能是多项式、矩阵、函数……不一定长得像数字列），两者不是同一类东西，不能直接划等号。只有<strong>选定一组基把 $T(\xi)$ 展开</strong>之后，才会得到一串数字——也就是"$T(\xi)$ 的坐标"，记作 $[T(\xi)]_{\text{基}}$ 或 $y$——这串数字才跟 $b$ 是同一层次的东西，可以互相对应。严格写出来，三者的对应关系是：
+          $$\underbrace{[\,\xi\,]_{\text{基}}}_{\text{对应 }x}\ \xrightarrow{\ \times A\ }\ \underbrace{[\,T(\xi)\,]_{\text{基}}}_{\text{对应 }b}$$
+          即 $\xi$ 的坐标 $x$ 对应方程组里的未知数 $x$；$T(\xi)$ 的坐标 $y=Ax$ 对应方程组里的常数项 $b$。两者方向也刚好相反：$Ax=b$ 是"已知 $A,b$，反解 $x$"；而 $T(\xi)$ 的坐标 $=Ax$ 是"已知 $A,x$，正着算出结果的坐标"——一个是反解，一个是正算，但用的是同一套"矩阵乘系数列"的机制，所以形式看起来一样。
+        </div>
       </div>
 
       <div class="nextlink"><a href="#ch7">下一节：基变换 →</a></div>
