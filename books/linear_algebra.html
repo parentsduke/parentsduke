@@ -1737,6 +1737,13 @@
           $$\underbrace{[\,\xi\,]_{\text{基}}}_{\text{对应 }x}\ \xrightarrow{\ \times A\ }\ \underbrace{[\,T(\xi)\,]_{\text{基}}}_{\text{对应 }b}$$
           即 $\xi$ 的坐标 $x$ 对应方程组里的未知数 $x$；$T(\xi)$ 的坐标 $y=Ax$ 对应方程组里的常数项 $b$。两者方向也刚好相反：$Ax=b$ 是"已知 $A,b$，反解 $x$"；而 $T(\xi)$ 的坐标 $=Ax$ 是"已知 $A,x$，正着算出结果的坐标"——一个是反解，一个是正算，但用的是同一套"矩阵乘系数列"的机制，所以形式看起来一样。
         </div>
+        <div class="note" style="margin-top:14px">
+          <strong>$A$ 到底是什么：本质就是把所有 $a_{ij}$ 按行、列位置摆放起来。</strong>但 $a_{ij}$ <strong>具体代表什么，要看站在哪个场景下看</strong>——两种场景下 $A$ 的"数值来源"不同，但"一堆数字按行列排成表格"这件事完全一样，这正是"解方程组"和"求变换矩阵"能共用同一套矩阵乘法工具的原因：
+          <ul style="margin:8px 0 0;padding-left:22px">
+            <li style="margin-bottom:6px"><strong>场景②：$Ax=b$（方程组视角）</strong>——$a_{ij}$ 就是第 $i$ 个方程里、未知数 $x_j$ 前面的<strong>系数</strong>，纯粹是一堆数字，跟"基""坐标"这些概念没有任何关系，只表示"这个未知数被乘了多少倍"。</li>
+            <li><strong>场景③：变换矩阵 $A$（本节视角）</strong>——$a_{ij}$ 是 $T(\alpha_j)$ 这个向量在旧基 $\{\alpha_i\}$ 下展开后的<strong>坐标分量</strong>，即把 $T(\alpha_j)=\sum_i a_{ij}\alpha_i$ 拆开看，$a_{ij}$ 是"$T(\alpha_j)$ 沿 $\alpha_i$ 方向的分量"；第 $j$ <strong>列</strong> $(a_{1j},\ldots,a_{nj})^T$ 整体，才是 $T(\alpha_j)$ 的坐标。</li>
+          </ul>
+        </div>
       </div>
 
       <div class="nextlink"><a href="#ch7">下一节：基变换 →</a></div>
