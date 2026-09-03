@@ -1517,6 +1517,19 @@
       <div class="step">把这些系数按<strong>第 $j$ 列</strong>排列，就得到 $T$ 在这组基下的矩阵 $A=(a_{ij})$。这是一个<strong>约定</strong>，而非需要证明的定理——矩阵的每一列，记录的正是"某个基向量被变换后，用原基怎样重新配出来"。</div>
 
       <div class="note">
+        <strong>用 $[\,\cdot\,]_{\text{基}}$ 记号把这张定义图对照着写一遍：</strong>记号 $[\,v\,]_{\text{基}}$ 表示"向量 $v$ 在基 $\{\alpha_1,\ldots,\alpha_n\}$ 下的坐标"（国际通用写法 $[v]_B$）。这套定义里，其实同时用到了两个"坐标"，容易混：
+        <ul style="margin:8px 0 0;padding-left:22px">
+          <li><strong>$\alpha_j$ 自己（变换前）的坐标</strong>：$\alpha_j$ 就是这组基里第 $j$ 个成员，所以它在自己这组基下的坐标必然是标准单位坐标
+            $$[\alpha_j]_{\text{基}}=e_j=(0,\ldots,0,\underbrace{1}_{第j位},0,\ldots,0)^T$$
+          </li>
+          <li><strong>$T(\alpha_j)$（变换后）的坐标</strong>：$T(\alpha_j)$ 是变换之后新得到的向量，不再是基向量了，但仍在同一空间里，用<strong>同一组基</strong>重新展开，坐标正是矩阵 $A$ 的第 $j$ 列
+            $$[T(\alpha_j)]_{\text{基}}=(a_{1j},\ldots,a_{nj})^T$$
+          </li>
+        </ul>
+        <p style="margin:10px 0 0">两者串起来看：矩阵 $A$ 这个"机器"，把"输入坐标" $e_j$ 变成"输出坐标"第 $j$ 列，即 $A\cdot e_j=[T(\alpha_j)]_{\text{基}}$——这正是矩阵乘法能代表线性变换的雏形，后面推广到任意向量 $\xi$（而非只是基向量 $\alpha_j$）就是 $Ax=[T(\xi)]_{\text{基}}$（见下一节 $y=Ax$ 的推导）。</p>
+      </div>
+
+      <div class="note">
         <strong>说明：为什么只需要"作用在每个基向量上的结果"，而不需要对空间里所有向量都算一遍？</strong>因为一个线性变换完全由它对基向量的作用决定。设 $v$ 是 $V$ 中任意向量，它可以唯一地写成基向量的线性组合 $v=c_1\alpha_1+\cdots+c_n\alpha_n$。利用 $T$ 的可加性与齐次性，就有
         <div class="center-block" style="margin:8px 0">$$T(v)=T(c_1\alpha_1+\cdots+c_n\alpha_n)=c_1T(\alpha_1)+\cdots+c_nT(\alpha_n)$$</div>
         也就是说，只要知道 $T(\alpha_1),\ldots,T(\alpha_n)$——即 $T$ <strong>作用在每个基向量上的结果</strong>——就能用同样的系数 $c_1,\ldots,c_n$ 组合出 $T$ 对任意向量 $v$ 的作用，完全不需要再对 $v$ 单独计算一次。这正是"矩阵能代表一个线性变换"的根本原因：把 $T(\alpha_1),\ldots,T(\alpha_n)$ <strong>各自在这组基下的坐标</strong>按列排起来，就是这个变换的矩阵——注意不是把 $T(\alpha_j)$ 这个向量本身塞进矩阵（矩阵的每一列必须是具体的数，不能是抽象的向量），而是要先把 $T(\alpha_j)$ 用同一组基重新展开、取出展开系数（坐标），才能排成矩阵的一列。
@@ -1622,6 +1635,12 @@
       <div class="step">括号里 $\sum_j a_{ij}x_j$ 正是矩阵 $A$ 乘向量 $x$ 的第 $i$ 行结果，所以 $T(\xi)$ 在旧基下的坐标 $y=(y_1,\ldots,y_n)^T$ 满足</div>
       <div class="center-block">$$y=Ax$$</div>
       <div class="step">把 $\xi$ 换回基向量 $\alpha_j$ 本身（坐标是 $x=(0,\ldots,1,\ldots,0)^T$，第 $j$ 位是1），代入 $y=Ax$ 恰好取出 $A$ 的第 $j$ 列——和最初的定义完全对上，说明 $T(\alpha_j)=\sum_i a_{ij}\alpha_i$ 只是这个一般式的特例。</div>
+
+      <div class="note" style="margin-top:14px">
+        <strong>用 $[\,\cdot\,]_{\text{基}}$ 记号把 $y=Ax$ 写得更严谨：</strong>$y=Ax$ 这行等式左右两边其实不是同一类"东西"——$y$ 是一列<strong>数字</strong>（坐标），而 $T(\xi)$ 是空间 $V$ 里一个<strong>真实的向量</strong>（可能是多项式、函数，或抽象元素），两者不能直接画等号，必须先"取坐标"才能比较。为了把这一步说清楚，记号 $[\,v\,]_{\text{基}}$ 专门表示"向量 $v$ 在基 $\{\alpha_1,\ldots,\alpha_n\}$ 下的坐标"——是一个把抽象向量翻译成数字列的映射（叫<strong>坐标映射</strong>，国际通用写法是 $[v]_B$，$B$ 即 Basis）。用这个记号，上面推出的结论应严格写成：
+        $$Ax=[\,T(\xi)\,]_{\text{基}}$$
+        读作："用矩阵 $A$ 乘坐标 $x$"，得到的数字列，恰好等于"$T(\xi)$ 这个向量在同一组基下的坐标"。也就是说，从 $\xi$ 出发有两条路都能走到"$T(\xi)$ 的坐标"：①先取坐标 $x=[\xi]_{\text{基}}$，再乘矩阵得 $Ax$；②先做变换得 $T(\xi)$，再取坐标 $[T(\xi)]_{\text{基}}$。这条等式说的正是——两条路殊途同归，这也是"矩阵乘法能代表线性变换"的根本原因：不需要真的算出 $T(\xi)$ 是什么（有时很麻烦，比如 $T$ 是求导、积分），只需做一次矩阵乘法 $Ax$，得到的数字就是 $T(\xi)$ 的坐标。而前面写的 $y=Ax$，说的就是这同一件事，只是省略了 $[\,\cdot\,]_{\text{基}}$ 这层记号，直接把"$T(\xi)$ 的坐标"称作 $y$。
+      </div>
 
       <h3 class="sub" style="margin-top:24px"><span class="tag">追问</span>$T(\xi)=\sum_{i=1}^n\left(\sum_{j=1}^n a_{ij}x_j\right)\alpha_i$ 具体是怎么一步步展开的？</h3>
       <div class="step"><strong>第一步，$\xi$ 用基展开：</strong>坐标是 $(x_1,\ldots,x_n)$ 的意思就是 $\xi=x_1\alpha_1+x_2\alpha_2+\cdots+x_n\alpha_n$。</div>
