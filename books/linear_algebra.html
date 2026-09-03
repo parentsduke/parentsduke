@@ -1774,7 +1774,7 @@
       <div class="note">
         <strong>和第六节 $T(\xi)=\sum_i(Ax)_i\,\alpha_i$ 对比着看：</strong>这两个公式的"外形"其实一模一样——都是"拿一列数字，配上同一组基向量，加权求和拼出一个向量"：
         <ul style="margin:8px 0 0;padding-left:22px">
-          <li style="margin-bottom:6px"><strong>本节（换基）</strong>：$\xi=\sum_i x_i\alpha_i=\sum_i (Py)_i\,\alpha_i$，即 $x=Py$——拿"新基下的坐标" $y$，通过 $P$ 换算出"旧基下的坐标" $x$，两套坐标描述的是<strong>同一个向量</strong> $\xi$，只是换了一把尺子去读它（被动变换，点没动）。</li>
+          <li style="margin-bottom:6px"><strong>本节（换基）</strong>：$\xi=\sum_i x_i\alpha_i=\sum_i (Py)_i\,\alpha_i$，即 $x=Py$——拿"新基下坐标" $y$，通过 $P$ 换算出"旧基下的坐标" $x$，两套坐标描述的是<strong>同一个向量</strong> $\xi$，只是换了一把尺子去读它（被动变换，点没动）。</li>
           <li><strong>第六节（变换）</strong>：$T(\xi)=\sum_i (Ax)_i\,\alpha_i$——拿"新向量的坐标" $Ax$，配上<strong>同一组基</strong> $\{\alpha_i\}$，拼出<strong>变换后的新向量</strong> $T(\xi)$，坐标和基都没换尺子，是向量本身被搬动了（主动变换，点被移动）。</li>
         </ul>
         两者形式相同，是因为矩阵乘法本身就是"把一串数字变成另一串数字"这一件事，至于新数字代表什么——是同一个向量换个尺子的坐标，还是另一个向量用同一把尺子量出的坐标——取决于你怎么解释这个矩阵，而不是公式本身的形状（后面"更深一层"那条追问会再展开这一点）。
@@ -1782,7 +1782,7 @@
         <p style="margin:10px 0 0"><strong>提醒：这两处"新"字修饰的对象完全不同，别混着用。</strong></p>
         <ul style="margin:0;padding-left:22px">
           <li style="margin-bottom:6px">"<strong>新坐标</strong>"（第六节的 $Ax$）：基<strong>没有换</strong>，还是原来那组 $\{\alpha_i\}$；"新"指的是<strong>向量变了</strong>——$Ax$ 是<strong>新向量</strong> $T(\xi)$ 在这组旧基下的坐标。</li>
-          <li>"<strong>新基下的坐标</strong>"（本节的 $y$）：向量<strong>没有变</strong>，还是原来那个 $\xi$；"新"指的是<strong>基变了</strong>——$y$ 是<strong>同一个向量</strong> $\xi$ 在另一组基 $\{\beta_j\}$ 下的坐标。</li>
+          <li>"<strong>新基下坐标</strong>"（本节的 $y$）：向量<strong>没有变</strong>，还是原来那个 $\xi$；"新"指的是<strong>基变了</strong>——$y$ 是<strong>同一个向量</strong> $\xi$ 在另一组基 $\{\beta_j\}$ 下的坐标。</li>
         </ul>
         一句话区分：一个是"尺子不变，量了个新东西"；一个是"东西不变，换了把新尺子去量"。
       </div>
@@ -1795,7 +1795,7 @@
           <li>基变换：新基 = 旧基 $\times P$（$P$ 在右）</li>
           <li>坐标变换：旧坐标 = $P\times$ 新坐标（$P$ 在左）</li>
         </ul>
-        直观理解：向量 $\xi$ 本身不变，如果新基比旧基"变大"了（比如整体放大2倍），那么同一个向量在新基下的坐标就必须"变小"（缩小一半）才能表示同一个向量——基和坐标的变化方向天然相反，这正是矩阵乘的位置也左右相反的原因（数学上称为坐标相对于基的<strong>逆变</strong>关系）。可以直接验证：$\xi=(\alpha_1,\dots,\alpha_n)x=(\beta_1,\dots,\beta_n)y=(\alpha_1,\dots,\alpha_n)Py$，两边比较系数即得 $x=Py$，与基变换公式中的 $P$ 完全是同一个矩阵。
+        直观理解：向量 $\xi$ 本身不变，如果新基比旧基"变大"了（比如整体放大2倍），那么同一个向量在新基下坐标就必须"变小"（缩小一半）才能表示同一个向量——基和坐标的变化方向天然相反，这正是矩阵乘的位置也左右相反的原因（数学上称为坐标相对于基的<strong>逆变</strong>关系）。可以直接验证：$\xi=(\alpha_1,\dots,\alpha_n)x=(\beta_1,\dots,\beta_n)y=(\alpha_1,\dots,\alpha_n)Py$，两边比较系数即得 $x=Py$，与基变换公式中的 $P$ 完全是同一个矩阵。
       </div>
 
       <div class="note">
@@ -2860,7 +2860,7 @@
     <div class="center-block">
       $$P=(\alpha_1,\ \alpha_2,\ \alpha_3)=\begin{pmatrix}1&6&3\\3&3&1\\5&2&0\end{pmatrix}$$
     </div>
-    <p style="margin:0 0 20px">回忆等式 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\alpha\)——把 \(\alpha_1,\alpha_2,\alpha_3\) 当作矩阵的列、\(x_1,x_2,x_3\) 当作待求未知数，这个线性组合正好等价于矩阵乘法 \(Px=\alpha\)，解得 \(x=P^{-1}\alpha\)，这里的 \(x\) 就是 \(\alpha\) 在新基下的坐标。</p>
+    <p style="margin:0 0 20px">回忆等式 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\alpha\)——把 \(\alpha_1,\alpha_2,\alpha_3\) 当作矩阵的列、\(x_1,x_2,x_3\) 当作待求未知数，这个线性组合正好等价于矩阵乘法 \(Px=\alpha\)，解得 \(x=P^{-1}\alpha\)，这里的 \(x\) 就是 \(\alpha\) 在新基下坐标。</p>
     <p style="margin:0 0 20px">\(P\) 一定可逆，是因为"\(\alpha_1,\alpha_2,\alpha_3\) 线性无关"正是它们能构成一组<strong>基</strong>的必要条件：若线性相关，\(\det(P)=0\)，方程要么无解要么有无穷多解，这时它们根本不配叫"基"；只有线性无关、\(\det(P)\neq0\) 时 \(P\) 才可逆，坐标才是唯一确定的。</p>
 
     <div class="box note">
