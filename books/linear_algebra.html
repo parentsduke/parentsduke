@@ -1775,7 +1775,7 @@
         <strong>和第六节 $T(\xi)=\sum_i(Ax)_i\,\alpha_i$ 对比着看：</strong>这两个公式的"外形"其实一模一样——都是"拿一列数字，配上同一组基向量，加权求和拼出一个向量"：
         <ul style="margin:8px 0 0;padding-left:22px">
           <li style="margin-bottom:6px"><strong>本节（换基）</strong>：$\xi=\sum_i x_i\alpha_i=\sum_i (Py)_i\,\alpha_i$，即 $x=Py$——拿"新基下坐标" $y$，通过 $P$ 换算出"旧基下坐标" $x$，两套坐标描述的是<strong>同一个向量</strong> $\xi$，只是换了一把尺子去读它（被动变换，点没动）。</li>
-          <li><strong>第六节（变换）</strong>：$T(\xi)=\sum_i (Ax)_i\,\alpha_i$——拿"新向量坐标" $Ax$，配上<strong>同一组基</strong> $\{\alpha_i\}$，拼出<strong>变换后的新向量</strong> $T(\xi)$，坐标和基都没换尺子，是向量本身被搬动了（主动变换，点被移动）。</li>
+          <li><strong>第六节（变换）</strong>：$T(\xi)=\sum_i (Ax)_i\,\alpha_i$——拿"新向量的坐标" $Ax$，配上<strong>同一组基</strong> $\{\alpha_i\}$，拼出<strong>变换后的新向量</strong> $T(\xi)$，坐标和基都没换尺子，是向量本身被搬动了（主动变换，点被移动）。</li>
         </ul>
         两者形式相同，是因为矩阵乘法本身就是"把一串数字变成另一串数字"这一件事，至于新数字代表什么——是同一个向量换个尺子的坐标，还是另一个向量用同一把尺子量出的坐标——取决于你怎么解释这个矩阵，而不是公式本身的形状（后面"更深一层"那条追问会再展开这一点）。
 
@@ -1908,7 +1908,7 @@
 
       <div class="example">
         <div class="ex-label">例：数值验证</div>
-        沿用例题中 $\alpha_1,\alpha_2,\alpha_3$ 与 $\xi=(3,5,2)$（第三节例2），已求得 $\xi$ 在 $\alpha_1,\alpha2,\alpha_3$ 下坐标为 $(3,2,0)$。若换到新基 $\beta_1=\alpha_2,\beta_2=\alpha_1,\beta_3=\alpha_3$（前两个调换），过渡矩阵 $P=\begin{pmatrix}0&1&0\\1&0&0\\0&0&1\end{pmatrix}$，用 $x=Py$ 反解 $y=P^{-1}x=Px$（这里 $P^{-1}=P$），代入 $x=(3,2,0)$ 得 $y=(2,3,0)$——坐标的前两个分量确实互换了，与直觉一致。
+        沿用例题中 $\alpha_1,\alpha_2,\alpha_3$ 与 $\xi=(3,5,2)$（第三节例2），已求得 $\xi$ 在 $\alpha_1,\alpha_2,\alpha_3$ 下坐标为 $(3,2,0)$。若换到新基 $\beta_1=\alpha_2,\beta_2=\alpha_1,\beta_3=\alpha_3$（前两个调换），过渡矩阵 $P=\begin{pmatrix}0&1&0\\1&0&0\\0&0&1\end{pmatrix}$，用 $x=Py$ 反解 $y=P^{-1}x=Px$（这里 $P^{-1}=P$），代入 $x=(3,2,0)$ 得 $y=(2,3,0)$——坐标的前两个分量确实互换了，与直觉一致。
       </div>
 
       <div class="note">
