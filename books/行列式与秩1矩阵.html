@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行列式 D = |I + aaᵀ| 完整解析</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --paper: #f7f4ee;
+    --ink: #232019;
+    --ink-soft: #5b5548;
+    --rule: #d8d1c0;
+    --accent: #7a5a3a;
+    --accent-deep: #4a3826;
+    --panel: #eee8db;
+    --code-bg: #efe9dc;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Serif 4', 'Noto Serif SC', serif;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .page{
+    max-width:760px;
+    margin:0 auto;
+    padding:64px 28px 120px;
+  }
+
+  header.title-block{
+    margin-bottom:56px;
+    border-bottom:1px solid var(--rule);
+    padding-bottom:32px;
+  }
+
+  .kicker{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    letter-spacing:0.02em;
+    color:var(--accent);
+    margin-bottom:14px;
+  }
+
+  h1{
+    font-family:'Noto Serif SC', serif;
+    font-weight:700;
+    font-size:clamp(28px, 4vw, 38px);
+    line-height:1.35;
+    margin:0 0 12px;
+    color:var(--accent-deep);
+  }
+
+  .subtitle{
+    font-size:17px;
+    color:var(--ink-soft);
+    font-style:italic;
+    max-width:60ch;
+  }
+
+  h2{
+    font-family:'Noto Serif SC', serif;
+    font-weight:700;
+    font-size:22px;
+    margin:56px 0 20px;
+    color:var(--accent-deep);
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+  }
+
+  h2 .num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:15px;
+    color:var(--accent);
+    font-weight:500;
+  }
+
+  h3{
+    font-size:17px;
+    font-weight:600;
+    color:var(--ink);
+    margin:28px 0 12px;
+  }
+
+  p{ margin:0 0 16px; font-size:16.5px; }
+
+  .lede{
+    font-size:18px;
+    color:var(--ink-soft);
+  }
+
+  .math-block{
+    background:var(--panel);
+    border-left:3px solid var(--accent);
+    padding:22px 26px;
+    margin:20px 0;
+    overflow-x:auto;
+    border-radius:2px;
+  }
+
+  .math-block.center{ text-align:center; }
+
+  table.matrix-table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    font-size:15px;
+  }
+  table.matrix-table th, table.matrix-table td{
+    border:1px solid var(--rule);
+    padding:10px 14px;
+    text-align:center;
+  }
+  table.matrix-table th{
+    background:var(--panel);
+    font-weight:600;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--accent-deep);
+  }
+
+  .callout{
+    background:#fff;
+    border:1px solid var(--rule);
+    border-left:4px solid var(--accent-deep);
+    padding:18px 22px;
+    margin:22px 0;
+    border-radius:2px;
+  }
+  .callout .label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.03em;
+    color:var(--accent-deep);
+    margin-bottom:8px;
+    font-weight:500;
+  }
+
+  .steps{
+    counter-reset: step;
+    padding:0;
+    margin:20px 0;
+    list-style:none;
+  }
+  .steps li{
+    counter-increment: step;
+    position:relative;
+    padding-left:44px;
+    margin-bottom:22px;
+  }
+  .steps li::before{
+    content: counter(step);
+    position:absolute;
+    left:0;
+    top:1px;
+    width:28px;
+    height:28px;
+    border:1.5px solid var(--accent-deep);
+    color:var(--accent-deep);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    font-weight:500;
+    background:var(--paper);
+  }
+
+  .compare-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin:20px 0;
+  }
+  @media (max-width:600px){
+    .compare-grid{ grid-template-columns:1fr; }
+  }
+  .compare-card{
+    background:#fff;
+    border:1px solid var(--rule);
+    padding:18px 20px;
+    border-radius:2px;
+  }
+  .compare-card h4{
+    margin:0 0 10px;
+    font-size:15px;
+    font-family:'JetBrains Mono', monospace;
+    color:var(--accent-deep);
+    font-weight:500;
+  }
+  .compare-card.symmetric{ border-top:3px solid var(--accent-deep); }
+  .compare-card.asymmetric{ border-top:3px solid var(--ink-soft); }
+
+  .verify{
+    background:var(--code-bg);
+    padding:18px 22px;
+    border-radius:2px;
+    font-size:15px;
+    margin:20px 0;
+  }
+  .verify code{
+    font-family:'JetBrains Mono', monospace;
+    background:none;
+  }
+
+  hr.divider{
+    border:none;
+    border-top:1px solid var(--rule);
+    margin:48px 0;
+  }
+
+  .footnote{
+    font-size:14px;
+    color:var(--ink-soft);
+    font-style:italic;
+    margin-top:8px;
+  }
+
+  .summary-box{
+    background:var(--accent-deep);
+    color:var(--paper);
+    padding:28px 30px;
+    border-radius:2px;
+    margin:40px 0;
+  }
+  .summary-box h3{
+    color:#fff;
+    margin-top:0;
+    font-size:16px;
+    font-family:'JetBrains Mono', monospace;
+    font-weight:500;
+    letter-spacing:0.02em;
+  }
+  .summary-box p{ color:#e8e2d3; margin-bottom:10px; font-size:15.5px; }
+  .summary-box .katex{ color:#fff; }
+
+  .signal-list{
+    list-style:none;
+    padding:0;
+    margin:16px 0;
+  }
+  .signal-list li{
+    padding:10px 0 10px 20px;
+    border-bottom:1px solid var(--rule);
+    position:relative;
+  }
+  .signal-list li::before{
+    content:"·";
+    position:absolute;
+    left:0;
+    color:var(--accent);
+    font-weight:700;
+    font-size:20px;
+    line-height:1;
+  }
+  .signal-list li:last-child{ border-bottom:none; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="title-block">
+    <div class="kicker">线性代数 · 行列式专题</div>
+    <h1>计算行列式 D = |I + aaᵀ|</h1>
+    <p class="subtitle">从识别矩阵结构，到加边法的构造理由，再到秩1矩阵的本质 —— 一份完整的解题笔记。</p>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>题目与结论</h2>
+    <p class="lede">计算下列 n 阶行列式的值：</p>
+
+    <div class="math-block center">
+      $$D=\begin{vmatrix}1+a_1^2 & a_1a_2 & \cdots & a_1a_n\\ a_2a_1 & 1+a_2^2 & \cdots & a_2a_n\\ \vdots&\vdots& &\vdots\\ a_na_1&a_na_2&\cdots&1+a_n^2\end{vmatrix}$$
+    </div>
+
+    <div class="callout">
+      <div class="label">结论</div>
+      $$D = 1+a_1^2+a_2^2+\cdots+a_n^2$$
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2><span class="num">02</span>第一步：识别矩阵结构</h2>
+    <p>逐项比对第 $i$ 行第 $j$ 列元素 $d_{ij}$：</p>
+
+    <table class="matrix-table">
+      <tr><th>位置</th><th>元素</th><th>规律</th></tr>
+      <tr><td>非对角 $(i\ne j)$</td><td>$d_{ij}=a_ia_j$</td><td>行标量 × 列标量</td></tr>
+      <tr><td>对角 $(i=j)$</td><td>$d_{ii}=1+a_i^2$</td><td>同样是 $a_i\cdot a_i$，只多加了 1</td></tr>
+    </table>
+
+    <p>统一写成一个通式：</p>
+    <div class="math-block center">
+      $$d_{ij}=\delta_{ij}+a_ia_j,\qquad \delta_{ij}=\begin{cases}1,&i=j\\0,&i\ne j\end{cases}$$
+    </div>
+
+    <h3>识别信号</h3>
+    <p>只要矩阵元素能写成"<b>第 i 个量 × 第 j 个量</b>"的乘积形式（行标下标乘列标下标），就该联想到向量外积：</p>
+    <div class="math-block center">
+      $$(ab^T)_{ij}=a_i\cdot b_j$$
+    </div>
+    <p>本题中两个下标用的是同一组 $a_i$，所以矩阵是<b>对称</b>的，对应的是外积的特殊情形 $aa^T$（而不是两个不同向量的 $ab^T$）：</p>
+    <div class="math-block center">
+      $$D=\det\big(I_n+aa^T\big),\quad a=(a_1,a_2,\dots,a_n)^T$$
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2><span class="num">03</span>什么是秩1矩阵</h2>
+    <p><b>秩</b>衡量矩阵中线性无关的行（或列）的最大个数。<b>秩为1</b>的矩阵，是指所有行（或列）都彼此成比例——只需一行信息就能还原整个矩阵。</p>
+
+    <h3>构造方式</h3>
+    <p>若 $u$ 是 $m\times1$ 列向量，$v$ 是 $n\times1$ 列向量，则 $A=uv^T$ 一定是秩1矩阵。</p>
+
+    <h3>举例：$uv^T$（两个不同向量）</h3>
+    <div class="math-block">
+      $$u=\begin{pmatrix}2\\3\\5\end{pmatrix},\quad v=\begin{pmatrix}7\\1\\4\end{pmatrix}\ \Longrightarrow\ uv^T=\begin{pmatrix}14&2&8\\21&3&12\\35&5&20\end{pmatrix}$$
+    </div>
+    <p>第2行是第1行的 $\tfrac{3}{2}$ 倍，第3行是第1行的 $\tfrac{5}{2}$ 倍——所有行都成比例，秩为1。</p>
+
+    <div class="compare-grid">
+      <div class="compare-card asymmetric">
+        <h4>uvᵀ（两个不同向量）</h4>
+        <p>一般<b>不对称</b>：$(uv^T)_{ij}=u_iv_j\ne u_jv_i=(uv^T)_{ji}$</p>
+        <p class="footnote">例：$B_{12}=2, B_{21}=21$，不相等</p>
+      </div>
+      <div class="compare-card symmetric">
+        <h4>aaᵀ（同一向量自乘）</h4>
+        <p>一定<b>对称</b>：$(aa^T)_{ij}=a_ia_j=a_ja_i=(aa^T)_{ji}$</p>
+        <p class="footnote">这正是本题矩阵的特征</p>
+      </div>
+    </div>
+
+    <p>本题的矩阵结构是由题目本身给定的对称性决定的——两个向量必须相同，写不成两个不同向量的 $uv^T$。但加边法这个<b>解题工具</b>本身更通用，能同时处理 $I+uv^T$（两向量不同）这类更一般的情形。</p>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2><span class="num">04</span>加边法：为什么要"加边"</h2>
+    <p>原行列式的结构是 $I_n+aa^T$——"单位矩阵 + 秩1矩阵"。直接展开会有大量交叉项，但秩1矩阵信息高度集中，可以用一行一列的"边框"把它外挂出去。</p>
+
+    <ol class="steps">
+      <li><b>消去"叠加"结构。</b>$aa^T$ 是秩1的，用边框行 $a^T$ 与边框列 $-a$ 相乘，自然生成 $aa^T$ 或 $a^Ta$ 这样的乘积项，而不是纠缠在原矩阵内部。</li>
+      <li><b>保证加边后行列式与原式的确定关系。</b>选取右上角 $a^T$、左下角 $-a$、角上元素 $1$，是根据目标反推出来的构造，不是任意选取。</li>
+      <li><b>用两种方向计算同一个 Δ，互相印证。</b>把 $(n+1)$ 阶行列式写成分块形式：</li>
+    </ol>
+
+    <div class="math-block center">
+      $$\Delta=\begin{vmatrix}1 & a^T\\ -a & I_n\end{vmatrix}$$
+    </div>
+
+    <h3>方向 ①：以左上角 1 为主元展开</h3>
+    <div class="math-block">
+      $$\Delta=\det(1)\cdot\det\big(I_n-(-a)(1)^{-1}a^T\big)=\det(I_n+aa^T)=D$$
+    </div>
+
+    <h3>方向 ②：以右下角 Iₙ 为主元展开</h3>
+    <div class="math-block">
+      $$\Delta=\det(I_n)\cdot\det\big(1-a^TI_n^{-1}(-a)\big)=1+a^Ta=1+\sum_{i=1}^n a_i^2$$
+    </div>
+
+    <div class="callout">
+      <div class="label">两种算法算的是同一个 Δ</div>
+      $$D=1+a_1^2+a_2^2+\cdots+a_n^2$$
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2><span class="num">05</span>验证（n = 2）</h2>
+    <div class="verify">
+      <p>$D=(1+a_1^2)(1+a_2^2)-a_1^2a_2^2$</p>
+      <p>$=1+a_1^2+a_2^2+a_1^2a_2^2-a_1^2a_2^2$</p>
+      <p>$=1+a_1^2+a_2^2\quad\checkmark$ 与公式吻合</p>
+    </div>
+  </section>
+
+  <div class="summary-box">
+    <h3>识别 aaᵀ 型结构的通用套路</h3>
+    <p>1. 对角元素是不是"基础值 + 某个变化项"；</p>
+    <p>2. 非对角元素是不是"行标量 × 列标量"的乘积形式；</p>
+    <p>3. 若两者用同一组 $a_i$ 就能统一描述，且矩阵对称，大概率是 $I+aa^T$（或更一般的 $\lambda I+ab^T$）这种秩1摄动结构。</p>
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+      ]
+    });
+  });
+</script>
+
+</body>
+</html>
