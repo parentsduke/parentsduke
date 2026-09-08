@@ -271,6 +271,13 @@
 
   .field label .req{ color: #e08a8a; margin-left: 3px; }
 
+  .quota-hint{
+    margin-top: 8px;
+    font-size: 13px;
+    color: #f0a840;
+    opacity: 0.9;
+  }
+
   .field input[type="text"],
   .field input[type="tel"],
   .field textarea{
@@ -443,7 +450,7 @@
     <div class="box">
       <ul>
         <li>对沟通中接触到的个人信息、联系方式等严格保密、不用于其他用途</li>
-        <li>处理事务代表的是扯谈 Duke 群，保持友善，不引起争议</li>
+        <li>发言和处理事务代表的是扯谈 Duke 群，保持中立、友善，不发表可能引起争议的个人立场</li>
         <li>遇到无法判断或处理的情况，及时与其他管理员讨论</li>
         <li>认领的事务确保按时完成</li>
       </ul>
@@ -465,8 +472,37 @@
         </div>
 
         <div class="field">
+          <label>报名方向 <span class="req">*</span></label>
+          <div class="checks" id="fRoles">
+            <label class="check-pill" id="opsPill">
+              <input type="checkbox" name="role" value="群内运营" id="opsCheck">
+              <span id="opsPillText">群内运营</span>
+            </label>
+            <label class="check-pill">
+              <input type="checkbox" name="role" value="网站更新">
+              <span>网站更新</span>
+            </label>
+          </div>
+          <div class="quota-hint" id="opsQuotaHint" style="display:none;"></div>
+        </div>
+
+        <div class="field">
+          <label>是否会参加 2026 年秋季 Family Weekend <span class="req">*</span></label>
+          <div class="checks" id="fFW">
+            <label class="check-pill">
+              <input type="radio" name="fw" value="是">
+              <span>会参加</span>
+            </label>
+            <label class="check-pill">
+              <input type="radio" name="fw" value="否">
+              <span>不参加</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
           <label>备注</label>
-          <textarea id="fNotes" maxlength="300" placeholder="可以简单说说你的想法；如果是报名网站更新，请在此说明；请注明是否参加 Family Weekend 活动"></textarea>
+          <textarea id="fNotes" maxlength="300" placeholder="可以简单说说你的想法"></textarea>
         </div>
 
         <button type="submit" class="submit-btn" id="fSubmitBtn">提 交 报 名</button>
@@ -506,17 +542,74 @@
       msgEl.className = 'form-msg show ' + (ok ? 'ok' : 'err');
     }
 
+    // ── 群内运营名额配额（非 Family Weekend 参与者最多 5 个）──
+    const OPS_NON_FW_LIMIT = 5;
+    let opsNonFwCount = 0;
+    let quotaLoaded = false;
+
+    async function loadOpsQuota(){
+      try {
+        const { count, error } = await db
+          .from('volunteer_ops_quota')
+          .select('*', { count: 'exact', head: true });
+        if (error) throw error;
+        opsNonFwCount = count || 0;
+        quotaLoaded = true;
+        updateQuotaUI();
+      } catch(e){
+        // 查询失败（比如后台还没建配额视图）时不阻塞报名，静默跳过限额检查
+        console.warn('配额查询失败，跳过前端限额检查:', e.message);
+      }
+    }
+
+    function updateQuotaUI(){
+      const hint = document.getElementById('opsQuotaHint');
+      const pillText = document.getElementById('opsPillText');
+      if (quotaLoaded && opsNonFwCount >= OPS_NON_FW_LIMIT){
+        hint.style.display = 'block';
+        hint.textContent = '非 Family Weekend 参与者的名额已满，仅 Family Weekend 参与者可报名此方向';
+        pillText.textContent = '群内运营（非FW名额已满）';
+      } else {
+        hint.style.display = 'none';
+        pillText.textContent = '群内运营';
+      }
+    }
+
+    loadOpsQuota();
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const name = document.getElementById('fName').value.trim();
       const contact = document.getElementById('fContact').value.trim();
       const notes = document.getElementById('fNotes').value.trim();
+      const selectedRoles = Array.from(document.querySelectorAll('input[name="role"]:checked')).map(el => el.value);
+      const fwChoice = document.querySelector('input[name="fw"]:checked');
 
       if (!name || !contact){
         showMsg('请填写姓名和联系方式', false);
         return;
       }
+
+      if (selectedRoles.length === 0){
+        showMsg('请至少选择一个报名方向', false);
+        return;
+      }
+
+      if (!fwChoice){
+        showMsg('请选择是否会参加 2026 年秋季 Family Weekend', false);
+        return;
+      }
+
+      const isOps = selectedRoles.includes('群内运营');
+      const isFW = fwChoice.value === '是';
+      if (isOps && !isFW && quotaLoaded && opsNonFwCount >= OPS_NON_FW_LIMIT){
+        showMsg('抱歉，非 Family Weekend 参与者的"群内运营"名额已满，仅 Family Weekend 参与者可报名此方向', false);
+        return;
+      }
+
+      const roles = [...selectedRoles];
+      if (fwChoice.value === '是') roles.push('Family Weekend参与者');
 
       btn.disabled = true;
       btn.textContent = '提交中…';
@@ -525,7 +618,7 @@
         const payload = {
           name: name,
           contact: contact,
-          roles: [],
+          roles: roles,
           notes: notes || null
         };
 
