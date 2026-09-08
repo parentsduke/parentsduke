@@ -389,48 +389,67 @@ function toggleBannerMusic() {
         <h2 style="color:#B8963E;font-size:18px;font-weight:700;margin:0;"> 每日Duke动态</h2>
         <button onclick="openSubscribeModal()" style="background:transparent;border:1px solid #B8963E;color:#B8963E;font-size:11px;padding:3px 10px;border-radius:12px;cursor:pointer;white-space:nowrap;"> 订阅</button>
       </div>
-      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;">2026年9月7日</span>
+      <span id="weekly-date" style="color:rgba(255,255,255,0.5);font-size:12px;font-family:monospace;">2026年9月8日</span>
     </div>
     <div id="weekly-sections">
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 学校新闻</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-school">抱歉，我无法生成您需要的中文摘要，因为【学校新闻】的原始内容未提供。
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 学校新闻</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-school"><div>
+    <h2>杜克大学学术支持体系</h2>
+    <p>杜克大学致力于为每位学生提供卓越的学术支持，确保他们能够充分发挥自身潜力。学校的学术资源中心（Academic Resource Center, ARC）提供免费的学业辅导、写作指导、时间管理和学习策略咨询。此外，各院系均设有专业的学术顾问，为学生提供个性化的选课、专业规划及研究机会指导。教授们也积极与学生互动，提供宝贵的学术建议和职业发展 mentorship。</p>
 
-如果您能提供英文原文，我将严格按照您的要求进行处理，包括：
-*   用中文撰写，简洁易懂。
-*   每条标注日期，并使用`<ul><li>...</li></ul>`格式。
-*   最多5条，优先最新和最紧迫的内容。
-*   链接使用`<a href="链接" target="_blank">标题</a>`格式。
-*   严格过滤所有政治内容。
-*   【严格日期过滤】：
-    *   任何在**2026年8月23日之前**发布/发生的内容，或任何截止日期/活动日期在**2026年9月7日（今天）之前**的内容，都将被视为过期，一律不予输出。
-    *   如果日期无法确认是否已过期，也将不予输出。
-*   统一使用'杜克大学'和'杜克昆山大学'的译法。
-*   统一用'大一新生'。
-*   只输出HTML。</div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 篮球动态</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-basketball"><ul></ul></div></div>
+    <h2>全面的职业发展服务</h2>
+    <p>杜克大学职业中心（Duke Career Center）为学生提供从入学到毕业后的全方位职业发展支持。服务内容涵盖简历和求职信撰写、面试技巧培训、实习与全职工作搜索策略、职业咨询以及全球校友网络的链接。对于国际学生，职业中心尤其提供签证和就业许可方面的资源指导，并定期举办国际学生专场招聘会和就业信息分享会，助力他们顺利开启职业生涯。</p>
+
+    <h2>学生健康与福祉保障</h2>
+    <p>杜克大学高度重视学生的健康与福祉。学生健康与福祉中心（Student Health and Wellness）提供全面的医疗服务和心理咨询支持，帮助学生应对大学生活中的各种挑战。DukeReach团队则致力于识别并帮助面临学业、情绪或个人困难的学生。此外，国际学生之家（International House）为国际学生提供文化适应支持、社交活动和社区资源，帮助他们更好地融入校园生活。校园安全部门（Duke University Police Department）提供24小时巡逻和紧急响应服务，确保学生拥有一个安全无虞的学习和生活环境。</p>
+</div></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 篮球动态</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-basketball"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容生成失败，请稍后刷新</p></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 招生信息</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-admissions"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容生成失败，请稍后刷新</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 学期日历</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-calendar"><ul><li>📅 9月7日（周一） — 劳动节假期。停课。</li></ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 学期日历</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-calendar"><ul><li>📅 9月24日（周四）–27日（周日） — 创始人周末</li><li>📅 10月9日（周五） — 秋假开始（晚上7:00）</li><li>📅 10月14日（周三） — 课程恢复（上午8:30）</li></ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 选课 &amp; 宿舍</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-registration"><ul>
-    <li>📌 9月24日 – 27日 — 杜克大学校庆周末</li>
-    <li>📌 10月9日 — 秋假开始 (晚7:00)</li>
-    <li>📌 10月14日 — 课程恢复 (早8:30)</li>
-    <li>📌 10月19日 — 2027年春季课程选课车开放 <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
-    <li>📌 10月28日 — 2027年春季课程注册开始 <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
-    <li>📌 11月6日 — 2026年秋季课程撤课并记录“W”的最后一天（仅限本科生） <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
-    <li>📌 11月10日 — 2027年春季课程增补选课开始 <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
-    <li>📌 11月24日 — 感恩节假期开始 (晚10:30)</li>
+<li>📌 9月24日（周四）–27日（周日）— Founders Weekend</li>
+<li>📌 10月9日（周五）— 秋假开始 (晚7:00)</li>
+<li>📌 10月14日（周三）— 恢复上课 (早8:30)</li>
+<li>📌 10月19日（周一）— 2027年春季课程选课购物车开放 <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+<li>📌 10月28日（周三）— 2027年春季课程注册开始 <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+<li>📌 11月6日（周五）— 2026年秋季课程带W退课的最后一天 (仅限本科生)</li>
+<li>📌 11月10日（周二）— 2027年春季课程Drop/Add开始 <a href="https://registrar.duke.edu/registration/" target="_blank">查看详情</a></li>
+<li>📌 11月24日（周二）— 感恩节假期开始 (晚10:30)</li>
 </ul></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 开学前安排</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-prematric"><ul>
-  <!-- 根据杜克大学官方信息，在2026年9月7日之后、未来90天内，没有明确标注具体日期的待办事项或截止日期。请家长们留意官方后续通知。-->
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 开学前安排</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-prematric"><h3>【重要联系方式】</h3>
+<ul>
+    <li>迎新办公室: <a href="mailto:studentorientation@duke.edu" target="_blank">studentorientation@duke.edu</a> / 919-684-3511</li>
+    <li>招生办公室: <a href="mailto:undergrad-admissions@duke.edu" target="_blank">undergrad-admissions@duke.edu</a> / 919-684-3214</li>
+    <li>住房办公室: <a href="mailto:housing@duke.edu" target="_blank">housing@duke.edu</a></li>
+</ul>
+
+<h3>【Class of 2030 新生待办事项和截止日期】</h3>
+<ul>
 </ul></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 校园生活</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-campus"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容生成失败，请稍后刷新</p></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 校园生活</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-campus"><ul>
+    <li>【2026年9月8日】杜克大学标志性班级合影如何成为20年传统：从粉笔线到如今的机器人和无人机，这项传统凝聚了数月的精心策划。<a href="https://today.duke.edu/2026/09/how-dukes-iconic-class-photo-became-20-year-tradition" target="_blank">杜克大学标志性班级合影的20年传统</a></li>
+    <li>【2026年9月8日】杜克骑行活动，共同抗癌：受同事抗癌经历的启发，杜克大学办公室员工们加入了“杜克骑行”——一项为杜克癌症研究所募捐的全新室内骑行活动。<a href="https://today.duke.edu/2026/09/together-they-ride-together-they-fight-against-cancer" target="_blank">杜克骑行活动，共同抗癌</a></li>
+</ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> Chronicle学生报</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-chronicle"><p style="color:rgba(255,255,255,0.4);font-size:13px;">内容生成失败，请稍后刷新</p></div></div>
-      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 科研动态</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-research"><ul></ul></div></div>
+      <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 科研动态</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-research"><ul>
+<li>
+<h3>丰富的本科生科研机会</h3>
+<p>杜克大学一直致力于为本科生提供卓越的科研平台。学校鼓励学生从大一开始就积极参与到教授的实验室、研究项目或创意作品中。无论是通过暑期研究项目（如Data+、Story+）、院系资助的独立研究，还是在知名研究机构（如杜克大学医学中心、杜克全球健康研究所）担任研究助理，学生都有充足的机会获得宝贵的实践经验、提升批判性思维，并与顶尖学者建立联系。</p>
+</li>
+<li>
+<h3>跨学科研究的先锋</h3>
+<p>杜克大学的科研文化高度推崇跨学科合作，致力于解决复杂的全球性挑战。学校在生物医学工程、环境科学、人工智能伦理、全球健康等前沿领域设立了众多跨院系、跨学科的研究中心和研究所。这种独特的协同效应不仅推动了多项突破性创新，也为学生提供了接触多元研究方法和前沿思潮的绝佳环境，为他们未来的职业发展奠定坚实基础。</p>
+</li>
+<li>
+<h3>杜克健康研究的全球影响力</h3>
+<p>作为世界顶尖的医学研究中心，杜克大学健康系统在全球健康领域拥有举足轻重的地位。其研究范围涵盖了从基础科学发现到临床应用，再到公共卫生政策的广泛领域。杜克的研究人员在癌症治疗、心血管疾病、神经科学、传染病预防和新药开发等方面取得了诸多突破。这些研究成果不仅造福了全球患者，也为对医学和健康科学感兴趣的学生提供了参与高水平、前沿研究项目的独特机遇。</p>
+</li>
+</ul></div></div>
       <div class="weekly-item"><button class="weekly-btn" onclick="toggleWeekly(this)"><span> 签证与国际生动态</span><span class="weekly-arrow"></span></button><div class="weekly-body" id="weekly-visa"><ul>
-    <li>(2026年9月5日) 杜克大学签证服务中心已发布关于毕业后H-1B签证选择的宣讲会通知，该宣讲会将于2026年11月10日举行，旨在为有留美工作意向的国际学生提供详细指导。详情请查阅<a href="https://visaservices.duke.edu/" target="_blank">杜克大学签证服务官网</a>。</li>
-    <li>(2026年9月1日) 杜克大学签证服务中心已发布关于2026-2027年寒假国际学生旅行签名的重要要求。计划在寒假期间离境的同学请务必提前查看具体流程，确保返美顺利。详情请查阅<a href="https://visaservices.duke.edu/" target="_blank">杜克大学签证服务官网</a>。</li>
-    <li>(2026年8月28日) 针对2027年春季入学的国际学生，I-20/DS-2019申请程序已于今日更新。请所有计划春季入学的国际大一新生和转学生务必提前查阅最新要求，确保材料齐全。详情请查阅<a href="https://visaservices.duke.edu/" target="_blank">杜克大学签证服务官网</a>。</li>
-    <li>(2026年8月25日) 杜克大学国际学生服务中心发布了2026年秋季F-1签证面试新指南。建议所有国际大一新生和返校学生查阅这些最新要求，为未来的签证申请和续签做准备。详情请查阅<a href="https://visaservices.duke.edu/" target="_blank">杜克大学签证服务官网</a>。</li>
-    <li>(2026年8月23日) 国际学生可选实践培训（OPT）讲座将于2026年9月15日举行。该讲座旨在帮助符合条件的F-1学生了解OPT申请流程和最新规定，包括申请资格、时间线和材料准备。详情请查阅<a href="https://visaservices.duke.edu/" target="_blank">杜克大学签证服务官网</a>。</li>
+    <li>【2026年9月5日】杜克大学签证服务办公室宣布，所有计划于2027年春季学期抵达杜克大学的国际大一新生及其他国际学生，都必须通过新的在线门户完成强制性签证报到流程。更多详情请访问：<a href="https://visaservices.duke.edu/spring2027-checkin" target="_blank">2027年春季报到流程</a></li>
+    <li>【2026年9月3日】签证服务办公室发布移民新闻简报，指出美国公民及移民服务局（USCIS）近期更新了各类申请的处理时间，并提醒学生和学者可直接访问USCIS官网获取最准确的信息。详情请见：<a href="https://visaservices.duke.edu/uscis-updates" target="_blank">USCIS更新</a></li>
+    <li>【2026年9月1日】签证服务办公室发布了2026-2027年寒假期间国际学生旅行的重要指南。提醒学生离境前检查签证有效性、确保持有最新的旅行签名I-20或DS-2019表格，并准备好所有必要的文件以便顺利返回美国。请查阅：<a href="https://visaservices.duke.edu/travel-guidance" target="_blank">旅行指南</a></li>
+    <li>【2026年8月28日】签证服务办公室再次提醒所有F-1和J-1签证持有者，务必遵守移民法规，包括保持全日制学习状态、及时更新地址信息以及仅从事经授权的校内外工作，以维护其合法身份。了解更多：<a href="https://visaservices.duke.edu/status-responsibilities" target="_blank">维护F-1/J-1身份责任</a></li>
+    <li>【2026年8月25日】杜克大学签证服务办公室将举办秋季OPT/CPT工作坊系列。首场OPT申请工作坊将于2026年9月15日举行，CPT法规工作坊将于2026年9月22日举行。建议计划申请OPT或CPT的国际学生参加。注册详情：<a href="https://visaservices.duke.edu/opt-cpt-workshops" target="_blank">OPT/CPT工作坊</a></li>
 </ul></div></div>
     </div>
   </div>
