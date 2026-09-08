@@ -849,6 +849,33 @@ def call_ai_roundrobin(prompt):
 
 FALLBACK_HTML = '<p style="color:rgba(255,255,255,0.4);font-size:13px;">内容生成失败，请稍后刷新</p>'
 
+def _looks_like_leaked_prompt(html):
+    """检测AI是否把内部指令/免责声明当成正文原样吐了回来，而不是真正的
+    HTML摘要——比如"抱歉，我无法生成...如果您能提供英文原文，我将严格按照
+    您的要求进行处理，包括：*用中文撰写..."这种，本质是把prompt里的"要求"
+    列表原样复述了一遍。只要命中任一特征就判定为"泄漏"，绝不能对外发送。"""
+    if not html:
+        return True
+    stripped = html.strip()
+    # 正常输出必须是<li>/<p>这样的HTML片段；连标签都没有，肯定不对
+    if '<li' not in stripped and '<p' not in stripped:
+        return True
+    leak_markers = [
+        '抱歉', '我无法生成', '原始内容未提供', '如果您能提供',
+        '请提供英文原文', '未提供任何内容', 'I cannot generate',
+        '我将严格按照', '如果没有提供', '内容为空', '未提供原始内容',
+    ]
+    return any(marker in stripped for marker in leak_markers)
+
+def _call_ai_html(prompt, fallback=FALLBACK_HTML):
+    """统一的AI调用出口：调用gemini()后先做泄漏检测，
+    确认是干净的HTML摘要才放行，否则一律回退到fallback（默认FALLBACK_HTML），
+    永远不把内部prompt/免责声明泄漏进最终邮件。"""
+    result = gemini(prompt)
+    if _looks_like_leaked_prompt(result):
+        return fallback
+    return result or fallback
+
 def clean_ai_html(text):
     """去除 AI 返回内容中的 Markdown 代码块标记"""
     if not text:
@@ -927,14 +954,18 @@ def generate_section(section_name, items, extra='', allow_political=False):
     today = datetime.now()
     date_hint = f"{today.year}年{today.month}月{today.day}日"
 
-    if not items and not extra:
-        prompt = (
+    def _background_prompt():
+        return (
             f"你是杜克大学家长社区的中文编辑。今天是{date_hint}。\n"
             f"【{section_name}】今日没有抓取到新内容。\n"
             "请根据你对杜克大学的了解，生成2-3条对中国家长有实用价值的背景信息。\n"
-            "要求：<ul><li>格式，只输出HTML，不要加任何类似「今日暂无最新动态」的说明文字。"
+            "要求：<ul><li>格式，只输出HTML，不要加任何类似「今日暂无最新动态」的说明文字，"
+            "也绝对不要提及自己缺少原始素材、无法生成摘要、需要用户提供原文等——"
+            "直接输出背景信息本身，不要有任何这类元说明。"
         )
-        return gemini(prompt) or FALLBACK_HTML
+
+    if not items and not extra:
+        return _call_ai_html(_background_prompt())
 
     news_text = '\n'.join([f"- {i['title']}: {i['summary']} ({i['link']})" for i in items])
     if extra:
@@ -947,6 +978,19 @@ def generate_section(section_name, items, extra='', allow_political=False):
     # 双保险：无论过期日期出现在标题、摘要还是官网正文里都会被剔除，
     # 不再单纯依赖AI自觉遵守"严格日期过滤"的文字规则。
     news_text = filter_expired_text(news_text, today.date())
+
+    # 关键修复（对应本次问题）：上面的过滤是"逐行"删除的，items/extra 在
+    # 过滤前不为空，不代表过滤后 news_text 还有内容——如果所有条目都因为
+    # 日期过期被删光了，news_text 会变成空字符串。此前代码没有在这里再检查
+    # 一次，导致后面仍然把完整的"要求"提示词（包含严格日期过滤规则、格式
+    # 要求等内部指令）连同一个空的"原始内容："一起发给了AI。AI在真的拿不到
+    # 任何原文的情况下，会把这些内部指令原样"复述"回来（例如"抱歉，我无法
+    # 生成...如果您能提供英文原文，我将严格按照您的要求...包括：*用中文撰写
+    # ..."），这段复述会被当作正常输出直接放进邮件正文，等于把prompt泄漏
+    # 给了收件人。现在过滤后如果内容已经清空，直接换成"背景信息"提示词，
+    # 不再把完整的内部指令连同空内容一起发出去。
+    if not news_text.strip():
+        return _call_ai_html(_background_prompt())
 
     political_rule = (
         "- 内容必须如实翻译，不要过滤任何内容\n" if allow_political else
@@ -988,7 +1032,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "- 统一用'大一新生'替代'首年学生'或'First-Year students'\n"
         "- 只输出HTML，不要其他文字"
     )
-    return gemini(prompt) or FALLBACK_HTML
+    return _call_ai_html(prompt)
 
 _CAL_MONTH_MAP = {
     'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
@@ -1085,7 +1129,7 @@ def generate_calendar_section(items):
         "5. 只输出HTML，不要其他文字\n\n"
         f"以下是需要翻译整理的条目：\n{combined}"
     )
-    return gemini(prompt) or FALLBACK_HTML
+    return _call_ai_html(prompt)
 
 def generate_registration_section(registration_text, housing_text):
     today = datetime.now()
@@ -1119,7 +1163,7 @@ def generate_registration_section(registration_text, housing_text):
         "- 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
         "- 只输出HTML"
     )
-    return gemini(prompt) or FALLBACK_HTML
+    return _call_ai_html(prompt)
 
 PREMATRIC_DONE_HTML = (
     '<p>Class of 2030 的开学前重要节点（搬入日、迎新周、正式开学等）均已完成，'
@@ -1161,7 +1205,7 @@ def generate_prematric_section(page_text):
         "6. 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
         "7. 只输出HTML，不要其他文字"
     )
-    return gemini(prompt) or FALLBACK_HTML
+    return _call_ai_html(prompt)
 
 # ══════════════════════════════════════════════════════════════
 #  更新 index.html
