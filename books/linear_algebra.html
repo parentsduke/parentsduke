@@ -836,6 +836,7 @@
       <a href="#ex13"><span class="num">✎</span>习题十三：‖Ax‖² 与最小二乘法</a>
       <a href="#ex14"><span class="num">✎</span>习题十四：矩阵求导与正规方程的推导</a>
       <a href="#ex15"><span class="num">✎</span>习题十五：AP 的含义与矩阵表示的构造顺序</a>
+      <a href="#ex16"><span class="num">✎</span>习题十六：行列式 D=|I+aaᵀ| 与秩1矩阵</a>
     </nav>
   </aside>
 
@@ -4641,7 +4642,147 @@
     </div>
   </div>
 
+  <div class="nextlink"><a href="#ex16">下一篇：习题十六 · 行列式与秩1矩阵 →</a></div>
+
   <footer>习题十五 · AP 的含义与矩阵表示的构造顺序 &nbsp;·&nbsp; 逐题详解</footer>
+
+</div>
+</div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 习题十六 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ex16" style="max-width:none; padding:0;">
+      <p class="kicker" style="padding:0 40px;">附录 · 习题详解</p>
+      <h2 class="chapter-title" style="padding:0 40px;">习题十六：行列式 \(D=|I+aa^{\mathrm T}|\) 与秩1矩阵</h2>
+      <p class="chapter-tagline" style="padding:0 40px;">从识别矩阵结构，到加边法的构造理由，再到秩1矩阵的本质</p>
+
+<div class="ex6-scope"><div class="wrap">
+
+  <header>
+    <div class="eyebrow">线性代数 · 行列式专题 · 详解</div>
+    <h1>习题十六详解</h1>
+    <div class="subtitle">单位矩阵 + 秩1矩阵，用"加边法"把交叉项外挂出去</div>
+    <div class="bracket-hero">
+      <svg viewBox="0 0 20 64" fill="none"><path d="M16 2 L4 2 L4 62 L16 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+      <div class="grid-mini">
+        <span>I+aaᵀ</span><span>→</span>
+        <span>1+‖a‖²</span><span>D</span>
+      </div>
+      <svg viewBox="0 0 20 64" fill="none"><path d="M4 2 L16 2 L16 62 L4 62" stroke="#1D2A44" stroke-width="3" stroke-linecap="square"/></svg>
+    </div>
+  </header>
+
+  <!-- ===================== PROBLEM 16 ===================== -->
+  <section class="problem" id="p16">
+    <div class="prob-head">
+      <span class="prob-num">16</span>
+      <span class="prob-title">计算行列式 \(D=|I+aa^{\mathrm T}|\)</span>
+    </div>
+    <div class="prob-statement">
+      计算下列 \(n\) 阶行列式的值：
+      \[
+      D=\begin{vmatrix}1+a_1^2 & a_1a_2 & \cdots & a_1a_n\\ a_2a_1 & 1+a_2^2 & \cdots & a_2a_n\\ \vdots&\vdots& &\vdots\\ a_na_1&a_na_2&\cdots&1+a_n^2\end{vmatrix}
+      \]
+    </div>
+
+    <div class="box basis">
+      <div class="label">结论</div>
+      <p style="margin:0">\(D = 1+a_1^2+a_2^2+\cdots+a_n^2\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 1</span> 识别矩阵结构</h3>
+    <p>逐项比对第 \(i\) 行第 \(j\) 列元素 \(d_{ij}\)：非对角元 \((i\ne j)\) 是 \(d_{ij}=a_ia_j\)；对角元 \((i=j)\) 是 \(d_{ii}=1+a_i^2\)——同样是 \(a_i\cdot a_i\)，只多加了 1。两者可以统一写成一个通式：</p>
+    <div class="box verify">
+      <div class="label">通式</div>
+      <p style="margin:0">\(d_{ij}=\delta_{ij}+a_ia_j\)，其中 \(\delta_{ij}=1\)（\(i=j\)）或 \(0\)（\(i\ne j\)）为克罗内克符号</p>
+    </div>
+    <p style="margin:0 0 20px">只要矩阵元素能写成"第 \(i\) 个量 × 第 \(j\) 个量"的乘积形式（行标下标乘列标下标），就该联想到向量外积 \((ab^{\mathrm T})_{ij}=a_i\cdot b_j\)。本题两个下标用的是同一组 \(a_i\)，矩阵天然<strong>对称</strong>，对应外积的特殊情形 \(aa^{\mathrm T}\)（而非两个不同向量的 \(ab^{\mathrm T}\)）：</p>
+    <div class="box verify">
+      <div class="label">识别结果</div>
+      <p style="margin:0">\(D=\det\big(I_n+aa^{\mathrm T}\big)\)，其中 \(a=(a_1,a_2,\dots,a_n)^{\mathrm T}\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">Step 2</span> 什么是秩1矩阵</h3>
+    <p><strong>秩</strong>衡量矩阵中线性无关的行（或列）的最大个数。<strong>秩为1</strong>的矩阵是指所有行（或列）都彼此成比例——只需一行信息就能还原整个矩阵。若 \(u\) 是 \(m\times1\) 列向量，\(v\) 是 \(n\times1\) 列向量，则 \(A=uv^{\mathrm T}\) 一定是秩1矩阵。例如：</p>
+    <div class="box note">
+      <div class="label">举例：\(uv^{\mathrm T}\)（两个不同向量）</div>
+      <p style="margin:0">\(u=\begin{pmatrix}2\\3\\5\end{pmatrix},\ v=\begin{pmatrix}7\\1\\4\end{pmatrix}\ \Rightarrow\ uv^{\mathrm T}=\begin{pmatrix}14&2&8\\21&3&12\\35&5&20\end{pmatrix}\)——第2行是第1行的 \(\tfrac{3}{2}\) 倍，第3行是第1行的 \(\tfrac{5}{2}\) 倍，所有行都成比例，秩为1</p>
+    </div>
+
+    <table class="compare">
+      <tr><th></th><th>uvᵀ（两个不同向量）</th><th>aaᵀ（同一向量自乘）</th></tr>
+      <tr><td>结构</td><td>两个独立向量 \(u\)（\(m\times1\)）与 \(v\)（\(n\times1\)）</td><td>同一向量 \(a\) 自乘（要求方阵，\(m=n\)）</td></tr>
+      <tr><td>对称性</td><td>一般<strong>不对称</strong>：\((uv^{\mathrm T})_{ij}=u_iv_j\ne u_jv_i=(uv^{\mathrm T})_{ji}\)</td><td>一定<strong>对称</strong>：\((aa^{\mathrm T})_{ij}=a_ia_j=a_ja_i=(aa^{\mathrm T})_{ji}\)</td></tr>
+      <tr><td>数值举例</td><td>\(B_{12}=2,\ B_{21}=21\)，不相等</td><td>这正是本题矩阵对角元 \(1+a_i^2\) 的由来</td></tr>
+    </table>
+    <p style="margin:0 0 20px">本题矩阵的对称结构由题目本身给定——两个向量必须相同，写不成两个不同向量的 \(uv^{\mathrm T}\)。但下面的加边法这个<strong>解题工具</strong>本身更通用，能同时处理 \(I+uv^{\mathrm T}\)（两向量不同）这类更一般的情形。</p>
+
+    <h3 class="sub"><span class="tag">Step 3</span> 加边法：为什么要"加边"</h3>
+    <p>原行列式的结构是 \(I_n+aa^{\mathrm T}\)——"单位矩阵 + 秩1矩阵"。直接展开会有大量交叉项，但秩1矩阵信息高度集中，可以用一行一列的"边框"把它外挂出去。选取右上角 \(a^{\mathrm T}\)、左下角 \(-a\)、角上元素 \(1\)，是根据目标反推出来的构造，不是任意选取。把 \((n+1)\) 阶行列式写成分块形式：</p>
+    <div class="box verify">
+      <div class="label">加边行列式</div>
+      <p style="margin:0">\(\Delta=\begin{vmatrix}1 & a^{\mathrm T}\\ -a & I_n\end{vmatrix}\)</p>
+    </div>
+
+    <p>用两种方向展开同一个 \(\Delta\)，互相印证：</p>
+    <div class="box basis">
+      <div class="label">方向 ①：以左上角 1 为主元展开</div>
+      <p style="margin:0">\(\Delta=\det(1)\cdot\det\big(I_n-(-a)(1)^{-1}a^{\mathrm T}\big)=\det(I_n+aa^{\mathrm T})=D\)</p>
+    </div>
+    <div class="box basis">
+      <div class="label">方向 ②：以右下角 \(I_n\) 为主元展开</div>
+      <p style="margin:0">\(\Delta=\det(I_n)\cdot\det\big(1-a^{\mathrm T}I_n^{-1}(-a)\big)=1+a^{\mathrm T}a=1+\sum_{i=1}^n a_i^2\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">结论</span></h3>
+    <p style="margin:0 0 20px">两种算法算的是同一个 \(\Delta\)，所以：</p>
+    <div class="box verify">
+      <div class="label">最终结果</div>
+      <p style="margin:0">\(D=1+a_1^2+a_2^2+\cdots+a_n^2\)</p>
+    </div>
+
+    <h3 class="sub"><span class="tag">验证</span>\(n=2\) 时的直接展开</h3>
+    <div class="box note">
+      <div class="label">代入验证</div>
+      <p>\(D=(1+a_1^2)(1+a_2^2)-a_1^2a_2^2\)</p>
+      <p>\(=1+a_1^2+a_2^2+a_1^2a_2^2-a_1^2a_2^2\)</p>
+      <p style="margin:0">\(=1+a_1^2+a_2^2\)，与公式吻合 ✓</p>
+    </div>
+  </section>
+
+  <!-- ===================== FOLLOW-UP: GENERAL PATTERN ===================== -->
+  <div class="followup">
+    <div class="eyebrow2">追问解析</div>
+    <h2>识别 \(aa^{\mathrm T}\) 型结构的通用套路</h2>
+
+    <p>遇到一个陌生的行列式或矩阵，怎么判断它是不是"单位矩阵 + 秩1摄动"这种可以用加边法处理的结构？可以按下面三步排查。</p>
+
+    <div class="box basis">
+      <div class="label">排查 1：对角元素</div>
+      <p style="margin:0">对角元素是不是"基础值 + 某个变化项"——比如本题里的 \(1+a_i^2\)，"1" 是基础值，"\(a_i^2\)" 是变化项。</p>
+    </div>
+
+    <div class="box basis">
+      <div class="label">排查 2：非对角元素</div>
+      <p style="margin:0">非对角元素是不是"行标量 × 列标量"的乘积形式，即能写成 \(d_{ij}=c_ic_j\)（\(i\ne j\)）这种依赖行、列下标各自取值再相乘的样子。</p>
+    </div>
+
+    <div class="box basis">
+      <div class="label">排查 3：统一与对称性</div>
+      <p style="margin:0">若排查 1、2 中用的是<strong>同一组</strong> \(a_i\)，且矩阵关于主对角线<strong>对称</strong>，大概率就是 \(I+aa^{\mathrm T}\)（或更一般的 \(\lambda I+ab^{\mathrm T}\)）这种秩1摄动结构，可以直接套用加边法。</p>
+    </div>
+
+    <div class="box note">
+      <div class="label">一句话总结</div>
+      <p style="margin:0">"单位矩阵 + 秩1矩阵"这个组合之所以好算，本质是秩1矩阵 \(uv^{\mathrm T}\) 的信息量只有一行（或一列），加边法恰好利用这一点，把 \(n\) 阶问题的交叉项，换算成 \((n+1)\) 阶行列式里一次干净的分块展开——这也是矩阵求逆里 Sherman–Morrison 公式背后的同一个思想。</p>
+    </div>
+  </div>
+
+  <footer>习题十六 · 行列式与秩1矩阵 &nbsp;·&nbsp; 逐题详解</footer>
 
 </div>
 </div>
