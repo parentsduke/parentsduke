@@ -49,8 +49,14 @@
 
   *{ box-sizing: border-box; }
 
+  html{
+    min-height: 100%;
+    background: var(--navy-deep);
+  }
+
   body{
     margin:0;
+    min-height: 100vh;
     background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
     color: var(--white);
     font-family: 'Kaiti','STKaiti','KaiTi', -apple-system, sans-serif;
@@ -65,12 +71,12 @@
   }
 
   @media (max-width: 600px){
-    .wrap{ padding: 40px 14px 28px; }
-    .box{ padding: 20px 16px; }
-    .role{ padding: 16px 16px; }
-    .form-box{ padding: 24px 16px 20px; }
-    .note-card{ padding: 20px 16px; }
-    .cta{ padding: 28px 14px; }
+    .wrap{ padding: 40px 8px 28px; }
+    .box{ padding: 18px 12px; }
+    .role{ padding: 14px 12px; }
+    .form-box{ padding: 22px 12px 18px; }
+    .note-card{ padding: 18px 12px; }
+    .cta{ padding: 28px 12px; }
   }
 
   .eyebrow{
