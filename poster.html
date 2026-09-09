@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>招募志愿者海报</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background:#12183a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:900px;
+    font-family: "LiSu", "STLiti", "华文隶书", "隶书", "Baoli SC", KaiTi, serif;
+  }
+
+  .poster {
+    width:1200px;
+    min-height:918px;
+    background:#12183a;
+    color:#ffffff;
+    padding:60px 60px 50px;
+    text-align:center;
+    position:relative;
+  }
+
+  .eyebrow {
+    color:#e0b96a;
+    letter-spacing:10px;
+    font-size:26px;
+    margin-top:10px;
+  }
+
+  .divider {
+    width:120px;
+    height:2px;
+    background:#e0b96a;
+    margin:22px auto;
+    opacity:0.8;
+  }
+
+  h1 {
+    font-size:64px;
+    color:#ffffff;
+    margin:26px 0 18px;
+    letter-spacing:6px;
+  }
+
+  .subtitle {
+    color:#e0b96a;
+    font-size:26px;
+    margin-bottom:46px;
+    letter-spacing:2px;
+  }
+
+  .cards {
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    margin-bottom:60px;
+  }
+
+  .card {
+    border:1px solid #4a5286;
+    border-radius:6px;
+    padding:26px 40px 30px;
+    text-align:left;
+    min-width:380px;
+  }
+
+  .tag {
+    display:inline-block;
+    background:#e0b96a;
+    color:#12183a;
+    font-weight:bold;
+    border-radius:20px;
+    padding:5px 16px;
+    font-size:20px;
+    margin-bottom:14px;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+
+  .card-title {
+    font-size:34px;
+    margin-bottom:16px;
+    color:#ffffff;
+  }
+
+  .card-sub {
+    font-size:20px;
+    color:#b9c0e6;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+
+  #qrcode {
+    display:inline-block;
+    background:#f4f6fb;
+    padding:26px;
+    border-radius:10px;
+    margin-bottom:34px;
+  }
+
+  #qrcode img, #qrcode canvas {
+    display:block;
+  }
+
+  .scan-text {
+    font-size:32px;
+    color:#e0b96a;
+    margin-bottom:12px;
+  }
+
+  .url {
+    font-size:22px;
+    color:#cfd4ee;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+  <div class="poster">
+    <div class="eyebrow">扯 谈 D U K E 群</div>
+    <div class="divider"></div>
+    <h1>招募志愿者</h1>
+    <div class="subtitle">2030 届家长群 · 一群人，一件事，一点点时间</div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="tag">运营</div>
+        <div class="card-title">群内运营</div>
+        <div class="card-sub">招募 10 人</div>
+      </div>
+      <div class="card">
+        <div class="tag">技术</div>
+        <div class="card-title">网站更新</div>
+        <div class="card-sub">招募 1 人</div>
+      </div>
+    </div>
+
+    <div id="qrcode"></div>
+
+    <div class="scan-text">扫码报名</div>
+    <div class="url">dukeparents.org/volunteer.html</div>
+  </div>
+
+  <script>
+    new QRCode(document.getElementById("qrcode"), {
+      text: "https://dukeparents.org/volunteer.html",
+      width: 200,
+      height: 200,
+      colorDark: "#12183a",
+      colorLight: "#f4f6fb",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  </script>
+</body>
+</html>
