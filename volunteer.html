@@ -6,6 +6,25 @@
 <title>志愿者招募 · 扯谈 Duke 群</title>
 <style>
   @font-face {
+    /* 数字、英文单独指定一套字体，不影响下面楷体对中文的渲染。
+       优先用系统自带的 Times New Roman；没有的设备（常见于部分安卓机型）
+       会自动用下面的网络字体 Tinos（与 Times New Roman 度量兼容的开源替代）兜底 */
+    font-family: 'SimLi';
+    src: local('Times New Roman'), local('Times'), local('STIXGeneral'),
+         url('https://cdn.jsdelivr.net/fontsource/fonts/tinos@latest/latin-400-normal.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/fontsource/fonts/tinos@latest/latin-400-normal.woff') format('woff');
+    unicode-range: U+0020-007E, U+00A0-00FF;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Kaiti';
+    src: local('Times New Roman'), local('Times'), local('STIXGeneral'),
+         url('https://cdn.jsdelivr.net/fontsource/fonts/tinos@latest/latin-400-normal.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/fontsource/fonts/tinos@latest/latin-400-normal.woff') format('woff');
+    unicode-range: U+0020-007E, U+00A0-00FF;
+    font-display: swap;
+  }
+  @font-face {
     font-family: 'SimLi';
     src: local('隶书'), local('LiSu'), local('华文隶书'), local('STLiti'),
          local('Kaiti SC'), local('STKaiti'), local('KaiTi'), local('楷体'),
@@ -92,7 +111,6 @@
   .intro{
     font-size: 17px;
     color: var(--white);
-    font-weight: 500;
     text-shadow: 0 0 1px rgba(255,255,255,0.5);
     margin-bottom: 44px;
     padding-bottom: 36px;
@@ -102,7 +120,7 @@
   .intro p{ margin: 0 0 14px; }
 
   h2.section-title{
-    font-family:'SimLi','KaiTi', sans-serif;
+    font-family: 'SimLi','KaiTi', sans-serif;
     color: var(--gold);
     font-size: 22px;
     letter-spacing: 3px;
@@ -154,7 +172,6 @@
   .role-desc{
     font-size: 15px;
     color: var(--white);
-    font-weight: 500;
     text-shadow: 0 0 1px rgba(255,255,255,0.5);
   }
 
@@ -173,7 +190,6 @@
   .box li{
     margin-bottom: 8px;
     font-size: 15px;
-    font-weight: 500;
     text-shadow: 0 0 1px rgba(255,255,255,0.5);
   }
 
@@ -204,7 +220,6 @@
     margin: 0;
     font-size: 14px;
     line-height: 1.9;
-    font-weight: 500;
     text-shadow: 0 0 1px rgba(255,255,255,0.5);
     text-align: left;
   }
@@ -395,7 +410,6 @@
 
   .success-view p{
     font-size: 15px;
-    font-weight: 500;
     text-shadow: 0 0 1px rgba(255,255,255,0.5);
   }
 </style>
