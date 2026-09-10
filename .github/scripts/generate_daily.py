@@ -977,7 +977,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
     # 这里对拼好的完整文本（标题+摘要+extra）统一做一次逐行日期过滤，
     # 双保险：无论过期日期出现在标题、摘要还是官网正文里都会被剔除，
     # 不再单纯依赖AI自觉遵守"严格日期过滤"的文字规则。
-    news_text = filter_expired_text(news_text, today.date())
+    news_text = filter_expired_text(news_text, GLOBAL_MIN_DATE)
 
     # 关键修复（对应本次问题）：上面的过滤是"逐行"删除的，items/extra 在
     # 过滤前不为空，不代表过滤后 news_text 还有内容——如果所有条目都因为
