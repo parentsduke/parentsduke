@@ -5189,7 +5189,7 @@
       $$f(A)=\sum_{i=1}^nf(\lambda_i)(\mathbf u_i\mathbf u_i^{\mathrm T})$$
       这是求解线性微分方程组 $\dot{\mathbf x}=A\mathbf x$（解为 $\mathbf x(t)=e^{At}\mathbf x(0)$）时，绕开"矩阵指数"直接定义、转而逐个特征值计算的常用技巧。</div>
       <div class="step"><strong>数据压缩与降维（PCA 的数学核心）。</strong>把特征值按从大到小排序，若后面若干个特征值远小于前面的，略去它们对应的项，只保留前 $k$ 项：
-      $$A\approx\sum_{i=1}^k\lambda_i(\mathbf u_i\mathbf u_i^{\mathrm T})\qquad(k<n)$$
+      $$A\approx\sum_{i=1}^k\lambda_i(\mathbf u_i\mathbf u_i^{\mathrm T})\qquad(k&lt;n)$$
       由于每一项都是秩一矩阵，这个近似正是矩阵的<strong>低秩近似</strong>；当 $A$ 取协方差矩阵时，只保留最大的几个特征值对应的方向，就是主成分分析（PCA）"只保留数据方差最大的几个方向、丢弃噪声方向"这一操作背后的完整数学依据。</div>
 
       <div class="note">
