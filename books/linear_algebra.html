@@ -824,6 +824,7 @@
       <a href="#ch21"><span class="num">21</span>矩阵函数与矩阵指数</a>
       <a href="#ch22"><span class="num">22</span>向量点积</a>
       <a href="#ch23"><span class="num">23</span>向量叉积</a>
+      <a href="#ch24"><span class="num">24</span>拉普拉斯展开定理</a>
 
       <p class="part-label">附录 · 习题详解</p>
       <a href="#ex6"><span class="num">✎</span>习题六：线性空间与基</a>
@@ -5138,6 +5139,11 @@
         取 $A=\begin{pmatrix}1&-1\\1&1\end{pmatrix}$（实矩阵，本质上是旋转+缩放）。$A^{\mathrm T}A=\begin{pmatrix}2&0\\0&2\end{pmatrix}=AA^{\mathrm T}$，两者相等，故 $A$ 是正规矩阵；但 $A^{\mathrm T}\neq A$（不是对称/厄米），且 $A^{\mathrm T}A=2I\neq I$（不是正交/酉），它仍然可以被（复数域上的）酉矩阵对角化，特征值是 $1\pm i$。
       </div>
 
+      <div class="note">
+        <strong>正交对角化和酉对角化，是不是一回事？</strong>可以把两者理解成同一套思想，分别落在实数域和复数域上的版本：正交对角化用正交矩阵 $Q$（$Q^{\mathrm T}Q=I$），要求 $A^{\mathrm T}=A$；酉对角化用酉矩阵 $U$（$U^*U=I$），要求 $AA^*=A^*A$。二者是<strong>包含关系而非对等关系</strong>——若实对称矩阵 $A$ 已经实现了正交对角化 $A=Q\Lambda Q^{\mathrm T}$，由于 $Q$ 是实矩阵（$Q^*=Q^{\mathrm T}$），它自动也是一次酉对角化，所以正交对角化只是酉对角化的一个特例。<br><br>
+        但反过来不成立：上面这个 $A=\begin{pmatrix}1&-1\\1&1\end{pmatrix}$ 就是例子——它是实矩阵，却只能在复数域上酉对角化（特征值 $1\pm i$ 是复数，特征向量也带虚部），在实数域上根本找不到一组正交实特征向量把它对角化。旋转矩阵（如 $\begin{pmatrix}0&-1\\1&0\end{pmatrix}$）也是同样的道理：几何上它是"纯转圈"，没有哪个实方向在变换下保持不变（方向都被转走了），自然也就没有实特征向量可言。
+      </div>
+
       <h3 class="part"><span class="tag">辨析</span>为什么"正规"恰好是分界线</h3>
       <div class="step">直观理解：矩阵 $A$ 能被酉对角化，意味着存在一组正交基，$A$ 在这组基下就是纯粹的"各方向独立伸缩"。而 $A^*$（作为 $A$ 的共轭转置）在同一组正交基下，恰好是"伸缩系数取共轭"的对角矩阵——两者在同一组基下都是对角矩阵，对角矩阵之间显然可交换，于是 $AA^*=A^*A$ 是"可对角化"必然带来的结果；反过来，只要 $AA^*=A^*A$，就能证明确实存在这样一组共同的正交特征基（证明过程用到"正规矩阵的特征向量之间必正交"这一关键引理，属于更深入的内容）。</div>
 
@@ -5148,6 +5154,57 @@
       <div class="step">这些投影矩阵满足三条代数性质：<strong>①</strong> 互相正交 $P_iP_j=O\ (i\neq j)$（不同特征子空间彼此没有重叠）；<strong>②</strong> 自伴且幂等 $P_i^*=P_i=P_i^2$（同一个方向投影两次，和投影一次的结果一样）；<strong>③</strong> 完备性 $\sum_{i=1}^kP_i=I$（所有特征子空间叠加起来，正好铺满整个空间）。</div>
       <div class="note">
         <strong>几何解读：</strong>向量 $A\mathbf{x}$ 的计算过程可以这样理解——先把 $\mathbf{x}$ 正交投影到每一个互相垂直的特征子空间上（得到 $P_i\mathbf{x}$），再分别按该子空间对应的特征值 $\lambda_i$ 独立伸缩，最后把所有子空间上的结果重新叠加起来。这正是"矩阵变换＝沿一组正交轴独立伸缩"这句话，在代数上最精确的写法——谱分解把"对角化"这件事，从"找一组新坐标"进一步翻译成了"矩阵本身就是这些投影的加权和"。
+      </div>
+
+      <h3 class="part"><span class="tag">推导</span>实对称矩阵为什么一定能正交对角化：三步证明</h3>
+      <div class="step">回到最基础的实数域情形，把"实对称矩阵可正交对角化"这条第十一节直接给出的结论，完整证明一遍。核心逻辑分三步走。</div>
+      <div class="step"><strong>第一步：特征值必为实数。</strong>设 $A\mathbf x=\lambda\mathbf x$（$\mathbf x\neq0$，允许 $\mathbf x$ 暂时取复向量）。两边左乘 $\mathbf x^*$（共轭转置）并利用 $A^{\mathrm T}=A$（进而 $A^*=A$，因为 $A$ 是实矩阵）：
+      $$\mathbf x^*A\mathbf x=\lambda\,\mathbf x^*\mathbf x$$
+      标量 $\mathbf x^*A\mathbf x$ 本身是实数——因为对它取共轭转置，$(\mathbf x^*A\mathbf x)^*=\mathbf x^*A^*\mathbf x=\mathbf x^*A\mathbf x$，一个数等于自己的共轭，说明它没有虚部。又 $\mathbf x^*\mathbf x=\|\mathbf x\|^2>0$ 恒为正实数，于是
+      $$\lambda=\frac{\mathbf x^*A\mathbf x}{\mathbf x^*\mathbf x}$$
+      是"实数除以正实数"，必为实数。这也说明了实对称矩阵的特征向量其实一开始就可以只在实数域里找，不必绕到复数域。</div>
+      <div class="step"><strong>第二步：不同特征值对应的特征向量必正交。</strong>设 $A\mathbf u_1=\lambda_1\mathbf u_1$，$A\mathbf u_2=\lambda_2\mathbf u_2$，且 $\lambda_1\neq\lambda_2$。利用 $A^{\mathrm T}=A$：
+      $$\lambda_1(\mathbf u_1^{\mathrm T}\mathbf u_2)=(A\mathbf u_1)^{\mathrm T}\mathbf u_2=\mathbf u_1^{\mathrm T}A^{\mathrm T}\mathbf u_2=\mathbf u_1^{\mathrm T}A\mathbf u_2=\lambda_2(\mathbf u_1^{\mathrm T}\mathbf u_2)$$
+      移项得 $(\lambda_1-\lambda_2)(\mathbf u_1^{\mathrm T}\mathbf u_2)=0$。因为 $\lambda_1\neq\lambda_2$，唯一的可能就是 $\mathbf u_1^{\mathrm T}\mathbf u_2=0$，即两向量正交。</div>
+      <div class="note">
+        <strong>第三步：同一特征值内部也能凑齐正交基，靠的是什么？</strong>前两步只处理了"不同特征值之间"的正交关系，还没说清"同一个特征值对应的特征子空间内部"能不能也挑出一组正交基——若某特征值是重根，这一点并不是自动成立的。严谨的证明要借助 <strong>Schur 分解</strong>：任意实对称矩阵都能通过正交相似变为上三角矩阵，而对称性会迫使这个上三角矩阵的非对角线部分全部消失，直接变成对角矩阵；再结合数学归纳法（每次剥离出一个特征方向，在剩下的正交补空间里重复同样的论证），就能保证哪怕特征值重复出现 $k$ 次，也总能在对应的特征子空间里找满 $k$ 个两两正交的单位特征向量。这一步涉及更深入的归纳论证，此处只给出结论，不展开完整推导。
+      </div>
+
+      <h3 class="part"><span class="tag">展开</span>换一种写法：按每个特征向量、而不是每个特征子空间展开</h3>
+      <div class="step">上面"谱分解"一节里的 $A=\sum_{i=1}^k\lambda_iP_i$ 是按 $k$ 个<strong>互不相同的特征值</strong>分组求和的（$P_i$ 是投影到第 $i$ 个特征子空间的算子，子空间维数可能大于 1）。还有一种更直接、更常见的等价写法：不按特征值分组，而是把 $n$ 个（计重数）两两正交的单位特征向量 $\mathbf u_1,\dots,\mathbf u_n$ 逐个列出，每人贡献一项：
+      $$A=\sum_{i=1}^n\lambda_i(\mathbf u_i\mathbf u_i^{\mathrm T})$$
+      两种写法本质相同——只是把同一特征值对应的若干项 $\mathbf u_i\mathbf u_i^{\mathrm T}$ 合并起来，就是 $P_i=\sum_{\mathbf u_j\in\text{第}i\text{个特征子空间}}\mathbf u_j\mathbf u_j^{\mathrm T}$。</div>
+      <div class="note">
+        <strong>这个写法是怎么来的：</strong>把正交对角化 $A=Q\Lambda Q^{\mathrm T}$ 里的 $Q=[\mathbf u_1\ \mathbf u_2\ \cdots\ \mathbf u_n]$ 按分块矩阵展开，先算 $Q\Lambda=[\lambda_1\mathbf u_1\ \lambda_2\mathbf u_2\ \cdots\ \lambda_n\mathbf u_n]$（每一列被对应特征值缩放），再乘以 $Q^{\mathrm T}$（按行排列的 $\mathbf u_i^{\mathrm T}$），按"列乘行"的外积展开规则，逐项相加即得上式——这和矩阵乘法"$AB=\sum_k(A\text{的第}k\text{列})(B\text{的第}k\text{行})$"是同一条法则的直接应用。
+      </div>
+      <div class="step">几何上，$\mathbf u_i\mathbf u_i^{\mathrm T}$ 依然是"投影到 $\mathbf u_i$ 方向"的秩一矩阵：把矩阵乘法结合律用在 $(\mathbf u_i\mathbf u_i^{\mathrm T})\mathbf x$ 上，可以先算括号内的 $\mathbf u_i^{\mathrm T}\mathbf x$（这是一个标量），再乘 $\mathbf u_i$：
+      $$(\mathbf u_i\mathbf u_i^{\mathrm T})\mathbf x=\mathbf u_i(\mathbf u_i^{\mathrm T}\mathbf x)=(\mathbf u_i^{\mathrm T}\mathbf x)\mathbf u_i$$
+      标量乘向量可以任意交换顺序写，所以最后把 $(\mathbf u_i^{\mathrm T}\mathbf x)$ 提到前面。这个标量 $\mathbf u_i^{\mathrm T}\mathbf x$ 正是 $\mathbf x$ 在 $\mathbf u_i$ 方向上的投影长度，乘回 $\mathbf u_i$ 之后，得到的就是 $\mathbf x$ 落在 $\mathbf u_i$ 方向上的那个分量。于是 $A\mathbf x$ 的计算过程可以拆成三步：先把 $\mathbf x$ 分解到 $n$ 个互相垂直的特征方向上（投影），再把每个方向上的分量按对应特征值缩放（伸缩），最后把所有缩放后的分量重新加回去（合成）。</div>
+
+      <h3 class="part"><span class="tag">应用</span>有了这个展开式，能省下哪些计算</h3>
+      <div class="step"><strong>矩阵的高次幂 $A^k$。</strong>因为不同 $\mathbf u_i$ 之间正交（$\mathbf u_i^{\mathrm T}\mathbf u_j=0,\ i\neq j$）、同一个 $\mathbf u_i$ 自身单位化（$\mathbf u_i^{\mathrm T}\mathbf u_i=1$），两个投影矩阵相乘时，交叉项会自动清零，只剩下对角项自我复合：
+      $$A^k=\sum_{i=1}^n\lambda_i^k(\mathbf u_i\mathbf u_i^{\mathrm T})$$
+      不需要真的把 $A$ 连乘 $k$ 次，只要把每个特征值单独取 $k$ 次方即可，计算量从"矩阵乘法"降到了"标量乘方"。</div>
+      <div class="step"><strong>矩阵函数 $f(A)$。</strong>同样的道理可以推广到任意函数（如矩阵指数 $e^A$、矩阵平方根 $\sqrt A$、矩阵对数 $\ln A$ 等），只要把函数作用在特征值这个标量上即可：
+      $$f(A)=\sum_{i=1}^nf(\lambda_i)(\mathbf u_i\mathbf u_i^{\mathrm T})$$
+      这是求解线性微分方程组 $\dot{\mathbf x}=A\mathbf x$（解为 $\mathbf x(t)=e^{At}\mathbf x(0)$）时，绕开"矩阵指数"直接定义、转而逐个特征值计算的常用技巧。</div>
+      <div class="step"><strong>数据压缩与降维（PCA 的数学核心）。</strong>把特征值按从大到小排序，若后面若干个特征值远小于前面的，略去它们对应的项，只保留前 $k$ 项：
+      $$A\approx\sum_{i=1}^k\lambda_i(\mathbf u_i\mathbf u_i^{\mathrm T})\qquad(k<n)$$
+      由于每一项都是秩一矩阵，这个近似正是矩阵的<strong>低秩近似</strong>；当 $A$ 取协方差矩阵时，只保留最大的几个特征值对应的方向，就是主成分分析（PCA）"只保留数据方差最大的几个方向、丢弃噪声方向"这一操作背后的完整数学依据。</div>
+
+      <div class="note">
+        <strong>为什么协方差矩阵的特征向量恰好就是"主成分方向"：</strong>设数据的协方差矩阵为 $C$（对称半正定，谱定理自动适用）。数据沿单位方向 $\mathbf v$ 的方差可以写成二次型 $\mathbf v^{\mathrm T}C\mathbf v$。把 $\mathbf v$ 用特征基展开、代入谱分解 $C=\sum\lambda_i\mathbf u_i\mathbf u_i^{\mathrm T}$，会发现这个二次型在 $\mathbf v=\mathbf u_1$（最大特征值对应的特征向量）时取得最大值，且最大值恰好就是 $\lambda_1$ 本身——这正是"最大特征值方向＝方差最大方向"的由来，而不是巧合或类比。<br><br>
+        <strong>"解释了多少方差"怎么算：</strong>协方差矩阵的迹 $\operatorname{tr}(C)=\sum_{i=1}^n\lambda_i$ 等于数据的总方差（迹在正交相似变换下不变，这也是"总方差不会因为换一套坐标系而变化"的代数原因）。只保留前 $k$ 个主成分时，<strong>累计方差贡献率</strong>定义为
+        $$\frac{\lambda_1+\lambda_2+\cdots+\lambda_k}{\lambda_1+\lambda_2+\cdots+\lambda_n}$$
+        这个比例越接近 1，说明丢掉的后 $n-k$ 个方向携带的信息量越少，降维造成的损失也就越小。
+      </div>
+
+      <div class="example">
+        <div class="ex-label">具体例子：二维数据降到一维，丢了多少信息</div>
+        设两个变量的协方差矩阵 $C=\begin{pmatrix}2&1\\1&2\end{pmatrix}$（两个变量各自方差为 2，彼此协方差为 1，说明正相关）。特征多项式 $\lambda^2-4\lambda+3=0$，解得 $\lambda_1=3,\ \lambda_2=1$，对应单位特征向量 $\mathbf u_1=\frac{1}{\sqrt2}(1,1)^{\mathrm T}$，$\mathbf u_2=\frac{1}{\sqrt2}(1,-1)^{\mathrm T}$。<br><br>
+        总方差 $\operatorname{tr}(C)=2+2=4=\lambda_1+\lambda_2=3+1$，验证无误。若只保留第一主成分（沿 $(1,1)$ 方向，也就是两个变量"一起变大、一起变小"的方向），累计方差贡献率为 $\dfrac{\lambda_1}{\lambda_1+\lambda_2}=\dfrac{3}{4}=75\%$——把二维数据投影到这一条直线上，保留了原始信息的 75%，丢弃的 25% 对应着 $\mathbf u_2$ 方向上"两个变量反向波动"的那部分次要变化。用谱分解的语言写出这次近似：
+        $$C\approx3(\mathbf u_1\mathbf u_1^{\mathrm T})=\frac32\begin{pmatrix}1&1\\1&1\end{pmatrix}$$
+        和真实的 $C=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ 相比，误差恰好就是被丢弃的那一项 $\lambda_2(\mathbf u_2\mathbf u_2^{\mathrm T})=\frac12\begin{pmatrix}1&-1\\-1&1\end{pmatrix}$。
       </div>
 
       <h3 class="part"><span class="tag">对比</span>几类常见矩阵的正交对角化属性</h3>
@@ -5612,8 +5669,91 @@
 
     </section>
 
+    <div class="divider"></div>
 
-    <footer class="book-footer">线性代数 · 通俗讲义 · 全二十三章 + 习题详解 完</footer>
+    <!-- ========================================================= -->
+    <!-- 第二十四章：拉普拉斯展开定理 -->
+    <!-- ========================================================= -->
+
+    <section class="chapter" id="ch24">
+      <p class="kicker">衔接第八节 · 行列式 / 24</p>
+      <h2 class="chapter-title">拉普拉斯展开定理（Laplace Expansion Theorem）</h2>
+      <p class="chapter-tagline">把一个 n 阶行列式，递归地拆成若干个低阶子行列式的加权和</p>
+
+      <div class="life">
+        <strong>生活比喻：</strong>算一份很长的账单时，你可以先把其中一栏（比如"运费"）单独挑出来算清楚，再把剩下的部分拆成更小的几张子账单分别核算——拉普拉斯展开定理做的正是这件事：挑出行列式里的某几行（或几列），把原来的大账本，拆成"挑出来的那一小块"乘以"剩下的那一大块"，再对所有挑法求和。
+      </div>
+
+      <h3 class="part"><span class="tag">基础版</span>按单行（或单列）展开</h3>
+      <div class="step">这是最日常使用的形式。对于一个 $n$ 阶行列式 $D=\det(A)$，可以任意指定第 $i$ 行（或第 $j$ 列）进行展开：</div>
+      <div class="center-block">
+        $$\text{按第 }i\text{ 行展开：}\quad D=a_{i1}C_{i1}+a_{i2}C_{i2}+\cdots+a_{in}C_{in}=\sum_{j=1}^{n}a_{ij}C_{ij}$$
+        $$\text{按第 }j\text{ 列展开：}\quad D=a_{1j}C_{1j}+a_{2j}C_{2j}+\cdots+a_{nj}C_{nj}=\sum_{i=1}^{n}a_{ij}C_{ij}$$
+      </div>
+      <div class="step">其中：$a_{ij}$ 是第 $i$ 行第 $j$ 列的元素；$M_{ij}$（余子式）是划掉第 $i$ 行与第 $j$ 列后，剩下的 $(n-1)$ 阶子行列式；$C_{ij}$（代数余子式）是带符号位的余子式，定义为 $C_{ij}=(-1)^{i+j}M_{ij}$。</div>
+
+      <div class="note">
+        <strong>和第八节的关系：</strong>第八节"三阶行列式按第一行展开"那个例子，正是这里 $i=1$ 的特殊情形；这里把它推广到"任意一行/列"，并在下一部分进一步推广到"任意 $k$ 行/列"。
+      </div>
+
+      <h3 class="part"><span class="tag">通用版</span>按多行（或多列）展开</h3>
+      <div class="step">拉普拉斯定理的完全体不仅限于单行单列，允许同时选中 $k$ 行（或 $k$ 列）进行展开（$1\le k\le n-1$）：</div>
+      <div class="statement">
+        <strong>定理内容：</strong>在 $n$ 阶行列式 $D$ 中，任意指定 $k$ 行。这 $k$ 行中所有可能的 $k$ 阶子式，与其对应的代数余子式的乘积之和，精确等于该行列式 $D$ 的值：
+        <div class="center-eq">$$D=\sum N\cdot C$$</div>
+      </div>
+      <div class="step"><strong>具体构造流程：</strong>假设在 $n$ 阶行列式中选定了 $k$ 行——</div>
+      <div class="step">① 从这 $k$ 行中取选定列构成的 $k$ 阶子式 $N$；</div>
+      <div class="step">② 划掉这 $k$ 行与这 $k$ 列后，剩下的 $(n-k)$ 阶子式称为 $N$ 的余子式 $M$；</div>
+      <div class="step">③ 为其配上符号位，得到代数余子式 $C=(-1)^{\sum\text{行号}+\sum\text{列号}}M$；</div>
+      <div class="step">④ 把所有可能选出的 $k$ 阶子式 $N$ 与对应的 $C$ 乘起来累加，即得 $D$。</div>
+
+      <div class="deepdive">
+        <div class="dd-label">辨析：符号位 $(-1)^{\sum\text{行号}+\sum\text{列号}}$ 的严谨写法</div>
+        <div class="step">若选定的 $k$ 行是 $i_1&lt;i_2&lt;\cdots&lt;i_k$，选定的 $k$ 列是 $j_1&lt;j_2&lt;\cdots&lt;j_k$，符号应写成：</div>
+        <div class="center-block">$$(-1)^{(i_1+i_2+\cdots+i_k)+(j_1+j_2+\cdots+j_k)}$$</div>
+        <div class="step">这个符号本质上来自"把这 $k$ 行（列）通过若干次相邻对换，搬到矩阵最前 $k$ 行（列）"所需的对换次数的奇偶性。这也解释了为什么单行/列展开时（$k=1$），符号会退化成熟悉的棋盘状 $(-1)^{i+j}$——因为 $k=1$ 时求和号里只有一个 $i$、一个 $j$，公式自然简化成最初学到的形式。</div>
+      </div>
+
+      <h3 class="part"><span class="tag">应用</span>三个经典技巧</h3>
+      <div class="step"><strong>① 降维打击（消元法）：</strong>通过初等变换（行/列加减倍数），将某一列或某一行变成只有一个非零元素（其余全为 0），再按该行/列展开，原 $n$ 阶行列式立刻缩减为一个 $(n-1)$ 阶行列式。</div>
+      <div class="step"><strong>② 加边法 / 升阶法：</strong>正向利用展开定理——通过补上一行一列（如上边加 $[1,a_1,\dots,a_n]^{\mathrm T}$、左边加 $[1,0,\dots,0]$），把复杂的 $n$ 阶交叉行列式包装成 $n+1$ 阶行列式，以便后续进行初等变换消元。</div>
+
+      <div class="note">
+        <strong>关于加边法的符号约定：</strong>补的那一行 $[1,0,\dots,0]$（或对应的列）通常是为了保证新增的第一行第一列的代数余子式恰好是 $+1\times$原行列式——这样按新增行/列展开后，系数干净，不会额外带出正负号。如果具体做加边法的例题时发现符号"对不上"，最容易出错的地方往往就是这一步：先确认新增行列放的位置（第一行第一列还是最后一行最后一列），符号位公式里的行号、列号也要跟着换算。
+      </div>
+
+      <div class="step"><strong>③ 分块对角矩阵求解：</strong>利用拉普拉斯按多行展开定理，可以很快证明分块（准）对角矩阵的行列式：</div>
+      <div class="center-block">$$\det\begin{pmatrix}A&O\\C&B\end{pmatrix}=\det(A)\cdot\det(B)$$</div>
+
+      <div class="deepdive">
+        <div class="dd-label">证明：用多行展开定理"秒杀"分块矩阵行列式</div>
+        <div class="step">设 $A$ 是 $k$ 阶方阵，$B$ 是 $(n-k)$ 阶方阵，对整个 $n$ 阶矩阵 $\begin{pmatrix}A&O\\C&B\end{pmatrix}$ 的<strong>前 $k$ 行</strong>（即 $A$ 所在的那 $k$ 行）使用多行展开定理。</div>
+        <div class="step">这 $k$ 行里，能取出的 $k$ 阶子式 $N$ 理论上有很多种取法（任选 $k$ 列），但只有<strong>取"最左边 $k$ 列"</strong>（即完全落在 $A$ 内部）的那个子式才可能非零——只要取法里包含右上角 $O$ 块的任何一列，取出的子式就必含一整列全零，行列式自然为零，这一项直接消失。</div>
+        <div class="step">于是求和 $\sum N\cdot C$ 只剩下唯一非零的一项：$N=\det(A)$。划掉前 $k$ 行与前 $k$ 列后，剩下的恰好是右下角的 $B$，所以这一项的余子式 $M=\det(B)$。</div>
+        <div class="step">符号位：因为选的是最前 $k$ 行、最前 $k$ 列，$\sum\text{行号}+\sum\text{列号}=2(1+2+\cdots+k)$，一定是偶数，符号位 $=+1$。</div>
+        <div class="step">于是 $D=N\cdot C=\det(A)\cdot(+1)\cdot\det(B)=\det(A)\det(B)$，证毕。这也是一个很典型的"用定理秒杀结论"的例子——不需要写出具体的初等变换过程，直接套多行展开定理，一步到位。</div>
+      </div>
+
+      <h3 class="part"><span class="tag">总结</span>一张表看懂符号位规则 $(-1)^{i+j}$</h3>
+      <div class="step">在按单行/单列展开时（$k=1$ 的情形），符号位呈现"棋盘状"交替分布：</div>
+      <div class="center-block">
+        <table class="matrix-table">
+          <tr><th>位置</th><th>$j=1$</th><th>$j=2$</th><th>$j=3$</th><th>$j=4$</th><th>$\cdots$</th></tr>
+          <tr><td>$i=1$</td><td>$+$</td><td>$-$</td><td>$+$</td><td>$-$</td><td>$\cdots$</td></tr>
+          <tr><td>$i=2$</td><td>$-$</td><td>$+$</td><td>$-$</td><td>$+$</td><td>$\cdots$</td></tr>
+          <tr><td>$i=3$</td><td>$+$</td><td>$-$</td><td>$+$</td><td>$-$</td><td>$\cdots$</td></tr>
+          <tr><td>$i=4$</td><td>$-$</td><td>$+$</td><td>$-$</td><td>$+$</td><td>$\cdots$</td></tr>
+          <tr><td>$\vdots$</td><td>$\vdots$</td><td>$\vdots$</td><td>$\vdots$</td><td>$\vdots$</td><td>$\ddots$</td></tr>
+        </table>
+      </div>
+      <div class="note">
+        <strong>说明：</strong>棋盘状分布的本质就是 $(-1)^{i+j}$——$i+j$ 是偶数时取 $+$，是奇数时取 $-$。而按多行/列展开时的一般符号位 $(-1)^{\sum i+\sum j}$，可以看成是把这张"棋盘"的规律，从"一格"推广到"一整块"之后的结果。
+      </div>
+
+    </section>
+
+    <footer class="book-footer">线性代数 · 通俗讲义 · 全二十四章 + 习题详解 完</footer>
 
   </main>
 </div>
