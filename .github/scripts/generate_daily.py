@@ -721,13 +721,14 @@ def call_gemini(prompt):
         return None
 
 def call_groq(prompt):
-    """Groq Llama-3.3-70b：14,400 RPD，30 RPM 免费"""
+    """Groq GPT-OSS-120B：llama-3.3-70b-versatile 已于2026-08-16被Groq下线，
+    改用官方迁移建议的 openai/gpt-oss-120b"""
     if not GROQ_KEY:
         return None
     url = 'https://api.groq.com/openai/v1/chat/completions'
     headers = {'Authorization': f'Bearer {GROQ_KEY}',
                'Content-Type': 'application/json'}
-    body = {'model': 'llama-3.3-70b-versatile',
+    body = {'model': 'openai/gpt-oss-120b',
             'messages': [{'role': 'user', 'content': prompt}],
             'max_tokens': 1500}
     for attempt in range(3):
@@ -776,14 +777,14 @@ def call_openrouter(prompt):
 
 
 def call_cerebras(prompt):
-    """Cerebras：免费层，速度极快"""
+    """Cerebras：llama3.1-8b 已被 Cerebras 弃用，改用 gpt-oss-120b"""
     if not CEREBRAS_KEY:
         return None
     try:
         r = requests.post('https://api.cerebras.ai/v1/chat/completions',
                           headers={'Authorization': f'Bearer {CEREBRAS_KEY}',
                                    'Content-Type': 'application/json'},
-                          json={'model': 'llama3.1-8b',
+                          json={'model': 'gpt-oss-120b',
                                 'messages': [{'role': 'user', 'content': prompt}],
                                 'max_tokens': 1500},
                           timeout=30)
@@ -1236,6 +1237,9 @@ def build_email_html(sections, unsubscribe_token=None):
     body_parts = []
     for key, label in SECTION_LABELS.items():
         content = sections.get(key, '')
+        if not content or content == FALLBACK_HTML:
+            print(f'  ⚠ 邮件中跳过 {key}（内容为空或全部AI失败）')
+            continue
         if content and content != FALLBACK_HTML:
             body_parts.append(
                 f'<h2 style="color:#012169;border-bottom:2px solid #012169;'
