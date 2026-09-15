@@ -868,11 +868,31 @@ def _looks_like_leaked_prompt(html):
     ]
     return any(marker in stripped for marker in leak_markers)
 
+def _strip_to_html_fragment(html):
+    """AI有时会在真正的<ul>/<ol>列表前后夹带问候语、自我说明等非正文文字
+    （例如"尊敬的XX家长们，大家好，今天是...，我们已严格按规则筛选掉...，
+    也绝对未添加任何未在源文中出现的日期"——本质是把prompt里的规则原样
+    复述了一遍）。这类文字措辞每次都不一样，逐条列关键词黑名单永远防不住，
+    所以改用"白名单"思路：只保留真正的<ul>...</ul>区块（或<ol>...</ol>），
+    区块之外的任何文字一律丢弃，从根源上杜绝此类前言/后记泄漏进邮件和网页。"""
+    if not html:
+        return html
+    import re as _re
+    blocks = _re.findall(r'<ul\b.*?</ul>', html, flags=_re.DOTALL | _re.IGNORECASE)
+    if blocks:
+        return '\n'.join(blocks)
+    blocks = _re.findall(r'<ol\b.*?</ol>', html, flags=_re.DOTALL | _re.IGNORECASE)
+    if blocks:
+        return '\n'.join(blocks)
+    # 没有<ul>/<ol>（比如背景说明用<p>）时保持原样，交给下面的关键词检测兜底
+    return html
+
 def _call_ai_html(prompt, fallback=FALLBACK_HTML):
-    """统一的AI调用出口：调用gemini()后先做泄漏检测，
-    确认是干净的HTML摘要才放行，否则一律回退到fallback（默认FALLBACK_HTML），
-    永远不把内部prompt/免责声明泄漏进最终邮件。"""
+    """统一的AI调用出口：调用gemini()后先剥离列表外的前言/后记，
+    再做泄漏检测，确认是干净的HTML摘要才放行，否则一律回退到fallback
+    （默认FALLBACK_HTML），永远不把内部prompt/免责声明泄漏进最终邮件。"""
     result = gemini(prompt)
+    result = _strip_to_html_fragment(result)
     if _looks_like_leaked_prompt(result):
         return fallback
     return result or fallback
@@ -1204,7 +1224,9 @@ def generate_prematric_section(page_text):
         "4. 其他事项优先列出今天起90天内的\n"
         "5. 涉及住房分配、迎新周、搬入日、国际生网络迎新务必包含（仅限源文本中确有的信息）\n"
         "6. 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
-        "7. 只输出HTML，不要其他文字"
+        "7. 只输出一段<ul>...</ul>，不要问候语（如「尊敬的XX家长们」「大家好」）、"
+        "不要说明今天的日期、不要描述你自己遵守了哪些规则或做了哪些筛选——"
+        "这些说明性文字一个字都不要出现，直接从<ul>开始、以</ul>结束"
     )
     return _call_ai_html(prompt)
 
