@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>接送机拼车登记 Airport Carpool Sign-up · 扯谈Duke群</title>
+<title>接送机拼车登记 Airport Carpool Sign-up · Duke Parents Community</title>
 <style>
   :root{
     --navy: #12284c;
@@ -220,7 +220,7 @@
 <div class="wrap">
 
   <div class="masthead">
-    <p class="eyebrow">扯谈Duke群 · 学生互助 <span class="en">Duke Chinese Parents Community · Student mutual help</span></p>
+    <p class="eyebrow">Duke 家长社区 · 学生互助 <span class="en">Duke Parents Community · Student mutual help</span></p>
     <h1>接送机拼车登记<span class="en">Airport Carpool Sign-up</span></h1>
     <p>填一次表，系统会按时间把你和顺路的同学分到一组，方便大家自己约车、分摊车费。信息只会给同组同学看到。</p>
     <p class="en">Fill this out once and the system will group you with classmates on a similar schedule, so you can arrange a ride and split the cost together. Your info is only shared with your matched group.</p>
@@ -254,6 +254,24 @@
         <div>
           <label for="email">邮箱<span class="en">Email</span></label>
           <input type="email" id="email" required>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="class_year">学生届次<span class="en">Class year</span></label>
+          <select id="class_year" required>
+            <option value="">请选择 / Select…</option>
+            <option value="2027">Class of 2027（大四 Senior）</option>
+            <option value="2028">Class of 2028（大三 Junior）</option>
+            <option value="2029">Class of 2029（大二 Sophomore）</option>
+            <option value="2030">Class of 2030（大一 First-year）</option>
+            <option value="graduate">研究生 / Graduate student</option>
+            <option value="other">其他 / Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="parent_wechat">家长微信 <span class="opt">（可选，方便家长群通知）</span><span class="en">Parent's WeChat (optional, for parent group updates)</span></label>
+          <input type="text" id="parent_wechat">
         </div>
       </div>
     </fieldset>
@@ -436,6 +454,8 @@
     const payload = {
       student_name: document.getElementById('student_name').value.trim(),
       wechat_id: document.getElementById('wechat_id').value.trim() || null,
+      class_year: document.getElementById('class_year').value || null,
+      parent_wechat: document.getElementById('parent_wechat').value.trim() || null,
       phone: document.getElementById('phone').value.trim() || null,
       email: document.getElementById('email').value.trim(),
       trip_type: tripTypeInput.value,
