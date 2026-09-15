@@ -277,7 +277,7 @@
     </fieldset>
 
     <fieldset>
-      <legend id="flightLegend">航班信息<span class="en" id="flightLegendEn">Flight info</span></legend>
+      <legend id="flightLegend">航班信息（RDU起飞）<span class="en" id="flightLegendEn">Flight info (departure)</span></legend>
       <div class="row">
         <div>
           <label for="flight_date" id="dateLabel">起飞日期<span class="en" id="dateLabelEn">Departure date</span></label>
@@ -362,7 +362,7 @@
 
     if (value === 'to_airport'){
       flightLegendEn.textContent = 'Flight info (departure)';
-      flightLegend.firstChild.textContent = '航班信息（起飞）';
+      flightLegend.firstChild.textContent = '航班信息（RDU起飞）';
       dateLabelEn.textContent = 'Departure date';
       dateLabel.firstChild.textContent = '起飞日期';
       timeLabelEn.textContent = 'Departure time';
@@ -374,7 +374,7 @@
       bufferInput.value = 120;
     } else {
       flightLegendEn.textContent = 'Flight info (arrival)';
-      flightLegend.firstChild.textContent = '航班信息（落地）';
+      flightLegend.firstChild.textContent = '航班信息（RDU落地）';
       dateLabelEn.textContent = 'Arrival date';
       dateLabel.firstChild.textContent = '落地日期';
       timeLabelEn.textContent = 'Arrival time';
