@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理后台 Admin · 扯谈Duke群</title>
+<style>
+  :root{
+    --navy: #12284c;
+    --navy-soft: #2c4570;
+    --gold: #c8963e;
+    --bg: #f5f6f4;
+    --card: #ffffff;
+    --ink: #1d2126;
+    --ink-soft: #5b6472;
+    --line: #dfe3e6;
+    --error: #b3402f;
+    --ok: #1d7a4c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+    line-height:1.6;
+    padding:32px 16px 80px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+
+  .masthead{margin-bottom:24px; display:flex; justify-content:space-between; align-items:flex-start; gap:16px;}
+  .masthead .eyebrow{color:var(--navy-soft); font-size:13px; margin:0 0 4px;}
+  .masthead h1{font-size:22px; margin:0; color:var(--navy); font-weight:700;}
+  .masthead h1 .en{display:block; font-size:14px; font-weight:500; color:var(--navy-soft); margin-top:2px;}
+
+  button{font-family:inherit; cursor:pointer;}
+  .btn{
+    background:var(--navy); color:#fff; border:none;
+    padding:9px 18px; border-radius:8px; font-size:14px; font-weight:600;
+  }
+  .btn:hover{background:var(--navy-soft);}
+  .btn:disabled{background:#9aa5b1; cursor:not-allowed;}
+  .btn.ghost{background:transparent; color:var(--navy); border:1px solid var(--line);}
+  .btn.ghost:hover{background:#eef2f6;}
+  .btn.small{padding:6px 12px; font-size:13px;}
+  .btn.danger{background:transparent; color:var(--error); border:1px solid var(--error);}
+
+  /* Login */
+  .login-card{
+    max-width:360px; margin:80px auto; background:var(--card);
+    border:1px solid var(--line); border-radius:12px; padding:28px;
+  }
+  .login-card h2{margin:0 0 4px; font-size:18px; color:var(--navy);}
+  .login-card p{margin:0 0 20px; font-size:13px; color:var(--ink-soft);}
+  .login-card label{display:block; font-size:13px; margin-bottom:6px; color:var(--ink);}
+  .login-card input{
+    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px;
+    font-size:14px; margin-bottom:14px; font-family:inherit;
+  }
+  .login-card .btn{width:100%;}
+  .login-err{color:var(--error); font-size:13px; margin-top:10px; display:none;}
+  .login-err.show{display:block;}
+
+  /* Dashboard */
+  #dashboard{display:none;}
+  #dashboard.show{display:block;}
+
+  .toolbar{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:16px 20px; margin-bottom:18px;
+  }
+  .toolbar-row{display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end;}
+  .field{display:flex; flex-direction:column; gap:4px;}
+  .field label{font-size:12px; color:var(--ink-soft);}
+  .field input, .field select{
+    padding:8px 10px; border:1px solid var(--line); border-radius:6px; font-size:14px; font-family:inherit;
+  }
+  .field.grow{flex:1; min-width:140px;}
+
+  .tabs{display:flex; gap:8px; margin-bottom:16px;}
+  .tabs button{
+    background:transparent; border:1px solid var(--line); border-radius:8px;
+    padding:8px 16px; font-size:14px; color:var(--ink-soft);
+  }
+  .tabs button.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+
+  .section-title{font-size:14px; font-weight:600; color:var(--navy); margin:22px 0 10px;}
+  .section-title .en{font-weight:400; color:var(--ink-soft); font-size:12px; margin-left:6px;}
+
+  table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+  th, td{padding:9px 10px; text-align:left; font-size:13px; border-bottom:1px solid var(--line);}
+  th{background:#eef2f6; color:var(--navy-soft); font-weight:600; font-size:12px;}
+  tr:last-child td{border-bottom:none;}
+  td.mono{font-variant-numeric:tabular-nums;}
+  .empty-state{
+    padding:24px; text-align:center; color:var(--ink-soft); font-size:13px;
+    background:var(--card); border:1px dashed var(--line); border-radius:10px;
+  }
+
+  .group-card{
+    background:var(--card); border:1px solid var(--line); border-left:4px solid var(--gold);
+    border-radius:10px; padding:16px 18px; margin-bottom:14px;
+  }
+  .group-card.preview{border-left-color:var(--navy-soft);}
+  .group-card h3{margin:0 0 2px; font-size:14px; color:var(--navy);}
+  .group-card .meta{font-size:12px; color:var(--ink-soft); margin-bottom:10px;}
+  .member{
+    display:flex; flex-wrap:wrap; gap:4px 16px; font-size:13px;
+    padding:7px 0; border-top:1px solid var(--line);
+  }
+  .member:first-of-type{border-top:none;}
+  .member .name{font-weight:600; min-width:80px;}
+  .member span.tag{color:var(--ink-soft);}
+
+  .status-line{font-size:13px; margin-top:10px;}
+  .status-line.ok{color:var(--ok);}
+  .status-line.err{color:var(--error);}
+
+  .unmatched-chip{
+    display:inline-block; background:#f2f2f2; border:1px solid var(--line);
+    border-radius:6px; padding:2px 8px; font-size:12px; color:var(--ink-soft); margin-bottom:8px;
+  }
+
+  @media (max-width:640px){
+    .masthead{flex-direction:column;}
+    table{font-size:12px;}
+    th, td{padding:7px 6px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div class="login-card" id="loginCard">
+    <h2>管理员登录<span class="en" style="display:block;font-size:12px;font-weight:400;color:var(--ink-soft);">Admin sign in</span></h2>
+    <p>接送机拼车登记 · 扯谈Duke群后台</p>
+    <label for="loginEmail">邮箱 Email</label>
+    <input type="email" id="loginEmail" autocomplete="username">
+    <label for="loginPassword">密码 Password</label>
+    <input type="password" id="loginPassword" autocomplete="current-password">
+    <button class="btn" id="loginBtn">登录 Sign in</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard">
+    <div class="masthead">
+      <div>
+        <p class="eyebrow">扯谈Duke群 · 后台管理</p>
+        <h1>接送机配对管理<span class="en">Carpool Matching Admin</span></h1>
+      </div>
+      <button class="btn ghost small" id="signOutBtn">退出登录 Sign out</button>
+    </div>
+
+    <div class="tabs">
+      <button type="button" class="tab-btn active" data-value="to_airport">送机 To Airport</button>
+      <button type="button" class="tab-btn" data-value="from_airport">接机 From Airport</button>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-row">
+        <div class="field">
+          <label for="filterDate">日期 Date</label>
+          <input type="date" id="filterDate">
+        </div>
+        <div class="field">
+          <label for="windowMinutes">聚类时间窗口(分钟) Window (min)</label>
+          <input type="number" id="windowMinutes" value="60" min="10" step="10" style="width:100px;">
+        </div>
+        <div class="field">
+          <label for="maxGroupSize">每组人数上限 Max group size</label>
+          <input type="number" id="maxGroupSize" value="4" min="2" step="1" style="width:100px;">
+        </div>
+        <div class="field grow"></div>
+        <button class="btn ghost small" id="refreshBtn">刷新 Refresh</button>
+        <button class="btn small" id="runMatchBtn">运行配对 Run matching</button>
+      </div>
+    </div>
+
+    <div id="loadStatus" class="status-line"></div>
+
+    <div class="section-title">配对预览（未保存）<span class="en">Preview (not saved yet)</span></div>
+    <div id="previewArea"><div class="empty-state">点击"运行配对"生成分组预览 · Click "Run matching" to preview groups</div></div>
+    <div id="saveArea" style="display:none; margin-bottom:10px;">
+      <button class="btn" id="saveGroupsBtn">保存这些分组 Save groups</button>
+      <span class="status-line" id="saveStatus"></span>
+    </div>
+
+    <div class="section-title">已保存的分组<span class="en">Saved groups</span></div>
+    <div id="savedGroupsArea"><div class="empty-state">暂无 · none yet</div></div>
+
+    <div class="section-title">未匹配 / 待处理登记<span class="en">Unmatched registrations</span></div>
+    <div id="unmatchedArea"><div class="empty-state">暂无 · none</div></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const loginCard = document.getElementById('loginCard');
+  const dashboard = document.getElementById('dashboard');
+  const loginErr = document.getElementById('loginErr');
+
+  let currentTripType = 'to_airport';
+  let currentRows = [];      // all rows for current trip_type (+ optional date filter)
+  let previewClusters = [];  // clusters generated by last "run matching"
+
+  // ---------------- Auth ----------------
+  async function checkSession(){
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session){
+      showDashboard();
+    } else {
+      showLogin();
+    }
+  }
+
+  function showLogin(){
+    loginCard.style.display = 'block';
+    dashboard.classList.remove('show');
+  }
+
+  function showDashboard(){
+    loginCard.style.display = 'none';
+    dashboard.classList.add('show');
+    loadData();
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    loginErr.classList.remove('show');
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error){
+      loginErr.textContent = '登录失败 Sign in failed: ' + error.message;
+      loginErr.classList.add('show');
+      return;
+    }
+    showDashboard();
+  });
+
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+    showLogin();
+  });
+
+  // ---------------- Tabs ----------------
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+      currentTripType = btn.dataset.value;
+      previewClusters = [];
+      renderPreview();
+      loadData();
+    });
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', loadData);
+
+  // ---------------- Load data ----------------
+  async function loadData(){
+    const statusEl = document.getElementById('loadStatus');
+    statusEl.textContent = '加载中... Loading...';
+    statusEl.className = 'status-line';
+
+    let query = supabaseClient
+      .from('rdu_match_requests')
+      .select('*')
+      .eq('trip_type', currentTripType)
+      .order('flight_date', { ascending: true })
+      .order('flight_time', { ascending: true });
+
+    const dateFilter = document.getElementById('filterDate').value;
+    if (dateFilter){
+      query = query.eq('flight_date', dateFilter);
+    }
+
+    const { data, error } = await query;
+
+    if (error){
+      statusEl.textContent = '加载失败 Failed to load: ' + error.message +
+        '（请确认已登录、已加入 admins 白名单、且已跑过 RLS 的 SQL）';
+      statusEl.className = 'status-line err';
+      currentRows = [];
+    } else {
+      currentRows = data || [];
+      statusEl.textContent = `已加载 ${currentRows.length} 条登记 · Loaded ${currentRows.length} registrations`;
+      statusEl.className = 'status-line ok';
+    }
+
+    renderSavedGroups();
+    renderUnmatched();
+  }
+
+  // ---------------- Time helpers ----------------
+  function targetTime(row){
+    const base = new Date(`${row.flight_date}T${row.flight_time}`);
+    const buffer = row.ready_buffer_minutes || 0;
+    if (row.trip_type === 'to_airport'){
+      return new Date(base.getTime() - (buffer + 60) * 60000);
+    } else {
+      return new Date(base.getTime() + buffer * 60000);
+    }
+  }
+
+  function fmtTime(d){
+    return d.toLocaleString('zh-CN', {
+      month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
+    });
+  }
+
+  // ---------------- Matching algorithm ----------------
+  function runMatching(){
+    const windowMin = parseInt(document.getElementById('windowMinutes').value || '60', 10);
+    const maxSize = parseInt(document.getElementById('maxGroupSize').value || '4', 10);
+
+    const ungrouped = currentRows
+      .filter(r => !r.group_id)
+      .map(r => ({ row: r, t: targetTime(r) }))
+      .sort((a, b) => a.t - b.t);
+
+    const clusters = [];
+    let current = [];
+
+    for (const item of ungrouped){
+      if (current.length === 0){
+        current = [item];
+        continue;
+      }
+      const last = current[current.length - 1];
+      const gapMin = (item.t - last.t) / 60000;
+      if (gapMin <= windowMin && current.length < maxSize){
+        current.push(item);
+      } else {
+        clusters.push(current);
+        current = [item];
+      }
+    }
+    if (current.length) clusters.push(current);
+
+    // only keep clusters with 2+ people as real matches
+    previewClusters = clusters.filter(c => c.length >= 2).map(c => ({
+      members: c.map(x => x.row),
+      startTime: c[0].t,
+      endTime: c[c.length - 1].t
+    }));
+
+    renderPreview();
+  }
+
+  document.getElementById('runMatchBtn').addEventListener('click', runMatching);
+
+  // ---------------- Render preview ----------------
+  function renderPreview(){
+    const area = document.getElementById('previewArea');
+    const saveArea = document.getElementById('saveArea');
+
+    if (!previewClusters.length){
+      area.innerHTML = '<div class="empty-state">点击"运行配对"生成分组预览 · Click "Run matching" to preview groups</div>';
+      saveArea.style.display = 'none';
+      return;
+    }
+
+    area.innerHTML = previewClusters.map((c, idx) => `
+      <div class="group-card preview">
+        <h3>预览分组 ${idx + 1} · ${c.members.length}人</h3>
+        <div class="meta">时间范围 ${fmtTime(c.startTime)} – ${fmtTime(c.endTime)}</div>
+        ${c.members.map(m => memberLine(m)).join('')}
+      </div>
+    `).join('');
+
+    saveArea.style.display = 'block';
+    document.getElementById('saveStatus').textContent = '';
+  }
+
+  function memberLine(m){
+    return `<div class="member">
+      <span class="name">${escapeHtml(m.student_name)}</span>
+      <span class="tag">${m.class_year ? escapeHtml(m.class_year) : ''}</span>
+      <span class="tag">微信 ${m.wechat_id ? escapeHtml(m.wechat_id) : '—'}</span>
+      <span class="tag">手机 ${m.phone ? escapeHtml(m.phone) : '—'}</span>
+      <span class="tag">邮箱 ${escapeHtml(m.email)}</span>
+      ${m.parent_wechat ? `<span class="tag">家长微信 ${escapeHtml(m.parent_wechat)}</span>` : ''}
+      <span class="tag">${escapeHtml(m.flight_date)} ${escapeHtml(m.flight_time)}${m.flight_number ? ' · ' + escapeHtml(m.flight_number) : ''}</span>
+      ${m.campus_location ? `<span class="tag">${escapeHtml(m.campus_location)}</span>` : ''}
+      ${m.notes ? `<span class="tag">备注: ${escapeHtml(m.notes)}</span>` : ''}
+    </div>`;
+  }
+
+  function escapeHtml(s){
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ---------------- Save groups ----------------
+  document.getElementById('saveGroupsBtn').addEventListener('click', async () => {
+    const statusEl = document.getElementById('saveStatus');
+    statusEl.textContent = '保存中... Saving...';
+    statusEl.className = 'status-line';
+
+    let seq = 1;
+    let hadError = false;
+
+    for (const c of previewClusters){
+      const dateStr = c.members[0].flight_date;
+      const gid = `${currentTripType}_${dateStr}_${seq++}`;
+      const ids = c.members.map(m => m.id);
+      const { error } = await supabaseClient
+        .from('rdu_match_requests')
+        .update({ group_id: gid })
+        .in('id', ids);
+      if (error){
+        hadError = true;
+        statusEl.textContent = '部分保存失败 Some saves failed: ' + error.message;
+        statusEl.className = 'status-line err';
+      }
+    }
+
+    if (!hadError){
+      statusEl.textContent = '已保存 Saved';
+      statusEl.className = 'status-line ok';
+    }
+
+    previewClusters = [];
+    renderPreview();
+    loadData();
+  });
+
+  // ---------------- Saved groups ----------------
+  function renderSavedGroups(){
+    const area = document.getElementById('savedGroupsArea');
+    const grouped = {};
+    currentRows.filter(r => r.group_id).forEach(r => {
+      if (!grouped[r.group_id]) grouped[r.group_id] = [];
+      grouped[r.group_id].push(r);
+    });
+    const groupIds = Object.keys(grouped).sort();
+
+    if (!groupIds.length){
+      area.innerHTML = '<div class="empty-state">暂无 · none yet</div>';
+      return;
+    }
+
+    area.innerHTML = groupIds.map(gid => `
+      <div class="group-card">
+        <h3>${escapeHtml(gid)} · ${grouped[gid].length}人</h3>
+        <div class="meta">
+          <button class="btn danger small" data-ungroup="${escapeHtml(gid)}">取消分组 Ungroup</button>
+        </div>
+        ${grouped[gid].map(m => memberLine(m)).join('')}
+      </div>
+    `).join('');
+
+    area.querySelectorAll('[data-ungroup]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const gid = btn.dataset.ungroup;
+        const ids = grouped[gid].map(m => m.id);
+        await supabaseClient.from('rdu_match_requests').update({ group_id: null }).in('id', ids);
+        loadData();
+      });
+    });
+  }
+
+  // ---------------- Unmatched ----------------
+  function renderUnmatched(){
+    const area = document.getElementById('unmatchedArea');
+    const unmatched = currentRows.filter(r => !r.group_id);
+
+    if (!unmatched.length){
+      area.innerHTML = '<div class="empty-state">暂无 · none</div>';
+      return;
+    }
+
+    area.innerHTML = `
+      <div class="unmatched-chip">${unmatched.length} 人待匹配 · ${unmatched.length} pending</div>
+      <table>
+        <thead><tr>
+          <th>姓名</th><th>届次</th><th>日期</th><th>时间</th><th>预计目标时间</th><th>微信</th><th>手机</th>
+        </tr></thead>
+        <tbody>
+          ${unmatched.map(r => `
+            <tr>
+              <td>${escapeHtml(r.student_name)}</td>
+              <td>${escapeHtml(r.class_year || '—')}</td>
+              <td class="mono">${escapeHtml(r.flight_date)}</td>
+              <td class="mono">${escapeHtml(r.flight_time)}</td>
+              <td class="mono">${fmtTime(targetTime(r))}</td>
+              <td>${escapeHtml(r.wechat_id || '—')}</td>
+              <td>${escapeHtml(r.phone || '—')}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  document.getElementById('filterDate').addEventListener('change', loadData);
+
+  // ---------------- Init ----------------
+  checkSession();
+</script>
+</body>
+</html>
