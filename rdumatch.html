@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>接送机拼车登记 Airport Carpool Sign-up · 扯谈Duke群</title>
+<style>
+  :root{
+    --navy: #12284c;
+    --navy-soft: #2c4570;
+    --gold: #c8963e;
+    --bg: #f5f6f4;
+    --card: #ffffff;
+    --ink: #1d2126;
+    --ink-soft: #5b6472;
+    --line: #dfe3e6;
+    --error: #b3402f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+    line-height:1.6;
+    padding:32px 16px 80px;
+  }
+  .wrap{max-width:640px;margin:0 auto;}
+
+  .masthead{margin-bottom:28px;}
+  .masthead .eyebrow{
+    color:var(--navy-soft);
+    font-size:14px;
+    margin:0 0 6px;
+  }
+  .masthead .eyebrow .en{ color:var(--ink-soft); }
+  .masthead h1{
+    font-size:26px;
+    margin:0 0 4px;
+    color:var(--navy);
+    font-weight:700;
+    letter-spacing:0.2px;
+  }
+  .masthead h1 .en{
+    display:block;
+    font-size:16px;
+    font-weight:500;
+    color:var(--navy-soft);
+    margin-top:2px;
+  }
+  .masthead p{
+    color:var(--ink-soft);
+    font-size:15px;
+    margin:10px 0 0;
+    max-width:56ch;
+  }
+  .masthead p.en{
+    font-size:14px;
+    margin-top:4px;
+  }
+
+  .switch{
+    display:flex;
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:24px;
+    background:var(--card);
+  }
+  .switch button{
+    flex:1;
+    border:none;
+    background:transparent;
+    padding:12px 10px;
+    font-size:15px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    font-family:inherit;
+    transition:background .15s ease, color .15s ease;
+  }
+  .switch button .en{
+    display:block;
+    font-size:12px;
+    font-weight:400;
+    opacity:0.85;
+    margin-top:2px;
+  }
+  .switch button.active{
+    background:var(--navy);
+    color:#fff;
+    font-weight:600;
+  }
+
+  form{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:28px 24px;
+  }
+
+  fieldset{
+    border:none;
+    padding:0;
+    margin:0 0 22px;
+  }
+  legend{
+    font-size:13px;
+    color:var(--navy-soft);
+    font-weight:600;
+    padding:0 0 10px;
+    border-bottom:1px solid var(--line);
+    width:100%;
+    margin-bottom:14px;
+  }
+  legend .en{ font-weight:400; color:var(--ink-soft); }
+
+  .row{display:flex; gap:14px;}
+  .row > div{flex:1;}
+
+  label{
+    display:block;
+    font-size:14px;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  label .opt{color:var(--ink-soft); font-weight:400;}
+  label .en{
+    display:block;
+    font-size:12px;
+    color:var(--ink-soft);
+    font-weight:400;
+    margin-top:1px;
+  }
+
+  input, select, textarea{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--ink);
+    background:#fff;
+    margin-bottom:16px;
+  }
+  input:focus, select:focus, textarea:focus{
+    outline:2px solid var(--navy-soft);
+    outline-offset:1px;
+    border-color:var(--navy-soft);
+  }
+  textarea{resize:vertical; min-height:64px;}
+
+  .preview{
+    background:#eef2f6;
+    border-left:3px solid var(--navy);
+    border-radius:6px;
+    padding:14px 16px;
+    font-size:14px;
+    color:var(--navy);
+    margin-bottom:22px;
+    display:none;
+  }
+  .preview.show{display:block;}
+  .preview strong{font-size:16px;}
+  .preview .en{
+    display:block;
+    font-size:12px;
+    color:var(--navy-soft);
+    margin-top:4px;
+  }
+
+  .submit-row{display:flex; align-items:center; gap:16px;}
+  button.primary{
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:13px 28px;
+    border-radius:8px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+    text-align:center;
+  }
+  button.primary .en{
+    display:block;
+    font-size:12px;
+    font-weight:400;
+    opacity:0.85;
+    margin-top:2px;
+  }
+  button.primary:hover{background:var(--navy-soft);}
+  button.primary:disabled{background:#9aa5b1; cursor:not-allowed;}
+
+  .status{font-size:14px;}
+  .status.ok{color:#1d7a4c;}
+  .status.err{color:var(--error);}
+
+  .success-panel{
+    display:none;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:4px solid var(--gold);
+    border-radius:12px;
+    padding:24px;
+    margin-top:20px;
+  }
+  .success-panel.show{display:block;}
+  .success-panel h2{margin:0 0 4px; font-size:18px; color:var(--navy);}
+  .success-panel h2 .en{ display:block; font-size:13px; font-weight:500; color:var(--navy-soft); margin-top:2px;}
+  .success-panel p{margin:10px 0 0; color:var(--ink-soft); font-size:14px;}
+  .success-panel p.en{font-size:13px; margin-top:4px;}
+
+  @media (max-width:480px){
+    .row{flex-direction:column; gap:0;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <p class="eyebrow">扯谈Duke群 · 学生互助 <span class="en">Duke Chinese Parents Community · Student mutual help</span></p>
+    <h1>接送机拼车登记<span class="en">Airport Carpool Sign-up</span></h1>
+    <p>填一次表，系统会按时间把你和顺路的同学分到一组，方便大家自己约车、分摊车费。信息只会给同组同学看到。</p>
+    <p class="en">Fill this out once and the system will group you with classmates on a similar schedule, so you can arrange a ride and split the cost together. Your info is only shared with your matched group.</p>
+  </div>
+
+  <div class="switch" role="tablist" aria-label="行程方向 Trip direction">
+    <button type="button" class="trip-btn active" data-value="to_airport">送机（离校去RDU）<span class="en">To Airport (Campus → RDU)</span></button>
+    <button type="button" class="trip-btn" data-value="from_airport">接机（RDU回校）<span class="en">From Airport (RDU → Campus)</span></button>
+  </div>
+
+  <form id="matchForm">
+    <input type="hidden" id="trip_type" value="to_airport">
+
+    <fieldset>
+      <legend>联系方式 <span class="en">Contact info</span></legend>
+      <div class="row">
+        <div>
+          <label for="student_name">姓名<span class="en">Full name</span></label>
+          <input type="text" id="student_name" required>
+        </div>
+        <div>
+          <label for="wechat_id">微信号 <span class="opt">（建议填，方便建群）</span><span class="en">WeChat ID (recommended, for group chat)</span></label>
+          <input type="text" id="wechat_id">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="phone">手机号 <span class="opt">（可选）</span><span class="en">Phone (optional)</span></label>
+          <input type="tel" id="phone">
+        </div>
+        <div>
+          <label for="email">邮箱<span class="en">Email</span></label>
+          <input type="email" id="email" required>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend id="flightLegend">航班信息<span class="en" id="flightLegendEn">Flight info</span></legend>
+      <div class="row">
+        <div>
+          <label for="flight_date" id="dateLabel">起飞日期<span class="en" id="dateLabelEn">Departure date</span></label>
+          <input type="date" id="flight_date" required>
+        </div>
+        <div>
+          <label for="flight_time" id="timeLabel">起飞时间<span class="en" id="timeLabelEn">Departure time</span></label>
+          <input type="time" id="flight_time" required>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="flight_number">航班号 <span class="opt">（可选）</span><span class="en">Flight number (optional)</span></label>
+          <input type="text" id="flight_number" placeholder="如 AA1234 / e.g. AA1234">
+        </div>
+        <div>
+          <label for="airline">航空公司 <span class="opt">（可选）</span><span class="en">Airline (optional)</span></label>
+          <input type="text" id="airline">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>接送地点与时间 <span class="en">Pickup / drop-off & timing</span></legend>
+      <label for="campus_location" id="locationLabel">校内上车地点<span class="en" id="locationLabelEn">Campus pickup location</span></label>
+      <input type="text" id="campus_location" placeholder="如 Keohane 4E / Central Campus">
+
+      <label for="ready_buffer_minutes" id="bufferLabel">提前到机场分钟数<span class="en" id="bufferLabelEn">Minutes ahead of departure to arrive at airport</span></label>
+      <input type="number" id="ready_buffer_minutes" value="120" min="0">
+
+      <div class="preview" id="preview">
+        <span id="previewText"></span>
+        <span class="en" id="previewTextEn"></span>
+      </div>
+
+      <label for="notes">备注 <span class="opt">（可选，比如愿意等一等 / 想尽早出发）</span><span class="en">Notes (optional — e.g. flexible on timing / prefer to leave early)</span></label>
+      <textarea id="notes"></textarea>
+    </fieldset>
+
+    <div class="submit-row">
+      <button type="submit" class="primary" id="submitBtn">提交登记<span class="en">Submit</span></button>
+      <span class="status" id="statusMsg"></span>
+    </div>
+  </form>
+
+  <div class="success-panel" id="successPanel">
+    <h2>登记成功<span class="en">Submitted</span></h2>
+    <p>系统会在有同组同学时通过邮件通知你，届时可以看到对方的联系方式，自己建群约车。如果时间有变化，可以重新提交一次。</p>
+    <p class="en">We'll email you once you're matched with classmates — you'll be able to see their contact info and set up a group chat to arrange the ride. If your schedule changes, just submit again.</p>
+  </div>
+
+</div>
+
+<!-- 引入 Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ------------------------------------------------------------
+  // 请替换为你们项目的 Supabase URL 和 anon key
+  // Replace with your project's Supabase URL and anon key
+  // ------------------------------------------------------------
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const tripButtons = document.querySelectorAll('.trip-btn');
+  const tripTypeInput = document.getElementById('trip_type');
+  const dateLabel = document.getElementById('dateLabel');
+  const dateLabelEn = document.getElementById('dateLabelEn');
+  const timeLabel = document.getElementById('timeLabel');
+  const timeLabelEn = document.getElementById('timeLabelEn');
+  const locationLabel = document.getElementById('locationLabel');
+  const locationLabelEn = document.getElementById('locationLabelEn');
+  const bufferLabel = document.getElementById('bufferLabel');
+  const bufferLabelEn = document.getElementById('bufferLabelEn');
+  const bufferInput = document.getElementById('ready_buffer_minutes');
+  const flightLegend = document.getElementById('flightLegend');
+  const flightLegendEn = document.getElementById('flightLegendEn');
+
+  function applyTripType(value){
+    tripTypeInput.value = value;
+    tripButtons.forEach(b => b.classList.toggle('active', b.dataset.value === value));
+
+    if (value === 'to_airport'){
+      flightLegendEn.textContent = 'Flight info (departure)';
+      flightLegend.firstChild.textContent = '航班信息（起飞）';
+      dateLabelEn.textContent = 'Departure date';
+      dateLabel.firstChild.textContent = '起飞日期';
+      timeLabelEn.textContent = 'Departure time';
+      timeLabel.firstChild.textContent = '起飞时间';
+      locationLabelEn.textContent = 'Campus pickup location';
+      locationLabel.firstChild.textContent = '校内上车地点';
+      bufferLabelEn.textContent = 'Minutes ahead of departure to arrive at airport';
+      bufferLabel.firstChild.textContent = '建议提前到机场分钟数';
+      bufferInput.value = 120;
+    } else {
+      flightLegendEn.textContent = 'Flight info (arrival)';
+      flightLegend.firstChild.textContent = '航班信息（落地）';
+      dateLabelEn.textContent = 'Arrival date';
+      dateLabel.firstChild.textContent = '落地日期';
+      timeLabelEn.textContent = 'Arrival time';
+      timeLabel.firstChild.textContent = '落地时间';
+      locationLabelEn.textContent = 'Campus drop-off location';
+      locationLabel.firstChild.textContent = '校内下车地点';
+      bufferLabelEn.textContent = 'Minutes to clear customs / collect luggage';
+      bufferLabel.firstChild.textContent = '预计出关取行李分钟数';
+      bufferInput.value = 40;
+    }
+    updatePreview();
+  }
+
+  tripButtons.forEach(btn => {
+    btn.addEventListener('click', () => applyTripType(btn.dataset.value));
+  });
+
+  function updatePreview(){
+    const date = document.getElementById('flight_date').value;
+    const time = document.getElementById('flight_time').value;
+    const buffer = parseInt(bufferInput.value || '0', 10);
+    const preview = document.getElementById('preview');
+    const previewText = document.getElementById('previewText');
+    const previewTextEn = document.getElementById('previewTextEn');
+
+    if (!date || !time){
+      preview.classList.remove('show');
+      return;
+    }
+
+    const base = new Date(`${date}T${time}`);
+    let result, labelZh, labelEn;
+
+    if (tripTypeInput.value === 'to_airport'){
+      // 建议出发时间 = 起飞时间 - 提前量 - 校园到机场车程(约60分钟，估算)
+      result = new Date(base.getTime() - (buffer + 60) * 60000);
+      labelZh = '建议从校园出发时间约为';
+      labelEn = 'Suggested departure time from campus:';
+    } else {
+      // 预计可上车时间 = 落地时间 + 出关取行李缓冲
+      result = new Date(base.getTime() + buffer * 60000);
+      labelZh = '预计可在RDU上车时间约为';
+      labelEn = 'Estimated pickup time at RDU:';
+    }
+
+    const timeStrZh = result.toLocaleString('zh-CN', {
+      month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
+    });
+    const timeStrEn = result.toLocaleString('en-US', {
+      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+    });
+    previewText.innerHTML = `${labelZh} <strong>${timeStrZh}</strong>（估算，供匹配参考）`;
+    previewTextEn.textContent = `${labelEn} ${timeStrEn} (estimated, for matching purposes)`;
+    preview.classList.add('show');
+  }
+
+  ['flight_date','flight_time','ready_buffer_minutes'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updatePreview);
+  });
+
+  applyTripType('to_airport');
+
+  // ------------------------------------------------------------
+  // 提交表单 Submit form
+  // ------------------------------------------------------------
+  const form = document.getElementById('matchForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const statusMsg = document.getElementById('statusMsg');
+  const successPanel = document.getElementById('successPanel');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    statusMsg.textContent = '提交中... Submitting...';
+    statusMsg.className = 'status';
+
+    const payload = {
+      student_name: document.getElementById('student_name').value.trim(),
+      wechat_id: document.getElementById('wechat_id').value.trim() || null,
+      phone: document.getElementById('phone').value.trim() || null,
+      email: document.getElementById('email').value.trim(),
+      trip_type: tripTypeInput.value,
+      flight_date: document.getElementById('flight_date').value,
+      flight_time: document.getElementById('flight_time').value,
+      flight_number: document.getElementById('flight_number').value.trim() || null,
+      airline: document.getElementById('airline').value.trim() || null,
+      campus_location: document.getElementById('campus_location').value.trim() || null,
+      ready_buffer_minutes: parseInt(bufferInput.value || '0', 10),
+      notes: document.getElementById('notes').value.trim() || null
+    };
+
+    const { error } = await supabaseClient.from('rdu_match_requests').insert(payload);
+
+    if (error){
+      statusMsg.textContent = '提交失败 Failed: ' + error.message;
+      statusMsg.className = 'status err';
+      submitBtn.disabled = false;
+      return;
+    }
+
+    statusMsg.textContent = '';
+    form.style.display = 'none';
+    document.querySelector('.switch').style.display = 'none';
+    successPanel.classList.add('show');
+  });
+</script>
+</body>
+</html>
