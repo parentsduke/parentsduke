@@ -464,7 +464,12 @@
       flight_time: document.getElementById('flight_time').value,
       flight_number: document.getElementById('flight_number').value.trim() || null,
       airline: document.getElementById('airline').value.trim() || null,
-      campus_location: document.getElementById('campus_location').value.trim() || null,
+      pickup_location: tripTypeInput.value === 'to_airport'
+        ? (document.getElementById('campus_location').value.trim() || null)
+        : null,
+      dropoff_location: tripTypeInput.value === 'from_airport'
+        ? (document.getElementById('campus_location').value.trim() || null)
+        : null,
       ready_buffer_minutes: parseInt(bufferInput.value || '0', 10),
       notes: document.getElementById('notes').value.trim() || null
     };
