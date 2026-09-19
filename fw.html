@@ -450,6 +450,11 @@
   .navlinks a[hidden]{display:none;}
   #rsvp[hidden]{display:none;}
   .rsvp-admin{margin-top:0;}
+  @media print{
+    #volunteer{display:none !important;}
+    body.print-volunteer #volunteer{display:block !important;}
+    body.print-volunteer section:not(#volunteer), body.print-volunteer .hero, body.print-volunteer .hero-caption, body.print-volunteer footer{display:none !important;}
+  }
 </style>
 </head>
 <body>
@@ -463,6 +468,7 @@
       <a href="#rsvp" id="rsvpNav" hidden>FW 报名</a>
       <a href="#invite">聚会安排</a>
       <a href="#minutes">会议记录</a>
+      <a href="#volunteer">筹备组纪要</a>
     </div>
     <button class="auth-btn" id="authBtn" hidden>管理员登录</button>
   </div>
@@ -570,7 +576,7 @@
         </div>
         <div class="field">
           <label>议程要点（每行一条）</label>
-          <textarea id="mAgenda" placeholder="1. 新生自我介绍&#10;2. 各届经验分享&#10;3. 自由交流"></textarea>
+          <textarea id="mAgenda" placeholder="1. 新生自我介绍&#10;2. 集体照&#10;3. 分组交流&#10;4. 各届经验分享&#10;5. 自由交流"></textarea>
         </div>
         <div class="btn-row">
           <button class="btn" onclick="generateInvite()">生成通知文案</button>
@@ -639,6 +645,60 @@
         <button class="btn" onclick="window.print()">打印本页记录</button>
         <button class="btn ghost" onclick="exportMinutes()">导出为文本文件</button>
         <button class="btn ghost" onclick="clearSaved()">清空全部已填内容</button>
+        <span class="save-status"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="volunteer">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow">VOLUNTEER TEAM</div>
+      <h2>志愿者筹备组会议纪要</h2>
+      <p>记录筹备组会议的出席志愿者、议程、讨论与决议和待办事项；管理员登录后可多人同时编辑，内容实时同步。</p>
+    </div>
+    <div class="minutes-card">
+      <div class="minutes-meta">
+        <div class="field"><label>日期</label><input type="date" id="vDate"></div>
+        <div class="field"><label>时间</label><input type="time" id="vTime"></div>
+        <div class="field"><label>主持人</label><input type="text" id="vHost"></div>
+        <div class="field"><label>记录人</label><input type="text" id="vNote" placeholder="记录人姓名"></div>
+      </div>
+
+      <div class="minutes-block">
+        <label class="block-title">出席志愿者</label>
+        <div class="field"><input type="text" id="vAttend" placeholder="用顿号或逗号分隔姓名"></div>
+      </div>
+
+      <div class="minutes-block">
+        <label class="block-title">议程</label>
+        <ul class="agenda-list" id="vAgenda"></ul>
+        <button class="add-row-btn" onclick="addAgendaItem('', null, null, AGENDA_LISTS.h)">＋ 添加议程项</button>
+      </div>
+
+      <div class="minutes-block">
+        <label class="block-title">讨论与决议</label>
+        <div class="editable" contenteditable="true" data-ph="记录本次筹备组会议的讨论内容与形成的决议……"></div>
+      </div>
+
+      <div class="minutes-block">
+        <label class="block-title">待办事项</label>
+        <table class="todo-table">
+          <thead><tr><th style="width:40%">事项</th><th style="width:20%">负责人</th><th style="width:20%">截止日期</th><th style="width:15%">状态</th><th></th></tr></thead>
+          <tbody id="vTodoBody"></tbody>
+        </table>
+        <button class="add-row-btn" onclick="addTodoRow([], null, null, TODO_LISTS.u)">＋ 添加一行</button>
+      </div>
+
+      <div class="minutes-block">
+        <label class="block-title">下次会议安排</label>
+        <div class="editable" contenteditable="true" data-ph="下次筹备组会议的时间 / 需要提前准备的事项……"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="printVolunteer()">打印本纪要</button>
+        <button class="btn ghost" onclick="exportVolunteer()">导出为文本文件</button>
         <span class="save-status"></span>
       </div>
     </div>
@@ -795,22 +855,29 @@ renderAttend();
 // ---- Minutes: agenda list ----
 const minutesAgenda = document.getElementById('minutesAgenda');
 const uid = () => Math.random().toString(36).slice(2, 10);
-function addAgendaItem(text='', id, p){
+// 议程列表 / 待办表：键前缀 -> 容器（g/t = 聚会当天会议记录；h/u = 志愿者筹备组会议纪要）
+const AGENDA_LISTS = { g: minutesAgenda, h: document.getElementById('vAgenda') };
+function addAgendaItem(text='', id, p, list=minutesAgenda){
   const li = document.createElement('li');
   li.dataset.id = id || uid(); li.dataset.p = (p != null ? p : Date.now());
-  const n = minutesAgenda.children.length + 1;
+  const n = list.children.length + 1;
   li.innerHTML = `<span class="n">${n}</span><span class="txt" contenteditable="true" data-ph="议程内容…"></span><button class="rm" onclick="this.parentElement.remove(); renumberAgenda();">×</button>`;
   li.querySelector('.txt').textContent = text;
-  minutesAgenda.appendChild(li);
+  list.appendChild(li);
 }
 function renumberAgenda(){
-  [...minutesAgenda.children].forEach((li,i)=>{ li.querySelector('.n').innerText = i+1; });
+  Object.values(AGENDA_LISTS).forEach(list => [...list.children].forEach((li,i)=>{ li.querySelector('.n').innerText = i+1; }));
 }
-['自我介绍与近况分享','各届申请/在校经验交流','近期活动与安排讨论','自由交流 / Q&A'].forEach((t,i)=>addAgendaItem(t,'d'+(i+1),i+1));
+// 聚会当天议程（d1–d4 为原有条目；d5、d6 为新增的集体照、分组交流，排在“自由交流”之前）
+[['自我介绍与近况分享','d1',1],['各届申请/在校经验交流','d2',2],['近期活动与安排讨论','d3',3],['集体照','d5',3.3],['分组交流','d6',3.6],['自由交流 / Q&A','d4',4]]
+  .forEach(([t,id,p])=>addAgendaItem(t,id,p));
+// 志愿者筹备组会议议程
+[['集体照','d1',1],['分组交流','d2',2]].forEach(([t,id,p])=>addAgendaItem(t,id,p,AGENDA_LISTS.h));
 
 // ---- Minutes: todo table ----
 const todoBody = document.getElementById('todoBody');
-function addTodoRow(vals=[], id, p){
+const TODO_LISTS = { t: todoBody, u: document.getElementById('vTodoBody') };
+function addTodoRow(vals=[], id, p, body=todoBody){
   const tr = document.createElement('tr');
   tr.dataset.id = id || uid(); tr.dataset.p = (p != null ? p : Date.now());
   tr.innerHTML = `
@@ -820,9 +887,36 @@ function addTodoRow(vals=[], id, p){
     <td contenteditable="true" data-ph="进行中"></td>
     <td><button class="rm-row" onclick="this.closest('tr').remove()">×</button></td>`;
   tr.querySelectorAll('td[contenteditable]').forEach((td,i)=>{ if(vals[i]) td.textContent = vals[i]; });
-  todoBody.appendChild(tr);
+  body.appendChild(tr);
 }
 for(let i=0;i<2;i++) addTodoRow([],'d'+(i+1),i+1);
+for(let i=0;i<2;i++) addTodoRow([],'d'+(i+1),i+1,TODO_LISTS.u);
+
+// ---- Volunteer minutes: print / export ----
+function printVolunteer(){
+  document.body.classList.add('print-volunteer');
+  const done = () => { document.body.classList.remove('print-volunteer'); window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  window.print();
+}
+function exportVolunteer(){
+  const v = id => document.getElementById(id).value.trim();
+  const ed = document.querySelectorAll('.editable');
+  const agenda = [...AGENDA_LISTS.h.querySelectorAll('.txt')].map(t => t.innerText.trim()).filter(Boolean);
+  const todos = [...TODO_LISTS.u.querySelectorAll('tr')].map(tr => [...tr.querySelectorAll('td[contenteditable]')].map(td => td.innerText.trim())).filter(r => r.some(x => x));
+  let out = 'Duke家长各届云集 · 志愿者筹备组会议纪要\n====================================\n';
+  out += '日期：' + (v('vDate') || '（未填写）') + '    时间：' + v('vTime') + '\n';
+  out += '主持人：' + (v('vHost') || '（未填写）') + '    记录人：' + (v('vNote') || '（未填写）') + '\n';
+  out += '出席志愿者：' + (v('vAttend') || '（未填写）') + '\n\n【议程】\n';
+  agenda.forEach((a, i) => { out += (i + 1) + '. ' + a + '\n'; });
+  out += '\n【讨论与决议】\n' + ((ed[2] && ed[2].innerText.trim()) || '（未填写）') + '\n\n【待办事项】\n';
+  if(todos.length) todos.forEach(r => { out += '- ' + (r[0] || '（事项）') + ' | 负责人：' + (r[1] || '-') + ' | 截止：' + (r[2] || '-') + ' | 状态：' + (r[3] || '-') + '\n'; });
+  else out += '（无）\n';
+  out += '\n【下次会议安排】\n' + ((ed[3] && ed[3].innerText.trim()) || '（未填写）') + '\n';
+  const url = URL.createObjectURL(new Blob([out], { type: 'text/plain;charset=utf-8' }));
+  const a = document.createElement('a'); a.href = url; a.download = '志愿者筹备组会议纪要_' + (v('vDate') || '未命名') + '.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
 
 // ---- Export minutes as text ----
 function exportMinutes(){
@@ -876,7 +970,7 @@ function exportMinutes(){
 
   const LOCAL_KEY = 'duke-' + EVENT_ID + '-kv-v1';
   const CLIENT_ID = Math.random().toString(36).slice(2) + Date.now().toString(36);
-  const fieldIds  = ['mDate','mTime','mLink','mHost','mTopic','mAgenda','rDate','rTime','rHost','rNote'];
+  const fieldIds  = ['mDate','mTime','mLink','mHost','mTopic','mAgenda','rDate','rTime','rHost','rNote','vDate','vTime','vHost','vNote','vAttend'];
   const inviteIds = ['mDate','mTime','mLink','mHost','mTopic','mAgenda'];
 
   const editables = () => [...document.querySelectorAll('.editable')];
@@ -910,12 +1004,12 @@ function exportMinutes(){
     fieldIds.forEach(id => { const el = document.getElementById(id); if(el) m['f:' + id] = el.value; });
     attended.forEach(n => { m['a:' + n] = true; });
     editables().forEach((e, i) => { m['d:' + i] = trimEnd(e.innerText); });
-    minutesAgenda.querySelectorAll('li').forEach(li => {
-      m['g:' + li.dataset.id] = { t: trimEnd(li.querySelector('.txt').innerText), p: +li.dataset.p };
-    });
-    todoBody.querySelectorAll('tr').forEach(tr => {
-      m['t:' + tr.dataset.id] = { c: [...tr.querySelectorAll('td[contenteditable]')].map(td => trimEnd(td.innerText)), p: +tr.dataset.p };
-    });
+    Object.keys(AGENDA_LISTS).forEach(kp => AGENDA_LISTS[kp].querySelectorAll('li').forEach(li => {
+      m[kp + ':' + li.dataset.id] = { t: trimEnd(li.querySelector('.txt').innerText), p: +li.dataset.p };
+    }));
+    Object.keys(TODO_LISTS).forEach(kp => TODO_LISTS[kp].querySelectorAll('tr').forEach(tr => {
+      m[kp + ':' + tr.dataset.id] = { c: [...tr.querySelectorAll('td[contenteditable]')].map(td => trimEnd(td.innerText)), p: +tr.dataset.p };
+    }));
     return m;
   }
   const DEFAULTS = readModel();   // 页面刚加载时的初始状态
@@ -927,11 +1021,15 @@ function exportMinutes(){
     Object.keys(m).forEach(k => { if(k.startsWith('a:') && m[k] && valid.has(k.slice(2))) attended.add(k.slice(2)); });
     renderAttend(searchEl.value); updateAttendCount();
     editables().forEach((el, i) => setMultiline(el, m['d:' + i]));
-    minutesAgenda.innerHTML = '';
-    entries(m, 'g:').filter(([, v]) => typeof v.t === 'string').sort(byP).forEach(([id, v]) => addAgendaItem(v.t, id, Number(v.p) || 0));
+    Object.keys(AGENDA_LISTS).forEach(kp => {
+      AGENDA_LISTS[kp].innerHTML = '';
+      entries(m, kp + ':').filter(([, v]) => typeof v.t === 'string').sort(byP).forEach(([id, v]) => addAgendaItem(v.t, id, Number(v.p) || 0, AGENDA_LISTS[kp]));
+    });
     renumberAgenda();
-    todoBody.innerHTML = '';
-    entries(m, 't:').filter(([, v]) => Array.isArray(v.c)).sort(byP).forEach(([id, v]) => addTodoRow(v.c, id, Number(v.p) || 0));
+    Object.keys(TODO_LISTS).forEach(kp => {
+      TODO_LISTS[kp].innerHTML = '';
+      entries(m, kp + ':').filter(([, v]) => Array.isArray(v.c)).sort(byP).forEach(([id, v]) => addTodoRow(v.c, id, Number(v.p) || 0, TODO_LISTS[kp]));
+    });
     if(inviteIds.some(id => m['f:' + id])) generateInvite();
   }
 
@@ -961,22 +1059,24 @@ function exportMinutes(){
       if(!el || document.activeElement === el) return;
       const v = gone ? '' : String(value);
       if(trimEnd(el.innerText) !== v) setMultiline(el, v);
-    } else if(kind === 'g:'){
-      let li = [...minutesAgenda.children].find(x => x.dataset.id === rest);
+    } else if(key[1] === ':' && AGENDA_LISTS[key[0]]){
+      const list = AGENDA_LISTS[key[0]];
+      let li = [...list.children].find(x => x.dataset.id === rest);
       if(gone){ if(li){ li.remove(); renumberAgenda(); } return; }
       if(typeof value.t !== 'string') return;
-      if(!li){ addAgendaItem(value.t, rest, Number(value.p) || 0); }
+      if(!li){ addAgendaItem(value.t, rest, Number(value.p) || 0, list); }
       else {
         li.dataset.p = Number(value.p) || 0;
         const t = li.querySelector('.txt');
         if(document.activeElement !== t && trimEnd(t.innerText) !== value.t) t.textContent = value.t;
       }
-      reorder(minutesAgenda); renumberAgenda();
-    } else if(kind === 't:'){
-      let tr = [...todoBody.children].find(x => x.dataset.id === rest);
+      reorder(list); renumberAgenda();
+    } else if(key[1] === ':' && TODO_LISTS[key[0]]){
+      const body = TODO_LISTS[key[0]];
+      let tr = [...body.children].find(x => x.dataset.id === rest);
       if(gone){ if(tr) tr.remove(); return; }
       if(!Array.isArray(value.c)) return;
-      if(!tr){ addTodoRow(value.c, rest, Number(value.p) || 0); }
+      if(!tr){ addTodoRow(value.c, rest, Number(value.p) || 0, body); }
       else {
         tr.dataset.p = Number(value.p) || 0;
         tr.querySelectorAll('td[contenteditable]').forEach((td, i) => {
@@ -984,7 +1084,7 @@ function exportMinutes(){
           if(document.activeElement !== td && trimEnd(td.innerText) !== v) td.textContent = v;
         });
       }
-      reorder(todoBody);
+      reorder(body);
     }
   }
 
@@ -1070,13 +1170,16 @@ function exportMinutes(){
         await sb.auth.signOut(); setStatus('已在本机保存'); return;
       }
       mode = 'shared'; me = (session && session.user && session.user.email) || '';
-      if(rows.length){ applyAll(live); known = readModel(); } else { known = {}; }
+      const present = new Set(rows.map(r => r.key));
+      const injected = rows.length ? Object.keys(DEFAULTS).filter(k => /^[ghtu]:/.test(k) && !present.has(k)) : [];
+      injected.forEach(k => { live[k] = DEFAULTS[k]; });
+      if(rows.length){ applyAll(live); known = readModel(); injected.forEach(k => { delete known[k]; }); } else { known = {}; }
       try{ localStorage.removeItem(LOCAL_KEY); lastLocalJson = null; }catch(e){}
       channel = sb.channel('fw-' + EVENT_ID + '-' + CLIENT_ID)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'fw_kv', filter: 'event_id=eq.' + EVENT_ID }, onRemote)
         .subscribe(st => { if(st === 'SUBSCRIBED') reconcile(); });
       updateAuthUI();
-      if(rows.length) setStatus('已载入云端记录 ✓ ' + clock()); else await pushDiff();
+      if(!rows.length || injected.length) await pushDiff(); else setStatus('已载入云端记录 ✓ ' + clock());
     }catch(e){
       console.error(e); mode = 'local';
       setStatus('⚠ 无法连接云端，仍在本机保存', true);
@@ -1146,8 +1249,7 @@ function exportMinutes(){
     if(e.target && (e.target.id === 'authEmail' || e.target.id === 'authPass')) return;
     scheduleSave();
   }));
-  new MutationObserver(scheduleSave).observe(minutesAgenda, { childList: true });
-  new MutationObserver(scheduleSave).observe(todoBody, { childList: true });
+  Object.values(AGENDA_LISTS).concat(Object.values(TODO_LISTS)).forEach(el => new MutationObserver(scheduleSave).observe(el, { childList: true }));
   window.addEventListener('pagehide', () => { if(dirty) flush(); });
   document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden' && dirty) flush(); });
   window.addEventListener('online', () => { if(mode === 'shared') pushDiff(); });
