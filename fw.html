@@ -433,14 +433,6 @@
   .modal-card p{font-size:13px;color:var(--ink-soft);margin:0 0 14px;}
   .modal-card input{width:100%;margin-bottom:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;}
   .auth-msg{min-height:18px;font-size:13px;color:#b3261e;margin-bottom:6px;}
-  .rsvp-card{max-width:560px;}
-  .rsvp-card .radio-row{display:flex;gap:10px;}
-  .rsvp-card .radio-row label{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;margin:0;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--paper-warm);cursor:pointer;font-size:14px;color:var(--ink);}
-  .rsvp-card .radio-row input{width:auto;padding:0;border:none;accent-color:var(--navy);}
-  .rsvp-card .radio-row label:has(input:checked){border-color:var(--sky);background:var(--sky-soft);color:var(--navy);font-weight:500;}
-  .rsvp-msg{min-height:20px;margin-top:12px;font-size:13.5px;color:var(--ink-soft);}
-  .rsvp-msg.ok{color:#1d7a46;}
-  .rsvp-msg.err{color:#b3261e;}
   .rsvp-admin{margin-top:28px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
   .rsvp-admin[hidden]{display:none;}
   .rsvp-admin-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
@@ -454,6 +446,10 @@
   .rsvp-table th,.rsvp-table td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;}
   .rsvp-table th{background:var(--sky-soft);color:var(--ink-soft);font-weight:500;}
   .rsvp-missing{margin-top:14px;font-size:13px;color:var(--ink-soft);line-height:1.8;}
+
+  .navlinks a[hidden]{display:none;}
+  #rsvp[hidden]{display:none;}
+  .rsvp-admin{margin-top:0;}
 </style>
 </head>
 <body>
@@ -462,9 +458,9 @@
   <div class="topnav-inner">
     <div class="brand"><span class="dot"></span>Duke家长各届云集</div>
     <div class="navlinks">
-      <a href="#rsvp">FW 报名</a>
       <a href="#overview">概览</a>
       <a href="#roster">花名册</a>
+      <a href="#rsvp" id="rsvpNav" hidden>FW 报名</a>
       <a href="#invite">聚会安排</a>
       <a href="#minutes">会议记录</a>
     </div>
@@ -478,69 +474,6 @@
 <div class="wrap hero-caption">
   <div class="lead">新生（Class of 2030）到研究生家长齐聚一堂，一份花名册，串起 dukeparents.org 各届家庭的联系与每一次线下聚会。</div>
 </div>
-
-<section id="rsvp" class="no-print">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="section-eyebrow">FAMILY WEEKEND</div>
-      <h2>FW 报名登记</h2>
-      <p>请先选择你的名字，再填写参加人数、孩子专业，以及是否观看橄榄球比赛。填错了，重新选名字再提交一次，会覆盖上一次的答案。</p>
-    </div>
-    <div class="form-card rsvp-card">
-      <div class="field">
-        <label for="rsvpName">我是</label>
-        <select id="rsvpName"><option value="" disabled selected>请选择你的名字…</option></select>
-      </div>
-      <div class="field">
-        <label for="rsvpGuests">FW 参加人数</label>
-        <select id="rsvpGuests"><option value="" disabled selected>请选择…</option></select>
-      </div>
-      <div class="field">
-        <label for="rsvpMajor">孩子专业</label>
-        <input type="text" id="rsvpMajor" list="rsvpMajors" maxlength="100" placeholder="可选择，也可直接输入；未定请填「未定」" autocomplete="off">
-        <datalist id="rsvpMajors">
-          <option value="未定"></option><option value="Computer Science"></option><option value="Economics"></option>
-          <option value="Biology"></option><option value="Neuroscience"></option><option value="Psychology"></option>
-          <option value="Public Policy"></option><option value="Political Science"></option><option value="Mathematics"></option>
-          <option value="Statistical Science"></option><option value="Physics"></option><option value="Chemistry"></option>
-          <option value="Biomedical Engineering"></option><option value="Mechanical Engineering"></option>
-          <option value="Electrical &amp; Computer Engineering"></option><option value="Civil &amp; Environmental Engineering"></option>
-          <option value="Environmental Science &amp; Policy"></option><option value="Philosophy"></option>
-          <option value="History"></option><option value="English"></option><option value="Music"></option>
-        </datalist>
-      </div>
-      <div class="field">
-        <label>是否观看橄榄球比赛</label>
-        <div class="radio-row">
-          <label><input type="radio" name="rsvpWatch" value="yes"> 是</label>
-          <label><input type="radio" name="rsvpWatch" value="no"> 否</label>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn" id="rsvpSubmit" type="button">提交报名</button>
-      </div>
-      <div class="rsvp-msg" id="rsvpMsg" role="status"></div>
-    </div>
-
-    <div class="rsvp-admin" id="rsvpAdmin" hidden>
-      <div class="rsvp-admin-head">
-        <h3>报名情况（仅管理员可见）</h3>
-        <div class="btn-row">
-          <button class="btn ghost" id="rsvpRefresh" type="button">刷新</button>
-          <button class="btn ghost" id="rsvpCsv" type="button">导出 CSV</button>
-        </div>
-      </div>
-      <div class="rsvp-stats" id="rsvpStats"></div>
-      <div class="rsvp-scroll">
-        <table class="rsvp-table">
-          <thead><tr><th>家长</th><th>届次</th><th>人数</th><th>孩子专业</th><th>橄榄球</th></tr></thead>
-          <tbody id="rsvpBody"></tbody>
-        </table>
-      </div>
-      <div class="rsvp-missing" id="rsvpMissing"></div>
-    </div>
-  </div>
-</section>
 
 <section id="overview">
   <div class="wrap">
@@ -574,6 +507,33 @@
     </div>
     <div class="tabs" id="rosterTabs"></div>
     <div class="chip-grid" id="rosterGrid"></div>
+  </div>
+</section>
+
+<section id="rsvp" class="no-print" hidden>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow">FAMILY WEEKEND</div>
+      <h2>FW 报名情况</h2>
+      <p>家长在单独的报名页里选名字并提交，这里汇总结果，仅登录的管理员可见。</p>
+    </div>
+    <div class="rsvp-admin" id="rsvpAdmin">
+      <div class="rsvp-admin-head">
+        <h3>报名汇总</h3>
+        <div class="btn-row">
+          <button class="btn ghost" id="rsvpRefresh" type="button">刷新</button>
+          <button class="btn ghost" id="rsvpCsv" type="button">导出 CSV</button>
+        </div>
+      </div>
+      <div class="rsvp-stats" id="rsvpStats"></div>
+      <div class="rsvp-scroll">
+        <table class="rsvp-table">
+          <thead><tr><th>家长</th><th>届次</th><th>人数（含杜娃）</th><th>杜娃参加</th><th>孩子专业</th><th>橄榄球</th></tr></thead>
+          <tbody id="rsvpBody"></tbody>
+        </table>
+      </div>
+      <div class="rsvp-missing" id="rsvpMissing"></div>
+    </div>
   </div>
 </section>
 
@@ -1208,64 +1168,13 @@ function exportMinutes(){
 })();
 </script>
 <script>
-// ---- FW 报名登记：家长选名字 → 提交；管理员登录后可查看汇总 ----
+// ---- FW 报名情况：管理员登录后汇总家长在报名页提交的答案 ----
 (function(){
   const $ = id => document.getElementById(id);
-  const sel = $('rsvpName'), guestsEl = $('rsvpGuests'), majorEl = $('rsvpMajor'), msgEl = $('rsvpMsg'), btn = $('rsvpSubmit');
-  const adminEl = $('rsvpAdmin'), statsEl = $('rsvpStats'), bodyEl = $('rsvpBody'), missEl = $('rsvpMissing');
+  const secEl = $('rsvp'), navEl = $('rsvpNav'), statsEl = $('rsvpStats'), bodyEl = $('rsvpBody'), missEl = $('rsvpMissing');
   const EVENT = () => window.FW_EVENT_ID || 'fw2026';
-  const LAST_KEY = () => 'fw-rsvp-last-' + EVENT();
   const gradeOf = {}, rosterIdx = {};
   roster.forEach((r, i) => { gradeOf[r.name] = r.grade; rosterIdx[r.name] = i; });
-
-  // 名字下拉：按届次分组
-  const seen = new Set();
-  function addGroup(label, list){
-    if(!list.length) return;
-    const og = document.createElement('optgroup'); og.label = label;
-    list.forEach(r => { const o = document.createElement('option'); o.value = r.name; o.textContent = r.name; og.appendChild(o); seen.add(r.name); });
-    sel.appendChild(og);
-  }
-  gradeOrder.forEach(g => addGroup(gradeLabel(g), roster.filter(r => r.grade === g)));
-  addGroup('其他', roster.filter(r => !seen.has(r.name)));
-
-  // 参加人数下拉
-  for(let i = 1; i <= 8; i++){ const o = document.createElement('option'); o.value = String(i); o.textContent = i + ' 人'; guestsEl.appendChild(o); }
-
-  function setMsg(text, kind){ msgEl.textContent = text; msgEl.className = 'rsvp-msg' + (kind ? ' ' + kind : ''); }
-
-  // 这台设备上次提交的内容，方便再次修改
-  try{
-    const last = JSON.parse(localStorage.getItem(LAST_KEY()) || 'null');
-    if(last && seen.has(last.name)){
-      sel.value = last.name; guestsEl.value = String(last.guests || ''); majorEl.value = last.major || '';
-      const r = document.querySelector('input[name=rsvpWatch][value=' + (last.watch ? 'yes' : 'no') + ']'); if(r) r.checked = true;
-      setMsg('已载入你在这台设备上次提交的内容，修改后可重新提交。');
-    }
-  }catch(e){}
-
-  btn.addEventListener('click', async () => {
-    const name = sel.value, guests = Number(guestsEl.value), major = majorEl.value.trim();
-    const w = document.querySelector('input[name=rsvpWatch]:checked');
-    if(!name)   return setMsg('请先选择你的名字', 'err');
-    if(!guests) return setMsg('请选择 FW 参加人数', 'err');
-    if(!major)  return setMsg('请填写孩子专业（未定请填「未定」）', 'err');
-    if(!w)      return setMsg('请选择是否观看橄榄球比赛', 'err');
-    const sb = window.fwSb;
-    if(!sb)     return setMsg('云端功能还没准备好，请稍等几秒或刷新页面后再试', 'err');
-    const watch = w.value === 'yes';
-    btn.disabled = true; setMsg('提交中…');
-    try{
-      const { error } = await sb.rpc('fw_submit_rsvp', { p_event: EVENT(), p_name: name, p_guests: guests, p_major: major, p_watch: watch });
-      if(error) throw error;
-      try{ localStorage.setItem(LAST_KEY(), JSON.stringify({ name, guests, major, watch })); }catch(e){}
-      setMsg('✓ 已提交，谢谢！如需修改，重新选择你的名字再提交一次即可。', 'ok');
-      if(!adminEl.hidden) loadAdmin();
-    }catch(e){
-      console.error(e);
-      setMsg('提交失败，请稍后再试；如果反复失败，请联系管理员。', 'err');
-    }finally{ btn.disabled = false; }
-  });
 
   // ---- 管理员汇总（登录后才显示）----
   let rows = [];
@@ -1274,7 +1183,7 @@ function exportMinutes(){
 
   async function loadAdmin(){
     const sb = window.fwSb; if(!sb) return;
-    const { data, error } = await sb.from('fw_rsvp').select('name,guests,major,watch_football,updated_at').eq('event_id', EVENT());
+    const { data, error } = await sb.from('fw_rsvp').select('name,guests,kid_attends,major,watch_football,updated_at').eq('event_id', EVENT());
     if(error){ statsEl.textContent = '读取失败：' + error.message; return; }
     rows = (data || []).slice().sort((a, b) =>
       (gi(gradeOf[a.name]) - gi(gradeOf[b.name])) ||
@@ -1284,15 +1193,16 @@ function exportMinutes(){
   function render(){
     const total = rows.reduce((s, r) => s + (Number(r.guests) || 0), 0);
     const football = rows.filter(r => r.watch_football).length;
+    const kid = rows.filter(r => r.kid_attends === true).length;
     statsEl.innerHTML = '';
-    [['已报名', rows.length + ' / ' + roster.length + ' 位家长'], ['FW 参加总人数', total + ' 人'], ['观看橄榄球', football + ' 个家庭']].forEach(([k, v]) => {
+    [['已报名', rows.length + ' / ' + roster.length + ' 位家长'], ['FW 参加总人数', total + ' 人'], ['杜娃参加', kid + ' 个家庭'], ['观看橄榄球', football + ' 个家庭']].forEach(([k, v]) => {
       const span = document.createElement('span'); span.append(k + ' '); const b = document.createElement('b'); b.textContent = v; span.appendChild(b); statsEl.appendChild(span);
     });
     bodyEl.innerHTML = '';
     rows.forEach(r => {
       const tr = document.createElement('tr');
       cell(tr, r.name); cell(tr, gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册');
-      cell(tr, r.guests + ' 人'); cell(tr, r.major || '—'); cell(tr, r.watch_football ? '是' : '否');
+      cell(tr, r.guests + ' 人'); cell(tr, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '—'); cell(tr, r.major || '—'); cell(tr, r.watch_football ? '是' : '否');
       bodyEl.appendChild(tr);
     });
     const answered = new Set(rows.map(r => r.name));
@@ -1301,8 +1211,8 @@ function exportMinutes(){
   }
   const csvCell = v => { v = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
   $('rsvpCsv').addEventListener('click', () => {
-    const lines = [['家长', '届次', 'FW参加人数', '孩子专业', '是否观看橄榄球', '提交时间']]
-      .concat(rows.map(r => [r.name, gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.major, r.watch_football ? '是' : '否', r.updated_at]));
+    const lines = [['家长', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间']]
+      .concat(rows.map(r => [r.name, gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '', r.major, r.watch_football ? '是' : '否', r.updated_at]));
     const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = 'FW报名_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
@@ -1311,7 +1221,7 @@ function exportMinutes(){
 
   function onMode(mode){
     const isAdmin = mode === 'shared';
-    adminEl.hidden = !isAdmin;
+    secEl.hidden = !isAdmin; navEl.hidden = !isAdmin;
     if(isAdmin) loadAdmin(); else { rows = []; bodyEl.innerHTML = ''; statsEl.innerHTML = ''; missEl.textContent = ''; }
   }
   document.addEventListener('fw-mode', e => onMode(e.detail.mode));

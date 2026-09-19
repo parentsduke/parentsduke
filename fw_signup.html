@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FW 报名 · Duke家长各届云集</title>
+<style>
+  :root{
+    --navy:#0b1f45; --navy-deep:#071433; --duke-blue:#00539b; --sky:#3d6fb4; --sky-soft:#e7eef8;
+    --paper:#f8f9fb; --paper-warm:#fbfaf6; --ink:#1c2433; --ink-soft:#4a5568; --line:#dbe3f0; --gold:#b78d4f;
+    --radius:14px; --shadow:0 8px 28px rgba(11,31,69,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink); line-height:1.6;
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  }
+  .bar{background:var(--duke-blue);}
+  .bar-in{max-width:640px;margin:0 auto;padding:14px 20px;color:#fff;font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block;}
+  main{max-width:640px;margin:0 auto;padding:30px 20px 60px;}
+  .eyebrow{color:var(--gold);font-size:13px;font-weight:600;letter-spacing:.04em;}
+  h1{font-size:22px;margin:2px 0 6px;color:var(--navy-deep);}
+  .lead{color:var(--ink-soft);font-size:14.5px;margin:0 0 22px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;}
+  .field{margin-bottom:18px;}
+  .field > label{display:block;font-size:13px;color:var(--ink-soft);margin-bottom:6px;font-weight:500;}
+  select,input[type=text]{
+    width:100%;border:1px solid var(--line);border-radius:8px;padding:11px 12px;font-size:16px;
+    font-family:inherit;color:var(--ink);background:var(--paper-warm);
+  }
+  select:focus,input[type=text]:focus{outline:none;border-color:var(--sky);background:#fff;}
+  .radio-row{display:flex;gap:10px;}
+  .radio-row label{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;
+    border:1px solid var(--line);border-radius:8px;background:var(--paper-warm);cursor:pointer;font-size:15px;
+  }
+  .radio-row input{accent-color:var(--navy);}
+  .radio-row label:has(input:checked){border-color:var(--sky);background:var(--sky-soft);color:var(--navy);font-weight:500;}
+  .btn{
+    width:100%;background:var(--duke-blue);color:#fff;border:none;padding:13px 18px;border-radius:8px;
+    font-size:16px;font-family:inherit;font-weight:500;cursor:pointer;
+  }
+  .btn:hover{background:var(--sky);}
+  .btn:disabled{opacity:.6;cursor:default;}
+  .msg{min-height:22px;margin-top:14px;font-size:14px;color:var(--ink-soft);}
+  .msg.ok{color:#1d7a46;}
+  .msg.err{color:#b3261e;}
+  .done{display:none;margin-top:14px;background:var(--sky-soft);border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.8;}
+  .done.show{display:block;}
+  .foot{color:var(--ink-soft);font-size:12.5px;margin-top:18px;}
+</style>
+</head>
+<body>
+<header class="bar"><div class="bar-in"><span class="dot"></span>Duke家长各届云集</div></header>
+<main>
+  <div class="eyebrow">FAMILY WEEKEND</div>
+  <h1>FW 报名登记</h1>
+  <p class="lead">请选择你的名字，再填写参加人数、孩子专业，以及是否观看橄榄球比赛。填错了，重新选名字再提交一次，会覆盖上一次的答案。</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="name">我是</label>
+      <select id="name"><option value="" disabled selected>请选择你的名字…</option></select>
+    </div>
+    <div class="field">
+      <label for="guests">FW 参加人数（含杜娃）</label>
+      <select id="guests"><option value="" disabled selected>请选择…</option></select>
+    </div>
+    <div class="field">
+      <label>杜娃是否参加 FW</label>
+      <div class="radio-row">
+        <label><input type="radio" name="kid" value="yes"> 是</label>
+        <label><input type="radio" name="kid" value="no"> 否</label>
+      </div>
+    </div>
+    <div class="field">
+      <label for="major">孩子专业</label>
+      <input type="text" id="major" list="majors" maxlength="100" placeholder="可选择，也可直接输入；未定请填「未定」" autocomplete="off">
+      <datalist id="majors">
+        <option value="未定"></option><option value="Computer Science"></option><option value="Economics"></option>
+        <option value="Biology"></option><option value="Neuroscience"></option><option value="Psychology"></option>
+        <option value="Public Policy"></option><option value="Political Science"></option><option value="Mathematics"></option>
+        <option value="Statistical Science"></option><option value="Physics"></option><option value="Chemistry"></option>
+        <option value="Biomedical Engineering"></option><option value="Mechanical Engineering"></option>
+        <option value="Electrical &amp; Computer Engineering"></option><option value="Civil &amp; Environmental Engineering"></option>
+        <option value="Environmental Science &amp; Policy"></option><option value="Philosophy"></option>
+        <option value="History"></option><option value="English"></option><option value="Music"></option>
+      </datalist>
+    </div>
+    <div class="field">
+      <label>是否观看橄榄球比赛</label>
+      <div class="radio-row">
+        <label><input type="radio" name="watch" value="yes"> 是</label>
+        <label><input type="radio" name="watch" value="no"> 否</label>
+      </div>
+    </div>
+    <button class="btn" id="submit" type="button">提交报名</button>
+    <div class="msg" id="msg" role="status"></div>
+    <div class="done" id="done"></div>
+  </div>
+  <p class="foot">你的答案只有活动组织的管理员能看到。</p>
+</main>
+
+<script>
+// ======== 配置：与管理页（fw.html）保持一致 ========
+const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';   // anon 公开密钥，写入权限由数据库函数限定
+const EVENT_ID = 'fw2026';            // 必须与 fw.html 里的 EVENT_ID 相同
+// ==================================================
+
+const ROSTER = [["慢慢", "硕士"], ["涟漪", "硕士"], ["'30 Victor妈妈 Sophia", "30"], ["Aiye", "30"], ["Chenyu-Rachel 30-T-MA", "30"], ["Debbie", "30"], ["Fenghai Guo", "30"], ["黄豫栋", "30"], ["火星人", "30"], ["Jessica 杜妈- Austin 30T -TO-C", "30"], ["Kathy Qi", "30"], ["刘延顺 YANSHUN LIU", "30"], ["Mary会计师", "30"], ["Mike", "30"], ["木森", "30"], ["卿卿", "30"], ["RC", "30"], ["肆丫头", "30"], ["Songlian", "30"], ["唐鸣", "30"], ["yi zeng", "30"], ["张春春", "30"], ["❀ॐ恋之风景ॐॎ❀", "30"], ["微微安", "30"], ["莹 ying", "30"], ["幽谷兰香", "30"], ["北斗璇玑", "30"], ["晨露", "30"], ["分类学家@2025", "30"], ["Jennifer Dai", "30"], ["敏", "30"], ["Sheila", "30"], ["Teresa Chen", "30"], ["an", "30"], ["dayong", "30"], ["Ding", "30"], ["janelzhang", "30"], ["newyork_guy", "30"], ["Vivian", "30"], ["Wei Luo", "30"], ["Xianhui Li", "30"], ["Jian", "30"], ["Jing", "30"], ["Joyce", "30"], ["li", "30"], ["Mi", "30"], ["Sharon Xing", "30"], ["Tao Lu", "30"], ["Taoer", "30"], ["jean", "30"], ["Dafu", "29"], ["李笑冰", "29"], ["圆缘（Grace）", "29"], ["Simin", "29"], ["Cécile", "29"], ["JZ", "29"], ["Bin L", "28"], ["Bing Ren", "28"], ["Peter-Dad-James28-P-NC", "28"], ["开心果杜妈-Anna 2028-T-NC", "28"], ["Laura Wang", "28"], ["Joanna Ma", "27"], ["李宏 Darren Li Mom", "27"], ["Ling P", "27"], ["Liping", "27"], ["Lily- ☀️🎶C", "27"], ["wendyzeng", "27"], ["Vicky-Mom-Eric26Daniel29-P-MD", "26"], ["Tina", "25"]];   // [名字, 届次]
+const gradeOrder = ['30','29','28','27','26','25','硕士'];
+const gradeLabel = g => g === '硕士' ? '硕士 / 研究生' : ('Class of 20' + g);
+
+const $ = id => document.getElementById(id);
+const sel = $('name'), guestsEl = $('guests'), majorEl = $('major'), msgEl = $('msg'), doneEl = $('done'), btn = $('submit');
+const LAST_KEY = 'fw-rsvp-last-' + EVENT_ID;
+
+// 名字下拉：按届次分组
+const seen = new Set();
+function addGroup(label, list){
+  if(!list.length) return;
+  const og = document.createElement('optgroup'); og.label = label;
+  list.forEach(([n]) => { const o = document.createElement('option'); o.value = n; o.textContent = n; og.appendChild(o); seen.add(n); });
+  sel.appendChild(og);
+}
+gradeOrder.forEach(g => addGroup(gradeLabel(g), ROSTER.filter(r => r[1] === g)));
+addGroup('其他', ROSTER.filter(r => !seen.has(r[0])));
+
+for(let i = 1; i <= 8; i++){ const o = document.createElement('option'); o.value = String(i); o.textContent = i + ' 人'; guestsEl.appendChild(o); }
+
+function setMsg(text, kind){ msgEl.textContent = text; msgEl.className = 'msg' + (kind ? ' ' + kind : ''); }
+
+// 这台设备上次提交的内容，方便再次修改
+try{
+  const last = JSON.parse(localStorage.getItem(LAST_KEY) || 'null');
+  if(last && seen.has(last.name)){
+    sel.value = last.name; guestsEl.value = String(last.guests || ''); majorEl.value = last.major || '';
+    const r = document.querySelector('input[name=watch][value=' + (last.watch ? 'yes' : 'no') + ']'); if(r) r.checked = true;
+    if(typeof last.kid === 'boolean'){ const k = document.querySelector('input[name=kid][value=' + (last.kid ? 'yes' : 'no') + ']'); if(k) k.checked = true; }
+    setMsg('已载入你在这台设备上次提交的内容，修改后可重新提交。');
+  }
+}catch(e){}
+
+btn.addEventListener('click', async () => {
+  const name = sel.value, guests = Number(guestsEl.value), major = majorEl.value.trim();
+  const w = document.querySelector('input[name=watch]:checked'), k = document.querySelector('input[name=kid]:checked');
+  doneEl.classList.remove('show');
+  if(!name)   return setMsg('请先选择你的名字', 'err');
+  if(!guests) return setMsg('请选择 FW 参加人数', 'err');
+  if(!k)      return setMsg('请选择杜娃是否参加 FW', 'err');
+  if(!major)  return setMsg('请填写孩子专业（未定请填「未定」）', 'err');
+  if(!w)      return setMsg('请选择是否观看橄榄球比赛', 'err');
+  const watch = w.value === 'yes', kid = k.value === 'yes';
+  btn.disabled = true; setMsg('提交中…');
+  const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 20000);
+  try{
+    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/fw_submit_rsvp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+      body: JSON.stringify({ p_event: EVENT_ID, p_name: name, p_guests: guests, p_kid: kid, p_major: major, p_watch: watch }),
+      signal: ctrl.signal
+    });
+    if(!res.ok) throw new Error(res.status + ' ' + (await res.text()));
+    try{ localStorage.setItem(LAST_KEY, JSON.stringify({ name, guests, kid, major, watch })); }catch(e){}
+    setMsg('✓ 已提交，谢谢！如需修改，重新选择你的名字再提交一次即可。', 'ok');
+    doneEl.textContent = '';
+    [['家长', name], ['FW 参加人数', guests + ' 人'], ['杜娃是否参加', kid ? '是' : '否'], ['孩子专业', major], ['观看橄榄球比赛', watch ? '是' : '否']].forEach(([k, v]) => {
+      const line = document.createElement('div'); line.textContent = k + '：' + v; doneEl.appendChild(line);
+    });
+    doneEl.classList.add('show');
+  }catch(e){
+    console.error(e);
+    setMsg(e.name === 'AbortError' ? '网络较慢，提交超时，请稍后重试。' : '提交失败，请稍后再试；如果反复失败，请联系管理员。', 'err');
+  }finally{ clearTimeout(timer); btn.disabled = false; }
+});
+</script>
+</body>
+</html>
