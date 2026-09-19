@@ -823,7 +823,9 @@ function exportMinutes(){
 (function(){
   // ======== 云端协同配置（留空 = 只在本机自动保存）========
   // 与 dukeparents.org 其他页面（如 form.html）用同一个 Supabase 项目即可
-  const SUPABASE_URL = '';       // 例如 'https://xxxx.supabase.co'
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  // 读取 ?redirect= 参数，登录后跳回原页面
   const SUPABASE_ANON_KEY = '';  // anon public key（公开密钥；安全靠 RLS + 管理员白名单）
   const EVENT_ID = 'fw2026';     // 一场聚会一份记录；下次聚会换个 id 就是全新的一份，旧记录保留
   // ========================================================
