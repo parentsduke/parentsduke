@@ -455,6 +455,10 @@
     body.print-volunteer #volunteer{display:block !important;}
     body.print-volunteer section:not(#volunteer), body.print-volunteer .hero, body.print-volunteer .hero-caption, body.print-volunteer footer{display:none !important;}
   }
+  .vol-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+  .vol-bar select{flex:1;min-width:200px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;color:var(--ink);background:var(--paper-warm);}
+  .vol-bar .btn{margin:0;}
+  @media print{ .vol-bar{display:none !important;} }
 </style>
 </head>
 <body>
@@ -644,7 +648,7 @@
       <div class="btn-row">
         <button class="btn" onclick="window.print()">打印本页记录</button>
         <button class="btn ghost" onclick="exportMinutes()">导出为文本文件</button>
-        <button class="btn ghost" onclick="clearSaved()">清空全部已填内容</button>
+        <button class="btn ghost" onclick="clearSaved()">清空聚会记录（不含筹备组纪要）</button>
         <span class="save-status"></span>
       </div>
     </div>
@@ -656,9 +660,14 @@
     <div class="section-head">
       <div class="section-eyebrow">VOLUNTEER TEAM</div>
       <h2>志愿者筹备组会议纪要</h2>
-      <p>记录筹备组会议的出席志愿者、议程、讨论与决议和待办事项；管理员登录后可多人同时编辑，内容实时同步。</p>
+      <p>每次筹备组会议单独保存一份，新建会议不会覆盖以前的纪要，可随时在下拉框里切换查看；管理员登录后可多人同时编辑，内容实时同步。</p>
     </div>
     <div class="minutes-card">
+      <div class="vol-bar">
+        <select id="vMeetingSel" aria-label="选择会议"></select>
+        <button class="btn ghost" type="button" onclick="newVolunteerMeeting()">＋ 新建会议</button>
+        <button class="btn ghost" type="button" onclick="deleteVolunteerMeeting()">删除空白会议</button>
+      </div>
       <div class="minutes-meta">
         <div class="field"><label>日期</label><input type="date" id="vDate"></div>
         <div class="field"><label>时间</label><input type="time" id="vTime"></div>
@@ -674,12 +683,12 @@
       <div class="minutes-block">
         <label class="block-title">议程</label>
         <ul class="agenda-list" id="vAgenda"></ul>
-        <button class="add-row-btn" onclick="addAgendaItem('', null, null, AGENDA_LISTS.h)">＋ 添加议程项</button>
+        <button class="add-row-btn" onclick="addAgendaItem('', null, null, VOL_AGENDA)">＋ 添加议程项</button>
       </div>
 
       <div class="minutes-block">
         <label class="block-title">讨论与决议</label>
-        <div class="editable" contenteditable="true" data-ph="记录本次筹备组会议的讨论内容与形成的决议……"></div>
+        <div class="editable" id="vDisc" contenteditable="true" data-ph="记录本次筹备组会议的讨论内容与形成的决议……"></div>
       </div>
 
       <div class="minutes-block">
@@ -688,17 +697,18 @@
           <thead><tr><th style="width:40%">事项</th><th style="width:20%">负责人</th><th style="width:20%">截止日期</th><th style="width:15%">状态</th><th></th></tr></thead>
           <tbody id="vTodoBody"></tbody>
         </table>
-        <button class="add-row-btn" onclick="addTodoRow([], null, null, TODO_LISTS.u)">＋ 添加一行</button>
+        <button class="add-row-btn" onclick="addTodoRow([], null, null, VOL_TODO)">＋ 添加一行</button>
       </div>
 
       <div class="minutes-block">
         <label class="block-title">下次会议安排</label>
-        <div class="editable" contenteditable="true" data-ph="下次筹备组会议的时间 / 需要提前准备的事项……"></div>
+        <div class="editable" id="vNext" contenteditable="true" data-ph="下次筹备组会议的时间 / 需要提前准备的事项……"></div>
       </div>
 
       <div class="btn-row">
         <button class="btn" onclick="printVolunteer()">打印本纪要</button>
-        <button class="btn ghost" onclick="exportVolunteer()">导出为文本文件</button>
+        <button class="btn ghost" onclick="exportVolunteer(false)">导出本次</button>
+        <button class="btn ghost" onclick="exportVolunteer(true)">导出全部会议</button>
         <span class="save-status"></span>
       </div>
     </div>
@@ -856,7 +866,8 @@ renderAttend();
 const minutesAgenda = document.getElementById('minutesAgenda');
 const uid = () => Math.random().toString(36).slice(2, 10);
 // 议程列表 / 待办表：键前缀 -> 容器（g/t = 聚会当天会议记录；h/u = 志愿者筹备组会议纪要）
-const AGENDA_LISTS = { g: minutesAgenda, h: document.getElementById('vAgenda') };
+const AGENDA_LISTS = { g: minutesAgenda };
+const VOL_AGENDA = document.getElementById('vAgenda');
 function addAgendaItem(text='', id, p, list=minutesAgenda){
   const li = document.createElement('li');
   li.dataset.id = id || uid(); li.dataset.p = (p != null ? p : Date.now());
@@ -866,17 +877,16 @@ function addAgendaItem(text='', id, p, list=minutesAgenda){
   list.appendChild(li);
 }
 function renumberAgenda(){
-  Object.values(AGENDA_LISTS).forEach(list => [...list.children].forEach((li,i)=>{ li.querySelector('.n').innerText = i+1; }));
+  [minutesAgenda, VOL_AGENDA].forEach(list => [...list.children].forEach((li,i)=>{ li.querySelector('.n').innerText = i+1; }));
 }
 // 聚会当天议程（d1–d4 为原有条目；d5、d6 为新增的集体照、分组交流，排在“自由交流”之前）
 [['自我介绍与近况分享','d1',1],['各届申请/在校经验交流','d2',2],['近期活动与安排讨论','d3',3],['集体照','d5',3.3],['分组交流','d6',3.6],['自由交流 / Q&A','d4',4]]
   .forEach(([t,id,p])=>addAgendaItem(t,id,p));
-// 志愿者筹备组会议议程
-[['集体照','d1',1],['分组交流','d2',2]].forEach(([t,id,p])=>addAgendaItem(t,id,p,AGENDA_LISTS.h));
 
 // ---- Minutes: todo table ----
 const todoBody = document.getElementById('todoBody');
-const TODO_LISTS = { t: todoBody, u: document.getElementById('vTodoBody') };
+const TODO_LISTS = { t: todoBody };
+const VOL_TODO = document.getElementById('vTodoBody');
 function addTodoRow(vals=[], id, p, body=todoBody){
   const tr = document.createElement('tr');
   tr.dataset.id = id || uid(); tr.dataset.p = (p != null ? p : Date.now());
@@ -890,34 +900,14 @@ function addTodoRow(vals=[], id, p, body=todoBody){
   body.appendChild(tr);
 }
 for(let i=0;i<2;i++) addTodoRow([],'d'+(i+1),i+1);
-for(let i=0;i<2;i++) addTodoRow([],'d'+(i+1),i+1,TODO_LISTS.u);
 
-// ---- Volunteer minutes: print / export ----
+// ---- Volunteer minutes: print（导出在下方同步脚本里，因为要读取全部会议）----
 function printVolunteer(){
   document.body.classList.add('print-volunteer');
   const done = () => { document.body.classList.remove('print-volunteer'); window.removeEventListener('afterprint', done); };
   window.addEventListener('afterprint', done);
   window.print();
 }
-function exportVolunteer(){
-  const v = id => document.getElementById(id).value.trim();
-  const ed = document.querySelectorAll('.editable');
-  const agenda = [...AGENDA_LISTS.h.querySelectorAll('.txt')].map(t => t.innerText.trim()).filter(Boolean);
-  const todos = [...TODO_LISTS.u.querySelectorAll('tr')].map(tr => [...tr.querySelectorAll('td[contenteditable]')].map(td => td.innerText.trim())).filter(r => r.some(x => x));
-  let out = 'Duke家长各届云集 · 志愿者筹备组会议纪要\n====================================\n';
-  out += '日期：' + (v('vDate') || '（未填写）') + '    时间：' + v('vTime') + '\n';
-  out += '主持人：' + (v('vHost') || '（未填写）') + '    记录人：' + (v('vNote') || '（未填写）') + '\n';
-  out += '出席志愿者：' + (v('vAttend') || '（未填写）') + '\n\n【议程】\n';
-  agenda.forEach((a, i) => { out += (i + 1) + '. ' + a + '\n'; });
-  out += '\n【讨论与决议】\n' + ((ed[2] && ed[2].innerText.trim()) || '（未填写）') + '\n\n【待办事项】\n';
-  if(todos.length) todos.forEach(r => { out += '- ' + (r[0] || '（事项）') + ' | 负责人：' + (r[1] || '-') + ' | 截止：' + (r[2] || '-') + ' | 状态：' + (r[3] || '-') + '\n'; });
-  else out += '（无）\n';
-  out += '\n【下次会议安排】\n' + ((ed[3] && ed[3].innerText.trim()) || '（未填写）') + '\n';
-  const url = URL.createObjectURL(new Blob([out], { type: 'text/plain;charset=utf-8' }));
-  const a = document.createElement('a'); a.href = url; a.download = '志愿者筹备组会议纪要_' + (v('vDate') || '未命名') + '.txt';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-}
-
 // ---- Export minutes as text ----
 function exportMinutes(){
   const date = document.getElementById('rDate').value || '（未填写）';
@@ -970,10 +960,10 @@ function exportMinutes(){
 
   const LOCAL_KEY = 'duke-' + EVENT_ID + '-kv-v1';
   const CLIENT_ID = Math.random().toString(36).slice(2) + Date.now().toString(36);
-  const fieldIds  = ['mDate','mTime','mLink','mHost','mTopic','mAgenda','rDate','rTime','rHost','rNote','vDate','vTime','vHost','vNote','vAttend'];
+  const fieldIds  = ['mDate','mTime','mLink','mHost','mTopic','mAgenda','rDate','rTime','rHost','rNote'];
   const inviteIds = ['mDate','mTime','mLink','mHost','mTopic','mAgenda'];
 
-  const editables = () => [...document.querySelectorAll('.editable')];
+  const editables = () => [...document.querySelectorAll('#minutes .editable')];
   const searchEl  = document.getElementById('attendSearch');
   const trimEnd   = t => String(t == null ? '' : t).replace(/\n+$/, '');
   const stable = v => JSON.stringify(v, (k, x) =>
@@ -1010,8 +1000,148 @@ function exportMinutes(){
     Object.keys(TODO_LISTS).forEach(kp => TODO_LISTS[kp].querySelectorAll('tr').forEach(tr => {
       m[kp + ':' + tr.dataset.id] = { c: [...tr.querySelectorAll('td[contenteditable]')].map(td => trimEnd(td.innerText)), p: +tr.dataset.p };
     }));
+    captureVol();
+    Object.assign(m, volKV);
     return m;
   }
+
+  // ------ 志愿者筹备组会议纪要：可以有多次会议，每次单独保存，互不覆盖 ------
+  // vm:<会议id> {p:创建时间}   vf:<会议id>:<字段>   vd:<会议id>:disc|next
+  // vg:<会议id>:<议程项id> {t,p}   vt:<会议id>:<待办行id> {c:[4格],p}
+  const VF = ['vDate','vTime','vHost','vNote','vAttend'];
+  const DEFAULT_VOL_AGENDA = ['集体照', '分组交流'];
+  const vSel = document.getElementById('vMeetingSel');
+  const vAgendaEl = VOL_AGENDA, vTodoEl = VOL_TODO;
+  const vDiscEl = document.getElementById('vDisc'), vNextEl = document.getElementById('vNext');
+  const VCUR_KEY = 'fw-vol-cur-' + EVENT_ID;     // 这台设备上次查看的会议（只存本机，不同步）
+  const isVolKey = k => /^v[mfdgt]:/.test(k);
+  const midOf = k => k.split(':')[1];
+  let volKV = {};      // 所有会议的全部内容（唯一真相；页面上只显示当前会议）
+  let volCur = null;   // 当前查看的会议 id
+
+  function defaultMeeting(mid, p){
+    const o = {}; o['vm:' + mid] = { p };
+    VF.forEach(f => { o['vf:' + mid + ':' + f] = ''; });
+    o['vd:' + mid + ':disc'] = ''; o['vd:' + mid + ':next'] = '';
+    DEFAULT_VOL_AGENDA.forEach((t, i) => { o['vg:' + mid + ':d' + (i + 1)] = { t, p: i + 1 }; });
+    [1, 2].forEach(i => { o['vt:' + mid + ':d' + i] = { c: ['', '', '', ''], p: i }; });
+    return o;
+  }
+  // 旧版本（只有一份筹备组记录）的数据 → 转成“第 1 次会议”
+  function legacyMeeting(m){
+    const has = VF.some(f => typeof m['f:' + f] === 'string') || typeof m['d:2'] === 'string' || Object.keys(m).some(k => /^[hu]:/.test(k));
+    if(!has) return null;
+    const mid = 'm1', o = {}; o['vm:' + mid] = { p: 1 };
+    VF.forEach(f => { o['vf:' + mid + ':' + f] = typeof m['f:' + f] === 'string' ? m['f:' + f] : ''; });
+    o['vd:' + mid + ':disc'] = typeof m['d:2'] === 'string' ? m['d:2'] : '';
+    o['vd:' + mid + ':next'] = typeof m['d:3'] === 'string' ? m['d:3'] : '';
+    entries(m, 'h:').forEach(([id, v]) => { if(typeof v.t === 'string') o['vg:' + mid + ':' + id] = { t: v.t, p: Number(v.p) || 0 }; });
+    entries(m, 'u:').forEach(([id, v]) => { if(Array.isArray(v.c)) o['vt:' + mid + ':' + id] = { c: v.c, p: Number(v.p) || 0 }; });
+    return o;
+  }
+  const meetingIds = () => Object.keys(volKV).filter(k => k.startsWith('vm:')).map(k => k.slice(3))
+    .sort((a, b) => ((Number(volKV['vm:' + a].p) || 0) - (Number(volKV['vm:' + b].p) || 0)) || (a < b ? -1 : 1));
+  const meetingLabel = (mid, i) => '第 ' + (i + 1) + ' 次会议' + (volKV['vf:' + mid + ':vDate'] ? '（' + volKV['vf:' + mid + ':vDate'] + '）' : '（未填日期）');
+  const storeCur = () => { try{ localStorage.setItem(VCUR_KEY, volCur); }catch(e){} };
+
+  function renderVolSelect(){
+    vSel.innerHTML = '';
+    meetingIds().forEach((mid, i) => { const o = document.createElement('option'); o.value = mid; o.textContent = meetingLabel(mid, i); vSel.appendChild(o); });
+    if(volCur) vSel.value = volCur;
+  }
+  // 把页面上当前会议的内容写回 volKV
+  function captureVol(){
+    const mid = volCur;
+    if(!mid || !volKV['vm:' + mid]) return;
+    VF.forEach(f => { volKV['vf:' + mid + ':' + f] = document.getElementById(f).value; });
+    volKV['vd:' + mid + ':disc'] = trimEnd(vDiscEl.innerText);
+    volKV['vd:' + mid + ':next'] = trimEnd(vNextEl.innerText);
+    Object.keys(volKV).forEach(k => { if((k.startsWith('vg:') || k.startsWith('vt:')) && midOf(k) === mid) delete volKV[k]; });
+    vAgendaEl.querySelectorAll('li').forEach(li => { volKV['vg:' + mid + ':' + li.dataset.id] = { t: trimEnd(li.querySelector('.txt').innerText), p: +li.dataset.p }; });
+    vTodoEl.querySelectorAll('tr').forEach(tr => {
+      volKV['vt:' + mid + ':' + tr.dataset.id] = { c: [...tr.querySelectorAll('td[contenteditable]')].map(td => trimEnd(td.innerText)), p: +tr.dataset.p };
+    });
+  }
+  // 把 volKV 里当前会议显示到页面上
+  function renderVol(){
+    const mid = volCur, str = k => (typeof volKV[k] === 'string' ? volKV[k] : '');
+    VF.forEach(f => { document.getElementById(f).value = str('vf:' + mid + ':' + f); });
+    setMultiline(vDiscEl, str('vd:' + mid + ':disc')); setMultiline(vNextEl, str('vd:' + mid + ':next'));
+    const pick = kind => Object.keys(volKV).filter(k => k.startsWith(kind + ':' + mid + ':') && volKV[k] && typeof volKV[k] === 'object')
+      .map(k => [k.split(':').slice(2).join(':'), volKV[k]]).sort(byP);
+    vAgendaEl.innerHTML = ''; pick('vg').filter(([, v]) => typeof v.t === 'string').forEach(([id, v]) => addAgendaItem(v.t, id, Number(v.p) || 0, vAgendaEl));
+    vTodoEl.innerHTML = ''; pick('vt').filter(([, v]) => Array.isArray(v.c)).forEach(([id, v]) => addTodoRow(v.c, id, Number(v.p) || 0, vTodoEl));
+    renumberAgenda(); renderVolSelect();
+  }
+  // 载入整套数据（本机草稿 / 云端 / 清空后）：没有任何会议时建“第 1 次”，并保持当前查看的会议
+  function loadVol(m){
+    const vk = {};
+    Object.keys(m).forEach(k => { if(isVolKey(k) && m[k] != null) vk[k] = m[k]; });
+    if(!Object.keys(vk).some(k => k.startsWith('vm:'))) Object.assign(vk, legacyMeeting(m) || defaultMeeting('m1', 1));
+    volKV = vk;
+    const ids = meetingIds();
+    let stored = null; try{ stored = localStorage.getItem(VCUR_KEY); }catch(e){}
+    volCur = (stored && volKV['vm:' + stored]) ? stored : (volCur && volKV['vm:' + volCur]) ? volCur : ids[ids.length - 1];
+    renderVol();
+  }
+  function switchMeeting(mid){
+    if(!mid || mid === volCur || !volKV['vm:' + mid]) return;
+    captureVol(); volCur = mid; storeCur(); renderVol();
+  }
+  function volHasContent(mid){
+    const t = k => String(volKV[k] == null ? '' : volKV[k]).trim();
+    if(VF.some(f => t('vf:' + mid + ':' + f))) return true;
+    if(t('vd:' + mid + ':disc') || t('vd:' + mid + ':next')) return true;
+    return Object.keys(volKV).some(k => {
+      if(midOf(k) !== mid) return false;
+      if(k.startsWith('vg:')){ const x = String(volKV[k].t || '').trim(); return x && !DEFAULT_VOL_AGENDA.includes(x); }
+      if(k.startsWith('vt:')) return (volKV[k].c || []).some(x => String(x || '').trim());
+      return false;
+    });
+  }
+  window.newVolunteerMeeting = function(){
+    captureVol();
+    const mid = 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    Object.assign(volKV, defaultMeeting(mid, Date.now()));
+    volCur = mid; storeCur(); renderVol(); scheduleSave();
+    document.getElementById('vDate').focus();
+  };
+  window.deleteVolunteerMeeting = function(){
+    captureVol();
+    if(meetingIds().length <= 1){ alert('至少要保留一次会议。'); return; }
+    if(volHasContent(volCur)){ alert('这次会议已经填写了内容，为避免误删纪要，不能删除。'); return; }
+    if(!confirm('确定删除这次空白会议吗？')) return;
+    const mid = volCur;
+    Object.keys(volKV).forEach(k => { if(midOf(k) === mid) delete volKV[k]; });
+    const ids = meetingIds(); volCur = ids[ids.length - 1]; storeCur(); renderVol(); scheduleSave();
+  };
+  window.exportVolunteer = function(all){
+    captureVol();
+    const ids = meetingIds(), list = all ? ids : [volCur];
+    const fmt = mid => {
+      const v = k => String(volKV[k] == null ? '' : volKV[k]).trim();
+      const ag = Object.keys(volKV).filter(k => k.startsWith('vg:' + mid + ':')).map(k => volKV[k]).sort((a, b) => a.p - b.p).map(x => String(x.t || '').trim()).filter(Boolean);
+      const td = Object.keys(volKV).filter(k => k.startsWith('vt:' + mid + ':')).map(k => volKV[k]).sort((a, b) => a.p - b.p).map(x => (x.c || []).map(c => String(c || '').trim())).filter(r => r.some(Boolean));
+      let out = 'Duke家长各届云集 · 志愿者筹备组会议纪要（第 ' + (ids.indexOf(mid) + 1) + ' 次）\n====================================\n';
+      out += '日期：' + (v('vf:' + mid + ':vDate') || '（未填写）') + '    时间：' + v('vf:' + mid + ':vTime') + '\n';
+      out += '主持人：' + (v('vf:' + mid + ':vHost') || '（未填写）') + '    记录人：' + (v('vf:' + mid + ':vNote') || '（未填写）') + '\n';
+      out += '出席志愿者：' + (v('vf:' + mid + ':vAttend') || '（未填写）') + '\n\n【议程】\n';
+      ag.forEach((a, i) => { out += (i + 1) + '. ' + a + '\n'; });
+      out += '\n【讨论与决议】\n' + (v('vd:' + mid + ':disc') || '（未填写）') + '\n\n【待办事项】\n';
+      if(td.length) td.forEach(r => { out += '- ' + (r[0] || '（事项）') + ' | 负责人：' + (r[1] || '-') + ' | 截止：' + (r[2] || '-') + ' | 状态：' + (r[3] || '-') + '\n'; });
+      else out += '（无）\n';
+      return out + '\n【下次会议安排】\n' + (v('vd:' + mid + ':next') || '（未填写）') + '\n';
+    };
+    const out = list.map(fmt).join('\n\n####################################\n\n');
+    const url = URL.createObjectURL(new Blob([out], { type: 'text/plain;charset=utf-8' }));
+    const a = document.createElement('a'); a.href = url;
+    a.download = all ? '志愿者筹备组会议纪要_全部.txt' : '志愿者筹备组会议纪要_' + (String(volKV['vf:' + volCur + ':vDate'] || '').trim() || '未命名') + '.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  };
+  vSel.addEventListener('change', () => switchMeeting(vSel.value));
+  ['input', 'change'].forEach(ev => document.getElementById('vDate').addEventListener(ev, () => { captureVol(); renderVolSelect(); }));
+
+  volKV = defaultMeeting('m1', 1); volCur = 'm1'; renderVol();   // 初始状态：一次空白会议
   const DEFAULTS = readModel();   // 页面刚加载时的初始状态
 
   function applyAll(m){
@@ -1030,6 +1160,7 @@ function exportMinutes(){
       TODO_LISTS[kp].innerHTML = '';
       entries(m, kp + ':').filter(([, v]) => Array.isArray(v.c)).sort(byP).forEach(([id, v]) => addTodoRow(v.c, id, Number(v.p) || 0, TODO_LISTS[kp]));
     });
+    loadVol(m);
     if(inviteIds.some(id => m['f:' + id])) generateInvite();
   }
 
@@ -1039,8 +1170,56 @@ function exportMinutes(){
     if(sorted.some((x, i) => x !== items[i])) sorted.forEach(x => list.appendChild(x));
   }
 
+  // 别的管理员对筹备组纪要的修改：先记入 volKV；如果正好是当前查看的会议，再更新页面
+  function applyRemoteVol(key, value){
+    const parts = key.split(':'), kind = parts[0], mid = parts[1], rest = parts.slice(2).join(':'), gone = value == null;
+    if(gone) delete volKV[key]; else volKV[key] = value;
+    if(kind === 'vm'){
+      if(gone){
+        Object.keys(volKV).forEach(k => { if(midOf(k) === mid) delete volKV[k]; });
+        if(!meetingIds().length) Object.assign(volKV, defaultMeeting('m1', 1));
+        if(mid === volCur){ const ids = meetingIds(); volCur = ids[ids.length - 1]; renderVol(); } else renderVolSelect();
+      } else renderVolSelect();
+      return;
+    }
+    if(mid !== volCur){ if(kind === 'vf' && rest === 'vDate') renderVolSelect(); return; }
+    const str = gone ? '' : String(value);
+    if(kind === 'vf'){
+      const el = document.getElementById(rest);
+      if(el && document.activeElement !== el && el.value !== str){ el.value = str; if(rest === 'vDate') renderVolSelect(); }
+    } else if(kind === 'vd'){
+      const el = rest === 'disc' ? vDiscEl : vNextEl;
+      if(document.activeElement !== el && trimEnd(el.innerText) !== str) setMultiline(el, str);
+    } else if(kind === 'vg'){
+      let li = [...vAgendaEl.children].find(x => x.dataset.id === rest);
+      if(gone){ if(li){ li.remove(); renumberAgenda(); } return; }
+      if(typeof value.t !== 'string') return;
+      if(!li){ addAgendaItem(value.t, rest, Number(value.p) || 0, vAgendaEl); }
+      else {
+        li.dataset.p = Number(value.p) || 0;
+        const t = li.querySelector('.txt');
+        if(document.activeElement !== t && trimEnd(t.innerText) !== value.t) t.textContent = value.t;
+      }
+      reorder(vAgendaEl); renumberAgenda();
+    } else if(kind === 'vt'){
+      let tr = [...vTodoEl.children].find(x => x.dataset.id === rest);
+      if(gone){ if(tr) tr.remove(); return; }
+      if(!Array.isArray(value.c)) return;
+      if(!tr){ addTodoRow(value.c, rest, Number(value.p) || 0, vTodoEl); }
+      else {
+        tr.dataset.p = Number(value.p) || 0;
+        tr.querySelectorAll('td[contenteditable]').forEach((td, i) => {
+          const v = value.c[i] || '';
+          if(document.activeElement !== td && trimEnd(td.innerText) !== v) td.textContent = v;
+        });
+      }
+      reorder(vTodoEl);
+    }
+  }
+
   // 应用别的管理员发来的单条变更（value 为 null 表示已删除/取消）
   function applyRemote(key, value){
+    if(isVolKey(key)) return applyRemoteVol(key, value);
     const kind = key.slice(0, 2), rest = key.slice(2), gone = value == null;
     if(kind === 'f:'){
       const el = document.getElementById(rest);
@@ -1171,15 +1350,20 @@ function exportMinutes(){
       }
       mode = 'shared'; me = (session && session.user && session.user.email) || '';
       const present = new Set(rows.map(r => r.key));
-      const injected = rows.length ? Object.keys(DEFAULTS).filter(k => /^[ghtu]:/.test(k) && !present.has(k)) : [];
+      const injected = rows.length ? Object.keys(DEFAULTS).filter(k => /^[gt]:/.test(k) && !present.has(k)) : [];
       injected.forEach(k => { live[k] = DEFAULTS[k]; });
-      if(rows.length){ applyAll(live); known = readModel(); injected.forEach(k => { delete known[k]; }); } else { known = {}; }
+      let needPush = !rows.length;
+      if(rows.length){
+        applyAll(live); known = readModel();
+        // 云端还没有的：新增的默认议程项、旧数据转成的“第 1 次会议”等 —— 从 known 里去掉，稍后会推送上去
+        Object.keys(known).forEach(k => { if(!present.has(k) && (isVolKey(k) || injected.includes(k))){ delete known[k]; needPush = true; } });
+      } else { known = {}; }
       try{ localStorage.removeItem(LOCAL_KEY); lastLocalJson = null; }catch(e){}
       channel = sb.channel('fw-' + EVENT_ID + '-' + CLIENT_ID)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'fw_kv', filter: 'event_id=eq.' + EVENT_ID }, onRemote)
         .subscribe(st => { if(st === 'SUBSCRIBED') reconcile(); });
       updateAuthUI();
-      if(!rows.length || injected.length) await pushDiff(); else setStatus('已载入云端记录 ✓ ' + clock());
+      if(needPush) await pushDiff(); else setStatus('已载入云端记录 ✓ ' + clock());
     }catch(e){
       console.error(e); mode = 'local';
       setStatus('⚠ 无法连接云端，仍在本机保存', true);
@@ -1249,17 +1433,19 @@ function exportMinutes(){
     if(e.target && (e.target.id === 'authEmail' || e.target.id === 'authPass')) return;
     scheduleSave();
   }));
-  Object.values(AGENDA_LISTS).concat(Object.values(TODO_LISTS)).forEach(el => new MutationObserver(scheduleSave).observe(el, { childList: true }));
+  Object.values(AGENDA_LISTS).concat(Object.values(TODO_LISTS), [VOL_AGENDA, VOL_TODO]).forEach(el => new MutationObserver(scheduleSave).observe(el, { childList: true }));
   window.addEventListener('pagehide', () => { if(dirty) flush(); });
   document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden' && dirty) flush(); });
   window.addEventListener('online', () => { if(mode === 'shared') pushDiff(); });
 
   window.clearSaved = async function(){
     const msg = mode === 'shared'
-      ? '这会清空云端的共享记录，所有管理员的页面都会被清空。\n\n确定继续吗？此操作无法撤销。'
-      : '确定清空本页已填写的所有内容并重新开始吗？此操作无法撤销。';
+      ? '这会清空云端的聚会安排、签到和聚会当天会议记录，所有管理员的页面都会被清空。志愿者筹备组会议纪要不受影响。\n\n确定继续吗？此操作无法撤销。'
+      : '确定清空本页的聚会安排、签到和聚会当天会议记录并重新开始吗？志愿者筹备组会议纪要不受影响。此操作无法撤销。';
     if(!confirm(msg)) return;
-    applyAll(DEFAULTS);
+    captureVol();
+    const base = {}; Object.keys(DEFAULTS).forEach(k => { if(!isVolKey(k)) base[k] = DEFAULTS[k]; });
+    applyAll(Object.assign(base, volKV));
     if(mode === 'shared') await pushDiff();
     else { try{ localStorage.removeItem(LOCAL_KEY); }catch(e){} lastLocalJson = stable(readModel()); setStatus('已清空'); }
   };
