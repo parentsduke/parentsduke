@@ -53,6 +53,15 @@
   .msg.err{color:#b3261e;}
   .done{display:none;margin-top:14px;background:var(--sky-soft);border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.8;}
   .done.show{display:block;}
+  .btn.ghost{background:#fff;color:var(--duke-blue);border:1px solid var(--line);}
+  .btn.ghost:hover{background:var(--sky-soft);}
+  .modal{position:fixed;inset:0;background:rgba(7,20,51,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;}
+  .modal[hidden]{display:none;}
+  .modal-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;width:100%;max-width:380px;}
+  .modal-card h2{font-size:18px;margin:0 0 10px;color:var(--navy-deep);}
+  .modal-card p{font-size:14.5px;color:var(--ink-soft);margin:0 0 12px;}
+  .modal-name{background:var(--sky-soft);border-radius:10px;padding:14px 16px;font-size:20px;font-weight:700;color:var(--navy);text-align:center;margin:0 0 14px;word-break:break-all;}
+  .modal-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
   .foot{color:var(--ink-soft);font-size:12.5px;margin-top:18px;}
 </style>
 </head>
@@ -113,6 +122,19 @@
   <p class="foot">你的答案只有活动组织的管理员能看到。</p>
 </main>
 
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="cmTitle" hidden>
+  <div class="modal-card">
+    <h2 id="cmTitle">请确认名字</h2>
+    <p>你选择的名字是：</p>
+    <div class="modal-name" id="cmName"></div>
+    <p>请确认名字是否正确？</p>
+    <div class="modal-actions">
+      <button class="btn" id="cmOk" type="button">名字正确，提交</button>
+      <button class="btn ghost" id="cmBack" type="button">返回修改</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ======== 配置：与管理页（fw.html）保持一致 ========
 const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
@@ -141,6 +163,25 @@ addGroup('其他', ROSTER.filter(r => !seen.has(r[0])));
 
 for(let i = 1; i <= 8; i++){ const o = document.createElement('option'); o.value = String(i); o.textContent = i + ' 人'; guestsEl.appendChild(o); }
 
+// 提交前弹窗：确认所选名字正确
+const cm = $('confirmModal'), cmName = $('cmName'), cmOk = $('cmOk'), cmBack = $('cmBack');
+function askConfirm(name){
+  return new Promise(resolve => {
+    cmName.textContent = name; cm.hidden = false; cmOk.focus();
+    const finish = v => {
+      cm.hidden = true;
+      cmOk.removeEventListener('click', onOk); cmBack.removeEventListener('click', onBack);
+      cm.removeEventListener('click', onBg); document.removeEventListener('keydown', onKey);
+      resolve(v);
+    };
+    const onOk = () => finish(true), onBack = () => finish(false);
+    const onBg = e => { if(e.target === cm) finish(false); };
+    const onKey = e => { if(e.key === 'Escape') finish(false); };
+    cmOk.addEventListener('click', onOk); cmBack.addEventListener('click', onBack);
+    cm.addEventListener('click', onBg); document.addEventListener('keydown', onKey);
+  });
+}
+
 function setMsg(text, kind){ msgEl.textContent = text; msgEl.className = 'msg' + (kind ? ' ' + kind : ''); }
 
 // 这台设备上次提交的内容，方便再次修改
@@ -164,6 +205,7 @@ btn.addEventListener('click', async () => {
   if(!major)  return setMsg('请填写孩子专业（未定请填「未定」）', 'err');
   if(!w)      return setMsg('请选择是否观看橄榄球比赛', 'err');
   const watch = w.value === 'yes', kid = k.value === 'yes';
+  if(!(await askConfirm(name))){ setMsg('请核对名字后再提交。'); return; }
   btn.disabled = true; setMsg('提交中…');
   const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 20000);
   try{
