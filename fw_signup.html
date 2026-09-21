@@ -63,6 +63,21 @@
   .modal-name{background:var(--sky-soft);border-radius:10px;padding:14px 16px;font-size:20px;font-weight:700;color:var(--navy);text-align:center;margin:0 0 14px;word-break:break-all;}
   .modal-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
   .foot{color:var(--ink-soft);font-size:12.5px;margin-top:18px;}
+  .pay{display:none;margin-top:14px;background:#fff8e6;border:1px solid #ecd9a8;border-left:4px solid var(--gold);border-radius:10px;padding:14px 16px;font-size:14.5px;line-height:1.8;}
+  .pay.show{display:block;}
+  .pay h3{margin:0 0 6px;font-size:15px;color:var(--navy-deep);}
+  .pay .amt{font-size:22px;font-weight:700;color:var(--navy);}
+  .pay .pill{display:inline-block;border-radius:20px;padding:1px 10px;font-size:12.5px;margin-left:8px;vertical-align:middle;}
+  .pay .pill.todo{background:#fde8e6;color:#b3261e;}
+  .pay .pill.ok{background:#e3f4ea;color:#1d7a46;}
+  .pay .code{display:flex;align-items:center;gap:10px;margin:8px 0;}
+  .pay .code b{font-size:20px;letter-spacing:.06em;color:var(--navy);background:#fff;border:1px dashed var(--gold);border-radius:8px;padding:2px 12px;}
+  .pay .code button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 12px;font-size:13px;cursor:pointer;color:var(--duke-blue);font-family:inherit;}
+  .pay .info{white-space:pre-wrap;background:#fff;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:14px;}
+  .pay .small{font-size:12.5px;color:var(--ink-soft);}
+  .fee-note{font-size:13.5px;color:var(--ink-soft);line-height:1.8;margin-top:10px;}
+  .fee-note b{color:var(--navy);}
+  #donateOther{margin-top:8px;}
 </style>
 </head>
 <body>
@@ -115,9 +130,21 @@
         <label><input type="radio" name="watch" value="no"> 否</label>
       </div>
     </div>
+    <div class="field" id="donateField" hidden>
+      <label>自愿捐款（请选择一项；不捐请选 $0）</label>
+      <div class="radio-row" id="donateRow">
+        <label><input type="radio" name="donate" value="0"> $0</label>
+        <label><input type="radio" name="donate" value="2"> $2</label>
+        <label><input type="radio" name="donate" value="5"> $5</label>
+        <label><input type="radio" name="donate" value="other"> 其他</label>
+      </div>
+      <input type="text" id="donateOther" inputmode="decimal" maxlength="7" placeholder="其他金额（美元），如 10" autocomplete="off">
+      <div class="fee-note" id="feeNote"></div>
+    </div>
     <button class="btn" id="submit" type="button">提交报名</button>
     <div class="msg" id="msg" role="status"></div>
     <div class="done" id="done"></div>
+    <div class="pay" id="pay" aria-live="polite"></div>
   </div>
   <p class="foot">你的答案只有活动组织的管理员能看到。</p>
 </main>
@@ -184,6 +211,99 @@ function askConfirm(name){
 
 function setMsg(text, kind){ msgEl.textContent = text; msgEl.className = 'msg' + (kind ? ' ' + kind : ''); }
 
+// ---- 缴费卡片：金额由数据库按人数计算；管理员确认收款后状态才会变成「已缴清」----
+const payEl = $('pay');
+const money = n => '$' + (Number(n) % 1 ? Number(n).toFixed(2) : String(Number(n)));
+function payLine(parent, text, cls){ const d = document.createElement('div'); if(cls) d.className = cls; d.textContent = text; parent.appendChild(d); return d; }
+async function showPayment(name){
+  payEl.classList.remove('show'); payEl.textContent = '';
+  try{
+    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/fw_get_payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+      body: JSON.stringify({ p_event: EVENT_ID, p_name: name })
+    });
+    if(!res.ok) return;                       // 缴费功能未启用或函数尚未部署：静默不显示
+    const p = await res.json();
+    if(!p || !p.enabled) return;
+    const due = Number(p.due) || 0, paid = Number(p.paid) || 0, bal = due - paid;
+    const don = Number(p.donation) || 0;
+    const h = document.createElement('h3'); h.textContent = '缴费'; payEl.appendChild(h);
+    if(don > 0) payLine(payEl, '活动费用 ' + money(due - don) + ' + 自愿捐款 ' + money(don), 'small');
+    const a = payLine(payEl, ''); a.append('应缴金额 ');
+    const amt = document.createElement('span'); amt.className = 'amt'; amt.textContent = money(due); a.appendChild(amt);
+    const pill = document.createElement('span'); pill.className = 'pill ' + (bal <= 0 && paid > 0 ? 'ok' : 'todo');
+    pill.textContent = bal <= 0 && paid > 0 ? '已缴清' : paid > 0 ? '部分已缴' : '待缴'; a.appendChild(pill);
+    if(paid > 0 && bal > 0) payLine(payEl, '已收 ' + money(paid) + '，还需补缴 ' + money(bal));
+    if(bal < 0) payLine(payEl, '已多收 ' + money(-bal) + '（人数有变），管理员会与你联系退还。', 'small');
+    if(bal > 0 || paid === 0){
+      const c = document.createElement('div'); c.className = 'code'; c.append('付款备注码 ');
+      const b = document.createElement('b'); b.textContent = p.code; c.appendChild(b);
+      const cp = document.createElement('button'); cp.type = 'button'; cp.textContent = '复制';
+      cp.addEventListener('click', async () => { try{ await navigator.clipboard.writeText(p.code); cp.textContent = '已复制'; }catch(e){ cp.textContent = '请手动复制'; } });
+      c.appendChild(cp); payEl.appendChild(c);
+      if(p.pay_info){ const i = document.createElement('div'); i.className = 'info'; i.textContent = p.pay_info; payEl.appendChild(i); }
+      payLine(payEl, '转账时请在备注里写上备注码' + (p.deadline ? '，并于 ' + p.deadline + ' 前完成' : '') + '。管理员核对到账后会标记为已缴清（不是即时的），稍后重新打开本页即可查看状态。', 'small');
+    }
+    payEl.classList.add('show');
+  }catch(e){ console.error(e); }
+}
+
+// ---- 费用与自愿捐款：每人费用由数据库设置；捐款选项只在缴费启用后显示 ----
+const donateField = $('donateField'), donateOther = $('donateOther'), feeNote = $('feeNote');
+let feeInfo = null;
+function readDonation(){                       // 返回金额；没选返回 null；「其他」输入不合法返回 NaN
+  const r = document.querySelector('input[name=donate]:checked');
+  if(!r) return null;
+  if(r.value !== 'other') return Number(r.value);
+  const v = donateOther.value.trim().replace(/^\$/, '');
+  if(!/^\d{1,4}(\.\d{1,2})?$/.test(v)) return NaN;
+  const n = Number(v);
+  return n > 0 && n <= 1000 ? n : NaN;
+}
+function setDonation(v){
+  const n = Number(v) || 0, std = [0, 2, 5].includes(n);
+  const r = document.querySelector('input[name=donate][value="' + (std ? String(n) : 'other') + '"]'); if(r) r.checked = true;
+  donateOther.value = std ? '' : String(n);
+}
+function updateFeeNote(){
+  if(!feeInfo) return;
+  const per = Number(feeInfo.per_person) || 0, wf = Number(feeInfo.watch_fee) || 0;
+  const g = Number(guestsEl.value) || 0, w = document.querySelector('input[name=watch]:checked');
+  const d = readDonation();
+  feeNote.textContent = '';
+  const line1 = document.createElement('div'); line1.append('活动费用：每人 '); const b1 = document.createElement('b'); b1.textContent = money(per); line1.appendChild(b1);
+  line1.append('（人数含杜娃）' + (wf ? '；观看橄榄球另加每家庭 ' + money(wf) : '')); feeNote.appendChild(line1);
+  if(g){
+    const base = g * per + (w && w.value === 'yes' ? wf : 0), don = (d == null || Number.isNaN(d)) ? 0 : d;
+    const line2 = document.createElement('div'); line2.append('预计应缴：'); const b2 = document.createElement('b'); b2.textContent = money(base + don); line2.appendChild(b2);
+    line2.append(don ? '（活动费用 ' + money(base) + ' + 捐款 ' + money(don) + '）' : ''); feeNote.appendChild(line2);
+  }
+}
+async function loadFeeInfo(){
+  try{
+    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/fw_fee_info', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+      body: JSON.stringify({ p_event: EVENT_ID })
+    });
+    if(!res.ok) return;                        // 函数未部署：不显示费用和捐款
+    const f = await res.json();
+    if(!f || !f.enabled) return;
+    feeInfo = f; donateField.hidden = false; updateFeeNote();
+  }catch(e){ console.error(e); }
+}
+document.querySelectorAll('input[name=donate]').forEach(r => r.addEventListener('change', () => {
+  if(r.checked && r.value === 'other') donateOther.focus(); else if(r.checked) donateOther.value = '';   // 选了固定金额就清空「其他」输入框
+  updateFeeNote();
+}));
+donateOther.addEventListener('input', () => {                 // 在输入框里填写金额，自动勾选「其他」
+  if(donateOther.value.trim()){ const o = document.querySelector('input[name=donate][value=other]'); if(o) o.checked = true; }
+  updateFeeNote();
+});
+guestsEl.addEventListener('change', updateFeeNote);
+document.querySelectorAll('input[name=watch]').forEach(r => r.addEventListener('change', updateFeeNote));
+
 // 这台设备上次提交的内容，方便再次修改
 try{
   const last = JSON.parse(localStorage.getItem(LAST_KEY) || 'null');
@@ -192,8 +312,12 @@ try{
     const r = document.querySelector('input[name=watch][value=' + (last.watch ? 'yes' : 'no') + ']'); if(r) r.checked = true;
     if(typeof last.kid === 'boolean'){ const k = document.querySelector('input[name=kid][value=' + (last.kid ? 'yes' : 'no') + ']'); if(k) k.checked = true; }
     setMsg('已载入你在这台设备上次提交的内容，修改后可重新提交。');
+    if(last.donation != null) setDonation(last.donation);
+    showPayment(last.name);
   }
 }catch(e){}
+
+loadFeeInfo();
 
 btn.addEventListener('click', async () => {
   const name = sel.value, guests = Number(guestsEl.value), major = majorEl.value.trim();
@@ -204,6 +328,9 @@ btn.addEventListener('click', async () => {
   if(!k)      return setMsg('请选择杜娃是否参加 FW', 'err');
   if(!major)  return setMsg('请填写孩子专业（未定请填「未定」）', 'err');
   if(!w)      return setMsg('请选择是否观看橄榄球比赛', 'err');
+  const donation = donateField.hidden ? 0 : readDonation();
+  if(donation === null) return setMsg('请选择自愿捐款金额（不捐请选 $0）', 'err');
+  if(Number.isNaN(donation)) return setMsg('请输入正确的捐款金额（美元，大于 0 且不超过 1000，最多两位小数）', 'err');
   const watch = w.value === 'yes', kid = k.value === 'yes';
   if(!(await askConfirm(name))){ setMsg('请核对名字后再提交。'); return; }
   btn.disabled = true; setMsg('提交中…');
@@ -216,13 +343,26 @@ btn.addEventListener('click', async () => {
       signal: ctrl.signal
     });
     if(!res.ok) throw new Error(res.status + ' ' + (await res.text()));
-    try{ localStorage.setItem(LAST_KEY, JSON.stringify({ name, guests, kid, major, watch })); }catch(e){}
-    setMsg('✓ 已提交，谢谢！如需修改，重新选择你的名字再提交一次即可。', 'ok');
+    let donErr = false;
+    if(feeInfo){                               // 捐款单独保存；失败不影响已保存的报名
+      try{
+        const r2 = await fetch(SUPABASE_URL + '/rest/v1/rpc/fw_set_donation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+          body: JSON.stringify({ p_event: EVENT_ID, p_name: name, p_donation: donation })
+        });
+        if(!r2.ok) donErr = true;
+      }catch(e){ donErr = true; }
+    }
+    try{ localStorage.setItem(LAST_KEY, JSON.stringify({ name, guests, kid, major, watch, donation })); }catch(e){}
+    if(donErr) setMsg('报名已提交，但捐款金额没有保存成功，请再提交一次。', 'err');
+    else setMsg('✓ 已提交，谢谢！如需修改，重新选择你的名字再提交一次即可。', 'ok');
     doneEl.textContent = '';
-    [['家长', name], ['FW 参加人数', guests + ' 人'], ['杜娃是否参加', kid ? '是' : '否'], ['孩子专业', major], ['观看橄榄球比赛', watch ? '是' : '否']].forEach(([k, v]) => {
+    [['家长', name], ['FW 参加人数', guests + ' 人'], ['杜娃是否参加', kid ? '是' : '否'], ['孩子专业', major], ['观看橄榄球比赛', watch ? '是' : '否']].concat(feeInfo ? [['自愿捐款', money(donation)]] : []).forEach(([k, v]) => {
       const line = document.createElement('div'); line.textContent = k + '：' + v; doneEl.appendChild(line);
     });
     doneEl.classList.add('show');
+    showPayment(name);
   }catch(e){
     console.error(e);
     setMsg(e.name === 'AbortError' ? '网络较慢，提交超时，请稍后重试。' : '提交失败，请稍后再试；如果反复失败，请联系管理员。', 'err');

@@ -445,6 +445,10 @@
   .rsvp-table{width:100%;border-collapse:collapse;font-size:13.5px;}
   .rsvp-table th,.rsvp-table td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;}
   .rsvp-table th{background:var(--sky-soft);color:var(--ink-soft);font-weight:500;}
+  .rsvp-table.no-pay .pay-col{display:none;}
+  .rsvp-table .pay-btn{border:1px solid var(--line);background:#fff;color:var(--duke-blue);border-radius:6px;padding:3px 10px;font-size:12.5px;cursor:pointer;font-family:inherit;}
+  .rsvp-table .pay-btn.undo{color:var(--ink-soft);margin-left:6px;}
+  .rsvp-table .paid-ok{color:#1d7a46;font-weight:600;}
   .rsvp-missing{margin-top:14px;font-size:13px;color:var(--ink-soft);line-height:1.8;}
 
   .navlinks a[hidden]{display:none;}
@@ -535,7 +539,7 @@
       <div class="rsvp-stats" id="rsvpStats"></div>
       <div class="rsvp-scroll">
         <table class="rsvp-table">
-          <thead><tr><th>家长</th><th>届次</th><th>人数（含杜娃）</th><th>杜娃参加</th><th>孩子专业</th><th>橄榄球</th></tr></thead>
+          <thead><tr><th>家长</th><th>届次</th><th>人数（含杜娃）</th><th>杜娃参加</th><th>孩子专业</th><th>橄榄球</th><th class="pay-col">应缴</th><th class="pay-col">含捐款</th><th class="pay-col">已收</th><th class="pay-col">备注码</th><th class="pay-col">缴费确认</th></tr></thead>
           <tbody id="rsvpBody"></tbody>
         </table>
       </div>
@@ -1510,6 +1514,8 @@ function exportMinutes(){
 
   // ---- 管理员汇总（登录后才显示）----
   let rows = [];
+  let pays = {}, payOn = false;          // 缴费：来自 fw_payment_list；函数未部署或未设价格时 payOn=false，缴费列自动隐藏
+  const money = n => '$' + (Number(n) % 1 ? Number(n).toFixed(2) : String(Number(n)));
   const gi = g => { const i = gradeOrder.indexOf(g); return i < 0 ? 99 : i; };
   function cell(tr, text){ const td = document.createElement('td'); td.textContent = text; tr.appendChild(td); }
 
@@ -1520,9 +1526,48 @@ function exportMinutes(){
     rows = (data || []).slice().sort((a, b) =>
       (gi(gradeOf[a.name]) - gi(gradeOf[b.name])) ||
       ((rosterIdx[a.name] ?? 9999) - (rosterIdx[b.name] ?? 9999)) || (a.name < b.name ? -1 : 1));
+    pays = {}; payOn = false;
+    try{
+      const pr = await sb.rpc('fw_payment_list', { p_event: EVENT() });
+      if(!pr.error && Array.isArray(pr.data)){ pr.data.forEach(x => { pays[x.name] = x; }); payOn = pr.data.some(x => Number(x.amount_due) > 0); }
+    }catch(e){ console.warn('fw_payment_list', e); }
     render();
   }
+  async function setPaid(name, amount){
+    const sb = window.fwSb; if(!sb) return;
+    const { error } = await sb.rpc('fw_set_paid', { p_event: EVENT(), p_name: name, p_amount: amount, p_note: null });
+    if(error){ alert('保存失败：' + error.message); return; }
+    loadAdmin();
+  }
+  function payCell(tr, r){
+    const x = pays[r.name] || {}, due = Number(x.amount_due) || 0, paid = Number(x.paid_amount) || 0;
+    const tdDue = document.createElement('td'); tdDue.className = 'pay-col'; tdDue.textContent = money(due); tr.appendChild(tdDue);
+    const tdDon = document.createElement('td'); tdDon.className = 'pay-col'; tdDon.textContent = Number(x.donation) > 0 ? money(x.donation) : '—'; tr.appendChild(tdDon);
+    const tdPaid = document.createElement('td'); tdPaid.className = 'pay-col'; tdPaid.textContent = paid ? money(paid) : '—'; tr.appendChild(tdPaid);
+    const tdCode = document.createElement('td'); tdCode.className = 'pay-col'; tdCode.textContent = x.pay_code || '—'; tr.appendChild(tdCode);
+    const td = document.createElement('td'); td.className = 'pay-col';
+    if(paid >= due && paid > 0){
+      const ok = document.createElement('span'); ok.className = 'paid-ok'; ok.textContent = '✓ 已缴'; td.appendChild(ok);
+      if(x.paid_by) { const by = document.createElement('span'); by.style.cssText = 'color:var(--ink-soft);font-size:12px;margin-left:6px;'; by.textContent = '（' + x.paid_by + '）'; td.appendChild(by); }
+    }else{
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'pay-btn'; b.textContent = paid > 0 ? '补记收款' : '确认收款';
+      b.addEventListener('click', () => {
+        const v = prompt(r.name + '：实收总额（$）', String(due));
+        if(v === null) return;
+        const n = Number(v); if(!isFinite(n) || n < 0){ alert('金额不正确'); return; }
+        setPaid(r.name, n);
+      });
+      td.appendChild(b);
+    }
+    if(paid > 0){
+      const u = document.createElement('button'); u.type = 'button'; u.className = 'pay-btn undo'; u.textContent = '撤销';
+      u.addEventListener('click', () => { if(confirm('撤销 ' + r.name + ' 的收款记录（改回未缴）？')) setPaid(r.name, 0); });
+      td.appendChild(u);
+    }
+    tr.appendChild(td);
+  }
   function render(){
+    bodyEl.closest('table').classList.toggle('no-pay', !payOn);
     const total = rows.reduce((s, r) => s + (Number(r.guests) || 0), 0);
     const football = rows.filter(r => r.watch_football).length;
     const kid = rows.filter(r => r.kid_attends === true).length;
@@ -1530,11 +1575,21 @@ function exportMinutes(){
     [['已报名', rows.length + ' / ' + roster.length + ' 位家长'], ['FW 参加总人数', total + ' 人'], ['杜娃参加', kid + ' 个家庭'], ['观看橄榄球', football + ' 个家庭']].forEach(([k, v]) => {
       const span = document.createElement('span'); span.append(k + ' '); const b = document.createElement('b'); b.textContent = v; span.appendChild(b); statsEl.appendChild(span);
     });
+    if(payOn){
+      const dueAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).amount_due) || 0), 0);
+      const paidAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).paid_amount) || 0), 0);
+      const okN = rows.filter(r => { const x = pays[r.name] || {}; return Number(x.paid_amount) > 0 && Number(x.paid_amount) >= Number(x.amount_due); }).length;
+      const donAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).donation) || 0), 0);
+      [['已缴清', okN + ' / ' + rows.length + ' 户'], ['已收 / 应收', money(paidAll) + ' / ' + money(dueAll)]].concat(donAll > 0 ? [['其中自愿捐款', money(donAll)]] : []).forEach(([k, v]) => {
+        const span = document.createElement('span'); span.append(k + ' '); const b = document.createElement('b'); b.textContent = v; span.appendChild(b); statsEl.appendChild(span);
+      });
+    }
     bodyEl.innerHTML = '';
     rows.forEach(r => {
       const tr = document.createElement('tr');
       cell(tr, r.name); cell(tr, gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册');
       cell(tr, r.guests + ' 人'); cell(tr, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '—'); cell(tr, r.major || '—'); cell(tr, r.watch_football ? '是' : '否');
+      if(payOn) payCell(tr, r);
       bodyEl.appendChild(tr);
     });
     const answered = new Set(rows.map(r => r.name));
@@ -1543,8 +1598,8 @@ function exportMinutes(){
   }
   const csvCell = v => { v = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
   $('rsvpCsv').addEventListener('click', () => {
-    const lines = [['家长', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间']]
-      .concat(rows.map(r => [r.name, gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '', r.major, r.watch_football ? '是' : '否', r.updated_at]));
+    const lines = [['家长', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间'].concat(payOn ? ['应缴（含捐款）', '其中捐款', '已收', '备注码', '收款确认人', '收款时间'] : [])]
+      .concat(rows.map(r => [r.name, gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '', r.major, r.watch_football ? '是' : '否', r.updated_at].concat(payOn ? (x => [x.amount_due, x.donation, x.paid_amount, x.pay_code, x.paid_by, x.paid_at])(pays[r.name] || {}) : [])));
     const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = 'FW报名_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
