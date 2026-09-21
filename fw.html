@@ -449,6 +449,15 @@
   .rsvp-table .pay-btn{border:1px solid var(--line);background:#fff;color:var(--duke-blue);border-radius:6px;padding:3px 10px;font-size:12.5px;cursor:pointer;font-family:inherit;}
   .rsvp-table .pay-btn.undo{color:var(--ink-soft);margin-left:6px;}
   .rsvp-table .paid-ok{color:#1d7a46;font-weight:600;}
+  .budget{margin-top:26px;padding-top:18px;border-top:1px dashed var(--line);}
+  .budget h3{margin:0 0 10px;font-size:16px;color:var(--navy);}
+  .budget h3 small{font-weight:400;color:var(--ink-soft);font-size:12.5px;margin-left:8px;}
+  .budget-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px;}
+  .budget-table td,.budget-table th{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;}
+  .budget-table th{background:var(--sky-soft);color:var(--ink-soft);font-weight:500;}
+  .budget-table td.num{text-align:right;white-space:nowrap;}
+  .budget-table tr.tot td{font-weight:700;color:var(--navy);background:#fafbfd;}
+  .budget-table tr.ttl td{font-weight:700;font-size:14.5px;}
   .rsvp-missing{margin-top:14px;font-size:13px;color:var(--ink-soft);line-height:1.8;}
 
   .navlinks a[hidden]{display:none;}
@@ -544,6 +553,11 @@
         </table>
       </div>
       <div class="rsvp-missing" id="rsvpMissing"></div>
+      <div class="budget" id="budgetBox" hidden>
+        <h3>预算与收支<small id="budgetNote"></small></h3>
+        <div class="rsvp-stats" id="budgetStats"></div>
+        <div class="rsvp-scroll"><table class="budget-table" id="budgetTable"></table></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1519,6 +1533,82 @@ function exportMinutes(){
   const gi = g => { const i = gradeOrder.indexOf(g); return i < 0 ? 99 : i; };
   function cell(tr, text){ const td = document.createElement('td'); td.textContent = text; tr.appendChild(td); }
 
+
+  // ---- 预算表（Google 表格）：表格「发布到网络」为 CSV 后，把链接填在这里；留空则不显示预算 ----
+  // Google 表格：文件 → 共享 → 发布到网络 → 选择对应工作表 + 「逗号分隔值 (.csv)」→ 发布 → 复制链接
+  // 表格改动后约 5 分钟内同步；点「刷新」会重新读取。
+  const BUDGET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBqOHxmNITNx1rXWf4yWHTxoRJ2NvP-9Zcol4pOQvwXtvVWFKxpisx9s5zk_oWL1OpnbEF8Se2wd9t/pub?gid=0&single=true&output=csv';
+  let budgetRows = null;
+  function parseCSV(text){
+    const out = []; let row = [], f = '', q = false;
+    for(let i = 0; i < text.length; i++){
+      const c = text[i];
+      if(q){ if(c === '"'){ if(text[i + 1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+      else if(c === '"') q = true;
+      else if(c === ','){ row.push(f); f = ''; }
+      else if(c === '\n'){ row.push(f); out.push(row); row = []; f = ''; }
+      else if(c !== '\r') f += c;
+    }
+    if(f !== '' || row.length){ row.push(f); out.push(row); }
+    return out.filter(r => r.some(x => String(x).trim() !== ''));
+  }
+  const isNum = x => /^\$?-?[\d,]+(\.\d+)?$/.test(String(x).trim());
+  const toNum = x => Number(String(x).replace(/[$,]/g, '')) || 0;
+  function sheetVal(re){                       // 按左侧标题找一行，取该行最右边的数字
+    for(const r of budgetRows){
+      if(re.test(String(r[0] || '').trim())){ for(let i = r.length - 1; i >= 1; i--) if(isNum(r[i])) return String(r[i]).trim(); }
+    }
+    return null;
+  }
+  function chip(k, v){ const span = document.createElement('span'); span.append(k + ' '); const b = document.createElement('b'); b.textContent = v; span.appendChild(b); $('budgetStats').appendChild(span); }
+  function renderBudget(){
+    const box = $('budgetBox');
+    if(!BUDGET_CSV_URL || !budgetRows){ box.hidden = true; return; }
+    box.hidden = false;
+    // 概览：表格里的预计数 vs 实际报名 / 缴费
+    $('budgetStats').innerHTML = '';
+    const heads = rows.reduce((a, r) => a + (Number(r.guests) || 0), 0);
+    const attEst = sheetVal(/^Total Estimated Attendance/i);
+    if(attEst !== null) chip('预计出席 / 实际报名', attEst + ' / ' + heads + ' 人');
+    const recEst = sheetVal(/^Total Estimated Receipts/i), costEst = sheetVal(/^Total Estimated Cost/i), netEst = sheetVal(/^Estimated Net Balance/i);
+    if(recEst !== null) chip('表格预计收入', money(toNum(recEst)));
+    if(payOn){
+      const dueAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).amount_due) || 0), 0);
+      const donAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).donation) || 0), 0);
+      const paidAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).paid_amount) || 0), 0);
+      chip('实际应缴活动费', money(dueAll - donAll)); chip('实际自愿捐款', money(donAll)); chip('实际已收', money(paidAll));
+    }
+    if(costEst !== null) chip('预计支出', money(toNum(costEst)));
+    if(netEst !== null) chip('表格预计净余额', money(toNum(netEst)));
+    // 明细：原样显示表格里的每一行
+    const t = $('budgetTable'); t.textContent = '';
+    const w = Math.max.apply(null, budgetRows.map(r => r.length));
+    budgetRows.forEach((r, i) => {
+      const tr = document.createElement('tr'); const first = String(r[0] || '').trim();
+      const nonEmpty = r.filter(x => String(x).trim() !== '').length;
+      if(i === 0 && nonEmpty === 1){ tr.className = 'ttl'; const td = document.createElement('td'); td.colSpan = w; td.textContent = first; tr.appendChild(td); t.appendChild(tr); return; }
+      const isHead = /^item$/i.test(first);
+      if(/^(Total|Estimated)/i.test(first)) tr.className = 'tot';
+      for(let c = 0; c < w; c++){
+        const v = String(r[c] == null ? '' : r[c]).trim();
+        const td = document.createElement(isHead ? 'th' : 'td'); td.textContent = v; if(c > 0 && isNum(v)) td.className = 'num'; tr.appendChild(td);
+      }
+      t.appendChild(tr);
+    });
+  }
+  async function loadBudget(){
+    if(!BUDGET_CSV_URL) return;
+    try{
+      const res = await fetch(BUDGET_CSV_URL + (BUDGET_CSV_URL.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now(), { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      budgetRows = parseCSV(await res.text());
+      renderBudget(); $('budgetNote').textContent = '（来自 Google 表格，读取于 ' + new Date().toLocaleTimeString() + '）';
+    }catch(e){
+      console.warn('budget', e);
+      if(!budgetRows){ $('budgetBox').hidden = false; $('budgetNote').textContent = '（预算表读取失败：请确认表格已「发布到网络」并使用 CSV 链接）'; }
+    }
+  }
+
   async function loadAdmin(){
     const sb = window.fwSb; if(!sb) return;
     const { data, error } = await sb.from('fw_rsvp').select('name,guests,kid_attends,major,watch_football,updated_at').eq('event_id', EVENT());
@@ -1532,6 +1622,7 @@ function exportMinutes(){
       if(!pr.error && Array.isArray(pr.data)){ pr.data.forEach(x => { pays[x.name] = x; }); payOn = pr.data.some(x => Number(x.amount_due) > 0); }
     }catch(e){ console.warn('fw_payment_list', e); }
     render();
+    renderBudget(); loadBudget();
   }
   async function setPaid(name, amount){
     const sb = window.fwSb; if(!sb) return;
@@ -1609,7 +1700,7 @@ function exportMinutes(){
   function onMode(mode){
     const isAdmin = mode === 'shared';
     secEl.hidden = !isAdmin; navEl.hidden = !isAdmin;
-    if(isAdmin) loadAdmin(); else { rows = []; bodyEl.innerHTML = ''; statsEl.innerHTML = ''; missEl.textContent = ''; }
+    if(isAdmin) loadAdmin(); else { rows = []; bodyEl.innerHTML = ''; statsEl.innerHTML = ''; missEl.textContent = ''; $('budgetBox').hidden = true; }
   }
   document.addEventListener('fw-mode', e => onMode(e.detail.mode));
   if(window.fwMode) onMode(window.fwMode);
