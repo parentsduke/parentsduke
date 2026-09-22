@@ -548,7 +548,7 @@
       <div class="rsvp-stats" id="rsvpStats"></div>
       <div class="rsvp-scroll">
         <table class="rsvp-table">
-          <thead><tr><th>家长</th><th>届次</th><th>人数（含杜娃）</th><th>杜娃参加</th><th>孩子专业</th><th>橄榄球</th><th class="pay-col">应缴</th><th class="pay-col">含捐款</th><th class="pay-col">已收</th><th class="pay-col">备注码</th><th class="pay-col">缴费确认</th></tr></thead>
+          <thead><tr><th>家长</th><th>Name Tag</th><th>届次</th><th>人数（含杜娃）</th><th>杜娃参加</th><th>孩子专业</th><th>橄榄球</th><th class="pay-col">应缴</th><th class="pay-col">含捐款</th><th class="pay-col">已收</th><th class="pay-col">备注码</th><th class="pay-col">缴费确认</th></tr></thead>
           <tbody id="rsvpBody"></tbody>
         </table>
       </div>
@@ -718,6 +718,15 @@
       <div class="minutes-block">
         <label class="block-title">下次会议安排</label>
         <div class="editable" id="vNext" contenteditable="true" data-ph="下次筹备组会议的时间 / 需要提前准备的事项……"></div>
+      </div>
+
+      <div class="minutes-block">
+        <label class="block-title">筹委会议后的落实进展</label>
+        <p style="margin:0 0 10px;font-size:13px;color:var(--ink-soft,#6b7280)">持续记录历次筹委会议之后，各项事务的落实进展；不随「清空聚会记录」清空，也不随切换某一次会议纪要而变化。</p>
+        <div class="editable" id="progressNote" contenteditable="true" data-ph="记录筹委会议后各项事务的落实进展，例如：
+- 场地已确认，Duke Garden，10/17 12:00-3:00
+- 坐垫已采购 80 个（Weihong，9/25 完成）
+- 横幅设计中，待 Rong 确认文案……"></div>
       </div>
 
       <div class="btn-row">
@@ -949,6 +958,7 @@ function renumberAgenda(){
 const todoBody = document.getElementById('todoBody');
 const TODO_LISTS = { t: todoBody };
 const VOL_TODO = document.getElementById('vTodoBody');
+const progressEl = document.getElementById('progressNote');   // 落实进展：跨会议持续存在的备忘录，键 p:note，与 d: 会议当天备注、vd: 单次筹备组会议记录都不同，互不清空
 function addTodoRow(vals=[], id, p, body=todoBody){
   const tr = document.createElement('tr');
   tr.dataset.id = id || uid(); tr.dataset.p = (p != null ? p : Date.now());
@@ -1062,6 +1072,7 @@ function exportMinutes(){
     Object.keys(TODO_LISTS).forEach(kp => TODO_LISTS[kp].querySelectorAll('tr').forEach(tr => {
       m[kp + ':' + tr.dataset.id] = { c: [...tr.querySelectorAll('td[contenteditable]')].map(td => trimEnd(td.innerText)), p: +tr.dataset.p };
     }));
+    m['p:note'] = trimEnd(progressEl.innerText);
     captureVol();
     Object.assign(m, volKV);
     return m;
@@ -1222,6 +1233,7 @@ function exportMinutes(){
       TODO_LISTS[kp].innerHTML = '';
       entries(m, kp + ':').filter(([, v]) => Array.isArray(v.c)).sort(byP).forEach(([id, v]) => addTodoRow(v.c, id, Number(v.p) || 0, TODO_LISTS[kp]));
     });
+    setMultiline(progressEl, typeof m['p:note'] === 'string' ? m['p:note'] : '');
     loadVol(m);
     if(inviteIds.some(id => m['f:' + id])) generateInvite();
   }
@@ -1282,6 +1294,12 @@ function exportMinutes(){
   // 应用别的管理员发来的单条变更（value 为 null 表示已删除/取消）
   function applyRemote(key, value){
     if(isVolKey(key)) return applyRemoteVol(key, value);
+    if(key === 'p:note'){
+      if(document.activeElement === progressEl) return;
+      const v = value == null ? '' : String(value);
+      if(trimEnd(progressEl.innerText) !== v) setMultiline(progressEl, v);
+      return;
+    }
     const kind = key.slice(0, 2), rest = key.slice(2), gone = value == null;
     if(kind === 'f:'){
       const el = document.getElementById(rest);
@@ -1502,12 +1520,13 @@ function exportMinutes(){
 
   window.clearSaved = async function(){
     const msg = mode === 'shared'
-      ? '这会清空云端的聚会安排、签到和聚会当天会议记录，所有管理员的页面都会被清空。志愿者筹备组会议纪要不受影响。\n\n确定继续吗？此操作无法撤销。'
-      : '确定清空本页的聚会安排、签到和聚会当天会议记录并重新开始吗？志愿者筹备组会议纪要不受影响。此操作无法撤销。';
+      ? '这会清空云端的聚会安排、签到和聚会当天会议记录，所有管理员的页面都会被清空。志愿者筹备组会议纪要和筹委会议后的落实进展不受影响。\n\n确定继续吗？此操作无法撤销。'
+      : '确定清空本页的聚会安排、签到和聚会当天会议记录并重新开始吗？志愿者筹备组会议纪要和筹委会议后的落实进展不受影响。此操作无法撤销。';
     if(!confirm(msg)) return;
     captureVol();
-    const base = {}; Object.keys(DEFAULTS).forEach(k => { if(!isVolKey(k)) base[k] = DEFAULTS[k]; });
-    applyAll(Object.assign(base, volKV));
+    const progressNow = { 'p:note': trimEnd(progressEl.innerText) };   // 落实进展独立于本次清空，先保留当前内容
+    const base = {}; Object.keys(DEFAULTS).forEach(k => { if(!isVolKey(k) && k !== 'p:note') base[k] = DEFAULTS[k]; });
+    applyAll(Object.assign(base, volKV, progressNow));
     if(mode === 'shared') await pushDiff();
     else { try{ localStorage.removeItem(LOCAL_KEY); }catch(e){} lastLocalJson = stable(readModel()); setStatus('已清空'); }
   };
@@ -1529,6 +1548,7 @@ function exportMinutes(){
   // ---- 管理员汇总（登录后才显示）----
   let rows = [];
   let pays = {}, payOn = false;          // 缴费：来自 fw_payment_list；函数未部署或未设价格时 payOn=false，缴费列自动隐藏
+  let nametags = {};                     // Name Tag：来自 fw_nametag_list，与缴费无关
   const money = n => '$' + (Number(n) % 1 ? Number(n).toFixed(2) : String(Number(n)));
   const gi = g => { const i = gradeOrder.indexOf(g); return i < 0 ? 99 : i; };
   function cell(tr, text){ const td = document.createElement('td'); td.textContent = text; tr.appendChild(td); }
@@ -1621,6 +1641,11 @@ function exportMinutes(){
       const pr = await sb.rpc('fw_payment_list', { p_event: EVENT() });
       if(!pr.error && Array.isArray(pr.data)){ pr.data.forEach(x => { pays[x.name] = x; }); payOn = pr.data.some(x => Number(x.amount_due) > 0); }
     }catch(e){ console.warn('fw_payment_list', e); }
+    nametags = {};
+    try{
+      const nr = await sb.rpc('fw_nametag_list', { p_event: EVENT() });
+      if(!nr.error && Array.isArray(nr.data)) nr.data.forEach(x => { nametags[x.name] = x.nametag; });
+    }catch(e){ console.warn('fw_nametag_list', e); }
     render();
     renderBudget(); loadBudget();
   }
@@ -1678,7 +1703,7 @@ function exportMinutes(){
     bodyEl.innerHTML = '';
     rows.forEach(r => {
       const tr = document.createElement('tr');
-      cell(tr, r.name); cell(tr, gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册');
+      cell(tr, r.name); cell(tr, nametags[r.name] || '—'); cell(tr, gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册');
       cell(tr, r.guests + ' 人'); cell(tr, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '—'); cell(tr, r.major || '—'); cell(tr, r.watch_football ? '是' : '否');
       if(payOn) payCell(tr, r);
       bodyEl.appendChild(tr);
@@ -1689,8 +1714,8 @@ function exportMinutes(){
   }
   const csvCell = v => { v = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
   $('rsvpCsv').addEventListener('click', () => {
-    const lines = [['家长', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间'].concat(payOn ? ['应缴（含捐款）', '其中捐款', '已收', '备注码', '收款确认人', '收款时间'] : [])]
-      .concat(rows.map(r => [r.name, gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '', r.major, r.watch_football ? '是' : '否', r.updated_at].concat(payOn ? (x => [x.amount_due, x.donation, x.paid_amount, x.pay_code, x.paid_by, x.paid_at])(pays[r.name] || {}) : [])));
+    const lines = [['家长', 'Name Tag', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间'].concat(payOn ? ['应缴（含捐款）', '其中捐款', '已收', '备注码', '收款确认人', '收款时间'] : [])]
+      .concat(rows.map(r => [r.name, nametags[r.name] || '', gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '', r.major, r.watch_football ? '是' : '否', r.updated_at].concat(payOn ? (x => [x.amount_due, x.donation, x.paid_amount, x.pay_code, x.paid_by, x.paid_at])(pays[r.name] || {}) : [])));
     const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = 'FW报名_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
