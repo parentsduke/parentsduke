@@ -78,6 +78,11 @@
   .fee-note{font-size:13.5px;color:var(--ink-soft);line-height:1.8;margin-top:10px;}
   .fee-note b{color:var(--navy);}
   #donateOther{margin-top:8px;}
+  .lookup{margin-bottom:18px;}
+  .lookup .row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+  .lookup .row .field{flex:1 1 200px;margin:0;}
+  .lookup .btn2{border:1px solid var(--duke-blue);background:#fff;color:var(--duke-blue);border-radius:10px;padding:11px 18px;font-size:14.5px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
+  .lookup .btn2:hover{background:var(--sky-soft);}
 </style>
 </head>
 <body>
@@ -91,6 +96,17 @@
   <div class="notice">
     <b>聚会时间</b>：2026年10月17日（周六）<br>
     12:00–2:00 pm 或 4:00–6:00 pm，根据 Duke vs UNC 比赛时间确定
+  </div>
+
+  <div class="card lookup" id="lookupCard" hidden>
+    <div class="row">
+      <div class="field">
+        <label for="lookupName">查询缴费状态</label>
+        <select id="lookupName"><option value="" disabled selected>请选择你的名字…</option></select>
+      </div>
+      <button class="btn2" id="lookupBtn" type="button">查询</button>
+    </div>
+    <div class="pay" id="lookupPay" aria-live="polite"></div>
   </div>
 
   <div class="card">
@@ -290,7 +306,7 @@ async function loadFeeInfo(){
     if(!res.ok) return;                        // 函数未部署：不显示费用和捐款
     const f = await res.json();
     if(!f || !f.enabled) return;
-    feeInfo = f; donateField.hidden = false; updateFeeNote();
+    feeInfo = f; donateField.hidden = false; lookupCard.hidden = false; updateFeeNote();
   }catch(e){ console.error(e); }
 }
 document.querySelectorAll('input[name=donate]').forEach(r => r.addEventListener('change', () => {
@@ -316,6 +332,50 @@ try{
     showPayment(last.name);
   }
 }catch(e){}
+
+// ---- 单独的缴费状态查询：不需要重新提交报名 ----
+const lookupCard = $('lookupCard'), lookupSel = $('lookupName'), lookupBtn = $('lookupBtn'), lookupPay = $('lookupPay');
+gradeOrder.forEach(g => { const list = ROSTER.filter(r => r[1] === g); if(!list.length) return;
+  const og = document.createElement('optgroup'); og.label = gradeLabel(g);
+  list.forEach(([n]) => { const o = document.createElement('option'); o.value = n; o.textContent = n; og.appendChild(o); });
+  lookupSel.appendChild(og);
+});
+async function showPaymentInto(name, el){         // 和 showPayment 一样的查询和渲染逻辑，只是写入指定的容器
+  el.classList.remove('show'); el.textContent = '';
+  try{
+    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/fw_get_payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+      body: JSON.stringify({ p_event: EVENT_ID, p_name: name })
+    });
+    if(!res.ok) return;
+    const p = await res.json();
+    if(!p || !p.enabled){ payLine(el, '还没有找到你的报名记录，请先在下方完成报名。'); el.classList.add('show'); return; }
+    const due = Number(p.due) || 0, paid = Number(p.paid) || 0, bal = due - paid, don = Number(p.donation) || 0;
+    const h = document.createElement('h3'); h.textContent = '缴费'; el.appendChild(h);
+    if(don > 0) payLine(el, '活动费用 ' + money(due - don) + ' + 自愿捐款 ' + money(don), 'small');
+    const a = payLine(el, ''); a.append('应缴金额 ');
+    const amt = document.createElement('span'); amt.className = 'amt'; amt.textContent = money(due); a.appendChild(amt);
+    const pill = document.createElement('span'); pill.className = 'pill ' + (bal <= 0 && paid > 0 ? 'ok' : 'todo');
+    pill.textContent = bal <= 0 && paid > 0 ? '已缴清' : paid > 0 ? '部分已缴' : '待缴'; a.appendChild(pill);
+    if(paid > 0 && bal > 0) payLine(el, '已收 ' + money(paid) + '，还需补缴 ' + money(bal));
+    if(bal < 0) payLine(el, '已多收 ' + money(-bal) + '（人数有变），管理员会与你联系退还。', 'small');
+    if(bal > 0 || paid === 0){
+      const c = document.createElement('div'); c.className = 'code'; c.append('付款备注码 ');
+      const b = document.createElement('b'); b.textContent = p.code; c.appendChild(b);
+      const cp = document.createElement('button'); cp.type = 'button'; cp.textContent = '复制';
+      cp.addEventListener('click', async () => { try{ await navigator.clipboard.writeText(p.code); cp.textContent = '已复制'; }catch(e){ cp.textContent = '请手动复制'; } });
+      c.appendChild(cp); el.appendChild(c);
+      if(p.pay_info){ const i = document.createElement('div'); i.className = 'info'; i.textContent = p.pay_info; el.appendChild(i); }
+      payLine(el, '转账时请在备注里写上备注码' + (p.deadline ? '，并于 ' + p.deadline + ' 前完成' : '') + '。管理员核对到账后会标记为已缴清（不是即时的），可以再次点「查询」查看最新状态。', 'small');
+    }
+    el.classList.add('show');
+  }catch(e){ console.error(e); }
+}
+lookupBtn.addEventListener('click', () => {
+  if(!lookupSel.value) return setMsg('请先选择你的名字再查询', 'err');
+  showPaymentInto(lookupSel.value, lookupPay);
+});
 
 loadFeeInfo();
 
