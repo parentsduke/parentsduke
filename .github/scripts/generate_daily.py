@@ -28,7 +28,7 @@ CHRONICLE_MIN_DATE = GLOBAL_MIN_DATE
 
 SECTION_LABELS = {
     'weekly-school':       '🏫 学校新闻',
-    'weekly-basketball':   '🏀 篮球/体育动态',
+    'weekly-basketball':   '🏈🏀 橄榄球/篮球/体育动态',
     'weekly-admissions':   '📋 招生信息',
     'weekly-prematric':    '📅 开学前安排',
     'weekly-calendar':     '🗓 学术日历',
@@ -66,6 +66,10 @@ RSS_FEEDS = {
     'goduke_mbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=MBB',
     'goduke_wbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=WBB',
     'goduke_all':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200',
+    # 橄榄球（football）：goduke.com的Sport参数代码未经验证，不确定是否为"FB"，
+    # 为避免抓空，改用与chronicle/today等栏目一致的Google News站内搜索方式，
+    # 覆盖goduke.com和dukechronicle.com两个信源，更稳妥。
+    'goduke_fb':        'https://news.google.com/rss/search?q=Duke+football+site:goduke.com+OR+Duke+football+site:dukechronicle.com&hl=en-US&gl=US&ceid=US:en',
 }
 
 HTML_SOURCES = {
@@ -99,6 +103,11 @@ HOUSING_PAGES = [
     'https://students.duke.edu/living/housing/annual-housing-calendar/',
     'https://students.duke.edu/living/housing/housing-assignments/fall26-housing/',
     'https://students.duke.edu/living/housing/graduate-professional-housing/',
+]
+
+# ── Family Weekend（家庭周末）：官方页面每年更新日期和日程，深度文本抓取 ──
+FAMILY_WEEKEND_PAGES = [
+    'https://students.duke.edu/info-for/families/family-weekend/',
 ]
 
 # ── 招生页面：深度文本抓取 ──────────────────────────────────
@@ -1427,6 +1436,7 @@ def main():
                 'goduke_mbb':      ex.submit(fetch_source, 'goduke_mbb', 5),
                 'goduke_wbb':      ex.submit(fetch_source, 'goduke_wbb', 3),
                 'goduke_all':      ex.submit(fetch_source, 'goduke_all', 3),
+                'goduke_fb':       ex.submit(fetch_source, 'goduke_fb', 5),
                 'athletics':       ex.submit(fetch_source, 'athletics', 3),
                 'admissions':      ex.submit(fetch_source, 'admissions', 5),
                 'admissions_site': ex.submit(fetch_source, 'admissions_site', 6),
@@ -1448,6 +1458,7 @@ def main():
                 'calendar':        ex.submit(fetch_calendar),
                 'reg_text':        ex.submit(fetch_pages_text, REGISTRATION_PAGES),
                 'housing_text':    ex.submit(fetch_pages_text, HOUSING_PAGES),
+                'family_weekend_text': ex.submit(fetch_pages_text, FAMILY_WEEKEND_PAGES, 2500),
                 'admissions_text': ex.submit(fetch_pages_text, ADMISSIONS_PAGES, 1500),
                 'prematric_text':  ex.submit(fetch_pages_text, PREMATRIC_PAGES, 1200),
             }
@@ -1456,7 +1467,7 @@ def main():
     r = fetch_all()
 
     school_items     = r['today'] + r['news']
-    basketball_items = r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_all'] + r['athletics']
+    basketball_items = r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_all'] + r['goduke_fb'] + r['athletics']
     admissions_items = r['admissions'] + r['admissions_site']
 
     # ── Python层面先过滤过期日期，再交给AI（所有栏目统一执行，不再局限于招生）──
@@ -1476,6 +1487,7 @@ def main():
     r["reg_text"]        = filter_expired_text(r["reg_text"], _today_date)
     r["housing_text"]    = filter_expired_text(r["housing_text"], _today_date)
     r["prematric_text"]  = filter_expired_text(r["prematric_text"], _today_date)
+    r["family_weekend_text"] = filter_expired_text(r["family_weekend_text"], _today_date)
 
     admissions_items = _drop_expired_items(admissions_items)
     school_items     = _drop_expired_items(school_items)
@@ -1512,15 +1524,28 @@ def main():
         BASKETBALL_EXTRA += "\n以上比赛仅在Amazon Prime Video播出，需订阅才能观看。"
     else:
         BASKETBALL_EXTRA = ""
+    # 本栏目同时涵盖橄榄球和篮球等杜克体育项目，秋季（8-12月）正值橄榄球赛季，
+    # 明确要求AI不要因为栏目历史上偏重篮球报道就忽略橄榄球赛事/战绩等内容。
+    BASKETBALL_EXTRA += ("\n\n【栏目范围提醒】本栏目涵盖杜克所有体育项目动态，"
+                         "包括但不限于橄榄球(football)和篮球(basketball)。"
+                         "如原始内容中有橄榄球比赛结果、赛程、排名等信息，"
+                         "必须与篮球内容同等重视，不得因栏目历史侧重篮球而遗漏橄榄球条目。")
+
+    # Family Weekend 临近时（活动前约6周内）优先突出展示；平时仍会因日期过期被过滤掉，
+    # 无需手动开关，全部依赖上面 filter_expired_text 的日期判断。
+    CAMPUS_EXTRA = r['family_weekend_text']
+    if CAMPUS_EXTRA.strip():
+        CAMPUS_EXTRA = ("【Family Weekend 家庭周末官方页面摘录，请优先关注并提炼：具体日期、"
+                        "是否与橄榄球主场赛程重合、注册/购票入口、截止日期等信息】\n" + CAMPUS_EXTRA)
 
     tasks = {
         'weekly-school':       lambda: generate_section('学校新闻', school_items),
-        'weekly-basketball':   lambda: generate_section('篮球/体育动态', basketball_items, extra=BASKETBALL_EXTRA),
+        'weekly-basketball':   lambda: generate_section('橄榄球/篮球/体育动态', basketball_items, extra=BASKETBALL_EXTRA),
         'weekly-admissions':   lambda: generate_section('招生信息', admissions_items, extra=r['admissions_text']),
         'weekly-calendar':     lambda: generate_calendar_section(calendar_items),
         'weekly-registration': lambda: generate_registration_section(r['reg_text'], r['housing_text']),
         'weekly-prematric':    lambda: generate_prematric_section(r['prematric_text']),
-        'weekly-campus':       lambda: generate_section('校园生活', campus_items),
+        'weekly-campus':       lambda: generate_section('校园生活', campus_items, extra=CAMPUS_EXTRA),
         'weekly-chronicle':    lambda: generate_section('Chronicle学生报', chronicle_items),
         'weekly-research':     lambda: generate_section('科研动态', research_items),
         'weekly-visa':         lambda: generate_section('签证与国际生动态', visa_items, allow_political=True),
