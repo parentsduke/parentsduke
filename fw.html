@@ -1660,7 +1660,14 @@ function exportMinutes(){
     const tdDue = document.createElement('td'); tdDue.className = 'pay-col'; tdDue.textContent = money(due); tr.appendChild(tdDue);
     const tdDon = document.createElement('td'); tdDon.className = 'pay-col'; tdDon.textContent = Number(x.donation) > 0 ? money(x.donation) : '—'; tr.appendChild(tdDon);
     const tdPaid = document.createElement('td'); tdPaid.className = 'pay-col'; tdPaid.textContent = paid ? money(paid) : '—'; tr.appendChild(tdPaid);
-    const tdCode = document.createElement('td'); tdCode.className = 'pay-col'; tdCode.textContent = x.pay_code || '—'; tr.appendChild(tdCode);
+    const tdCode = document.createElement('td'); tdCode.className = 'pay-col'; tdCode.textContent = x.pay_code || '—';
+    if(x.self_paid && !(paid >= due && paid > 0)){                     // 家长自报已付款，但管理员还没确认收款：提醒对账
+      const tag = document.createElement('span'); tag.textContent = '✅ 家长已勾选';
+      tag.style.cssText = 'display:block;font-size:11.5px;color:#b3821e;margin-top:2px;';
+      tag.title = x.self_paid_at ? ('勾选时间 ' + x.self_paid_at) : '';
+      tdCode.appendChild(tag);
+    }
+    tr.appendChild(tdCode);
     const td = document.createElement('td'); td.className = 'pay-col';
     if(paid >= due && paid > 0){
       const ok = document.createElement('span'); ok.className = 'paid-ok'; ok.textContent = '✓ 已缴'; td.appendChild(ok);
@@ -1714,8 +1721,8 @@ function exportMinutes(){
   }
   const csvCell = v => { v = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
   $('rsvpCsv').addEventListener('click', () => {
-    const lines = [['家长', 'Name Tag', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间'].concat(payOn ? ['应缴（含捐款）', '其中捐款', '已收', '备注码', '收款确认人', '收款时间'] : [])]
-      .concat(rows.map(r => [r.name, nametags[r.name] || '', gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '', r.major, r.watch_football ? '是' : '否', r.updated_at].concat(payOn ? (x => [x.amount_due, x.donation, x.paid_amount, x.pay_code, x.paid_by, x.paid_at])(pays[r.name] || {}) : [])));
+    const lines = [['家长', 'Name Tag', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间'].concat(payOn ? ['应缴（含捐款）', '其中捐款', '已收', '备注码', '收款确认人', '收款时间', '家长自报已付款', '自报时间'] : [])]
+      .concat(rows.map(r => [r.name, nametags[r.name] || '', gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '', r.major, r.watch_football ? '是' : '否', r.updated_at].concat(payOn ? (x => [x.amount_due, x.donation, x.paid_amount, x.pay_code, x.paid_by, x.paid_at, x.self_paid ? '是' : '否', x.self_paid_at || ''])(pays[r.name] || {}) : [])));
     const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = 'FW报名_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);

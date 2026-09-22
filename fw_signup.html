@@ -75,6 +75,9 @@
   .pay .code button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 12px;font-size:13px;cursor:pointer;color:var(--duke-blue);font-family:inherit;}
   .pay .info{white-space:pre-wrap;background:#fff;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:14px;}
   .pay .small{font-size:12.5px;color:var(--ink-soft);}
+  .pay .selfpaid{display:flex;align-items:flex-start;gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed #ecd9a8;font-size:14px;cursor:pointer;}
+  .pay .selfpaid input{margin-top:3px;width:17px;height:17px;flex:none;cursor:pointer;}
+  .pay .selfpaid .note{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
   .fee-note{font-size:13.5px;color:var(--ink-soft);line-height:1.8;margin-top:10px;}
   .fee-note b{color:var(--navy);}
   #donateOther{margin-top:8px;}
@@ -113,6 +116,10 @@
     <div class="field">
       <label for="name">我是</label>
       <select id="name"><option value="" disabled selected>请选择你的名字…</option></select>
+    </div>
+    <div class="field">
+      <label for="nametag">胸牌姓名（打印在 name tag 上，可用昵称或英文名）</label>
+      <input type="text" id="nametag" maxlength="40" placeholder="例如：Tina / 田甜" autocomplete="off">
     </div>
     <div class="field">
       <label for="guests">FW 参加人数（含杜娃）</label>
@@ -190,7 +197,7 @@ const gradeOrder = ['30','29','28','27','26','25','研究生'];
 const gradeLabel = g => g === '研究生' ? '研究生' : ('Class of 20' + g);
 
 const $ = id => document.getElementById(id);
-const sel = $('name'), guestsEl = $('guests'), majorEl = $('major'), msgEl = $('msg'), doneEl = $('done'), btn = $('submit');
+const sel = $('name'), guestsEl = $('guests'), majorEl = $('major'), msgEl = $('msg'), doneEl = $('done'), btn = $('submit'), nametagEl = $('nametag');
 const LAST_KEY = 'fw-rsvp-last-' + EVENT_ID;
 
 // 名字下拉：按届次分组
@@ -202,6 +209,7 @@ function addGroup(label, list){
   sel.appendChild(og);
 }
 gradeOrder.forEach(g => addGroup(gradeLabel(g), ROSTER.filter(r => r[1] === g)));
+sel.addEventListener('change', () => { if(!nametagEl.value.trim()) nametagEl.value = sel.value; });
 addGroup('其他', ROSTER.filter(r => !seen.has(r[0])));
 
 for(let i = 1; i <= 8; i++){ const o = document.createElement('option'); o.value = String(i); o.textContent = i + ' 人'; guestsEl.appendChild(o); }
@@ -231,6 +239,30 @@ function setMsg(text, kind){ msgEl.textContent = text; msgEl.className = 'msg' +
 const payEl = $('pay');
 const money = n => '$' + (Number(n) % 1 ? Number(n).toFixed(2) : String(Number(n)));
 function payLine(parent, text, cls){ const d = document.createElement('div'); if(cls) d.className = cls; d.textContent = text; parent.appendChild(d); return d; }
+function payCheckbox(parent, name, p){          // 家长自报「已付款」：只是提醒管理员核对，不等于管理员已确认收款
+  const due = Number(p.due) || 0, paid = Number(p.paid) || 0;
+  if(paid >= due && paid > 0) return;            // 管理员已经确认收款，不用再自报
+  const label = document.createElement('label'); label.className = 'selfpaid';
+  const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!p.self_paid;
+  const span = document.createElement('span');
+  span.append('✅ 我已完成转账（付款后请勾选）');
+  const note = document.createElement('span'); note.className = 'note';
+  const sync = () => { note.textContent = cb.checked ? '已提交，等待管理员核对到账后标记为已缴清' : ''; };
+  sync(); span.appendChild(note);
+  cb.addEventListener('change', async () => {
+    const v = cb.checked; cb.disabled = true;
+    try{
+      const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/fw_mark_self_paid', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+        body: JSON.stringify({ p_event: EVENT_ID, p_name: name, p_value: v })
+      });
+      if(!r.ok) cb.checked = !v;
+    }catch(e){ cb.checked = !v; }
+    cb.disabled = false; sync();
+  });
+  label.appendChild(cb); label.appendChild(span); parent.appendChild(label);
+}
 async function showPayment(name){
   payEl.classList.remove('show'); payEl.textContent = '';
   try{
@@ -261,6 +293,7 @@ async function showPayment(name){
       if(p.pay_info){ const i = document.createElement('div'); i.className = 'info'; i.textContent = p.pay_info; payEl.appendChild(i); }
       payLine(payEl, '转账时请在备注里写上备注码' + (p.deadline ? '，并于 ' + p.deadline + ' 前完成' : '') + '。管理员核对到账后会标记为已缴清（不是即时的），稍后重新打开本页即可查看状态。', 'small');
     }
+    payCheckbox(payEl, name, p);
     payEl.classList.add('show');
   }catch(e){ console.error(e); }
 }
@@ -324,7 +357,7 @@ document.querySelectorAll('input[name=watch]').forEach(r => r.addEventListener('
 try{
   const last = JSON.parse(localStorage.getItem(LAST_KEY) || 'null');
   if(last && seen.has(last.name)){
-    sel.value = last.name; guestsEl.value = String(last.guests || ''); majorEl.value = last.major || '';
+    sel.value = last.name; guestsEl.value = String(last.guests || ''); majorEl.value = last.major || ''; nametagEl.value = last.nametag || last.name;
     const r = document.querySelector('input[name=watch][value=' + (last.watch ? 'yes' : 'no') + ']'); if(r) r.checked = true;
     if(typeof last.kid === 'boolean'){ const k = document.querySelector('input[name=kid][value=' + (last.kid ? 'yes' : 'no') + ']'); if(k) k.checked = true; }
     setMsg('已载入你在这台设备上次提交的内容，修改后可重新提交。');
@@ -369,6 +402,7 @@ async function showPaymentInto(name, el){         // 和 showPayment 一样的�
       if(p.pay_info){ const i = document.createElement('div'); i.className = 'info'; i.textContent = p.pay_info; el.appendChild(i); }
       payLine(el, '转账时请在备注里写上备注码' + (p.deadline ? '，并于 ' + p.deadline + ' 前完成' : '') + '。管理员核对到账后会标记为已缴清（不是即时的），可以再次点「查询」查看最新状态。', 'small');
     }
+    payCheckbox(el, name, p);
     el.classList.add('show');
   }catch(e){ console.error(e); }
 }
@@ -388,6 +422,8 @@ btn.addEventListener('click', async () => {
   if(!k)      return setMsg('请选择杜娃是否参加 FW', 'err');
   if(!major)  return setMsg('请填写孩子专业（未定请填「未定」）', 'err');
   if(!w)      return setMsg('请选择是否观看橄榄球比赛', 'err');
+  const nametag = nametagEl.value.trim();
+  if(!nametag) return setMsg('请填写胸牌姓名', 'err');
   const donation = donateField.hidden ? 0 : readDonation();
   if(donation === null) return setMsg('请选择自愿捐款金额（不捐请选 $0）', 'err');
   if(Number.isNaN(donation)) return setMsg('请输入正确的捐款金额（美元，大于 0 且不超过 1000，最多两位小数）', 'err');
@@ -403,6 +439,15 @@ btn.addEventListener('click', async () => {
       signal: ctrl.signal
     });
     if(!res.ok) throw new Error(res.status + ' ' + (await res.text()));
+    let tagErr = false;
+    try{
+      const rt = await fetch(SUPABASE_URL + '/rest/v1/rpc/fw_set_nametag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+        body: JSON.stringify({ p_event: EVENT_ID, p_name: name, p_nametag: nametag })
+      });
+      if(!rt.ok) tagErr = true;
+    }catch(e){ tagErr = true; }
     let donErr = false;
     if(feeInfo){                               // 捐款单独保存；失败不影响已保存的报名
       try{
@@ -414,11 +459,12 @@ btn.addEventListener('click', async () => {
         if(!r2.ok) donErr = true;
       }catch(e){ donErr = true; }
     }
-    try{ localStorage.setItem(LAST_KEY, JSON.stringify({ name, guests, kid, major, watch, donation })); }catch(e){}
-    if(donErr) setMsg('报名已提交，但捐款金额没有保存成功，请再提交一次。', 'err');
+    try{ localStorage.setItem(LAST_KEY, JSON.stringify({ name, guests, kid, major, watch, donation, nametag })); }catch(e){}
+    if(tagErr) setMsg('报名已提交，但胸牌姓名没有保存成功，请再提交一次。', 'err');
+    else if(donErr) setMsg('报名已提交，但捐款金额没有保存成功，请再提交一次。', 'err');
     else setMsg('✓ 已提交，谢谢！如需修改，重新选择你的名字再提交一次即可。', 'ok');
     doneEl.textContent = '';
-    [['家长', name], ['FW 参加人数', guests + ' 人'], ['杜娃是否参加', kid ? '是' : '否'], ['孩子专业', major], ['观看橄榄球比赛', watch ? '是' : '否']].concat(feeInfo ? [['自愿捐款', money(donation)]] : []).forEach(([k, v]) => {
+    [['家长', name], ['FW 参加人数', guests + ' 人'], ['杜娃是否参加', kid ? '是' : '否'], ['孩子专业', major], ['观看橄榄球比赛', watch ? '是' : '否'], ['胸牌姓名', nametag]].concat(feeInfo ? [['自愿捐款', money(donation)]] : []).forEach(([k, v]) => {
       const line = document.createElement('div'); line.textContent = k + '：' + v; doneEl.appendChild(line);
     });
     doneEl.classList.add('show');
