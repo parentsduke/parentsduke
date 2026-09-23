@@ -1649,7 +1649,7 @@ function exportMinutes(){
     nametags = {};
     try{
       const nr = await sb.rpc('fw_nametag_list', { p_event: EVENT() });
-      if(!nr.error && Array.isArray(nr.data)) nr.data.forEach(x => { nametags[x.name] = x.nametag; });
+      if(!nr.error && Array.isArray(nr.data)) nr.data.forEach(x => { nametags[x.name] = Array.isArray(x.nametags) ? x.nametags.join('、') : (x.nametags || ''); });
     }catch(e){ console.warn('fw_nametag_list', e); }
     render();
     renderBudget(); loadBudget();

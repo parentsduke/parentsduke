@@ -118,12 +118,12 @@
       <select id="name"><option value="" disabled selected>请选择你的名字…</option></select>
     </div>
     <div class="field">
-      <label for="nametag">胸牌姓名（打印在 name tag 上，请填写中文或英文姓名）</label>
-      <input type="text" id="nametag" maxlength="40" placeholder="例如：张伟 / Wei Zhang" autocomplete="off">
-    </div>
-    <div class="field">
       <label for="guests">FW 参加人数（含杜娃）</label>
       <select id="guests"><option value="" disabled selected>请选择…</option></select>
+    </div>
+    <div class="field" id="nametagsField" hidden>
+      <label>胸牌姓名（每位参加者一个 name tag，请填<b>真实姓名</b>，中文或英文均可，不要填昵称）</label>
+      <div id="nametags"></div>
     </div>
     <div class="field">
       <label>杜娃是否参加 FW</label>
@@ -197,7 +197,7 @@ const gradeOrder = ['30','29','28','27','26','25','研究生'];
 const gradeLabel = g => g === '研究生' ? '研究生' : ('Class of 20' + g);
 
 const $ = id => document.getElementById(id);
-const sel = $('name'), guestsEl = $('guests'), majorEl = $('major'), msgEl = $('msg'), doneEl = $('done'), btn = $('submit'), nametagEl = $('nametag');
+const sel = $('name'), guestsEl = $('guests'), majorEl = $('major'), msgEl = $('msg'), doneEl = $('done'), btn = $('submit'), nametagsBox = $('nametags'), nametagsField = $('nametagsField');
 const LAST_KEY = 'fw-rsvp-last-' + EVENT_ID;
 
 // 名字下拉：按届次分组
@@ -210,6 +210,24 @@ function addGroup(label, list){
 }
 gradeOrder.forEach(g => addGroup(gradeLabel(g), ROSTER.filter(r => r[1] === g)));
 addGroup('其他', ROSTER.filter(r => !seen.has(r[0])));
+
+// 胸牌姓名：人数是几个，就生成几个输入框；改人数时保留已填内容
+function renderNametags(vals){
+  const n = Number(guestsEl.value) || 0;
+  const old = vals || Array.from(nametagsBox.querySelectorAll('input')).map(i => i.value);
+  nametagsBox.textContent = '';
+  nametagsField.hidden = n < 1;
+  for(let i = 0; i < n; i++){
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.maxLength = 40; inp.autocomplete = 'off';
+    inp.placeholder = '第 ' + (i + 1) + ' 位：例如 张伟 / Wei Zhang';
+    inp.value = old[i] || '';
+    inp.style.marginBottom = '8px';
+    nametagsBox.appendChild(inp);
+  }
+}
+function readNametags(){ return Array.from(nametagsBox.querySelectorAll('input')).map(i => i.value.trim()); }
+guestsEl.addEventListener('change', () => renderNametags());
 
 for(let i = 1; i <= 8; i++){ const o = document.createElement('option'); o.value = String(i); o.textContent = i + ' 人'; guestsEl.appendChild(o); }
 
@@ -316,14 +334,14 @@ function setDonation(v){
 }
 function updateFeeNote(){
   if(!feeInfo) return;
-  const per = Number(feeInfo.per_person) || 0, wf = Number(feeInfo.watch_fee) || 0;
-  const g = Number(guestsEl.value) || 0, w = document.querySelector('input[name=watch]:checked');
+  const per = Number(feeInfo.per_person) || 0;
+  const g = Number(guestsEl.value) || 0;
   const d = readDonation();
   feeNote.textContent = '';
   const line1 = document.createElement('div'); line1.append('活动费用：每人 '); const b1 = document.createElement('b'); b1.textContent = money(per); line1.appendChild(b1);
-  line1.append('（人数含杜娃）' + (wf ? '；观看橄榄球另加每家庭 ' + money(wf) : '')); feeNote.appendChild(line1);
+  line1.append('（人数含杜娃）'); feeNote.appendChild(line1);
   if(g){
-    const base = g * per + (w && w.value === 'yes' ? wf : 0), don = (d == null || Number.isNaN(d)) ? 0 : d;
+    const base = g * per, don = (d == null || Number.isNaN(d)) ? 0 : d;
     const line2 = document.createElement('div'); line2.append('预计应缴：'); const b2 = document.createElement('b'); b2.textContent = money(base + don); line2.appendChild(b2);
     line2.append(don ? '（活动费用 ' + money(base) + ' + 捐款 ' + money(don) + '）' : ''); feeNote.appendChild(line2);
   }
@@ -356,7 +374,8 @@ document.querySelectorAll('input[name=watch]').forEach(r => r.addEventListener('
 try{
   const last = JSON.parse(localStorage.getItem(LAST_KEY) || 'null');
   if(last && seen.has(last.name)){
-    sel.value = last.name; guestsEl.value = String(last.guests || ''); majorEl.value = last.major || ''; nametagEl.value = last.nametag || last.name;
+    sel.value = last.name; guestsEl.value = String(last.guests || ''); majorEl.value = last.major || '';
+    renderNametags(Array.isArray(last.nametags) ? last.nametags : (last.nametag ? [last.nametag] : []));
     const r = document.querySelector('input[name=watch][value=' + (last.watch ? 'yes' : 'no') + ']'); if(r) r.checked = true;
     if(typeof last.kid === 'boolean'){ const k = document.querySelector('input[name=kid][value=' + (last.kid ? 'yes' : 'no') + ']'); if(k) k.checked = true; }
     setMsg('已载入你在这台设备上次提交的内容，修改后可重新提交。');
@@ -421,8 +440,8 @@ btn.addEventListener('click', async () => {
   if(!k)      return setMsg('请选择杜娃是否参加 FW', 'err');
   if(!major)  return setMsg('请填写孩子专业（未定请填「未定」）', 'err');
   if(!w)      return setMsg('请选择是否观看橄榄球比赛', 'err');
-  const nametag = nametagEl.value.trim();
-  if(!nametag) return setMsg('请填写胸牌姓名（中文或英文姓名）', 'err');
+  const nametags = readNametags();
+  if(nametags.length !== guests || nametags.some(t => !t)) return setMsg('请为每位参加者填写胸牌姓名（共 ' + guests + ' 位，真实姓名）', 'err');
   const donation = donateField.hidden ? 0 : readDonation();
   if(donation === null) return setMsg('请选择自愿捐款金额（不捐请选 $0）', 'err');
   if(Number.isNaN(donation)) return setMsg('请输入正确的捐款金额（美元，大于 0 且不超过 1000，最多两位小数）', 'err');
@@ -443,7 +462,7 @@ btn.addEventListener('click', async () => {
       const rt = await fetch(SUPABASE_URL + '/rest/v1/rpc/fw_set_nametag', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
-        body: JSON.stringify({ p_event: EVENT_ID, p_name: name, p_nametag: nametag })
+        body: JSON.stringify({ p_event: EVENT_ID, p_name: name, p_nametags: nametags })
       });
       if(!rt.ok) tagErr = true;
     }catch(e){ tagErr = true; }
@@ -458,12 +477,12 @@ btn.addEventListener('click', async () => {
         if(!r2.ok) donErr = true;
       }catch(e){ donErr = true; }
     }
-    try{ localStorage.setItem(LAST_KEY, JSON.stringify({ name, guests, kid, major, watch, donation, nametag })); }catch(e){}
+    try{ localStorage.setItem(LAST_KEY, JSON.stringify({ name, guests, kid, major, watch, donation, nametags })); }catch(e){}
     if(tagErr) setMsg('报名已提交，但胸牌姓名没有保存成功，请再提交一次。', 'err');
     else if(donErr) setMsg('报名已提交，但捐款金额没有保存成功，请再提交一次。', 'err');
     else setMsg('✓ 已提交，谢谢！如需修改，重新选择你的名字再提交一次即可。', 'ok');
     doneEl.textContent = '';
-    [['家长', name], ['FW 参加人数', guests + ' 人'], ['杜娃是否参加', kid ? '是' : '否'], ['孩子专业', major], ['观看橄榄球比赛', watch ? '是' : '否'], ['胸牌姓名', nametag]].concat(feeInfo ? [['自愿捐款', money(donation)]] : []).forEach(([k, v]) => {
+    [['家长', name], ['FW 参加人数', guests + ' 人'], ['杜娃是否参加', kid ? '是' : '否'], ['孩子专业', major], ['观看橄榄球比赛', watch ? '是' : '否'], ['胸牌姓名', nametags.join('、')]].concat(feeInfo ? [['自愿捐款', money(donation)]] : []).forEach(([k, v]) => {
       const line = document.createElement('div'); line.textContent = k + '：' + v; doneEl.appendChild(line);
     });
     doneEl.classList.add('show');
