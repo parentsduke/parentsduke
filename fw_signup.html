@@ -118,8 +118,8 @@
       <select id="name"><option value="" disabled selected>请选择你的名字…</option></select>
     </div>
     <div class="field">
-      <label for="nametag">胸牌姓名（打印在 name tag 上，可用昵称或英文名）</label>
-      <input type="text" id="nametag" maxlength="40" placeholder="例如：Tina / 田甜" autocomplete="off">
+      <label for="nametag">胸牌姓名（打印在 name tag 上，请填写中文或英文姓名）</label>
+      <input type="text" id="nametag" maxlength="40" placeholder="例如：张伟 / Wei Zhang" autocomplete="off">
     </div>
     <div class="field">
       <label for="guests">FW 参加人数（含杜娃）</label>
@@ -209,7 +209,6 @@ function addGroup(label, list){
   sel.appendChild(og);
 }
 gradeOrder.forEach(g => addGroup(gradeLabel(g), ROSTER.filter(r => r[1] === g)));
-sel.addEventListener('change', () => { if(!nametagEl.value.trim()) nametagEl.value = sel.value; });
 addGroup('其他', ROSTER.filter(r => !seen.has(r[0])));
 
 for(let i = 1; i <= 8; i++){ const o = document.createElement('option'); o.value = String(i); o.textContent = i + ' 人'; guestsEl.appendChild(o); }
@@ -423,7 +422,7 @@ btn.addEventListener('click', async () => {
   if(!major)  return setMsg('请填写孩子专业（未定请填「未定」）', 'err');
   if(!w)      return setMsg('请选择是否观看橄榄球比赛', 'err');
   const nametag = nametagEl.value.trim();
-  if(!nametag) return setMsg('请填写胸牌姓名', 'err');
+  if(!nametag) return setMsg('请填写胸牌姓名（中文或英文姓名）', 'err');
   const donation = donateField.hidden ? 0 : readDonation();
   if(donation === null) return setMsg('请选择自愿捐款金额（不捐请选 $0）', 'err');
   if(Number.isNaN(donation)) return setMsg('请输入正确的捐款金额（美元，大于 0 且不超过 1000，最多两位小数）', 'err');
