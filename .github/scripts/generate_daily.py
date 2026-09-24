@@ -9,7 +9,7 @@ OPENROUTER_KEY= os.environ.get('OPENROUTER_API_KEY', '')
 CEREBRAS_KEY  = os.environ.get('CEREBRAS_API_KEY', '')
 MISTRAL_KEY   = os.environ.get('MISTRAL_API_KEY', '')
 RESEND_KEY    = os.environ.get('RESEND_API_KEY', '')
-BREVO_KEY     = os.environ.get('BREVO_API_KEY', '')
+RESEND_KEY_W  = os.environ.get('RESEND_API_KEY_W', '')
 SUPABASE_URL  = os.environ.get('SUPABASE_URL', '')
 SUPABASE_KEY  = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
 
@@ -1344,35 +1344,18 @@ def fetch_subscribers():
 
 
 def send_via_resend(to_email, subject, html):
-    """用 Resend 发送单封邮件。"""
+    """用 Resend (RESEND_API_KEY_W) 发送单封邮件。"""
     r = requests.post(
         'https://api.resend.com/emails',
         headers={
-            'Authorization': f'Bearer {RESEND_KEY}',
+            'Authorization': f'Bearer {RESEND_KEY_W}',
             'Content-Type': 'application/json',
         },
-        json={'from': EMAIL_FROM, 'to': [to_email], 'subject': subject, 'html': html},
+        json={'from': f'杜克家长日报 <{EMAIL_FROM}>', 'to': [to_email], 'subject': subject, 'html': html},
         timeout=15,
     )
-    return r.status_code in (200, 201)
-
-
-def send_via_brevo(to_email, subject, html):
-    """用 Brevo 发送单封邮件。"""
-    r = requests.post(
-        'https://api.brevo.com/v3/smtp/email',
-        headers={
-            'api-key': BREVO_KEY,
-            'Content-Type': 'application/json',
-        },
-        json={
-            'sender':      {'name': '杜克家长日报', 'email': EMAIL_FROM},
-            'to':          [{'email': to_email}],
-            'subject':     subject,
-            'htmlContent': html,
-        },
-        timeout=15,
-    )
+    if r.status_code not in (200, 201):
+        print(f'    Resend 返回 {r.status_code}: {r.text[:200]}')
     return r.status_code in (200, 201)
 
 
@@ -1391,9 +1374,9 @@ def send_email(sections):
     # else:
     #     print('  跳过 Resend：未设置 RESEND_API_KEY')
 
-    # ── 2. 订阅者：用 Brevo ───────────────────────────────────
-    if not BREVO_KEY:
-        print('  跳过订阅者：未设置 BREVO_API_KEY')
+    # ── 2. 订阅者：用 Resend (RESEND_API_KEY_W) ───────────────
+    if not RESEND_KEY_W:
+        print('  跳过订阅者：未设置 RESEND_API_KEY_W')
         return
 
     subscribers = fetch_subscribers()
@@ -1408,16 +1391,16 @@ def send_email(sections):
             continue
         html = build_email_html(sections, unsubscribe_token=token)
         try:
-            ok = send_via_brevo(email, subject, html)
+            ok = send_via_resend(email, subject, html)
             if ok:
                 ok_count += 1
             else:
-                print(f'  ✗ Brevo 失败: {email}')
+                print(f'  ✗ Resend 失败: {email}')
         except Exception as ex:
-            print(f'  ✗ Brevo 异常 {email}: {ex}')
-        time.sleep(0.1)  # 避免触发频率限制
+            print(f'  ✗ Resend 异常 {email}: {ex}')
+        time.sleep(0.6)  # Resend 默认限速 2 次/秒
 
-    print(f'  ✓ Brevo 已发送 {ok_count}/{len(subscribers)} 封')
+    print(f'  ✓ Resend 已发送 {ok_count}/{len(subscribers)} 封')
 
 
 # ══════════════════════════════════════════════════════════════
