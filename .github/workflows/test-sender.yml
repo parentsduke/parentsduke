@@ -1,0 +1,36 @@
+name: 测试 Sender API
+
+# 手动触发：去仓库 Actions 页面点 "Run workflow"
+on:
+  workflow_dispatch:
+
+jobs:
+  test-sender:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 发送单封测试邮件
+        env:
+          SENDER_API_KEY: ${{ secrets.SENDER_API_KEY }}
+        run: |
+          pip install requests -q
+          python3 - <<'EOF'
+          import os, requests
+          key = os.environ.get('SENDER_API_KEY', '')
+          if not key:
+              print('SENDER_API_KEY 为空，检查 GitHub Secrets')
+              raise SystemExit(1)
+          r = requests.post(
+              'https://api.sender.net/v2/message/send',
+              headers={'Authorization': f'Bearer {key}',
+                       'Content-Type': 'application/json',
+                       'Accept': 'application/json'},
+              json={
+                  'from': {'email': 'daily@dukeparents.org', 'name': '杜克家长日报'},
+                  'to':   {'email': 'weihong_j@yahoo.com'},
+                  'subject': 'Sender API 测试',
+                  'html': '<p>这是 Sender API 测试邮件。能收到说明 endpoint 和 token 都正常。</p>',
+              },
+              timeout=20)
+          print('状态码:', r.status_code)
+          print('返回:', r.text[:500])
+          EOF
