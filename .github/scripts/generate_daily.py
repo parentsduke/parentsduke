@@ -9,7 +9,7 @@ OPENROUTER_KEY= os.environ.get('OPENROUTER_API_KEY', '')
 CEREBRAS_KEY  = os.environ.get('CEREBRAS_API_KEY', '')
 MISTRAL_KEY   = os.environ.get('MISTRAL_API_KEY', '')
 RESEND_KEY    = os.environ.get('RESEND_API_KEY', '')
-RESEND_KEY_W  = os.environ.get('RESEND_API_KEY_W', '')
+SENDER_KEY    = os.environ.get('SENDER_API_KEY', '')
 SUPABASE_URL  = os.environ.get('SUPABASE_URL', '')
 SUPABASE_KEY  = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
 
@@ -1343,20 +1343,35 @@ def fetch_subscribers():
         return []
 
 
-def send_via_resend(to_email, subject, html):
-    """用 Resend (RESEND_API_KEY_W) 发送单封邮件。"""
-    r = requests.post(
-        'https://api.resend.com/emails',
-        headers={
-            'Authorization': f'Bearer {RESEND_KEY_W}',
-            'Content-Type': 'application/json',
-        },
-        json={'from': f'杜克家长日报 <{EMAIL_FROM}>', 'to': [to_email], 'subject': subject, 'html': html},
-        timeout=15,
-    )
-    if r.status_code not in (200, 201):
-        print(f'    Resend 返回 {r.status_code}: {r.text[:200]}')
-    return r.status_code in (200, 201)
+def send_via_sender(to_email, subject, html):
+    """用 Sender.net (SENDER_API_KEY) 发送单封邮件。"""
+    payload = {
+        'from':    {'email': EMAIL_FROM, 'name': '杜克家长日报'},
+        'to':      {'email': to_email},
+        'subject': subject,
+        'html':    html,
+    }
+    headers = {
+        'Authorization': f'Bearer {SENDER_KEY}',
+        'Content-Type':  'application/json',
+        'Accept':        'application/json',
+    }
+    for attempt in range(2):
+        r = requests.post('https://api.sender.net/v2/message/send',
+                          headers=headers, json=payload, timeout=15)
+        if r.status_code == 429 and attempt == 0:
+            time.sleep(3)  # 触发限速，等待后重试一次
+            continue
+        break
+    ok = r.status_code in (200, 201)
+    if ok:
+        try:
+            ok = r.json().get('success', True)
+        except Exception:
+            pass
+    if not ok:
+        print(f'    Sender 返回 {r.status_code}: {r.text[:200]}')
+    return ok
 
 
 def send_email(sections):
@@ -1374,9 +1389,9 @@ def send_email(sections):
     # else:
     #     print('  跳过 Resend：未设置 RESEND_API_KEY')
 
-    # ── 2. 订阅者：用 Resend (RESEND_API_KEY_W) ───────────────
-    if not RESEND_KEY_W:
-        print('  跳过订阅者：未设置 RESEND_API_KEY_W')
+    # ── 2. 订阅者：用 Sender.net (SENDER_API_KEY) ─────────────
+    if not SENDER_KEY:
+        print('  跳过订阅者：未设置 SENDER_API_KEY')
         return
 
     subscribers = fetch_subscribers()
@@ -1391,16 +1406,16 @@ def send_email(sections):
             continue
         html = build_email_html(sections, unsubscribe_token=token)
         try:
-            ok = send_via_resend(email, subject, html)
+            ok = send_via_sender(email, subject, html)
             if ok:
                 ok_count += 1
             else:
-                print(f'  ✗ Resend 失败: {email}')
+                print(f'  ✗ Sender 失败: {email}')
         except Exception as ex:
-            print(f'  ✗ Resend 异常 {email}: {ex}')
-        time.sleep(0.6)  # Resend 默认限速 2 次/秒
+            print(f'  ✗ Sender 异常 {email}: {ex}')
+        time.sleep(0.3)  # 避免触发频率限制
 
-    print(f'  ✓ Resend 已发送 {ok_count}/{len(subscribers)} 封')
+    print(f'  ✓ Sender 已发送 {ok_count}/{len(subscribers)} 封')
 
 
 # ══════════════════════════════════════════════════════════════
