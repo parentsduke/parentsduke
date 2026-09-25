@@ -713,26 +713,32 @@ def fetch_calendar():
 # ══════════════════════════════════════════════════════════════
 
 def call_gemini(prompt):
-    """Gemini 2.5 Flash：5 RPM / 20 RPD"""
+    """Gemini 2.5 Flash：5 RPM / 20 RPD，429/超时自动退避重试"""
     if not GEMINI_KEY:
         return None
     url = ('https://generativelanguage.googleapis.com/v1beta/models/'
            'gemini-2.5-flash:generateContent?key=' + GEMINI_KEY)
-    try:
-        r = requests.post(url, json={'contents':[{'parts':[{'text':prompt}]}]},
-                          timeout=60)
-        data = r.json()
-        if 'candidates' in data:
-            time.sleep(13)  # Flash: 5 RPM 限制
-            return clean_ai_html(data['candidates'][0]['content']['parts'][0]['text'])
-        if r.status_code == 429:
-            print('  Gemini超限(429)，降级到Groq')
+    for attempt in range(3):
+        try:
+            r = requests.post(url, json={'contents':[{'parts':[{'text':prompt}]}]},
+                              timeout=60)
+            data = r.json()
+            if 'candidates' in data:
+                time.sleep(13)  # Flash: 5 RPM 限制
+                return clean_ai_html(data['candidates'][0]['content']['parts'][0]['text'])
+            if r.status_code == 429:
+                wait = 20 * (attempt + 1)
+                print(f'  Gemini超限(429)，等待{wait}秒重试...')
+                time.sleep(wait)
+                continue
+            print(f'  Gemini错误: {r.status_code} {str(data)[:100]}')
             return None
-        print(f'  Gemini错误: {r.status_code} {str(data)[:100]}')
-        return None
-    except Exception as ex:
-        print(f'  Gemini异常: {ex}')
-        return None
+        except Exception as ex:
+            wait = 15 * (attempt + 1)
+            print(f'  Gemini异常: {ex}，等待{wait}秒重试...')
+            time.sleep(wait)
+    print('  Gemini重试耗尽，降级到下一个')
+    return None
 
 def call_groq(prompt):
     """Groq GPT-OSS-120B：llama-3.3-70b-versatile 已于2026-08-16被Groq下线，
@@ -812,38 +818,119 @@ def call_cerebras(prompt):
         return None
 
 def call_mistral(prompt):
-    """Mistral AI：免费层"""
+    """Mistral AI：免费层限流严，429/异常自动退避重试，成功后延迟保护 RPM"""
     if not MISTRAL_KEY:
         return None
-    try:
-        r = requests.post('https://api.mistral.ai/v1/chat/completions',
-                          headers={'Authorization': f'Bearer {MISTRAL_KEY}',
-                                   'Content-Type': 'application/json'},
-                          json={'model': 'mistral-small-latest',
-                                'messages': [{'role': 'user', 'content': prompt}],
-                                'max_tokens': 1500},
-                          timeout=30)
-        data = r.json()
-        if 'choices' in data:
-            return clean_ai_html(data['choices'][0]['message']['content'])
-        print(f'  Mistral错误: {r.status_code} {str(data)[:100]}')
-        return None
-    except Exception as ex:
-        print(f'  Mistral异常: {ex}')
-        return None
+    for attempt in range(3):
+        try:
+            r = requests.post('https://api.mistral.ai/v1/chat/completions',
+                              headers={'Authorization': f'Bearer {MISTRAL_KEY}',
+                                       'Content-Type': 'application/json'},
+                              json={'model': 'mistral-small-latest',
+                                    'messages': [{'role': 'user', 'content': prompt}],
+                                    'max_tokens': 1500},
+                              timeout=30)
+            data = r.json()
+            if 'choices' in data:
+                time.sleep(5)  # Mistral 免费层 RPM 保护
+                return clean_ai_html(data['choices'][0]['message']['content'])
+            if r.status_code == 429:
+                wait = 20 * (attempt + 1)
+                print(f'  Mistral超限(429)，等待{wait}秒重试...')
+                time.sleep(wait)
+                continue
+            print(f'  Mistral错误: {r.status_code} {str(data)[:100]}')
+            return None
+        except Exception as ex:
+            wait = 15 * (attempt + 1)
+            print(f'  Mistral异常: {ex}，等待{wait}秒重试...')
+            time.sleep(wait)
+    print('  Mistral重试耗尽，降级到下一个')
+    return None
 
 def gemini(prompt):
     """自动降级链：Gemini → Groq → OpenRouter → Cerebras → Mistral（保留，供单独调用）"""
     return call_ai_roundrobin(prompt)
 
 # 轮询分配：每个板块直接指定首选AI，失败再降级
+def call_github_models(prompt):
+    """GitHub Models：用 Actions 自带的 GITHUB_TOKEN（workflow 需开 models: read 权限），
+    无需注册新账号。免费：gpt-4o-mini 150次/天，gpt-4o 50次/天"""
+    token = os.environ.get('GITHUB_TOKEN')
+    if not token:
+        return None
+    for attempt in range(3):
+        try:
+            r = requests.post('https://models.github.ai/inference/chat/completions',
+                              headers={'Authorization': f'Bearer {token}',
+                                       'Content-Type': 'application/json'},
+                              json={'model': 'openai/gpt-4o-mini',
+                                    'messages': [{'role': 'user', 'content': prompt}],
+                                    'max_tokens': 1500},
+                              timeout=60)
+            data = r.json()
+            if 'choices' in data:
+                time.sleep(4)  # 10-15 RPM 保护
+                return clean_ai_html(data['choices'][0]['message']['content'])
+            if r.status_code in (429, 403):
+                wait = 20 * (attempt + 1)
+                print(f'  GitHub Models限流/无权限({r.status_code})，等待{wait}秒重试...')
+                time.sleep(wait)
+                continue
+            print(f'  GitHub Models错误: {r.status_code} {str(data)[:100]}')
+            return None
+        except Exception as ex:
+            wait = 15 * (attempt + 1)
+            print(f'  GitHub Models异常: {ex}，等待{wait}秒重试...')
+            time.sleep(wait)
+    print('  GitHub Models重试耗尽，降级到下一个')
+    return None
+
+def call_zhipu(prompt):
+    """智谱 GLM：GLM-4.5-Flash 官方永久免费，无需信用卡。
+    key 去 z.ai 或 bigmodel.cn 注册获取，加到 Secrets 叫 ZHIPU_API_KEY"""
+    key = os.environ.get('ZHIPU_API_KEY')
+    if not key:
+        return None
+    for attempt in range(3):
+        try:
+            r = requests.post('https://open.bigmodel.cn/api/paas/v4/chat/completions',
+                              headers={'Authorization': f'Bearer {key}',
+                                       'Content-Type': 'application/json'},
+                              json={'model': 'glm-4.5-flash',
+                                    'messages': [{'role': 'user', 'content': prompt}],
+                                    'max_tokens': 1500},
+                              timeout=60)
+            data = r.json()
+            if 'choices' in data:
+                time.sleep(3)
+                return clean_ai_html(data['choices'][0]['message']['content'])
+            if r.status_code == 429:
+                wait = 20 * (attempt + 1)
+                print(f'  智谱GLM超限(429)，等待{wait}秒重试...')
+                time.sleep(wait)
+                continue
+            print(f'  智谱GLM错误: {r.status_code} {str(data)[:100]}')
+            return None
+        except Exception as ex:
+            wait = 15 * (attempt + 1)
+            print(f'  智谱GLM异常: {ex}，等待{wait}秒重试...')
+            time.sleep(wait)
+    print('  智谱GLM重试耗尽，降级到下一个')
+    return None
+
 _AI_POOL = [
     ('Gemini',      call_gemini),
+    ('GitHubModels', call_github_models),
+    ('ZhipuGLM',    call_zhipu),
     ('Groq',        call_groq),
-    ('OpenRouter',  call_openrouter),
-    ('Cerebras',    call_cerebras),
     ('Mistral',     call_mistral),
 ]
+# 2026-09-25 暂时下线（日志实锤 402，无需再试）：Cerebras 需付费才能访问、
+# OpenRouter 账号从未购买 credit。解决账单/key 后把下面两行加回 _AI_POOL
+# 即可，call_openrouter / call_cerebras 函数本身保留不动。
+# ('OpenRouter',  call_openrouter),
+# ('Cerebras',    call_cerebras),
 _ai_counter = 0
 _ai_lock = __import__('threading').Lock()
 
@@ -901,15 +988,25 @@ def _strip_to_html_fragment(html):
     # 没有<ul>/<ol>（比如背景说明用<p>）时保持原样，交给下面的关键词检测兜底
     return html
 
-def _call_ai_html(prompt, fallback=FALLBACK_HTML):
+def _call_ai_html(prompt, fallback=FALLBACK_HTML, tag=''):
     """统一的AI调用出口：调用gemini()后先剥离列表外的前言/后记，
     再做泄漏检测，确认是干净的HTML摘要才放行，否则一律回退到fallback
-    （默认FALLBACK_HTML），永远不把内部prompt/免责声明泄漏进最终邮件。"""
-    result = gemini(prompt)
-    result = _strip_to_html_fragment(result)
-    if _looks_like_leaked_prompt(result):
+    （默认FALLBACK_HTML），永远不把内部prompt/免责声明泄漏进最终邮件。
+    诊断：任何一关被拦下都在日志里打出 tag 和 AI 原始输出前400字符，
+    方便定位是供应商全挂、strip掏空还是泄漏检查误杀。"""
+    label = tag or '未知栏目'
+    raw = gemini(prompt)
+    if not raw:
+        print(f'  ⚠ {label}: 全部AI供应商失败/无返回')
         return fallback
-    return result or fallback
+    result = _strip_to_html_fragment(raw)
+    if not result:
+        print(f'  ⚠ {label}: strip后为空，AI原始输出: {raw[:400]!r}')
+        return fallback
+    if _looks_like_leaked_prompt(result):
+        print(f'  ⚠ {label}: 泄漏检查未通过，AI原始输出: {raw[:400]!r}')
+        return fallback
+    return result
 
 def clean_ai_html(text):
     """去除 AI 返回内容中的 Markdown 代码块标记"""
@@ -1000,7 +1097,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
         )
 
     if not items and not extra:
-        return _call_ai_html(_background_prompt())
+        return _call_ai_html(_background_prompt(), tag=f'{section_name}(背景)')
 
     news_text = '\n'.join([f"- {i['title']}: {i['summary']} ({i['link']})" for i in items])
     if extra:
@@ -1025,7 +1122,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
     # 给了收件人。现在过滤后如果内容已经清空，直接换成"背景信息"提示词，
     # 不再把完整的内部指令连同空内容一起发出去。
     if not news_text.strip():
-        return _call_ai_html(_background_prompt())
+        return _call_ai_html(_background_prompt(), tag=f'{section_name}(背景)')
 
     political_rule = (
         "- 内容必须如实翻译，不要过滤任何内容\n" if allow_political else
@@ -1067,7 +1164,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "- 统一用'大一新生'替代'首年学生'或'First-Year students'\n"
         "- 只输出HTML，不要其他文字"
     )
-    return _call_ai_html(prompt)
+    return _call_ai_html(prompt, tag=section_name)
 
 _CAL_MONTH_MAP = {
     'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
@@ -1164,7 +1261,7 @@ def generate_calendar_section(items):
         "5. 只输出HTML，不要其他文字\n\n"
         f"以下是需要翻译整理的条目：\n{combined}"
     )
-    return _call_ai_html(prompt)
+    return _call_ai_html(prompt, tag='学术日历')
 
 def generate_registration_section(registration_text, housing_text):
     today = datetime.now()
@@ -1198,7 +1295,7 @@ def generate_registration_section(registration_text, housing_text):
         "- 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
         "- 只输出HTML"
     )
-    return _call_ai_html(prompt)
+    return _call_ai_html(prompt, tag='选课与住房')
 
 PREMATRIC_DONE_HTML = (
     '<p>Class of 2030 的开学前重要节点（搬入日、迎新周、正式开学等）均已完成，'
@@ -1242,7 +1339,7 @@ def generate_prematric_section(page_text):
         "不要说明今天的日期、不要描述你自己遵守了哪些规则或做了哪些筛选——"
         "这些说明性文字一个字都不要出现，直接从<ul>开始、以</ul>结束"
     )
-    return _call_ai_html(prompt)
+    return _call_ai_html(prompt, tag='开学前安排')
 
 # ══════════════════════════════════════════════════════════════
 #  更新 index.html
@@ -1253,13 +1350,19 @@ def update_index(sections_html):
     for section_id, html in sections_html.items():
         if not html:
             continue
-        pattern = rf'(<div[^>]*id="{section_id}"[^>]*>)(.*?)(</div>)'
+        open_pat = rf'<div[^>]*id="{section_id}"[^>]*>'
+        if not re.search(open_pat, content):
+            print(f'  ✗ {section_id}: index.html 中没有这个 div')
+            continue
+        pattern = rf'({open_pat})(.*?)(</div>)'
         new_content = re.sub(pattern, rf'\g<1>{html}\3', content, flags=re.DOTALL, count=1)
         if new_content != content:
             content = new_content
             print(f'  已更新 {section_id}')
         else:
-            print(f'  未找到 {section_id}')
+            # div 存在但替换后字符串不变：新内容与旧内容一字不差
+            # （常见于 fallback 占位反复写入），并非"没找到"
+            print(f'  ○ {section_id}: 内容无变化（div 存在，新旧内容相同）')
     now = datetime.now()
     content = re.sub(r'(<span id="weekly-date"[^>]*>)[^<]*(</span>)',
                      rf'\g<1>{now.year}年{now.month}月{now.day}日\2', content)
@@ -1572,7 +1675,9 @@ def main():
     }
 
     sections = {}
-    with ThreadPoolExecutor(max_workers=10) as ex:
+    # 2026-09-25：10 并发打爆免费层 RPM（Mistral/Gemini 429），降到 4，
+    # 配合各供应商内部重试+退避；每日任务多花几分钟，换成功率
+    with ThreadPoolExecutor(max_workers=4) as ex:
         futs = {ex.submit(fn): key for key, fn in tasks.items()}
         for fut in as_completed(futs):
             key = futs[fut]
