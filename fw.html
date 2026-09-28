@@ -468,6 +468,18 @@
     body.print-volunteer #volunteer{display:block !important;}
     body.print-volunteer section:not(#volunteer), body.print-volunteer .hero, body.print-volunteer .hero-caption, body.print-volunteer footer{display:none !important;}
   }
+  #nametagSheet{display:none;}
+  .nt-page{display:grid;margin:0 auto;break-after:page;page-break-after:always;}
+  .nt-page:last-child{break-after:auto;page-break-after:auto;}
+  .nt{box-sizing:border-box;border:1px dashed #999;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;padding:.14in .16in;overflow:hidden;background:#fff;color:#012169;break-inside:avoid;}
+  .nt-top{color:#666;letter-spacing:.06em;}
+  .nt-name{font-weight:700;line-height:1.2;word-break:break-word;flex:1;display:flex;align-items:center;justify-content:center;}
+  .nt-sub{color:#00539b;min-height:1em;}
+  @media print{
+    body.print-nametags > :not(#nametagSheet){display:none !important;}
+    body.print-nametags #nametagSheet{display:block !important;}
+    body.print-nametags{background:#fff;}
+  }
   .vol-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
   .vol-bar select{flex:1;min-width:200px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;color:var(--ink);background:var(--paper-warm);}
   .vol-bar .btn{margin:0;}
@@ -542,6 +554,11 @@
         <h3>报名汇总</h3>
         <div class="btn-row">
           <button class="btn ghost" id="rsvpRefresh" type="button">刷新</button>
+          <select id="ntSize" title="Name Tag 尺寸" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--paper-warm);">
+            <option value="big">Name Tag 4×3 in（6张/页）</option>
+            <option value="small">Name Tag 3.5×2 in（10张/页）</option>
+          </select>
+          <button class="btn ghost" id="ntPrint" type="button">打印 Name Tag</button>
           <button class="btn ghost" id="rsvpCsv" type="button">导出 CSV</button>
         </div>
       </div>
@@ -760,6 +777,8 @@
     </div>
   </div>
 </div>
+
+<div id="nametagSheet"></div>
 
 <div class="modal" id="alreadyModal" role="dialog" aria-modal="true" aria-labelledby="alTitle" hidden>
   <div class="modal-card">
@@ -1543,7 +1562,7 @@ function exportMinutes(){
 
   if(loadLocal()) setStatus('已恢复本机草稿');
   ['input', 'change'].forEach(ev => document.addEventListener(ev, e => {
-    if(e.target && e.target.id === 'attendSearch') return;
+    if(e.target && (e.target.id === 'attendSearch' || e.target.id === 'ntSize')) return;
     if(e.target && (e.target.id === 'authEmail' || e.target.id === 'authPass')) return;
     scheduleSave();
   }));
@@ -1583,6 +1602,7 @@ function exportMinutes(){
   let rows = [];
   let pays = {}, payOn = false;          // 缴费：来自 fw_payment_list；函数未部署或未设价格时 payOn=false，缴费列自动隐藏
   let nametags = {};                     // Name Tag：来自 fw_nametag_list，与缴费无关
+  let ntList = {};                       // 每位家长的 Name Tag 数组（打印用，一人一张）
   const money = n => '$' + (Number(n) % 1 ? Number(n).toFixed(2) : String(Number(n)));
   const gi = g => { const i = gradeOrder.indexOf(g); return i < 0 ? 99 : i; };
   function cell(tr, text){ const td = document.createElement('td'); td.textContent = text; tr.appendChild(td); }
@@ -1675,10 +1695,10 @@ function exportMinutes(){
       const pr = await sb.rpc('fw_payment_list', { p_event: EVENT() });
       if(!pr.error && Array.isArray(pr.data)){ pr.data.forEach(x => { pays[x.name] = x; }); payOn = pr.data.some(x => Number(x.amount_due) > 0); }
     }catch(e){ console.warn('fw_payment_list', e); }
-    nametags = {};
+    nametags = {}; ntList = {};
     try{
       const nr = await sb.rpc('fw_nametag_list', { p_event: EVENT() });
-      if(!nr.error && Array.isArray(nr.data)) nr.data.forEach(x => { nametags[x.name] = Array.isArray(x.nametags) ? x.nametags.join('、') : (x.nametags || ''); });
+      if(!nr.error && Array.isArray(nr.data)) nr.data.forEach(x => { ntList[x.name] = (Array.isArray(x.nametags) ? x.nametags : String(x.nametags || '').split('、')).map(t => String(t).trim()).filter(Boolean); nametags[x.name] = Array.isArray(x.nametags) ? x.nametags.join('、') : (x.nametags || ''); });
     }catch(e){ console.warn('fw_nametag_list', e); }
     render();
     renderBudget(); loadBudget();
@@ -1760,6 +1780,42 @@ function exportMinutes(){
     const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = 'FW报名_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  });
+  // ---- 打印 Name Tag：一人一张，按尺寸自动分页 ----
+  const NT_SIZES = { big: { w: 4, h: 3, cols: 2, rows: 3, k: 1 }, small: { w: 3.5, h: 2, cols: 2, rows: 5, k: 0.72 } };
+  $('ntPrint').addEventListener('click', () => {
+    const cfg = NT_SIZES[$('ntSize').value] || NT_SIZES.big;
+    const tags = []; let missing = 0;
+    rows.forEach(r => {
+      const list = ntList[r.name] || [];
+      if(!list.length){ missing++; return; }
+      const sub = gradeOf[r.name] ? gradeLabel(gradeOf[r.name]).replace('Class of 20', '20') : '';
+      list.forEach(n => tags.push({ name: n, sub }));
+    });
+    if(!tags.length){ alert('还没有可打印的 Name Tag（需要家长在报名页填写胸牌姓名）。'); return; }
+    if(missing && !confirm('有 ' + missing + ' 位已报名的家长没有填写胸牌姓名，不会生成他们的 Name Tag。\n\n共 ' + tags.length + ' 张，继续打印吗？')) return;
+    const sheet = $('nametagSheet'); sheet.innerHTML = '';
+    const per = cfg.cols * cfg.rows;
+    for(let i = 0; i < tags.length; i += per){
+      const page = document.createElement('div'); page.className = 'nt-page';
+      page.style.gridTemplateColumns = 'repeat(' + cfg.cols + ',' + cfg.w + 'in)';
+      page.style.gridAutoRows = cfg.h + 'in'; page.style.width = (cfg.cols * cfg.w) + 'in';
+      tags.slice(i, i + per).forEach(t => {
+        const d = document.createElement('div'); d.className = 'nt';
+        const top = document.createElement('div'); top.className = 'nt-top'; top.textContent = 'DUKE 家长 · FAMILY WEEKEND 2026'; top.style.fontSize = (8.5 * cfg.k + 1) + 'pt';
+        const nm = document.createElement('div'); nm.className = 'nt-name'; nm.textContent = t.name;
+        const len = [...t.name].length;
+        nm.style.fontSize = ((len <= 6 ? 36 : len <= 10 ? 28 : len <= 16 ? 22 : 17) * cfg.k) + 'pt';
+        const sub = document.createElement('div'); sub.className = 'nt-sub'; sub.textContent = t.sub; sub.style.fontSize = (11 * cfg.k) + 'pt';
+        d.append(top, nm, sub); page.appendChild(d);
+      });
+      sheet.appendChild(page);
+    }
+    const st = document.createElement('style'); st.id = 'ntPageStyle'; st.textContent = '@page{size:letter portrait;margin:0.25in;}'; document.head.appendChild(st);
+    document.body.classList.add('print-nametags');
+    const done = () => { document.body.classList.remove('print-nametags'); const x = document.getElementById('ntPageStyle'); if(x) x.remove(); sheet.innerHTML = ''; window.removeEventListener('afterprint', done); };
+    window.addEventListener('afterprint', done);
+    window.print();
   });
   $('rsvpRefresh').addEventListener('click', loadAdmin);
 
