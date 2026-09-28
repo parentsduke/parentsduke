@@ -535,7 +535,7 @@
     <div class="section-head">
       <div class="section-eyebrow">FAMILY WEEKEND</div>
       <h2>FW 报名情况</h2>
-      <p>家长在单独的报名页里选名字并提交，这里汇总结果，仅登录的管理员可见。</p>
+      <p>家长在单独的报名页里选名字并提交，这里汇总结果，仅登录的管理员可见。<br><b>报名截止：2026年10月6日（周二）</b></p>
     </div>
     <div class="rsvp-admin" id="rsvpAdmin">
       <div class="rsvp-admin-head">
@@ -580,6 +580,10 @@
             <label>时间</label>
             <input type="time" id="mTime">
           </div>
+        </div>
+        <div class="field">
+          <label>报名截止日期</label>
+          <input type="date" id="mDeadline" value="2026-10-06">
         </div>
         <div class="field">
           <label>地点</label>
@@ -834,6 +838,7 @@ renderGrid();
 function generateInvite(){
   const date = document.getElementById('mDate').value;
   const time = document.getElementById('mTime').value;
+  const deadline = document.getElementById('mDeadline').value;
   const host = document.getElementById('mHost').value || '待定';
   const link = document.getElementById('mLink').value;
   const topic = document.getElementById('mTopic').value || '家长交流聚会';
@@ -846,6 +851,7 @@ function generateInvite(){
   text += `主题：${topic}\n`;
   text += `时间：${dateDisp} ${time||''}\n`;
   if(link) text += `地点：${link}\n`;
+  if(deadline) text += `报名截止：${new Date(deadline+'T00:00:00').toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'})}\n`;
   text += `主持人：${host}\n`;
   if(agendaLines.length){
     text += `\n议程：\n`;
@@ -1037,8 +1043,8 @@ function exportMinutes(){
 
   const LOCAL_KEY = 'duke-' + EVENT_ID + '-kv-v1';
   const CLIENT_ID = Math.random().toString(36).slice(2) + Date.now().toString(36);
-  const fieldIds  = ['mDate','mTime','mLink','mHost','mTopic','mAgenda','rDate','rTime','rHost','rNote'];
-  const inviteIds = ['mDate','mTime','mLink','mHost','mTopic','mAgenda'];
+  const fieldIds  = ['mDate','mTime','mDeadline','mLink','mHost','mTopic','mAgenda','rDate','rTime','rHost','rNote'];
+  const inviteIds = ['mDate','mTime','mDeadline','mLink','mHost','mTopic','mAgenda'];
 
   const editables = () => [...document.querySelectorAll('#minutes .editable')];
   const searchEl  = document.getElementById('attendSearch');
@@ -1223,7 +1229,7 @@ function exportMinutes(){
   const DEFAULTS = readModel();   // 页面刚加载时的初始状态
 
   function applyAll(m){
-    fieldIds.forEach(id => { const el = document.getElementById(id); if(el) el.value = typeof m['f:' + id] === 'string' ? m['f:' + id] : ''; });
+    fieldIds.forEach(id => { const el = document.getElementById(id); if(el) el.value = typeof m['f:' + id] === 'string' ? m['f:' + id] : (id === 'mDeadline' ? '2026-10-06' : ''); });
     const valid = new Set(roster.map(r => r.name));
     attended.clear();
     Object.keys(m).forEach(k => { if(k.startsWith('a:') && m[k] && valid.has(k.slice(2))) attended.add(k.slice(2)); });
