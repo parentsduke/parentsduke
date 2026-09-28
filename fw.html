@@ -445,6 +445,18 @@
   .rsvp-table{width:100%;border-collapse:collapse;font-size:13.5px;}
   .rsvp-table th,.rsvp-table td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;}
   .rsvp-table th{background:var(--sky-soft);color:var(--ink-soft);font-weight:500;}
+  /* ---- FW 分组 ---- */
+  .grp-box{margin-top:28px;}
+  .grp-box h3{margin-bottom:10px;}
+  .grp-box h3 small{display:block;font-family:'Noto Sans SC',sans-serif;font-weight:400;font-size:13px;color:var(--ink-soft);margin-top:4px;line-height:1.6;}
+  .grp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;}
+  .grp-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+  .grp-head{background:var(--sky-soft);padding:12px 14px;color:var(--navy-deep);font-size:15px;}
+  .grp-head small{display:block;color:var(--ink-soft);font-size:12.5px;margin-top:2px;}
+  .grp-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .grp-table th,.grp-table td{padding:7px 12px;border-bottom:1px solid var(--line);text-align:left;}
+  .grp-table th{color:var(--ink-soft);font-weight:500;}
+  .grp-sen{display:inline-block;background:var(--gold);color:#fff;border-radius:10px;padding:0 7px;font-size:11px;margin-left:4px;}
   .rsvp-table.no-pay .pay-col{display:none;}
   .rsvp-table .pay-btn{border:1px solid var(--line);background:#fff;color:var(--duke-blue);border-radius:6px;padding:3px 10px;font-size:12.5px;cursor:pointer;font-family:inherit;}
   .rsvp-table .pay-btn.undo{color:var(--ink-soft);margin-left:6px;}
@@ -570,6 +582,10 @@
         </table>
       </div>
       <div class="rsvp-missing" id="rsvpMissing"></div>
+      <div class="grp-box" id="grpBox">
+        <h3>FW 分组<small>按孩子专业大类分为 4 组，每组 8 个家庭；高年级（28 届及以上、含研究生）均衡分配。依据 9 月 28 日的报名名单生成，之后新增报名不会自动更新。</small></h3>
+        <div class="grp-grid"><div class="grp-card"><div class="grp-head"><b>第1组</b> · 计算机 · 电子工程<small>8 家 · 高年级 3 家 · 16 人</small></div><table class="grp-table"><thead><tr><th>家长</th><th>届次</th><th>孩子专业</th></tr></thead><tbody><tr><td>Bin L <span class="grp-sen">高年级</span></td><td>'28</td><td>ECE/CS</td></tr><tr><td>Peter-Dad-James28-P-NC <span class="grp-sen">高年级</span></td><td>'28</td><td>Electrical &amp; Computer Engineering</td></tr><tr><td>Laura Wang <span class="grp-sen">高年级</span></td><td>'28</td><td>ECE &amp; CS</td></tr><tr><td>Mike</td><td>'30</td><td>Computer Science</td></tr><tr><td>Yubin</td><td>'29</td><td>Computer Science</td></tr><tr><td>Teresa Chen</td><td>'30</td><td>Computer Science+ statistics</td></tr><tr><td>RC</td><td>'30</td><td>Math+CS</td></tr><tr><td>&#x27;30 Victor妈妈 Sophia</td><td>'30</td><td>未定</td></tr></tbody></table></div><div class="grp-card"><div class="grp-head"><b>第2组</b> · 数理 · 工程<small>8 家 · 高年级 2 家 · 22 人</small></div><table class="grp-table"><thead><tr><th>家长</th><th>届次</th><th>孩子专业</th></tr></thead><tbody><tr><td>李宏 Darren Li Mom <span class="grp-sen">高年级</span></td><td>'27</td><td>Computer Science</td></tr><tr><td>Betty（伊人） <span class="grp-sen">高年级</span></td><td>研究生</td><td>Statistical Science</td></tr><tr><td>Jennifer Dai</td><td>'30</td><td>Mathematics</td></tr><tr><td>火星人</td><td>'30</td><td>Mechanical Engineering</td></tr><tr><td>Jing</td><td>'30</td><td>Mechanical Engineering</td></tr><tr><td>Nicole</td><td>'30</td><td>Biomedical Engineering</td></tr><tr><td>Taoer</td><td>'30</td><td>未定</td></tr><tr><td>元·Ding</td><td>'30</td><td>未定</td></tr></tbody></table></div><div class="grp-card"><div class="grp-head"><b>第3组</b> · 生命科学 · 医学预科<small>8 家 · 高年级 2 家 · 16 人</small></div><table class="grp-table"><thead><tr><th>家长</th><th>届次</th><th>孩子专业</th></tr></thead><tbody><tr><td>wendyzeng <span class="grp-sen">高年级</span></td><td>'27</td><td>Chemistry</td></tr><tr><td>Peifang <span class="grp-sen">高年级</span></td><td>'27</td><td>Biology &amp; Computer Science</td></tr><tr><td>Fenghai Guo</td><td>'30</td><td>Biology</td></tr><tr><td>Sophie</td><td>'30</td><td>Biology</td></tr><tr><td>Kathy Qi</td><td>'30</td><td>Pre med</td></tr><tr><td>北斗璇玑</td><td>'30</td><td>Pre med</td></tr><tr><td>Wei Luo</td><td>'30</td><td>Pre-med</td></tr><tr><td>Min</td><td>'30</td><td>未定</td></tr></tbody></table></div><div class="grp-card"><div class="grp-head"><b>第4组</b> · 心理 · 神经 · 经济社科<small>8 家 · 高年级 2 家 · 19 人</small></div><table class="grp-table"><thead><tr><th>家长</th><th>届次</th><th>孩子专业</th></tr></thead><tbody><tr><td>Liping <span class="grp-sen">高年级</span></td><td>'27</td><td>Econ, CS</td></tr><tr><td>Lily- ☀️🎶C <span class="grp-sen">高年级</span></td><td>'27</td><td>未定</td></tr><tr><td>Jian</td><td>'30</td><td>Economics</td></tr><tr><td>Sharon Xing</td><td>'30</td><td>Economics</td></tr><tr><td>Songlian</td><td>'30</td><td>心理学</td></tr><tr><td>晨露</td><td>'30</td><td>Neuroscience</td></tr><tr><td>敏</td><td>'30</td><td>Neuroscience</td></tr><tr><td>janelzhang</td><td>'30</td><td>Neuroscience</td></tr></tbody></table></div></div>
+      </div>
       <div class="budget" id="budgetBox" hidden>
         <h3>预算与收支<small id="budgetNote"></small></h3>
         <div class="rsvp-stats" id="budgetStats"></div>
