@@ -9,7 +9,7 @@ OPENROUTER_KEY= os.environ.get('OPENROUTER_API_KEY', '')
 CEREBRAS_KEY  = os.environ.get('CEREBRAS_API_KEY', '')
 MISTRAL_KEY   = os.environ.get('MISTRAL_API_KEY', '')
 RESEND_KEY    = os.environ.get('RESEND_API_KEY', '')
-SENDER_KEY    = os.environ.get('SENDER_API_KEY', '')
+BREVO_KEY     = os.environ.get('BREVO_API_KEY', '')
 SUPABASE_URL  = os.environ.get('SUPABASE_URL', '')
 SUPABASE_KEY  = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
 
@@ -28,11 +28,13 @@ CHRONICLE_MIN_DATE = GLOBAL_MIN_DATE
 
 SECTION_LABELS = {
     'weekly-school':       '🏫 学校新闻',
-    'weekly-basketball':   '🏈🏀 橄榄球/篮球/体育动态',
+    'weekly-basketball':   '🏀 篮球/体育动态',
+    'weekly-football':     '🏈 橄榄球',
     'weekly-admissions':   '📋 招生信息',
     'weekly-prematric':    '📅 开学前安排',
     'weekly-calendar':     '🗓 学术日历',
     'weekly-registration': '📝 选课与住房',
+    'weekly-familyweekend':'👨‍👩‍👧 Family Weekend 家庭周末',
     'weekly-campus':       '🎓 校园生活',
     'weekly-chronicle':    '📰 Chronicle学生报',
     'weekly-research':     '🔬 科研动态',
@@ -66,10 +68,9 @@ RSS_FEEDS = {
     'goduke_mbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=MBB',
     'goduke_wbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=WBB',
     'goduke_all':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200',
-    # 橄榄球（football）：goduke.com 的 Sport 参数已实测验证，"FB" 返回 404，
-    # 不可用。为避免抓空，改用与 chronicle/today 等栏目一致的 Google News 站内搜索方式，
-    # 覆盖 goduke.com 和 dukechronicle.com 两个信源；Google News 常拦截机房 IP，
-    # 因此在 fetch_source 中另配了 Jina/HTML 兜底（dukechronicle.com/section/sports）。
+    # 橄榄球（football）：goduke.com的Sport参数代码未经验证，不确定是否为"FB"，
+    # 为避免抓空，改用与chronicle/today等栏目一致的Google News站内搜索方式，
+    # 覆盖goduke.com和dukechronicle.com两个信源，更稳妥。
     'goduke_fb':        'https://news.google.com/rss/search?q=Duke+football+site:goduke.com+OR+Duke+football+site:dukechronicle.com&hl=en-US&gl=US&ceid=US:en',
 }
 
@@ -609,6 +610,34 @@ def fetch_pages_text(urls, max_chars=1200):
                 print(f'  抓取失败 {url}: {ex}')
     return '\n\n'.join(texts)
 
+def fetch_family_weekend_text(urls, max_chars=2500):
+    """Family Weekend 专用抓取：
+    通用的 fetch_pages_text 用 separator=' ' 把整页压成一行，
+    而 filter_expired_text 是逐行过滤——页面里只要有一个过去的日期
+    （比如底部 'Last Updated August 26th, 2026'），整页文字就会被一次性删光。
+    这里改为按行保留，只留含关键词的行，日期过滤才能逐行生效，
+    同时避免开头的导航文字把字符额度占满、截掉后面的日期和橄榄球信息。"""
+    keys = ('family weekend', 'october', 'football', 'unc', 'register',
+            'box office', 'ticket', 'kickoff')
+    out = []
+    for url in urls:
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            for tag in soup.select('nav,footer,header,script,style'):
+                tag.decompose()
+            main = soup.select_one('main,#main,.main-content,article') or soup
+            lines = [ln.strip() for ln in main.get_text(separator='\n').split('\n')]
+            kept = [ln for ln in lines if len(ln) > 25 and any(k in ln.lower() for k in keys)]
+            text = '\n'.join(kept)[:max_chars]
+            if text:
+                out.append(f'[{url}]\n{text}')
+                print(f'  抓取OK: {url}')
+        except Exception as ex:
+            print(f'  抓取失败 {url}: {ex}')
+    return '\n\n'.join(out)
+
+
 TRINITY_TAG_URL_CANDIDATES = [
     'https://today.duke.edu/tags/trinity-college-arts-sciences/rss',
     'https://today.duke.edu/tags/trinity-college-of-arts-and-sciences/rss',
@@ -640,16 +669,12 @@ def fetch_source(name, max_items=8):
             'trinity':   'https://trinity.duke.edu/news',
             'today':     'https://today.duke.edu/',
             'news':      'https://news.duke.edu/',
-            # 橄榄球：Google News RSS 常被机房 IP 拦截，兜底抓 Chronicle 体育版面
-            'goduke_fb': 'https://www.dukechronicle.com/section/sports',
         }
         html_fallbacks = {
             'chronicle': ('https://www.dukechronicle.com/section/news',
                           ['h2 a','h3 a','.article-title a']),
             'pratt':     ('https://pratt.duke.edu/news/',['h2 a','h3 a']),
             'trinity':   ('https://trinity.duke.edu/news',['h2 a','h3 a','.views-row a']),
-            'goduke_fb': ('https://www.dukechronicle.com/section/sports',
-                          ['h2 a','h3 a','.article-title a']),
         }
         if not items and name in jina_sites:
             items = fetch_jina(jina_sites[name], max_items)
@@ -713,32 +738,26 @@ def fetch_calendar():
 # ══════════════════════════════════════════════════════════════
 
 def call_gemini(prompt):
-    """Gemini 2.5 Flash：5 RPM / 20 RPD，429/超时自动退避重试"""
+    """Gemini 2.5 Flash：5 RPM / 20 RPD"""
     if not GEMINI_KEY:
         return None
     url = ('https://generativelanguage.googleapis.com/v1beta/models/'
            'gemini-2.5-flash:generateContent?key=' + GEMINI_KEY)
-    for attempt in range(3):
-        try:
-            r = requests.post(url, json={'contents':[{'parts':[{'text':prompt}]}]},
-                              timeout=60)
-            data = r.json()
-            if 'candidates' in data:
-                time.sleep(13)  # Flash: 5 RPM 限制
-                return clean_ai_html(data['candidates'][0]['content']['parts'][0]['text'])
-            if r.status_code == 429:
-                wait = 20 * (attempt + 1)
-                print(f'  Gemini超限(429)，等待{wait}秒重试...')
-                time.sleep(wait)
-                continue
-            print(f'  Gemini错误: {r.status_code} {str(data)[:100]}')
+    try:
+        r = requests.post(url, json={'contents':[{'parts':[{'text':prompt}]}]},
+                          timeout=60)
+        data = r.json()
+        if 'candidates' in data:
+            time.sleep(13)  # Flash: 5 RPM 限制
+            return clean_ai_html(data['candidates'][0]['content']['parts'][0]['text'])
+        if r.status_code == 429:
+            print('  Gemini超限(429)，降级到Groq')
             return None
-        except Exception as ex:
-            wait = 15 * (attempt + 1)
-            print(f'  Gemini异常: {ex}，等待{wait}秒重试...')
-            time.sleep(wait)
-    print('  Gemini重试耗尽，降级到下一个')
-    return None
+        print(f'  Gemini错误: {r.status_code} {str(data)[:100]}')
+        return None
+    except Exception as ex:
+        print(f'  Gemini异常: {ex}')
+        return None
 
 def call_groq(prompt):
     """Groq GPT-OSS-120B：llama-3.3-70b-versatile 已于2026-08-16被Groq下线，
@@ -818,119 +837,38 @@ def call_cerebras(prompt):
         return None
 
 def call_mistral(prompt):
-    """Mistral AI：免费层限流严，429/异常自动退避重试，成功后延迟保护 RPM"""
+    """Mistral AI：免费层"""
     if not MISTRAL_KEY:
         return None
-    for attempt in range(3):
-        try:
-            r = requests.post('https://api.mistral.ai/v1/chat/completions',
-                              headers={'Authorization': f'Bearer {MISTRAL_KEY}',
-                                       'Content-Type': 'application/json'},
-                              json={'model': 'mistral-small-latest',
-                                    'messages': [{'role': 'user', 'content': prompt}],
-                                    'max_tokens': 1500},
-                              timeout=30)
-            data = r.json()
-            if 'choices' in data:
-                time.sleep(5)  # Mistral 免费层 RPM 保护
-                return clean_ai_html(data['choices'][0]['message']['content'])
-            if r.status_code == 429:
-                wait = 20 * (attempt + 1)
-                print(f'  Mistral超限(429)，等待{wait}秒重试...')
-                time.sleep(wait)
-                continue
-            print(f'  Mistral错误: {r.status_code} {str(data)[:100]}')
-            return None
-        except Exception as ex:
-            wait = 15 * (attempt + 1)
-            print(f'  Mistral异常: {ex}，等待{wait}秒重试...')
-            time.sleep(wait)
-    print('  Mistral重试耗尽，降级到下一个')
-    return None
+    try:
+        r = requests.post('https://api.mistral.ai/v1/chat/completions',
+                          headers={'Authorization': f'Bearer {MISTRAL_KEY}',
+                                   'Content-Type': 'application/json'},
+                          json={'model': 'mistral-small-latest',
+                                'messages': [{'role': 'user', 'content': prompt}],
+                                'max_tokens': 1500},
+                          timeout=30)
+        data = r.json()
+        if 'choices' in data:
+            return clean_ai_html(data['choices'][0]['message']['content'])
+        print(f'  Mistral错误: {r.status_code} {str(data)[:100]}')
+        return None
+    except Exception as ex:
+        print(f'  Mistral异常: {ex}')
+        return None
 
 def gemini(prompt):
     """自动降级链：Gemini → Groq → OpenRouter → Cerebras → Mistral（保留，供单独调用）"""
     return call_ai_roundrobin(prompt)
 
 # 轮询分配：每个板块直接指定首选AI，失败再降级
-def call_github_models(prompt):
-    """GitHub Models：用 Actions 自带的 GITHUB_TOKEN（workflow 需开 models: read 权限），
-    无需注册新账号。免费：gpt-4o-mini 150次/天，gpt-4o 50次/天"""
-    token = os.environ.get('GITHUB_TOKEN')
-    if not token:
-        return None
-    for attempt in range(3):
-        try:
-            r = requests.post('https://models.github.ai/inference/chat/completions',
-                              headers={'Authorization': f'Bearer {token}',
-                                       'Content-Type': 'application/json'},
-                              json={'model': 'openai/gpt-4o-mini',
-                                    'messages': [{'role': 'user', 'content': prompt}],
-                                    'max_tokens': 1500},
-                              timeout=60)
-            data = r.json()
-            if 'choices' in data:
-                time.sleep(4)  # 10-15 RPM 保护
-                return clean_ai_html(data['choices'][0]['message']['content'])
-            if r.status_code in (429, 403):
-                wait = 20 * (attempt + 1)
-                print(f'  GitHub Models限流/无权限({r.status_code})，等待{wait}秒重试...')
-                time.sleep(wait)
-                continue
-            print(f'  GitHub Models错误: {r.status_code} {str(data)[:100]}')
-            return None
-        except Exception as ex:
-            wait = 15 * (attempt + 1)
-            print(f'  GitHub Models异常: {ex}，等待{wait}秒重试...')
-            time.sleep(wait)
-    print('  GitHub Models重试耗尽，降级到下一个')
-    return None
-
-def call_zhipu(prompt):
-    """智谱 GLM：GLM-4.5-Flash 官方永久免费，无需信用卡。
-    key 去 z.ai 或 bigmodel.cn 注册获取，加到 Secrets 叫 ZHIPU_API_KEY"""
-    key = os.environ.get('ZHIPU_API_KEY')
-    if not key:
-        return None
-    for attempt in range(3):
-        try:
-            r = requests.post('https://open.bigmodel.cn/api/paas/v4/chat/completions',
-                              headers={'Authorization': f'Bearer {key}',
-                                       'Content-Type': 'application/json'},
-                              json={'model': 'glm-4.5-flash',
-                                    'messages': [{'role': 'user', 'content': prompt}],
-                                    'max_tokens': 1500},
-                              timeout=60)
-            data = r.json()
-            if 'choices' in data:
-                time.sleep(3)
-                return clean_ai_html(data['choices'][0]['message']['content'])
-            if r.status_code == 429:
-                wait = 20 * (attempt + 1)
-                print(f'  智谱GLM超限(429)，等待{wait}秒重试...')
-                time.sleep(wait)
-                continue
-            print(f'  智谱GLM错误: {r.status_code} {str(data)[:100]}')
-            return None
-        except Exception as ex:
-            wait = 15 * (attempt + 1)
-            print(f'  智谱GLM异常: {ex}，等待{wait}秒重试...')
-            time.sleep(wait)
-    print('  智谱GLM重试耗尽，降级到下一个')
-    return None
-
 _AI_POOL = [
     ('Gemini',      call_gemini),
-    ('GitHubModels', call_github_models),
-    ('ZhipuGLM',    call_zhipu),
     ('Groq',        call_groq),
+    ('OpenRouter',  call_openrouter),
+    ('Cerebras',    call_cerebras),
     ('Mistral',     call_mistral),
 ]
-# 2026-09-25 暂时下线（日志实锤 402，无需再试）：Cerebras 需付费才能访问、
-# OpenRouter 账号从未购买 credit。解决账单/key 后把下面两行加回 _AI_POOL
-# 即可，call_openrouter / call_cerebras 函数本身保留不动。
-# ('OpenRouter',  call_openrouter),
-# ('Cerebras',    call_cerebras),
 _ai_counter = 0
 _ai_lock = __import__('threading').Lock()
 
@@ -988,25 +926,34 @@ def _strip_to_html_fragment(html):
     # 没有<ul>/<ol>（比如背景说明用<p>）时保持原样，交给下面的关键词检测兜底
     return html
 
-def _call_ai_html(prompt, fallback=FALLBACK_HTML, tag=''):
+def _balance_html(html):
+    """修复AI输出被截断导致的标签未闭合问题。
+    症状：最后一条 <li>/<a> 写到一半就断了（如标题 'Polly Ha on a Hidden World of Dissent and'），
+    没有 </a></li></ul>，后面的栏目标题就被吞进这个未闭合的列表/链接里，
+    表现为标题变成列表项、或整个标题变成可点击链接，无法与其他栏目并列。
+    做法：1) 丢掉末尾不完整的 <li>；2) 用 BeautifulSoup 重新序列化，自动补全所有闭合标签。"""
+    if not html:
+        return html
+    last_li = html.rfind('<li')
+    if last_li != -1 and '</li>' not in html[last_li:]:
+        html = html[:last_li]
+    if not html.strip():
+        return ''
+    fixed = str(BeautifulSoup(html, 'html.parser'))
+    if '<ul' in fixed and '<li' not in fixed:
+        return ''  # 只剩空列表，等同于没有内容，交给上层走fallback
+    return fixed
+
+def _call_ai_html(prompt, fallback=FALLBACK_HTML):
     """统一的AI调用出口：调用gemini()后先剥离列表外的前言/后记，
     再做泄漏检测，确认是干净的HTML摘要才放行，否则一律回退到fallback
-    （默认FALLBACK_HTML），永远不把内部prompt/免责声明泄漏进最终邮件。
-    诊断：任何一关被拦下都在日志里打出 tag 和 AI 原始输出前400字符，
-    方便定位是供应商全挂、strip掏空还是泄漏检查误杀。"""
-    label = tag or '未知栏目'
-    raw = gemini(prompt)
-    if not raw:
-        print(f'  ⚠ {label}: 全部AI供应商失败/无返回')
-        return fallback
-    result = _strip_to_html_fragment(raw)
-    if not result:
-        print(f'  ⚠ {label}: strip后为空，AI原始输出: {raw[:400]!r}')
-        return fallback
+    （默认FALLBACK_HTML），永远不把内部prompt/免责声明泄漏进最终邮件。"""
+    result = gemini(prompt)
+    result = _strip_to_html_fragment(result)
+    result = _balance_html(result)
     if _looks_like_leaked_prompt(result):
-        print(f'  ⚠ {label}: 泄漏检查未通过，AI原始输出: {raw[:400]!r}')
         return fallback
-    return result
+    return result or fallback
 
 def clean_ai_html(text):
     """去除 AI 返回内容中的 Markdown 代码块标记"""
@@ -1097,7 +1044,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
         )
 
     if not items and not extra:
-        return _call_ai_html(_background_prompt(), tag=f'{section_name}(背景)')
+        return _call_ai_html(_background_prompt())
 
     news_text = '\n'.join([f"- {i['title']}: {i['summary']} ({i['link']})" for i in items])
     if extra:
@@ -1122,7 +1069,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
     # 给了收件人。现在过滤后如果内容已经清空，直接换成"背景信息"提示词，
     # 不再把完整的内部指令连同空内容一起发出去。
     if not news_text.strip():
-        return _call_ai_html(_background_prompt(), tag=f'{section_name}(背景)')
+        return _call_ai_html(_background_prompt())
 
     political_rule = (
         "- 内容必须如实翻译，不要过滤任何内容\n" if allow_political else
@@ -1164,7 +1111,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "- 统一用'大一新生'替代'首年学生'或'First-Year students'\n"
         "- 只输出HTML，不要其他文字"
     )
-    return _call_ai_html(prompt, tag=section_name)
+    return _call_ai_html(prompt)
 
 _CAL_MONTH_MAP = {
     'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
@@ -1261,7 +1208,7 @@ def generate_calendar_section(items):
         "5. 只输出HTML，不要其他文字\n\n"
         f"以下是需要翻译整理的条目：\n{combined}"
     )
-    return _call_ai_html(prompt, tag='学术日历')
+    return _call_ai_html(prompt)
 
 def generate_registration_section(registration_text, housing_text):
     today = datetime.now()
@@ -1295,7 +1242,7 @@ def generate_registration_section(registration_text, housing_text):
         "- 有链接则加<a href=\"链接\" target=\"_blank\">查看详情</a>\n"
         "- 只输出HTML"
     )
-    return _call_ai_html(prompt, tag='选课与住房')
+    return _call_ai_html(prompt)
 
 PREMATRIC_DONE_HTML = (
     '<p>Class of 2030 的开学前重要节点（搬入日、迎新周、正式开学等）均已完成，'
@@ -1339,7 +1286,7 @@ def generate_prematric_section(page_text):
         "不要说明今天的日期、不要描述你自己遵守了哪些规则或做了哪些筛选——"
         "这些说明性文字一个字都不要出现，直接从<ul>开始、以</ul>结束"
     )
-    return _call_ai_html(prompt, tag='开学前安排')
+    return _call_ai_html(prompt)
 
 # ══════════════════════════════════════════════════════════════
 #  更新 index.html
@@ -1350,19 +1297,13 @@ def update_index(sections_html):
     for section_id, html in sections_html.items():
         if not html:
             continue
-        open_pat = rf'<div[^>]*id="{section_id}"[^>]*>'
-        if not re.search(open_pat, content):
-            print(f'  ✗ {section_id}: index.html 中没有这个 div')
-            continue
-        pattern = rf'({open_pat})(.*?)(</div>)'
+        pattern = rf'(<div[^>]*id="{section_id}"[^>]*>)(.*?)(</div>)'
         new_content = re.sub(pattern, rf'\g<1>{html}\3', content, flags=re.DOTALL, count=1)
         if new_content != content:
             content = new_content
             print(f'  已更新 {section_id}')
         else:
-            # div 存在但替换后字符串不变：新内容与旧内容一字不差
-            # （常见于 fallback 占位反复写入），并非"没找到"
-            print(f'  ○ {section_id}: 内容无变化（div 存在，新旧内容相同）')
+            print(f'  未找到 {section_id}')
     now = datetime.now()
     content = re.sub(r'(<span id="weekly-date"[^>]*>)[^<]*(</span>)',
                      rf'\g<1>{now.year}年{now.month}月{now.day}日\2', content)
@@ -1383,7 +1324,7 @@ def build_email_html(sections, unsubscribe_token=None):
             body_parts.append(
                 f'<h2 style="color:#012169;border-bottom:2px solid #012169;'
                 f'padding-bottom:6px;margin-top:32px">{label}</h2>'
-                f'{content}'
+                f'<div>{content}</div>'
             )
     unsubscribe_html = ''
     if unsubscribe_token:
@@ -1451,48 +1392,37 @@ def fetch_subscribers():
         return []
 
 
-def send_via_sender(to_email, subject, html):
-    """用 Sender.net (SENDER_API_KEY) 发送单封邮件。
-    批量发送时 API 偶发超时/限流，这里做 3 次重试 + 退避。"""
-    payload = {
-        'from':    {'email': EMAIL_FROM, 'name': '杜克家长日报'},
-        'to':      {'email': to_email},
-        'subject': subject,
-        'html':    html,
-    }
-    headers = {
-        'Authorization': f'Bearer {SENDER_KEY}',
-        'Content-Type':  'application/json',
-        'Accept':        'application/json',
-    }
-    for attempt in range(3):
-        try:
-            r = requests.post('https://api.sender.net/v2/message/send',
-                              headers=headers, json=payload, timeout=30)
-        except requests.exceptions.Timeout:
-            wait = 5 * (attempt + 1)
-            print(f'    Sender 超时，重试 {attempt + 1}/3，等待 {wait}s')
-            time.sleep(wait)
-            continue
-        except Exception as ex:
-            print(f'    Sender 连接异常: {ex}')
-            return False
-        if r.status_code == 429:
-            wait = 10 * (attempt + 1)
-            print(f'    Sender 限速(429)，等待 {wait}s 后重试')
-            time.sleep(wait)
-            continue
-        ok = r.status_code in (200, 201)
-        if ok:
-            try:
-                ok = r.json().get('success', True)
-            except Exception:
-                pass
-        if not ok:
-            print(f'    Sender 返回 {r.status_code}: {r.text[:200]}')
-        return ok
-    print('    Sender 3次重试均超时，放弃这一封')
-    return False
+def send_via_resend(to_email, subject, html):
+    """用 Resend 发送单封邮件。"""
+    r = requests.post(
+        'https://api.resend.com/emails',
+        headers={
+            'Authorization': f'Bearer {RESEND_KEY}',
+            'Content-Type': 'application/json',
+        },
+        json={'from': EMAIL_FROM, 'to': [to_email], 'subject': subject, 'html': html},
+        timeout=15,
+    )
+    return r.status_code in (200, 201)
+
+
+def send_via_brevo(to_email, subject, html):
+    """用 Brevo 发送单封邮件。"""
+    r = requests.post(
+        'https://api.brevo.com/v3/smtp/email',
+        headers={
+            'api-key': BREVO_KEY,
+            'Content-Type': 'application/json',
+        },
+        json={
+            'sender':      {'name': '杜克家长日报', 'email': EMAIL_FROM},
+            'to':          [{'email': to_email}],
+            'subject':     subject,
+            'htmlContent': html,
+        },
+        timeout=15,
+    )
+    return r.status_code in (200, 201)
 
 
 def send_email(sections):
@@ -1510,9 +1440,9 @@ def send_email(sections):
     # else:
     #     print('  跳过 Resend：未设置 RESEND_API_KEY')
 
-    # ── 2. 订阅者：用 Sender.net (SENDER_API_KEY) ─────────────
-    if not SENDER_KEY:
-        print('  跳过订阅者：未设置 SENDER_API_KEY')
+    # ── 2. 订阅者：用 Brevo ───────────────────────────────────
+    if not BREVO_KEY:
+        print('  跳过订阅者：未设置 BREVO_API_KEY')
         return
 
     subscribers = fetch_subscribers()
@@ -1527,20 +1457,16 @@ def send_email(sections):
             continue
         html = build_email_html(sections, unsubscribe_token=token)
         try:
-            ok = send_via_sender(email, subject, html)
+            ok = send_via_brevo(email, subject, html)
             if ok:
                 ok_count += 1
             else:
-                print(f'  ✗ Sender 失败: {email}')
+                print(f'  ✗ Brevo 失败: {email}')
         except Exception as ex:
-            print(f'  ✗ Sender 异常 {email}: {ex}')
-        time.sleep(2)  # 批量发送间隔拉大到2秒，避免触发 Sender 频率限制
+            print(f'  ✗ Brevo 异常 {email}: {ex}')
+        time.sleep(0.1)  # 避免触发频率限制
 
-    print(f'  ✓ Sender 已发送 {ok_count}/{len(subscribers)} 封')
-    if subscribers and ok_count == 0:
-        # 全部失败时让 job 显式变红，方便发现；网站更新不受影响
-        # （workflow 的提交步骤加了 if: always()）
-        raise SystemExit('所有邮件发送失败')
+    print(f'  ✓ Brevo 已发送 {ok_count}/{len(subscribers)} 封')
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1581,7 +1507,7 @@ def main():
                 'calendar':        ex.submit(fetch_calendar),
                 'reg_text':        ex.submit(fetch_pages_text, REGISTRATION_PAGES),
                 'housing_text':    ex.submit(fetch_pages_text, HOUSING_PAGES),
-                'family_weekend_text': ex.submit(fetch_pages_text, FAMILY_WEEKEND_PAGES, 2500),
+                'family_weekend_text': ex.submit(fetch_family_weekend_text, FAMILY_WEEKEND_PAGES, 2500),
                 'admissions_text': ex.submit(fetch_pages_text, ADMISSIONS_PAGES, 1500),
                 'prematric_text':  ex.submit(fetch_pages_text, PREMATRIC_PAGES, 1200),
             }
@@ -1590,7 +1516,7 @@ def main():
     r = fetch_all()
 
     school_items     = r['today'] + r['news']
-    basketball_items = r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_all'] + r['goduke_fb'] + r['athletics']
+    basketball_items = r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_all'] + r['athletics']
     admissions_items = r['admissions'] + r['admissions_site']
 
     # ── Python层面先过滤过期日期，再交给AI（所有栏目统一执行，不再局限于招生）──
@@ -1647,37 +1573,31 @@ def main():
         BASKETBALL_EXTRA += "\n以上比赛仅在Amazon Prime Video播出，需订阅才能观看。"
     else:
         BASKETBALL_EXTRA = ""
-    # 本栏目同时涵盖橄榄球和篮球等杜克体育项目，秋季（8-12月）正值橄榄球赛季，
-    # 明确要求AI不要因为栏目历史上偏重篮球报道就忽略橄榄球赛事/战绩等内容。
-    BASKETBALL_EXTRA += ("\n\n【栏目范围提醒】本栏目涵盖杜克所有体育项目动态，"
-                         "包括但不限于橄榄球(football)和篮球(basketball)。"
-                         "如原始内容中有橄榄球比赛结果、赛程、排名等信息，"
-                         "必须与篮球内容同等重视，不得因栏目历史侧重篮球而遗漏橄榄球条目。")
+    football_items   = _drop_expired_items(r['goduke_fb'])
 
-    # Family Weekend 临近时（活动前约6周内）优先突出展示；平时仍会因日期过期被过滤掉，
-    # 无需手动开关，全部依赖上面 filter_expired_text 的日期判断。
-    CAMPUS_EXTRA = r['family_weekend_text']
-    if CAMPUS_EXTRA.strip():
-        CAMPUS_EXTRA = ("【Family Weekend 家庭周末官方页面摘录，请优先关注并提炼：具体日期、"
-                        "是否与橄榄球主场赛程重合、注册/购票入口、截止日期等信息】\n" + CAMPUS_EXTRA)
+    # Family Weekend 独立栏目：活动结束后页面日期被逐行过滤掉，文本为空，栏目自动不显示
+    FW_EXTRA = r['family_weekend_text']
+    if FW_EXTRA.strip():
+        FW_EXTRA = ("【请提炼：具体日期、是否与橄榄球主场赛程重合、注册/购票入口、"
+                    "截止日期、联系方式】\n" + FW_EXTRA)
 
     tasks = {
         'weekly-school':       lambda: generate_section('学校新闻', school_items),
-        'weekly-basketball':   lambda: generate_section('橄榄球/篮球/体育动态', basketball_items, extra=BASKETBALL_EXTRA),
+        'weekly-basketball':   lambda: generate_section('篮球/体育动态', basketball_items, extra=BASKETBALL_EXTRA),
+        'weekly-football':     lambda: generate_section('橄榄球', football_items),
         'weekly-admissions':   lambda: generate_section('招生信息', admissions_items, extra=r['admissions_text']),
         'weekly-calendar':     lambda: generate_calendar_section(calendar_items),
         'weekly-registration': lambda: generate_registration_section(r['reg_text'], r['housing_text']),
         'weekly-prematric':    lambda: generate_prematric_section(r['prematric_text']),
-        'weekly-campus':       lambda: generate_section('校园生活', campus_items, extra=CAMPUS_EXTRA),
+        'weekly-familyweekend': lambda: (generate_section('Family Weekend家庭周末', [], extra=FW_EXTRA) if FW_EXTRA.strip() else ''),
+        'weekly-campus':       lambda: generate_section('校园生活', campus_items),
         'weekly-chronicle':    lambda: generate_section('Chronicle学生报', chronicle_items),
         'weekly-research':     lambda: generate_section('科研动态', research_items),
         'weekly-visa':         lambda: generate_section('签证与国际生动态', visa_items, allow_political=True),
     }
 
     sections = {}
-    # 2026-09-25：10 并发打爆免费层 RPM（Mistral/Gemini 429），降到 4，
-    # 配合各供应商内部重试+退避；每日任务多花几分钟，换成功率
-    with ThreadPoolExecutor(max_workers=4) as ex:
+    with ThreadPoolExecutor(max_workers=10) as ex:
         futs = {ex.submit(fn): key for key, fn in tasks.items()}
         for fut in as_completed(futs):
             key = futs[fut]
