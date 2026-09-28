@@ -761,6 +761,17 @@
   </div>
 </div>
 
+<div class="modal" id="alreadyModal" role="dialog" aria-modal="true" aria-labelledby="alTitle" hidden>
+  <div class="modal-card">
+    <h3 id="alTitle">已签到</h3>
+    <div class="modal-name" id="alName"></div>
+    <p>这位家长已经签到，无需重复签到，也不能取消签到。</p>
+    <div class="btn-row">
+      <button class="btn" id="alOk" type="button">知道了</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="checkinModal" role="dialog" aria-modal="true" aria-labelledby="ciTitle" hidden>
   <div class="modal-card">
     <h3 id="ciTitle">签到确认</h3>
@@ -920,6 +931,17 @@ function confirmCheckin(name){
     ciModal.addEventListener('click', onBg); document.addEventListener('keydown', onKey);
   });
 }
+const alModal = document.getElementById('alreadyModal'), alName = document.getElementById('alName'), alOk = document.getElementById('alOk');
+function showAlready(name){
+  alName.textContent = name; alModal.hidden = false; alOk.focus();
+  const close = () => {
+    alModal.hidden = true;
+    alOk.removeEventListener('click', close); alModal.removeEventListener('click', onBg); document.removeEventListener('keydown', onKey);
+  };
+  const onBg = e => { if(e.target === alModal) close(); };
+  const onKey = e => { if(e.key === 'Escape' || e.key === 'Enter') close(); };
+  alOk.addEventListener('click', close); alModal.addEventListener('click', onBg); document.addEventListener('keydown', onKey);
+}
 attendGrid.addEventListener('change', e=>{
   const cb = e.target;
   if(!cb || !cb.matches || !cb.matches('input[type=checkbox]')) return;
@@ -937,8 +959,9 @@ attendGrid.addEventListener('change', e=>{
       (box || attendGrid).dispatchEvent(new Event('input', { bubbles: true }));   // 触发自动保存 / 云端同步
     });
   } else {
-    attended.delete(name);
-    updateAttendCount();
+    // 已签到不可取消（防误触）：恢复勾选并提示已签到
+    cb.checked = attended.has(name);
+    showAlready(name);
   }
 });
 document.getElementById('attendSearch').addEventListener('input', e=>renderAttend(e.target.value));
