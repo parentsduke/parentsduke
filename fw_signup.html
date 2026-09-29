@@ -68,6 +68,7 @@
   .pay h3{margin:0 0 6px;font-size:15px;color:var(--navy-deep);}
   .pay .amt{font-size:22px;font-weight:700;color:var(--navy);}
   .pay .pill{display:inline-block;border-radius:20px;padding:1px 10px;font-size:12.5px;margin-left:8px;vertical-align:middle;}
+  .pay .donrow{margin-top:8px;padding-top:8px;border-top:1px dashed #ecd9a8;}
   .pay .pill.todo{background:#fde8e6;color:#b3261e;}
   .pay .pill.ok{background:#e3f4ea;color:#1d7a46;}
   .pay .code{display:flex;align-items:center;gap:10px;margin:8px 0;}
@@ -258,8 +259,8 @@ const payEl = $('pay');
 const money = n => '$' + (Number(n) % 1 ? Number(n).toFixed(2) : String(Number(n)));
 function payLine(parent, text, cls){ const d = document.createElement('div'); if(cls) d.className = cls; d.textContent = text; parent.appendChild(d); return d; }
 function payCheckbox(parent, name, p){          // 家长自报「已付款」：只是提醒管理员核对，不等于管理员已确认收款
-  const due = Number(p.due) || 0, paid = Number(p.paid) || 0;
-  if(paid >= due && paid > 0) return;            // 管理员已经确认收款，不用再自报
+  const base = (Number(p.due) || 0) - (Number(p.donation) || 0), paid = Number(p.paid) || 0;   // 只看活动费（必缴部分）是否收齐，自愿捐款不影响
+  if(paid >= base && paid > 0) return;           // 活动费已经确认收款，不用再自报
   const label = document.createElement('label'); label.className = 'selfpaid';
   const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!p.self_paid;
   const span = document.createElement('span');
@@ -292,23 +293,30 @@ async function showPayment(name){
     if(!res.ok) return;                       // 缴费功能未启用或函数尚未部署：静默不显示
     const p = await res.json();
     if(!p || !p.enabled) return;
-    const due = Number(p.due) || 0, paid = Number(p.paid) || 0, bal = due - paid;
-    const don = Number(p.donation) || 0;
+    const due = Number(p.due) || 0, paid = Number(p.paid) || 0;
+    const don = Number(p.donation) || 0, base = due - don;         // 活动费用与自愿捐款分开计算，互不影响
+    const basePaid = Math.min(paid, base), baseBal = base - basePaid;
+    const donPaid = Math.max(0, paid - base);
     const h = document.createElement('h3'); h.textContent = '缴费'; payEl.appendChild(h);
-    if(don > 0) payLine(payEl, '活动费用 ' + money(due - don) + ' + 自愿捐款 ' + money(don), 'small');
-    const a = payLine(payEl, ''); a.append('应缴金额 ');
-    const amt = document.createElement('span'); amt.className = 'amt'; amt.textContent = money(due); a.appendChild(amt);
-    const pill = document.createElement('span'); pill.className = 'pill ' + (bal <= 0 && paid > 0 ? 'ok' : 'todo');
-    pill.textContent = bal <= 0 && paid > 0 ? '已缴清' : paid > 0 ? '部分已缴' : '待缴'; a.appendChild(pill);
-    if(paid > 0 && bal > 0) payLine(payEl, '已收 ' + money(paid) + '，还需补缴 ' + money(bal));
-    if(bal < 0) payLine(payEl, '已多收 ' + money(-bal) + '（人数有变），管理员会与你联系退还。', 'small');
-    if(bal > 0 || paid === 0){
+    const a = payLine(payEl, ''); a.append('应缴活动费 ');
+    const amt = document.createElement('span'); amt.className = 'amt'; amt.textContent = money(base); a.appendChild(amt);
+    const pill = document.createElement('span'); pill.className = 'pill ' + (baseBal <= 0 && basePaid > 0 ? 'ok' : 'todo');
+    pill.textContent = baseBal <= 0 && basePaid > 0 ? '已缴清' : basePaid > 0 ? '部分已缴' : '待缴'; a.appendChild(pill);
+    if(basePaid > 0 && baseBal > 0) payLine(payEl, '已收活动费 ' + money(basePaid) + '，还需补缴 ' + money(baseBal));
+    if(don > 0){
+      const dl = payLine(payEl, '', 'donrow'); dl.append('自愿捐款（与活动费分开，不计入上面的缴清状态） ');
+      const damt = document.createElement('span'); damt.className = 'amt'; damt.style.fontSize = '16px'; damt.textContent = money(don); dl.appendChild(damt);
+      const dpill = document.createElement('span'); dpill.className = 'pill ' + (donPaid >= don && donPaid > 0 ? 'ok' : 'todo');
+      dpill.textContent = donPaid >= don && donPaid > 0 ? '已收到' : donPaid > 0 ? '部分收到 ' + money(donPaid) : '尚未收到'; dl.appendChild(dpill);
+    }
+    if(baseBal > 0 || basePaid === 0){
       const c = document.createElement('div'); c.className = 'code'; c.append('付款备注码 ');
       const b = document.createElement('b'); b.textContent = p.code; c.appendChild(b);
       const cp = document.createElement('button'); cp.type = 'button'; cp.textContent = '复制';
       cp.addEventListener('click', async () => { try{ await navigator.clipboard.writeText(p.code); cp.textContent = '已复制'; }catch(e){ cp.textContent = '请手动复制'; } });
       c.appendChild(cp); payEl.appendChild(c);
       if(p.pay_info){ const i = document.createElement('div'); i.className = 'info'; i.textContent = p.pay_info; payEl.appendChild(i); }
+      if(p.pay_qr_url){ const img = document.createElement('img'); img.className = 'qr'; img.src = p.pay_qr_url; img.alt = '收款二维码'; payEl.appendChild(img); }
       payLine(payEl, '转账时请在备注里写上备注码' + (p.deadline ? '，并于 ' + p.deadline + ' 前完成' : '') + '。管理员核对到账后会标记为已缴清（不是即时的），稍后重新打开本页即可查看状态。', 'small');
     }
     payCheckbox(payEl, name, p);
@@ -403,22 +411,30 @@ async function showPaymentInto(name, el){         // 和 showPayment 一样的�
     if(!res.ok) return;
     const p = await res.json();
     if(!p || !p.enabled){ payLine(el, '还没有找到你的报名记录，请先在下方完成报名。'); el.classList.add('show'); return; }
-    const due = Number(p.due) || 0, paid = Number(p.paid) || 0, bal = due - paid, don = Number(p.donation) || 0;
+    const due = Number(p.due) || 0, paid = Number(p.paid) || 0;
+    const don = Number(p.donation) || 0, base = due - don;         // 活动费用与自愿捐款分开计算，互不影响
+    const basePaid = Math.min(paid, base), baseBal = base - basePaid;
+    const donPaid = Math.max(0, paid - base);
     const h = document.createElement('h3'); h.textContent = '缴费'; el.appendChild(h);
-    if(don > 0) payLine(el, '活动费用 ' + money(due - don) + ' + 自愿捐款 ' + money(don), 'small');
-    const a = payLine(el, ''); a.append('应缴金额 ');
-    const amt = document.createElement('span'); amt.className = 'amt'; amt.textContent = money(due); a.appendChild(amt);
-    const pill = document.createElement('span'); pill.className = 'pill ' + (bal <= 0 && paid > 0 ? 'ok' : 'todo');
-    pill.textContent = bal <= 0 && paid > 0 ? '已缴清' : paid > 0 ? '部分已缴' : '待缴'; a.appendChild(pill);
-    if(paid > 0 && bal > 0) payLine(el, '已收 ' + money(paid) + '，还需补缴 ' + money(bal));
-    if(bal < 0) payLine(el, '已多收 ' + money(-bal) + '（人数有变），管理员会与你联系退还。', 'small');
-    if(bal > 0 || paid === 0){
+    const a = payLine(el, ''); a.append('应缴活动费 ');
+    const amt = document.createElement('span'); amt.className = 'amt'; amt.textContent = money(base); a.appendChild(amt);
+    const pill = document.createElement('span'); pill.className = 'pill ' + (baseBal <= 0 && basePaid > 0 ? 'ok' : 'todo');
+    pill.textContent = baseBal <= 0 && basePaid > 0 ? '已缴清' : basePaid > 0 ? '部分已缴' : '待缴'; a.appendChild(pill);
+    if(basePaid > 0 && baseBal > 0) payLine(el, '已收活动费 ' + money(basePaid) + '，还需补缴 ' + money(baseBal));
+    if(don > 0){
+      const dl = payLine(el, '', 'donrow'); dl.append('自愿捐款（与活动费分开，不计入上面的缴清状态） ');
+      const damt = document.createElement('span'); damt.className = 'amt'; damt.style.fontSize = '16px'; damt.textContent = money(don); dl.appendChild(damt);
+      const dpill = document.createElement('span'); dpill.className = 'pill ' + (donPaid >= don && donPaid > 0 ? 'ok' : 'todo');
+      dpill.textContent = donPaid >= don && donPaid > 0 ? '已收到' : donPaid > 0 ? '部分收到 ' + money(donPaid) : '尚未收到'; dl.appendChild(dpill);
+    }
+    if(baseBal > 0 || basePaid === 0){
       const c = document.createElement('div'); c.className = 'code'; c.append('付款备注码 ');
       const b = document.createElement('b'); b.textContent = p.code; c.appendChild(b);
       const cp = document.createElement('button'); cp.type = 'button'; cp.textContent = '复制';
       cp.addEventListener('click', async () => { try{ await navigator.clipboard.writeText(p.code); cp.textContent = '已复制'; }catch(e){ cp.textContent = '请手动复制'; } });
       c.appendChild(cp); el.appendChild(c);
       if(p.pay_info){ const i = document.createElement('div'); i.className = 'info'; i.textContent = p.pay_info; el.appendChild(i); }
+      if(p.pay_qr_url){ const img = document.createElement('img'); img.className = 'qr'; img.src = p.pay_qr_url; img.alt = '收款二维码'; el.appendChild(img); }
       payLine(el, '转账时请在备注里写上备注码' + (p.deadline ? '，并于 ' + p.deadline + ' 前完成' : '') + '。管理员核对到账后会标记为已缴清（不是即时的），可以再次点「查询」查看最新状态。', 'small');
     }
     payCheckbox(el, name, p);
