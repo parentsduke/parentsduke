@@ -1666,7 +1666,8 @@ function exportMinutes(){
       const dueAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).amount_due) || 0), 0);
       const donAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).donation) || 0), 0);
       const paidAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).paid_amount) || 0), 0);
-      chip('实际已收总额', money(paidAll)); chip('实际活动费（应收）', money(dueAll - donAll)); chip('实际自愿捐款', money(donAll));
+      const sp = rows.map(r => paySplit(pays[r.name])); const feeIn = sp.reduce((a, q) => a + q.fee, 0), dnIn = sp.reduce((a, q) => a + q.dn, 0);
+      chip('实际已收总额', money(paidAll) + ' = 活动费 ' + money(feeIn) + ' + 自愿捐款 ' + money(dnIn)); chip('应收', money(dueAll) + '（活动费 ' + money(dueAll - donAll) + ' + 捐款 ' + money(donAll) + '）');
     }
     if(costEst !== null) chip('预计支出', money(toNum(costEst)));
     if(netEst !== null) chip('表格预计净余额', money(toNum(netEst)));
@@ -1725,12 +1726,20 @@ function exportMinutes(){
     if(error){ alert('保存失败：' + error.message); return; }
     loadAdmin();
   }
+  function paySplit(x){
+    x = x || {};
+    const due = Number(x.amount_due) || 0, don = Number(x.donation) || 0, paid = Number(x.paid_amount) || 0, base = due - don;
+    const fee = Math.min(paid, base), dn = paid - fee;      // 已收总额 = 活动费部分 + 自愿捐款部分
+    return { due, don, base, paid, fee, dn };
+  }
   function payCell(tr, r){
     const x = pays[r.name] || {}, due = Number(x.amount_due) || 0, paid = Number(x.paid_amount) || 0;
     const don = Number(x.donation) || 0, base = due - don;          // 活动费（必缴）与自愿捐款分开判断是否「已缴」
     const tdDue = document.createElement('td'); tdDue.className = 'pay-col'; tdDue.textContent = money(base); tr.appendChild(tdDue);
     const tdDon = document.createElement('td'); tdDon.className = 'pay-col'; tdDon.textContent = don > 0 ? money(don) : '—'; tr.appendChild(tdDon);
-    const tdPaid = document.createElement('td'); tdPaid.className = 'pay-col'; tdPaid.textContent = paid ? money(paid) : '—'; tr.appendChild(tdPaid);
+    const tdPaid = document.createElement('td'); tdPaid.className = 'pay-col'; tdPaid.textContent = paid ? money(paid) : '—';
+    if(paid){ const q = paySplit(x), sub = document.createElement('span'); sub.style.cssText = 'display:block;color:var(--ink-soft);font-size:11.5px;'; sub.textContent = '= 活动费 ' + money(q.fee) + ' + 捐款 ' + money(q.dn); tdPaid.appendChild(sub); }
+    tr.appendChild(tdPaid);
     const tdCode = document.createElement('td'); tdCode.className = 'pay-col'; tdCode.textContent = x.pay_code || '—';
     if(x.self_paid && !(paid >= base && paid > 0)){                     // 家长自报已付款，但管理员还没确认活动费收款：提醒对账
       const tag = document.createElement('span'); tag.textContent = '✅ 家长已勾选';
@@ -1774,8 +1783,9 @@ function exportMinutes(){
       const donAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).donation) || 0), 0);
       const dueAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).amount_due) || 0), 0) - donAll;   // 应收只算活动费，不含捐款
       const paidAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).paid_amount) || 0), 0);
+      const sp = rows.map(r => paySplit(pays[r.name])); const feeIn = sp.reduce((a, q) => a + q.fee, 0), dnIn = sp.reduce((a, q) => a + q.dn, 0);
       const okN = rows.filter(r => { const x = pays[r.name] || {}; const b = (Number(x.amount_due) || 0) - (Number(x.donation) || 0); return Number(x.paid_amount) > 0 && Number(x.paid_amount) >= b; }).length;
-      [['活动费已缴清', okN + ' / ' + rows.length + ' 户'], ['已收总额', money(paidAll)], ['活动费（应收）', money(dueAll)], ['自愿捐款', money(donAll)]].forEach(([k, v]) => {
+      [['活动费已缴清', okN + ' / ' + rows.length + ' 户'], ['已收总额 = 活动费 + 自愿捐款', money(paidAll) + ' = ' + money(feeIn) + ' + ' + money(dnIn)], ['应收 = 活动费 + 自愿捐款', money(dueAll + donAll) + ' = ' + money(dueAll) + ' + ' + money(donAll)]].forEach(([k, v]) => {
         const span = document.createElement('span'); span.append(k + ' '); const b = document.createElement('b'); b.textContent = v; span.appendChild(b); statsEl.appendChild(span);
       });
     }
@@ -1793,8 +1803,8 @@ function exportMinutes(){
   }
   const csvCell = v => { v = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
   $('rsvpCsv').addEventListener('click', () => {
-    const lines = [['家长', 'Name Tag', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间'].concat(payOn ? ['应缴（活动费）', '自愿捐款', '已收总额', '备注码', '收款确认人', '收款时间', '家长自报已付款', '自报时间'] : [])]
-      .concat(rows.map(r => [r.name, nametags[r.name] || '', gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '', r.major, r.watch_football ? '是' : '否', r.updated_at].concat(payOn ? (x => [(Number(x.amount_due)||0) - (Number(x.donation)||0), x.donation, x.paid_amount, x.pay_code, x.paid_by, x.paid_at, x.self_paid ? '是' : '否', x.self_paid_at || ''])(pays[r.name] || {}) : [])));
+    const lines = [['家长', 'Name Tag', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间'].concat(payOn ? ['应缴（活动费）', '自愿捐款', '已收总额', '其中活动费', '其中捐款', '备注码', '收款确认人', '收款时间', '家长自报已付款', '自报时间'] : [])]
+      .concat(rows.map(r => [r.name, nametags[r.name] || '', gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '', r.major, r.watch_football ? '是' : '否', r.updated_at].concat(payOn ? (x => [(Number(x.amount_due)||0) - (Number(x.donation)||0), x.donation, x.paid_amount, paySplit(x).fee, paySplit(x).dn, x.pay_code, x.paid_by, x.paid_at, x.self_paid ? '是' : '否', x.self_paid_at || ''])(pays[r.name] || {}) : [])));
     const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = 'FW报名_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
