@@ -577,7 +577,7 @@
       <div class="rsvp-stats" id="rsvpStats"></div>
       <div class="rsvp-scroll">
         <table class="rsvp-table">
-          <thead><tr><th>家长</th><th>Name Tag</th><th>届次</th><th>人数（含杜娃）</th><th>杜娃参加</th><th>孩子专业</th><th>橄榄球</th><th class="pay-col">应缴（活动费）</th><th class="pay-col">自愿捐款</th><th class="pay-col">已收</th><th class="pay-col">备注码</th><th class="pay-col">缴费确认</th></tr></thead>
+          <thead><tr><th>家长</th><th>Name Tag</th><th>届次</th><th>人数（含杜娃）</th><th>杜娃参加</th><th>孩子专业</th><th>橄榄球</th><th class="pay-col">应缴（活动费）</th><th class="pay-col">自愿捐款</th><th class="pay-col">已收总额</th><th class="pay-col">备注码</th><th class="pay-col">缴费确认</th></tr></thead>
           <tbody id="rsvpBody"></tbody>
         </table>
       </div>
@@ -1666,7 +1666,7 @@ function exportMinutes(){
       const dueAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).amount_due) || 0), 0);
       const donAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).donation) || 0), 0);
       const paidAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).paid_amount) || 0), 0);
-      chip('实际应缴活动费', money(dueAll - donAll)); chip('实际自愿捐款', money(donAll)); chip('实际已收', money(paidAll));
+      chip('实际已收总额', money(paidAll)); chip('实际活动费（应收）', money(dueAll - donAll)); chip('实际自愿捐款', money(donAll));
     }
     if(costEst !== null) chip('预计支出', money(toNum(costEst)));
     if(netEst !== null) chip('表格预计净余额', money(toNum(netEst)));
@@ -1775,7 +1775,7 @@ function exportMinutes(){
       const dueAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).amount_due) || 0), 0) - donAll;   // 应收只算活动费，不含捐款
       const paidAll = rows.reduce((a, r) => a + (Number((pays[r.name] || {}).paid_amount) || 0), 0);
       const okN = rows.filter(r => { const x = pays[r.name] || {}; const b = (Number(x.amount_due) || 0) - (Number(x.donation) || 0); return Number(x.paid_amount) > 0 && Number(x.paid_amount) >= b; }).length;
-      [['活动费已缴清', okN + ' / ' + rows.length + ' 户'], ['已收 / 应收活动费', money(paidAll) + ' / ' + money(dueAll)]].concat(donAll > 0 ? [['其中自愿捐款', money(donAll)]] : []).forEach(([k, v]) => {
+      [['活动费已缴清', okN + ' / ' + rows.length + ' 户'], ['已收总额', money(paidAll)], ['活动费（应收）', money(dueAll)], ['自愿捐款', money(donAll)]].forEach(([k, v]) => {
         const span = document.createElement('span'); span.append(k + ' '); const b = document.createElement('b'); b.textContent = v; span.appendChild(b); statsEl.appendChild(span);
       });
     }
@@ -1793,7 +1793,7 @@ function exportMinutes(){
   }
   const csvCell = v => { v = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
   $('rsvpCsv').addEventListener('click', () => {
-    const lines = [['家长', 'Name Tag', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间'].concat(payOn ? ['应缴（活动费）', '自愿捐款', '已收', '备注码', '收款确认人', '收款时间', '家长自报已付款', '自报时间'] : [])]
+    const lines = [['家长', 'Name Tag', '届次', 'FW参加人数（含杜娃）', '杜娃是否参加', '孩子专业', '是否观看橄榄球', '提交时间'].concat(payOn ? ['应缴（活动费）', '自愿捐款', '已收总额', '备注码', '收款确认人', '收款时间', '家长自报已付款', '自报时间'] : [])]
       .concat(rows.map(r => [r.name, nametags[r.name] || '', gradeOf[r.name] ? gradeLabel(gradeOf[r.name]) : '不在花名册', r.guests, r.kid_attends === true ? '是' : r.kid_attends === false ? '否' : '', r.major, r.watch_football ? '是' : '否', r.updated_at].concat(payOn ? (x => [(Number(x.amount_due)||0) - (Number(x.donation)||0), x.donation, x.paid_amount, x.pay_code, x.paid_by, x.paid_at, x.self_paid ? '是' : '否', x.self_paid_at || ''])(pays[r.name] || {}) : [])));
     const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
