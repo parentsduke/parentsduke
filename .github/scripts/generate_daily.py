@@ -9,7 +9,7 @@ OPENROUTER_KEY= os.environ.get('OPENROUTER_API_KEY', '')
 CEREBRAS_KEY  = os.environ.get('CEREBRAS_API_KEY', '')
 MISTRAL_KEY   = os.environ.get('MISTRAL_API_KEY', '')
 RESEND_KEY    = os.environ.get('RESEND_API_KEY', '')
-SENDER_KEY    = os.environ.get('SENDER_API_KEY', '')
+BREVO_KEY     = os.environ.get('BREVO_API_KEY', '')
 SUPABASE_URL  = os.environ.get('SUPABASE_URL', '')
 SUPABASE_KEY  = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
 
@@ -948,12 +948,19 @@ def _call_ai_html(prompt, fallback=FALLBACK_HTML):
     """统一的AI调用出口：调用gemini()后先剥离列表外的前言/后记，
     再做泄漏检测，确认是干净的HTML摘要才放行，否则一律回退到fallback
     （默认FALLBACK_HTML），永远不把内部prompt/免责声明泄漏进最终邮件。"""
-    result = gemini(prompt)
-    result = _strip_to_html_fragment(result)
-    result = _balance_html(result)
-    if _looks_like_leaked_prompt(result):
+    raw = gemini(prompt)
+    if not raw:
+        print('    ⚠ 回退原因：所有AI均无返回（限流/欠费/超时）')
         return fallback
-    return result or fallback
+    result = _strip_to_html_fragment(raw)
+    result = _balance_html(result)
+    if not result:
+        print(f'    ⚠ 回退原因：清洗后为空。AI原文前120字：{raw[:120]!r}')
+        return fallback
+    if _looks_like_leaked_prompt(result):
+        print(f'    ⚠ 回退原因：被判定为泄漏/无效。AI原文前120字：{raw[:120]!r}')
+        return fallback
+    return result
 
 def clean_ai_html(text):
     """去除 AI 返回内容中的 Markdown 代码块标记"""
@@ -1297,13 +1304,21 @@ def update_index(sections_html):
     for section_id, html in sections_html.items():
         if not html:
             continue
+        if html == FALLBACK_HTML:
+            print(f'  ⚠ 跳过 {section_id}：AI生成失败，保留页面上原有内容')
+            continue
         pattern = rf'(<div[^>]*id="{section_id}"[^>]*>)(.*?)(</div>)'
-        new_content = re.sub(pattern, rf'\g<1>{html}\3', content, flags=re.DOTALL, count=1)
+        if not re.search(pattern, content, flags=re.DOTALL):
+            print(f'  ✗ index.html 里没有 id="{section_id}" 的 <div>，请补上')
+            continue
+        new_content = re.sub(pattern,
+                             lambda m: m.group(1) + html + m.group(3),
+                             content, flags=re.DOTALL, count=1)
         if new_content != content:
             content = new_content
             print(f'  已更新 {section_id}')
         else:
-            print(f'  未找到 {section_id}')
+            print(f'  {section_id} 内容与页面上一致，无需更新')
     now = datetime.now()
     content = re.sub(r'(<span id="weekly-date"[^>]*>)[^<]*(</span>)',
                      rf'\g<1>{now.year}年{now.month}月{now.day}日\2', content)
@@ -1406,25 +1421,24 @@ def send_via_resend(to_email, subject, html):
     return r.status_code in (200, 201)
 
 
-def send_via_sender(to_email, subject, html):
-    """用 Sender.net 发送单封邮件（transactional API）。"""
+def send_via_brevo(to_email, subject, html):
+    """用 Brevo 发送单封邮件。"""
     r = requests.post(
-        'https://api.sender.net/v2/message/send',
+        'https://api.brevo.com/v3/smtp/email',
         headers={
-            'Authorization': f'Bearer {SENDER_KEY}',
+            'api-key': BREVO_KEY,
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
         },
         json={
-            'from':    {'email': EMAIL_FROM, 'name': '杜克家长日报'},
-            'to':      {'email': to_email},
-            'subject': subject,
-            'html':    html,
+            'sender':      {'name': '杜克家长日报', 'email': EMAIL_FROM},
+            'to':          [{'email': to_email}],
+            'subject':     subject,
+            'htmlContent': html,
         },
-        timeout=10,
+        timeout=15,
     )
     if r.status_code not in (200, 201, 202):
-        print(f'    Sender 响应: {r.status_code} {r.text[:120]!r}')
+        print(f'    Brevo 响应: {r.status_code} {r.text[:120]!r}')
     return r.status_code in (200, 201, 202)
 
 
@@ -1443,19 +1457,19 @@ def send_email(sections):
     # else:
     #     print('  跳过 Resend：未设置 RESEND_API_KEY')
 
-    # ── 2. 订阅者：优先 Sender，连续失败后切换 Resend ─────────
-    if not SENDER_KEY and not RESEND_KEY:
-        print('  跳过订阅者：未设置 SENDER_API_KEY / RESEND_API_KEY')
+    # ── 2. 订阅者：优先 Brevo，连续失败后切换 Resend ─────────
+    if not BREVO_KEY and not RESEND_KEY:
+        print('  跳过订阅者：未设置 BREVO_API_KEY / RESEND_API_KEY')
         return
 
     subscribers = fetch_subscribers()
     if not subscribers:
         return
 
-    MAX_SENDER_FAILS = 3          # Sender 连续失败达到此数，后面不再尝试 Sender
-    sender_fails = 0
-    use_sender = bool(SENDER_KEY)
-    ok_sender = ok_resend = 0
+    MAX_BREVO_FAILS = 3          # Brevo 连续失败达到此数，后面不再尝试 Brevo
+    brevo_fails = 0
+    use_brevo = bool(BREVO_KEY)
+    ok_brevo = ok_resend = 0
 
     for sub in subscribers:
         email = sub.get('email', '')
@@ -1465,20 +1479,20 @@ def send_email(sections):
         html = build_email_html(sections, unsubscribe_token=token)
         sent = False
 
-        if use_sender:
+        if use_brevo:
             try:
-                sent = send_via_sender(email, subject, html)
+                sent = send_via_brevo(email, subject, html)
             except Exception as ex:
-                print(f'  ✗ Sender 异常 {email}: {ex}')
+                print(f'  ✗ Brevo 异常 {email}: {ex}')
             if sent:
-                ok_sender += 1
-                sender_fails = 0
+                ok_brevo += 1
+                brevo_fails = 0
             else:
-                sender_fails += 1
-                print(f'  ✗ Sender 失败: {email}')
-                if sender_fails >= MAX_SENDER_FAILS:
-                    use_sender = False
-                    print(f'  ⚠ Sender 连续失败 {sender_fails} 次，后续不再尝试 Sender')
+                brevo_fails += 1
+                print(f'  ✗ Brevo 失败: {email}')
+                if brevo_fails >= MAX_BREVO_FAILS:
+                    use_brevo = False
+                    print(f'  ⚠ Brevo 连续失败 {brevo_fails} 次，后续不再尝试 Brevo')
 
         if not sent and RESEND_KEY:
             try:
@@ -1492,8 +1506,8 @@ def send_email(sections):
 
         time.sleep(0.1)  # 避免触发频率限制
 
-    print(f'  ✓ 已发送 {ok_sender + ok_resend}/{len(subscribers)} 封 '
-          f'(Sender {ok_sender}, Resend {ok_resend})')
+    print(f'  ✓ 已发送 {ok_brevo + ok_resend}/{len(subscribers)} 封 '
+          f'(Brevo {ok_brevo}, Resend {ok_resend})')
 
 
 # ══════════════════════════════════════════════════════════════
