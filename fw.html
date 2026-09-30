@@ -410,6 +410,20 @@
     margin-left:auto;font-size:10.5px;color:var(--duke-blue);background:var(--sky-soft);padding:1px 6px;border-radius:6px;flex:none;
   }
 
+  .fam-stat{font-size:13px;margin:2px 0 10px;color:var(--ink);}
+  .fam{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:8px;font-size:13px;}
+  .fam.part{border-color:var(--gold);} .fam.full{background:var(--sky-soft);}
+  .fam-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .fam-h b{font-size:14px;} .fam-h .g{font-size:10.5px;color:var(--duke-blue);background:var(--sky-soft);padding:1px 6px;border-radius:6px;}
+  .fam-badge{margin-left:auto;font-size:11.5px;padding:2px 8px;border-radius:10px;background:#eee;color:var(--ink-soft);}
+  .fam.part .fam-badge{background:#fbefc9;color:#8a6410;} .fam.full .fam-badge{background:var(--navy);color:#fff;}
+  .fam-who{margin:6px 0 4px;line-height:1.6;font-size:12.5px;} .fam-who .y{color:var(--navy);} .fam-who .n{color:#b3421e;}
+  .fam-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+  .fam-chips button{font:inherit;font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:3px 10px;cursor:pointer;}
+  .fam-chips button.on{background:var(--navy);color:#fff;border-color:var(--navy);cursor:default;}
+  .fam-chips button.act{border-style:dashed;color:var(--duke-blue);}
+  details.fam-all{margin-top:10px;} details.fam-all summary{cursor:pointer;font-size:12.5px;color:var(--ink-soft);margin-bottom:8px;}
+
   footer{
     padding:34px 22px 46px;text-align:center;color:var(--ink-soft);font-size:12.5px;
   }
@@ -669,7 +683,8 @@
           <input type="text" class="attend-search" id="attendSearch" placeholder="搜索姓名…">
           <div class="attend-count">已签到 <b id="attendCount">0</b> / <span id="attendTotal">76</span></div>
         </div>
-        <div class="attend-grid" id="attendGrid"></div>
+        <div id="famBox"><div class="fam-stat" id="famStat"></div><div id="famList"></div></div>
+        <details class="fam-all"><summary>全部名单签到（未报名 / 临时到场的家长）</summary><div class="attend-grid" id="attendGrid"></div></details>
       </div>
 
       <div class="minutes-block">
@@ -999,8 +1014,97 @@ attendGrid.addEventListener('change', e=>{
     showAlready(name);
   }
 });
-document.getElementById('attendSearch').addEventListener('input', e=>renderAttend(e.target.value));
+document.getElementById('attendSearch').addEventListener('input', e=>{ renderAttend(e.target.value); renderFamilies(e.target.value); });
 renderAttend();
+
+// ---- 已报名家庭签到：按家庭 + 按 name tag（每个人单独签到，可部分到场）----
+// 同步键 n:<家长>|<到场人>；家庭内只要有一人到场，家长层 a:<家长> 也同步记为已签到（会议纪要沿用）
+const attendedPeople = new Set();
+let famList = [];
+const famStat = document.getElementById('famStat'), famListEl = document.getElementById('famList'), famBox = document.getElementById('famBox');
+const pKey = (parent, person) => parent + '|' + person;
+function famInfo(name){
+  const f = famList.find(x => x.name === name); if(!f) return null;
+  const set = new Set(f.tags);
+  attendedPeople.forEach(k => { if(k.startsWith(name + '|')) set.add(k.slice(name.length + 1)); });   // 现场手动补的名字
+  const ps = [...set], here = ps.filter(p => attendedPeople.has(pKey(name, p))), away = ps.filter(p => !attendedPeople.has(pKey(name, p)));
+  const expected = Math.max(f.guests, ps.length, 1);
+  return { f, ps, here, away, expected, unnamed: Math.max(0, expected - ps.length) };
+}
+function famSyncSave(){
+  renderAttend(document.getElementById('attendSearch').value); updateAttendCount(); renderFamilies();
+  famBox.dispatchEvent(new Event('input', { bubbles: true }));      // 触发自动保存 / 云端同步
+}
+function famCheckIn(parent, persons){
+  persons.forEach(p => attendedPeople.add(pKey(parent, p)));
+  attended.add(parent); famSyncSave();
+}
+function renderFamilies(filter){
+  if(filter === undefined) filter = document.getElementById('attendSearch').value;
+  const q = String(filter || '').trim().toLowerCase();
+  famListEl.textContent = '';
+  if(!famList.length){ famStat.textContent = '（登录管理员后，这里会列出已报名的家庭，按家庭和 name tag 签到；未报名的家长可用下方「全部名单」签到。）'; return; }
+  let famHere = 0, famPart = 0, pHere = 0, pAll = 0;
+  famList.forEach(f => { const i = famInfo(f.name); pAll += i.expected; pHere += i.here.length; if(i.here.length){ famHere++; if(i.here.length < i.expected) famPart++; } });
+  famStat.textContent = '已报名家庭到场 ' + famHere + ' / ' + famList.length + ' 户（其中部分到场 ' + famPart + ' 户）· 人数 ' + pHere + ' / ' + pAll + ' 人';
+  famList.filter(f => !q || f.name.toLowerCase().includes(q) || f.tags.some(t => t.toLowerCase().includes(q))).forEach(f => {
+    const i = famInfo(f.name), n = i.here.length, full = n >= i.expected;
+    const box = document.createElement('div'); box.className = 'fam' + (full ? ' full' : n ? ' part' : '');
+    const h = document.createElement('div'); h.className = 'fam-h';
+    const b = document.createElement('b'); b.textContent = f.name; h.appendChild(b);
+    const r = roster.find(x => x.name === f.name);
+    if(r){ const g = document.createElement('span'); g.className = 'g'; g.textContent = gradeLabel(r.grade).replace('Class of 20', '20'); h.appendChild(g); }
+    const bd = document.createElement('span'); bd.className = 'fam-badge';
+    bd.textContent = full ? '全部到场 ' + n + '/' + i.expected : n ? '部分到场 ' + n + '/' + i.expected : '未到（报名 ' + i.expected + ' 人）';
+    h.appendChild(bd); box.appendChild(h);
+    if(n){   // 写清楚谁来了、谁没来
+      const w = document.createElement('div'); w.className = 'fam-who';
+      const y = document.createElement('span'); y.className = 'y'; y.textContent = '已到：' + i.here.join('、');
+      w.appendChild(y);
+      const miss = i.away.concat(i.unnamed ? ['（另 ' + i.unnamed + ' 人未填名字）'] : []);
+      if(miss.length){ const nn = document.createElement('span'); nn.className = 'n'; nn.textContent = '　未到：' + miss.join('、'); w.appendChild(nn); }
+      box.appendChild(w);
+    }
+    const chips = document.createElement('div'); chips.className = 'fam-chips';
+    i.ps.forEach(p => {
+      const c = document.createElement('button'); c.type = 'button'; const on = attendedPeople.has(pKey(f.name, p));
+      c.className = on ? 'on' : ''; c.textContent = (on ? '✅ ' : '⬜ ') + p;
+      c.dataset.act = on ? 'done' : 'one'; c.dataset.parent = f.name; c.dataset.person = p; chips.appendChild(c);
+    });
+    if(i.away.length > 1 || (i.away.length && !n)){
+      const all = document.createElement('button'); all.type = 'button'; all.className = 'act'; all.textContent = '整家到齐（' + i.away.length + ' 人）';
+      all.dataset.act = 'all'; all.dataset.parent = f.name; chips.appendChild(all);
+    }
+    if(!full || i.unnamed){
+      const add = document.createElement('button'); add.type = 'button'; add.className = 'act';
+      add.textContent = '＋补名字' + (i.unnamed ? '（' + i.unnamed + ' 人未填）' : ''); add.dataset.act = 'add'; add.dataset.parent = f.name; chips.appendChild(add);
+    }
+    box.appendChild(chips); famListEl.appendChild(box);
+  });
+}
+famListEl.addEventListener('click', e => {
+  const btn = e.target.closest && e.target.closest('button[data-act]'); if(!btn) return;
+  const act = btn.dataset.act, parent = btn.dataset.parent, person = btn.dataset.person;
+  if(act === 'done'){ showAlready(person); return; }
+  if(act === 'one'){ confirmCheckin(person).then(ok => { if(ok) famCheckIn(parent, [person]); }); return; }
+  const i = famInfo(parent); if(!i) return;
+  if(act === 'all'){
+    if(confirm('请对照 name tag，确认以下 ' + i.away.length + ' 人都已到场：\n' + i.away.join('、'))) famCheckIn(parent, i.away);
+    return;
+  }
+  if(act === 'add'){
+    const nm = (prompt('未填胸牌姓名：请输入到场人的姓名（与现场 name tag 一致）') || '').trim();
+    if(!nm) return;
+    if(nm.indexOf('|') >= 0){ alert('姓名里不能包含 | 符号'); return; }
+    if(i.ps.includes(nm)){ alert(nm + ' 已在这个家庭的名单里，请直接点他/她的名字签到'); return; }
+    confirmCheckin(nm).then(ok => { if(ok) famCheckIn(parent, [nm]); });
+  }
+});
+window.fwSetCheckinFamilies = function(rows, nt){
+  famList = (rows || []).map(r => ({ name: r.name, guests: Number(r.guests) || 0, tags: ((nt && nt[r.name]) || []).slice() }));
+  renderFamilies();
+};
+renderFamilies();
 
 // ---- Minutes: agenda list ----
 const minutesAgenda = document.getElementById('minutesAgenda');
@@ -1055,7 +1159,7 @@ function exportMinutes(){
   const time = document.getElementById('rTime').value || '';
   const host = document.getElementById('rHost').value || '（未填写）';
   const noteTaker = document.getElementById('rNote').value || '（未填写）';
-  const attendees = roster.filter(r=>attended.has(r.name)).map(r=>r.name);
+  const attendees = roster.filter(r=>attended.has(r.name)).map(r=>{ const i = famInfo(r.name); if(!i || !i.here.length) return r.name; const miss = i.away.concat(i.unnamed ? ['另' + i.unnamed + '人未填名字'] : []); return r.name + '（到场：' + i.here.join('、') + (miss.length ? '；未到：' + miss.join('、') : '') + '）'; });
   const agendaItems = [...minutesAgenda.querySelectorAll('.txt')].map(t=>t.innerText.trim()).filter(Boolean);
   const editables = document.querySelectorAll('.editable');
   const discussion = editables[0] ? editables[0].innerText.trim() : '';
@@ -1134,6 +1238,7 @@ function exportMinutes(){
     const m = {};
     fieldIds.forEach(id => { const el = document.getElementById(id); if(el) m['f:' + id] = el.value; });
     attended.forEach(n => { m['a:' + n] = true; });
+    attendedPeople.forEach(k => { m['n:' + k] = true; });
     editables().forEach((e, i) => { m['d:' + i] = trimEnd(e.innerText); });
     Object.keys(AGENDA_LISTS).forEach(kp => AGENDA_LISTS[kp].querySelectorAll('li').forEach(li => {
       m[kp + ':' + li.dataset.id] = { t: trimEnd(li.querySelector('.txt').innerText), p: +li.dataset.p };
@@ -1291,7 +1396,9 @@ function exportMinutes(){
     const valid = new Set(roster.map(r => r.name));
     attended.clear();
     Object.keys(m).forEach(k => { if(k.startsWith('a:') && m[k] && valid.has(k.slice(2))) attended.add(k.slice(2)); });
-    renderAttend(searchEl.value); updateAttendCount();
+    attendedPeople.clear();
+    Object.keys(m).forEach(k => { if(k.startsWith('n:') && m[k] && valid.has(k.slice(2).split('|')[0])) attendedPeople.add(k.slice(2)); });
+    renderAttend(searchEl.value); updateAttendCount(); renderFamilies();
     editables().forEach((el, i) => setMultiline(el, m['d:' + i]));
     Object.keys(AGENDA_LISTS).forEach(kp => {
       AGENDA_LISTS[kp].innerHTML = '';
@@ -1382,6 +1489,9 @@ function exportMinutes(){
       if(gone || value === false) attended.delete(rest); else if(roster.some(r => r.name === rest)) attended.add(rest);
       attendGrid.querySelectorAll('input').forEach(cb => { if(cb.dataset.name === rest) cb.checked = attended.has(rest); });
       updateAttendCount();
+    } else if(kind === 'n:'){
+      if(gone || value === false) attendedPeople.delete(rest); else if(roster.some(r => r.name === rest.split('|')[0])) attendedPeople.add(rest);
+      renderFamilies();
     } else if(kind === 'd:'){
       const el = editables()[+rest];
       if(!el || document.activeElement === el) return;
@@ -1717,6 +1827,7 @@ function exportMinutes(){
       const nr = await sb.rpc('fw_nametag_list', { p_event: EVENT() });
       if(!nr.error && Array.isArray(nr.data)) nr.data.forEach(x => { ntList[x.name] = (Array.isArray(x.nametags) ? x.nametags : String(x.nametags || '').split('、')).map(t => String(t).trim()).filter(Boolean); nametags[x.name] = Array.isArray(x.nametags) ? x.nametags.join('、') : (x.nametags || ''); });
     }catch(e){ console.warn('fw_nametag_list', e); }
+    if(window.fwSetCheckinFamilies) window.fwSetCheckinFamilies(rows, ntList);
     render();
     renderBudget(); loadBudget();
   }
@@ -1787,6 +1898,19 @@ function exportMinutes(){
       const okN = rows.filter(r => { const x = pays[r.name] || {}; const b = (Number(x.amount_due) || 0) - (Number(x.donation) || 0); return Number(x.paid_amount) > 0 && Number(x.paid_amount) >= b; }).length;
       [['活动费已缴清', okN + ' / ' + rows.length + ' 户'], ['已收总额 = 活动费 + 自愿捐款', money(paidAll) + ' = ' + money(feeIn) + ' + ' + money(dnIn)], ['应收 = 活动费 + 自愿捐款', money(dueAll + donAll) + ' = ' + money(dueAll) + ' + ' + money(donAll)]].forEach(([k, v]) => {
         const span = document.createElement('span'); span.append(k + ' '); const b = document.createElement('b'); b.textContent = v; span.appendChild(b); statsEl.appendChild(span);
+      });
+      // 各收款人分别收款数：按「收款人」(paid_by，最后一次记录该户收款的人)汇总已收总额，并拆成活动费 + 自愿捐款
+      const by = {};
+      rows.forEach(r => {
+        const x = pays[r.name] || {}, q = paySplit(x); if(!(q.paid > 0)) return;
+        const k = String(x.paid_by || '').trim() || '未记录收款人';
+        const o = by[k] || (by[k] = { n: 0, paid: 0, fee: 0, dn: 0 });
+        o.n++; o.paid += q.paid; o.fee += q.fee; o.dn += q.dn;
+      });
+      Object.keys(by).sort((a, b) => by[b].paid - by[a].paid).forEach(k => {
+        const o = by[k], span = document.createElement('span'); span.append('收款人 ' + k + ' ');
+        const b = document.createElement('b'); b.textContent = money(o.paid); span.appendChild(b);
+        span.append('（活动费 ' + money(o.fee) + ' + 捐款 ' + money(o.dn) + ' · ' + o.n + ' 户）'); statsEl.appendChild(span);
       });
     }
     bodyEl.innerHTML = '';
