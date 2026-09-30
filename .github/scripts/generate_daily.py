@@ -1421,10 +1421,10 @@ def send_via_sender(to_email, subject, html):
             'subject': subject,
             'html':    html,
         },
-        timeout=20,
+        timeout=10,
     )
     if r.status_code not in (200, 201, 202):
-        print(f'    Sender 响应: {r.status_code} {r.text[:200]}')
+        print(f'    Sender 响应: {r.status_code} {r.text[:120]!r}')
     return r.status_code in (200, 201, 202)
 
 
@@ -1443,33 +1443,57 @@ def send_email(sections):
     # else:
     #     print('  跳过 Resend：未设置 RESEND_API_KEY')
 
-    # ── 2. 订阅者：用 Sender ───────────────────────────────────
-    if not SENDER_KEY:
-        print('  跳过订阅者：未设置 SENDER_API_KEY')
+    # ── 2. 订阅者：优先 Sender，连续失败后切换 Resend ─────────
+    if not SENDER_KEY and not RESEND_KEY:
+        print('  跳过订阅者：未设置 SENDER_API_KEY / RESEND_API_KEY')
         return
 
     subscribers = fetch_subscribers()
     if not subscribers:
         return
 
-    ok_count = 0
+    MAX_SENDER_FAILS = 3          # Sender 连续失败达到此数，后面不再尝试 Sender
+    sender_fails = 0
+    use_sender = bool(SENDER_KEY)
+    ok_sender = ok_resend = 0
+
     for sub in subscribers:
         email = sub.get('email', '')
         token = sub.get('unsubscribe_token', '')
         if not email:
             continue
         html = build_email_html(sections, unsubscribe_token=token)
-        try:
-            ok = send_via_sender(email, subject, html)
-            if ok:
-                ok_count += 1
+        sent = False
+
+        if use_sender:
+            try:
+                sent = send_via_sender(email, subject, html)
+            except Exception as ex:
+                print(f'  ✗ Sender 异常 {email}: {ex}')
+            if sent:
+                ok_sender += 1
+                sender_fails = 0
             else:
+                sender_fails += 1
                 print(f'  ✗ Sender 失败: {email}')
-        except Exception as ex:
-            print(f'  ✗ Sender 异常 {email}: {ex}')
+                if sender_fails >= MAX_SENDER_FAILS:
+                    use_sender = False
+                    print(f'  ⚠ Sender 连续失败 {sender_fails} 次，后续不再尝试 Sender')
+
+        if not sent and RESEND_KEY:
+            try:
+                sent = send_via_resend(email, subject, html)
+            except Exception as ex:
+                print(f'  ✗ Resend 异常 {email}: {ex}')
+            if sent:
+                ok_resend += 1
+            else:
+                print(f'  ✗ Resend 失败: {email}')
+
         time.sleep(0.1)  # 避免触发频率限制
 
-    print(f'  ✓ Sender 已发送 {ok_count}/{len(subscribers)} 封')
+    print(f'  ✓ 已发送 {ok_sender + ok_resend}/{len(subscribers)} 封 '
+          f'(Sender {ok_sender}, Resend {ok_resend})')
 
 
 # ══════════════════════════════════════════════════════════════
