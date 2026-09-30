@@ -952,7 +952,8 @@ const attended = new Set();
 function renderAttend(filter=''){
   attendGrid.innerHTML='';
   const f = filter.trim().toLowerCase();
-  roster.filter(r=>!f || r.name.toLowerCase().includes(f)).forEach((r)=>{
+  const reg = new Set((famList || []).map(x => x.name));   // 已报名的家庭在上方按家庭签到，这里只留未报名 / 临时到场的
+  roster.filter(r=>!reg.has(r.name) && (!f || r.name.toLowerCase().includes(f))).forEach((r)=>{
     const item = document.createElement('label');
     item.className='attend-item';
     item.innerHTML = `<input type="checkbox" data-name="${r.name}"${attended.has(r.name)?' checked':''}><span>${r.name}</span><span class="g">${gradeLabel(r.grade).replace('Class of 20','20')}</span>`;
@@ -1002,11 +1003,8 @@ attendGrid.addEventListener('change', e=>{
     e.stopPropagation();
     confirmCheckin(name).then(ok => {
       if(!ok) return;
-      attended.add(name);
-      const box = [...attendGrid.querySelectorAll('input[type=checkbox]')].find(x => x.dataset.name === name);
-      if(box) box.checked = true;
-      updateAttendCount();
-      (box || attendGrid).dispatchEvent(new Event('input', { bubbles: true }));   // 触发自动保存 / 云端同步
+      attended.add(name); attendedPeople.add(name + '|' + name);   // 临时到场：先记家长本人，其他家人在上方「临时到场家庭」里用「＋现场加人」逐个加
+      famSyncSave();   // 刷新列表 + 触发自动保存 / 云端同步
     });
   } else {
     // 已签到不可取消（防误触）：恢复勾选并提示已签到
@@ -1020,16 +1018,20 @@ renderAttend();
 // ---- 已报名家庭签到：按家庭 + 按 name tag（每个人单独签到，可部分到场）----
 // 同步键 n:<家长>|<到场人>；家庭内只要有一人到场，家长层 a:<家长> 也同步记为已签到（会议纪要沿用）
 const attendedPeople = new Set();
-let famList = [];
+const outsiders = new Map();       // 名单外到场：id → {n:姓名, note:备注}；同步键 o:<id>
+var famList = [];
 const famStat = document.getElementById('famStat'), famListEl = document.getElementById('famList'), famBox = document.getElementById('famBox');
 const pKey = (parent, person) => parent + '|' + person;
 function famInfo(name){
-  const f = famList.find(x => x.name === name); if(!f) return null;
+  let f = famList.find(x => x.name === name), walk = false;
+  if(!f){ if(!attended.has(name)) return null; f = { name, guests: 0, tags: [] }; walk = true; }   // 临时到场：未报名但已签到的家长
   const set = new Set(f.tags);
-  attendedPeople.forEach(k => { if(k.startsWith(name + '|')) set.add(k.slice(name.length + 1)); });   // 现场手动补的名字
-  const ps = [...set], here = ps.filter(p => attendedPeople.has(pKey(name, p))), away = ps.filter(p => !attendedPeople.has(pKey(name, p)));
-  const expected = Math.max(f.guests, ps.length, 1);
-  return { f, ps, here, away, expected, unnamed: Math.max(0, expected - ps.length) };
+  attendedPeople.forEach(k => { if(k.startsWith(name + '|')) set.add(k.slice(name.length + 1)); });   // 现场手动补 / 新增的名字
+  if(walk && !set.size) set.add(name);                     // 旧记录：只签了家长本人
+  const ps = [...set];
+  const here = walk ? ps : ps.filter(p => attendedPeople.has(pKey(name, p))), away = walk ? [] : ps.filter(p => !attendedPeople.has(pKey(name, p)));
+  const registered = walk ? 0 : Math.max(f.guests, f.tags.length, 1), expected = walk ? ps.length : Math.max(registered, ps.length);
+  return { f, ps, here, away, walk, registered, expected, added: walk ? 0 : expected - registered, unnamed: walk ? 0 : Math.max(0, expected - ps.length) };
 }
 function famSyncSave(){
   renderAttend(document.getElementById('attendSearch').value); updateAttendCount(); renderFamilies();
@@ -1043,19 +1045,27 @@ function renderFamilies(filter){
   if(filter === undefined) filter = document.getElementById('attendSearch').value;
   const q = String(filter || '').trim().toLowerCase();
   famListEl.textContent = '';
-  if(!famList.length){ famStat.textContent = '（登录管理员后，这里会列出已报名的家庭，按家庭和 name tag 签到；未报名的家长可用下方「全部名单」签到。）'; return; }
-  let famHere = 0, famPart = 0, pHere = 0, pAll = 0;
-  famList.forEach(f => { const i = famInfo(f.name); pAll += i.expected; pHere += i.here.length; if(i.here.length){ famHere++; if(i.here.length < i.expected) famPart++; } });
-  famStat.textContent = '已报名家庭到场 ' + famHere + ' / ' + famList.length + ' 户（其中部分到场 ' + famPart + ' 户）· 人数 ' + pHere + ' / ' + pAll + ' 人';
-  famList.filter(f => !q || f.name.toLowerCase().includes(q) || f.tags.some(t => t.toLowerCase().includes(q))).forEach(f => {
+  const regSet = new Set(famList.map(f => f.name));
+  const walkNames = roster.map(r => r.name).filter(n => !regSet.has(n) && attended.has(n));   // 临时到场家庭
+  let famHere = 0, famPart = 0, pHere = 0, pAll = 0, pAdd = 0, wP = 0;
+  famList.forEach(f => { const i = famInfo(f.name); pAll += i.expected; pAdd += i.added; pHere += i.here.length; if(i.here.length){ famHere++; if(i.here.length < i.expected) famPart++; } });
+  walkNames.forEach(n => { wP += famInfo(n).here.length; });
+  let st = famList.length
+    ? '已报名家庭到场 ' + famHere + ' / ' + famList.length + ' 户（其中部分到场 ' + famPart + ' 户）· 人数 ' + pHere + ' / ' + pAll + ' 人' + (pAdd ? '（含现场新增 ' + pAdd + ' 人）' : '')
+    : '（登录管理员后，这里会列出已报名的家庭，按家庭和 name tag 签到；未报名的家长用下方「全部名单」签到。）';
+  if(walkNames.length) st += (famList.length ? ' · ' : ' ') + '临时到场 ' + walkNames.length + ' 户 ' + wP + ' 人';
+  if(outsiders.size) st += (st ? ' · ' : '') + '名单外 ' + outsiders.size + ' 人';
+  famStat.textContent = st;
+  const draw = (f, walk) => {
     const i = famInfo(f.name), n = i.here.length, full = n >= i.expected;
-    const box = document.createElement('div'); box.className = 'fam' + (full ? ' full' : n ? ' part' : '');
+    const box = document.createElement('div'); box.className = 'fam' + (walk ? '' : full ? ' full' : n ? ' part' : '');
     const h = document.createElement('div'); h.className = 'fam-h';
     const b = document.createElement('b'); b.textContent = f.name; h.appendChild(b);
     const r = roster.find(x => x.name === f.name);
     if(r){ const g = document.createElement('span'); g.className = 'g'; g.textContent = gradeLabel(r.grade).replace('Class of 20', '20'); h.appendChild(g); }
     const bd = document.createElement('span'); bd.className = 'fam-badge';
-    bd.textContent = full ? '全部到场 ' + n + '/' + i.expected : n ? '部分到场 ' + n + '/' + i.expected : '未到（报名 ' + i.expected + ' 人）';
+    bd.textContent = walk ? '临时到场 ' + n + ' 人' : full ? '全部到场 ' + n + '/' + i.expected : n ? '部分到场 ' + n + '/' + i.expected : '未到（报名 ' + i.expected + ' 人）';
+    if(i.added) bd.textContent += '（报名 ' + i.registered + '，现场加 ' + i.added + '）';
     h.appendChild(bd); box.appendChild(h);
     if(n){   // 写清楚谁来了、谁没来
       const w = document.createElement('div'); w.className = 'fam-who';
@@ -1067,7 +1077,7 @@ function renderFamilies(filter){
     }
     const chips = document.createElement('div'); chips.className = 'fam-chips';
     i.ps.forEach(p => {
-      const c = document.createElement('button'); c.type = 'button'; const on = attendedPeople.has(pKey(f.name, p));
+      const c = document.createElement('button'); c.type = 'button'; const on = i.here.includes(p);
       c.className = on ? 'on' : ''; c.textContent = (on ? '✅ ' : '⬜ ') + p;
       c.dataset.act = on ? 'done' : 'one'; c.dataset.parent = f.name; c.dataset.person = p; chips.appendChild(c);
     });
@@ -1075,25 +1085,57 @@ function renderFamilies(filter){
       const all = document.createElement('button'); all.type = 'button'; all.className = 'act'; all.textContent = '整家到齐（' + i.away.length + ' 人）';
       all.dataset.act = 'all'; all.dataset.parent = f.name; chips.appendChild(all);
     }
-    if(!full || i.unnamed){
+    {   // 始终可用：补未填的名字，或现场新增的人
       const add = document.createElement('button'); add.type = 'button'; add.className = 'act';
-      add.textContent = '＋补名字' + (i.unnamed ? '（' + i.unnamed + ' 人未填）' : ''); add.dataset.act = 'add'; add.dataset.parent = f.name; chips.appendChild(add);
+      add.textContent = i.unnamed ? '＋补名字（' + i.unnamed + ' 人未填）' : '＋现场加人'; add.dataset.act = 'add'; add.dataset.parent = f.name; chips.appendChild(add);
     }
     box.appendChild(chips); famListEl.appendChild(box);
+  };
+  famList.filter(f => !q || f.name.toLowerCase().includes(q) || f.tags.some(t => t.toLowerCase().includes(q))).forEach(f => draw(f, false));
+  const wl = walkNames.filter(n => !q || n.toLowerCase().includes(q));
+  if(wl.length){
+    const hd = document.createElement('div'); hd.className = 'fam-stat'; hd.style.marginTop = '12px'; hd.textContent = '临时到场家庭（未报名）'; famListEl.appendChild(hd);
+    wl.forEach(n => draw({ name: n, guests: 0, tags: [] }, true));
+  }
+  // 名单外到场（不在 89 位家长名单里的人，如嘉宾 / 老师 / 朋友）
+  const hd2 = document.createElement('div'); hd2.className = 'fam-stat'; hd2.style.marginTop = '12px'; hd2.textContent = '名单外到场（不在家长名单里的人）：' + outsiders.size + ' 人'; famListEl.appendChild(hd2);
+  const oc = document.createElement('div'); oc.className = 'fam-chips';
+  [...outsiders.entries()].filter(([, o]) => !q || o.n.toLowerCase().includes(q) || (o.note || '').toLowerCase().includes(q)).forEach(([id, o]) => {
+    const c = document.createElement('button'); c.type = 'button'; c.className = 'on'; c.textContent = '✅ ' + o.n + (o.note ? '（' + o.note + '）' : '');
+    c.title = '点一下可删除这条记录（录错时用）'; c.dataset.act = 'odel'; c.dataset.id = id; oc.appendChild(c);
   });
+  const oa = document.createElement('button'); oa.type = 'button'; oa.className = 'act'; oa.textContent = '＋添加名单外到场人员'; oa.dataset.act = 'oadd'; oc.appendChild(oa);
+  famListEl.appendChild(oc);
 }
 famListEl.addEventListener('click', e => {
   const btn = e.target.closest && e.target.closest('button[data-act]'); if(!btn) return;
   const act = btn.dataset.act, parent = btn.dataset.parent, person = btn.dataset.person;
   if(act === 'done'){ showAlready(person); return; }
   if(act === 'one'){ confirmCheckin(person).then(ok => { if(ok) famCheckIn(parent, [person]); }); return; }
+  if(act === 'oadd'){
+    const nm = (prompt('名单外到场人员：请输入姓名（与现场 name tag 一致）') || '').trim(); if(!nm) return;
+    const note = (prompt('备注（选填，如：嘉宾 / 老师 / 某某的朋友）；没有就留空') || '').trim();
+    confirmCheckin(nm).then(ok => {
+      if(!ok) return;
+      outsiders.set(Date.now().toString(36) + Math.random().toString(36).slice(2, 5), { n: nm, note }); renderFamilies();
+      famBox.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    return;
+  }
+  if(act === 'odel'){
+    const o = outsiders.get(btn.dataset.id); if(!o) return;
+    if(confirm('删除这条名单外到场记录？\n' + o.n + (o.note ? '（' + o.note + '）' : ''))){
+      outsiders.delete(btn.dataset.id); renderFamilies(); famBox.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    return;
+  }
   const i = famInfo(parent); if(!i) return;
   if(act === 'all'){
     if(confirm('请对照 name tag，确认以下 ' + i.away.length + ' 人都已到场：\n' + i.away.join('、'))) famCheckIn(parent, i.away);
     return;
   }
   if(act === 'add'){
-    const nm = (prompt('未填胸牌姓名：请输入到场人的姓名（与现场 name tag 一致）') || '').trim();
+    const nm = (prompt(i.unnamed ? '补名字：请输入到场人的姓名（与现场 name tag 一致）' : '现场新增人员（超出报名人数）：请输入姓名（与现场 name tag 一致）') || '').trim();
     if(!nm) return;
     if(nm.indexOf('|') >= 0){ alert('姓名里不能包含 | 符号'); return; }
     if(i.ps.includes(nm)){ alert(nm + ' 已在这个家庭的名单里，请直接点他/她的名字签到'); return; }
@@ -1102,7 +1144,7 @@ famListEl.addEventListener('click', e => {
 });
 window.fwSetCheckinFamilies = function(rows, nt){
   famList = (rows || []).map(r => ({ name: r.name, guests: Number(r.guests) || 0, tags: ((nt && nt[r.name]) || []).slice() }));
-  renderFamilies();
+  renderFamilies(); renderAttend(document.getElementById('attendSearch').value);
 };
 renderFamilies();
 
@@ -1173,7 +1215,7 @@ function exportMinutes(){
   out += `====================================\n`;
   out += `日期：${date}    时间：${time}\n`;
   out += `主持人：${host}    记录人：${noteTaker}\n`;
-  out += `出席家长（${attendees.length} 人）：${attendees.join('、') || '（未签到）'}\n\n`;
+  out += `出席家长（${attendees.length} 人）：${attendees.join('、') || '（未签到）'}\n${outsiders.size ? '名单外到场（' + outsiders.size + ' 人）：' + [...outsiders.values()].map(o => o.n + (o.note ? '（' + o.note + '）' : '')).join('、') + '\n' : ''}\n`;
   out += `【议程】\n`;
   agendaItems.forEach((a,i)=>{ out += `${i+1}. ${a}\n`; });
   out += `\n【讨论要点】\n${discussion || '（未填写）'}\n\n`;
@@ -1239,6 +1281,7 @@ function exportMinutes(){
     fieldIds.forEach(id => { const el = document.getElementById(id); if(el) m['f:' + id] = el.value; });
     attended.forEach(n => { m['a:' + n] = true; });
     attendedPeople.forEach(k => { m['n:' + k] = true; });
+    outsiders.forEach((o, id) => { m['o:' + id] = { n: o.n, note: o.note || '' }; });
     editables().forEach((e, i) => { m['d:' + i] = trimEnd(e.innerText); });
     Object.keys(AGENDA_LISTS).forEach(kp => AGENDA_LISTS[kp].querySelectorAll('li').forEach(li => {
       m[kp + ':' + li.dataset.id] = { t: trimEnd(li.querySelector('.txt').innerText), p: +li.dataset.p };
@@ -1396,6 +1439,8 @@ function exportMinutes(){
     const valid = new Set(roster.map(r => r.name));
     attended.clear();
     Object.keys(m).forEach(k => { if(k.startsWith('a:') && m[k] && valid.has(k.slice(2))) attended.add(k.slice(2)); });
+    outsiders.clear();
+    Object.keys(m).forEach(k => { if(k.startsWith('o:') && m[k] && typeof m[k].n === 'string') outsiders.set(k.slice(2), { n: m[k].n, note: String(m[k].note || '') }); });
     attendedPeople.clear();
     Object.keys(m).forEach(k => { if(k.startsWith('n:') && m[k] && valid.has(k.slice(2).split('|')[0])) attendedPeople.add(k.slice(2)); });
     renderAttend(searchEl.value); updateAttendCount(); renderFamilies();
@@ -1491,6 +1536,9 @@ function exportMinutes(){
       updateAttendCount();
     } else if(kind === 'n:'){
       if(gone || value === false) attendedPeople.delete(rest); else if(roster.some(r => r.name === rest.split('|')[0])) attendedPeople.add(rest);
+      renderFamilies();
+    } else if(kind === 'o:'){
+      if(gone || !value || typeof value.n !== 'string') outsiders.delete(rest); else outsiders.set(rest, { n: value.n, note: String(value.note || '') });
       renderFamilies();
     } else if(kind === 'd:'){
       const el = editables()[+rest];
