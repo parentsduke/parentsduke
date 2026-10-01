@@ -419,6 +419,7 @@
   .fam.part .fam-badge{background:#fbefc9;color:#8a6410;} .fam.full .fam-badge{background:var(--navy);color:#fff;}
   .fam-who{margin:6px 0 4px;line-height:1.6;font-size:12.5px;} .fam-who .y{color:var(--navy);} .fam-who .n{color:#b3421e;}
   .fam-title{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:800;font-size:17px;color:#111;margin:16px 0 8px;letter-spacing:.3px;}
+  #attendTitle{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:800;font-size:17px;color:#111;border-bottom:none;padding-bottom:0;margin:0 0 8px;letter-spacing:.3px;}
   details.fam-all summary.fam-title{cursor:pointer;margin:16px 0 8px;font-size:17px;font-weight:800;color:#111;}
   .fam-pay{font-size:12px;margin-top:4px;font-weight:600;}
   .fam-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
@@ -544,13 +545,14 @@
     <div style="font-size:15px;margin:-4px 0 12px;color:var(--ink);" id="attendPeople"></div>
     <div class="minutes-card">
       <div class="minutes-block">
-        <label class="block-title">出席家长（点击签到）</label>
+        <label class="block-title" id="attendTitle">FW群报名出席家长（点击签到）</label>
         <div class="attend-toolbar">
           <input type="text" class="attend-search" id="attendSearch" placeholder="搜索姓名…">
           <select id="famGrade" title="按届次筛选已报名家庭" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--paper-warm);"><option value="">全部届次</option></select>
         </div>
         <div id="famBox"><div class="fam-stat" id="famStat"></div><div id="famList"></div></div>
-        <details class="fam-all"><summary class="fam-title">未报名家长签到（临时到场）</summary><div class="attend-grid" id="attendGrid"></div></details>
+        <details class="fam-all"><summary class="fam-title">FW群未报名家长签到（临时到场）</summary><div class="attend-grid" id="attendGrid"></div></details>
+        <div id="outsiderBox"></div>
       </div>
 
     </div>
@@ -1096,7 +1098,7 @@ function askOutsider(){      // 名单外到场登记：姓名 + 届次(必选) 
 }
 const payRefresh = () => { if(window.fwRefreshPayStats) window.fwRefreshPayStats(); };
 var famList = [];
-const famStat = document.getElementById('famStat'), famListEl = document.getElementById('famList'), famBox = document.getElementById('famBox');
+const famStat = document.getElementById('famStat'), famListEl = document.getElementById('famList'), famBox = document.getElementById('famBox'), outsiderBox = document.getElementById('outsiderBox');
 const pKey = (parent, person) => parent + '|' + person;
 const famGradeEl = document.getElementById('famGrade');
 const famGradeOf = n => { const r = roster.find(x => x.name === n); return r && gradeOrder.includes(r.grade) ? r.grade : '__other'; };
@@ -1133,7 +1135,7 @@ function famCheckIn(parent, persons){
 function renderFamilies(filter){
   if(filter === undefined) filter = document.getElementById('attendSearch').value;
   const q = String(filter || '').trim().toLowerCase();
-  famListEl.textContent = '';
+  famListEl.textContent = ''; outsiderBox.textContent = '';
   const regSet = new Set(famList.map(f => f.name));
   const walkNames = roster.map(r => r.name).filter(n => !regSet.has(n) && attended.has(n));   // 临时到场家庭
   let famHere = 0, famPart = 0, pHere = 0, pAll = 0, pAdd = 0, wP = 0;
@@ -1206,7 +1208,7 @@ function renderFamilies(filter){
     wl.forEach(n => draw({ name: n, guests: 0, tags: [] }, true));
   }
   // 名单外到场（不在 89 位家长名单里的人，如嘉宾 / 老师 / 朋友）
-  const hd2 = document.createElement('div'); hd2.className = 'fam-title'; hd2.textContent = '名单外到场（不在家长名单里的人）：' + outsiders.size + ' 人'; famListEl.appendChild(hd2);
+  const hd2 = document.createElement('div'); hd2.className = 'fam-title'; hd2.textContent = 'FW群名单外到场（不在家长名单里的人）：' + outsiders.size + ' 人'; outsiderBox.appendChild(hd2);
   const oc = document.createElement('div'); oc.className = 'fam-chips';
   [...outsiders.entries()].filter(([, o]) => (!famGradeEl.value || (o.g || '__other') === famGradeEl.value) && (!q || o.n.toLowerCase().includes(q) || (o.note || '').toLowerCase().includes(q))).forEach(([id, o]) => {
     const c = document.createElement('button'); c.type = 'button'; c.className = 'on'; c.textContent = '✅ ' + o.n + ([gLabel(o.g), o.note].filter(Boolean).length ? '（' + [gLabel(o.g), o.note].filter(Boolean).join(' · ') + '）' : '');
@@ -1218,9 +1220,9 @@ function renderFamilies(filter){
     pb.style.marginRight = '6px'; oc.appendChild(pb);
   });
   const oa = document.createElement('button'); oa.type = 'button'; oa.className = 'act'; oa.textContent = '＋添加名单外到场人员'; oa.dataset.act = 'oadd'; oc.appendChild(oa);
-  famListEl.appendChild(oc);
+  outsiderBox.appendChild(oc);
 }
-famListEl.addEventListener('click', async e => {
+async function famListClickHandler(e) {
   const btn = e.target.closest && e.target.closest('button[data-act]'); if(!btn) return;
   const act = btn.dataset.act, parent = btn.dataset.parent, person = btn.dataset.person;
   if(act === 'done'){
@@ -1311,7 +1313,9 @@ famListEl.addEventListener('click', async e => {
     if(i.ps.includes(nm)){ alert(nm + ' 已在这个家庭的名单里，请直接点他/她的名字签到'); return; }
     confirmCheckin(nm).then(ok => { if(ok) famCheckIn(parent, [nm]); });
   }
-});
+}
+famListEl.addEventListener('click', famListClickHandler);
+outsiderBox.addEventListener('click', famListClickHandler);
 window.fwSetCheckinFamilies = function(rows, nt){
   famList = (rows || []).map(r => ({ name: r.name, guests: Number(r.guests) || 0, tags: ((nt && nt[r.name]) || []).slice() }));
   renderFamGrade(); renderFamilies(); renderAttend(document.getElementById('attendSearch').value);
