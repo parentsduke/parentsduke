@@ -418,6 +418,7 @@
   .fam-badge{margin-left:auto;font-size:11.5px;padding:2px 8px;border-radius:10px;background:#eee;color:var(--ink-soft);}
   .fam.part .fam-badge{background:#fbefc9;color:#8a6410;} .fam.full .fam-badge{background:var(--navy);color:#fff;}
   .fam-who{margin:6px 0 4px;line-height:1.6;font-size:12.5px;} .fam-who .y{color:var(--navy);} .fam-who .n{color:#b3421e;}
+  .fam-pay{font-size:12px;margin-top:4px;font-weight:600;}
   .fam-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
   .fam-chips button{font:inherit;font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:3px 10px;cursor:pointer;}
   .fam-chips button.on{background:var(--navy);color:#fff;border-color:var(--navy);cursor:default;}
@@ -586,6 +587,7 @@
           </select>
           <button class="btn ghost" id="ntPrint" type="button">打印 Name Tag</button>
           <button class="btn ghost" id="rsvpCsv" type="button">导出 CSV</button>
+          <button class="btn ghost" id="onsiteCsv" type="button">导出现场收款</button>
         </div>
       </div>
       <div class="rsvp-stats" id="rsvpStats"></div>
@@ -715,7 +717,6 @@
       <div class="btn-row">
         <button class="btn" onclick="window.print()">打印本页记录</button>
         <button class="btn ghost" onclick="exportMinutes()">导出为文本文件</button>
-        <button class="btn ghost" onclick="clearSaved()">清空聚会记录（不含筹备组纪要）</button>
         <span class="save-status"></span>
       </div>
     </div>
@@ -1003,10 +1004,10 @@ attendGrid.addEventListener('change', e=>{
     e.stopPropagation();
     confirmCheckin(name).then(ok => {
       if(!ok) return;
-      attended.add(name); attendedPeople.add(name + '|' + name);
+      attended.add(name); attendedPeople.add(name + '|' + name); personTime.set(name + '|' + name, Date.now());
       // 同来的其他家人：一次输入多个名字（逗号 / 顿号隔开），没有就留空
       (prompt('还有其他家人一起来吗？\n输入他们 name tag 上的名字，多人用逗号或顿号隔开；没有就留空') || '')
-        .split(/[,，、;；\n]+/).map(x => x.trim()).filter(x => x && x.indexOf('|') < 0 && x !== name).forEach(x => attendedPeople.add(name + '|' + x));   // 临时到场：先记家长本人，其他家人在上方「临时到场家庭」里用「＋现场加人」逐个加
+        .split(/[,，、;；\n]+/).map(x => x.trim()).filter(x => x && x.indexOf('|') < 0 && x !== name).forEach(x => { attendedPeople.add(name + '|' + x); personTime.set(name + '|' + x, Date.now()); });   // 临时到场：先记家长本人，其他家人在上方「临时到场家庭」里用「＋现场加人」逐个加
       famSyncSave();   // 刷新列表 + 触发自动保存 / 云端同步
     });
   } else {
@@ -1021,7 +1022,23 @@ renderAttend();
 // ---- 已报名家庭签到：按家庭 + 按 name tag（每个人单独签到，可部分到场）----
 // 同步键 n:<家长>|<到场人>；家庭内只要有一人到场，家长层 a:<家长> 也同步记为已签到（会议纪要沿用）
 const attendedPeople = new Set();
-const outsiders = new Map();       // 名单外到场：id → {n:姓名, note:备注}；同步键 o:<id>
+const personTime = new Map();      // 签到时间：'家长|姓名' → 毫秒时间戳；同步时作为 n: 键的值(旧记录为 true，没有时间)
+const outsiders = new Map();       // 名单外到场：id → {n姓名, note备注, t录入时间, fee应缴, paid已收, by收款人}；同步键 o:<id>
+const outRec = v => ({ n: v.n, note: String(v.note || ''), t: Number(v.t) || 0, fee: Number(v.fee) || 0, paid: Number(v.paid) || 0, by: String(v.by || ''), free: !!v.free });
+const $m = n => '$' + (Number(n) % 1 ? Number(n).toFixed(2) : String(Number(n)));
+const onsitePay = new Map();       // 现场收款(临时到场家庭 / 已报名家庭现场加的人)：家长 → {paid, by}；同步键 q:<家长>
+function onsiteList(){      // 需要现场补缴的家庭：临时到场家庭(全部人头) + 已报名但现场多加了人的家庭(多出的人头)
+  const per = Number(window.fwFeePer) || 0, out = [], names = new Set(famList.map(f => f.name));
+  roster.forEach(r => { if(attended.has(r.name)) names.add(r.name); });
+  names.forEach(n => {
+    const i = famInfo(n); if(!i) return;
+    const heads = i.walk ? i.here.length : i.added, p = onsitePay.get(n) || { paid: 0, by: '' };
+    const due = (p.fee != null) ? Number(p.fee) : heads * per;      // 手工填过应缴(含 0=免费)就用手工的
+    if(heads > 0 || p.paid > 0) out.push({ parent: n, heads, due, paid: Number(p.paid) || 0, by: p.by || '', walk: i.walk, free: p.fee === 0 });
+  });
+  return out;
+}
+const payRefresh = () => { if(window.fwRefreshPayStats) window.fwRefreshPayStats(); };
 var famList = [];
 const famStat = document.getElementById('famStat'), famListEl = document.getElementById('famList'), famBox = document.getElementById('famBox');
 const pKey = (parent, person) => parent + '|' + person;
@@ -1041,7 +1058,7 @@ function famSyncSave(){
   famBox.dispatchEvent(new Event('input', { bubbles: true }));      // 触发自动保存 / 云端同步
 }
 function famCheckIn(parent, persons){
-  persons.forEach(p => attendedPeople.add(pKey(parent, p)));
+  persons.forEach(p => { attendedPeople.add(pKey(parent, p)); personTime.set(pKey(parent, p), Date.now()); });
   attended.add(parent); famSyncSave();
 }
 function renderFamilies(filter){
@@ -1070,6 +1087,15 @@ function renderFamilies(filter){
     bd.textContent = walk ? '临时到场 ' + n + ' 人' : full ? '全部到场 ' + n + '/' + i.expected : n ? '部分到场 ' + n + '/' + i.expected : '未到（报名 ' + i.expected + ' 人）';
     if(i.added) bd.textContent += '（报名 ' + i.registered + '，现场加 ' + i.added + '）';
     h.appendChild(bd); box.appendChild(h);
+    const px = !walk && window.fwPayOf ? window.fwPayOf(f.name) : null;
+    if(px && Number(px.amount_due) > 0){      // 报名缴费状态：门口一眼看到是否已缴
+      const pdue = Number(px.amount_due) || 0, pdon = Number(px.donation) || 0, pbase = pdue - pdon, ppaid = Number(px.paid_amount) || 0;
+      const pe = document.createElement('div'); pe.className = 'fam-pay';
+      if(ppaid >= pbase && ppaid > 0){ pe.textContent = '✓ 活动费已缴 ' + $m(pbase) + (pdon > 0 ? '；捐款 ' + $m(pdon) + (ppaid >= pdue ? '（已收）' : '（未收）') : ''); pe.style.color = '#1f7a3d'; }
+      else if(ppaid > 0){ pe.textContent = '活动费还差 ' + $m(pbase - ppaid) + '（应缴 ' + $m(pbase) + '，已收 ' + $m(ppaid) + '）'; pe.style.color = '#b3421e'; }
+      else { pe.textContent = '未缴 · 活动费 ' + $m(pbase) + (pdon > 0 ? ' + 捐款 ' + $m(pdon) : '') + (px.self_paid ? '（家长自报已付，待核对）' : ''); pe.style.color = '#b3421e'; }
+      box.appendChild(pe);
+    }
     if(n){   // 写清楚谁来了、谁没来
       const w = document.createElement('div'); w.className = 'fam-who';
       const y = document.createElement('span'); y.className = 'y'; y.textContent = '已到：' + i.here.join('、');
@@ -1082,7 +1108,7 @@ function renderFamilies(filter){
     i.ps.forEach(p => {
       const c = document.createElement('button'); c.type = 'button'; const on = i.here.includes(p);
       c.className = on ? 'on' : ''; c.textContent = (on ? '✅ ' : '⬜ ') + p;
-      c.dataset.act = on ? 'done' : 'one'; c.dataset.parent = f.name; c.dataset.person = p; chips.appendChild(c);
+      c.dataset.act = on ? 'done' : 'one'; c.dataset.parent = f.name; c.dataset.person = p; if(on) c.title = '签到后 10 分钟内可点击撤回'; chips.appendChild(c);
     });
     if(i.away.length > 1){   // 只剩一个人时不需要「整家到齐」，直接点他的名字
       const all = document.createElement('button'); all.type = 'button'; all.className = 'act'; all.textContent = '整家到齐（' + i.away.length + ' 人）';
@@ -1091,6 +1117,13 @@ function renderFamilies(filter){
     {   // 始终可用：补未填的名字，或现场新增的人
       const add = document.createElement('button'); add.type = 'button'; add.className = 'act';
       add.textContent = i.unnamed ? '＋补名字（' + i.unnamed + ' 人未填）' : '＋现场加人'; add.dataset.act = 'add'; add.dataset.parent = f.name; chips.appendChild(add);
+    }
+    if(i.walk || i.added){   // 现场收款：临时到场家庭 / 现场加了人的家庭
+      const heads = i.walk ? n : i.added, per = Number(window.fwFeePer) || 0, pd = onsitePay.get(f.name) || { paid: 0, by: '' }, due = (pd.fee != null) ? Number(pd.fee) : heads * per;
+      const pb = document.createElement('button'); pb.type = 'button'; pb.dataset.act = 'qpay'; pb.dataset.parent = f.name;
+      pb.className = (pd.fee === 0 || (pd.paid > 0 && (!due || pd.paid >= due))) ? 'on' : 'act';
+      pb.textContent = pd.fee === 0 ? '💲现场免费（' + heads + ' 人）' : pd.paid > 0 ? '💲现场已收 ' + $m(pd.paid) + (pd.by ? '（' + String(pd.by).split('@')[0] + '）' : '') + (due && pd.paid < due ? '，还差 ' + $m(due - pd.paid) : '') : '💲现场收款（' + heads + ' 人' + (due ? '，应缴 ' + $m(due) : '') + '）';
+      chips.appendChild(pb);
     }
     box.appendChild(chips); famListEl.appendChild(box);
   };
@@ -1105,31 +1138,95 @@ function renderFamilies(filter){
   const oc = document.createElement('div'); oc.className = 'fam-chips';
   [...outsiders.entries()].filter(([, o]) => !q || o.n.toLowerCase().includes(q) || (o.note || '').toLowerCase().includes(q)).forEach(([id, o]) => {
     const c = document.createElement('button'); c.type = 'button'; c.className = 'on'; c.textContent = '✅ ' + o.n + (o.note ? '（' + o.note + '）' : '');
-    c.title = '录入后 10 分钟内可点击删除（录错时用）'; c.dataset.act = 'odel'; c.dataset.id = id; oc.appendChild(c);
+    c.title = '录入后 10 分钟内且未登记收款时可点击删除（录错时用）'; c.dataset.act = 'odel'; c.dataset.id = id; oc.appendChild(c);
+    const pb = document.createElement('button'); pb.type = 'button'; pb.dataset.act = 'opay'; pb.dataset.id = id;
+    const ok = o.free || (o.paid > 0 && (!o.fee || o.paid >= o.fee));
+    pb.className = ok ? 'on' : 'act';
+    pb.textContent = o.free ? '💲免费' : o.paid > 0 ? '💲已收 ' + $m(o.paid) + (o.by ? '（' + String(o.by).split('@')[0] + '）' : '') + (o.fee && o.paid < o.fee ? '，还差 ' + $m(o.fee - o.paid) : '') : '💲收款' + (o.fee ? '（应缴 ' + $m(o.fee) + '）' : '');
+    pb.style.marginRight = '6px'; oc.appendChild(pb);
   });
   const oa = document.createElement('button'); oa.type = 'button'; oa.className = 'act'; oa.textContent = '＋添加名单外到场人员'; oa.dataset.act = 'oadd'; oc.appendChild(oa);
   famListEl.appendChild(oc);
 }
-famListEl.addEventListener('click', e => {
+famListEl.addEventListener('click', async e => {
   const btn = e.target.closest && e.target.closest('button[data-act]'); if(!btn) return;
   const act = btn.dataset.act, parent = btn.dataset.parent, person = btn.dataset.person;
-  if(act === 'done'){ showAlready(person); return; }
+  if(act === 'done'){
+    const k = pKey(parent, person), t0 = personTime.get(k);
+    if(t0 && Date.now() - t0 <= 10 * 60 * 1000){      // 签到后 10 分钟内可撤回(点错人时用)
+      if(!confirm('撤回「' + person + '」的签到？\n（仅签到后 10 分钟内可以撤回）')) return;
+      const pd0 = onsitePay.get(parent);
+      if(pd0 && pd0.paid > 0){ alert('这户已登记现场收款，请先把现场收款改为 0 再撤回签到。'); return; }
+      attendedPeople.delete(k); personTime.delete(k);
+      if(![...attendedPeople].some(x => x.startsWith(parent + '|'))) attended.delete(parent);
+      famSyncSave(); payRefresh();
+    } else showAlready(person);
+    return;
+  }
   if(act === 'one'){ confirmCheckin(person).then(ok => { if(ok) famCheckIn(parent, [person]); }); return; }
   if(act === 'oadd'){
     const nm = (prompt('名单外到场人员：请输入姓名（与现场 name tag 一致）') || '').trim(); if(!nm) return;
     const note = (prompt('备注（选填，如：嘉宾 / 老师 / 某某的朋友）；没有就留空') || '').trim();
     confirmCheckin(nm).then(ok => {
       if(!ok) return;
-      outsiders.set(Date.now().toString(36) + Math.random().toString(36).slice(2, 5), { n: nm, note, t: Date.now() }); renderFamilies();
+      outsiders.set(Date.now().toString(36) + Math.random().toString(36).slice(2, 5), { n: nm, note, t: Date.now(), fee: Number(window.fwFeePer) || 0, paid: 0, by: '' }); renderFamilies(); payRefresh();
       famBox.dispatchEvent(new Event('input', { bubbles: true }));
     });
     return;
   }
+  if(act === 'qpay'){
+    const i0 = famInfo(parent); if(!i0) return;
+    const heads = i0.walk ? i0.here.length : i0.added, per = Number(window.fwFeePer) || 0, pd = onsitePay.get(parent) || { paid: 0, by: '' };
+    const dueDef = (pd.fee != null) ? Number(pd.fee) : heads * per;
+    const fv = prompt('应缴金额（美元）：' + parent + ' 现场到场 ' + heads + ' 人。免费填 0；按标准就直接确定', String(dueDef || ''));
+    if(fv === null) return;
+    const fee = fv.trim() === '' ? null : Number(String(fv).replace(/[$,\s]/g, ''));
+    if(fee !== null && (!isFinite(fee) || fee < 0)){ alert('金额不对，请输入数字'); return; }
+    if(fee === 0){ onsitePay.set(parent, { paid: 0, by: '', fee: 0 }); renderFamilies(); payRefresh(); famBox.dispatchEvent(new Event('input', { bubbles: true })); return; }
+    const due = fee != null ? fee : heads * per;
+    const v = prompt('现场收款（美元）：' + (due ? '应缴 ' + $m(due) + '，' : '') + '这里填累计已收总额（目前已收 ' + $m(pd.paid || 0) + '）；没收到填 0', String(pd.paid || due || ''));
+    if(v === null) return;
+    const amt = Number(String(v).replace(/[$,\s]/g, ''));
+    if(!isFinite(amt) || amt < 0){ alert('金额不对，请输入数字'); return; }
+    let by = pd.by;
+    if(amt > 0){
+      if(!by){ try{ const r = await window.fwSb.auth.getSession(); by = ((((r || {}).data || {}).session || {}).user || {}).email || ''; }catch(err){} }
+      const b2 = prompt('收款人（谁收的这笔钱）', by || ''); if(b2 === null) return; by = b2.trim();
+    }
+    const rec = { paid: amt, by: amt > 0 ? by : '' }; if(fee !== null) rec.fee = fee;
+    if(amt > 0 || fee !== null) onsitePay.set(parent, rec); else onsitePay.delete(parent);
+    renderFamilies(); payRefresh(); famBox.dispatchEvent(new Event('input', { bubbles: true }));
+    return;
+  }
+  if(act === 'opay'){
+    const o = outsiders.get(btn.dataset.id); if(!o) return;
+    const fv = prompt('应缴金额（美元）：' + o.n + '。免费填 0；按标准就直接确定', String(o.free ? 0 : (o.fee || '')));
+    if(fv === null) return;
+    if(fv.trim() !== ''){
+      const fee = Number(String(fv).replace(/[$,\s]/g, ''));
+      if(!isFinite(fee) || fee < 0){ alert('金额不对，请输入数字'); return; }
+      o.fee = fee; o.free = fee === 0;
+      if(o.free){ o.paid = 0; o.by = ''; renderFamilies(); payRefresh(); famBox.dispatchEvent(new Event('input', { bubbles: true })); return; }
+    }
+    const v = prompt('收款金额（美元）：' + (o.fee ? '应缴 ' + $m(o.fee) + '，' : '') + '这里填累计已收总额（目前已收 ' + $m(o.paid || 0) + '）；没收到填 0', String(o.paid || o.fee || ''));
+    if(v === null) return;
+    const amt = Number(String(v).replace(/[$,\s]/g, ''));
+    if(!isFinite(amt) || amt < 0){ alert('金额不对，请输入数字'); return; }
+    let by = o.by;
+    if(amt > 0){
+      if(!by){ try{ const r = await window.fwSb.auth.getSession(); by = ((((r || {}).data || {}).session || {}).user || {}).email || ''; }catch(err){} }
+      const b2 = prompt('收款人（谁收的这笔钱）', by || ''); if(b2 === null) return; by = b2.trim();
+    }
+    o.paid = amt; o.by = amt > 0 ? by : ''; renderFamilies(); payRefresh();
+    famBox.dispatchEvent(new Event('input', { bubbles: true }));
+    return;
+  }
   if(act === 'odel'){
     const o = outsiders.get(btn.dataset.id); if(!o) return;
+    if(o.paid > 0){ alert('这条已登记收款，不能删除；如需更正请先把收款金额改为 0。'); return; }
     if(!o.t || Date.now() - o.t > 10 * 60 * 1000){ alert('这条记录已超过 10 分钟（或是旧记录），不能再删除。'); return; }   // 录入 10 分钟内才可删
     if(confirm('删除这条名单外到场记录？\n' + o.n + (o.note ? '（' + o.note + '）' : ''))){
-      outsiders.delete(btn.dataset.id); renderFamilies(); famBox.dispatchEvent(new Event('input', { bubbles: true }));
+      outsiders.delete(btn.dataset.id); renderFamilies(); payRefresh(); famBox.dispatchEvent(new Event('input', { bubbles: true }));
     }
     return;
   }
@@ -1284,8 +1381,9 @@ function exportMinutes(){
     const m = {};
     fieldIds.forEach(id => { const el = document.getElementById(id); if(el) m['f:' + id] = el.value; });
     attended.forEach(n => { m['a:' + n] = true; });
-    attendedPeople.forEach(k => { m['n:' + k] = true; });
-    outsiders.forEach((o, id) => { m['o:' + id] = { n: o.n, note: o.note || '', t: o.t || 0 }; });
+    attendedPeople.forEach(k => { m['n:' + k] = personTime.get(k) || true; });
+    outsiders.forEach((o, id) => { m['o:' + id] = outRec(o); });
+    onsitePay.forEach((v, k) => { if(v.paid > 0 || v.fee != null){ const q = { paid: v.paid || 0, by: v.by || '' }; if(v.fee != null) q.fee = v.fee; m['q:' + k] = q; } });
     editables().forEach((e, i) => { m['d:' + i] = trimEnd(e.innerText); });
     Object.keys(AGENDA_LISTS).forEach(kp => AGENDA_LISTS[kp].querySelectorAll('li').forEach(li => {
       m[kp + ':' + li.dataset.id] = { t: trimEnd(li.querySelector('.txt').innerText), p: +li.dataset.p };
@@ -1443,10 +1541,13 @@ function exportMinutes(){
     const valid = new Set(roster.map(r => r.name));
     attended.clear();
     Object.keys(m).forEach(k => { if(k.startsWith('a:') && m[k] && valid.has(k.slice(2))) attended.add(k.slice(2)); });
+    onsitePay.clear();
+    Object.keys(m).forEach(k => { if(k.startsWith('q:') && m[k] && typeof m[k] === 'object' && valid.has(k.slice(2))){ const q = { paid: Number(m[k].paid) || 0, by: String(m[k].by || '') }; if(m[k].fee != null) q.fee = Number(m[k].fee) || 0; onsitePay.set(k.slice(2), q); } });
     outsiders.clear();
-    Object.keys(m).forEach(k => { if(k.startsWith('o:') && m[k] && typeof m[k].n === 'string') outsiders.set(k.slice(2), { n: m[k].n, note: String(m[k].note || ''), t: Number(m[k].t) || 0 }); });
+    Object.keys(m).forEach(k => { if(k.startsWith('o:') && m[k] && typeof m[k].n === 'string') outsiders.set(k.slice(2), outRec(m[k])); });
     attendedPeople.clear();
-    Object.keys(m).forEach(k => { if(k.startsWith('n:') && m[k] && valid.has(k.slice(2).split('|')[0])) attendedPeople.add(k.slice(2)); });
+    personTime.clear();
+    Object.keys(m).forEach(k => { if(k.startsWith('n:') && m[k] && valid.has(k.slice(2).split('|')[0])){ attendedPeople.add(k.slice(2)); if(typeof m[k] === 'number') personTime.set(k.slice(2), m[k]); } });
     renderAttend(searchEl.value); updateAttendCount(); renderFamilies();
     editables().forEach((el, i) => setMultiline(el, m['d:' + i]));
     Object.keys(AGENDA_LISTS).forEach(kp => {
@@ -1539,11 +1640,14 @@ function exportMinutes(){
       attendGrid.querySelectorAll('input').forEach(cb => { if(cb.dataset.name === rest) cb.checked = attended.has(rest); });
       updateAttendCount();
     } else if(kind === 'n:'){
-      if(gone || value === false) attendedPeople.delete(rest); else if(roster.some(r => r.name === rest.split('|')[0])) attendedPeople.add(rest);
+      if(gone || value === false){ attendedPeople.delete(rest); personTime.delete(rest); } else if(roster.some(r => r.name === rest.split('|')[0])){ attendedPeople.add(rest); if(typeof value === 'number') personTime.set(rest, value); }
       renderFamilies();
+    } else if(kind === 'q:'){
+      if(gone || !value || typeof value !== 'object') onsitePay.delete(rest); else if(roster.some(r => r.name === rest)){ const q = { paid: Number(value.paid) || 0, by: String(value.by || '') }; if(value.fee != null) q.fee = Number(value.fee) || 0; onsitePay.set(rest, q); }
+      renderFamilies(); payRefresh();
     } else if(kind === 'o:'){
-      if(gone || !value || typeof value.n !== 'string') outsiders.delete(rest); else outsiders.set(rest, { n: value.n, note: String(value.note || ''), t: Number(value.t) || 0 });
-      renderFamilies();
+      if(gone || !value || typeof value.n !== 'string') outsiders.delete(rest); else outsiders.set(rest, outRec(value));
+      renderFamilies(); payRefresh();
     } else if(kind === 'd:'){
       const el = editables()[+rest];
       if(!el || document.activeElement === el) return;
@@ -1749,19 +1853,6 @@ function exportMinutes(){
   document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden' && dirty) flush(); });
   window.addEventListener('online', () => { if(mode === 'shared') pushDiff(); });
 
-  window.clearSaved = async function(){
-    const msg = mode === 'shared'
-      ? '这会清空云端的聚会安排、签到和聚会当天会议记录，所有管理员的页面都会被清空。志愿者筹备组会议纪要和筹委会议后的落实进展不受影响。\n\n确定继续吗？此操作无法撤销。'
-      : '确定清空本页的聚会安排、签到和聚会当天会议记录并重新开始吗？志愿者筹备组会议纪要和筹委会议后的落实进展不受影响。此操作无法撤销。';
-    if(!confirm(msg)) return;
-    captureVol();
-    const progressNow = { 'p:note': trimEnd(progressEl.innerText) };   // 落实进展独立于本次清空，先保留当前内容
-    const base = {}; Object.keys(DEFAULTS).forEach(k => { if(!isVolKey(k) && k !== 'p:note') base[k] = DEFAULTS[k]; });
-    applyAll(Object.assign(base, volKV, progressNow));
-    if(mode === 'shared') await pushDiff();
-    else { try{ localStorage.removeItem(LOCAL_KEY); }catch(e){} lastLocalJson = stable(readModel()); setStatus('已清空'); }
-  };
-
   if(SUPABASE_URL && SUPABASE_ANON_KEY){
     loadLib().then(initCloud).catch(() => setStatus('⚠ 云端组件加载失败，仍在本机保存', true));
   }
@@ -1879,6 +1970,9 @@ function exportMinutes(){
       const nr = await sb.rpc('fw_nametag_list', { p_event: EVENT() });
       if(!nr.error && Array.isArray(nr.data)) nr.data.forEach(x => { ntList[x.name] = (Array.isArray(x.nametags) ? x.nametags : String(x.nametags || '').split('、')).map(t => String(t).trim()).filter(Boolean); nametags[x.name] = Array.isArray(x.nametags) ? x.nametags.join('、') : (x.nametags || ''); });
     }catch(e){ console.warn('fw_nametag_list', e); }
+    try{ const fr = await sb.rpc('fw_fee_info', { p_event: EVENT() }); if(!fr.error && fr.data && fr.data.enabled) window.fwFeePer = Number(fr.data.per_person) || 0; }catch(e){ console.warn('fw_fee_info', e); }
+    window.fwRefreshPayStats = () => { if(rows && rows.length) render(); };
+    window.fwPayOf = name => payOn ? (pays[name] || null) : null;      // 供签到区显示缴费状态
     if(window.fwSetCheckinFamilies) window.fwSetCheckinFamilies(rows, ntList);
     render();
     renderBudget(); loadBudget();
@@ -1951,18 +2045,31 @@ function exportMinutes(){
       [['活动费已缴清', okN + ' / ' + rows.length + ' 户'], ['已收总额 = 活动费 + 自愿捐款', money(paidAll) + ' = ' + money(feeIn) + ' + ' + money(dnIn)], ['应收 = 活动费 + 自愿捐款', money(dueAll + donAll) + ' = ' + money(dueAll) + ' + ' + money(donAll)]].forEach(([k, v]) => {
         const span = document.createElement('span'); span.append(k + ' '); const b = document.createElement('b'); b.textContent = v; span.appendChild(b); statsEl.appendChild(span);
       });
-      // 各收款人分别收款数：按「收款人」(paid_by，最后一次记录该户收款的人)汇总已收总额，并拆成活动费 + 自愿捐款
+      // 各收款人分别收款数：按「收款人」(paid_by，最后一次记录该户收款的人)汇总，拆成活动费 + 自愿捐款；名单外到场的收款按各自登记的收款人并入
       const by = {};
+      const slot = k => by[k] || (by[k] = { n: 0, paid: 0, fee: 0, dn: 0, out: 0, outN: 0 });
       rows.forEach(r => {
         const x = pays[r.name] || {}, q = paySplit(x); if(!(q.paid > 0)) return;
-        const k = String(x.paid_by || '').trim() || '未记录收款人';
-        const o = by[k] || (by[k] = { n: 0, paid: 0, fee: 0, dn: 0 });
+        const o = slot(String(x.paid_by || '').trim() || '未记录收款人');
         o.n++; o.paid += q.paid; o.fee += q.fee; o.dn += q.dn;
       });
+      let outN = 0, outDue = 0, outPaid = 0, osN = 0, osDue = 0, osPaid = 0;
+      outsiders.forEach(o => {
+        outN++; outDue += Number(o.fee) || 0; outPaid += Number(o.paid) || 0;
+        if(o.paid > 0){ const e = slot(String(o.by || '').trim() || '未记录收款人'); e.paid += o.paid; e.out += o.paid; e.outN++; }
+      });
+      onsiteList().forEach(x => {      // 临时到场家庭 + 已报名家庭现场加的人
+        osN += x.heads; osDue += x.due; osPaid += x.paid;
+        if(x.paid > 0){ const e = slot(String(x.by || '').trim() || '未记录收款人'); e.paid += x.paid; e.out += x.paid; e.outN++; }
+      });
+      const addChip = (k, v, extra) => { const sp = document.createElement('span'); sp.append(k + ' '); const bb = document.createElement('b'); bb.textContent = v; sp.appendChild(bb); if(extra) sp.append(extra); statsEl.appendChild(sp); };
+      if(outN) addChip('名单外到场 ' + outN + ' 人：已收', money(outPaid), outDue ? ' / 应缴 ' + money(outDue) : '');
+      if(osN || osPaid) addChip('临时到场 / 现场加人 ' + osN + ' 人：已收', money(osPaid), osDue ? ' / 应缴 ' + money(osDue) : '');
+      if(outPaid || osPaid) addChip('实收合计（含现场收款）', money(paidAll + outPaid + osPaid), '');
       Object.keys(by).sort((a, b) => by[b].paid - by[a].paid).forEach(k => {
         const o = by[k], span = document.createElement('span'); span.append('收款人 ' + k + ' ');
         const b = document.createElement('b'); b.textContent = money(o.paid); span.appendChild(b);
-        span.append('（活动费 ' + money(o.fee) + ' + 捐款 ' + money(o.dn) + ' · ' + o.n + ' 户）'); statsEl.appendChild(span);
+        span.append('（活动费 ' + money(o.fee) + ' + 捐款 ' + money(o.dn) + (o.out ? ' + 现场/名单外 ' + money(o.out) : '') + ' · ' + o.n + ' 户' + (o.outN ? '、现场收款 ' + o.outN + ' 笔' : '') + '）'); statsEl.appendChild(span);
       });
     }
     bodyEl.innerHTML = '';
@@ -1984,6 +2091,26 @@ function exportMinutes(){
     const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = 'FW报名_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  });
+  // ---- 导出现场收款：名单外到场 + 临时到场家庭 + 已报名家庭现场加的人（这些不在报名缴费记录里，需单独对账）----
+  $('onsiteCsv').addEventListener('click', () => {
+    const fmt = t => t ? new Date(t).toLocaleString('zh-CN', { hour12: false }) : '';
+    const lines = [['类型', '家长 / 姓名', '备注', '现场人数', '到场人员', '应缴', '已收', '收款人', '录入时间']];
+    let dueT = 0, paidT = 0;
+    outsiders.forEach(o => {
+      lines.push(['名单外到场', o.n, o.note || '', 1, o.n, o.fee || 0, o.paid || 0, o.by || '', fmt(o.t)]);
+      dueT += Number(o.fee) || 0; paidT += Number(o.paid) || 0;
+    });
+    onsiteList().forEach(x => {
+      const i = famInfo(x.parent);
+      lines.push([x.walk ? '临时到场家庭' : '已报名家庭现场加人', x.parent, '', x.heads, i ? i.here.join('、') : '', x.due, x.paid, x.by, '']);
+      dueT += x.due; paidT += x.paid;
+    });
+    if(lines.length === 1){ alert('目前没有现场收款相关的记录（名单外到场 / 临时到场家庭 / 现场加人）。'); return; }
+    lines.push(['合计', '', '', '', '', dueT, paidT, '', '']);
+    const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = '现场收款_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   });
   // ---- 打印 Name Tag：一人一张，按尺寸自动分页 ----
   const NT_SIZES = { big: { w: 4, h: 3, cols: 2, rows: 3, k: 1 }, small: { w: 3.5, h: 2, cols: 2, rows: 5, k: 0.72 } };
