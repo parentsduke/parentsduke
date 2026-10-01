@@ -1001,6 +1001,7 @@ function flashButton(btn,label){
 const attendGrid = document.getElementById('attendGrid');
 const attendCountEl = document.getElementById('attendCount');
 const attended = new Set();
+const ATTEND_HIDE = new Set(['黄豫栋','刘延顺 YANSHUN LIU','李笑冰','li xinyu','Joanna Ma']);   // 仅从「FW群未报名家长签到（临时到场）」列表中隐藏，其他地方（全部名单等）仍保留
 function renderAttend(filter=''){
   attendGrid.innerHTML='';
   const f = filter.trim().toLowerCase();
@@ -1009,7 +1010,7 @@ function renderAttend(filter=''){
     const hint = document.createElement('div'); hint.style.cssText = 'grid-column:1/-1;font-size:13px;color:var(--ink-soft);padding:6px 2px;';
     hint.textContent = '请先登录管理员，读到报名名单后，这里只列出未报名的家长。'; attendGrid.appendChild(hint); return;
   }
-  roster.filter(r=>!reg.has(r.name) && !attended.has(r.name) && (!f || r.name.toLowerCase().includes(f))).forEach((r)=>{   // 已报名的不列；已签到的移到上方「临时到场家庭」
+  roster.filter(r=>!reg.has(r.name) && !ATTEND_HIDE.has(r.name) && !attended.has(r.name) && (!f || r.name.toLowerCase().includes(f))).forEach((r)=>{   // 已报名的不列；已签到的移到上方「临时到场家庭」
     const item = document.createElement('label');
     item.className='attend-item';
     item.innerHTML = `<input type="checkbox" data-name="${r.name}"${attended.has(r.name)?' checked':''}><span>${r.name}</span><span class="g">${gradeLabel(r.grade).replace('Class of 20','20')}</span>`;
