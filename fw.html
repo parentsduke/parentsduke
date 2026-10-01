@@ -538,13 +538,14 @@
       <div class="section-eyebrow">CHECK-IN</div>
       <h2>现场签到</h2>
     </div>
+    <div class="attend-count" style="font-size:20px;font-weight:700;color:var(--navy);margin:0 0 12px;">已签到 <b id="attendCount">0</b> / <span id="attendTotal">89</span> 位家长</div>
+    <div style="font-size:15px;margin:-4px 0 12px;color:var(--ink);" id="attendPeople"></div>
     <div class="minutes-card">
       <div class="minutes-block">
         <label class="block-title">出席家长（点击签到）</label>
         <div class="attend-toolbar">
           <input type="text" class="attend-search" id="attendSearch" placeholder="搜索姓名…">
           <select id="famGrade" title="按届次筛选已报名家庭" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--paper-warm);"><option value="">全部届次</option></select>
-          <div class="attend-count">已签到 <b id="attendCount">0</b> / <span id="attendTotal">76</span></div>
         </div>
         <div id="famBox"><div class="fam-stat" id="famStat"></div><div id="famList"></div></div>
         <details class="fam-all"><summary>全部名单签到（未报名 / 临时到场的家长）</summary><div class="attend-grid" id="attendGrid"></div></details>
@@ -825,6 +826,22 @@
 
 <div id="nametagSheet"></div>
 
+<div class="modal" id="outModal" role="dialog" aria-modal="true" aria-labelledby="otTitle" hidden>
+  <div class="modal-card">
+    <h3 id="otTitle">名单外到场登记</h3>
+    <p style="margin:0 0 10px;font-size:13px;">请对照现场 name tag，填写姓名并选择届次：</p>
+    <div style="display:grid;gap:8px;margin-bottom:14px;">
+      <input type="text" id="otName" placeholder="姓名（与 name tag 一致）" maxlength="40" autocomplete="off" style="padding:10px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:inherit;">
+      <select id="otGrade" style="padding:10px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:inherit;background:#fff;"></select>
+      <input type="text" id="otNote" placeholder="备注（选填，如：嘉宾 / 老师 / 某某的朋友）" maxlength="60" autocomplete="off" style="padding:10px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:inherit;">
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="otOk" type="button">确认已到场</button>
+      <button class="btn ghost" id="otCancel" type="button">取消</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="alreadyModal" role="dialog" aria-modal="true" aria-labelledby="alTitle" hidden>
   <div class="modal-card">
     <h3 id="alTitle">已签到</h3>
@@ -1037,7 +1054,7 @@ renderAttend();
 const attendedPeople = new Set();
 const personTime = new Map();      // 签到时间：'家长|姓名' → 毫秒时间戳；同步时作为 n: 键的值(旧记录为 true，没有时间)
 const outsiders = new Map();       // 名单外到场：id → {n姓名, note备注, t录入时间, fee应缴, paid已收, by收款人}；同步键 o:<id>
-const outRec = v => ({ n: v.n, note: String(v.note || ''), t: Number(v.t) || 0, fee: Number(v.fee) || 0, paid: Number(v.paid) || 0, by: String(v.by || ''), free: !!v.free });
+const outRec = v => ({ n: v.n, note: String(v.note || ''), g: String(v.g || ''), t: Number(v.t) || 0, fee: Number(v.fee) || 0, paid: Number(v.paid) || 0, by: String(v.by || ''), free: !!v.free });
 const $m = n => '$' + (Number(n) % 1 ? Number(n).toFixed(2) : String(Number(n)));
 const onsitePay = new Map();       // 现场收款(临时到场家庭 / 已报名家庭现场加的人)：家长 → {paid, by}；同步键 q:<家长>
 function onsiteList(){      // 需要现场补缴的家庭：临时到场家庭(全部人头) + 已报名但现场多加了人的家庭(多出的人头)
@@ -1051,6 +1068,26 @@ function onsiteList(){      // 需要现场补缴的家庭：临时到场家庭(
   });
   return out;
 }
+const gLabel = g => !g ? '' : g === '__other' ? '嘉宾/无届次' : gradeLabel(g).replace('Class of 20', '20');
+const outGradeEl = document.getElementById('otGrade');
+(function(){ const ph = document.createElement('option'); ph.value = ''; ph.disabled = true; ph.selected = true; ph.textContent = '请选择届次…'; outGradeEl.appendChild(ph);
+  gradeOrder.forEach(g => { const o = document.createElement('option'); o.value = g; o.textContent = gradeLabel(g); outGradeEl.appendChild(o); });
+  const o = document.createElement('option'); o.value = '__other'; o.textContent = '嘉宾 / 无届次'; outGradeEl.appendChild(o); })();
+function askOutsider(){      // 名单外到场登记：姓名 + 届次(必选) + 备注
+  return new Promise(resolve => {
+    const m = document.getElementById('outModal'), nm = document.getElementById('otName'), nt = document.getElementById('otNote'), ok = document.getElementById('otOk'), cancel = document.getElementById('otCancel');
+    nm.value = ''; nt.value = ''; outGradeEl.value = ''; m.hidden = false; nm.focus();
+    const finish = v => { m.hidden = true; ok.removeEventListener('click', onOk); cancel.removeEventListener('click', onCancel); m.removeEventListener('click', onBg); document.removeEventListener('keydown', onKey); resolve(v); };
+    const onOk = () => {
+      const name = nm.value.trim();
+      if(!name){ nm.focus(); return; }
+      if(!outGradeEl.value){ alert('请选择届次（不是家长的嘉宾请选「嘉宾 / 无届次」）'); outGradeEl.focus(); return; }
+      finish({ n: name, g: outGradeEl.value, note: nt.value.trim() });
+    };
+    const onCancel = () => finish(null), onBg = e => { if(e.target === m) finish(null); }, onKey = e => { if(e.key === 'Escape') finish(null); };
+    ok.addEventListener('click', onOk); cancel.addEventListener('click', onCancel); m.addEventListener('click', onBg); document.addEventListener('keydown', onKey);
+  });
+}
 const payRefresh = () => { if(window.fwRefreshPayStats) window.fwRefreshPayStats(); };
 var famList = [];
 const famStat = document.getElementById('famStat'), famListEl = document.getElementById('famList'), famBox = document.getElementById('famBox');
@@ -1060,11 +1097,12 @@ const famGradeOf = n => { const r = roster.find(x => x.name === n); return r && 
 const famGradeOk = n => !famGradeEl.value || famGradeOf(n) === famGradeEl.value;
 function renderFamGrade(){      // 届次下拉：只列已报名家庭里有人的届次，并显示户数
   const keep = famGradeEl.value, cnt = {};
+  const oc = {}; outsiders.forEach(o => { const g = o.g || '__other'; oc[g] = (oc[g] || 0) + 1; });
   famList.forEach(f => { const g = famGradeOf(f.name); cnt[g] = (cnt[g] || 0) + 1; });
   famGradeEl.textContent = '';
   const all = document.createElement('option'); all.value = ''; all.textContent = '全部届次（' + famList.length + ' 户）'; famGradeEl.appendChild(all);
-  gradeOrder.concat(['__other']).forEach(g => { if(!cnt[g]) return; const o = document.createElement('option'); o.value = g; o.textContent = (g === '__other' ? '其他' : gradeLabel(g)) + '（' + cnt[g] + ' 户）'; famGradeEl.appendChild(o); });
-  famGradeEl.value = cnt[keep] ? keep : '';
+  gradeOrder.concat(['__other']).forEach(g => { if(!cnt[g] && !oc[g]) return; const o = document.createElement('option'); o.value = g; o.textContent = (g === '__other' ? '其他/嘉宾' : gradeLabel(g)) + '（' + (cnt[g] || 0) + ' 户' + (oc[g] ? '，名单外 ' + oc[g] + ' 人' : '') + '）'; famGradeEl.appendChild(o); });
+  famGradeEl.value = (cnt[keep] || oc[keep]) ? keep : '';
 }
 famGradeEl.addEventListener('change', () => renderFamilies());
 function famInfo(name){
@@ -1095,6 +1133,9 @@ function renderFamilies(filter){
   let famHere = 0, famPart = 0, pHere = 0, pAll = 0, pAdd = 0, wP = 0;
   famList.forEach(f => { const i = famInfo(f.name); pAll += i.expected; pAdd += i.added; pHere += i.here.length; if(i.here.length){ famHere++; if(i.here.length < i.expected) famPart++; } });
   walkNames.forEach(n => { wP += famInfo(n).here.length; });
+  document.getElementById('attendPeople').innerHTML = '';
+  { const tot = pHere + wP + outsiders.size, box = document.getElementById('attendPeople'), b = document.createElement('b'); b.style.cssText = 'font-size:18px;color:var(--navy);'; b.textContent = tot + ' 人';
+    box.append('到场总人数 '); box.appendChild(b); box.append('（已报名家庭 ' + pHere + ' + 临时到场 ' + wP + ' + 名单外 ' + outsiders.size + '）'); }
   let st = famList.length
     ? '已报名家庭到场 ' + famHere + ' / ' + famList.length + ' 户（其中部分到场 ' + famPart + ' 户）· 人数 ' + pHere + ' / ' + pAll + ' 人' + (pAdd ? '（含现场新增 ' + pAdd + ' 人）' : '')
     : '（登录管理员后，这里会列出已报名的家庭，按家庭和 name tag 签到；未报名的家长用下方「全部名单」签到。）';
@@ -1161,8 +1202,8 @@ function renderFamilies(filter){
   // 名单外到场（不在 89 位家长名单里的人，如嘉宾 / 老师 / 朋友）
   const hd2 = document.createElement('div'); hd2.className = 'fam-stat'; hd2.style.marginTop = '12px'; hd2.textContent = '名单外到场（不在家长名单里的人）：' + outsiders.size + ' 人'; famListEl.appendChild(hd2);
   const oc = document.createElement('div'); oc.className = 'fam-chips';
-  [...outsiders.entries()].filter(([, o]) => !q || o.n.toLowerCase().includes(q) || (o.note || '').toLowerCase().includes(q)).forEach(([id, o]) => {
-    const c = document.createElement('button'); c.type = 'button'; c.className = 'on'; c.textContent = '✅ ' + o.n + (o.note ? '（' + o.note + '）' : '');
+  [...outsiders.entries()].filter(([, o]) => (!famGradeEl.value || (o.g || '__other') === famGradeEl.value) && (!q || o.n.toLowerCase().includes(q) || (o.note || '').toLowerCase().includes(q))).forEach(([id, o]) => {
+    const c = document.createElement('button'); c.type = 'button'; c.className = 'on'; c.textContent = '✅ ' + o.n + ([gLabel(o.g), o.note].filter(Boolean).length ? '（' + [gLabel(o.g), o.note].filter(Boolean).join(' · ') + '）' : '');
     c.title = '录入后 10 分钟内且未登记收款时可点击删除（录错时用）'; c.dataset.act = 'odel'; c.dataset.id = id; oc.appendChild(c);
     const pb = document.createElement('button'); pb.type = 'button'; pb.dataset.act = 'opay'; pb.dataset.id = id;
     const ok = o.free || (o.paid > 0 && (!o.fee || o.paid >= o.fee));
@@ -1190,13 +1231,10 @@ famListEl.addEventListener('click', async e => {
   }
   if(act === 'one'){ confirmCheckin(person).then(ok => { if(ok) famCheckIn(parent, [person]); }); return; }
   if(act === 'oadd'){
-    const nm = (prompt('名单外到场人员：请输入姓名（与现场 name tag 一致）') || '').trim(); if(!nm) return;
-    const note = (prompt('备注（选填，如：嘉宾 / 老师 / 某某的朋友）；没有就留空') || '').trim();
-    confirmCheckin(nm).then(ok => {
-      if(!ok) return;
-      outsiders.set(Date.now().toString(36) + Math.random().toString(36).slice(2, 5), { n: nm, note, t: Date.now(), fee: Number(window.fwFeePer) || 0, paid: 0, by: '' }); renderFamilies(); payRefresh();
-      famBox.dispatchEvent(new Event('input', { bubbles: true }));
-    });
+    const r = await askOutsider(); if(!r) return;
+    outsiders.set(Date.now().toString(36) + Math.random().toString(36).slice(2, 5), { n: r.n, note: r.note, g: r.g, t: Date.now(), fee: Number(window.fwFeePer) || 0, paid: 0, by: '' });
+    renderFamGrade(); renderFamilies(); payRefresh();
+    famBox.dispatchEvent(new Event('input', { bubbles: true }));
     return;
   }
   if(act === 'qpay'){
@@ -1251,7 +1289,7 @@ famListEl.addEventListener('click', async e => {
     if(o.paid > 0){ alert('这条已登记收款，不能删除；如需更正请先把收款金额改为 0。'); return; }
     if(!o.t || Date.now() - o.t > 10 * 60 * 1000){ alert('这条记录已超过 10 分钟（或是旧记录），不能再删除。'); return; }   // 录入 10 分钟内才可删
     if(confirm('删除这条名单外到场记录？\n' + o.n + (o.note ? '（' + o.note + '）' : ''))){
-      outsiders.delete(btn.dataset.id); renderFamilies(); payRefresh(); famBox.dispatchEvent(new Event('input', { bubbles: true }));
+      outsiders.delete(btn.dataset.id); renderFamGrade(); renderFamilies(); payRefresh(); famBox.dispatchEvent(new Event('input', { bubbles: true }));
     }
     return;
   }
@@ -1341,7 +1379,7 @@ function exportMinutes(){
   out += `====================================\n`;
   out += `日期：${date}    时间：${time}\n`;
   out += `主持人：${host}    记录人：${noteTaker}\n`;
-  out += `出席家长（${attendees.length} 人）：${attendees.join('、') || '（未签到）'}\n${outsiders.size ? '名单外到场（' + outsiders.size + ' 人）：' + [...outsiders.values()].map(o => o.n + (o.note ? '（' + o.note + '）' : '')).join('、') + '\n' : ''}\n`;
+  out += `出席家长（${attendees.length} 人）：${attendees.join('、') || '（未签到）'}\n${outsiders.size ? '名单外到场（' + outsiders.size + ' 人）：' + [...outsiders.values()].map(o => o.n + ([gLabel(o.g), o.note].filter(Boolean).length ? '（' + [gLabel(o.g), o.note].filter(Boolean).join('，') + '）' : '')).join('、') + '\n' : ''}\n`;
   out += `【议程】\n`;
   agendaItems.forEach((a,i)=>{ out += `${i+1}. ${a}\n`; });
   out += `\n【讨论要点】\n${discussion || '（未填写）'}\n\n`;
@@ -1672,7 +1710,7 @@ function exportMinutes(){
       renderFamilies(); payRefresh();
     } else if(kind === 'o:'){
       if(gone || !value || typeof value.n !== 'string') outsiders.delete(rest); else outsiders.set(rest, outRec(value));
-      renderFamilies(); payRefresh();
+      renderFamGrade(); renderFamilies(); payRefresh();
     } else if(kind === 'd:'){
       const el = editables()[+rest];
       if(!el || document.activeElement === el) return;
@@ -2120,19 +2158,20 @@ function exportMinutes(){
   // ---- 导出现场收款：名单外到场 + 临时到场家庭 + 已报名家庭现场加的人（这些不在报名缴费记录里，需单独对账）----
   $('onsiteCsv').addEventListener('click', () => {
     const fmt = t => t ? new Date(t).toLocaleString('zh-CN', { hour12: false }) : '';
-    const lines = [['类型', '家长 / 姓名', '备注', '现场人数', '到场人员', '应缴', '已收', '收款人', '录入时间']];
+    const lines = [['类型', '家长 / 姓名', '届次', '备注', '现场人数', '到场人员', '应缴', '已收', '收款人', '录入时间']];
     let dueT = 0, paidT = 0;
     outsiders.forEach(o => {
-      lines.push(['名单外到场', o.n, o.note || '', 1, o.n, o.fee || 0, o.paid || 0, o.by || '', fmt(o.t)]);
+      lines.push(['名单外到场', o.n, gLabel(o.g), o.note || '', 1, o.n, o.fee || 0, o.paid || 0, o.by || '', fmt(o.t)]);
       dueT += Number(o.fee) || 0; paidT += Number(o.paid) || 0;
     });
     onsiteList().forEach(x => {
       const i = famInfo(x.parent);
-      lines.push([x.walk ? '临时到场家庭' : '已报名家庭现场加人', x.parent, '', x.heads, i ? i.here.join('、') : '', x.due, x.paid, x.by, '']);
+      const rr = roster.find(z => z.name === x.parent);
+      lines.push([x.walk ? '临时到场家庭' : '已报名家庭现场加人', x.parent, rr ? gLabel(rr.grade) : '', '', x.heads, i ? i.here.join('、') : '', x.due, x.paid, x.by, '']);
       dueT += x.due; paidT += x.paid;
     });
     if(lines.length === 1){ alert('目前没有现场收款相关的记录（名单外到场 / 临时到场家庭 / 现场加人）。'); return; }
-    lines.push(['合计', '', '', '', '', dueT, paidT, '', '']);
+    lines.push(['合计', '', '', '', '', '', dueT, paidT, '', '']);
     const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = '现场收款_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
