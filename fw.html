@@ -545,7 +545,7 @@
       <a href="#roster">花名册</a>
       <a href="#rsvp" id="rsvpNav" hidden>FW 报名</a>
       <a href="#invite">聚会安排</a>
-      <a href="#minutes">会议记录</a>
+      <a href="#minutes">聚会记录</a>
       <a href="#volunteer">筹备组纪要</a>
     </div>
     <button class="auth-btn" id="authBtn" hidden>管理员登录</button>
@@ -712,8 +712,8 @@
 <section id="minutes">
   <div class="wrap">
     <div class="section-head">
-      <div class="section-eyebrow">MEETING RECORD</div>
-      <h2>会议记录</h2>
+      <div class="section-eyebrow">GATHERING RECORD</div>
+      <h2>聚会记录</h2>
       <p>供聚会当天记录使用：填写基本信息、勾选出席家长、记录讨论要点与待办事项，结束后可打印或导出为文本。</p>
     </div>
     <div class="minutes-card">
@@ -1402,7 +1402,7 @@ function exportMinutes(){
     return [...tds].map(td=>td.innerText.trim());
   }).filter(r=>r.some(v=>v));
 
-  let out = `Duke家长各届云集 · 会议记录\n`;
+  let out = `Duke家长各届云集 · 聚会记录\n`;
   out += `====================================\n`;
   out += `日期：${date}    时间：${time}\n`;
   out += `主持人：${host}    记录人：${noteTaker}\n`;
@@ -1419,7 +1419,7 @@ function exportMinutes(){
   const blob = new Blob([out], {type:'text/plain;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  const fname = `会议记录_${date!=='（未填写）'?date:'未命名'}.txt`;
+  const fname = `聚会记录_${date!=='（未填写）'?date:'未命名'}.txt`;
   a.href = url; a.download = fname;
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
