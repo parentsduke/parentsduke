@@ -1143,7 +1143,7 @@ function renderFamilies(filter){
   walkNames.forEach(n => { wP += famInfo(n).here.length; });
   document.getElementById('attendPeople').innerHTML = '';
   { const tot = pHere + wP + outsiders.size, box = document.getElementById('attendPeople'), b = document.createElement('b'); b.style.cssText = 'font-size:18px;color:var(--navy);'; b.textContent = tot + ' 人';
-    box.append('到场总人数 '); box.appendChild(b); box.append('（已报名家庭 ' + pHere + ' + 临时到场 ' + wP + ' + 名单外 ' + outsiders.size + '）'); }
+    box.append('到场总人数 '); box.appendChild(b); box.append('（FW群已报名家庭 ' + pHere + ' + FW群未报名临时到场 ' + wP + ' + FW群名单外 ' + outsiders.size + '）'); }
   let st = famList.length
     ? '已报名家庭到场 ' + famHere + ' / ' + famList.length + ' 户（其中部分到场 ' + famPart + ' 户）· 人数 ' + pHere + ' / ' + pAll + ' 人' + (pAdd ? '（含现场新增 ' + pAdd + ' 人）' : '')
     : '（登录管理员后，这里会列出已报名的家庭，按家庭和 name tag 签到；未报名的家长用下方「全部名单」签到。）';
