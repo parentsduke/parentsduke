@@ -418,6 +418,8 @@
   .fam-badge{margin-left:auto;font-size:11.5px;padding:2px 8px;border-radius:10px;background:#eee;color:var(--ink-soft);}
   .fam.part .fam-badge{background:#fbefc9;color:#8a6410;} .fam.full .fam-badge{background:var(--navy);color:#fff;}
   .fam-who{margin:6px 0 4px;line-height:1.6;font-size:12.5px;} .fam-who .y{color:var(--navy);} .fam-who .n{color:#b3421e;}
+  .fam-title{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Heiti SC",sans-serif;font-weight:800;font-size:17px;color:#111;margin:16px 0 8px;letter-spacing:.3px;}
+  details.fam-all summary.fam-title{cursor:pointer;margin:16px 0 8px;font-size:17px;font-weight:800;color:#111;}
   .fam-pay{font-size:12px;margin-top:4px;font-weight:600;}
   .fam-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
   .fam-chips button{font:inherit;font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:3px 10px;cursor:pointer;}
@@ -538,7 +540,7 @@
       <div class="section-eyebrow">CHECK-IN</div>
       <h2>现场签到</h2>
     </div>
-    <div class="attend-count" style="font-size:20px;font-weight:700;color:var(--navy);margin:0 0 12px;">已签到 <b id="attendCount">0</b> / <span id="attendTotal">89</span> 位家长</div>
+    <div class="attend-count" style="display:none;">已签到 <b id="attendCount">0</b> / <span id="attendTotal">89</span> 位家长</div>
     <div style="font-size:15px;margin:-4px 0 12px;color:var(--ink);" id="attendPeople"></div>
     <div class="minutes-card">
       <div class="minutes-block">
@@ -548,7 +550,7 @@
           <select id="famGrade" title="按届次筛选已报名家庭" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--paper-warm);"><option value="">全部届次</option></select>
         </div>
         <div id="famBox"><div class="fam-stat" id="famStat"></div><div id="famList"></div></div>
-        <details class="fam-all"><summary>全部名单签到（未报名 / 临时到场的家长）</summary><div class="attend-grid" id="attendGrid"></div></details>
+        <details class="fam-all"><summary class="fam-title">未报名家长签到（临时到场）</summary><div class="attend-grid" id="attendGrid"></div></details>
       </div>
 
     </div>
@@ -984,7 +986,11 @@ function renderAttend(filter=''){
   attendGrid.innerHTML='';
   const f = filter.trim().toLowerCase();
   const reg = new Set((famList || []).map(x => x.name));   // 已报名的家庭在上方按家庭签到，这里只留未报名 / 临时到场的
-  roster.filter(r=>!reg.has(r.name) && (!f || r.name.toLowerCase().includes(f))).forEach((r)=>{
+  if(!reg.size){      // 还没读到报名名单(未登录管理员)：不列全部家长，避免把已报名的人当成临时到场
+    const hint = document.createElement('div'); hint.style.cssText = 'grid-column:1/-1;font-size:13px;color:var(--ink-soft);padding:6px 2px;';
+    hint.textContent = '请先登录管理员，读到报名名单后，这里只列出未报名的家长。'; attendGrid.appendChild(hint); return;
+  }
+  roster.filter(r=>!reg.has(r.name) && !attended.has(r.name) && (!f || r.name.toLowerCase().includes(f))).forEach((r)=>{   // 已报名的不列；已签到的移到上方「临时到场家庭」
     const item = document.createElement('label');
     item.className='attend-item';
     item.innerHTML = `<input type="checkbox" data-name="${r.name}"${attended.has(r.name)?' checked':''}><span>${r.name}</span><span class="g">${gradeLabel(r.grade).replace('Class of 20','20')}</span>`;
@@ -1196,11 +1202,11 @@ function renderFamilies(filter){
   famList.filter(f => famGradeOk(f.name) && (!q || f.name.toLowerCase().includes(q) || f.tags.some(t => t.toLowerCase().includes(q)))).forEach(f => draw(f, false));
   const wl = walkNames.filter(n => famGradeOk(n) && (!q || n.toLowerCase().includes(q)));
   if(wl.length){
-    const hd = document.createElement('div'); hd.className = 'fam-stat'; hd.style.marginTop = '12px'; hd.textContent = '临时到场家庭（未报名）'; famListEl.appendChild(hd);
+    const hd = document.createElement('div'); hd.className = 'fam-title'; hd.textContent = '临时到场家庭（未报名）'; famListEl.appendChild(hd);
     wl.forEach(n => draw({ name: n, guests: 0, tags: [] }, true));
   }
   // 名单外到场（不在 89 位家长名单里的人，如嘉宾 / 老师 / 朋友）
-  const hd2 = document.createElement('div'); hd2.className = 'fam-stat'; hd2.style.marginTop = '12px'; hd2.textContent = '名单外到场（不在家长名单里的人）：' + outsiders.size + ' 人'; famListEl.appendChild(hd2);
+  const hd2 = document.createElement('div'); hd2.className = 'fam-title'; hd2.textContent = '名单外到场（不在家长名单里的人）：' + outsiders.size + ' 人'; famListEl.appendChild(hd2);
   const oc = document.createElement('div'); oc.className = 'fam-chips';
   [...outsiders.entries()].filter(([, o]) => (!famGradeEl.value || (o.g || '__other') === famGradeEl.value) && (!q || o.n.toLowerCase().includes(q) || (o.note || '').toLowerCase().includes(q))).forEach(([id, o]) => {
     const c = document.createElement('button'); c.type = 'button'; c.className = 'on'; c.textContent = '✅ ' + o.n + ([gLabel(o.g), o.note].filter(Boolean).length ? '（' + [gLabel(o.g), o.note].filter(Boolean).join(' · ') + '）' : '');
