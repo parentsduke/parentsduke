@@ -459,7 +459,17 @@
   .rsvp-stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
   .rsvp-stats span{background:var(--sky-soft);color:var(--navy);border-radius:20px;padding:5px 12px;font-size:13px;}
   .rsvp-stats b{font-family:'Noto Serif SC',serif;font-size:15px;}
-  .rsvp-scroll{overflow-x:auto;}
+  .rsvp-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:auto;scrollbar-color:#9fb3d1 #e7eef8;padding-bottom:4px;}
+  .rsvp-scroll::-webkit-scrollbar{height:12px;}
+  .rsvp-scroll::-webkit-scrollbar-track{background:#e7eef8;border-radius:6px;}
+  .rsvp-scroll::-webkit-scrollbar-thumb{background:#9fb3d1;border-radius:6px;border:2px solid #e7eef8;}
+  .rsvp-scroll::-webkit-scrollbar-thumb:hover{background:#6f8ab5;}
+  .todo-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:auto;scrollbar-color:#9fb3d1 #e7eef8;}
+  .todo-scroll::-webkit-scrollbar{height:12px;}
+  .todo-scroll::-webkit-scrollbar-track{background:#e7eef8;border-radius:6px;}
+  .todo-scroll::-webkit-scrollbar-thumb{background:#9fb3d1;border-radius:6px;border:2px solid #e7eef8;}
+  .todo-scroll table.todo-table{min-width:480px;}
+  @media print{ .rsvp-scroll,.todo-scroll{overflow:visible;} }
   .rsvp-table{width:100%;border-collapse:collapse;font-size:13.5px;}
   .rsvp-table th,.rsvp-table td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;}
   .rsvp-table th{background:var(--sky-soft);color:var(--ink-soft);font-weight:500;}
@@ -721,10 +731,10 @@
 
       <div class="minutes-block">
         <label class="block-title">志愿者筹备组待办事项</label>
-        <table class="todo-table" id="todoTable">
+        <div class="todo-scroll"><table class="todo-table" id="todoTable">
           <thead><tr><th style="width:40%">事项</th><th style="width:20%">负责人</th><th style="width:20%">截止日期</th><th style="width:15%">状态</th><th></th></tr></thead>
           <tbody id="todoBody"></tbody>
-        </table>
+        </table></div>
         <button class="add-row-btn" onclick="addTodoRow()">＋ 添加一行</button>
       </div>
 
@@ -780,10 +790,10 @@
 
       <div class="minutes-block">
         <label class="block-title">待办事项</label>
-        <table class="todo-table">
+        <div class="todo-scroll"><table class="todo-table">
           <thead><tr><th style="width:40%">事项</th><th style="width:20%">负责人</th><th style="width:20%">截止日期</th><th style="width:15%">状态</th><th></th></tr></thead>
           <tbody id="vTodoBody"></tbody>
-        </table>
+        </table></div>
         <button class="add-row-btn" onclick="addTodoRow([], null, null, VOL_TODO)">＋ 添加一行</button>
       </div>
 
