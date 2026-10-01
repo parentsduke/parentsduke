@@ -1003,7 +1003,10 @@ attendGrid.addEventListener('change', e=>{
     e.stopPropagation();
     confirmCheckin(name).then(ok => {
       if(!ok) return;
-      attended.add(name); attendedPeople.add(name + '|' + name);   // 临时到场：先记家长本人，其他家人在上方「临时到场家庭」里用「＋现场加人」逐个加
+      attended.add(name); attendedPeople.add(name + '|' + name);
+      // 同来的其他家人：一次输入多个名字（逗号 / 顿号隔开），没有就留空
+      (prompt('还有其他家人一起来吗？\n输入他们 name tag 上的名字，多人用逗号或顿号隔开；没有就留空') || '')
+        .split(/[,，、;；\n]+/).map(x => x.trim()).filter(x => x && x.indexOf('|') < 0 && x !== name).forEach(x => attendedPeople.add(name + '|' + x));   // 临时到场：先记家长本人，其他家人在上方「临时到场家庭」里用「＋现场加人」逐个加
       famSyncSave();   // 刷新列表 + 触发自动保存 / 云端同步
     });
   } else {
@@ -1081,7 +1084,7 @@ function renderFamilies(filter){
       c.className = on ? 'on' : ''; c.textContent = (on ? '✅ ' : '⬜ ') + p;
       c.dataset.act = on ? 'done' : 'one'; c.dataset.parent = f.name; c.dataset.person = p; chips.appendChild(c);
     });
-    if(i.away.length > 1 || (i.away.length && !n)){
+    if(i.away.length > 1){   // 只剩一个人时不需要「整家到齐」，直接点他的名字
       const all = document.createElement('button'); all.type = 'button'; all.className = 'act'; all.textContent = '整家到齐（' + i.away.length + ' 人）';
       all.dataset.act = 'all'; all.dataset.parent = f.name; chips.appendChild(all);
     }
@@ -1102,7 +1105,7 @@ function renderFamilies(filter){
   const oc = document.createElement('div'); oc.className = 'fam-chips';
   [...outsiders.entries()].filter(([, o]) => !q || o.n.toLowerCase().includes(q) || (o.note || '').toLowerCase().includes(q)).forEach(([id, o]) => {
     const c = document.createElement('button'); c.type = 'button'; c.className = 'on'; c.textContent = '✅ ' + o.n + (o.note ? '（' + o.note + '）' : '');
-    c.title = '点一下可删除这条记录（录错时用）'; c.dataset.act = 'odel'; c.dataset.id = id; oc.appendChild(c);
+    c.title = '录入后 10 分钟内可点击删除（录错时用）'; c.dataset.act = 'odel'; c.dataset.id = id; oc.appendChild(c);
   });
   const oa = document.createElement('button'); oa.type = 'button'; oa.className = 'act'; oa.textContent = '＋添加名单外到场人员'; oa.dataset.act = 'oadd'; oc.appendChild(oa);
   famListEl.appendChild(oc);
@@ -1117,13 +1120,14 @@ famListEl.addEventListener('click', e => {
     const note = (prompt('备注（选填，如：嘉宾 / 老师 / 某某的朋友）；没有就留空') || '').trim();
     confirmCheckin(nm).then(ok => {
       if(!ok) return;
-      outsiders.set(Date.now().toString(36) + Math.random().toString(36).slice(2, 5), { n: nm, note }); renderFamilies();
+      outsiders.set(Date.now().toString(36) + Math.random().toString(36).slice(2, 5), { n: nm, note, t: Date.now() }); renderFamilies();
       famBox.dispatchEvent(new Event('input', { bubbles: true }));
     });
     return;
   }
   if(act === 'odel'){
     const o = outsiders.get(btn.dataset.id); if(!o) return;
+    if(!o.t || Date.now() - o.t > 10 * 60 * 1000){ alert('这条记录已超过 10 分钟（或是旧记录），不能再删除。'); return; }   // 录入 10 分钟内才可删
     if(confirm('删除这条名单外到场记录？\n' + o.n + (o.note ? '（' + o.note + '）' : ''))){
       outsiders.delete(btn.dataset.id); renderFamilies(); famBox.dispatchEvent(new Event('input', { bubbles: true }));
     }
@@ -1281,7 +1285,7 @@ function exportMinutes(){
     fieldIds.forEach(id => { const el = document.getElementById(id); if(el) m['f:' + id] = el.value; });
     attended.forEach(n => { m['a:' + n] = true; });
     attendedPeople.forEach(k => { m['n:' + k] = true; });
-    outsiders.forEach((o, id) => { m['o:' + id] = { n: o.n, note: o.note || '' }; });
+    outsiders.forEach((o, id) => { m['o:' + id] = { n: o.n, note: o.note || '', t: o.t || 0 }; });
     editables().forEach((e, i) => { m['d:' + i] = trimEnd(e.innerText); });
     Object.keys(AGENDA_LISTS).forEach(kp => AGENDA_LISTS[kp].querySelectorAll('li').forEach(li => {
       m[kp + ':' + li.dataset.id] = { t: trimEnd(li.querySelector('.txt').innerText), p: +li.dataset.p };
@@ -1440,7 +1444,7 @@ function exportMinutes(){
     attended.clear();
     Object.keys(m).forEach(k => { if(k.startsWith('a:') && m[k] && valid.has(k.slice(2))) attended.add(k.slice(2)); });
     outsiders.clear();
-    Object.keys(m).forEach(k => { if(k.startsWith('o:') && m[k] && typeof m[k].n === 'string') outsiders.set(k.slice(2), { n: m[k].n, note: String(m[k].note || '') }); });
+    Object.keys(m).forEach(k => { if(k.startsWith('o:') && m[k] && typeof m[k].n === 'string') outsiders.set(k.slice(2), { n: m[k].n, note: String(m[k].note || ''), t: Number(m[k].t) || 0 }); });
     attendedPeople.clear();
     Object.keys(m).forEach(k => { if(k.startsWith('n:') && m[k] && valid.has(k.slice(2).split('|')[0])) attendedPeople.add(k.slice(2)); });
     renderAttend(searchEl.value); updateAttendCount(); renderFamilies();
@@ -1538,7 +1542,7 @@ function exportMinutes(){
       if(gone || value === false) attendedPeople.delete(rest); else if(roster.some(r => r.name === rest.split('|')[0])) attendedPeople.add(rest);
       renderFamilies();
     } else if(kind === 'o:'){
-      if(gone || !value || typeof value.n !== 'string') outsiders.delete(rest); else outsiders.set(rest, { n: value.n, note: String(value.note || '') });
+      if(gone || !value || typeof value.n !== 'string') outsiders.delete(rest); else outsiders.set(rest, { n: value.n, note: String(value.note || ''), t: Number(value.t) || 0 });
       renderFamilies();
     } else if(kind === 'd:'){
       const el = editables()[+rest];
