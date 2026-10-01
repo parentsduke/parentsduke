@@ -116,8 +116,12 @@
 
   <div class="card">
     <div class="field">
+      <label for="gradeSel">届次</label>
+      <select id="gradeSel"><option value="" disabled selected>请先选择届次…</option></select>
+    </div>
+    <div class="field">
       <label for="name">我是</label>
-      <select id="name"><option value="" disabled selected>请选择你的名字…</option></select>
+      <select id="name" disabled><option value="" disabled selected>请先选择届次，再选你的名字…</option></select>
     </div>
     <div class="field">
       <label for="guests">FW 参加人数（含杜娃）</label>
@@ -202,16 +206,21 @@ const $ = id => document.getElementById(id);
 const sel = $('name'), guestsEl = $('guests'), majorEl = $('major'), msgEl = $('msg'), doneEl = $('done'), btn = $('submit'), nametagsBox = $('nametags'), nametagsField = $('nametagsField');
 const LAST_KEY = 'fw-rsvp-last-' + EVENT_ID;
 
-// 名字下拉：按届次分组
-const seen = new Set();
-function addGroup(label, list){
-  if(!list.length) return;
-  const og = document.createElement('optgroup'); og.label = label;
-  list.forEach(([n]) => { const o = document.createElement('option'); o.value = n; o.textContent = n; og.appendChild(o); seen.add(n); });
-  sel.appendChild(og);
+// 名字下拉：先选届次，再从该届的名字里选
+const seen = new Set(ROSTER.map(r => r[0]));
+const gradeSel = $('gradeSel'), OTHER = '__other';
+const namesOf = g => g === OTHER ? ROSTER.filter(r => !gradeOrder.includes(r[1])) : ROSTER.filter(r => r[1] === g);
+gradeOrder.concat([OTHER]).forEach(g => {
+  const list = namesOf(g); if(!list.length) return;
+  const o = document.createElement('option'); o.value = g; o.textContent = (g === OTHER ? '其他' : gradeLabel(g)) + '（' + list.length + ' 位）'; gradeSel.appendChild(o);
+});
+function fillNames(g){
+  sel.textContent = '';
+  const ph = document.createElement('option'); ph.value = ''; ph.disabled = true; ph.selected = true; ph.textContent = '请选择你的名字…'; sel.appendChild(ph);
+  namesOf(g).forEach(([n]) => { const o = document.createElement('option'); o.value = n; o.textContent = n; sel.appendChild(o); });
+  sel.disabled = false;
 }
-gradeOrder.forEach(g => addGroup(gradeLabel(g), ROSTER.filter(r => r[1] === g)));
-addGroup('其他', ROSTER.filter(r => !seen.has(r[0])));
+gradeSel.addEventListener('change', () => fillNames(gradeSel.value));
 
 // 胸牌姓名：人数是几个，就生成几个输入框；改人数时保留已填内容
 function renderNametags(vals){
@@ -383,6 +392,7 @@ document.querySelectorAll('input[name=watch]').forEach(r => r.addEventListener('
 try{
   const last = JSON.parse(localStorage.getItem(LAST_KEY) || 'null');
   if(last && seen.has(last.name)){
+    { const lr = ROSTER.find(r => r[0] === last.name); gradeSel.value = (lr && gradeOrder.includes(lr[1])) ? lr[1] : OTHER; fillNames(gradeSel.value); }
     sel.value = last.name; guestsEl.value = String(last.guests || ''); majorEl.value = last.major || '';
     renderNametags(Array.isArray(last.nametags) ? last.nametags : (last.nametag ? [last.nametag] : []));
     const r = document.querySelector('input[name=watch][value=' + (last.watch ? 'yes' : 'no') + ']'); if(r) r.checked = true;
