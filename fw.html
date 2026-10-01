@@ -469,7 +469,13 @@
   .todo-scroll::-webkit-scrollbar-track{background:#e7eef8;border-radius:6px;}
   .todo-scroll::-webkit-scrollbar-thumb{background:#9fb3d1;border-radius:6px;border:2px solid #e7eef8;}
   .todo-scroll table.todo-table{min-width:480px;}
-  @media print{ .rsvp-scroll,.todo-scroll{overflow:visible;} }
+  @media print{ .rsvp-scroll,.todo-scroll{overflow:visible;max-height:none;} }
+  /* 报名名单：限制高度，横向滚动条固定在可视区域底部，表头和首列冻结 */
+  .rsvp-main{max-height:70vh;overflow:auto;border:1px solid var(--line);border-radius:8px;padding-bottom:0;}
+  .rsvp-main .rsvp-table th{position:sticky;top:0;z-index:2;}
+  .rsvp-main .rsvp-table th:first-child,.rsvp-main .rsvp-table td:first-child{position:sticky;left:0;background:#fff;box-shadow:1px 0 0 var(--line);}
+  .rsvp-main .rsvp-table th:first-child{z-index:3;background:var(--sky-soft);}
+  .rsvp-main .rsvp-table td:first-child{z-index:1;}
   .rsvp-table{width:100%;border-collapse:collapse;font-size:13.5px;}
   .rsvp-table th,.rsvp-table td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;}
   .rsvp-table th{background:var(--sky-soft);color:var(--ink-soft);font-weight:500;}
@@ -630,7 +636,7 @@
         </div>
       </div>
       <div class="rsvp-stats" id="rsvpStats"></div>
-      <div class="rsvp-scroll">
+      <div class="rsvp-scroll rsvp-main">
         <table class="rsvp-table">
           <thead><tr><th>家长</th><th>Name Tag</th><th>届次</th><th>人数（含杜娃）</th><th>杜娃参加</th><th>孩子专业</th><th>橄榄球</th><th class="pay-col">应缴（活动费）</th><th class="pay-col">自愿捐款</th><th class="pay-col">已收总额</th><th class="pay-col">备注码</th><th class="pay-col">缴费确认</th></tr></thead>
           <tbody id="rsvpBody"></tbody>
