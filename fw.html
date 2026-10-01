@@ -543,6 +543,7 @@
         <label class="block-title">出席家长（点击签到）</label>
         <div class="attend-toolbar">
           <input type="text" class="attend-search" id="attendSearch" placeholder="搜索姓名…">
+          <select id="famGrade" title="按届次筛选已报名家庭" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--paper-warm);"><option value="">全部届次</option></select>
           <div class="attend-count">已签到 <b id="attendCount">0</b> / <span id="attendTotal">76</span></div>
         </div>
         <div id="famBox"><div class="fam-stat" id="famStat"></div><div id="famList"></div></div>
@@ -1054,6 +1055,18 @@ const payRefresh = () => { if(window.fwRefreshPayStats) window.fwRefreshPayStats
 var famList = [];
 const famStat = document.getElementById('famStat'), famListEl = document.getElementById('famList'), famBox = document.getElementById('famBox');
 const pKey = (parent, person) => parent + '|' + person;
+const famGradeEl = document.getElementById('famGrade');
+const famGradeOf = n => { const r = roster.find(x => x.name === n); return r && gradeOrder.includes(r.grade) ? r.grade : '__other'; };
+const famGradeOk = n => !famGradeEl.value || famGradeOf(n) === famGradeEl.value;
+function renderFamGrade(){      // 届次下拉：只列已报名家庭里有人的届次，并显示户数
+  const keep = famGradeEl.value, cnt = {};
+  famList.forEach(f => { const g = famGradeOf(f.name); cnt[g] = (cnt[g] || 0) + 1; });
+  famGradeEl.textContent = '';
+  const all = document.createElement('option'); all.value = ''; all.textContent = '全部届次（' + famList.length + ' 户）'; famGradeEl.appendChild(all);
+  gradeOrder.concat(['__other']).forEach(g => { if(!cnt[g]) return; const o = document.createElement('option'); o.value = g; o.textContent = (g === '__other' ? '其他' : gradeLabel(g)) + '（' + cnt[g] + ' 户）'; famGradeEl.appendChild(o); });
+  famGradeEl.value = cnt[keep] ? keep : '';
+}
+famGradeEl.addEventListener('change', () => renderFamilies());
 function famInfo(name){
   let f = famList.find(x => x.name === name), walk = false;
   if(!f){ if(!attended.has(name)) return null; f = { name, guests: 0, tags: [] }; walk = true; }   // 临时到场：未报名但已签到的家长
@@ -1139,8 +1152,8 @@ function renderFamilies(filter){
     }
     box.appendChild(chips); famListEl.appendChild(box);
   };
-  famList.filter(f => !q || f.name.toLowerCase().includes(q) || f.tags.some(t => t.toLowerCase().includes(q))).forEach(f => draw(f, false));
-  const wl = walkNames.filter(n => !q || n.toLowerCase().includes(q));
+  famList.filter(f => famGradeOk(f.name) && (!q || f.name.toLowerCase().includes(q) || f.tags.some(t => t.toLowerCase().includes(q)))).forEach(f => draw(f, false));
+  const wl = walkNames.filter(n => famGradeOk(n) && (!q || n.toLowerCase().includes(q)));
   if(wl.length){
     const hd = document.createElement('div'); hd.className = 'fam-stat'; hd.style.marginTop = '12px'; hd.textContent = '临时到场家庭（未报名）'; famListEl.appendChild(hd);
     wl.forEach(n => draw({ name: n, guests: 0, tags: [] }, true));
@@ -1257,7 +1270,7 @@ famListEl.addEventListener('click', async e => {
 });
 window.fwSetCheckinFamilies = function(rows, nt){
   famList = (rows || []).map(r => ({ name: r.name, guests: Number(r.guests) || 0, tags: ((nt && nt[r.name]) || []).slice() }));
-  renderFamilies(); renderAttend(document.getElementById('attendSearch').value);
+  renderFamGrade(); renderFamilies(); renderAttend(document.getElementById('attendSearch').value);
 };
 renderFamilies();
 
@@ -1856,7 +1869,7 @@ function exportMinutes(){
 
   if(loadLocal()) setStatus('已恢复本机草稿');
   ['input', 'change'].forEach(ev => document.addEventListener(ev, e => {
-    if(e.target && (e.target.id === 'attendSearch' || e.target.id === 'ntSize')) return;
+    if(e.target && (e.target.id === 'attendSearch' || e.target.id === 'famGrade' || e.target.id === 'ntSize')) return;
     if(e.target && (e.target.id === 'authEmail' || e.target.id === 'authPass')) return;
     scheduleSave();
   }));
