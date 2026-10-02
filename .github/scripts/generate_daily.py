@@ -1298,6 +1298,27 @@ def generate_prematric_section(page_text):
 # ══════════════════════════════════════════════════════════════
 #  更新 index.html
 # ══════════════════════════════════════════════════════════════
+def _find_div_inner_span(content, section_id):
+    """找到 id=section_id 的 <div> 的「内部内容」范围 (inner_start, inner_end)。
+    关键：按 <div> / </div> 嵌套层数配对，找到真正匹配的那个 </div>。
+    之前用 (.*?)(</div>) 非贪婪匹配，只会匹配到第一个 </div>——
+    一旦栏目内容里有嵌套的 <div>（AI输出的 <div><h3>..</h3><p>..</p></div>），
+    就会在内层 </div> 处提前截断，上次的旧内容残留在容器外面，
+    于是出现文字脱离 .weekly-body、颜色/样式错乱的问题。"""
+    m = re.search(rf'<div\b[^>]*\bid="{re.escape(section_id)}"[^>]*>', content)
+    if not m:
+        return None
+    inner_start = m.end()
+    depth = 1
+    for t in re.finditer(r'<div\b[^>]*>|</div\s*>', content[inner_start:], flags=re.IGNORECASE):
+        if t.group(0).startswith('</'):
+            depth -= 1
+            if depth == 0:
+                return inner_start, inner_start + t.start()
+        else:
+            depth += 1
+    return None
+
 def update_index(sections_html):
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
@@ -1307,13 +1328,12 @@ def update_index(sections_html):
         if html == FALLBACK_HTML:
             print(f'  ⚠ 跳过 {section_id}：AI生成失败，保留页面上原有内容')
             continue
-        pattern = rf'(<div[^>]*id="{section_id}"[^>]*>)(.*?)(</div>)'
-        if not re.search(pattern, content, flags=re.DOTALL):
-            print(f'  ✗ index.html 里没有 id="{section_id}" 的 <div>，请补上')
+        span = _find_div_inner_span(content, section_id)
+        if not span:
+            print(f'  ✗ index.html 里没有 id="{section_id}" 的 <div>（或标签未闭合），请检查')
             continue
-        new_content = re.sub(pattern,
-                             lambda m: m.group(1) + html + m.group(3),
-                             content, flags=re.DOTALL, count=1)
+        inner_start, inner_end = span
+        new_content = content[:inner_start] + html + content[inner_end:]
         if new_content != content:
             content = new_content
             print(f'  已更新 {section_id}')
