@@ -129,6 +129,8 @@
   th.sortable{cursor:pointer;user-select:none;white-space:nowrap;}
   th.sortable:hover{color:var(--navy);}
   th.sortable .arrow{font-size:11px;opacity:.7;margin-left:3px;}
+  #unmatchedArea{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  #unmatchedArea table{min-width:900px;}
 </style>
 </head>
 <body>
@@ -390,7 +392,7 @@
       <span class="tag">邮箱 ${escapeHtml(m.email)}</span>
       ${m.parent_wechat ? `<span class="tag">家长微信 ${escapeHtml(m.parent_wechat)}</span>` : ''}
       <span class="tag">${escapeHtml(m.flight_date)} ${escapeHtml(m.flight_time)}${m.flight_number ? ' · ' + escapeHtml(m.flight_number) : ''}</span>
-      ${m.campus_location ? `<span class="tag">${escapeHtml(m.campus_location)}</span>` : ''}
+      ${(m.pickup_location || m.dropoff_location) ? `<span class="tag">${m.pickup_location ? '上车 ' + escapeHtml(m.pickup_location) : '下车 ' + escapeHtml(m.dropoff_location)}</span>` : ''}
       ${m.notes ? `<span class="tag">备注: ${escapeHtml(m.notes)}</span>` : ''}
     </div>`;
   }
@@ -479,6 +481,8 @@
       case 'date':   return `${r.flight_date} ${r.flight_time}`;
       case 'time':   return r.flight_time || '';
       case 'target': return targetTime(r).getTime();
+      case 'buffer': return r.ready_buffer_minutes || 0;
+      case 'flight': return `${r.airline || ''} ${r.flight_number || ''}`.trim().toLowerCase();
       default:       return '';
     }
   }
@@ -505,7 +509,7 @@
       <div class="unmatched-chip">${unmatched.length} 人待匹配 · ${unmatched.length} pending</div>
       <table>
         <thead><tr>
-          ${th('name','姓名')}${th('class','届次')}${th('date','日期')}${th('time','时间')}${th('target','预计目标时间')}<th>微信</th><th>手机</th>
+          ${th('name','姓名')}${th('class','届次')}${th('date','日期')}${th('time','时间')}${th('target','预计目标时间')}${th('flight','航班')}${th('buffer','缓冲(分钟)')}<th>地点</th><th>微信</th><th>家长微信</th><th>手机</th><th>邮箱</th><th>备注</th>
         </tr></thead>
         <tbody>
           ${unmatched.map(r => `
@@ -515,8 +519,14 @@
               <td class="mono">${escapeHtml(r.flight_date)}</td>
               <td class="mono">${escapeHtml(r.flight_time)}</td>
               <td class="mono">${fmtTime(targetTime(r))}</td>
+              <td>${escapeHtml([r.airline, r.flight_number].filter(Boolean).join(' ') || '—')}</td>
+              <td class="mono">${r.ready_buffer_minutes ?? '—'}</td>
+              <td>${escapeHtml(r.pickup_location || r.dropoff_location || '—')}</td>
               <td>${escapeHtml(r.wechat_id || '—')}</td>
+              <td>${escapeHtml(r.parent_wechat || '—')}</td>
               <td>${escapeHtml(r.phone || '—')}</td>
+              <td>${escapeHtml(r.email || '—')}</td>
+              <td>${escapeHtml(r.notes || '—')}</td>
             </tr>
           `).join('')}
         </tbody>
