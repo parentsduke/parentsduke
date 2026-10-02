@@ -650,6 +650,16 @@
       </div>
       <div class="budget" id="budgetBox" hidden>
         <h3>预算与收支<small id="budgetNote"></small></h3>
+        <div class="tabs" id="budgetTools" style="margin:0 0 12px;gap:8px;">
+          <button class="btn ghost" id="bEdit" type="button">✏️ 编辑</button>
+          <button class="btn" id="bSave" type="button" hidden>💾 保存到后台</button>
+          <button class="btn ghost" id="bAdd" type="button" hidden>＋ 加一行</button>
+          <button class="btn ghost" id="bCancel" type="button" hidden>取消</button>
+          <button class="btn ghost" id="bImport" type="button">从 Google 表格导入</button>
+          <button class="btn ghost" id="bGhSave" type="button">备份到 GitHub</button>
+          <button class="btn ghost" id="bGhLoad" type="button">从 GitHub 恢复</button>
+          <button class="btn ghost" id="bGhReset" type="button">重设 GitHub 令牌</button>
+        </div>
         <div class="rsvp-stats" id="budgetStats"></div>
         <div class="rsvp-scroll"><table class="budget-table" id="budgetTable"></table></div>
       </div>
@@ -1973,7 +1983,7 @@ function exportMinutes(){
   // Google 表格：文件 → 共享 → 发布到网络 → 选择对应工作表 + 「逗号分隔值 (.csv)」→ 发布 → 复制链接
   // 表格改动后约 5 分钟内同步；点「刷新」会重新读取。
   const BUDGET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBqOHxmNITNx1rXWf4yWHTxoRJ2NvP-9Zcol4pOQvwXtvVWFKxpisx9s5zk_oWL1OpnbEF8Se2wd9t/pub?gid=0&single=true&output=csv';
-  let budgetRows = null;
+  let budgetRows = null, budgetEdit = false, budgetBackup = null, budgetDb = false;   // budgetDb: 后台已启用
   function parseCSV(text){
     const out = []; let row = [], f = '', q = false;
     for(let i = 0; i < text.length; i++){
@@ -1998,7 +2008,7 @@ function exportMinutes(){
   function chip(k, v){ const span = document.createElement('span'); span.append(k + ' '); const b = document.createElement('b'); b.textContent = v; span.appendChild(b); $('budgetStats').appendChild(span); }
   function renderBudget(){
     const box = $('budgetBox');
-    if(!BUDGET_CSV_URL || !budgetRows){ box.hidden = true; return; }
+    if(!budgetRows){ box.hidden = true; return; }
     box.hidden = false;
     // 概览：表格里的预计数 vs 实际报名 / 缴费
     $('budgetStats').innerHTML = '';
@@ -2019,31 +2029,125 @@ function exportMinutes(){
     // 明细：原样显示表格里的每一行
     const t = $('budgetTable'); t.textContent = '';
     const w = Math.max.apply(null, budgetRows.map(r => r.length));
+    if(budgetEdit) budgetRows.forEach(r => { while(r.length < w) r.push(''); });
     budgetRows.forEach((r, i) => {
       const tr = document.createElement('tr'); const first = String(r[0] || '').trim();
       const nonEmpty = r.filter(x => String(x).trim() !== '').length;
-      if(i === 0 && nonEmpty === 1){ tr.className = 'ttl'; const td = document.createElement('td'); td.colSpan = w; td.textContent = first; tr.appendChild(td); t.appendChild(tr); return; }
+      if(!budgetEdit && i === 0 && nonEmpty === 1){ tr.className = 'ttl'; const td = document.createElement('td'); td.colSpan = w; td.textContent = first; tr.appendChild(td); t.appendChild(tr); return; }
       const isHead = /^item$/i.test(first);
       if(/^(Total|Estimated)/i.test(first)) tr.className = 'tot';
       for(let c = 0; c < w; c++){
         const v = String(r[c] == null ? '' : r[c]).trim();
-        const td = document.createElement(isHead ? 'th' : 'td'); td.textContent = v; if(c > 0 && isNum(v)) td.className = 'num'; tr.appendChild(td);
+        const td = document.createElement(isHead ? 'th' : 'td');
+        if(budgetEdit){ const inp = document.createElement('input'); inp.type = 'text'; inp.value = v; inp.style.cssText = 'width:100%;min-width:' + (c === 0 ? 150 : 70) + 'px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;font:inherit;box-sizing:border-box;'; inp.addEventListener('input', () => { budgetRows[i][c] = inp.value; }); td.appendChild(inp); }
+        else { td.textContent = v; if(c > 0 && isNum(v)) td.className = 'num'; }
+        tr.appendChild(td);
       }
+      if(budgetEdit){ const td = document.createElement('td'); const x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.title = '删除此行'; x.style.cssText = 'border:0;background:none;color:#b33;cursor:pointer;font-size:15px;'; x.addEventListener('click', () => { budgetRows.splice(i, 1); renderBudget(); }); td.appendChild(x); tr.appendChild(td); }
       t.appendChild(tr);
     });
   }
-  async function loadBudget(){
-    if(!BUDGET_CSV_URL) return;
-    try{
-      const res = await fetch(BUDGET_CSV_URL + (BUDGET_CSV_URL.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now(), { cache: 'no-store' });
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      budgetRows = parseCSV(await res.text());
-      renderBudget(); $('budgetNote').textContent = '（来自 Google 表格，读取于 ' + new Date().toLocaleTimeString() + '）';
-    }catch(e){
-      console.warn('budget', e);
-      if(!budgetRows){ $('budgetBox').hidden = false; $('budgetNote').textContent = '（预算表读取失败：请确认表格已「发布到网络」并使用 CSV 链接）'; }
-    }
+  async function fetchGoogleBudget(){
+    const res = await fetch(BUDGET_CSV_URL + (BUDGET_CSV_URL.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now(), { cache: 'no-store' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    return parseCSV(await res.text());
   }
+  function budgetUI(){
+    $('bEdit').hidden = budgetEdit; $('bSave').hidden = !budgetEdit; $('bAdd').hidden = !budgetEdit; $('bCancel').hidden = !budgetEdit; $('bImport').hidden = budgetEdit || !BUDGET_CSV_URL; ['bGhSave','bGhLoad','bGhReset'].forEach(id => { $(id).hidden = budgetEdit; });
+  }
+  async function loadBudget(){
+    const sb = window.fwSb;
+    // 1) 优先读后台保存的版本（可修改、不依赖 Google 表格）
+    if(sb){
+      try{
+        const r = await sb.rpc('fw_budget_get', { p_event: EVENT() });
+        if(!r.error){
+          budgetDb = true;
+          if(r.data && Array.isArray(r.data.data) && r.data.data.length){
+            budgetRows = r.data.data; budgetEdit = false; budgetUI(); renderBudget();
+            $('budgetNote').textContent = '（后台保存的版本' + (r.data.updated_at ? '，更新于 ' + new Date(r.data.updated_at).toLocaleString() : '') + (r.data.updated_by ? '，by ' + r.data.updated_by : '') + '）';
+            return;
+          }
+        }else console.warn('fw_budget_get', r.error);
+      }catch(e){ console.warn('fw_budget_get', e); }
+    }
+    // 2) 后台还没有 → 读 Google 表格（首次导入用），可点「保存到后台」存下来
+    if(BUDGET_CSV_URL){
+      try{
+        const txt0 = await fetch(BUDGET_CSV_URL + (BUDGET_CSV_URL.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now(), { cache: 'no-store' });
+        if(!txt0.ok) throw new Error('HTTP ' + txt0.status);
+        const txt = await txt0.text(); budgetRows = parseCSV(txt);
+        try{ localStorage.setItem('fw_budget_cache', JSON.stringify({t: Date.now(), csv: txt})); }catch(_){}
+        budgetUI(); renderBudget();
+        $('budgetNote').textContent = '（来自 Google 表格，读取于 ' + new Date().toLocaleTimeString() + (budgetDb ? '；尚未存到后台，点「编辑」→「保存到后台」' : '；后台未启用，见 fw_budget.sql') + '）';
+        return;
+      }catch(e){ console.warn('budget', e); }
+    }
+    // 3) 都读不到 → 本设备副本
+    try{ const c = JSON.parse(localStorage.getItem('fw_budget_cache') || 'null');
+      if(c && c.csv){ budgetRows = parseCSV(c.csv); budgetUI(); renderBudget(); $('budgetNote').textContent = '（无法读取后台和 Google 表格，显示本设备上次保存的副本，保存于 ' + new Date(c.t).toLocaleString() + '）'; return; } }catch(_){}
+    $('budgetBox').hidden = false; budgetUI();
+    $('budgetNote').textContent = budgetDb ? '（后台还没有预算；点「编辑」新建，或「从 Google 表格导入」）' : '（预算读取失败，且后台未启用）';
+  }
+  // ---- GitHub 备份：令牌只存在管理员自己设备的浏览器里，不写进网页代码 ----
+  const ghPath = () => 'fw-budget/' + EVENT() + '.json';
+  const b64enc = str => btoa(unescape(encodeURIComponent(str)));
+  const b64dec = b64 => decodeURIComponent(escape(atob(b64.replace(/\s/g, ''))));
+  function ghCfg(force){
+    let c = null; try{ c = JSON.parse(localStorage.getItem('fw_gh') || 'null'); }catch(_){}
+    if(c && c.repo && c.token && !force) return c;
+    const repo = prompt('GitHub 仓库（格式 owner/repo，建议用私有仓库）', (c && c.repo) || ''); if(!repo) return null;
+    const token = prompt('GitHub 令牌（Fine-grained token，只授权该仓库的 Contents 读写）'); if(!token) return null;
+    c = { repo: repo.trim(), token: token.trim() }; try{ localStorage.setItem('fw_gh', JSON.stringify(c)); }catch(_){}
+    return c;
+  }
+  async function ghApi(c, method, body){
+    const r = await fetch('https://api.github.com/repos/' + c.repo + '/contents/' + ghPath(), { method, headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+    if(r.status === 401 || r.status === 403){ try{ localStorage.removeItem('fw_gh'); }catch(_){} throw new Error('令牌无效或权限不足（已清除，请重新输入）'); }
+    return r;
+  }
+  (function(){
+    const on = (id, fn) => { const el = $(id); if(el) el.addEventListener('click', fn); };
+    on('bEdit', () => { if(!budgetRows) budgetRows = [['预算与收支'], ['Item', 'Amount'], ['Total Estimated Receipts', ''], ['Total Estimated Cost', ''], ['Estimated Net Balance', '']];
+      budgetBackup = JSON.stringify(budgetRows); budgetEdit = true; budgetUI(); renderBudget(); });
+    on('bCancel', () => { budgetRows = JSON.parse(budgetBackup); budgetEdit = false; budgetUI(); renderBudget(); });
+    on('bAdd', () => { const w = Math.max.apply(null, budgetRows.map(r => r.length)); budgetRows.push(new Array(w).fill('')); renderBudget(); });
+    on('bSave', async () => {
+      const sb = window.fwSb; if(!sb){ alert('未连接后台'); return; }
+      const data = budgetRows.filter(r => r.some(x => String(x).trim() !== '')).map(r => r.map(x => String(x == null ? '' : x).trim()));
+      const { error } = await sb.rpc('fw_budget_set', { p_event: EVENT(), p_data: data });
+      if(error){ alert('保存失败：' + error.message + '\n（如果提示函数不存在，请先在 Supabase 的 SQL Editor 运行 fw_budget.sql）'); return; }
+      budgetRows = data; budgetEdit = false; budgetDb = true; budgetUI(); renderBudget();
+      $('budgetNote').textContent = '（已保存到后台，' + new Date().toLocaleString() + '）';
+    });
+    on('bGhReset', () => { try{ localStorage.removeItem('fw_gh'); }catch(_){} alert('已清除本设备保存的 GitHub 令牌，下次备份时重新输入。'); });
+    on('bGhSave', async () => {
+      if(!budgetRows){ alert('还没有预算内容'); return; }
+      const c = ghCfg(); if(!c) return;
+      try{
+        const g = await ghApi(c, 'GET'); let sha; if(g.ok){ sha = (await g.json()).sha; } else if(g.status !== 404) throw new Error('读取失败 HTTP ' + g.status);
+        const content = b64enc(JSON.stringify({ event: EVENT(), saved_at: new Date().toISOString(), rows: budgetRows }, null, 1));
+        const p = await ghApi(c, 'PUT', { message: 'FW budget backup ' + new Date().toISOString(), content, sha });
+        if(!p.ok) throw new Error('写入失败 HTTP ' + p.status + (p.status === 404 ? '（仓库名不对或令牌未授权该仓库）' : ''));
+        $('budgetNote').textContent = '（已备份到 GitHub ' + c.repo + '/' + ghPath() + '，' + new Date().toLocaleString() + '）';
+      }catch(e){ alert('GitHub 备份失败：' + e.message); }
+    });
+    on('bGhLoad', async () => {
+      const c = ghCfg(); if(!c) return;
+      if(budgetRows && !confirm('用 GitHub 上的备份替换当前预算？（替换后可再点「编辑」→「保存到后台」）')) return;
+      try{
+        const g = await ghApi(c, 'GET'); if(!g.ok) throw new Error(g.status === 404 ? 'GitHub 上还没有备份' : 'HTTP ' + g.status);
+        const j = JSON.parse(b64dec((await g.json()).content)); if(!Array.isArray(j.rows)) throw new Error('备份格式不对');
+        budgetRows = j.rows; budgetEdit = false; budgetUI(); renderBudget();
+        $('budgetNote').textContent = '（已从 GitHub 恢复，备份时间 ' + new Date(j.saved_at).toLocaleString() + '；如需长期使用请再保存到后台）';
+      }catch(e){ alert('GitHub 恢复失败：' + e.message); }
+    });
+    on('bImport', async () => {
+      if(budgetRows && !confirm('用 Google 表格的内容替换当前预算？（替换后需再点「编辑」→「保存到后台」才会存下来）')) return;
+      try{ budgetRows = await fetchGoogleBudget(); budgetEdit = false; budgetUI(); renderBudget(); $('budgetNote').textContent = '（刚从 Google 表格导入，尚未保存到后台）'; }
+      catch(e){ alert('读取 Google 表格失败：' + e.message); }
+    });
+  })();
 
   // ---- FW 分组：方案二（杜娃单独一组）----
   (function(){
