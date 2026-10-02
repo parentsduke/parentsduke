@@ -659,6 +659,7 @@
           <button class="btn ghost" id="bGhSave" type="button">备份到 GitHub</button>
           <button class="btn ghost" id="bGhLoad" type="button">从 GitHub 恢复</button>
           <button class="btn ghost" id="bGhReset" type="button">重设 GitHub 令牌</button>
+          <button class="btn ghost" id="bDl" type="button">下载备份文件</button>
         </div>
         <div class="rsvp-stats" id="budgetStats"></div>
         <div class="rsvp-scroll"><table class="budget-table" id="budgetTable"></table></div>
@@ -2053,7 +2054,7 @@ function exportMinutes(){
     return parseCSV(await res.text());
   }
   function budgetUI(){
-    $('bEdit').hidden = budgetEdit; $('bSave').hidden = !budgetEdit; $('bAdd').hidden = !budgetEdit; $('bCancel').hidden = !budgetEdit; $('bImport').hidden = budgetEdit || !BUDGET_CSV_URL; ['bGhSave','bGhLoad','bGhReset'].forEach(id => { $(id).hidden = budgetEdit; });
+    $('bEdit').hidden = budgetEdit; $('bSave').hidden = !budgetEdit; $('bAdd').hidden = !budgetEdit; $('bCancel').hidden = !budgetEdit; $('bImport').hidden = budgetEdit || !BUDGET_CSV_URL; ['bGhSave','bGhLoad','bGhReset','bDl'].forEach(id => { $(id).hidden = budgetEdit; });
   }
   async function loadBudget(){
     const sb = window.fwSb;
@@ -2120,6 +2121,12 @@ function exportMinutes(){
       budgetRows = data; budgetEdit = false; budgetDb = true; budgetUI(); renderBudget();
       $('budgetNote').textContent = '（已保存到后台，' + new Date().toLocaleString() + '）';
     });
+    on('bDl', () => {
+      if(!budgetRows){ alert('还没有预算内容'); return; }
+      const blob = new Blob([JSON.stringify({ event: EVENT(), saved_at: new Date().toISOString(), rows: budgetRows }, null, 1)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'fw-budget-' + EVENT() + '-' + new Date().toISOString().slice(0, 10) + '.json';
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    });
     on('bGhReset', () => { try{ localStorage.removeItem('fw_gh'); }catch(_){} alert('已清除本设备保存的 GitHub 令牌，下次备份时重新输入。'); });
     on('bGhSave', async () => {
       if(!budgetRows){ alert('还没有预算内容'); return; }
@@ -2130,7 +2137,7 @@ function exportMinutes(){
         const p = await ghApi(c, 'PUT', { message: 'FW budget backup ' + new Date().toISOString(), content, sha });
         if(!p.ok) throw new Error('写入失败 HTTP ' + p.status + (p.status === 404 ? '（仓库名不对或令牌未授权该仓库）' : ''));
         $('budgetNote').textContent = '（已备份到 GitHub ' + c.repo + '/' + ghPath() + '，' + new Date().toLocaleString() + '）';
-      }catch(e){ alert('GitHub 备份失败：' + e.message); }
+      }catch(e){ alert('GitHub 备份失败：' + e.message + (/fetch/i.test(e.message) ? '\n（连不上 api.github.com：国内网络可能被屏蔽，可换网络/开代理，或点「下载备份文件」）' : '')); }
     });
     on('bGhLoad', async () => {
       const c = ghCfg(); if(!c) return;
