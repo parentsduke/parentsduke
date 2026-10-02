@@ -658,7 +658,6 @@
           <button class="btn ghost" id="bImport" type="button">从 Google 表格导入</button>
           <button class="btn ghost" id="bGhSave" type="button">备份到 GitHub</button>
           <button class="btn ghost" id="bGhLoad" type="button">从 GitHub 恢复</button>
-          <button class="btn ghost" id="bGhReset" type="button">重设 GitHub 令牌</button>
         </div>
         <div class="rsvp-stats" id="budgetStats"></div>
         <div class="rsvp-scroll"><table class="budget-table" id="budgetTable"></table></div>
@@ -2053,7 +2052,7 @@ function exportMinutes(){
     return parseCSV(await res.text());
   }
   function budgetUI(){
-    $('bEdit').hidden = budgetEdit; $('bSave').hidden = !budgetEdit; $('bAdd').hidden = !budgetEdit; $('bCancel').hidden = !budgetEdit; $('bImport').hidden = budgetEdit || !BUDGET_CSV_URL; ['bGhSave','bGhLoad','bGhReset'].forEach(id => { $(id).hidden = budgetEdit; });
+    $('bEdit').hidden = budgetEdit; $('bSave').hidden = !budgetEdit; $('bAdd').hidden = !budgetEdit; $('bCancel').hidden = !budgetEdit; $('bImport').hidden = budgetEdit || !BUDGET_CSV_URL; ['bGhSave','bGhLoad'].forEach(id => { $(id).hidden = budgetEdit; });
   }
   async function loadBudget(){
     const sb = window.fwSb;
@@ -2120,7 +2119,6 @@ function exportMinutes(){
       budgetRows = data; budgetEdit = false; budgetDb = true; budgetUI(); renderBudget();
       $('budgetNote').textContent = '（已保存到后台，' + new Date().toLocaleString() + '）';
     });
-    on('bGhReset', () => { try{ localStorage.removeItem('fw_gh'); }catch(_){} alert('已清除本设备保存的 GitHub 令牌，下次备份时重新输入。'); });
     on('bGhSave', async () => {
       if(!budgetRows){ alert('还没有预算内容'); return; }
       const c = ghCfg(); if(!c) return;
