@@ -2099,8 +2099,12 @@ function exportMinutes(){
     if(c && c.repo && c.token && !force) return c;
     const repo = prompt('GitHub 仓库（格式 owner/repo，建议用私有仓库）', (c && c.repo) || ''); if(!repo) return null;
     const token = prompt('GitHub 令牌（Fine-grained token，只授权该仓库的 Contents 读写）'); if(!token) return null;
-    c = { repo: repo.trim(), token: token.trim() }; try{ localStorage.setItem('fw_gh', JSON.stringify(c)); }catch(_){}
+    c = { repo: repo.trim().replace(/^https?:\/\/github\.com\//i, '').replace(/\.git$/i, '').replace(/^\/+|\/+$/g, ''), token: token.replace(/[^\x21-\x7e]/g, '') }; try{ localStorage.setItem('fw_gh', JSON.stringify(c)); }catch(_){}
     return c;
+  }
+  async function ghDiag(){
+    try{ const r = await fetch('https://api.github.com/rate_limit'); return r.ok ? '\n\n诊断：网络能连上 GitHub，问题出在带令牌的请求（令牌含异常字符，或仓库名格式不对）。请点「重设 GitHub 令牌」，重新复制粘贴令牌，仓库名只写 owner/repo。' : '\n\n诊断：GitHub 返回 HTTP ' + r.status; }
+    catch(_){ return '\n\n诊断：本页面连不上 api.github.com。可能是浏览器的广告/隐私拦截、私人 DNS、VPN，或网站的安全策略拦截了这个地址。可先点「下载备份文件」。'; }
   }
   async function ghApi(c, method, body){
     const r = await fetch('https://api.github.com/repos/' + c.repo + '/contents/' + ghPath(), { method, headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
@@ -2137,7 +2141,7 @@ function exportMinutes(){
         const p = await ghApi(c, 'PUT', { message: 'FW budget backup ' + new Date().toISOString(), content, sha });
         if(!p.ok) throw new Error('写入失败 HTTP ' + p.status + (p.status === 404 ? '（仓库名不对或令牌未授权该仓库）' : ''));
         $('budgetNote').textContent = '（已备份到 GitHub ' + c.repo + '/' + ghPath() + '，' + new Date().toLocaleString() + '）';
-      }catch(e){ alert('GitHub 备份失败：' + e.message + (/fetch/i.test(e.message) ? '\n（连不上 api.github.com：国内网络可能被屏蔽，可换网络/开代理，或点「下载备份文件」）' : '')); }
+      }catch(e){ alert('GitHub 备份失败：' + e.message + (/fetch/i.test(e.message) ? await ghDiag() : '')); }
     });
     on('bGhLoad', async () => {
       const c = ghCfg(); if(!c) return;
