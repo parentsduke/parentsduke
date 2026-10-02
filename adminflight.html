@@ -126,6 +126,9 @@
     table{font-size:12px;}
     th, td{padding:7px 6px;}
   }
+  th.sortable{cursor:pointer;user-select:none;white-space:nowrap;}
+  th.sortable:hover{color:var(--navy);}
+  th.sortable .arrow{font-size:11px;opacity:.7;margin-left:3px;}
 </style>
 </head>
 <body>
@@ -467,6 +470,19 @@
   }
 
   // ---------------- Unmatched ----------------
+  let unmatchedSort = { key: 'date', asc: true };
+
+  function sortValue(r, key){
+    switch (key){
+      case 'name':   return (r.student_name || '').toLowerCase();
+      case 'class':  return String(r.class_year || '');
+      case 'date':   return `${r.flight_date} ${r.flight_time}`;
+      case 'time':   return r.flight_time || '';
+      case 'target': return targetTime(r).getTime();
+      default:       return '';
+    }
+  }
+
   function renderUnmatched(){
     const area = document.getElementById('unmatchedArea');
     const unmatched = currentRows.filter(r => !r.group_id);
@@ -476,11 +492,20 @@
       return;
     }
 
+    const { key, asc } = unmatchedSort;
+    unmatched.sort((a, b) => {
+      const x = sortValue(a, key), y = sortValue(b, key);
+      return (x > y ? 1 : x < y ? -1 : 0) * (asc ? 1 : -1);
+    });
+
+    const th = (k, label) =>
+      `<th class="sortable" data-sort="${k}">${label}<span class="arrow">${key === k ? (asc ? '▲' : '▼') : ''}</span></th>`;
+
     area.innerHTML = `
       <div class="unmatched-chip">${unmatched.length} 人待匹配 · ${unmatched.length} pending</div>
       <table>
         <thead><tr>
-          <th>姓名</th><th>届次</th><th>日期</th><th>时间</th><th>预计目标时间</th><th>微信</th><th>手机</th>
+          ${th('name','姓名')}${th('class','届次')}${th('date','日期')}${th('time','时间')}${th('target','预计目标时间')}<th>微信</th><th>手机</th>
         </tr></thead>
         <tbody>
           ${unmatched.map(r => `
@@ -497,6 +522,14 @@
         </tbody>
       </table>
     `;
+
+    area.querySelectorAll('th.sortable').forEach(h => {
+      h.addEventListener('click', () => {
+        const k = h.dataset.sort;
+        unmatchedSort = { key: k, asc: unmatchedSort.key === k ? !unmatchedSort.asc : true };
+        renderUnmatched();
+      });
+    });
   }
 
   document.getElementById('filterDate').addEventListener('change', loadData);
