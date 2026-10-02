@@ -2101,7 +2101,7 @@ function exportMinutes(){
     return c;
   }
   async function ghApi(c, method, body){
-    const r = await fetch('https://api.github.com/repos/' + c.repo + '/contents/' + ghPath(), { method, headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+    const r = await fetch('https://api.github.com/repos/' + c.repo + '/contents/' + ghPath() + (method === 'GET' ? '?t=' + Date.now() : ''), { method, cache: 'no-store', headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
     if(r.status === 401 || r.status === 403){ try{ localStorage.removeItem('fw_gh'); }catch(_){} throw new Error('令牌无效或权限不足（已清除，请重新输入）'); }
     return r;
   }
