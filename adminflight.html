@@ -259,6 +259,7 @@
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
       currentTripType = btn.dataset.value;
+      selectedIds = new Set();
       previewClusters = [];
       renderPreview();
       loadData();
@@ -472,7 +473,45 @@
   }
 
   // ---------------- Unmatched ----------------
+  // id 可能是数字或 uuid：按数据里的原始类型还原
+  function r_id(idStr){
+    const hit = currentRows.find(r => String(r.id) === idStr);
+    return hit ? hit.id : idStr;
+  }
+
+  async function manualMatch(){
+    const statusEl = document.getElementById('manualStatus');
+    const picked = currentRows.filter(r => selectedIds.has(r.id) && !r.group_id);
+    if (picked.length < 2){ return; }
+
+    const dates = [...new Set(picked.map(r => r.flight_date))];
+    const names = picked.map(r => `${r.student_name}（${r.flight_date} ${r.flight_time}）`).join('\n');
+    let msg = `把以下 ${picked.length} 人配成一组？\nGroup these ${picked.length} people?\n\n${names}`;
+    if (dates.length > 1) msg += '\n\n⚠ 注意：日期不同 / Dates differ';
+    if (picked.length > parseInt(document.getElementById('maxGroupSize').value || '4', 10)) msg += '\n⚠ 超过人数上限 / Exceeds group size limit';
+    if (!confirm(msg)) return;
+
+    statusEl.textContent = '保存中... Saving...';
+    statusEl.className = 'status-line';
+
+    const earliest = picked.map(r => r.flight_date).sort()[0];
+    const gid = `${currentTripType}_${earliest}_m${Date.now().toString(36)}`;
+    const { error } = await supabaseClient
+      .from('rdu_match_requests')
+      .update({ group_id: gid })
+      .in('id', picked.map(r => r.id));
+
+    if (error){
+      statusEl.textContent = '保存失败 Failed: ' + error.message;
+      statusEl.className = 'status-line err';
+      return;
+    }
+    selectedIds.clear();
+    await loadData();
+  }
+
   let unmatchedSort = { key: 'date', asc: true };
+  let selectedIds = new Set();
 
   function sortValue(r, key){
     switch (key){
@@ -496,6 +535,9 @@
       return;
     }
 
+    const validIds = new Set(unmatched.map(r => r.id));
+    selectedIds = new Set([...selectedIds].filter(id => validIds.has(id)));
+
     const { key, asc } = unmatchedSort;
     unmatched.sort((a, b) => {
       const x = sortValue(a, key), y = sortValue(b, key);
@@ -507,13 +549,18 @@
 
     area.innerHTML = `
       <div class="unmatched-chip">${unmatched.length} 人待匹配 · ${unmatched.length} pending</div>
+      <div style="margin:10px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button type="button" id="manualMatchBtn" class="btn small" ${selectedIds.size >= 2 ? '' : 'disabled'}>手动配成一组 · Group selected (${selectedIds.size})</button>
+        <span class="status-line" id="manualStatus"></span>
+      </div>
       <table>
         <thead><tr>
-          ${th('name','姓名')}${th('class','届次')}${th('date','日期')}${th('time','时间')}${th('target','预计目标时间')}${th('flight','航班')}${th('buffer','缓冲(分钟)')}<th>地点</th><th>微信</th><th>家长微信</th><th>手机</th><th>邮箱</th><th>备注</th>
+          <th></th>${th('name','姓名')}${th('class','届次')}${th('date','日期')}${th('time','时间')}${th('target','预计目标时间')}${th('flight','航班')}${th('buffer','缓冲(分钟)')}<th>地点</th><th>微信</th><th>家长微信</th><th>手机</th><th>邮箱</th><th>备注</th>
         </tr></thead>
         <tbody>
           ${unmatched.map(r => `
             <tr>
+              <td><input type="checkbox" class="pick" data-id="${r.id}" ${selectedIds.has(r.id) ? 'checked' : ''}></td>
               <td>${escapeHtml(r.student_name)}</td>
               <td>${escapeHtml(r.class_year || '—')}</td>
               <td class="mono">${escapeHtml(r.flight_date)}</td>
@@ -532,6 +579,18 @@
         </tbody>
       </table>
     `;
+
+    area.querySelectorAll('input.pick').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const id = cb.dataset.id;
+        if (cb.checked) selectedIds.add(r_id(id)); else selectedIds.delete(r_id(id));
+        const btn = document.getElementById('manualMatchBtn');
+        btn.disabled = selectedIds.size < 2;
+        btn.textContent = `手动配成一组 · Group selected (${selectedIds.size})`;
+      });
+    });
+
+    document.getElementById('manualMatchBtn').addEventListener('click', manualMatch);
 
     area.querySelectorAll('th.sortable').forEach(h => {
       h.addEventListener('click', () => {
