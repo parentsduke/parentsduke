@@ -1011,7 +1011,7 @@ function flashButton(btn,label){
 const attendGrid = document.getElementById('attendGrid');
 const attendCountEl = document.getElementById('attendCount');
 const attended = new Set();
-const ATTEND_HIDE = new Set(['黄豫栋','刘延顺 YANSHUN LIU','李笑冰','li xinyu','Joanna Ma','X. CHEN']);   // 仅从「FW群未报名家长签到（临时到场）」列表中隐藏，其他地方（全部名单等）仍保留
+const ATTEND_HIDE = new Set(['黄豫栋','刘延顺 YANSHUN LIU','李笑冰','li xinyu','Joanna Ma','X. CHEN','newyork_guy']);   // 仅从「FW群未报名家长签到（临时到场）」列表中隐藏，其他地方（全部名单等）仍保留
 function renderAttend(filter=''){
   attendGrid.innerHTML='';
   const f = filter.trim().toLowerCase();
