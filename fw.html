@@ -656,6 +656,7 @@
           <button class="btn ghost" id="bAdd" type="button" hidden>＋ 加一行</button>
           <button class="btn ghost" id="bCancel" type="button" hidden>取消</button>
           <button class="btn ghost" id="bImport" type="button">从 Google 表格导入</button>
+          <button class="btn ghost" id="bPurchase" type="button">＋ 载入采购明细</button>
           <button class="btn ghost" id="bGhSave" type="button">备份到 GitHub</button>
           <button class="btn ghost" id="bGhLoad" type="button">从 GitHub 恢复</button>
         </div>
@@ -2033,8 +2034,8 @@ function exportMinutes(){
       const tr = document.createElement('tr'); const first = String(r[0] || '').trim();
       const nonEmpty = r.filter(x => String(x).trim() !== '').length;
       if(!budgetEdit && i === 0 && nonEmpty === 1){ tr.className = 'ttl'; const td = document.createElement('td'); td.colSpan = w; td.textContent = first; tr.appendChild(td); t.appendChild(tr); return; }
-      const isHead = /^item$/i.test(first);
-      if(/^(Total|Estimated)/i.test(first)) tr.className = 'tot';
+      const isHead = /^(item|商品|订单号)$/i.test(first);
+      if(/^(Total|Estimated|合计|总计|采购人均|采购订单小计|其他捐赠支出订单小计)/i.test(first)) tr.className = 'tot';
       for(let c = 0; c < w; c++){
         const v = String(r[c] == null ? '' : r[c]).trim();
         const td = document.createElement(isHead ? 'th' : 'td');
@@ -2052,7 +2053,7 @@ function exportMinutes(){
     return parseCSV(await res.text());
   }
   function budgetUI(){
-    $('bEdit').hidden = budgetEdit; $('bSave').hidden = !budgetEdit; $('bAdd').hidden = !budgetEdit; $('bCancel').hidden = !budgetEdit; $('bImport').hidden = budgetEdit || !BUDGET_CSV_URL; ['bGhSave','bGhLoad'].forEach(id => { $(id).hidden = budgetEdit; });
+    $('bEdit').hidden = budgetEdit; $('bSave').hidden = !budgetEdit; $('bAdd').hidden = !budgetEdit; $('bCancel').hidden = !budgetEdit; $('bImport').hidden = budgetEdit || !BUDGET_CSV_URL; ['bGhSave','bGhLoad','bPurchase'].forEach(id => { const el = $(id); if(el) el.hidden = budgetEdit; });
   }
   async function loadBudget(){
     const sb = window.fwSb;
@@ -2144,6 +2145,22 @@ function exportMinutes(){
       if(budgetRows && !confirm('用 Google 表格的内容替换当前预算？（替换后需再点「编辑」→「保存到后台」才会存下来）')) return;
       try{ budgetRows = await fetchGoogleBudget(); budgetEdit = false; budgetUI(); renderBudget(); $('budgetNote').textContent = '（刚从 Google 表格导入，尚未保存到后台）'; }
       catch(e){ alert('读取 Google 表格失败：' + e.message); }
+    });
+  })();
+
+  // ---- 聚会采购明细：一键载入到预算表（再点「保存到后台」存下来；以后在「编辑」里直接改）----
+  const PURCHASE_ROWS = [["聚会采购明细（Temu）— 毕业家长聚会 Cocktail Reception，蓝白主题"], ["商品", "采购人", "捐赠人", "采购（含税 $）", "家长聚会捐赠支出（含税 $）", "其他捐赠支出（含税$）", "数量", "规格", "订单号", "订购时间", "收到时间", "状态", "单价（$）", "商品小计（$）", "运费（$）", "税（$）", "含税合计（$）"], ["野餐沙滩毯", "", "", "$16.86", "", "", "3", "78.7×78.7 英寸", "PO-211-00693589402234024", "2026-09-28", "暂无送达日期", "已发货", "$5.24", "$15.72", "", "$1.14", "$16.86"], ["6 口 USB 车载充电器", "", "", "$89.02", "", "", "50", "黑色", "PO-211-00693589402234024", "2026-09-28", "暂无送达日期", "已发货", "$1.66", "$83.00", "", "$6.02", "$89.02"], ["三合一多功能充电线", "", "", "$78.83", "", "", "50", "玫瑰金，1.2 米", "PO-211-00693589402234024", "2026-09-28", "暂无送达日期", "已发货", "$1.47", "$73.50", "", "$5.33", "$78.83"], ["定制单面印刷横幅", "", "", "$6.05", "", "", "1", "59.06×82.68 英寸", "PO-211-00693589402234024", "2026-09-28", "预计 10/5–10/20", "预售", "$5.64", "$5.64", "", "$0.41", "$6.05"], ["移动电源", "", "", "$26.43", "", "", "5", "白色", "PO-211-00693725717114024", "2026-09-28", "2026-10-02", "已送达", "$4.33", "$21.65", "$2.99", "$1.79", "$26.43"], ["伸缩自拍杆三脚架（YUNTENG 99）", "", "", "$14.66", "", "", "4", "40 英寸，带蓝牙遥控", "PO-211-00693641831034024", "2026-09-28", "预计 9/30–10/7", "运输中", "$2.67", "$10.68", "$2.99", "$0.99", "$14.66"], ["野餐沙滩毯", "", "", "", "", "$49.25", "7", "78.7×78.7 英寸", "PO-211-20622288712314024", "2026-09-19", "2026-10-01", "已送达", "$6.56", "$45.92", "", "$3.33", "$49.25"], ["合计", "", "", "$231.85", "$0.00", "$49.25", "120", "", "", "", "", "", "", "$256.11", "$5.98", "$19.01", "$281.10"], ["总计（含税合计）", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "$281.10"], ["采购人均（按 100 人）", "", "", "$2.32", "", "", "", "", "", "", "", "", "", "", "", "", ""], ["订单核对（收据实付 vs 明细表，差额 $0 表示一致）"], ["订单号", "商品内容", "类别", "下单日期", "商品小计（$）", "运费（$）", "税（$）", "收据实付（$）", "明细表含税合计（$）", "与明细表差额"], ["PO-211-00693589402234024", "104 件：毯×3、充电器×50、充电线×50、横幅×1", "采购", "2026-09-28", "$177.86", "", "$12.90", "$190.76", "$190.76", "$0.00"], ["PO-211-00693641831034024", "自拍杆三脚架 ×4", "采购", "2026-09-28", "$10.68", "$2.99", "$0.99", "$14.66", "$14.66", "$0.00"], ["PO-211-00693725717114024", "移动电源 ×5", "采购", "2026-09-28", "$21.65", "$2.99", "$1.79", "$26.43", "$26.43", "$0.00"], ["PO-211-20622288712314024", "野餐沙滩毯 ×7", "捐赠", "2026-09-19", "$45.92", "", "$3.33", "$49.25", "$49.25", "$0.00"], ["采购订单小计", "", "", "", "$210.19", "$5.98", "$15.68", "$231.85", "$231.85", "$0.00"], ["其他捐赠支出订单小计", "", "", "", "$45.92", "$0.00", "$3.33", "$49.25", "$49.25", "$0.00"], ["总计", "", "", "", "$256.11", "$5.98", "$19.01", "$281.10", "$281.10", "$0.00"], ["说明：税 =（商品小计 + 运费）× 7.25%；9/28 三笔订单在 PayPal 合并付款 $231.85，9/19 的 7 条野餐沙滩毯单独付款 $49.25；横幅按促销价 $5.64 计。"]];
+  (function(){
+    const btn = $('bPurchase'); if(!btn) return;
+    btn.addEventListener('click', () => {
+      const had = budgetRows ? budgetRows.findIndex(r => String(r[0] || '').indexOf('聚会采购明细（Temu）') === 0) : -1;
+      if(had >= 0 && !confirm('预算表里已有一份采购明细，用最新的替换它？（你在那部分手动改过的内容会被覆盖）')) return;
+      if(!budgetRows) budgetRows = [['预算与收支'], ['Item', 'Amount'], ['Total Estimated Receipts', ''], ['Total Estimated Cost', ''], ['Estimated Net Balance', '']];
+      budgetBackup = JSON.stringify(budgetRows);
+      if(had >= 0) budgetRows.splice(had, PURCHASE_ROWS.length);
+      PURCHASE_ROWS.forEach(r => budgetRows.push(r.slice()));
+      budgetEdit = true; budgetUI(); renderBudget();
+      $('budgetNote').textContent = '（已载入采购明细，确认无误后点「💾 保存到后台」；不想要点「取消」）';
     });
   })();
 
