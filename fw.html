@@ -2047,6 +2047,14 @@ function exportMinutes(){
       t.appendChild(tr);
     });
   }
+  // 采购明细区块始终是整张预算表里最后被追加的一段（从标题行开始，一路到表尾），
+  // 所以「从 Google 表格导入」时，只要把替换前表里这一段摘出来，替换后再拼回表尾，
+  // 不管表格被手动加过几行，都不会被 Google 表格的内容冲掉。
+  function extractTrailingBlock(rows, headerPrefix){
+    if(!rows) return null;
+    const idx = rows.findIndex(r => String(r[0] || '').indexOf(headerPrefix) === 0);
+    return idx < 0 ? null : rows.slice(idx);
+  }
   async function fetchGoogleBudget(){
     const res = await fetch(BUDGET_CSV_URL + (BUDGET_CSV_URL.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now(), { cache: 'no-store' });
     if(!res.ok) throw new Error('HTTP ' + res.status);
@@ -2142,9 +2150,18 @@ function exportMinutes(){
       }catch(e){ alert('GitHub 恢复失败：' + e.message); }
     });
     on('bImport', async () => {
-      if(budgetRows && !confirm('用 Google 表格的内容替换当前预算？（替换后需再点「编辑」→「保存到后台」才会存下来）')) return;
-      try{ budgetRows = await fetchGoogleBudget(); budgetEdit = false; budgetUI(); renderBudget(); $('budgetNote').textContent = '（刚从 Google 表格导入，尚未保存到后台）'; }
-      catch(e){ alert('读取 Google 表格失败：' + e.message); }
+      if(budgetRows && !confirm('用 Google 表格的内容替换当前预算？（如果已经载入过采购明细，会自动保留，不会被冲掉；替换后需再点「编辑」→「保存到后台」才会存下来）')) return;
+      try{
+        const oldPurchase = extractTrailingBlock(budgetRows, '聚会采购明细（Temu）');   // 导入前先把已有的采购明细摘出来
+        budgetRows = await fetchGoogleBudget();
+        if(oldPurchase){
+          const hadInNew = budgetRows.findIndex(r => String(r[0] || '').indexOf('聚会采购明细（Temu）') === 0);
+          if(hadInNew >= 0) budgetRows = budgetRows.slice(0, hadInNew);   // 以防 Google 表格自己也带了同名的一段，先去掉再拼回已保存的版本
+          oldPurchase.forEach(r => budgetRows.push(r.slice()));
+        }
+        budgetEdit = false; budgetUI(); renderBudget();
+        $('budgetNote').textContent = oldPurchase ? '（刚从 Google 表格导入，已自动保留原有的采购明细，尚未保存到后台）' : '（刚从 Google 表格导入，尚未保存到后台）';
+      }catch(e){ alert('读取 Google 表格失败：' + e.message); }
     });
   })();
 
