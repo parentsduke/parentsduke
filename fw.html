@@ -2274,7 +2274,7 @@ function exportMinutes(){
       const c=mk('第'+(i+2)+'组 · 家长', g.fams.length+' 家 · 高年级 '+g.sen+' 家 · '+g.n+' 位家长');
       tbl(c,['家长','届次','家长人数','孩子专业'],tb=>{
         g.fams.slice().sort((a,b)=>(gi(gradeOf[a.name])-gi(gradeOf[b.name]))||((rosterIdx[a.name]??9999)-(rosterIdx[b.name]??9999))).forEach(r=>{
-          const tr=document.createElement('tr'); const nt=document.createElement('td'); if(kid(r)){ if(gradeOf[r.name]==='27'){ nt.append('🎓 '); } } nt.append(r.name); if(kid(r)&&gradeOf[r.name]!=='27'){ const kb=document.createElement('span'); kb.className='grp-kid'; kb.textContent='杜娃'; nt.appendChild(kb); } tr.appendChild(nt); cell(tr,gl(r)); cell(tr,par(r)+' 人'); cell(tr,r.major||'—'); tb.appendChild(tr); }); });
+          const tr=document.createElement('tr'); const nt=document.createElement('td'); if((kid(r)&&gradeOf[r.name]==='27')||r.name==='Bin L'){ nt.append('🎓 '); } nt.append(r.name); if(kid(r)&&gradeOf[r.name]!=='27'){ const kb=document.createElement('span'); kb.className='grp-kid'; kb.textContent='杜娃'; nt.appendChild(kb); } tr.appendChild(nt); cell(tr,gl(r)); cell(tr,par(r)+' 人'); cell(tr,r.major||'—'); tb.appendChild(tr); }); });
       grid.appendChild(c);
     });
   }
