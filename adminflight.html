@@ -197,6 +197,9 @@
 
     <div class="section-title">未匹配 / 待处理登记<span class="en">Unmatched registrations</span></div>
     <div id="unmatchedArea"><div class="empty-state">暂无 · none</div></div>
+
+    <div class="section-title">已标记不需要匹配<span class="en">Skipped (no matching needed)</span></div>
+    <div id="skippedArea"><div class="empty-state">暂无 · none</div></div>
   </div>
 
 </div>
@@ -301,6 +304,7 @@
 
     renderSavedGroups();
     renderUnmatched();
+    renderSkipped();
   }
 
   // ---------------- Time helpers ----------------
@@ -326,7 +330,7 @@
     const maxSize = parseInt(document.getElementById('maxGroupSize').value || '4', 10);
 
     const ungrouped = currentRows
-      .filter(r => !r.group_id)
+      .filter(r => !r.group_id && !r.skip_match)
       .map(r => ({ row: r, t: targetTime(r) }))
       .sort((a, b) => a.t - b.t);
 
@@ -472,6 +476,44 @@
     });
   }
 
+  // ---------------- Skip (不需要匹配) ----------------
+  async function setSkip(ids, value){
+    const { error } = await supabaseClient
+      .from('rdu_match_requests')
+      .update({ skip_match: value })
+      .in('id', ids);
+    if (error){
+      alert('操作失败 Failed: ' + error.message +
+        '\n（请确认已在 Supabase 添加 skip_match 列）');
+      return;
+    }
+    selectedIds.clear();
+    await loadData();
+  }
+
+  function renderSkipped(){
+    const area = document.getElementById('skippedArea');
+    const skipped = currentRows.filter(r => r.skip_match && !r.group_id);
+    if (!skipped.length){
+      area.innerHTML = '<div class="empty-state">暂无 · none</div>';
+      return;
+    }
+    area.innerHTML = `
+      <div class="unmatched-chip">${skipped.length} 人已跳过 · ${skipped.length} skipped</div>
+      ${skipped.map(m => `
+        <div class="group-card">
+          <div class="meta">
+            <button type="button" class="btn small" data-unskip="${m.id}">恢复匹配 Restore</button>
+          </div>
+          ${memberLine(m)}
+        </div>
+      `).join('')}
+    `;
+    area.querySelectorAll('[data-unskip]').forEach(btn => {
+      btn.addEventListener('click', () => setSkip([r_id(btn.dataset.unskip)], false));
+    });
+  }
+
   // ---------------- Unmatched ----------------
   // id 可能是数字或 uuid：按数据里的原始类型还原
   function r_id(idStr){
@@ -481,7 +523,7 @@
 
   async function manualMatch(){
     const statusEl = document.getElementById('manualStatus');
-    const picked = currentRows.filter(r => selectedIds.has(r.id) && !r.group_id);
+    const picked = currentRows.filter(r => selectedIds.has(r.id) && !r.group_id && !r.skip_match);
     if (picked.length < 2){ return; }
 
     const dates = [...new Set(picked.map(r => r.flight_date))];
@@ -528,7 +570,7 @@
 
   function renderUnmatched(){
     const area = document.getElementById('unmatchedArea');
-    const unmatched = currentRows.filter(r => !r.group_id);
+    const unmatched = currentRows.filter(r => !r.group_id && !r.skip_match);
 
     if (!unmatched.length){
       area.innerHTML = '<div class="empty-state">暂无 · none</div>';
@@ -551,11 +593,12 @@
       <div class="unmatched-chip">${unmatched.length} 人待匹配 · ${unmatched.length} pending</div>
       <div style="margin:10px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
         <button type="button" id="manualMatchBtn" class="btn small" ${selectedIds.size >= 2 ? '' : 'disabled'}>手动配成一组 · Group selected (${selectedIds.size})</button>
+        <button type="button" id="skipSelectedBtn" class="btn ghost small" ${selectedIds.size >= 1 ? '' : 'disabled'}>标记不需要匹配 · Skip selected (${selectedIds.size})</button>
         <span class="status-line" id="manualStatus"></span>
       </div>
       <table>
         <thead><tr>
-          <th></th>${th('name','姓名')}${th('class','届次')}${th('date','日期')}${th('time','时间')}${th('target','预计目标时间')}${th('flight','航班')}${th('buffer','缓冲(分钟)')}<th>地点</th><th>微信</th><th>家长微信</th><th>手机</th><th>邮箱</th><th>备注</th>
+          <th></th>${th('name','姓名')}${th('class','届次')}${th('date','日期')}${th('time','时间')}${th('target','预计目标时间')}${th('flight','航班')}${th('buffer','缓冲(分钟)')}<th>地点</th><th>微信</th><th>家长微信</th><th>手机</th><th>邮箱</th><th>备注</th><th>操作</th>
         </tr></thead>
         <tbody>
           ${unmatched.map(r => `
@@ -574,6 +617,7 @@
               <td>${escapeHtml(r.phone || '—')}</td>
               <td>${escapeHtml(r.email || '—')}</td>
               <td>${escapeHtml(r.notes || '—')}</td>
+              <td><button type="button" class="btn ghost small" data-skip="${r.id}">不需要匹配</button></td>
             </tr>
           `).join('')}
         </tbody>
@@ -587,7 +631,20 @@
         const btn = document.getElementById('manualMatchBtn');
         btn.disabled = selectedIds.size < 2;
         btn.textContent = `手动配成一组 · Group selected (${selectedIds.size})`;
+        const sb = document.getElementById('skipSelectedBtn');
+        sb.disabled = selectedIds.size < 1;
+        sb.textContent = `标记不需要匹配 · Skip selected (${selectedIds.size})`;
       });
+    });
+
+    area.querySelectorAll('[data-skip]').forEach(btn => {
+      btn.addEventListener('click', () => setSkip([r_id(btn.dataset.skip)], true));
+    });
+    document.getElementById('skipSelectedBtn').addEventListener('click', () => {
+      const ids = [...selectedIds];
+      if (!ids.length) return;
+      if (!confirm(`将选中的 ${ids.length} 人标记为"不需要匹配"？\nMark ${ids.length} selected as no-match-needed?`)) return;
+      setSkip(ids, true);
     });
 
     document.getElementById('manualMatchBtn').addEventListener('click', manualMatch);
