@@ -2411,7 +2411,7 @@ function exportMinutes(){
           const np=par(r); let lab='—';
           if(np===1){ pn++; lab=gid+'-'+pad(pn); } else if(np>1){ const a=pn+1; pn+=np; lab=gid+'-'+pad(a)+'、'+pad(pn); }
           cell(tr,lab);
-          const nt=document.createElement('td'); if((kid(r)&&gradeOf[r.name]==='27')||r.name==='Bin L'){ nt.append('🎓 '); } nt.append(r.name); if(kid(r)&&gradeOf[r.name]==='27'&&kidCode[r.name]){ const kb2=document.createElement('span'); kb2.className='grp-kid'; kb2.textContent='杜娃 '+kidCode[r.name]; nt.appendChild(kb2); } if(kid(r)&&gradeOf[r.name]!=='27'){ const kb=document.createElement('span'); kb.className='grp-kid'; kb.textContent='杜娃 '+(kidCode[r.name]||''); nt.appendChild(kb); } tr.appendChild(nt); cell(tr,gl(r)); cell(tr,par(r)+' 人'); cell(tr,r.major||'—');
+          const nt=document.createElement('td'); if(gradeOf[r.name]==='27'||r.name==='Bin L'){ nt.append('🎓 '); } nt.append(r.name); if(kid(r)&&gradeOf[r.name]==='27'&&kidCode[r.name]){ const kb2=document.createElement('span'); kb2.className='grp-kid'; kb2.textContent='杜娃 '+kidCode[r.name]; nt.appendChild(kb2); } if(kid(r)&&gradeOf[r.name]!=='27'){ const kb=document.createElement('span'); kb.className='grp-kid'; kb.textContent='杜娃 '+(kidCode[r.name]||''); nt.appendChild(kb); } tr.appendChild(nt); cell(tr,gl(r)); cell(tr,par(r)+' 人'); cell(tr,r.major||'—');
           const mv=document.createElement('td'); const sel=document.createElement('select');
           [2,3,4].forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent='第'+n+'组'; if(n===gid) o.selected=true; sel.appendChild(o); });
           sel.addEventListener('change',()=>{ sel.disabled=true; setPlan2Ov(r.name,Number(sel.value)).then(()=>renderPlan2()); });
