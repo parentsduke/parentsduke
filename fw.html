@@ -543,6 +543,16 @@
   .grp-table th{color:var(--ink-soft);font-weight:500;}
   .grp-sen{display:inline-block;background:var(--gold);color:#fff;border-radius:10px;padding:0 7px;font-size:11px;margin-left:4px;}
   .grp-kid{display:inline-block;background:var(--duke-blue);color:#fff;border-radius:10px;padding:0 7px;font-size:11px;margin-left:4px;}
+  .grp2 select{font-size:13px;padding:3px 2px;max-width:100%;}
+  @media (max-width:560px){
+    .grp2,.grp2 tbody,.grp2 tr,.grp2 td{display:block;width:100%;}
+    .grp2 thead{display:none;}
+    .grp2 tr{padding:8px 12px;border-bottom:1px solid var(--line);}
+    .grp2 td{border:0;padding:2px 0 2px 72px;position:relative;min-height:22px;font-size:14px;}
+    .grp2 td::before{content:attr(data-label);position:absolute;left:0;top:2px;width:66px;color:var(--ink-soft);font-size:12.5px;}
+    .grp2 td:first-child{font-weight:600;color:var(--navy-deep);}
+    .grp2 select{font-size:16px;padding:6px 8px;}
+  }
   .rsvp-table.no-pay .pay-col{display:none;}
   .rsvp-table .pay-btn{border:1px solid var(--line);background:#fff;color:var(--duke-blue);border-radius:6px;padding:3px 10px;font-size:12.5px;cursor:pointer;font-family:inherit;}
   .rsvp-table .pay-btn.undo{color:var(--ink-soft);margin-left:6px;}
@@ -688,7 +698,7 @@
       <div class="grp-box" id="grpBox">
         <h3>FW 分组<small>按孩子专业大类分为 4 组，每组 8 个家庭；高年级（28 届及以上、含研究生）均衡分配。原有分组保持不变；管理员登录后，新增报名会按孩子专业自动加入对应的组（专业未定的进入家庭数最少的组）。</small></h3>
         <div class="tabs" id="grpTabs" style="margin:6px 0 14px;"><button type="button" class="tab-btn active" data-plan="1">方案一 · 按专业分 4 组</button><button type="button" class="tab-btn" data-plan="2">方案二 · 杜娃组 + 家长 3 组</button></div><div id="grpPlan1"><div class="grp-grid"><div class="grp-card"><div class="grp-head"><b>第1组</b> · 计算机 · 电子工程<small>8 家 · 高年级 3 家 · 16 人</small></div><table class="grp-table"><thead><tr><th>家长</th><th>届次</th><th>孩子专业</th></tr></thead><tbody><tr><td>Bin L <span class="grp-sen">高年级</span></td><td>'28</td><td>ECE/CS</td></tr><tr><td>Peter-Dad-James28-P-NC <span class="grp-sen">高年级</span></td><td>'28</td><td>Electrical &amp; Computer Engineering</td></tr><tr><td>Laura Wang <span class="grp-sen">高年级</span></td><td>'28</td><td>ECE &amp; CS</td></tr><tr><td>Mike</td><td>'30</td><td>Computer Science</td></tr><tr><td>Yubin</td><td>'29</td><td>Computer Science</td></tr><tr><td>Teresa Chen</td><td>'30</td><td>Computer Science+ statistics</td></tr><tr><td>RC</td><td>'30</td><td>Math+CS</td></tr><tr><td>&#x27;30 Victor妈妈 Sophia</td><td>'30</td><td>未定</td></tr></tbody></table></div><div class="grp-card"><div class="grp-head"><b>第2组</b> · 数理 · 工程<small>8 家 · 高年级 2 家 · 22 人</small></div><table class="grp-table"><thead><tr><th>家长</th><th>届次</th><th>孩子专业</th></tr></thead><tbody><tr><td>李宏 Darren Li Mom <span class="grp-sen">高年级</span></td><td>'27</td><td>Computer Science</td></tr><tr><td>Betty（伊人） <span class="grp-sen">高年级</span></td><td>研究生</td><td>Statistical Science</td></tr><tr><td>Jennifer Dai</td><td>'30</td><td>Mathematics</td></tr><tr><td>火星人</td><td>'30</td><td>Mechanical Engineering</td></tr><tr><td>Jing</td><td>'30</td><td>Mechanical Engineering</td></tr><tr><td>Nicole</td><td>'30</td><td>Biomedical Engineering</td></tr><tr><td>Taoer</td><td>'30</td><td>未定</td></tr><tr><td>元·Ding</td><td>'30</td><td>未定</td></tr></tbody></table></div><div class="grp-card"><div class="grp-head"><b>第3组</b> · 生命科学 · 医学预科<small>8 家 · 高年级 2 家 · 16 人</small></div><table class="grp-table"><thead><tr><th>家长</th><th>届次</th><th>孩子专业</th></tr></thead><tbody><tr><td>wendyzeng <span class="grp-sen">高年级</span></td><td>'27</td><td>Chemistry</td></tr><tr><td>Peifang <span class="grp-sen">高年级</span></td><td>'27</td><td>Biology &amp; Computer Science</td></tr><tr><td>Fenghai Guo</td><td>'30</td><td>Biology</td></tr><tr><td>Sophie</td><td>'30</td><td>Biology</td></tr><tr><td>Kathy Qi</td><td>'30</td><td>Pre med</td></tr><tr><td>北斗璇玑</td><td>'30</td><td>Pre med</td></tr><tr><td>Wei Luo</td><td>'30</td><td>Pre-med</td></tr><tr><td>Min</td><td>'30</td><td>未定</td></tr></tbody></table></div><div class="grp-card"><div class="grp-head"><b>第4组</b> · 心理 · 神经 · 经济社科<small>8 家 · 高年级 2 家 · 19 人</small></div><table class="grp-table"><thead><tr><th>家长</th><th>届次</th><th>孩子专业</th></tr></thead><tbody><tr><td>Liping <span class="grp-sen">高年级</span></td><td>'27</td><td>Econ, CS</td></tr><tr><td>Lily- ☀️🎶C <span class="grp-sen">高年级</span></td><td>'27</td><td>未定</td></tr><tr><td>Jian</td><td>'30</td><td>Economics</td></tr><tr><td>Sharon Xing</td><td>'30</td><td>Economics</td></tr><tr><td>Songlian</td><td>'30</td><td>心理学</td></tr><tr><td>晨露</td><td>'30</td><td>Neuroscience</td></tr><tr><td>敏</td><td>'30</td><td>Neuroscience</td></tr><tr><td>janelzhang</td><td>'30</td><td>Neuroscience</td></tr></tbody></table></div></div></div>
-<div id="grpPlan2" hidden><div class="grp-hint" id="grpPlan2Hint" style="font-size:13px;color:var(--ink-soft);margin-bottom:12px;">管理员登录后，按实时报名人数自动生成。</div><div class="grp-grid" id="grpPlan2Grid"></div></div>
+<div id="grpPlan2" hidden><div class="grp-hint" id="grpPlan2Hint" style="font-size:13px;color:var(--ink-soft);margin-bottom:12px;">管理员登录后，按实时报名人数自动生成。</div><div id="grpPlan2Bar" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"><button type="button" class="tab-btn" id="grpPlan2Copy">📋 复制分组</button><button type="button" class="tab-btn" id="grpPlan2Reset">↺ 恢复自动分组</button></div><div class="grp-grid" id="grpPlan2Grid"></div></div>
       </div>
       <div class="budget" id="budgetBox" hidden>
         <h3>预算与收支<small id="budgetNote"></small></h3>
@@ -2276,10 +2286,29 @@ function exportMinutes(){
     tb.addEventListener('click',e=>{ const b=e.target.closest('[data-plan]'); if(!b) return;
       tb.querySelectorAll('.tab-btn').forEach(x=>x.classList.toggle('active',x===b));
       document.getElementById('grpPlan1').hidden=b.dataset.plan!=='1';
-      document.getElementById('grpPlan2').hidden=b.dataset.plan!=='2'; });
+      document.getElementById('grpPlan2').hidden=b.dataset.plan!=='2';
+      if(b.dataset.plan==='2'&&window.fwSb&&typeof loadPlan2Ov==='function') loadPlan2Ov().then(()=>renderPlan2()); });
   })();
   // ---- FW 分组：方案一自动更新（原有分组不动，新增报名按专业自动入组）----
   let plan1Base=null;
+  // ---- FW 分组方案二：手动调整（存后台，所有管理员共享；后台未启用时退回本机）----
+  let plan2Ov={}, plan2Db=false;
+  async function loadPlan2Ov(){
+    const sb=window.fwSb; plan2Db=false; plan2Ov={};
+    if(sb){ try{ const r=await sb.rpc('fw_plan2_get',{p_event:EVENT()}); if(!r.error){ plan2Db=true; plan2Ov=(r.data&&r.data.data)||{}; return; } console.warn('fw_plan2_get',r.error); }catch(e){ console.warn('fw_plan2_get',e); } }
+    try{ plan2Ov=JSON.parse(localStorage.getItem('fwPlan2Ov_'+EVENT())||'{}')||{}; }catch(e){ plan2Ov={}; }
+  }
+  async function setPlan2Ov(name,grp){
+    const sb=window.fwSb;
+    if(plan2Db&&sb){ const r=await sb.rpc('fw_plan2_set',{p_event:EVENT(),p_name:name,p_group:grp});
+      if(r.error){ alert('保存失败：'+r.error.message); return; } await loadPlan2Ov(); return; }
+    plan2Ov[name]=grp; try{ localStorage.setItem('fwPlan2Ov_'+EVENT(),JSON.stringify(plan2Ov)); }catch(e){}
+  }
+  async function clearPlan2Ov(){
+    const sb=window.fwSb;
+    if(plan2Db&&sb){ const r=await sb.rpc('fw_plan2_clear',{p_event:EVENT()}); if(r.error){ alert('保存失败：'+r.error.message); return; } await loadPlan2Ov(); return; }
+    plan2Ov={}; try{ localStorage.removeItem('fwPlan2Ov_'+EVENT()); }catch(e){}
+  }
   function majorCat(r){ const m=String(r.major||'').toLowerCase().trim();
     if(!m||/未定|undecided|undeclared/.test(m)) return 4;
     if(/neuro|psych|心理|econ/.test(m)) return 3;
@@ -2347,9 +2376,14 @@ function exportMinutes(){
     const G=[0,1,2].map(()=>({fams:[],n:0,sen:0}));
     let k=0;
     order.forEach(r=>{ while(k<2 && G[k].n>0 && G[k].n+par(r)/2>cap) k++; G[k].fams.push(r); G[k].n+=par(r); if(isSen(r)) G[k].sen++; });
-    if(hint) hint.textContent='共 '+total+' 人 = 杜娃 '+kids.length+' 人 + 家长 '+parN+' 人。第 1 组为杜娃组（只有杜娃，没有家长）；全部家长按孩子专业大类依次分到第 2–4 组（计算机·电子 → 数理·工程 → 生命·医预 → 心理·经济社科），每组约 '+Math.round(cap)+' 位家长。家长人数 = 报名人数 − 参加的杜娃（按每家 1 位杜娃计）。';
+    // 手动调整：家庭 → 目标组（2–4）
+    const ov=plan2Ov||{}; let nMoved=0;
+    Object.keys(ov).forEach(nm=>{ const to=Number(ov[nm])-2; if(!(to>=0&&to<3)) return;
+      G.forEach((g,g0)=>{ if(g0===to) return; const ix=g.fams.findIndex(f=>f.name===nm); if(ix>=0){ const f=g.fams.splice(ix,1)[0]; G[to].fams.push(f); nMoved++; } }); });
+    G.forEach(g=>{ g.n=g.fams.reduce((a,r)=>a+par(r),0); g.sen=g.fams.filter(r=>isSen(r)).length; });
+    if(hint) hint.textContent='共 '+total+' 人 = 杜娃 '+kids.length+' 人 + 家长 '+parN+' 人。第 1 组为杜娃组（只有杜娃，没有家长）；全部家长按孩子专业大类依次分到第 2–4 组（计算机·电子 → 数理·工程 → 生命·医预 → 心理·经济社科），每组约 '+Math.round(cap)+' 位家长。家长人数 = 报名人数 − 参加的杜娃（按每家 1 位杜娃计）。每个家庭右侧的下拉可直接换组'+(nMoved?'（已手动调整 '+nMoved+' 家'+(plan2Db?'，所有管理员可见':'，仅保存在本机；后台未启用，见 fw_plan2.sql')+'）':(plan2Db?'':'（后台未启用，调整仅保存在本机，见 fw_plan2.sql）'))+'。';
     const mk=(title,sub)=>{ const c=document.createElement('div'); c.className='grp-card'; const hd=document.createElement('div'); hd.className='grp-head'; const b=document.createElement('b'); b.textContent=title; hd.appendChild(b); const sm=document.createElement('small'); sm.textContent=sub; hd.appendChild(sm); c.appendChild(hd); return c; };
-    const tbl=(c,heads,fill)=>{ const t=document.createElement('table'); t.className='grp-table'; t.innerHTML='<thead><tr>'+heads.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead>'; const tb=document.createElement('tbody'); fill(tb); t.appendChild(tb); c.appendChild(t); };
+    const tbl=(c,heads,fill)=>{ const t=document.createElement('table'); t.className='grp-table grp2'; t.innerHTML='<thead><tr>'+heads.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead>'; const tb=document.createElement('tbody'); fill(tb); tb.querySelectorAll('tr').forEach(tr=>{ Array.prototype.forEach.call(tr.children,(td,i)=>{ if(heads[i]) td.setAttribute('data-label',heads[i]); }); }); if(heads.indexOf('调整')>=0){ const th=t.querySelector('th:last-child'); if(th) th.style.width='84px'; } t.appendChild(tb); c.appendChild(t); };
     const gl=r=>gradeOf[r.name]?(gradeOf[r.name]==='研究生'?'研究生':"'"+gradeOf[r.name]):'—';
     // 预先计算：每个家庭在家长组（第2–4组）中的组号与编号，供杜娃组标注来源
     const famLoc={};
@@ -2370,16 +2404,27 @@ function exportMinutes(){
     // 家长 3 组
     G.forEach((g,i)=>{
       const c=mk('第'+(i+2)+'组 · 家长', g.fams.length+' 家 · 高年级 '+g.sen+' 家 · '+g.n+' 位家长');
-      tbl(c,['编号','家长','届次','家长人数','孩子专业'],tb=>{
+      tbl(c,['编号','家长','届次','家长人数','孩子专业','调整'],tb=>{
         let pn=0; const gid=i+2;
         g.fams.slice().sort((a,b)=>(gi(gradeOf[a.name])-gi(gradeOf[b.name]))||((rosterIdx[a.name]??9999)-(rosterIdx[b.name]??9999))).forEach(r=>{
           const tr=document.createElement('tr');
           const np=par(r); let lab='—';
           if(np===1){ pn++; lab=gid+'-'+pad(pn); } else if(np>1){ const a=pn+1; pn+=np; lab=gid+'-'+pad(a)+'、'+pad(pn); }
           cell(tr,lab);
-          const nt=document.createElement('td'); if((kid(r)&&gradeOf[r.name]==='27')||r.name==='Bin L'){ nt.append('🎓 '); } nt.append(r.name); if(kid(r)&&gradeOf[r.name]==='27'&&kidCode[r.name]){ const kb2=document.createElement('span'); kb2.className='grp-kid'; kb2.textContent='杜娃 '+kidCode[r.name]; nt.appendChild(kb2); } if(kid(r)&&gradeOf[r.name]!=='27'){ const kb=document.createElement('span'); kb.className='grp-kid'; kb.textContent='杜娃 '+(kidCode[r.name]||''); nt.appendChild(kb); } tr.appendChild(nt); cell(tr,gl(r)); cell(tr,par(r)+' 人'); cell(tr,r.major||'—'); tb.appendChild(tr); }); });
+          const nt=document.createElement('td'); if((kid(r)&&gradeOf[r.name]==='27')||r.name==='Bin L'){ nt.append('🎓 '); } nt.append(r.name); if(kid(r)&&gradeOf[r.name]==='27'&&kidCode[r.name]){ const kb2=document.createElement('span'); kb2.className='grp-kid'; kb2.textContent='杜娃 '+kidCode[r.name]; nt.appendChild(kb2); } if(kid(r)&&gradeOf[r.name]!=='27'){ const kb=document.createElement('span'); kb.className='grp-kid'; kb.textContent='杜娃 '+(kidCode[r.name]||''); nt.appendChild(kb); } tr.appendChild(nt); cell(tr,gl(r)); cell(tr,par(r)+' 人'); cell(tr,r.major||'—');
+          const mv=document.createElement('td'); const sel=document.createElement('select');
+          [2,3,4].forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent='第'+n+'组'; if(n===gid) o.selected=true; sel.appendChild(o); });
+          sel.addEventListener('change',()=>{ sel.disabled=true; setPlan2Ov(r.name,Number(sel.value)).then(()=>renderPlan2()); });
+          mv.appendChild(sel); tr.appendChild(mv); tb.appendChild(tr); }); });
       grid.appendChild(c);
     });
+    const bc=document.getElementById('grpPlan2Copy'), br=document.getElementById('grpPlan2Reset');
+    if(br){ br.disabled=false; br.onclick=()=>{ if(!Object.keys(ov).length) return; if(!confirm('清除手动调整，恢复自动分组？（所有管理员的调整都会清除）')) return; clearPlan2Ov().then(()=>renderPlan2()); }; }
+    if(bc){ bc.onclick=()=>{ const out=[]; grid.querySelectorAll('.grp-card').forEach(card=>{ const hd=card.querySelector('.grp-head'); out.push(hd.innerText.replace(/\n+/g,'  ').trim());
+        card.querySelectorAll('tbody tr').forEach(tr=>{ out.push(Array.prototype.filter.call(tr.children,td=>!td.querySelector('select')).map(td=>td.textContent.trim()).join(' ')); }); out.push(''); });
+      const txt=out.join('\n').trim(); const done=()=>{ bc.textContent='✅ 已复制'; setTimeout(()=>{ bc.textContent='📋 复制分组'; },1500); };
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done,()=>{ prompt('复制下面的文字：',txt); }); }
+      else { const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); done(); }catch(e){ prompt('复制下面的文字：',txt); } ta.remove(); } }; }
   }
   async function loadAdmin(){
     const sb = window.fwSb; if(!sb) return;
@@ -2402,7 +2447,7 @@ function exportMinutes(){
     window.fwRefreshPayStats = () => { if(rows && rows.length) render(); };
     window.fwPayOf = name => payOn ? (pays[name] || null) : null;      // 供签到区显示缴费状态
     if(window.fwSetCheckinFamilies) window.fwSetCheckinFamilies(rows, ntList);
-    render(); renderPlan1(); renderPlan2();
+    render(); renderPlan1(); await loadPlan2Ov(); renderPlan2();
     renderBudget(); loadBudget();
   }
   async function setPaid(name, amount){
