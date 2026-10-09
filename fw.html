@@ -289,6 +289,7 @@
   .poster-toggle .arrow{font-size:12.5px;color:var(--duke-blue);font-weight:400;white-space:nowrap;}
   #posterBody{margin-top:14px;}
   #posterBody[hidden]{display:none;}
+  #minutesCard[hidden]{display:none;}
   .poster-card img{
     width:100%;max-width:340px;border-radius:10px;border:1px solid var(--line);
     cursor:zoom-in;display:block;
@@ -485,6 +486,8 @@
     section{border:none;padding:12px 0;}
     body{background:#fff;}
     .stat-card,.pie-card,.form-card,.preview-card,.minutes-card{box-shadow:none;border:1px solid #ccc;}
+    #minutesCard[hidden]{display:block !important;}
+    #minutesToggle{display:none;}
   }
   .save-status{font-size:12.5px;color:var(--ink-soft);align-self:center;margin-left:4px;}
   .save-status.warn{color:#b3261e;}
@@ -774,7 +777,10 @@
       <h2>聚会记录</h2>
       <p>供聚会当天记录使用：填写基本信息、勾选出席家长、记录讨论要点与待办事项，结束后可打印或导出为文本。</p>
     </div>
-    <div class="minutes-card">
+    <div class="poster-card" style="margin-top:0;margin-bottom:16px;">
+      <button type="button" class="poster-toggle" id="minutesToggle" aria-expanded="false" aria-controls="minutesCard"><span>📝 聚会记录（已折叠）</span><span class="arrow">点击展开 ▾</span></button>
+    </div>
+    <div class="minutes-card" id="minutesCard" hidden>
       <div class="minutes-meta">
         <div class="field"><label>日期</label><input type="date" id="rDate"></div>
         <div class="field"><label>时间</label><input type="time" id="rTime"></div>
@@ -1037,6 +1043,19 @@ function generateInvite(){
 
 generateInvite();   // 页面加载即显示已确定的通知文案
 
+// 聚会记录卡片：折叠 / 展开
+(function(){
+  const tg = document.getElementById('minutesToggle'), card = document.getElementById('minutesCard');
+  if(!tg || !card) return;
+  const set = open => {
+    card.hidden = !open;
+    tg.setAttribute('aria-expanded', String(open));
+    tg.querySelector('span').textContent = open ? '📝 聚会记录' : '📝 聚会记录（已折叠）';
+    tg.querySelector('.arrow').textContent = open ? '点击收起 ▴' : '点击展开 ▾';
+  };
+  tg.addEventListener('click', () => set(card.hidden));
+  document.querySelectorAll('a[href="#minutes"]').forEach(a => a.addEventListener('click', () => set(true)));   // 点导航「聚会记录」自动展开
+})();
 // 海报点击放大 / 再点关闭
 (function(){
   const img = document.getElementById('posterImg'), lb = document.getElementById('posterLb'), big = document.getElementById('posterLbImg');
