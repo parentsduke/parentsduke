@@ -710,10 +710,10 @@
     <div class="section-head">
       <div class="section-eyebrow">GATHERING</div>
       <h2>聚会时间安排</h2>
-      <p>填写本次线下聚会的信息，会自动生成一段可直接复制到群里的通知文案。</p>
+      <p>本次线下聚会的通知文案如下，可直接复制到群里。</p>
     </div>
-    <div class="invite-grid">
-      <div class="form-card">
+    <div class="invite-grid" style="grid-template-columns:1fr;">
+      <div class="form-card" hidden style="display:none;">
         <div class="field-row">
           <div class="field">
             <label>日期</label>
@@ -752,6 +752,7 @@
       </div>
       <div class="preview-card">
         <h4>群通知预览</h4>
+        <div class="btn-row" style="margin:0 0 10px;"><button class="btn ghost" onclick="copyInvite()">复制文案</button></div>
         <div class="invite-preview" id="invitePreview"><span class="ph">填写信息后点击「生成通知文案」，这里会出现可直接复制的通知内容……</span></div>
       </div>
     </div>
@@ -2332,16 +2333,23 @@ function exportMinutes(){
     const gl=r=>gradeOf[r.name]?(gradeOf[r.name]==='研究生'?'研究生':"'"+gradeOf[r.name]):'—';
     // 杜娃组
     const kc=mk('第1组 · 🎓 杜娃组', kids.length+' 位杜娃 · 无家长');
-    tbl(kc,['杜娃（家长）','届次','专业'],tb=>{
-      kids.forEach(r=>{ const tr=document.createElement('tr'); cell(tr,r.name+' 的杜娃'); cell(tr,gl(r)); cell(tr,r.major||'—'); tb.appendChild(tr); });
+    const pad=n=>String(n).padStart(2,'0');
+    tbl(kc,['编号','杜娃（家长）','届次','专业'],tb=>{
+      let kn=0;
+      kids.forEach(r=>{ const tr=document.createElement('tr'); kn++; cell(tr,'1-'+pad(kn)); cell(tr,r.name+' 的杜娃'); cell(tr,gl(r)); cell(tr,r.major||'—'); tb.appendChild(tr); });
       if(!kids.length){ const tr=document.createElement('tr'); cell(tr,'暂无杜娃报名'); tb.appendChild(tr); } });
     grid.appendChild(kc);
     // 家长 3 组
     G.forEach((g,i)=>{
       const c=mk('第'+(i+2)+'组 · 家长', g.fams.length+' 家 · 高年级 '+g.sen+' 家 · '+g.n+' 位家长');
-      tbl(c,['家长','届次','家长人数','孩子专业'],tb=>{
+      tbl(c,['编号','家长','届次','家长人数','孩子专业'],tb=>{
+        let pn=0; const gid=i+2;
         g.fams.slice().sort((a,b)=>(gi(gradeOf[a.name])-gi(gradeOf[b.name]))||((rosterIdx[a.name]??9999)-(rosterIdx[b.name]??9999))).forEach(r=>{
-          const tr=document.createElement('tr'); const nt=document.createElement('td'); if((kid(r)&&gradeOf[r.name]==='27')||r.name==='Bin L'){ nt.append('🎓 '); } nt.append(r.name); if(kid(r)&&gradeOf[r.name]!=='27'){ const kb=document.createElement('span'); kb.className='grp-kid'; kb.textContent='杜娃'; nt.appendChild(kb); } tr.appendChild(nt); cell(tr,gl(r)); cell(tr,par(r)+' 人'); cell(tr,r.major||'—'); tb.appendChild(tr); }); });
+          const tr=document.createElement('tr');
+          const np=par(r); let lab='—';
+          if(np===1){ pn++; lab=gid+'-'+pad(pn); } else if(np>1){ const a=pn+1; pn+=np; lab=gid+'-'+pad(a)+'、'+pad(pn); }
+          cell(tr,lab);
+          const nt=document.createElement('td'); if((kid(r)&&gradeOf[r.name]==='27')||r.name==='Bin L'){ nt.append('🎓 '); } nt.append(r.name); if(kid(r)&&gradeOf[r.name]!=='27'){ const kb=document.createElement('span'); kb.className='grp-kid'; kb.textContent='杜娃'; nt.appendChild(kb); } tr.appendChild(nt); cell(tr,gl(r)); cell(tr,par(r)+' 人'); cell(tr,r.major||'—'); tb.appendChild(tr); }); });
       grid.appendChild(c);
     });
   }
