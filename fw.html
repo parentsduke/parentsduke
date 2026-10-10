@@ -618,6 +618,7 @@
     <div class="section-head">
       <div class="section-eyebrow">CHECK-IN</div>
       <h2>现场签到</h2>
+      <p>每家签到后领取两件礼物：6-in-1 Multi-port car charger（六合一多口车充）和 3-in-1 USB flash charging cable（三合一快充线），发放时在家庭卡片里分别点击确认。</p>
     </div>
     <div class="attend-count" style="display:none;">已签到 <b id="attendCount">0</b> / <span id="attendTotal">94</span> 位家长</div>
     <div style="font-size:15px;margin:-4px 0 12px;color:var(--ink);" id="attendPeople"></div>
@@ -1018,6 +1019,7 @@ const INVITE_INFO = {
   format: '高年级家长引导 · 按专业分组聚餐畅聊',
   dining: '台北101餐馆提供',
   cost: '$12 每人',
+  gift: '每家两件：6-in-1 Multi-port car charger（六合一多口车充）+ 3-in-1 USB flash charging cable（三合一快充线）',
   signup: 'dukeparents.org/fw_signup.html',
   weather: '如遇恶劣天气，请关注群内动态通知'
 };
@@ -1040,6 +1042,7 @@ function generateInvite(){
   text += `形式：${INVITE_INFO.format}\n`;
   text += `餐饮：${INVITE_INFO.dining}\n`;
   text += `费用：${INVITE_INFO.cost}\n`;
+  text += `签到礼：${INVITE_INFO.gift}\n`;
   if(deadline) text += `报名截止：${new Date(deadline+'T00:00:00').toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'})}\n`;
   text += `主持人：${host}\n`;
   text += `报名：${INVITE_INFO.signup}\n`;
@@ -1186,6 +1189,8 @@ renderAttend();
 // ---- 已报名家庭签到：按家庭 + 按 name tag（每个人单独签到，可部分到场）----
 // 同步键 n:<家长>|<到场人>；家庭内只要有一人到场，家长层 a:<家长> 也同步记为已签到（会议纪要沿用）
 const attendedPeople = new Set();
+const giftGot = new Map();        // 签到礼领取：'家长|c'(6-in-1 车充) / '家长|k'(3-in-1 充电线) → 确认时间戳；同步键 w:<家长>|c、w:<家长>|k
+const GIFTS = { c: '6-in-1 Multi-port car charger（车充）', k: '3-in-1 USB flash charging cable（充电线）' };
 const personTime = new Map();      // 签到时间：'家长|姓名' → 毫秒时间戳；同步时作为 n: 键的值(旧记录为 true，没有时间)
 const outsiders = new Map();       // 名单外到场：id → {n姓名, note备注, t录入时间, fee应缴, paid已收, by收款人}；同步键 o:<id>
 const outRec = v => ({ n: v.n, note: String(v.note || ''), g: String(v.g || ''), t: Number(v.t) || 0, fee: Number(v.fee) || 0, paid: Number(v.paid) || 0, by: String(v.by || ''), free: !!v.free });
@@ -1275,6 +1280,7 @@ function renderFamilies(filter){
     : '（登录管理员后，这里会列出已报名的家庭，按家庭和 name tag 签到；未报名的家长用下方「全部名单」签到。）';
   if(walkNames.length) st += (famList.length ? ' · ' : ' ') + '临时到场 ' + walkNames.length + ' 户 ' + wP + ' 人';
   if(outsiders.size) st += (st ? ' · ' : '') + '名单外 ' + outsiders.size + ' 人';
+  { let gc = 0, gk = 0; giftGot.forEach((v, k) => { if(k.endsWith('|c')) gc++; else if(k.endsWith('|k')) gk++; }); if(gc || gk) st += ' · 礼物已发：车充 ' + gc + ' 份、充电线 ' + gk + ' 份'; }
   famStat.textContent = st;
   const draw = (f, walk) => {
     const i = famInfo(f.name), n = i.here.length, full = n >= i.expected;
@@ -1325,7 +1331,18 @@ function renderFamilies(filter){
       pb.textContent = pd.fee === 0 ? '💲现场免费（' + heads + ' 人）' : pd.paid > 0 ? '💲现场已收 ' + $m(pd.paid) + (pd.by ? '（' + String(pd.by).split('@')[0] + '）' : '') + (due && pd.paid < due ? '，还差 ' + $m(due - pd.paid) : '') : '💲现场收款（' + heads + ' 人' + (due ? '，应缴 ' + $m(due) : '') + '）';
       chips.appendChild(pb);
     }
-    box.appendChild(chips); famListEl.appendChild(box);
+    box.appendChild(chips);
+    if(n){   // 签到后：两件礼物各自单独点击确认发放
+      const gr = document.createElement('div'); gr.className = 'fam-chips'; gr.style.marginTop = '6px';
+      const gl = document.createElement('span'); gl.textContent = '🎁 签到礼：'; gl.style.cssText = 'font-size:13px;color:var(--ink-soft);align-self:center;'; gr.appendChild(gl);
+      Object.keys(GIFTS).forEach(g => {
+        const got = giftGot.has(pKey(f.name, g)), gb = document.createElement('button'); gb.type = 'button';
+        gb.className = got ? 'on' : 'act'; gb.textContent = (got ? '✅ 已发 ' : '⬜ 确认发放 ') + GIFTS[g];
+        gb.dataset.act = 'gift'; gb.dataset.parent = f.name; gb.dataset.gift = g; if(got) gb.title = '确认后 10 分钟内可点击撤回'; gr.appendChild(gb);
+      });
+      box.appendChild(gr);
+    }
+    famListEl.appendChild(box);
   };
   famList.filter(f => famGradeOk(f.name) && (!q || f.name.toLowerCase().includes(q) || f.tags.some(t => t.toLowerCase().includes(q)))).forEach(f => draw(f, false));
   const wl = walkNames.filter(n => famGradeOk(n) && (!q || n.toLowerCase().includes(q)));
@@ -1361,6 +1378,18 @@ async function famListClickHandler(e) {
       if(![...attendedPeople].some(x => x.startsWith(parent + '|'))) attended.delete(parent);
       famSyncSave(); payRefresh();
     } else showAlready(person);
+    return;
+  }
+  if(act === 'gift'){      // 两件礼物分别确认；确认后 10 分钟内可撤回(点错时用)
+    const g = btn.dataset.gift, gk = pKey(parent, g), label = GIFTS[g], t0 = giftGot.get(gk);
+    if(t0){
+      if(typeof t0 === 'number' && Date.now() - t0 <= 10 * 60 * 1000){ if(!confirm('撤回「' + parent + '」的「' + label + '」领取记录？\n（仅确认后 10 分钟内可以撤回）')) return; giftGot.delete(gk); }
+      else { alert(parent + ' 已领取「' + label + '」。'); return; }
+    } else {
+      if(!confirm('确认已发给「' + parent + '」：\n' + label + '？')) return;
+      giftGot.set(gk, Date.now());
+    }
+    renderFamilies(); famBox.dispatchEvent(new Event('input', { bubbles: true }));
     return;
   }
   if(act === 'one'){ confirmCheckin(person).then(ok => { if(ok) famCheckIn(parent, [person]); }); return; }
@@ -1582,6 +1611,7 @@ function exportMinutes(){
     attended.forEach(n => { m['a:' + n] = true; });
     attendedPeople.forEach(k => { m['n:' + k] = personTime.get(k) || true; });
     outsiders.forEach((o, id) => { m['o:' + id] = outRec(o); });
+    giftGot.forEach((t, k) => { m['w:' + k] = t || true; });
     onsitePay.forEach((v, k) => { if(v.paid > 0 || v.fee != null){ const q = { paid: v.paid || 0, by: v.by || '' }; if(v.fee != null) q.fee = v.fee; m['q:' + k] = q; } });
     editables().forEach((e, i) => { m['d:' + i] = trimEnd(e.innerText); });
     Object.keys(AGENDA_LISTS).forEach(kp => AGENDA_LISTS[kp].querySelectorAll('li').forEach(li => {
@@ -1744,6 +1774,8 @@ function exportMinutes(){
     Object.keys(m).forEach(k => { if(k.startsWith('a:') && m[k] && valid.has(k.slice(2))) attended.add(k.slice(2)); });
     onsitePay.clear();
     Object.keys(m).forEach(k => { if(k.startsWith('q:') && m[k] && typeof m[k] === 'object' && valid.has(k.slice(2))){ const q = { paid: Number(m[k].paid) || 0, by: String(m[k].by || '') }; if(m[k].fee != null) q.fee = Number(m[k].fee) || 0; onsitePay.set(k.slice(2), q); } });
+    giftGot.clear();
+    Object.keys(m).forEach(k => { if(k.startsWith('w:') && m[k] && valid.has(k.slice(2).split('|')[0])) giftGot.set(k.slice(2), typeof m[k] === 'number' ? m[k] : true); });
     outsiders.clear();
     Object.keys(m).forEach(k => { if(k.startsWith('o:') && m[k] && typeof m[k].n === 'string') outsiders.set(k.slice(2), outRec(m[k])); });
     attendedPeople.clear();
@@ -1846,6 +1878,9 @@ function exportMinutes(){
     } else if(kind === 'q:'){
       if(gone || !value || typeof value !== 'object') onsitePay.delete(rest); else if(roster.some(r => r.name === rest)){ const q = { paid: Number(value.paid) || 0, by: String(value.by || '') }; if(value.fee != null) q.fee = Number(value.fee) || 0; onsitePay.set(rest, q); }
       renderFamilies(); payRefresh();
+    } else if(kind === 'w:'){
+      if(gone || value === false) giftGot.delete(rest); else if(roster.some(r => r.name === rest.split('|')[0])) giftGot.set(rest, typeof value === 'number' ? value : true);
+      renderFamilies();
     } else if(kind === 'o:'){
       if(gone || !value || typeof value.n !== 'string') outsiders.delete(rest); else outsiders.set(rest, outRec(value));
       renderFamGrade(); renderFamilies(); payRefresh();
