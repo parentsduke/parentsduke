@@ -220,7 +220,7 @@ const $ = id => document.getElementById(id);
 // 用 Intl 把访问者本地时间换算成美东时间的日期字符串，不受访问者所在时区影响（America/New_York 会自动处理夏令时/标准时切换）
 // ★ 报名截止日期：只需改这一行（美东时间的日期，含当天 23:59 为止，次日 00:00 起关闭）
 //   填 '0000-00-00' 表示"截止日期待定"：不设截止，表单一直开放
-const SIGNUP_LAST_DAY = '2026-10-07';
+const SIGNUP_LAST_DAY = '2026-10-10';
 function easternCutoff(){   // 最后一天的次日 = 截止分界日；无有效日期时返回 null（不截止）
   if(SIGNUP_LAST_DAY === '0000-00-00' || !/^\d{4}-\d{2}-\d{2}$/.test(SIGNUP_LAST_DAY)) return null;
   const d = new Date(SIGNUP_LAST_DAY + 'T00:00:00Z'); if(isNaN(d.getTime())) return null;
