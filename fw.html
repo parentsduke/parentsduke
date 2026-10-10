@@ -2406,6 +2406,7 @@ function exportMinutes(){
       G[t].fams.push({name:r.name,grade:gradeOf[r.name]?(gradeOf[r.name]==='研究生'?'研究生':"'"+gradeOf[r.name]):'—',major:r.major||'未定',isNew:true});
     });
     const isSen=f=>f.grade&&f.grade!=="'29"&&f.grade!=="'30"&&f.grade!=='—';
+    window.fwPlan1Export=G.map(g=>({title:g.titleNodes.map(n=>n.textContent).join('').trim(),fams:g.fams.map(f=>({name:f.name,grade:f.grade,major:f.major,guests:byName[f.name]?Number(byName[f.name].guests)||0:'',kid:byName[f.name]?(byName[f.name].kid_attends===true?'是':byName[f.name].kid_attends===false?'否':''):''}))}));
     box.textContent='';
     const grid=document.createElement('div'); grid.className='grp-grid';
     G.forEach(g=>{
@@ -2464,6 +2465,8 @@ function exportMinutes(){
         if(np===1){ pn++; lab=gid+'-'+String(pn).padStart(2,'0'); } else if(np>1){ const a=pn+1; pn+=np; lab=gid+'-'+String(a).padStart(2,'0')+'、'+String(pn).padStart(2,'0'); }
         famLoc[r.name]={gid:gid,lab:lab}; }); });
     const kidCode={}; kids.forEach((r,i)=>{ kidCode[r.name]='1-'+String(i+1).padStart(2,'0'); });
+    { const srt=(a,b)=>(gi(gradeOf[a.name])-gi(gradeOf[b.name]))||((rosterIdx[a.name]??9999)-(rosterIdx[b.name]??9999)); window.fwPlan2Export=[];
+      G.forEach((g,i)=>{ g.fams.slice().sort(srt).forEach(r=>{ const fl=famLoc[r.name]||{}; window.fwPlan2Export.push({gid:i+2,lab:fl.lab||'',name:r.name,grade:gl(r),par:par(r),kid:kid(r),kc:kidCode[r.name]||'',major:r.major||''}); }); }); }
     // 杜娃组
     const kc=mk('第1组 · 🎓 杜娃组', kids.length+' 位杜娃 · 无家长');
     const pad=n=>String(n).padStart(2,'0');
@@ -2636,6 +2639,27 @@ function exportMinutes(){
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = 'FW报名_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   });
+  // ---- 导出聚会分组（当前选中的方案，CSV，Excel 可直接打开）----
+  (function(){
+    const tb=document.getElementById('grpTabs'); if(!tb) return;
+    const b=document.createElement('button'); b.type='button'; b.className='tab-btn'; b.id='grpExport'; b.textContent='⬇ 导出当前方案 CSV'; b.style.marginLeft='auto'; tb.appendChild(b);
+    b.addEventListener('click',()=>{
+      const act=tb.querySelector('[data-plan].active'), plan=act?act.dataset.plan:'1', lines=[];
+      if(plan==='2'){
+        const d=window.fwPlan2Export||[]; if(!d.length){ alert('暂无分组数据（管理员登录后自动生成）。'); return; }
+        const owners=(typeof GROUP_OWNERS!=='undefined')?GROUP_OWNERS:{};
+        lines.push(['组别','负责人','编号','家长','Name Tag','届次','家长人数','杜娃参加','杜娃编号','孩子专业']);
+        d.forEach(x=>lines.push(['第'+x.gid+'组',owners[x.gid]||'',x.lab,x.name,nametags[x.name]||'',x.grade,x.par,x.kid?'是':'否',x.kc,x.major]));
+      } else {
+        const d=window.fwPlan1Export||[]; if(!d.length){ alert('暂无分组数据（管理员登录后自动生成）。'); return; }
+        lines.push(['组别','序号','家长','Name Tag','届次','FW参加人数（含杜娃）','杜娃是否参加','孩子专业']);
+        d.forEach(g=>g.fams.forEach((f,i)=>lines.push([g.title,i+1,f.name,nametags[f.name]||'',f.grade,f.guests,f.kid,f.major])));
+      }
+      const blob=new Blob(['\ufeff'+lines.map(l=>l.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
+      const url=URL.createObjectURL(blob), a=document.createElement('a');
+      a.href=url; a.download='FW分组_'+(plan==='2'?'方案二_':'方案一_')+EVENT()+'.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    });
+  })();
   // ---- 导出现场收款：名单外到场 + 临时到场家庭 + 已报名家庭现场加的人（这些不在报名缴费记录里，需单独对账）----
   $('onsiteCsv').addEventListener('click', () => {
     const fmt = t => t ? new Date(t).toLocaleString('zh-CN', { hour12: false }) : '';
