@@ -618,7 +618,7 @@
     <div class="section-head">
       <div class="section-eyebrow">CHECK-IN</div>
       <h2>现场签到</h2>
-      <p>每家签到后领取两件礼物：6-in-1 Multi-port car charger（六合一多口车充）和 3-in-1 USB flash charging cable（三合一快充线），发放时在家庭卡片里分别点击确认。各组负责人：第 2 组 Liwei、第 3 组 Aiye、第 4 组 Ivy；签到帮助：Haixia。</p>
+      <p>每家签到后领取两件礼物：6-in-1 Multi-port car charger（六合一多口车充）和 3-in-1 USB flash charging cable（三合一快充线），发放时在家庭卡片里分别点击确认。各组负责人：第 2 组 Liwei、第 3 组 Aiye、第 4 组 Ivy；签到帮助：Haixia。签到小礼物按 50 个家庭出席数预订，目前报名家庭已超过 50 户，小礼物已不够，聚会当天您可能不会获赠；聚会后我们会购买，然后转给您家孩子。</p>
     </div>
     <div class="attend-count" style="display:none;">已签到 <b id="attendCount">0</b> / <span id="attendTotal">96</span> 位家长</div>
     <div style="font-size:15px;margin:-4px 0 12px;color:var(--ink);" id="attendPeople"></div>
@@ -1020,6 +1020,7 @@ const INVITE_INFO = {
   dining: '台北101餐馆提供',
   cost: '$12 每人',
   gift: '每家两件：6-in-1 Multi-port car charger（六合一多口车充）+ 3-in-1 USB flash charging cable（三合一快充线）',
+  giftNote: '签到小礼物按 50 个家庭出席数预订，目前报名家庭已超过 50 户，小礼物已不够，聚会当天您可能不会获赠；聚会后我们会购买，然后转给您家孩子。',
   signup: 'dukeparents.org/fw_signup.html',
   weather: '如遇恶劣天气，请关注群内动态通知'
 };
@@ -1043,6 +1044,7 @@ function generateInvite(){
   text += `餐饮：${INVITE_INFO.dining}\n`;
   text += `费用：${INVITE_INFO.cost}\n`;
   text += `签到礼：${INVITE_INFO.gift}\n`;
+  text += `签到礼说明：${INVITE_INFO.giftNote}\n`;
   if(deadline) text += `报名截止：${new Date(deadline+'T00:00:00').toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'})}\n`;
   text += `主持人：${host}\n`;
   text += `报名：${INVITE_INFO.signup}\n`;
@@ -1303,7 +1305,7 @@ function renderFamilies(filter){
     : '（登录管理员后，这里会列出已报名的家庭，按家庭和 name tag 签到；未报名的家长用下方「全部名单」签到。）';
   if(walkNames.length) st += (famList.length ? ' · ' : ' ') + '临时到场 ' + walkNames.length + ' 户 ' + wP + ' 人';
   if(outsiders.size) st += (st ? ' · ' : '') + '名单外 ' + outsiders.size + ' 人';
-  { let gc = 0, gk = 0; giftGot.forEach((v, k) => { if(k.endsWith('|c')) gc++; else if(k.endsWith('|k')) gk++; }); if(gc || gk) st += ' · 礼物已发：车充 ' + gc + ' 份、充电线 ' + gk + ' 份'; }
+  { let gc = 0, gk = 0, gp = 0; giftGot.forEach((v, k) => { if(k.endsWith('|c')) gc++; else if(k.endsWith('|k')) gk++; else if(k.endsWith('|p')) gp++; }); if(gc || gk) st += ' · 礼物已发：车充 ' + gc + ' 份、充电线 ' + gk + ' 份'; if(gp) st += ' · 待补礼物 ' + gp + ' 户'; }
   famStat.textContent = st;
   const draw = (f, walk) => {
     const i = famInfo(f.name), n = i.here.length, full = n >= i.expected;
@@ -1365,6 +1367,9 @@ function renderFamilies(filter){
         gb.className = got ? 'on' : 'act'; gb.textContent = (got ? '✅ 已发 ' : '⬜ 确认发放 ') + GIFTS[g];
         gb.dataset.act = 'gift'; gb.dataset.parent = f.name; gb.dataset.gift = g; if(got) gb.title = '确认后 10 分钟内可点击撤回'; gr.appendChild(gb);
       });
+      const pend = giftGot.has(pKey(f.name, 'p')), pb = document.createElement('button'); pb.type = 'button';
+      pb.className = pend ? 'on' : 'act'; pb.textContent = pend ? '📦 待补礼物（点击取消）' : '📦 礼物不足，记为待补';
+      pb.dataset.act = 'gift'; pb.dataset.parent = f.name; pb.dataset.gift = 'p'; gr.appendChild(pb);
       box.appendChild(gr);
     }
     famListEl.appendChild(box);
@@ -1421,6 +1426,13 @@ async function famListClickHandler(e) {
     return;
   }
   if(act === 'gift'){      // 两件礼物分别确认；确认后 10 分钟内可撤回(点错时用)
+    if(btn.dataset.gift === 'p'){   // 待补：礼物不够时记一下，聚会后补购并转给孩子；可随时取消
+      const pk = pKey(parent, 'p');
+      if(giftGot.has(pk)){ if(!confirm('取消「' + parent + '」的待补礼物记录？')) return; giftGot.delete(pk); }
+      else { if(!confirm('把「' + parent + '」记为待补礼物？\n（聚会后补购，转给他们家孩子）')) return; giftGot.set(pk, Date.now()); }
+      renderFamilies(); famBox.dispatchEvent(new Event('input', { bubbles: true }));
+      return;
+    }
     const g = btn.dataset.gift, gk = pKey(parent, g), label = GIFTS[g], t0 = giftGot.get(gk);
     if(t0){
       if(typeof t0 === 'number' && Date.now() - t0 <= 10 * 60 * 1000){ if(!confirm('撤回「' + parent + '」的「' + label + '」领取记录？\n（仅确认后 10 分钟内可以撤回）')) return; giftGot.delete(gk); }
@@ -2664,6 +2676,25 @@ function exportMinutes(){
       const blob=new Blob(['\ufeff'+lines.map(l=>l.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
       const url=URL.createObjectURL(blob), a=document.createElement('a');
       a.href=url; a.download='FW分组_'+(plan==='2'?'方案二_':'方案一_')+EVENT()+'.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    });
+  })();
+  // ---- 导出待补礼物名单：已记为待补的家庭，以及已签到但两件礼物没领全的家庭（聚会后补购，转给孩子）----
+  (function(){
+    const bar = (typeof famGrpBar !== 'undefined') ? famGrpBar : null; if(!bar || !bar.parentNode) return;
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'tab-btn'; b.id = 'giftPendExport'; b.textContent = '⬇ 导出待补礼物名单'; b.style.margin = '0 0 8px';
+    bar.parentNode.insertBefore(b, bar);
+    b.addEventListener('click', () => {
+      const p2 = window.fwPlan2Of || {}, owners = (typeof GROUP_OWNERS !== 'undefined') ? GROUP_OWNERS : {}, lines = [['组别','负责人','家长','Name Tag','届次','到场人数','车充','充电线','状态']];
+      famList.forEach(f => {
+        const i = famInfo(f.name), here = i ? i.here.length : 0, c = giftGot.has(pKey(f.name, 'c')), k = giftGot.has(pKey(f.name, 'k')), pend = giftGot.has(pKey(f.name, 'p'));
+        if(!pend && !(here && !(c && k))) return;
+        const gid = p2[f.name];
+        lines.push([gid ? '第' + gid + '组' : '', gid ? (owners[gid] || '') : '', f.name, nametags[f.name] || '', gradeOf[f.name] || '', here, c ? '已发' : '未发', k ? '已发' : '未发', pend ? '待补' : '已到场未领全']);
+      });
+      if(lines.length === 1){ alert('目前没有待补礼物的家庭。'); return; }
+      const blob = new Blob(['\ufeff' + lines.map(l => l.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob), a = document.createElement('a');
+      a.href = url; a.download = 'FW待补礼物名单_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
     });
   })();
   // ---- 导出现场收款：名单外到场 + 临时到场家庭 + 已报名家庭现场加的人（这些不在报名缴费记录里，需单独对账）----
