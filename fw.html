@@ -583,6 +583,7 @@
   .nt-top{color:#666;letter-spacing:.06em;}
   .nt-name{font-weight:700;line-height:1.2;word-break:break-word;flex:1;display:flex;align-items:center;justify-content:center;}
   .nt-sub{color:#00539b;min-height:1em;}
+  .nt-major{color:#012169;font-weight:600;line-height:1.2;max-width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;}
   .nt-grp{font-weight:800;color:#fff;background:#00539b;border-radius:999px;padding:.02in .16in;line-height:1.3;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   @media print{
     body.print-nametags > :not(#nametagSheet){display:none !important;}
@@ -713,6 +714,7 @@
           <button class="btn ghost" id="rsvpRefresh" type="button">刷新</button>
           <select id="ntSize" title="Name Tag 尺寸" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--paper-warm);">
             <option value="big">Name Tag 4×3 in（6张/页）</option>
+            <option value="eight">Name Tag 4×2.5 in（8张/页）</option>
             <option value="small">Name Tag 3.5×2 in（10张/页）</option>
           </select>
           <button class="btn ghost" id="ntPrint" type="button">打印 Name Tag</button>
@@ -2781,7 +2783,7 @@ function exportMinutes(){
     a.href = url; a.download = '现场收款_' + EVENT() + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   });
   // ---- 打印 Name Tag：一人一张，按尺寸自动分页 ----
-  const NT_SIZES = { big: { w: 4, h: 3, cols: 2, rows: 3, k: 1 }, small: { w: 3.5, h: 2, cols: 2, rows: 5, k: 0.72 } };
+  const NT_SIZES = { big: { w: 4, h: 3, cols: 2, rows: 3, k: 1 }, eight: { w: 4, h: 2.5, cols: 2, rows: 4, k: 0.9 }, small: { w: 3.5, h: 2, cols: 2, rows: 5, k: 0.72 } };
   $('ntPrint').addEventListener('click', () => {
     const cfg = NT_SIZES[$('ntSize').value] || NT_SIZES.big;
     const tags = []; let missing = 0, noGrp = 0;
@@ -2792,7 +2794,8 @@ function exportMinutes(){
       const sub = gradeOf[r.name] ? gradeLabel(gradeOf[r.name]).replace('Class of 20', '20') : '';
       const grp = p2[r.name] || '';
       if(!grp) noGrp++;
-      list.forEach(n => tags.push({ name: n, sub, grp }));
+      const major = String(r.major || '').trim();
+      list.forEach(n => tags.push({ name: n, sub, grp, major }));
     });
     if(!tags.length){ alert('还没有可打印的 Name Tag（需要家长在报名页填写胸牌姓名）。'); return; }
     if(missing && !confirm('有 ' + missing + ' 位已报名的家长没有填写胸牌姓名，不会生成他们的 Name Tag。\n\n共 ' + tags.length + ' 张，继续打印吗？')) return;
@@ -2812,6 +2815,7 @@ function exportMinutes(){
         const sub = document.createElement('div'); sub.className = 'nt-sub'; sub.textContent = t.sub; sub.style.fontSize = (11 * cfg.k) + 'pt';
         d.append(top, nm);
         if(t.grp){ const g = document.createElement('div'); g.className = 'nt-grp'; g.textContent = '第 ' + t.grp + ' 组 · GROUP ' + t.grp; g.style.fontSize = (15 * cfg.k) + 'pt'; g.style.margin = (3 * cfg.k) + 'pt 0'; d.append(g); }
+        if(t.major){ const mj = document.createElement('div'); mj.className = 'nt-major'; mj.textContent = '专业 Major: ' + t.major; mj.style.fontSize = ((t.major.length > 28 ? 9 : 11) * cfg.k) + 'pt'; mj.style.marginBottom = (2 * cfg.k) + 'pt'; d.append(mj); }
         d.append(sub); page.appendChild(d);
       });
       sheet.appendChild(page);
