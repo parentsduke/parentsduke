@@ -583,6 +583,7 @@
   .nt-top{color:#666;letter-spacing:.06em;}
   .nt-name{font-weight:700;line-height:1.2;word-break:break-word;flex:1;display:flex;align-items:center;justify-content:center;}
   .nt-sub{color:#00539b;min-height:1em;}
+  .nt-grp{font-weight:800;color:#fff;background:#00539b;border-radius:999px;padding:.02in .16in;line-height:1.3;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   @media print{
     body.print-nametags > :not(#nametagSheet){display:none !important;}
     body.print-nametags #nametagSheet{display:block !important;}
@@ -2783,15 +2784,19 @@ function exportMinutes(){
   const NT_SIZES = { big: { w: 4, h: 3, cols: 2, rows: 3, k: 1 }, small: { w: 3.5, h: 2, cols: 2, rows: 5, k: 0.72 } };
   $('ntPrint').addEventListener('click', () => {
     const cfg = NT_SIZES[$('ntSize').value] || NT_SIZES.big;
-    const tags = []; let missing = 0;
+    const tags = []; let missing = 0, noGrp = 0;
+    const p2 = window.fwPlan2Of || {};      // 家庭 → 组号（FW 方案二：第 2/3/4 组；杜娃随家庭）
     rows.forEach(r => {
       const list = ntList[r.name] || [];
       if(!list.length){ missing++; return; }
       const sub = gradeOf[r.name] ? gradeLabel(gradeOf[r.name]).replace('Class of 20', '20') : '';
-      list.forEach(n => tags.push({ name: n, sub }));
+      const grp = p2[r.name] || '';
+      if(!grp) noGrp++;
+      list.forEach(n => tags.push({ name: n, sub, grp }));
     });
     if(!tags.length){ alert('还没有可打印的 Name Tag（需要家长在报名页填写胸牌姓名）。'); return; }
     if(missing && !confirm('有 ' + missing + ' 位已报名的家长没有填写胸牌姓名，不会生成他们的 Name Tag。\n\n共 ' + tags.length + ' 张，继续打印吗？')) return;
+    if(noGrp && !confirm('有 ' + noGrp + ' 个家庭还没有分组（分组在管理员登录后自动生成），这些 Name Tag 上不会显示组号。\n\n继续打印吗？')) return;
     const sheet = $('nametagSheet'); sheet.innerHTML = '';
     const per = cfg.cols * cfg.rows;
     for(let i = 0; i < tags.length; i += per){
@@ -2805,7 +2810,9 @@ function exportMinutes(){
         const len = [...t.name].length;
         nm.style.fontSize = ((len <= 6 ? 36 : len <= 10 ? 28 : len <= 16 ? 22 : 17) * cfg.k) + 'pt';
         const sub = document.createElement('div'); sub.className = 'nt-sub'; sub.textContent = t.sub; sub.style.fontSize = (11 * cfg.k) + 'pt';
-        d.append(top, nm, sub); page.appendChild(d);
+        d.append(top, nm);
+        if(t.grp){ const g = document.createElement('div'); g.className = 'nt-grp'; g.textContent = '第 ' + t.grp + ' 组 · GROUP ' + t.grp; g.style.fontSize = (15 * cfg.k) + 'pt'; g.style.margin = (3 * cfg.k) + 'pt 0'; d.append(g); }
+        d.append(sub); page.appendChild(d);
       });
       sheet.appendChild(page);
     }
