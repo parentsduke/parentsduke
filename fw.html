@@ -579,7 +579,7 @@
   #nametagSheet{display:none;}
   .nt-page{display:grid;margin:0 auto;break-after:page;page-break-after:always;}
   .nt-page:last-child{break-after:auto;page-break-after:auto;}
-  .nt{box-sizing:border-box;border:1px dashed #999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.05in;text-align:center;padding:.2in .16in;overflow:hidden;background:#fff;color:#012169;break-inside:avoid;}
+  .nt{box-sizing:border-box;border:1px dashed #999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.04in;text-align:center;padding:.42in .16in .1in;overflow:hidden;background:#fff;color:#012169;break-inside:avoid;}
   .nt-top{color:#666;letter-spacing:.06em;}
   .nt-name{font-weight:700;line-height:1.15;word-break:break-word;flex:none;display:flex;align-items:center;justify-content:center;}
   .nt-sub{color:#00539b;min-height:0;}
@@ -2807,7 +2807,7 @@ function exportMinutes(){
       page.style.gridTemplateColumns = 'repeat(' + cfg.cols + ',' + cfg.w + 'in)';
       page.style.gridAutoRows = cfg.h + 'in'; page.style.width = (cfg.cols * cfg.w) + 'in';
       tags.slice(i, i + per).forEach(t => {
-        const d = document.createElement('div'); d.className = 'nt'; if(cfg.h <= 2) d.style.gap = '.03in';
+        const d = document.createElement('div'); d.className = 'nt'; if(cfg.h <= 2){ d.style.gap = '.03in'; d.style.paddingTop = '.3in'; }
         const top = document.createElement('div'); top.className = 'nt-top'; top.textContent = 'DUKE 家长 · FAMILY WEEKEND 2026'; top.style.fontSize = (8.5 * cfg.k + 1) + 'pt';
         const nm = document.createElement('div'); nm.className = 'nt-name'; nm.textContent = t.name;
         const len = [...t.name].length;
