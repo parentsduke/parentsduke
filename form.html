@@ -662,6 +662,25 @@
             <button class="rm" onclick="removeFile('sid')">✕</button>
           </div>
         </div>
+        <!-- Family Weekend 家长聚会参加者（可选证据） -->
+        <div class="form-group full" id="fwGroup">
+          <label>Family Weekend 家长聚会参加者（可选）</label>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;line-height:1.8;">
+            参加过 Duke Family Weekend 家长聚会的家长，可填写<strong style="color:#003087;">已在家长群里、与你认识的家长</strong>作为身份佐证，管理员将向其核实
+          </div>
+          <select id="fFwAttended" onchange="onFwChange(this.value)">
+            <option value="">请选择</option>
+            <option value="true">✅ 是，我参加了 Family Weekend 家长聚会</option>
+            <option value="false">❌ 否</option>
+          </select>
+          <div id="fwDetail" style="display:none;margin-top:10px;">
+            <label>认识的群内家长 <span class="req">*</span></label>
+            <input type="text" autocomplete="off" id="fFwKnownParent" style="width:100%;margin-top:6px;" placeholder="对方的群昵称或微信名称，如：Lily-杜妈-Amy-28T-CA"/>
+            <div style="margin-top:6px;padding:10px 14px;background:#eef2fa;border:1px solid rgba(0,48,135,0.15);border-radius:7px;font-size:12px;color:#003087;line-height:1.8;">
+              💡 请填写<strong>已在 Duke 家长群里</strong>的家长，并确保对方愿意为你确认身份
+            </div>
+          </div>
+        </div>
         <span id="progressLabel" style="display:none;">上传中…</span>
         <div class="progress-bar" style="display:none;"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       </div>
@@ -812,7 +831,19 @@
     document.getElementById('dormPhotoGroup').style.display = extraDisplay;
     document.getElementById('portalGroup').style.display    = extraDisplay;
     document.getElementById('sidGroup').style.display       = extraDisplay;
-    if (!showExtras) { removeFile('dorm'); removeFile('portal'); removeFile('sid'); }
+    document.getElementById('fwGroup').style.display        = extraDisplay;
+    if (!showExtras) { removeFile('dorm'); removeFile('portal'); removeFile('sid'); resetFw(); }
+  }
+
+  // ── Family Weekend 证据联动 ──
+  function onFwChange(val) {
+    document.getElementById('fwDetail').style.display = (val === 'true') ? 'block' : 'none';
+    if (val !== 'true') document.getElementById('fFwKnownParent').value = '';
+  }
+  function resetFw() {
+    document.getElementById('fFwAttended').value = '';
+    document.getElementById('fFwKnownParent').value = '';
+    document.getElementById('fwDetail').style.display = 'none';
   }
 
   function toggleCommitted(type) {
@@ -1024,9 +1055,14 @@
     if (!type)  { showError('请选择录取类型'); return; }
     if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
     if (type === 'RD' && rdCommitted === 'true' && !committedFile) { showError('已 Committed 需上传 Committed Letter 作为凭证'); return; }
-    // 至少需要上传一个文件
-    const hasAnyFile = letterFile || committedFile || dormFile || portalFile || sidFile;
-    if (!hasAnyFile) { showError('请至少上传一个文件（录取通知书、Committed Letter 等）'); return; }
+    // Family Weekend 证据：选择"是"时必须填写认识的群内家长
+    const fwAttended    = document.getElementById('fFwAttended').value;
+    const fwKnownParent = document.getElementById('fFwKnownParent').value.trim();
+    if (fwAttended === 'true' && !fwKnownParent) { showError('请填写你在家长群里认识的家长（群昵称或微信名称）'); return; }
+    // 至少需要一项证据：上传文件，或 Family Weekend 参加者佐证
+    const hasFwEvidence = fwAttended === 'true' && !!fwKnownParent;
+    const hasAnyFile = letterFile || committedFile || dormFile || portalFile || sidFile || hasFwEvidence;
+    if (!hasAnyFile) { showError('请至少提供一项证据（录取通知书、Committed Letter、Family Weekend 佐证等）'); return; }
 
     if (!document.getElementById('fSubmitterName').value.trim())    { showError('请填写群昵称'); return; }
     if (!document.getElementById('fParentRole').value)               { showError('请选择家长角色（爸爸/妈妈）'); return; }
@@ -1162,6 +1198,8 @@
         dorm_photo_path,
         portal_screenshot_path,
         student_id_path,
+        family_weekend_attended:     fwAttended === 'true' ? true : fwAttended === 'false' ? false : null,
+        family_weekend_known_parent: (fwAttended === 'true' && fwKnownParent) ? fwKnownParent : null,
         submitter_name:        document.getElementById('fSubmitterName').value.trim() || null,
         submitter_contact:     document.getElementById('fSubmitterContact').value.trim() || null,
         submitter_email:       submitterEmail || null,
@@ -1384,6 +1422,7 @@
     // 恢复录取类型显示
     document.getElementById('fType').closest('.form-group').style.display = '';
     removeFile('letter'); removeFile('committed'); removeFile('dorm'); removeFile('portal'); removeFile('sid');
+    resetFw();
     document.getElementById('formError').className = 'msg';
     document.getElementById('submitBtn').disabled = false;
     document.getElementById('submitBtn').textContent = '提 交';
