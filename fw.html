@@ -651,7 +651,7 @@
     <div class="section-head">
       <div class="section-eyebrow">CHECK-IN</div>
       <h2>现场签到</h2>
-      <p>每家签到后领取两件礼物：6-in-1 Multi-port car charger（六合一多口车充）和 3-in-1 USB flash charging cable（三合一快充线），发放时在家庭卡片里分别点击确认（最后报名的 5 个家庭暂无礼物，名单见下方红框，管理员登录后可见）。各组负责人：第 2 组 Liwei、第 3 组 Aiye、第 4 组 Ivy；签到帮助：Haixia。签到小礼物按 50 个家庭出席数预订，目前报名家庭已超过 50 户，小礼物已不够，聚会当天您可能不会获赠；聚会后我们会购买，然后转给您家孩子。</p>
+      <p>每家签到后领取两件礼物：6-in-1 Multi-port car charger（六合一多口车充）和 3-in-1 USB flash charging cable（三合一快充线），发放时在家庭卡片里分别点击确认（最后报名的几个家庭暂无礼物，名单见下方红框，管理员登录后可见）。各组负责人：第 2 组 Liwei、第 3 组 Aiye、第 4 组 Ivy；签到帮助：Haixia。签到小礼物按 50 个家庭出席数预订，目前报名家庭已超过 50 户，小礼物已不够，聚会当天您可能不会获赠；聚会后我们会购买，然后转给您家孩子。</p>
     </div>
     <div class="attend-count" style="display:none;">已签到 <b id="attendCount">0</b> / <span id="attendTotal">96</span> 位家长</div>
     <div style="font-size:15px;margin:-4px 0 12px;color:var(--ink);" id="attendPeople"></div>
@@ -1260,8 +1260,8 @@ const attendedPeople = new Set();
 const giftGot = new Map();        // 签到礼领取：'家长|c'(6-in-1 车充) / '家长|k'(3-in-1 充电线) → 确认时间戳；同步键 w:<家长>|c、w:<家长>|k
 const GIFTS = { c: '6-in-1 Multi-port car charger（车充）', k: '3-in-1 USB flash charging cable（充电线）' };
 // ---- 签到礼不够：按报名先后，最后报名的 NO_GIFT_N 个家庭暂无礼物（人数变了改这个数字即可）----
-const NO_GIFT_N = 5;
-const NO_GIFT_FIXED = [{ name: 'Lily', rank: 51 }, { name: 'Joanna Ma', rank: 52 }, { name: 'Peihua', rank: 53 }, { name: '张春春', rank: 54 }, { name: 'Jimmy Quan', rank: 55 }];   // 最后报名的 5 家（按 10/17 导出的 55 户报名表，备注码最大的 5 个）
+const NO_GIFT_N = 6;
+const NO_GIFT_FIXED = [{ name: 'Lily', rank: 51 }, { name: 'Joanna Ma', rank: 52 }, { name: 'Peihua', rank: 53 }, { name: '张春春', rank: 54 }, { name: 'Jimmy Quan', rank: 55 }, { name: 'Mi', rank: 56 }];   // 最后报名的 6 家（按 10/17 导出的 55 户报名表，备注码最大的 5 个）
 let noGiftSet = new Set(), noGiftList = [], noGiftBasis = '', noGiftTotal = 0;
 function computeNoGift(rows){
   const arr = (rows || []).map((r, i) => ({ name: r.name, i, t: Date.parse(r.created_at || r.updated_at || '') || 0 })).sort((a, b) => (a.t - b.t) || (a.i - b.i));
@@ -1271,6 +1271,12 @@ function computeNoGift(rows){
   if(NO_GIFT_FIXED.length){   // 已按报名 CSV 的备注码（首次报名顺序）确定名单，优先于按时间推算
     const have = new Set(arr.map(x => x.name));
     noGiftList = NO_GIFT_FIXED.filter(x => have.has(x.name));
+    const lastFx = arr.find(x => x.name === 'Mi');   // 冻结名单里最后一家；比它更晚报名的自动加入
+    if(lastFx && (rows || []).some(r => r.created_at)){
+      const fx = new Set(NO_GIFT_FIXED.map(x => x.name));
+      arr.filter(x => !fx.has(x.name) && x.t > lastFx.t)
+         .forEach((x, k) => noGiftList.push({ name: x.name, rank: 57 + k, t: x.t }));
+    }
     noGiftBasis = '报名顺序（备注码 FW184–FW197）';
   }
   noGiftSet = new Set(noGiftList.map(x => x.name));
