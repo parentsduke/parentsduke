@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Duke University 2030 RD</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #00123a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-family: 'EB Garamond', serif;
+      overflow: hidden;
+    }
+
+    /* 背景粒子 */
+    .bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,48,135,0.6) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(184,150,62,0.15) 0%, transparent 60%),
+        #00123a;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 900px;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* 顶部标识 */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+    .brand-d {
+      font-size: 32px;
+      font-weight: 600;
+      color: #B8963E;
+      letter-spacing: -1px;
+      font-family: 'EB Garamond', serif;
+    }
+    .brand-text {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* 视频容器 */
+    .video-wrap {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(184,150,62,0.2);
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.5s;
+      position: relative;
+      background: #000;
+    }
+    .video-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* 加载中提示 */
+    .loading-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.3);
+      font-size: 14px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 2px;
+      pointer-events: none;
+    }
+
+    /* 跳转倒计时条 */
+    .redirect-bar {
+      width: 100%;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .redirect-bar.show { opacity: 1; }
+    .redirect-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .redirect-label span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 1px;
+    }
+    .redirect-label a {
+      font-size: 12px;
+      color: #B8963E;
+      font-family: 'DM Mono', monospace;
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: opacity 0.2s;
+    }
+    .redirect-label a:hover { opacity: 0.7; }
+    .progress-track {
+      width: 100%;
+      height: 2px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #003087, #B8963E);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* 底部说明 */
+    .caption {
+      font-size: 13px;
+      color: rgba(255,255,255,0.25);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 1px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.8s;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .brand-d { font-size: 24px; }
+      .brand-text { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="wrap">
+
+  <div class="brand">
+    <div class="brand-d">Duke</div>
+    <div class="brand-text">Class of 2030 · RD</div>
+  </div>
+
+  <div class="video-wrap" id="videoWrap">
+    <div class="loading-hint" id="loadingHint">加载中…</div>
+    <iframe id="videoFrame" src="" allowfullscreen
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+    </iframe>
+  </div>
+
+  <div class="redirect-bar" id="redirectBar">
+    <div class="redirect-label">
+      <span id="countLabel">视频结束后自动跳转…</span>
+      <a href="index.html">立即前往 →</a>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <div class="caption">dukeparents.org</div>
+
+</div>
+
+<script>
+  const YT_EMBED  = 'https://www.youtube.com/embed/VpeycZqQMMY?autoplay=1&rel=0&enablejsapi=1';
+  const BILI_EMBED = 'https://player.bilibili.com/player.html?bvid=BV1dtAVzHEFk&autoplay=1';
+  const REDIRECT_URL = 'index.html';
+  const REDIRECT_DELAY = 5; // 视频结束后几秒跳转
+
+  let redirectTimer = null;
+  let useYT = false;
+
+  // ── 检测网络，选择视频源 ──
+  async function init() {
+    try {
+      await Promise.race([
+        fetch('https://www.youtube.com/favicon.ico', { mode: 'no-cors' }),
+        new Promise((_, rej) => setTimeout(() => rej(), 3000))
+      ]);
+      useYT = true;
+    } catch(e) {
+      useYT = false;
+    }
+
+    const frame = document.getElementById('videoFrame');
+    frame.src = useYT ? YT_EMBED : BILI_EMBED;
+    document.getElementById('loadingHint').style.display = 'none';
+
+    if (useYT) {
+      setupYouTubeAPI();
+    } else {
+      // B站无法监听结束事件，改为定时跳转（可根据视频时长调整）
+      setupFallbackRedirect();
+    }
+  }
+
+  // ── YouTube API 监听视频结束 ──
+  function setupYouTubeAPI() {
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  }
+
+  window.onYouTubeIframeAPIReady = function() {
+    new YT.Player('videoFrame', {
+      events: {
+        onStateChange: function(e) {
+          if (e.data === YT.PlayerState.ENDED) {
+            startRedirectCountdown();
+          }
+        }
+      }
+    });
+  };
+
+  // ── B站备用：监听 iframe 消息（部分支持）+ 页面可见性兜底 ──
+  function setupFallbackRedirect() {
+    window.addEventListener('message', function(e) {
+      if (e.data && (e.data.event === 'ended' || e.data.type === 'ended')) {
+        startRedirectCountdown();
+      }
+    });
+  }
+
+  // ── 倒计时跳转 ──
+  function startRedirectCountdown() {
+    if (redirectTimer) return;
+    const bar = document.getElementById('redirectBar');
+    const fill = document.getElementById('progressFill');
+    const label = document.getElementById('countLabel');
+    bar.classList.add('show');
+
+    let remaining = REDIRECT_DELAY;
+    const interval = 100;
+    const total = REDIRECT_DELAY * 1000;
+    let elapsed = 0;
+
+    redirectTimer = setInterval(() => {
+      elapsed += interval;
+      const pct = Math.min((elapsed / total) * 100, 100);
+      fill.style.width = pct + '%';
+      remaining = Math.ceil((total - elapsed) / 1000);
+      label.textContent = `${remaining} 秒后自动跳转…`;
+
+      if (elapsed >= total) {
+        clearInterval(redirectTimer);
+        window.location.href = REDIRECT_URL;
+      }
+    }, interval);
+  }
+
+  init();
+</script>
+</body>
+</html>

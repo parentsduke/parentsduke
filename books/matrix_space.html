@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>矩阵空间 · M(m×n) 的线性代数结构</title>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#faf8f2;
+    --panel:#ffffff;
+    --panel-2:#f1ede2;
+    --grid-line:rgba(30,42,66,0.07)
+    ;--grid-line-strong:rgba(30,42,66,0.14);
+    --text:#1a2233;
+    --text-dim:#4d5668;
+    --text-faint:#8891a1;
+    --mint:#0e8f73;
+    --gold:#b8791a;
+    --coral:#c0392b;
+    --ink-on-accent:#ffffff;
+    --serif:'Fraunces', Georgia, serif;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.65;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:44px 44px;
+  }
+  ::selection{background:var(--mint); color:var(--ink-on-accent);}
+  a{color:var(--mint);}
+  .wrap{max-width:980px; margin:0 auto; padding:0 28px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:120px 28px 90px;
+    position:relative;
+    border-bottom:1px solid var(--grid-line-strong);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 700px 400px at 82% 8%, rgba(14,143,115,0.08), transparent 60%),
+      radial-gradient(ellipse 500px 300px at 8% 90%, rgba(184,121,26,0.07), transparent 60%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--mint); margin:0 0 22px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:"["; color:var(--text-faint);}
+  .eyebrow::after{content:"]"; color:var(--text-faint);}
+  .hero h1{
+    font-family:var(--serif); font-weight:600; font-size:clamp(42px,7vw,84px);
+    margin:0 0 6px; letter-spacing:-0.01em; color:var(--text);
+    font-optical-sizing:auto;
+  }
+  .hero h1 em{font-style:italic; color:var(--mint); font-weight:500;}
+  .hero .sub{
+    max-width:640px; color:var(--text-dim); font-size:18px; margin:22px 0 40px;
+  }
+  .hero-formula{
+    display:inline-block; background:var(--panel); border:1px solid var(--grid-line-strong);
+    padding:22px 30px; border-radius:6px; font-size:19px; position:relative;
+  }
+  .hero-formula::before{
+    content:"定义域"; position:absolute; top:-11px; left:16px; background:var(--ink);
+    padding:0 8px; font-family:var(--mono); font-size:11px; color:var(--text-faint); letter-spacing:0.08em;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:78px 28px; border-bottom:1px solid var(--grid-line-strong); position:relative;}
+  section:last-of-type{border-bottom:none;}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:34px;}
+  .sec-num{font-family:var(--mono); color:var(--text-faint); font-size:14px; letter-spacing:0.05em;}
+  .sec-head h2{
+    font-family:var(--serif); font-size:clamp(26px,3.4vw,36px); font-weight:600; margin:0; color:var(--text);
+  }
+  .lead{color:var(--text-dim); max-width:680px; font-size:16px; margin-bottom:30px;}
+  p{color:var(--text-dim); font-size:16px;}
+  strong{color:var(--text); font-weight:600;}
+
+  .card{
+    background:var(--panel); border:1px solid var(--grid-line-strong); border-radius:8px; padding:26px 28px;
+  }
+  .callout{
+    background:var(--panel-2); border-left:3px solid var(--mint); border-radius:0 6px 6px 0;
+    padding:18px 22px; margin:22px 0; font-size:15px; color:var(--text-dim);
+  }
+  .callout b{color:var(--mint); font-family:var(--mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase; display:block; margin-bottom:6px;}
+
+  /* axioms checklist */
+  .axioms{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px;}
+  @media (max-width:640px){.axioms{grid-template-columns:1fr;}}
+  .axiom{
+    display:flex; gap:12px; padding:14px 16px; background:var(--panel); border:1px solid var(--grid-line-strong);
+    border-radius:6px; font-size:14.5px; color:var(--text-dim);
+  }
+  .axiom .mark{
+    flex:none; width:20px; height:20px; border-radius:4px; background:rgba(14,143,115,0.12);
+    color:var(--mint); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;
+    font-family:var(--mono);
+  }
+
+  /* basis grid */
+  .basis-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-top:26px;
+  }
+  .basis-cell{
+    background:var(--panel); border:1px solid var(--grid-line-strong); border-radius:6px;
+    padding:14px; text-align:center;
+  }
+  .mini-matrix{font-family:var(--mono); font-size:13px; color:var(--text-faint); line-height:1.5;}
+  .mini-matrix .hot{color:var(--gold); font-weight:700;}
+  .basis-cell .label{font-family:var(--mono); font-size:11px; color:var(--mint); margin-top:8px; letter-spacing:0.04em;}
+
+  /* subspace cards */
+  .subspaces{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;}
+  @media (max-width:700px){.subspaces{grid-template-columns:1fr;}}
+  .fourspace-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;}
+  @media (max-width:700px){.fourspace-grid{grid-template-columns:1fr;}}
+  .sub-card{
+    background:var(--panel); border:1px solid var(--grid-line-strong); border-radius:8px; padding:22px;
+    transition:border-color .2s ease, transform .2s ease;
+  }
+  .sub-card:hover{border-color:var(--mint); transform:translateY(-2px);}
+  .sub-card h3{font-family:var(--serif); font-size:20px; margin:0 0 8px; color:var(--text); font-weight:600;}
+  .sub-card .dim-tag{
+    display:inline-block; font-family:var(--mono); font-size:12px; color:var(--ink-on-accent); background:var(--gold);
+    padding:2px 8px; border-radius:3px; margin-bottom:12px; font-weight:700;
+  }
+  .sub-card .domain-tag{
+    display:inline-block; font-family:var(--mono); font-size:12px; color:var(--ink-on-accent); background:var(--mint);
+    padding:2px 8px; border-radius:3px; margin-bottom:12px; margin-left:8px; font-weight:700;
+  }
+  .sub-card .domain-tag--gold{background:var(--gold);}
+  .sub-card p{font-size:14.5px; margin:0;}
+  .sub-card .vivid-line{
+    font-size:12.5px; color:var(--text-faint); font-style:italic; margin-top:12px;
+    padding-top:10px; border-top:1px dashed var(--grid-line-strong);
+  }
+
+  /* four-spaces dimension calculator */
+  .calc-panel{
+    background:var(--panel); border:1px solid var(--grid-line-strong); border-radius:10px; padding:30px 32px;
+    margin-top:26px;
+  }
+  .calc-inputs{display:flex; gap:24px; flex-wrap:wrap; margin-bottom:26px;}
+  .calc-field{display:flex; flex-direction:column; gap:6px;}
+  .calc-field label{font-family:var(--mono); font-size:11px; color:var(--text-faint); letter-spacing:0.05em; text-transform:uppercase;}
+  .calc-field input{
+    width:84px; background:var(--panel-2); border:1px solid var(--grid-line-strong); border-radius:5px;
+    color:var(--text); font-family:var(--mono); font-size:16px; text-align:center; padding:9px 0;
+  }
+  .calc-field input:focus{outline:none; border-color:var(--mint);}
+  .space-diagram{display:flex; flex-direction:column; gap:16px;}
+  .space-row{display:flex; align-items:center; gap:14px;}
+  .space-row .space-label{width:66px; flex:none; font-family:var(--mono); font-size:13px; color:var(--text-dim);}
+  .space-bar{
+    flex:1; display:flex; height:52px; border-radius:6px; overflow:hidden; border:1px solid var(--grid-line-strong);
+  }
+  .space-bar .seg{
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:12.5px;
+    font-weight:600; white-space:nowrap; overflow:hidden; transition:flex-basis .25s ease;
+  }
+  .seg.row-space{background:var(--mint); color:var(--ink-on-accent);}
+  .seg.col-space{background:var(--gold); color:var(--ink-on-accent);}
+  .seg.null-space, .seg.leftnull-space{background:var(--panel-2); color:var(--text-dim); border-left:1px dashed var(--grid-line-strong);}
+  .calc-note{margin-top:18px; font-size:13.5px; color:var(--text-dim);}
+
+  /* insight panel: 看输入/看输出 mnemonic */
+  .insight-panel{
+    background:linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+    border:1px solid var(--grid-line-strong); border-radius:12px; padding:34px 36px 30px;
+    margin:6px 0 34px;
+  }
+  .io-eyebrow{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--text-faint); margin-bottom:4px;
+  }
+  .io-formula{text-align:center; padding:16px 0 24px; font-size:19px; overflow-x:auto;}
+  .io-columns{
+    display:grid; grid-template-columns:1fr 1fr; gap:28px; padding-top:22px;
+    border-top:1px dashed var(--grid-line-strong);
+  }
+  @media (max-width:700px){.io-columns{grid-template-columns:1fr; gap:22px;}}
+  .io-col-tag{
+    display:inline-block; font-family:var(--mono); font-size:11.5px; color:var(--ink-on-accent);
+    background:var(--mint); padding:3px 10px; border-radius:4px; margin-bottom:14px; letter-spacing:0.03em;
+  }
+  .io-col-tag--gold{background:var(--gold);}
+  .io-list{margin:0; padding-left:18px; color:var(--text-dim); font-size:14.5px;}
+  .io-list li{margin-bottom:10px;}
+  .io-list li:last-child{margin-bottom:0;}
+  .io-tagline{
+    text-align:center; margin-top:28px; padding-top:22px; border-top:1px solid var(--grid-line-strong);
+    font-family:var(--serif); font-size:25px; font-weight:600; color:var(--text); letter-spacing:0.01em;
+  }
+  .io-tagline .mint-word{color:var(--mint);}
+  .io-tagline .gold-word{color:var(--gold);}
+
+  /* big picture svg diagram */
+  .bigpicture{
+    background:var(--panel); border:1px solid var(--grid-line-strong); border-radius:10px;
+    padding:30px 32px; margin-top:20px;
+  }
+  .bigpicture-svg{width:100%; height:auto; display:block; max-width:640px; margin:0 auto;}
+  .bp-domain-label{font-family:var(--mono); font-size:13px; fill:var(--text-faint); letter-spacing:0.04em;}
+  .bp-box{fill:var(--panel-2); stroke:var(--grid-line-strong); stroke-width:1.5;}
+  .bp-divider{stroke:var(--grid-line-strong); stroke-width:1.5; stroke-dasharray:4 4;}
+  .bp-region-label{font-family:var(--sans); font-size:14px; font-weight:600;}
+  .bp-region-sub{font-family:var(--mono); font-size:11.5px; fill:var(--text-faint);}
+  .bp-mint-text{fill:var(--mint);}
+  .bp-gold-text{fill:var(--gold);}
+  .bp-dim-text{fill:var(--text-dim);}
+  .bp-dot{fill:var(--text-faint);}
+  .bp-tiny{font-family:var(--mono); font-size:11px; fill:var(--text-faint);}
+  .bp-origin{fill:var(--text-dim);}
+  .bp-arrow-solid{stroke:var(--mint); stroke-width:2; fill:none;}
+  .bp-arrow-dashed{stroke:var(--text-faint); stroke-width:1.5; fill:none; stroke-dasharray:5 4;}
+  .bp-arrow-label{font-family:var(--serif); font-size:18px; font-weight:600; fill:var(--text);}
+  .bp-arrow-sub{font-family:var(--mono); font-size:11px; fill:var(--text-faint);}
+  .bp-mint-fill{fill:var(--mint);}
+  .bp-dim-fill{fill:var(--text-faint);}
+
+  /* interactive builder */
+  .lab{
+    background:var(--panel); border:1px solid var(--grid-line-strong); border-radius:10px; padding:32px;
+    margin-top:10px;
+  }
+  .lab-top{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:20px; margin-bottom:26px;}
+  .lab-title{font-family:var(--mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--mint);}
+  .lab-controls{display:flex; gap:10px; flex-wrap:wrap;}
+  .lab-btn{
+    background:var(--panel-2); border:1px solid var(--grid-line-strong); color:var(--text-dim);
+    font-family:var(--mono); font-size:12px; padding:7px 12px; border-radius:5px; cursor:pointer;
+    transition:all .15s ease;
+  }
+  .lab-btn:hover{border-color:var(--mint); color:var(--mint);}
+  .lab-btn.active{background:var(--mint); color:var(--ink-on-accent); border-color:var(--mint); font-weight:700;}
+
+  .lab-body{display:grid; grid-template-columns:auto 1fr; gap:40px; align-items:center;}
+  @media (max-width:760px){.lab-body{grid-template-columns:1fr;}}
+
+  .matrix-editor{display:inline-grid; gap:8px; justify-content:center;}
+  .matrix-row{display:flex; gap:8px;}
+  .cell-input{
+    width:64px; height:52px; background:var(--ink); border:1px solid var(--grid-line-strong);
+    color:var(--text); font-family:var(--mono); font-size:16px; text-align:center; border-radius:5px;
+    -moz-appearance:textfield;
+  }
+  .cell-input:disabled{opacity:0.25; cursor:not-allowed;}
+  .cell-input:focus{outline:none; border-color:var(--mint);}
+  .cell-input::-webkit-outer-spin-button, .cell-input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+
+  .decomposition{font-size:15px; color:var(--text-dim);}
+  .decomp-line{
+    font-family:var(--mono); font-size:14px; background:var(--ink); border:1px solid var(--grid-line-strong);
+    border-radius:6px; padding:14px 16px; margin-bottom:14px; overflow-x:auto; white-space:nowrap;
+    color:var(--text-dim);
+  }
+  .decomp-line .coef{color:var(--gold);}
+  .decomp-line .base{color:var(--mint);}
+  .stat-row{display:flex; gap:24px; margin-top:16px; flex-wrap:wrap;}
+  .stat{font-size:13px;}
+  .stat .num{font-family:var(--mono); font-size:22px; color:var(--text); display:block;}
+  .stat .lbl{color:var(--text-faint); font-family:var(--mono); font-size:11px; letter-spacing:0.05em; text-transform:uppercase;}
+
+  /* examples */
+  .example{
+    display:grid; grid-template-columns:36px 1fr; gap:16px; margin-bottom:22px; align-items:start;
+  }
+  .example .idx{
+    font-family:var(--mono); color:var(--gold); font-size:14px; padding-top:2px;
+  }
+  .example .body{background:var(--panel); border:1px solid var(--grid-line-strong); border-radius:8px; padding:18px 20px;}
+  .example .body p{margin:0 0 8px; font-size:15px;}
+  .example .ans{color:var(--mint); font-size:14px; margin-top:8px; font-family:var(--mono);}
+  .ans-details{margin-top:2px;}
+  .ans-details summary{
+    cursor:pointer; font-family:var(--mono); font-size:12.5px; color:var(--mint);
+    list-style:none; user-select:none; display:inline-flex; align-items:center; gap:6px;
+  }
+  .ans-details summary::-webkit-details-marker{display:none;}
+  .ans-details summary::before{content:"▸"; font-size:10px; display:inline-block; transition:transform .15s ease;}
+  .ans-details[open] summary::before{transform:rotate(90deg);}
+  .ans-details .ans{margin-top:10px; line-height:1.6;}
+
+  footer{padding:50px 28px 70px; text-align:center;}
+  footer p{color:var(--text-faint); font-size:13px; font-family:var(--mono);}
+
+  .katex{font-size:1.02em;}
+  .katex-display{margin:0.5em 0;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Linear Algebra · 精讲笔记</p>
+    <h1>矩阵<em>空间</em></h1>
+    <p class="sub">把所有 <span style="font-family:var(--mono)">m×n</span> 矩阵放进一个集合，加法与数乘让它变成一个向量空间——这就是矩阵空间。本文从定义出发，逐步搭建基、维度、子空间与内积结构，并提供一个可交互的基分解实验台。</p>
+    <div class="hero-formula">
+      $$M_{m\times n}(\mathbb{R}) = \left\{ A = (a_{ij}) \;\middle|\; a_{ij}\in\mathbb{R},\; 1\le i\le m,\; 1\le j\le n \right\}$$
+    </div>
+  </div>
+</header>
+
+<!-- 1. 定义 -->
+<section id="def">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">01</span><h2>什么是矩阵空间</h2></div>
+    <p class="lead">给定域 <span style="font-family:var(--mono)">ℝ</span>（或任意域 <span style="font-family:var(--mono)">𝔽</span>），所有 <span style="font-family:var(--mono)">m×n</span> 实矩阵构成的集合，配上矩阵加法与标量乘法，就是一个向量空间——记作 <span style="font-family:var(--mono)">M_{m×n}(ℝ)</span>，简称矩阵空间。</p>
+
+    <div class="card">
+      <p style="margin-bottom:14px;"><strong>运算定义。</strong>对任意 $A=(a_{ij}),\,B=(b_{ij})\in M_{m\times n}$ 与标量 $k\in\mathbb{R}$：</p>
+      <p>$$(A+B)_{ij} = a_{ij}+b_{ij}, \qquad (kA)_{ij} = k\,a_{ij}$$</p>
+      <p style="margin-top:14px;">也就是说，矩阵的加法和数乘都是<strong>逐元素</strong>进行的——这与向量 $\mathbb{R}^n$ 中坐标分量的运算完全同构。事实上 $M_{m\times n}(\mathbb{R})$ 与 $\mathbb{R}^{mn}$ 作为向量空间是同构的，只是把 $mn$ 个数排成了矩形而不是一列。</p>
+    </div>
+
+    <div class="callout">
+      <b>直观理解</b>
+      把矩阵想象成一张 m 行 n 列的"格子纸"，每个格子里填一个数。矩阵空间就是所有可能填法的集合；两张格子纸对应相加，就是把每个格子里的数分别相加。
+    </div>
+  </div>
+</section>
+
+<!-- 2. 公理验证 -->
+<section id="axioms">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">02</span><h2>验证向量空间八条公理</h2></div>
+    <p class="lead">要确认 $M_{m\times n}(\mathbb{R})$ 真的是向量空间，需要逐条核对向量空间公理。因为矩阵运算是逐元素定义的，而实数满足这些性质，所以每一条都自动继承。</p>
+    <div class="axioms">
+      <div class="axiom"><span class="mark">✓</span>加法交换律：$A+B=B+A$</div>
+      <div class="axiom"><span class="mark">✓</span>加法结合律：$(A+B)+C=A+(B+C)$</div>
+      <div class="axiom"><span class="mark">✓</span>零元存在：零矩阵 $O$ 满足 $A+O=A$</div>
+      <div class="axiom"><span class="mark">✓</span>负元存在：$A+(-A)=O$</div>
+      <div class="axiom"><span class="mark">✓</span>数乘结合律：$k(lA)=(kl)A$</div>
+      <div class="axiom"><span class="mark">✓</span>单位数乘：$1\cdot A = A$</div>
+      <div class="axiom"><span class="mark">✓</span>数乘对加法分配：$k(A+B)=kA+kB$</div>
+      <div class="axiom"><span class="mark">✓</span>数乘对标量加法分配：$(k+l)A=kA+lA$</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. 基与维度 -->
+<section id="basis">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">03</span><h2>标准基与维度</h2></div>
+    <p class="lead">定义基本矩阵 $E_{ij}$：第 $i$ 行第 $j$ 列为 1，其余全为 0。这 $mn$ 个矩阵构成 $M_{m\times n}(\mathbb{R})$ 的一组基，称为<strong>标准基</strong>。</p>
+    <p>$$\dim M_{m\times n}(\mathbb{R}) = m \times n$$</p>
+    <p>任意矩阵 $A=(a_{ij})$ 都能唯一地写成标准基的线性组合：</p>
+    <p>$$A = \sum_{i=1}^{m}\sum_{j=1}^{n} a_{ij}\, E_{ij}$$</p>
+
+    <div class="basis-grid">
+      <div class="basis-cell">
+        <div class="mini-matrix">1&nbsp;0<br>0&nbsp;0</div>
+        <div class="label">E₁₁</div>
+      </div>
+      <div class="basis-cell">
+        <div class="mini-matrix">0&nbsp;<span class="hot">1</span><br>0&nbsp;0</div>
+        <div class="label">E₁₂</div>
+      </div>
+      <div class="basis-cell">
+        <div class="mini-matrix">0&nbsp;0<br><span class="hot">1</span>&nbsp;0</div>
+        <div class="label">E₂₁</div>
+      </div>
+    </div>
+    <p style="margin-top:18px; font-size:14.5px;">下方实验台把这个"唯一分解"变成可以亲手操作的过程——调整任意矩阵的元素，实时看到它如何被标准基拼出来。</p>
+  </div>
+</section>
+
+<!-- 4. 交互实验台 -->
+<section id="lab">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">04</span><h2>基分解实验台</h2></div>
+    <p class="lead">选择一种子空间约束，编辑矩阵元素（被约束锁定的格子会自动联动），观察它如何分解为标准基 $E_{ij}$ 的线性组合，以及该子空间的维度。</p>
+
+    <div class="lab">
+      <div class="lab-top">
+        <span class="lab-title">3×3 矩阵 · 子空间约束</span>
+        <div class="lab-controls" id="mode-buttons">
+          <button class="lab-btn active" data-mode="all">全部矩阵</button>
+          <button class="lab-btn" data-mode="sym">对称</button>
+          <button class="lab-btn" data-mode="skew">反对称</button>
+          <button class="lab-btn" data-mode="upper">上三角</button>
+          <button class="lab-btn" data-mode="diag">对角</button>
+          <button class="lab-btn" data-mode="trace0">迹为零</button>
+        </div>
+      </div>
+      <div class="lab-body">
+        <div class="matrix-editor" id="matrix-editor"></div>
+        <div class="decomposition">
+          <div class="decomp-line" id="decomp-line">A = 0</div>
+          <div class="stat-row">
+            <div class="stat"><span class="num" id="stat-dim">9</span><span class="lbl">该子空间维度</span></div>
+            <div class="stat"><span class="num" id="stat-active">0</span><span class="lbl">非零基向量个数</span></div>
+            <div class="stat"><span class="num" id="stat-full">9</span><span class="lbl">全空间维度 m×n</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. 子空间 -->
+<section id="subspaces">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">05</span><h2>常见子空间</h2></div>
+    <p class="lead">矩阵空间内部藏着许多重要的线性子空间，它们各自的维度反映了约束条件"用掉"了多少自由度（以 $n\times n$ 方阵为例）。</p>
+    <div class="subspaces">
+      <div class="sub-card">
+        <span class="dim-tag">dim = n(n+1)/2</span>
+        <h3>对称矩阵</h3>
+        <p>满足 $A^{T}=A$，即 $a_{ij}=a_{ji}$。上三角（含对角线）的每个位置可自由取值，其余由对称性决定。</p>
+      </div>
+      <div class="sub-card">
+        <span class="dim-tag">dim = n(n−1)/2</span>
+        <h3>反对称矩阵</h3>
+        <p>满足 $A^{T}=-A$，对角线元素必为 0，$a_{ij}=-a_{ji}$。任意方阵可唯一分解为对称部分 + 反对称部分。</p>
+      </div>
+      <div class="sub-card">
+        <span class="dim-tag">dim = n(n+1)/2</span>
+        <h3>上三角矩阵</h3>
+        <p>主对角线及以上元素任意，以下全为 0。下三角矩阵同理，维度相同但两者不是同一子空间。</p>
+      </div>
+      <div class="sub-card">
+        <span class="dim-tag">dim = n</span>
+        <h3>对角矩阵</h3>
+        <p>只有主对角线可以非零，是上三角与下三角矩阵子空间的交集，维度最小、结构最"简单"。</p>
+      </div>
+      <div class="sub-card">
+        <span class="dim-tag">dim = n² − 1</span>
+        <h3>迹为零矩阵</h3>
+        <p>$\operatorname{tr}(A)=\sum a_{ii}=0$，是一个线性方程，恰好削去一个自由度——这也是李代数 $\mathfrak{sl}(n)$ 的载体。</p>
+      </div>
+      <div class="sub-card">
+        <span class="dim-tag">dim = n²</span>
+        <h3>全空间 M(n×n)</h3>
+        <p>不加任何约束的全体方阵集合，是以上所有子空间共同的"母空间"。</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <b>直和分解</b>
+      对称矩阵与反对称矩阵这两个子空间除了零矩阵外没有任何交集，且合在一起能"拼满"整个方阵空间——这正是<strong>直和</strong>的定义：$M_{n\times n}(\mathbb{R}) = \text{Sym}(n) \oplus \text{Skew}(n)$。维度上也严丝合缝：$\dfrac{n(n+1)}{2} + \dfrac{n(n-1)}{2} = n^2$。任意方阵 $A$ 都能唯一拆成 $A=\underbrace{\tfrac12(A+A^{T})}_{\text{对称部分}} + \underbrace{\tfrac12(A-A^{T})}_{\text{反对称部分}}$。
+    </div>
+  </div>
+</section>
+
+<!-- 6. 内积 -->
+<section id="inner">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Frobenius 内积与范数</h2></div>
+    <p class="lead">给矩阵空间装上内积结构，就能谈论"矩阵之间的角度"与"矩阵的长度"，这就是 Frobenius 内积。</p>
+    <div class="card">
+      <p>$$\langle A, B \rangle_F = \operatorname{tr}(A^{T}B) = \sum_{i=1}^{m}\sum_{j=1}^{n} a_{ij}\,b_{ij}$$</p>
+      <p style="margin-top:16px;">诱导出的范数为</p>
+      <p>$$\|A\|_F = \sqrt{\langle A,A\rangle_F} = \sqrt{\sum_{i,j} a_{ij}^{2}}$$</p>
+      <p style="margin-top:16px;">这正是把矩阵"拉直"成 $\mathbb{R}^{mn}$ 中的向量后所用的标准欧氏内积——标准基 $\{E_{ij}\}$ 在此内积下彼此正交，且每个 $E_{ij}$ 的范数为 1，因此它是一组<strong>标准正交基</strong>。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. 四大空间 -->
+<section id="four-spaces">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">07</span><h2>矩阵的四大基本子空间</h2></div>
+    <p class="lead">和前面说的"矩阵空间"这个大容器不同，这里指的是<strong>某一个具体矩阵</strong> $A\in\mathbb{R}^{m\times n}$（设 $\operatorname{rank}(A)=r$）自身诱导出的四个子空间——线性代数里最著名的"大图景"（The Big Picture）。</p>
+
+    <div class="insight-panel">
+      <div class="io-eyebrow">极简对比法则</div>
+      <div class="io-formula">
+        $$\underbrace{N(A)}_{\text{看输入}} \quad \xrightarrow{\ A_{m\times n}\ } \quad \underbrace{C(A)}_{\text{看输出}}$$
+      </div>
+      <div class="io-columns">
+        <div class="io-col">
+          <span class="io-col-tag">输入端 ℝⁿ · 看输入</span>
+          <ul class="io-list">
+            <li><strong>行空间 Row(A)</strong> — 输入端里"能被 $A$ 有效映射"的向量：经过 $A$ 之后不会变成 0。</li>
+            <li><strong>零空间 N(A)</strong> — 输入端里"被 $A$ 抹杀"的向量：经过 $A$ 之后全部变成 0。</li>
+          </ul>
+        </div>
+        <div class="io-col">
+          <span class="io-col-tag io-col-tag--gold">输出端 ℝᵐ · 看输出</span>
+          <ul class="io-list">
+            <li><strong>列空间 C(A)</strong> — 输出端里"真正能被生成"的区域：矩阵所有列向量投射出的实际幕布。</li>
+            <li><strong>左零空间 N(Aᵀ)</strong> — 输出端里"绝对触碰不到"的死角：矩阵无论如何也映射不到的地方。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="io-tagline"><span class="mint-word">零</span>看输入，<span class="gold-word">列</span>看输出。</div>
+    </div>
+
+    <div class="fourspace-grid">
+      <div class="sub-card">
+        <span class="dim-tag">dim = r</span><span class="domain-tag">⊂ ℝⁿ</span>
+        <h3>行空间 Row Space</h3>
+        <p>$C(A^{T})$，由 $A$ 的所有行向量张成，等价于行最简形中非零行张成的空间。</p>
+        <p class="vivid-line">→ 有效信号区域：能被 $A$ 成功转换、对输出真正有贡献的那部分输入。</p>
+      </div>
+      <div class="sub-card">
+        <span class="dim-tag">dim = n − r</span><span class="domain-tag">⊂ ℝⁿ</span>
+        <h3>零空间 Null Space</h3>
+        <p>$N(A)=\{x\in\mathbb{R}^n : Ax=0\}$，即齐次线性方程组 $Ax=0$ 的全部解。</p>
+        <p class="vivid-line">→ 零值化死角：被矩阵直接压扁蒸发、对输出毫无贡献的那部分输入。</p>
+      </div>
+      <div class="sub-card">
+        <span class="dim-tag">dim = r</span><span class="domain-tag domain-tag--gold">⊂ ℝᵐ</span>
+        <h3>列空间 Column Space</h3>
+        <p>$C(A)$，由 $A$ 的所有列向量张成，也是线性映射 $x\mapsto Ax$ 的值域。</p>
+        <p class="vivid-line">→ 实际可达区域：矩阵无论怎么变换输入，真正能生成的全部输出。</p>
+      </div>
+      <div class="sub-card">
+        <span class="dim-tag">dim = m − r</span><span class="domain-tag domain-tag--gold">⊂ ℝᵐ</span>
+        <h3>左零空间 Left Null Space</h3>
+        <p>$N(A^{T})=\{y\in\mathbb{R}^m : A^{T}y=0\}$，等价于 $y^{T}A=0$ 的全部解。</p>
+        <p class="vivid-line">→ 不可达残差死角：理论上无论如何也生成不出来的输出盲区。</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <b>四大子空间"住"在哪里</b>
+      容易搞混的一点：这四个子空间并不藏在矩阵 $A$ 内部，而是矩阵把输入空间 $\mathbb{R}^n$ 和输出空间 $\mathbb{R}^m$ 各自切出的两块"专属领地"。任意输入向量都能唯一拆成 $x = x_{\text{行}} + x_{\text{零}}$：$x_{\text{零}}$ 这部分会被 $A$ 直接压成 0，只有 $x_{\text{行}}$ 真正"活着"传到输出端。对应地，任意输出向量也能唯一拆成 $b = b_{\text{列}} + b_{\text{左零}}$——当方程 $Ax=b$ 无解时，$b_{\text{左零}}$ 正是"实际测量值"与"理论可达值"之间那部分怎么都补不上的残差，也正是最小二乘法要设法压到最小的那块东西。
+    </div>
+
+    <div class="callout">
+      <b>正交关系（秩-零化度定理）</b>
+      行空间与零空间在 $\mathbb{R}^n$ 中互为正交补：$\mathbb{R}^n = C(A^{T}) \oplus N(A)$，维度满足 $r+(n-r)=n$。同理，列空间与左零空间在 $\mathbb{R}^m$ 中互为正交补：$\mathbb{R}^m = C(A) \oplus N(A^{T})$，维度满足 $r+(m-r)=m$。
+    </div>
+
+    <div class="calc-panel">
+      <div class="lab-title" style="margin-bottom:18px;">四大空间维度计算器</div>
+      <div class="calc-inputs">
+        <div class="calc-field"><label>行数 m</label><input type="number" id="fs-m" value="4" min="1" max="8"></div>
+        <div class="calc-field"><label>列数 n</label><input type="number" id="fs-n" value="5" min="1" max="8"></div>
+        <div class="calc-field"><label>秩 r</label><input type="number" id="fs-r" value="3" min="0" max="8"></div>
+      </div>
+      <div class="space-diagram">
+        <div class="space-row">
+          <span class="space-label">ℝⁿ 分解</span>
+          <div class="space-bar" id="bar-n"></div>
+        </div>
+        <div class="space-row">
+          <span class="space-label">ℝᵐ 分解</span>
+          <div class="space-bar" id="bar-m"></div>
+        </div>
+      </div>
+      <p class="calc-note" id="calc-note"></p>
+    </div>
+
+    <div class="bigpicture">
+      <div class="lab-title" style="margin-bottom:6px;">大图景 · 正交分解全景</div>
+      <p style="font-size:14px; color:var(--text-dim); margin:0 0 20px;">$A$ 把输入端 $\mathbb{R}^n$ 里"活着"的行空间一一映射（同构）到输出端 $\mathbb{R}^m$ 的列空间，同时把输入端"死掉"的零空间整体压扁到原点。</p>
+      <svg class="bigpicture-svg" viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+        <text x="180" y="26" text-anchor="middle" class="bp-domain-label">ℝⁿ（输入空间）</text>
+        <text x="580" y="26" text-anchor="middle" class="bp-domain-label">ℝᵐ（输出空间）</text>
+
+        <rect x="40" y="40" width="280" height="300" rx="16" class="bp-box"/>
+        <line x1="40" y1="190" x2="320" y2="190" class="bp-divider"/>
+        <text x="180" y="120" text-anchor="middle" class="bp-region-label bp-mint-text">行空间 Row(A)</text>
+        <text x="180" y="140" text-anchor="middle" class="bp-region-sub">dim = r</text>
+        <text x="180" y="270" text-anchor="middle" class="bp-region-label bp-dim-text">零空间 N(A)</text>
+        <text x="180" y="290" text-anchor="middle" class="bp-region-sub">dim = n − r</text>
+        <circle cx="60" cy="190" r="3" class="bp-dot"/>
+        <text x="70" y="194" class="bp-tiny">⊥</text>
+
+        <rect x="440" y="40" width="280" height="300" rx="16" class="bp-box"/>
+        <line x1="440" y1="190" x2="720" y2="190" class="bp-divider"/>
+        <text x="580" y="120" text-anchor="middle" class="bp-region-label bp-gold-text">列空间 C(A)</text>
+        <text x="580" y="140" text-anchor="middle" class="bp-region-sub">dim = r</text>
+        <text x="580" y="270" text-anchor="middle" class="bp-region-label bp-dim-text">左零空间 N(Aᵀ)</text>
+        <text x="580" y="290" text-anchor="middle" class="bp-region-sub">dim = m − r</text>
+        <circle cx="460" cy="190" r="3" class="bp-dot"/>
+        <text x="470" y="194" class="bp-tiny">⊥</text>
+
+        <circle cx="580" cy="305" r="4" class="bp-origin"/>
+        <text x="592" y="309" class="bp-tiny">0</text>
+
+        <line x1="320" y1="115" x2="432" y2="115" class="bp-arrow-solid" marker-end="url(#bpArrowSolid)"/>
+        <text x="376" y="98" text-anchor="middle" class="bp-arrow-label">A</text>
+        <text x="376" y="132" text-anchor="middle" class="bp-arrow-sub">同构（一一映射）</text>
+
+        <path d="M 320 260 C 400 260, 480 300, 570 302" class="bp-arrow-dashed" marker-end="url(#bpArrowDashed)"/>
+        <text x="440" y="252" text-anchor="middle" class="bp-arrow-sub">全部压到原点</text>
+
+        <defs>
+          <marker id="bpArrowSolid" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L8,3 L0,6 Z" class="bp-mint-fill"/>
+          </marker>
+          <marker id="bpArrowDashed" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L8,3 L0,6 Z" class="bp-dim-fill"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 8. 矩阵空间上的线性变换 -->
+<section id="linear-maps">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">08</span><h2>矩阵空间上的线性变换</h2></div>
+    <p class="lead">别忘了矩阵空间本身也是一个向量空间——所以完全可以在它上面定义线性映射。这里挑两个最常见的例子，正好和前面讲过的内容对上号。</p>
+
+    <div class="subspaces">
+      <div class="sub-card">
+        <span class="domain-tag">线性同构</span>
+        <h3>转置 A ↦ Aᵀ</h3>
+        <p>$T:M_{m\times n}\to M_{n\times m}$，$T(A)=A^{T}$。满足 $T(A+B)=T(A)+T(B)$、$T(kA)=kT(A)$，是线性映射；又因为 $T\circ T=\mathrm{id}$，$T$ 是双射，所以它是一个<strong>线性同构</strong>——$M_{m\times n}$ 与 $M_{n\times m}$ 维度相同（都是 $mn$），结构上"长得一样"。</p>
+      </div>
+      <div class="sub-card">
+        <span class="domain-tag domain-tag--gold">线性泛函</span>
+        <h3>迹 A ↦ tr(A)</h3>
+        <p>$\operatorname{tr}:M_{n\times n}\to\mathbb{R}$，$\operatorname{tr}(A)=\sum_i a_{ii}$。这是一个把矩阵"吃进去、吐出一个数"的<strong>线性泛函</strong>。它的核 $\ker(\operatorname{tr})=\{A:\operatorname{tr}(A)=0\}$ 正是第 05 节提到的迹为零子空间，维度 $n^2-1$。</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <b>换个角度看四大空间</b>
+      第 07 节的"四大空间"其实是矩阵 $A$ 作为线性映射 $x\mapsto Ax:\mathbb{R}^n\to\mathbb{R}^m$ 诱导出的核与像；而这里的转置、迹，是把<strong>矩阵本身</strong>当作向量，在矩阵空间 $M_{m\times n}$ 上定义新的线性映射，并且迹映射同样满足秩-零化度定理：$\dim M_{n\times n} = \dim\ker(\operatorname{tr}) + \dim\operatorname{im}(\operatorname{tr}) = (n^2-1)+1$。同一套"核（被压扁的）/ 像（能生成的）"语言，可以套用在任何线性映射上——这正是线性代数最值钱的抽象。
+    </div>
+  </div>
+</section>
+
+<!-- 9. 例题 -->
+<section id="examples">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">09</span><h2>例题</h2></div>
+
+    <div class="example">
+      <span class="idx">01</span>
+      <div class="body">
+        <p>设 $A\in\mathbb{R}^{4\times5}$，$\operatorname{rank}(A)=3$。求零空间与左零空间的维度。</p>
+        <details class="ans-details"><summary>查看解答</summary>
+          <div class="ans">解：dim 零空间 = n − r = 5 − 3 = 2；dim 左零空间 = m − r = 4 − 3 = 1。</div>
+        </details>
+      </div>
+    </div>
+
+    <div class="example">
+      <span class="idx">02</span>
+      <div class="body">
+        <p>求 $M_{2\times2}(\mathbb{R})$ 中满足 $a_{11}+a_{22}=0$ 的子空间的维度。</p>
+        <details class="ans-details"><summary>查看解答</summary>
+          <div class="ans">解：这是迹为零的 2×2 矩阵，约束削去 1 个自由度，dim = 4 − 1 = 3。</div>
+        </details>
+      </div>
+    </div>
+
+    <div class="example">
+      <span class="idx">03</span>
+      <div class="body">
+        <p>证明任意方阵 $A$ 可唯一写成对称矩阵与反对称矩阵之和。</p>
+        <details class="ans-details"><summary>查看解答</summary>
+          <div class="ans">解：令 $A_s=\tfrac12(A+A^{T})$，$A_a=\tfrac12(A-A^{T})$，则 $A_s$ 对称、$A_a$ 反对称，且 $A=A_s+A_a$；唯一性由两子空间仅交于零矩阵得出，即 $M_{n\times n}=\text{Sym}\oplus\text{Skew}$。</div>
+        </details>
+      </div>
+    </div>
+
+    <div class="example">
+      <span class="idx">04</span>
+      <div class="body">
+        <p>验证标准基向量 $E_{12}$ 与 $E_{21}$ 在 Frobenius 内积下正交。</p>
+        <details class="ans-details"><summary>查看解答</summary>
+          <div class="ans">解：$\langle E_{12},E_{21}\rangle_F=\sum_{i,j}(E_{12})_{ij}(E_{21})_{ij}=0$，因为两者非零位置不重合。</div>
+        </details>
+      </div>
+    </div>
+
+    <div class="example">
+      <span class="idx">05</span>
+      <div class="body">
+        <p>设 $\operatorname{tr}:M_{3\times3}(\mathbb{R})\to\mathbb{R}$ 为迹映射。它的像 $\operatorname{im}(\operatorname{tr})$ 是什么？由此验证秩-零化度定理。</p>
+        <details class="ans-details"><summary>查看解答</summary>
+          <div class="ans">解：迹映射不是零映射（例如单位阵 $I$ 的迹为 3 ≠ 0），且值域是 $\mathbb{R}$ 的子空间，只能是 $\{0\}$ 或 $\mathbb{R}$ 本身，故 $\operatorname{im}(\operatorname{tr})=\mathbb{R}$，dim = 1。核（迹为零矩阵）维度是 $3^2-1=8$。验证：$\dim\ker+\dim\operatorname{im}=8+1=9=\dim M_{3\times3}$，与秩-零化度定理吻合。</div>
+        </details>
+      </div>
+    </div>
+
+    <div class="example">
+      <span class="idx">06</span>
+      <div class="body">
+        <p>方程 $Ax=b$ 无解，用最小二乘法求出的最优解 $\hat{x}$ 满足 $A^{T}(b-A\hat{x})=0$。说明残差向量 $r=b-A\hat{x}$ 恰好落在左零空间 $N(A^{T})$ 中，并解释这为什么等价于"残差与列空间正交"。</p>
+        <details class="ans-details"><summary>查看解答</summary>
+          <div class="ans">解：$A^{T}r=A^{T}(b-A\hat{x})=0$，这正是左零空间 $N(A^{T})=\{y\in\mathbb{R}^m:A^{T}y=0\}$ 的定义式，所以 $r\in N(A^{T})$。又因为 $C(A)=N(A^{T})^{\perp}$（第 07 节的正交关系），$r\in N(A^{T})$ 就等价于 $r\perp C(A)$——也就是说最优残差必须与整个列空间垂直，这正是最小二乘法"投影求解"的几何本质：$A\hat{x}$ 是 $b$ 在列空间上的正交投影，多出来的那部分残差被甩进了列空间够不着的左零空间死角里。</div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>M(m×n)(ℝ) — 一个格子纸上的向量空间</p>
+</footer>
+
+<script>
+renderMathInElement(document.body, {
+  delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}
+  ]
+});
+
+(function(){
+  const N = 3;
+  let mode = 'all';
+  let values = Array.from({length:N}, () => Array(N).fill(0));
+
+  const editorEl = document.getElementById('matrix-editor');
+  const decompEl = document.getElementById('decomp-line');
+  const statDim = document.getElementById('stat-dim');
+  const statActive = document.getElementById('stat-active');
+  const statFull = document.getElementById('stat-full');
+
+  const dims = { all:9, sym:6, skew:3, upper:6, diag:3, trace0:8 };
+
+  function locked(i,j){
+    if(mode==='sym') return j<i; // lower triangle mirrors upper
+    if(mode==='skew') return j<i || i===j; // lower mirrors, diag forced 0
+    if(mode==='upper') return j<i;
+    if(mode==='diag') return i!==j;
+    return false;
+  }
+
+  function isFreeTraceCell(i,j){
+    // last diagonal cell (2,2) is dependent under trace0 mode
+    return mode==='trace0' && i===N-1 && j===N-1;
+  }
+
+  function buildEditor(){
+    editorEl.innerHTML='';
+    for(let i=0;i<N;i++){
+      const row=document.createElement('div');
+      row.className='matrix-row';
+      for(let j=0;j<N;j++){
+        const inp=document.createElement('input');
+        inp.type='number';
+        inp.step='1';
+        inp.className='cell-input';
+        inp.dataset.i=i; inp.dataset.j=j;
+        inp.value=values[i][j];
+        if(locked(i,j) || isFreeTraceCell(i,j)) inp.disabled=true;
+        inp.addEventListener('input', onEdit);
+        row.appendChild(inp);
+      }
+      editorEl.appendChild(row);
+    }
+  }
+
+  function onEdit(e){
+    const i=+e.target.dataset.i, j=+e.target.dataset.j;
+    let v=parseFloat(e.target.value); if(isNaN(v)) v=0;
+    values[i][j]=v;
+
+    if(mode==='sym') values[j][i]=v;
+    if(mode==='skew'){ values[j][i]=-v; values[i][i]=0; values[j][j]=0; }
+    if(mode==='diag'){ /* off-diag stays 0, handled by lock */ }
+    if(mode==='trace0'){
+      // recompute the free-diagonal dependent cell
+      let sum=0;
+      for(let k=0;k<N-1;k++) sum+=values[k][k];
+      values[N-1][N-1] = -sum;
+    }
+    refreshDisplay();
+  }
+
+  function applyModeConstraints(){
+    for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+      if(mode==='sym' && j<i) values[i][j]=values[j][i];
+      if(mode==='skew'){
+        if(i===j) values[i][j]=0;
+        else if(j<i) values[i][j]=-values[j][i];
+      }
+      if(mode==='upper' && j<i) values[i][j]=0;
+      if(mode==='diag' && i!==j) values[i][j]=0;
+    }
+    if(mode==='trace0'){
+      let sum=0;
+      for(let k=0;k<N-1;k++) sum+=values[k][k];
+      values[N-1][N-1] = -sum;
+    }
+  }
+
+  function refreshDisplay(){
+    buildEditor();
+    let terms=[];
+    let active=0;
+    for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+      const v=values[i][j];
+      if(v!==0){ active++; terms.push(`<span class="coef">${v}</span>·<span class="base">E${i+1}${j+1}</span>`); }
+    }
+    decompEl.innerHTML = 'A = ' + (terms.length ? terms.join(' + ') : '0');
+    statDim.textContent = dims[mode];
+    statActive.textContent = active;
+    statFull.textContent = N*N;
+  }
+
+  document.getElementById('mode-buttons').addEventListener('click', (e)=>{
+    const btn = e.target.closest('.lab-btn');
+    if(!btn) return;
+    document.querySelectorAll('#mode-buttons .lab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    mode = btn.dataset.mode;
+    applyModeConstraints();
+    refreshDisplay();
+  });
+
+  // seed with an interesting default
+  values = [[2,1,0],[1,-3,4],[0,4,1]];
+  refreshDisplay();
+})();
+
+(function(){
+  const mInput=document.getElementById('fs-m');
+  const nInput=document.getElementById('fs-n');
+  const rInput=document.getElementById('fs-r');
+  const barN=document.getElementById('bar-n');
+  const barM=document.getElementById('bar-m');
+  const note=document.getElementById('calc-note');
+  if(!mInput) return;
+
+  function render(){
+    let m=parseInt(mInput.value)||1, n=parseInt(nInput.value)||1, r=parseInt(rInput.value)||0;
+    m=Math.max(1,Math.min(8,m)); n=Math.max(1,Math.min(8,n));
+    r=Math.max(0,Math.min(Math.min(m,n),r));
+    mInput.value=m; nInput.value=n; rInput.value=r;
+
+    const nullDim=n-r, leftNullDim=m-r;
+
+    barN.innerHTML =
+      `<div class="seg row-space" style="flex-basis:${r/n*100}%">${r>0?`行空间 r=${r}`:''}</div>`+
+      `<div class="seg null-space" style="flex-basis:${nullDim/n*100}%">${nullDim>0?`零空间 n−r=${nullDim}`:''}</div>`;
+    barM.innerHTML =
+      `<div class="seg col-space" style="flex-basis:${r/m*100}%">${r>0?`列空间 r=${r}`:''}</div>`+
+      `<div class="seg leftnull-space" style="flex-basis:${leftNullDim/m*100}%">${leftNullDim>0?`左零空间 m−r=${leftNullDim}`:''}</div>`;
+    note.innerHTML = `当前设置：A ∈ ℝ<sup>${m}×${n}</sup>，rank(A) = ${r} → dim 行空间 = ${r}，dim 零空间 = ${nullDim}，dim 列空间 = ${r}，dim 左零空间 = ${leftNullDim}。`;
+  }
+
+  [mInput,nInput,rInput].forEach(el=>el.addEventListener('input',render));
+  render();
+})();
+</script>
+
+<style id="reader-style">
+  .fr-reading{
+    outline: 2px solid var(--mint);
+    outline-offset: 4px;
+    background: rgba(14,143,115,0.07);
+    border-radius: 4px;
+  }
+  .fr-clickable{ cursor: pointer; transition: background 0.15s ease; }
+  .fr-clickable:hover{ background: rgba(14,143,115,0.05); border-radius: 4px; }
+  .fr-clickable:active{ background: rgba(14,143,115,0.09); }
+
+  #fr-toggle{
+    position: fixed; right: 18px; bottom: 18px; z-index: 61;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(160deg, var(--mint) 0%, var(--gold) 100%);
+    color: #fff; border: none; box-shadow: 0 8px 22px rgba(20,30,50,0.22);
+    font-size: 20px; cursor: pointer; display:flex; align-items:center; justify-content:center;
+  }
+  #fr-toggle:active{ transform: scale(0.94); }
+
+  #fr-panel{
+    position: fixed; right: 18px; bottom: 82px; z-index: 60;
+    background: var(--panel);
+    border: 1px solid var(--grid-line-strong);
+    border-radius: 12px;
+    padding: 14px 15px;
+    box-shadow: 0 10px 30px rgba(20,30,50,0.18);
+    font-family: var(--sans);
+    width: 216px;
+    display: none;
+  }
+  #fr-panel.open{ display:block; }
+  #fr-panel .fr-title{
+    font-family:var(--mono);
+    font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+    color: var(--mint); margin-bottom:10px; font-weight:600;
+  }
+  #fr-progress{ font-size:12px; color:var(--text-dim); margin-bottom:6px; }
+  #fr-bar-track{ height:4px; background:var(--panel-2); border-radius:2px; overflow:hidden; margin-bottom:11px;}
+  #fr-bar-fill{ height:100%; width:0%; background: var(--mint); transition: width 0.2s ease; }
+  .fr-row{ display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+  #fr-play{
+    flex:1; background: var(--mint); color:#fff; border:none;
+    border-radius:6px; padding:9px 10px; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  #fr-stop{
+    background: transparent; border:1px solid var(--grid-line-strong);
+    color: var(--text-dim); border-radius:6px; padding:9px 11px; font-size:13px; cursor:pointer;
+  }
+  #fr-rate-row{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-dim); margin-bottom:2px; }
+  #fr-rate{ flex:1; accent-color: var(--mint); }
+
+  #fr-export{ margin-top:11px; border-top: 1px solid var(--grid-line-strong); padding-top:9px; }
+  #fr-export summary{
+    font-size:11.5px; color: var(--gold); cursor:pointer; list-style:none;
+    display:flex; align-items:center; gap:4px;
+  }
+  #fr-export summary::-webkit-details-marker{ display:none; }
+  #fr-export summary::before{ content:'▸'; color: var(--gold); }
+  #fr-export[open] summary::before{ content:'▾'; }
+  .fr-export-body{ margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+  #fr-export input[type="password"], #fr-export input[type="text"], #fr-export select{
+    background: var(--panel-2); border:1px solid var(--grid-line-strong); color: var(--text);
+    border-radius:5px; padding:6px 8px; font-size:12px; width:100%;
+  }
+  .fr-row2{ display:flex; gap:6px; }
+  .fr-row2 input{ flex:1.2; }
+  .fr-row2 select{ flex:1; }
+  #fr-export-btn, #fr-export-cancel{
+    background: var(--gold); color:#fff; border:none; border-radius:6px;
+    padding:7px 10px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-export-cancel{ background: transparent; border:1px solid var(--grid-line-strong); color: var(--text-dim); }
+  #fr-export-progress{ font-size:11px; color:var(--text-dim); min-height:14px; }
+  #fr-download-link{
+    display:inline-block; text-align:center; background: rgba(184,121,26,0.12); color: var(--gold);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+  }
+  #fr-audio-preview{ width:100%; height:32px; }
+
+  #fr-record-btn{
+    width:100%; background: rgba(14,143,115,0.10); color: var(--mint);
+    border:1px solid var(--mint); border-radius:6px; padding:9px 10px;
+    font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-record-btn.recording{ background: #c0392b; border-color:#e0685a; color:#fff; }
+  #fr-record-status{ font-size:11px; color:var(--text-dim); min-height:14px; margin-top:4px; }
+  #fr-record-download{
+    display:inline-block; text-align:center; background: rgba(14,143,115,0.10); color: var(--mint);
+    border:1px solid var(--mint); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+    margin-top:4px;
+  }
+  #fr-record-preview{ width:100%; height:32px; margin-top:4px; }
+  @media (max-width: 520px){ #fr-panel{ right:10px; bottom:74px; width:188px; padding:12px 13px; } #fr-toggle{ right:10px; bottom:10px; } }
+</style>
+
+<button id="fr-toggle" title="语音朗读">🔊</button>
+<div id="fr-panel">
+  <div class="fr-title">语音朗读全文</div>
+  <div id="fr-progress">正在扫描内容…</div>
+  <div id="fr-bar-track"><div id="fr-bar-fill"></div></div>
+  <div class="fr-row">
+    <button id="fr-play">▶ 朗读全文</button>
+    <button id="fr-stop">■</button>
+  </div>
+  <div id="fr-rate-row">
+    语速 <input type="range" id="fr-rate" min="0.6" max="1.6" step="0.1" value="0.95"> <span id="fr-rate-val">0.95x</span>
+  </div>
+  <div class="fr-row" style="margin-top:2px;">
+    <button id="fr-record-btn">🎙 录制音频文件（免注册）</button>
+  </div>
+  <div id="fr-record-status"></div>
+  <a id="fr-record-download" style="display:none;">↓ 下载录音</a>
+  <audio id="fr-record-preview" controls style="display:none;"></audio>
+  <details id="fr-export">
+    <summary>高级：导出 MP3（Azure 语音，需注册）</summary>
+    <div class="fr-export-body">
+      <input type="password" id="fr-azure-key" placeholder="Azure Speech Key">
+      <div class="fr-row2">
+        <input type="text" id="fr-azure-region" placeholder="区域 如 eastasia">
+        <select id="fr-azure-voice">
+          <option value="zh-CN-XiaoxiaoNeural">晓晓 女声</option>
+          <option value="zh-CN-YunxiNeural">云希 男声</option>
+          <option value="zh-CN-YunyangNeural">云扬 男声</option>
+        </select>
+      </div>
+      <button id="fr-export-btn">生成并下载 MP3</button>
+      <button id="fr-export-cancel" style="display:none;">取消</button>
+      <div id="fr-export-progress"></div>
+      <a id="fr-download-link" style="display:none;">↓ 下载 MP3</a>
+      <audio id="fr-audio-preview" controls style="display:none;"></audio>
+    </div>
+  </details>
+</div>
+
+<script id="reader-script">
+(function () {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function () {};
+  }
+
+  // ---------------------------------------------------------------
+  // 本页大量使用 KaTeX 公式与交互式小部件（基分解实验台、维度计算器、
+  // 大图景 SVG），这些不适合逐字朗读，统一在 SKIP_CLASSES 里跳过，
+  // 只朗读叙述性文字（定义、说明、提示框、例题）。
+  // ---------------------------------------------------------------
+  const BLOCK_TAGS = new Set(['DIV','P','LI','TD','TH','TR','H1','H2','H3','H4','H5','H6',
+    'BLOCKQUOTE','SECTION','TABLE','THEAD','TBODY','UL','OL','FIGURE','FIGCAPTION','DT','DD',
+    'FOOTER','HEADER','ARTICLE']);
+  const SKIP_CLASSES = ['katex-mathml', 'bigpicture-svg', 'dim-tag', 'domain-tag',
+    'basis-grid', 'space-diagram', 'calc-inputs', 'stat-row', 'decomp-line', 'mini-matrix',
+    'matrix-editor', 'lab-controls'];
+
+  function shouldSkipEl(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (el.getAttribute && el.getAttribute('aria-hidden') === 'true') return true;
+    for (const cls of SKIP_CLASSES) { if (el.classList && el.classList.contains(cls)) return true; }
+    return false;
+  }
+
+  function collectInline(el) {
+    const parts = [];
+    el.childNodes.forEach(node => {
+      if (node.nodeType === 3) {
+        const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+        if (t) parts.push(t);
+      } else if (node.nodeType === 1) {
+        if (shouldSkipEl(node)) return;
+        const inner = collectInline(node);
+        if (inner) parts.push(inner);
+      }
+    });
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function buildContentUnits(root) {
+    const units = [];
+    function walk(el) {
+      if (shouldSkipEl(el)) return;
+      let buffer = [];
+      const flush = () => {
+        const text = buffer.join(' ').replace(/\s+/g, ' ').trim();
+        if (text) units.push({ el, text });
+        buffer = [];
+      };
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+          if (t) buffer.push(t);
+        } else if (node.nodeType === 1) {
+          if (shouldSkipEl(node)) return;
+          if (BLOCK_TAGS.has(node.tagName)) {
+            flush();
+            walk(node);
+          } else {
+            const inner = collectInline(node);
+            if (inner) buffer.push(inner);
+          }
+        }
+      });
+      flush();
+    }
+    walk(root);
+    return units;
+  }
+
+  function initReader() {
+    // 本页每个 <section> 内部各自有一个 .wrap，而不是全文共用一个，
+    // 所以要把 hero 区域和所有 .wrap 都收集进来，按文档顺序朗读。
+    const roots = [document.querySelector('.hero')]
+      .concat(Array.from(document.querySelectorAll('.wrap')))
+      .filter(Boolean);
+    let units = [];
+    roots.forEach(r => { units = units.concat(buildContentUnits(r)); });
+
+    const progressEl = document.getElementById('fr-progress');
+    if (!units.length) { progressEl.textContent = '未找到可朗读内容'; return; }
+
+    const toggleBtn = document.getElementById('fr-toggle');
+    const panel = document.getElementById('fr-panel');
+    const playBtn = document.getElementById('fr-play');
+    const stopBtn = document.getElementById('fr-stop');
+    const barFill = document.getElementById('fr-bar-fill');
+    const rateInput = document.getElementById('fr-rate');
+    const rateVal = document.getElementById('fr-rate-val');
+
+    let playing = false;
+    let currentIdx = -1;
+    let stopRequested = false;
+
+    toggleBtn.addEventListener('click', () => { panel.classList.toggle('open'); });
+    rateInput.addEventListener('input', () => { rateVal.textContent = `${rateInput.value}x`; });
+
+    function updateProgressIdle() {
+      progressEl.textContent = `共 ${units.length} 段`;
+      barFill.style.width = '0%';
+    }
+
+    function updateProgress(idx) {
+      progressEl.textContent = `第 ${idx + 1} / ${units.length} 段`;
+      barFill.style.width = `${((idx + 1) / units.length) * 100}%`;
+    }
+
+    function clearHighlight() {
+      units.forEach(u => u.el.classList.remove('fr-reading'));
+    }
+
+    function speakOne(idx, chainNext) {
+      if (!('speechSynthesis' in window)) { alert('当前浏览器不支持语音朗读'); return; }
+      const item = units[idx];
+      clearHighlight();
+      item.el.classList.add('fr-reading');
+      item.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const spoken = item.text || '';
+      if (!spoken) {
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+        return;
+      }
+
+      const utter = new SpeechSynthesisUtterance(spoken);
+      utter.lang = 'zh-CN';
+      utter.rate = parseFloat(rateInput.value);
+      const voices = window.speechSynthesis.getVoices();
+      const v = voices.find(vv => vv.lang && vv.lang.toLowerCase().startsWith('zh'));
+      if (v) utter.voice = v;
+
+      utter.onend = () => {
+        item.el.classList.remove('fr-reading');
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+      };
+      utter.onerror = () => { if (chainNext) finishPlay(); };
+      window.speechSynthesis.speak(utter);
+    }
+
+    function finishPlay() {
+      playing = false; stopRequested = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      if (recordingActive) stopRecording();
+      releaseWakeLock();
+    }
+
+    function stopAll() {
+      window.speechSynthesis.cancel();
+      stopRequested = true; playing = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      releaseWakeLock();
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (playing) { stopAll(); return; }
+      startFrom(0);
+    });
+
+    // 屏幕唤醒锁：朗读期间尽量阻止系统自动熄屏
+    let wakeLock = null;
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      } catch (e) { /* 静默忽略 */ }
+    }
+    function releaseWakeLock() {
+      if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && playing && !wakeLock) requestWakeLock();
+    });
+
+    function startFrom(idx) {
+      if (playing) stopAll();
+      if (!units.length || idx < 0 || idx >= units.length) return;
+      checkChineseVoice();
+      playing = true; stopRequested = false;
+      playBtn.textContent = '⏸ 朗读中…';
+      currentIdx = idx;
+      updateProgress(currentIdx);
+      requestWakeLock();
+      speakOne(currentIdx, true);
+    }
+
+    let voiceWarned = false;
+    function checkChineseVoice() {
+      if (voiceWarned || !('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return;
+      const hasZh = voices.some(v => v.lang && v.lang.toLowerCase().startsWith('zh'));
+      if (!hasZh) {
+        voiceWarned = true;
+        alert('没检测到设备上的中文语音包，念出来的可能是别的语言。\n\n去 设置 → 语言和输入法 → 文字转语音输出，把引擎设为"Google 文字转语音"，进去下载"中文（中国）"语音包，装完刷新页面重试。');
+      }
+    }
+
+    // 点击任意一段正文，从那一段开始往下连续朗读
+    units.forEach((u, idx) => {
+      u.el.classList.add('fr-clickable');
+      u.el.addEventListener('click', (e) => {
+        const sel = window.getSelection ? window.getSelection().toString() : '';
+        if (sel) return;
+        panel.classList.add('open');
+        startFrom(idx);
+      });
+    });
+
+    stopBtn.addEventListener('click', stopAll);
+    updateProgressIdle();
+
+    // ---------------------------------------------------------------
+    // 免注册方案：录制当前标签页播放的朗读声音，存成音频文件
+    // ---------------------------------------------------------------
+    const recordBtn = document.getElementById('fr-record-btn');
+    const recordStatus = document.getElementById('fr-record-status');
+    const recordDownload = document.getElementById('fr-record-download');
+    const recordPreview = document.getElementById('fr-record-preview');
+
+    let recordingActive = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      recordingActive = false;
+      recordBtn.classList.remove('recording');
+      recordBtn.textContent = '🎙 录制音频文件（免注册）';
+    }
+
+    recordBtn.addEventListener('click', async () => {
+      if (recordingActive) { stopRecording(); recordStatus.textContent = '已手动停止'; return; }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        alert('当前浏览器不支持标签页音频录制，换 Chrome / Edge 试试'); return;
+      }
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      } catch (err) {
+        recordStatus.textContent = '未授权分享，已取消'; return;
+      }
+      const audioTracks = stream.getAudioTracks();
+      stream.getVideoTracks().forEach(t => t.stop());
+      if (!audioTracks.length) {
+        recordStatus.textContent = '没有捕获到音频 —— 分享时要勾选"分享标签页音频"';
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+
+      const audioStream = new MediaStream(audioTracks);
+      recordedChunks = [];
+      try {
+        mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+      } catch (err) {
+        mediaRecorder = new MediaRecorder(audioStream);
+      }
+      mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        audioTracks.forEach(t => t.stop());
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        const ext = (blob.type.indexOf('webm') !== -1) ? 'webm' : 'ogg';
+        recordDownload.href = url;
+        recordDownload.download = '矩阵空间_朗读.' + ext;
+        recordDownload.style.display = 'inline-block';
+        recordPreview.src = url;
+        recordPreview.style.display = 'block';
+        recordStatus.textContent = `录制完成，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+      };
+
+      mediaRecorder.start();
+      recordingActive = true;
+      recordBtn.classList.add('recording');
+      recordBtn.textContent = '⏹ 停止录制';
+      recordStatus.textContent = '正在录制…请不要切走这个标签页或静音';
+      recordDownload.style.display = 'none';
+      recordPreview.style.display = 'none';
+
+      if (!playing) playBtn.click();
+    });
+
+    // ---------------------------------------------------------------
+    // 导出 MP3：把正文逐段发给 Azure 语音合成 REST API，拼成一个 MP3 文件
+    // ---------------------------------------------------------------
+    const keyInput = document.getElementById('fr-azure-key');
+    const regionInput = document.getElementById('fr-azure-region');
+    const voiceSelect = document.getElementById('fr-azure-voice');
+    const exportBtn = document.getElementById('fr-export-btn');
+    const exportCancelBtn = document.getElementById('fr-export-cancel');
+    const exportProgress = document.getElementById('fr-export-progress');
+    const downloadLink = document.getElementById('fr-download-link');
+    const audioPreview = document.getElementById('fr-audio-preview');
+
+    try {
+      keyInput.value = localStorage.getItem('fr-azure-key') || '';
+      regionInput.value = localStorage.getItem('fr-azure-region') || 'eastasia';
+      const savedVoice = localStorage.getItem('fr-azure-voice');
+      if (savedVoice) voiceSelect.value = savedVoice;
+    } catch (e) { /* localStorage 不可用则忽略 */ }
+
+    function escapeXml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    }
+
+    async function getAzureToken(key, region) {
+      const resp = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issuetoken`, {
+        method: 'POST',
+        headers: { 'Ocp-Apim-Subscription-Key': key, 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
+      if (!resp.ok) throw new Error(`认证失败（${resp.status}），请检查 Key 和区域是否正确`);
+      return await resp.text();
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function synthesizeOne(token, region, text, voice, rate) {
+      const ratePct = Math.round((rate - 1) * 100);
+      const ssml = `<speak version="1.0" xml:lang="zh-CN"><voice name="${voice}"><prosody rate="${ratePct}%">${escapeXml(text)}</prosody></voice></speak>`;
+      const resp = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/ssml+xml',
+          'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3'
+        },
+        body: ssml
+      });
+      if (!resp.ok) {
+        const errText = await resp.text().catch(() => '');
+        const err = new Error(`合成失败（${resp.status}）${errText.slice(0, 150)}`);
+        err.status = resp.status;
+        err.retryAfter = parseInt(resp.headers.get('Retry-After') || '', 10) || null;
+        throw err;
+      }
+      return await resp.arrayBuffer();
+    }
+
+    async function synthesizeWithRetry(token, region, text, voice, rate, onRetryMsg) {
+      const maxRetries = 5;
+      let attempt = 0;
+      while (true) {
+        try {
+          return await synthesizeOne(token, region, text, voice, rate);
+        } catch (err) {
+          if (err.status === 429 && attempt < maxRetries) {
+            attempt++;
+            const waitMs = err.retryAfter ? err.retryAfter * 1000 : Math.min(2000 * 2 ** (attempt - 1), 20000);
+            onRetryMsg(`触发限流(429)，${Math.round(waitMs / 1000)} 秒后自动重试（第 ${attempt}/${maxRetries} 次）…`);
+            await sleep(waitMs);
+            continue;
+          }
+          throw err;
+        }
+      }
+    }
+
+    let exportCancelled = false;
+
+    exportBtn.addEventListener('click', async () => {
+      const key = keyInput.value.trim();
+      const region = (regionInput.value.trim() || 'eastasia');
+      if (!key) { alert('请先填写 Azure Speech Key'); return; }
+
+      try {
+        localStorage.setItem('fr-azure-key', key);
+        localStorage.setItem('fr-azure-region', region);
+        localStorage.setItem('fr-azure-voice', voiceSelect.value);
+      } catch (e) { /* ignore */ }
+
+      const list = units.filter(it => it.text && it.text.trim());
+      if (!list.length) { alert('没有可朗读的内容'); return; }
+
+      if (playing) stopAll();
+
+      exportCancelled = false;
+      exportBtn.disabled = true;
+      exportBtn.textContent = '生成中…';
+      exportCancelBtn.style.display = 'inline-block';
+      downloadLink.style.display = 'none';
+      audioPreview.style.display = 'none';
+
+      const rate = parseFloat(rateInput.value);
+      const voice = voiceSelect.value;
+      const chunks = [];
+      let token = '', tokenTime = 0;
+
+      try {
+        for (let i = 0; i < list.length; i++) {
+          if (exportCancelled) { exportProgress.textContent = '已取消'; break; }
+          if (!token || Date.now() - tokenTime > 8 * 60 * 1000) {
+            token = await getAzureToken(key, region);
+            tokenTime = Date.now();
+          }
+          exportProgress.textContent = `正在合成第 ${i + 1} / ${list.length} 段…`;
+          const buf = await synthesizeWithRetry(token, region, list[i].text, voice, rate,
+            (msg) => { exportProgress.textContent = msg; });
+          chunks.push(new Uint8Array(buf));
+          if (i < list.length - 1) await sleep(250);
+        }
+
+        if (!exportCancelled && chunks.length) {
+          const blob = new Blob(chunks, { type: 'audio/mpeg' });
+          const url = URL.createObjectURL(blob);
+          downloadLink.href = url;
+          downloadLink.download = '矩阵空间_朗读.mp3';
+          downloadLink.style.display = 'inline-block';
+          audioPreview.src = url;
+          audioPreview.style.display = 'block';
+          exportProgress.textContent = `完成，共 ${chunks.length} 段，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+        }
+      } catch (err) {
+        exportProgress.textContent = '出错：' + err.message;
+      } finally {
+        exportBtn.disabled = false;
+        exportBtn.textContent = '生成并下载 MP3';
+        exportCancelBtn.style.display = 'none';
+      }
+    });
+
+    exportCancelBtn.addEventListener('click', () => { exportCancelled = true; });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReader);
+  } else {
+    initReader();
+  }
+})();
+</script>
+</body>
+</html>

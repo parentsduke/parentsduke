@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>志愿者招募 · 扯谈 Duke 群</title>
+<style>
+  @font-face {
+    /* 数字、英文单独指定一套字体，不影响下面楷体对中文的渲染。
+       优先用系统自带的 Times New Roman；没有的设备（常见于部分安卓机型）
+       会自动用下面的网络字体 Tinos（与 Times New Roman 度量兼容的开源替代）兜底 */
+    font-family: 'SimLi';
+    src: local('Times New Roman'), local('Times'), local('STIXGeneral'),
+         url('https://cdn.jsdelivr.net/fontsource/fonts/tinos@latest/latin-400-normal.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/fontsource/fonts/tinos@latest/latin-400-normal.woff') format('woff');
+    unicode-range: U+0020-007E, U+00A0-00FF;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Kaiti';
+    src: local('Times New Roman'), local('Times'), local('STIXGeneral'),
+         url('https://cdn.jsdelivr.net/fontsource/fonts/tinos@latest/latin-400-normal.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/fontsource/fonts/tinos@latest/latin-400-normal.woff') format('woff');
+    unicode-range: U+0020-007E, U+00A0-00FF;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SimLi';
+    src: local('隶书'), local('LiSu'), local('华文隶书'), local('STLiti'),
+         local('Kaiti SC'), local('STKaiti'), local('KaiTi'), local('楷体'),
+         url('https://cdn.jsdelivr.net/gh/yihui/cron/fonts/FandolKai-Regular-yihui.woff2') format('woff2');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Kaiti';
+    src: local('Kaiti SC'), local('STKaiti'), local('KaiTi'), local('楷体'), local('SimKai'),
+         url('https://cdn.jsdelivr.net/gh/yihui/cron/fonts/FandolKai-Regular-yihui.woff2') format('woff2');
+    font-display: swap;
+  }
+
+  :root{
+    --navy: #1a2f6e;
+    --navy-deep: #0f1c46;
+    --gold: #f0c040;
+    --gold-dim: #b89131;
+    --white: #ffffff;
+    --line: rgba(240,192,64,0.25);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{
+    min-height: 100%;
+    background: var(--navy-deep);
+  }
+
+  body{
+    margin:0;
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color: var(--white);
+    font-family: 'Kaiti','STKaiti','KaiTi', -apple-system, sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 64px 28px 40px;
+  }
+
+  @media (max-width: 600px){
+    .wrap{ padding: 40px 8px 28px; }
+    .box{ padding: 18px 12px; }
+    .role{ padding: 14px 12px; }
+    .form-box{ padding: 22px 12px 18px; }
+    .note-card{ padding: 18px 12px; }
+    .cta{ padding: 28px 12px; }
+  }
+
+  .eyebrow{
+    font-family: 'SimLi','KaiTi', sans-serif;
+    color: var(--gold);
+    font-size: 14px;
+    letter-spacing: 4px;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  h1{
+    font-family: 'SimLi','KaiTi', sans-serif;
+    font-size: clamp(32px, 6vw, 48px);
+    text-align: center;
+    margin: 0 0 8px;
+    color: var(--white);
+    letter-spacing: 2px;
+  }
+
+  .page-title{
+    font-family: 'SimLi','KaiTi', sans-serif;
+    font-size: clamp(28px, 5.5vw, 40px);
+    text-align: center;
+    margin: 0 0 8px;
+    color: var(--white);
+    letter-spacing: 2px;
+  }
+
+  .subtitle{
+    text-align:center;
+    color: var(--gold);
+    font-size: 15px;
+    margin-bottom: 48px;
+    letter-spacing: 1px;
+  }
+
+  .intro{
+    font-size: 17px;
+    color: var(--white);
+    text-shadow: 0 0 1px rgba(255,255,255,0.5);
+    margin-bottom: 44px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .intro p{ margin: 0 0 14px; }
+
+  h2.section-title{
+    font-family: 'SimLi','KaiTi', sans-serif;
+    color: var(--gold);
+    font-size: 22px;
+    letter-spacing: 3px;
+    margin: 0 0 24px;
+  }
+
+  .roles{
+    display: grid;
+    gap: 18px;
+    margin-bottom: 48px;
+  }
+
+  .role{
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 22px;
+    background: rgba(240,192,64,0.03);
+  }
+
+  .role-name{
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .role-name .tag{
+    display:inline-block;
+    font-family: 'SimLi','KaiTi', sans-serif;
+    font-size: 12px;
+    color: var(--navy-deep);
+    background: var(--gold);
+    padding: 2px 9px;
+    border-radius: 20px;
+    margin-right: 10px;
+    letter-spacing: 1px;
+    vertical-align: middle;
+  }
+
+  .role-name .quota{
+    float: right;
+    font-family: 'SimLi','KaiTi', sans-serif;
+    font-size: 15px;
+    color: var(--gold);
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+
+  .role-desc{
+    font-size: 15px;
+    color: var(--white);
+    text-shadow: 0 0 1px rgba(255,255,255,0.5);
+  }
+
+  .box{
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px 26px;
+    margin-bottom: 44px;
+  }
+
+  .box ul{
+    margin: 0;
+    padding-left: 20px;
+  }
+
+  .box li{
+    margin-bottom: 8px;
+    font-size: 15px;
+    text-shadow: 0 0 1px rgba(255,255,255,0.5);
+  }
+
+  .cta{
+    text-align: center;
+    padding: 36px 20px;
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .note-card{
+    padding: 26px 24px;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    margin: 36px 0 8px;
+  }
+
+  .note-card .note-title{
+    text-align: center;
+    font-size: 15px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .note-card p{
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.9;
+    text-shadow: 0 0 1px rgba(255,255,255,0.5);
+    text-align: left;
+  }
+
+  .cta p{
+    margin: 0 0 18px;
+    font-size: 16px;
+  }
+
+  .cta .highlight{
+    color: var(--gold);
+    font-size: 20px;
+    font-family: 'SimLi','KaiTi', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  .cta small{
+    display:block;
+    margin-top: 14px;
+    color: var(--gold-dim);
+    font-size: 13px;
+  }
+
+  footer{
+    text-align: center;
+    padding: 30px 0 10px;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  footer a{
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--gold-dim);
+  }
+
+  /* ── 报名表单 ── */
+  .form-box{
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 30px 26px 26px;
+    margin-bottom: 20px;
+  }
+
+  .form-box h2.section-title{ margin-bottom: 6px; }
+
+  .form-hint{
+    font-size: 14px;
+    color: var(--white);
+    opacity: 0.7;
+    margin-bottom: 24px;
+  }
+
+  .field{ margin-bottom: 18px; }
+
+  .field label{
+    display: block;
+    font-size: 14px;
+    color: var(--gold);
+    margin-bottom: 7px;
+    letter-spacing: 0.5px;
+  }
+
+  .field label .req{ color: #e08a8a; margin-left: 3px; }
+
+  .quota-hint{
+    margin-top: 8px;
+    font-size: 13px;
+    color: #f0a840;
+    opacity: 0.9;
+  }
+
+  .field input[type="text"],
+  .field input[type="tel"],
+  .field textarea{
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: 11px 13px;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .field input:focus, .field textarea:focus{
+    border-color: var(--gold);
+  }
+
+  .field textarea{ resize: vertical; min-height: 70px; }
+
+  .checks{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .check-pill{
+    position: relative;
+  }
+
+  .check-pill input{
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .check-pill span{
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1.5px solid var(--line);
+    border-radius: 20px;
+    font-size: 14px;
+    color: var(--white);
+    opacity: 0.75;
+    transition: all 0.15s;
+  }
+
+  .check-pill input:checked + span{
+    border-color: var(--gold);
+    background: rgba(240,192,64,0.15);
+    color: var(--gold);
+    opacity: 1;
+  }
+
+  .check-pill.full input{
+    cursor: not-allowed;
+  }
+
+  .check-pill.full span{
+    opacity: 0.35;
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+
+  .check-pill.full span::after{
+    content: '（已满）';
+    text-decoration: none;
+    font-size: 11px;
+  }
+
+  .submit-btn{
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    border-radius: 8px;
+    border: none;
+    background: var(--gold);
+    color: var(--navy-deep);
+    font-family: 'SimLi','KaiTi', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    text-shadow: 0.4px 0 0 currentColor, -0.4px 0 0 currentColor, 0 0.4px 0 currentColor, 0 -0.4px 0 currentColor;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .submit-btn:hover{ opacity: 0.88; }
+  .submit-btn:disabled{ opacity: 0.5; cursor: not-allowed; }
+
+  .form-msg{
+    margin-top: 14px;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+  }
+
+  .form-msg.show{ display: block; }
+  .form-msg.ok{ color: #7bd68a; }
+  .form-msg.err{ color: #e08a8a; }
+
+  .success-view{
+    display: none;
+    text-align: center;
+    padding: 20px 10px 6px;
+  }
+
+  .success-view.show{ display: block; }
+
+  .success-view .mark{
+    font-size: 34px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .success-view p{
+    font-size: 15px;
+    text-shadow: 0 0 1px rgba(255,255,255,0.5);
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="eyebrow">扯 谈 D U K E 群</div>
+    <h2 class="page-title">2030 届家长群招募志愿者</h2>
+    <div class="subtitle">一群人,一件事,一点点时间</div>
+
+    <div class="intro">
+      <p>扯谈 Duke 群，从最初几位热心家长的自发互助，慢慢长成了大家熟悉的社区平台。审核申请、解答疑问、更新内容、组织活动等等，这些琐碎却必需的事，一直是靠志愿者抽空撑起来的。</p>
+      <p>一届又一届，如今轮到了 2030 届。如果你愿意每天挤出一点点时间，为这个社区出一份力，我们非常欢迎你加入这个小小的幕后团队。</p>
+    </div>
+
+    <h2 class="section-title">招募目的</h2>
+    <div class="box">
+      <ul>
+        <li>短期：组织今年 Family Weekend 家长聚会</li>
+        <li>中期：筹建 2031 届家长群</li>
+        <li>长期：培养自主运营的志愿者团队</li>
+        
+      </ul>
+    </div>
+
+    <h2 class="section-title">招募方向</h2>
+    <div class="roles">
+
+      <div class="role">
+        <div class="role-name"><span class="tag">运营</span>群内运营<span class="quota">招募 10 人</span></div>
+        <div class="role-desc">其中至少 5 位需要是 2026 年秋季 Family Weekend 活动的参加者，以组织家长聚会，实现短期目标第一步。</div>
+      </div>
+
+      <div class="role">
+        <div class="role-name"><span class="tag">技术</span>网站更新<span class="quota">招募 1 人</span></div>
+        <div class="role-desc">有 GitHub 使用经验，帮助收集群里的重要信息、图片和视频等挂在网站的托管平台上。</div>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">我们希望你</h2>
+    <div class="box">
+      <ul>
+        <li>愿意每天投入一些零散时间，长期稳定地参与</li>
+        <li>做事细心、靠谱，能按时回应群里的事务</li>
+        <li>不需要专业背景，热心和责任心比经验更重要</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">志愿者守则</h2>
+    <div class="box">
+      <ul>
+        <li>对沟通中接触到的个人信息、联系方式等严格保密、不用于其他用途</li>
+        <li>处理事务代表的是扯谈 Duke 群，保持友善，不引起争议</li>
+        <li>遇到无法判断的情况，及时与其他管理员讨论</li>
+        <li>认领的事务确保按时完成</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">在线报名</h2>
+    <div class="form-box">
+      <div class="form-hint">填一下基本信息，我们会尽快联系你</div>
+
+      <form id="volForm">
+        <div class="field">
+          <label>姓名 <span class="req">*</span></label>
+          <input type="text" id="fName" required maxlength="40">
+        </div>
+
+        <div class="field">
+          <label>微信号 / 联系方式 <span class="req">*</span></label>
+          <input type="text" id="fContact" required maxlength="60">
+        </div>
+
+        <div class="field">
+          <label>报名方向 <span class="req">*</span></label>
+          <div class="checks" id="fRoles">
+            <label class="check-pill" id="opsPill">
+              <input type="checkbox" name="role" value="群内运营" id="opsCheck">
+              <span id="opsPillText">群内运营</span>
+            </label>
+            <label class="check-pill">
+              <input type="checkbox" name="role" value="网站更新">
+              <span>网站更新</span>
+            </label>
+          </div>
+          <div class="quota-hint" id="opsQuotaHint" style="display:none;"></div>
+        </div>
+
+        <div class="field">
+          <label>是否会参加 2026 年秋季 Family Weekend <span class="req">*</span></label>
+          <div class="checks" id="fFW">
+            <label class="check-pill">
+              <input type="radio" name="fw" value="是">
+              <span>会参加</span>
+            </label>
+            <label class="check-pill">
+              <input type="radio" name="fw" value="否">
+              <span>不参加</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>备注</label>
+          <textarea id="fNotes" maxlength="300" placeholder="可以简单说说你的想法"></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="fSubmitBtn">提 交 报 名</button>
+        <div class="form-msg" id="fMsg"></div>
+      </form>
+
+      <div class="success-view" id="fSuccess">
+        <div class="mark">已收到</div>
+        <p>谢谢你的报名，我们会尽快联系你～</p>
+      </div>
+    </div>
+
+    <div class="note-card">
+      <div class="note-title">写在最后</div>
+      <p>一个志愿者组织能走多远，靠的不是某几个人硬撑，而是靠制度延续下去。我们希望通过清晰的分工、交接和传承，让扯谈 Duke 群体系一届一届延续下去。</p>
+    </div>
+
+  </div>
+
+  <footer>
+    扯谈 Duke 群 · <a href="https://dukeparents.org">dukeparents.org</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById('volForm');
+    const msgEl = document.getElementById('fMsg');
+    const btn = document.getElementById('fSubmitBtn');
+
+    function showMsg(text, ok){
+      msgEl.textContent = text;
+      msgEl.className = 'form-msg show ' + (ok ? 'ok' : 'err');
+    }
+
+    // ── 群内运营名额配额（非 Family Weekend 参与者最多 5 个）──
+    const OPS_NON_FW_LIMIT = 5;
+    let opsNonFwCount = 0;
+    let quotaLoaded = false;
+
+    async function loadOpsQuota(){
+      try {
+        const { count, error } = await db
+          .from('volunteer_ops_quota')
+          .select('*', { count: 'exact', head: true });
+        if (error) throw error;
+        opsNonFwCount = count || 0;
+        quotaLoaded = true;
+        updateQuotaUI();
+      } catch(e){
+        // 查询失败（比如后台还没建配额视图）时不阻塞报名，静默跳过限额检查
+        console.warn('配额查询失败，跳过前端限额检查:', e.message);
+      }
+    }
+
+    function updateQuotaUI(){
+      const hint = document.getElementById('opsQuotaHint');
+      const pillText = document.getElementById('opsPillText');
+      if (quotaLoaded && opsNonFwCount >= OPS_NON_FW_LIMIT){
+        hint.style.display = 'block';
+        hint.textContent = '非 Family Weekend 参与者的名额已满，仅 Family Weekend 参与者可报名此方向';
+        pillText.textContent = '群内运营（非FW名额已满）';
+      } else {
+        hint.style.display = 'none';
+        pillText.textContent = '群内运营';
+      }
+    }
+
+    loadOpsQuota();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('fName').value.trim();
+      const contact = document.getElementById('fContact').value.trim();
+      const notes = document.getElementById('fNotes').value.trim();
+      const selectedRoles = Array.from(document.querySelectorAll('input[name="role"]:checked')).map(el => el.value);
+      const fwChoice = document.querySelector('input[name="fw"]:checked');
+
+      if (!name || !contact){
+        showMsg('请填写姓名和联系方式', false);
+        return;
+      }
+
+      if (selectedRoles.length === 0){
+        showMsg('请至少选择一个报名方向', false);
+        return;
+      }
+
+      if (!fwChoice){
+        showMsg('请选择是否会参加 2026 年秋季 Family Weekend', false);
+        return;
+      }
+
+      const isOps = selectedRoles.includes('群内运营');
+      const isFW = fwChoice.value === '是';
+      if (isOps && !isFW && quotaLoaded && opsNonFwCount >= OPS_NON_FW_LIMIT){
+        showMsg('抱歉，非 Family Weekend 参与者的"群内运营"名额已满，仅 Family Weekend 参与者可报名此方向', false);
+        return;
+      }
+
+      const roles = [...selectedRoles];
+      if (fwChoice.value === '是') roles.push('Family Weekend参与者');
+
+      btn.disabled = true;
+      btn.textContent = '提交中…';
+
+      try {
+        const payload = {
+          name: name,
+          contact: contact,
+          roles: roles,
+          notes: notes || null
+        };
+
+        const { error } = await db.from('volunteer_signups').insert(payload);
+        if (error) throw error;
+
+        // ── 触发 notify-admin（邮件通知）──
+        try {
+          await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({
+              type: 'volunteer_signup',
+              recipients: ['weihong_j@yahoo.com'],
+              record: payload
+            }),
+          });
+        } catch(e) {
+          console.warn('通知发送失败:', e);
+        }
+
+        form.style.display = 'none';
+        document.getElementById('fSuccess').classList.add('show');
+      } catch(err){
+        showMsg('提交失败，请稍后再试或直接联系管理员（' + err.message + '）', false);
+        btn.disabled = false;
+        btn.textContent = '提 交 报 名';
+      }
+    });
+  </script>
+</body>
+</html>

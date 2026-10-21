@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>记录迁移工具</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Serif SC', serif; background: #f4f6fa; color: #1a1a2e; min-height: 100vh; padding: 32px 16px; }
+  h1 { font-size: 20px; font-weight: 700; color: #003087; margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 28px; }
+
+  .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,.08); margin-bottom: 20px; }
+  .card h2 { font-size: 15px; font-weight: 700; color: #003087; margin-bottom: 16px; border-bottom: 1px solid #e8eaf0; padding-bottom: 10px; }
+
+  .search-row { display: flex; gap: 10px; }
+  input[type=text] { flex: 1; padding: 10px 14px; border: 1.5px solid #d0d4e0; border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; transition: border .2s; }
+  input[type=text]:focus { border-color: #003087; }
+  button { padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; font-family: inherit; cursor: pointer; transition: background .2s; }
+  .btn-search { background: #003087; color: #fff; }
+  .btn-search:hover { background: #00205b; }
+  .btn-migrate { background: #1a6b3c; color: #fff; font-weight: 700; padding: 12px 28px; font-size: 15px; }
+  .btn-migrate:hover { background: #145230; }
+  .btn-migrate:disabled { background: #aaa; cursor: not-allowed; }
+
+  .results-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .result-item { padding: 12px 16px; border: 1.5px solid #e0e4f0; border-radius: 8px; cursor: pointer; transition: all .2s; font-size: 14px; }
+  .result-item:hover { border-color: #003087; background: #f0f4ff; }
+  .result-item.selected { border-color: #003087; background: #e8eeff; }
+  .result-name { font-weight: 700; }
+  .result-meta { font-size: 12px; color: #666; margin-top: 3px; }
+
+  .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field-row { padding: 8px 12px; background: #f8f9fc; border-radius: 6px; font-size: 13px; }
+  .field-label { color: #666; font-size: 11px; margin-bottom: 2px; }
+  .field-val { font-weight: 600; color: #1a1a2e; word-break: break-all; }
+  .field-val.mapped { color: #1a6b3c; }
+  .field-val.null { color: #aaa; font-style: italic; }
+
+  .warn { background: #fff8e6; border: 1.5px solid #f5a623; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #7a5200; margin-bottom: 16px; }
+  .success { background: #e8f5ee; border: 1.5px solid #1a6b3c; border-radius: 8px; padding: 16px; font-size: 14px; color: #1a6b3c; font-weight: 600; }
+  .error { background: #fff0f0; border: 1.5px solid #c84b31; border-radius: 8px; padding: 16px; font-size: 14px; color: #c84b31; }
+
+  .empty { color: #aaa; font-size: 13px; margin-top: 10px; }
+  .loading { color: #666; font-size: 13px; margin-top: 10px; }
+  .step-badge { display: inline-block; background: #003087; color: #fff; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 22px; font-size: 12px; font-weight: 700; margin-right: 8px; }
+</style>
+</head>
+<body>
+
+<h1>📋 记录迁移工具</h1>
+<p class="subtitle">将 admissions_submissions（单招表）中的指定记录迁移至 admissions_submissionsMulti（多招表）</p>
+
+<!-- Step 1: Search -->
+<div class="card">
+  <h2><span class="step-badge">1</span>搜索记录（老表）</h2>
+  <div class="search-row">
+    <input type="text" id="searchInput" placeholder="输入学生中文姓名或英文姓名…" onkeydown="if(event.key==='Enter')search()">
+    <button class="btn-search" onclick="search()">搜索</button>
+  </div>
+  <div id="searchResults"></div>
+</div>
+
+<!-- Step 2: Preview -->
+<div class="card" id="previewCard" style="display:none;">
+  <h2><span class="step-badge">2</span>预览迁移内容</h2>
+  <div class="warn">⚠️ 以下字段将被写入 <strong>admissions_submissionsMulti</strong>，老表记录保持不变。<br>注意：<code>letter_path</code> 将映射为 <code>grad_letter_path</code>。</div>
+  <div class="preview-grid" id="previewGrid"></div>
+</div>
+
+<!-- Step 3: Confirm -->
+<div class="card" id="confirmCard" style="display:none;">
+  <h2><span class="step-badge">3</span>确认迁移</h2>
+  <div id="migrateResult"></div>
+  <button class="btn-migrate" id="migrateBtn" onclick="migrate()">确认迁移到 Multi 表</button>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let selectedRecord = null;
+
+  async function search() {
+    const q = document.getElementById('searchInput').value.trim();
+    if (!q) return;
+    const el = document.getElementById('searchResults');
+    el.innerHTML = '<div class="loading">搜索中…</div>';
+    document.getElementById('previewCard').style.display = 'none';
+    document.getElementById('confirmCard').style.display = 'none';
+    selectedRecord = null;
+
+    const { data, error } = await db
+      .from('admissions_submissions')
+      .select('*')
+      .or(`student_name_cn.ilike.%${q}%,student_name_en.ilike.%${q}%`);
+
+    if (error) { el.innerHTML = `<div class="error">搜索失败：${error.message}</div>`; return; }
+    if (!data || data.length === 0) { el.innerHTML = '<div class="empty">未找到匹配记录</div>'; return; }
+
+    el.innerHTML = '<div class="results-list">' + data.map(r => `
+      <div class="result-item" onclick="selectRecord('${r.id}')" id="ri-${r.id}">
+        <div class="result-name">${r.student_name_cn || '—'} / ${r.student_name_en || '—'}</div>
+        <div class="result-meta">${r.high_school || '—'} · ${r.admission_type || '—'} · ${r.class_year || '—'} · 提交于 ${r.created_at ? new Date(r.created_at).toLocaleDateString('zh-CN') : '—'}</div>
+      </div>`).join('') + '</div>';
+
+    // Store data for selection
+    window._searchData = data;
+  }
+
+  function selectRecord(id) {
+    document.querySelectorAll('.result-item').forEach(el => el.classList.remove('selected'));
+    document.getElementById('ri-' + id).classList.add('selected');
+    selectedRecord = window._searchData.find(r => r.id === id);
+    showPreview(selectedRecord);
+  }
+
+  function showPreview(r) {
+    const fields = [
+      { label: '学生中文姓名', val: r.student_name_cn },
+      { label: '学生英文姓名', val: r.student_name_en },
+      { label: '高中学校', val: r.high_school },
+      { label: '地区', val: r.location },
+      { label: '录取类型', val: r.admission_type },
+      { label: '届次', val: r.class_year },
+      { label: '学院', val: r.college },
+      { label: '专业', val: r.major },
+      { label: 'Committed', val: r.committed != null ? String(r.committed) : null },
+      { label: '备注', val: r.notes },
+      { label: '提交者', val: r.submitter_name },
+      { label: '微信号', val: r.submitter_contact },
+      { label: '邮箱', val: r.submitter_email },
+      { label: '微信昵称', val: r.wx_nickname },
+      { label: 'letter_path → grad_letter_path', val: r.letter_path, mapped: true },
+      { label: 'committed_letter_path', val: r.committed_letter_path },
+      { label: 'approved_at', val: r.approved_at },
+      { label: 'rejected_at', val: r.rejected_at },
+      { label: 'shelved_at', val: r.shelved_at },
+      { label: 'qr_code_no', val: r.qr_code_no },
+    ];
+
+    document.getElementById('previewGrid').innerHTML = fields.map(f => `
+      <div class="field-row">
+        <div class="field-label">${f.label}</div>
+        <div class="field-val ${f.mapped ? 'mapped' : ''} ${!f.val && f.val !== false ? 'null' : ''}">${f.val != null ? f.val : '（空）'}</div>
+      </div>`).join('');
+
+    document.getElementById('previewCard').style.display = 'block';
+    document.getElementById('confirmCard').style.display = 'block';
+    document.getElementById('migrateResult').innerHTML = '';
+    document.getElementById('migrateBtn').disabled = false;
+    document.getElementById('previewCard').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function migrate() {
+    if (!selectedRecord) return;
+    const r = selectedRecord;
+    const btn = document.getElementById('migrateBtn');
+    btn.disabled = true;
+    btn.textContent = '迁移中…';
+
+    // Check if already exists in Multi table
+    const { data: existing } = await db
+      .from('admissions_submissionsMulti')
+      .select('id')
+      .eq('student_name_en', r.student_name_en || '')
+      .eq('submitter_email', r.submitter_email || '');
+
+    if (existing && existing.length > 0) {
+      document.getElementById('migrateResult').innerHTML =
+        `<div class="error" style="margin-bottom:12px;">⚠️ Multi 表中已存在同名同邮箱记录，请确认是否重复迁移。如需继续请联系管理员直接操作数据库。</div>`;
+      btn.disabled = false;
+      btn.textContent = '确认迁移到 Multi 表';
+      return;
+    }
+
+    // Build payload mapping old → new
+    const payload = {
+      student_name_cn:       r.student_name_cn       || null,
+      student_name_en:       r.student_name_en       || null,
+      high_school:           r.high_school           || null,
+      location:              r.location              || null,
+      admission_type:        r.admission_type        || null,
+      class_year:            r.class_year            || null,
+      college:               r.college               || null,
+      major:                 r.major                 || null,
+      committed:             r.committed             ?? null,
+      notes:                 r.notes                 || null,
+      submitter_name:        r.submitter_name        || null,
+      submitter_contact:     r.submitter_contact     || null,
+      submitter_email:       r.submitter_email       || null,
+      wx_nickname:           r.wx_nickname           || null,
+      grad_letter_path:      r.letter_path           || null,  // 字段映射
+      committed_letter_path: r.committed_letter_path || null,
+      approved_at:           r.approved_at           || null,
+      rejected_at:           r.rejected_at           || null,
+      shelved_at:            r.shelved_at            || null,
+      qr_code_no:            r.qr_code_no            || null,
+      created_at:            r.created_at            || null,
+      // Multi 专有字段
+      dorm_photo_path:       null,
+      approved_by:           null,
+      approval_log:          null,
+    };
+
+    const { error } = await db.from('admissions_submissionsMulti').insert(payload);
+
+    if (error) {
+      document.getElementById('migrateResult').innerHTML =
+        `<div class="error" style="margin-bottom:12px;">❌ 迁移失败：${error.message}</div>`;
+      btn.disabled = false;
+      btn.textContent = '确认迁移到 Multi 表';
+    } else {
+      document.getElementById('migrateResult').innerHTML =
+        `<div class="success" style="margin-bottom:12px;">✅ 迁移成功！${r.student_name_cn || r.student_name_en} 的记录已写入 admissions_submissionsMulti，老表记录保持不变。</div>`;
+      btn.textContent = '已完成';
+    }
+  }
+</script>
+</body>
+</html>

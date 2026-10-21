@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全球市场行情 — 扯谈Duke群</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  const ADMIN = 'weihong_j@yahoo.com';
+  const client = window.supabase.createClient(
+    'https://ritglkwqpwlcjwemhfqd.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8'
+  );
+  client.auth.getSession().then(function({ data }) {
+    if (!data.session || data.session.user.email !== ADMIN) {
+      window.location.href = 'index.html';
+    }
+  });
+})();
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root {
+  --bg:#0d1117; --card:#161b22; --border:#30363d;
+  --gold:#d4a843; --green:#3fb950; --red:#f85149; --flat:#8b949e;
+  --text:#e6edf3; --muted:#8b949e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Noto Serif SC',serif;min-height:100vh;padding-bottom:60px}
+.top-bar{background:linear-gradient(135deg,#0d1117 0%,#012169 100%);border-bottom:1px solid var(--gold);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:99}
+.top-bar h1{font-size:17px;font-weight:700;color:#fff;letter-spacing:0.08em}
+.top-bar .meta{text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.6}
+.market-state{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--gold);margin-bottom:2px}
+.container{max-width:960px;margin:0 auto;padding:20px 16px}
+.commentary{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:6px;padding:14px 18px;margin-bottom:24px;font-size:14px;line-height:1.8;color:#cdd9e5}
+.commentary-label{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--gold);margin-bottom:8px;letter-spacing:0.1em}
+.section-title{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--gold);letter-spacing:0.15em;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #21262d}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:4px}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 14px;transition:border-color 0.15s}
+.q-card:hover{border-color:var(--gold)}
+.up-border{border-top:2px solid var(--green)}
+.down-border{border-top:2px solid var(--red)}
+.flat-border{border-top:2px solid var(--flat)}
+.q-label{font-size:12px;color:var(--muted);margin-bottom:2px}
+.q-symbol{font-size:10px;font-family:'JetBrains Mono',monospace;color:#444d56;margin-bottom:6px}
+.q-price{font-family:'JetBrains Mono',monospace;font-weight:600;color:#fff;margin-bottom:4px}
+.q-change{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.q-ext{margin-top:6px;padding-top:6px;border-top:1px solid #2a2a2a;font-size:11px;font-family:'JetBrains Mono',monospace}.q-ext-label{color:#666;margin-right:4px}
+.tv-chart-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin:12px 0 20px}
+.tv-chart-item{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px}
+.tv-chart-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.tv-chart-box{width:100%;height:200px}
+.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--flat)}
+.news-wrap{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-top:4px}
+.news-wrap ul{list-style:none;padding:0}
+.news-wrap li{padding:9px 0;border-bottom:1px solid #21262d;font-size:13px;line-height:1.6;color:#cdd9e5}
+.news-wrap li:last-child{border-bottom:none}
+.news-wrap a{color:var(--gold);text-decoration:none;font-size:11px;margin-left:6px}
+.news-wrap a:hover{text-decoration:underline}
+.no-data{color:var(--muted);font-size:13px;padding:8px 0}
+footer{text-align:center;padding:24px 16px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);border-top:1px solid #21262d;margin-top:32px}
+footer a{color:var(--gold);text-decoration:none}
+@media(max-width:480px){.card-grid{grid-template-columns:repeat(2,1fr)}.top-bar h1{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div>
+    <div class="market-state">⚪ 已收盘</div>
+    <h1>📈 全球市场行情</h1>
+  </div>
+  <div class="meta">2026-05-14 19:59 ET<br>07:59 北京时间</div>
+</div>
+<div class="container">
+  <div class="commentary">
+    <div class="commentary-label">▸ AI 市场点评</div>
+    今日美国股市表现积极，标普500、纳斯达克和道琼斯指数均录得小幅上涨，市场情绪较为乐观。具体来看，博通和英伟达等芯片股领涨市场，而白银则出现较大跌幅，这可能与大宗商品市场情绪变化有关。值得关注的是，人民币对美元汇率今日小幅升值，这对于需要汇款支持孩子留学生活的家庭而言，意味着换汇成本略有降低。整体而言，今日市场波动平稳，建议留学家庭继续关注汇率动态，合理规划资金。
+  </div>
+  <div class="section-title">🇺🇸 美股指数</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">S&P 500</div><div class="q-symbol">^GSPC</div><div class="q-price" style="font-size:24px">7,501.24</div><div class="q-change up">+56.99 (+0.77%)</div></div><div class="q-card up-border"><div class="q-label">纳斯达克</div><div class="q-symbol">^IXIC</div><div class="q-price" style="font-size:24px">26,635.22</div><div class="q-change up">+232.88 (+0.88%)</div></div><div class="q-card up-border"><div class="q-label">道琼斯</div><div class="q-symbol">^DJI</div><div class="q-price" style="font-size:24px">50,063.46</div><div class="q-change up">+370.26 (+0.75%)</div></div><div class="q-card up-border"><div class="q-label">罗素2000</div><div class="q-symbol">^RUT</div><div class="q-price" style="font-size:24px">2,863.09</div><div class="q-change up">+19.16 (+0.67%)</div></div><div class="q-card down-border"><div class="q-label">VIX恐慌指数</div><div class="q-symbol">^VIX</div><div class="q-price" style="font-size:24px">17.26</div><div class="q-change down">-0.61 (-3.41%)</div></div></div><div class="tv-chart-row"><div class="tv-chart-item"><div class="tv-chart-label">S&P 500</div><div class="tv-chart-wrap">
+  <div id="tv-us_indices-0" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"SP:SPX",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_indices-0"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">道琼斯</div><div class="tv-chart-wrap">
+  <div id="tv-us_indices-1" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"DJ:DJI",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_indices-1"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">纳斯达克</div><div class="tv-chart-wrap">
+  <div id="tv-us_indices-2" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:IXIC",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_indices-2"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div></div><div class="section-title">📈 期货指数</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">S&P 500期货</div><div class="q-symbol">ES=F</div><div class="q-price" style="font-size:24px">7,525.00</div><div class="q-change up">+55.50 (+0.74%)</div></div><div class="q-card up-border"><div class="q-label">道琼斯期货</div><div class="q-symbol">YM=F</div><div class="q-price" style="font-size:24px">50,136.00</div><div class="q-change up">+344.00 (+0.69%)</div></div><div class="q-card up-border"><div class="q-label">纳斯达克期货</div><div class="q-symbol">NQ=F</div><div class="q-price" style="font-size:24px">29,711.75</div><div class="q-change up">+232.50 (+0.79%)</div></div><div class="q-card up-border"><div class="q-label">罗素2000期货</div><div class="q-symbol">RTY=F</div><div class="q-price" style="font-size:24px">2,864.40</div><div class="q-change up">+12.10 (+0.42%)</div></div></div><div class="tv-chart-row"><div class="tv-chart-item"><div class="tv-chart-label">S&P 500期货</div><div class="tv-chart-wrap">
+  <div id="tv-futures-0" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"CME_MINI:ES1!",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-futures-0"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">道琼斯期货</div><div class="tv-chart-wrap">
+  <div id="tv-futures-1" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"CBOT_MINI:YM1!",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-futures-1"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">纳斯达克期货</div><div class="tv-chart-wrap">
+  <div id="tv-futures-2" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"CME_MINI:NQ1!",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-futures-2"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">罗素2000期货</div><div class="tv-chart-wrap">
+  <div id="tv-futures-3" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"CME_MINI:RTY1!",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-futures-3"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div></div><div class="section-title">📱 美股科技</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">Apple</div><div class="q-symbol">AAPL</div><div class="q-price" style="font-size:18px">298.2</div><div class="q-change down">-0.66 (-0.22%)</div></div><div class="q-card up-border"><div class="q-label">NVIDIA</div><div class="q-symbol">NVDA</div><div class="q-price" style="font-size:18px">235.7</div><div class="q-change up">+9.91 (+4.39%)</div></div><div class="q-card down-border"><div class="q-label">Tesla</div><div class="q-symbol">TSLA</div><div class="q-price" style="font-size:18px">443.3</div><div class="q-change down">-1.97 (-0.44%)</div></div><div class="q-card up-border"><div class="q-label">Microsoft</div><div class="q-symbol">MSFT</div><div class="q-price" style="font-size:18px">409.4</div><div class="q-change up">+4.22 (+1.04%)</div></div><div class="q-card down-border"><div class="q-label">Google</div><div class="q-symbol">GOOGL</div><div class="q-price" style="font-size:18px">401.1</div><div class="q-change down">-1.55 (-0.38%)</div></div><div class="q-card down-border"><div class="q-label">Amazon</div><div class="q-symbol">AMZN</div><div class="q-price" style="font-size:18px">267.2</div><div class="q-change down">-2.91 (-1.08%)</div></div><div class="q-card up-border"><div class="q-label">Meta</div><div class="q-symbol">META</div><div class="q-price" style="font-size:18px">618.4</div><div class="q-change up">+1.80 (+0.29%)</div></div><div class="q-card down-border"><div class="q-label">Eli Lilly</div><div class="q-symbol">LLY</div><div class="q-price" style="font-size:18px">1,006.70</div><div class="q-change down">-9.05 (-0.89%)</div></div></div><div class="tv-chart-row"><div class="tv-chart-item"><div class="tv-chart-label">Apple</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-0" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:AAPL",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-0"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">NVIDIA</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-1" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:NVDA",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-1"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">Tesla</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-2" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:TSLA",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-2"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">Microsoft</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-3" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:MSFT",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-3"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">Google</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-4" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:GOOGL",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-4"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">Amazon</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-5" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:AMZN",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-5"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">Meta</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-6" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:META",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-6"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">Eli Lilly</div><div class="tv-chart-wrap">
+  <div id="tv-us_stocks-7" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NYSE:LLY",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-us_stocks-7"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div></div><div class="section-title">🤖 AI科技股</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">Palantir</div><div class="q-symbol">PLTR</div><div class="q-price" style="font-size:18px">133.7</div><div class="q-change up">+3.68 (+2.83%)</div></div><div class="q-card up-border"><div class="q-label">AMD</div><div class="q-symbol">AMD</div><div class="q-price" style="font-size:18px">449.7</div><div class="q-change up">+4.20 (+0.94%)</div></div><div class="q-card up-border"><div class="q-label">Broadcom</div><div class="q-symbol">AVGO</div><div class="q-price" style="font-size:18px">439.8</div><div class="q-change up">+23.00 (+5.52%)</div></div></div><div class="tv-chart-row"><div class="tv-chart-item"><div class="tv-chart-label">Palantir</div><div class="tv-chart-wrap">
+  <div id="tv-ai_tech-0" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:PLTR",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-ai_tech-0"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">AMD</div><div class="tv-chart-wrap">
+  <div id="tv-ai_tech-1" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:AMD",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-ai_tech-1"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">Broadcom</div><div class="tv-chart-wrap">
+  <div id="tv-ai_tech-2" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NASDAQ:AVGO",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-ai_tech-2"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div></div><div class="section-title">🇭🇰 港股</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">恒生指数</div><div class="q-symbol">^HSI</div><div class="q-price" style="font-size:18px">26,388.44</div><div class="q-change up">+40.53 (+0.15%)</div></div></div><div class="section-title">🌏 亚太/欧洲</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">日经225</div><div class="q-symbol">^N225</div><div class="q-price" style="font-size:18px">63,272.11</div><div class="q-change up">+529.54 (+0.84%)</div></div><div class="q-card up-border"><div class="q-label">韩国KOSPI</div><div class="q-symbol">^KS11</div><div class="q-price" style="font-size:18px">7,844.01</div><div class="q-change up">+200.86 (+2.63%)</div></div><div class="q-card up-border"><div class="q-label">欧元区STOXX50</div><div class="q-symbol">^STOXX50E</div><div class="q-price" style="font-size:18px">5,934.96</div><div class="q-change up">+73.89 (+1.26%)</div></div><div class="q-card up-border"><div class="q-label">英国富时100</div><div class="q-symbol">^FTSE</div><div class="q-price" style="font-size:18px">10,325.40</div><div class="q-change up">+60.10 (+0.59%)</div></div></div><div class="section-title">🇨🇳 A股</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">上证综指</div><div class="q-symbol">000001.SS</div><div class="q-price" style="font-size:18px">4,242.57</div><div class="q-change up">+28.08 (+0.67%)</div></div><div class="q-card up-border"><div class="q-label">深证成指</div><div class="q-symbol">399001.SZ</div><div class="q-price" style="font-size:18px">16,089.75</div><div class="q-change up">+264.83 (+1.67%)</div></div><div class="q-card up-border"><div class="q-label">沪深300</div><div class="q-symbol">000300.SS</div><div class="q-price" style="font-size:18px">4,998.34</div><div class="q-change up">+50.29 (+1.02%)</div></div></div><div class="section-title">💱 外汇</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">USD/CNY</div><div class="q-symbol">USDCNY=X</div><div class="q-price" style="font-size:18px">6.785</div><div class="q-change down">-0.01 (-0.09%)</div></div><div class="q-card up-border"><div class="q-label">USD/HKD</div><div class="q-symbol">USDHKD=X</div><div class="q-price" style="font-size:18px">7.832</div><div class="q-change up">+0.00 (+0.04%)</div></div><div class="q-card down-border"><div class="q-label">EUR/USD</div><div class="q-symbol">EURUSD=X</div><div class="q-price" style="font-size:18px">1.167</div><div class="q-change down">-0.01 (-0.43%)</div></div><div class="q-card up-border"><div class="q-label">USD/JPY</div><div class="q-symbol">USDJPY=X</div><div class="q-price" style="font-size:18px">158.4</div><div class="q-change up">+0.51 (+0.32%)</div></div></div><div class="tv-chart-row"><div class="tv-chart-item"><div class="tv-chart-label">USD/CNY</div><div class="tv-chart-wrap">
+  <div id="tv-fx-0" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"FX:USDCNH",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-fx-0"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">USD/HKD</div><div class="tv-chart-wrap">
+  <div id="tv-fx-1" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"FX:USDHKD",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-fx-1"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">EUR/USD</div><div class="tv-chart-wrap">
+  <div id="tv-fx-2" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"FX:EURUSD",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-fx-2"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">USD/JPY</div><div class="tv-chart-wrap">
+  <div id="tv-fx-3" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"FX:USDJPY",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-fx-3"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div></div><div class="section-title">🛢 大宗商品</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">黄金</div><div class="q-symbol">GC=F</div><div class="q-price" style="font-size:18px">4,657.40</div><div class="q-change down">-40.30 (-0.86%)</div></div><div class="q-card up-border"><div class="q-label">原油</div><div class="q-symbol">CL=F</div><div class="q-price" style="font-size:18px">102</div><div class="q-change up">+0.94 (+0.93%)</div></div><div class="q-card down-border"><div class="q-label">白银</div><div class="q-symbol">SI=F</div><div class="q-price" style="font-size:18px">83.93</div><div class="q-change down">-4.96 (-5.58%)</div></div></div><div class="tv-chart-row"><div class="tv-chart-item"><div class="tv-chart-label">黄金</div><div class="tv-chart-wrap">
+  <div id="tv-commodities-0" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"COMEX:GC1!",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-commodities-0"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">原油</div><div class="tv-chart-wrap">
+  <div id="tv-commodities-1" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"NYMEX:CL1!",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-commodities-1"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div><div class="tv-chart-item"><div class="tv-chart-label">白银</div><div class="tv-chart-wrap">
+  <div id="tv-commodities-2" class="tv-chart-box"></div>
+  <script>
+  (function(){
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/tv.js';
+    s.onload=function(){
+      new TradingView.widget({
+        autosize:true,height:200,symbol:"COMEX:SI1!",
+        interval:"D",timezone:"America/New_York",
+        theme:"dark",style:"1",locale:"zh_CN",
+        hide_top_toolbar:true,hide_legend:true,
+        save_image:false,container_id:"tv-commodities-2"
+      });
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</div></div></div><div class="section-title">₿ 加密货币</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">Bitcoin</div><div class="q-symbol">BTC-USD</div><div class="q-price" style="font-size:18px">81,057.00</div><div class="q-change up">+1779.88 (+2.25%)</div></div></div><div class="section-title">📊 美债/指数</div><div class="card-grid"><div class="q-card down-border"><div class="q-label">10年期美债收益率</div><div class="q-symbol">^TNX</div><div class="q-price" style="font-size:18px">4.461</div><div class="q-change down">-0.02 (-0.45%)</div></div><div class="q-card down-border"><div class="q-label">30年期美债收益率</div><div class="q-symbol">^TYX</div><div class="q-price" style="font-size:18px">5.012</div><div class="q-change down">-0.03 (-0.69%)</div></div><div class="q-card up-border"><div class="q-label">S&P 600小盘股</div><div class="q-symbol">^SP600</div><div class="q-price" style="font-size:18px">1,656.09</div><div class="q-change up">+11.28 (+0.69%)</div></div><div class="q-card down-border"><div class="q-label">5年期美债收益率</div><div class="q-symbol">^FVX</div><div class="q-price" style="font-size:18px">4.121</div><div class="q-change down">-0.01 (-0.22%)</div></div></div><div class="section-title">💼 共同基金</div><div class="card-grid"><div class="q-card up-border"><div class="q-label">Vanguard 扩展市场</div><div class="q-symbol">VIEIX</div><div class="q-price" style="font-size:18px">172.6</div><div class="q-change up">+0.09 (+0.05%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 优质股票</div><div class="q-symbol">VPMAX</div><div class="q-price" style="font-size:18px">221.8</div><div class="q-change up">+3.25 (+1.49%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 联邦货币</div><div class="q-symbol">VFTNX</div><div class="q-price" style="font-size:18px">50.95</div><div class="q-change up">+0.39 (+0.77%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 机构指数</div><div class="q-symbol">VINIX</div><div class="q-price" style="font-size:18px">596.6</div><div class="q-change up">+3.49 (+0.59%)</div></div><div class="q-card down-border"><div class="q-label">Vanguard 能源基金</div><div class="q-symbol">VGELX</div><div class="q-price" style="font-size:18px">109.4</div><div class="q-change down">-0.13 (-0.12%)</div></div><div class="q-card down-border"><div class="q-label">BTC 全市场</div><div class="q-symbol">BTSMX</div><div class="q-price" style="font-size:18px">24.71</div><div class="q-change down">-0.10 (-0.40%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 全球股票</div><div class="q-symbol">VTSNX</div><div class="q-price" style="font-size:18px">182.8</div><div class="q-change up">+1.46 (+0.81%)</div></div><div class="q-card flat-border"><div class="q-label">PIMCO 债券基金</div><div class="q-symbol">PTTRX</div><div class="q-price" style="font-size:18px">8.71</div><div class="q-change flat">+0.00 (+0.00%)</div></div><div class="q-card down-border"><div class="q-label">DoubleLine 贷款</div><div class="q-symbol">DHLYX</div><div class="q-price" style="font-size:18px">31.67</div><div class="q-change down">-0.29 (-0.91%)</div></div><div class="q-card down-border"><div class="q-label">PIMCO 房产基金</div><div class="q-symbol">PIRMX</div><div class="q-price" style="font-size:18px">10.01</div><div class="q-change down">-0.01 (-0.10%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 惠灵顿</div><div class="q-symbol">VWENX</div><div class="q-price" style="font-size:18px">81.18</div><div class="q-change up">+0.50 (+0.62%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 2065目标</div><div class="q-symbol">VSVNX</div><div class="q-price" style="font-size:18px">34.89</div><div class="q-change up">+0.21 (+0.61%)</div></div><div class="q-card up-border"><div class="q-label">Vanguard 医疗基金</div><div class="q-symbol">VGHAX</div><div class="q-price" style="font-size:18px">80.79</div><div class="q-change up">+0.43 (+0.54%)</div></div></div>
+  <div class="section-title">📰 财经新闻摘要</div>
+  <div class="news-wrap"><ul>
+<b>📈 财经市场</b>
+<li>[MarketWatch] 一对夫妇靠退休金22倍于收入成功退休，分享理财心得。 <a href="https://www.marketwatch.com/story/my-retirement-fund-is-like-an-ai-version-of-me-it-keeps-working-when-im-not-able-to-6d053f9d?mod=mw_rss_topstories" target="_blank">原文</a></li>
+<li>[MarketWatch] 凯文·沃什接任美联储主席，债券市场已先于美联储开始加息。 <a href="https://www.marketwatch.com/story/the-bond-market-is-already-hiking-rates-as-kevin-warsh-takes-over-as-feds-new-chair-7a74acbd?mod=mw_rss_topstories" target="_blank">原文</a></li>
+<li>[MarketWatch] 7旬老人年入9万美元，房产已付清，咨询能否购买带泳池的梦想之家。 <a href="https://www.marketwatch.com/story/im-not-an-extravagant-spender-im-in-my-70s-with-a-90-000-income-can-i-afford-my-dream-home-with-a-pool-871ccda2?mod=mw_rss_topstories" target="_blank">原文</a></li>
+<li>[MarketWatch] 40多岁夫妇房贷将还清，咨询每月额外1500美元投资去向。 <a href="https://www.marketwatch.com/story/were-in-our-40s-our-mortgage-is-nearly-paid-off-how-should-we-invest-our-extra-1-500-a-month-af3eec89?mod=mw_rss_topstories" target="_blank">原文</a></li>
+<li>[Yahoo金融] 预计社保金将迎来“特朗普增长”，未来数月或获额外现金。 <a href="https://finance.yahoo.com/economy/policy/articles/social-security-now-poised-big-163000521.html" target="_blank">原文</a></li>
+<li>[Yahoo金融] 塔吉特百货困境重重，20年前实习生受命挽救公司。 <a href="https://finance.yahoo.com/news/target-went-hell-man-tasked-162500409.html" target="_blank">原文</a></li>
+<li>[Bloomberg] 受通胀及加息预期影响，黄金本周面临下跌。 <a href="https://www.bloomberg.com/news/articles/2026-05-14/gold-heads-for-weekly-drop-as-inflation-fuels-rate-hike-bets" target="_blank">原文</a></li>
+<b>🌍 国际时事</b>
+<li>[Bloomberg] 习近平警告，台湾问题是中美关系最大风险，或致冲突。 <a href="https://www.bloomberg.com/news/videos/2026-05-14/xi-cements-taiwan-as-top-us-china-risk-video" target="_blank">原文</a></li>
+<li>[Bloomberg] 俄亥俄州长候选人Ramaswamy出售所有BuzzFeed股票。 <a href="https://www.bloomberg.com/news/articles/2026-05-14/ohio-governor-candidate-ramaswamy-sells-all-his-buzzfeed-shares" target="_blank">原文</a></li>
+<b>💻 科技动态</b>
+<li>[MarketWatch] Figma股价因AI产品变现方案和超预期财报大涨。 <a href="https://www.marketwatch.com/story/figma-has-a-fix-for-its-ailing-stock-a-new-way-to-make-money-off-its-ai-products-2a4f3489?mod=mw_rss_topstories" target="_blank">原文</a></li>
+<li>[Yahoo金融] 华尔街对“永续DEX”及其运作模式进行解读。 <a href="https://finance.yahoo.com/news/explained-perpetual-dex-wall-street-152000841.html" target="_blank">原文</a></li>
+<b>🌏 亚洲动态</b>
+<li>[Yahoo金融] 阿里巴巴营收不及预期，核心利润大跌，股价仍反弹。 <a href="https://www.investors.com/news/technology/alibaba-stock-q4-2026-march-earnings-results/?src=A00220&yptr=yahoo" target="_blank">原文</a></li>
+<li>[Bloomberg] 受AI热潮及美股创新高提振，亚洲股市有望上涨。 <a href="https://www.bloomberg.com/news/articles/2026-05-14/asian-stocks-to-rise-as-ai-rally-spurs-wall-street-markets-wrap" target="_blank">原文</a></li>
+<li>[Bloomberg] 私募基金Lightrock募资5亿美元，投资亚洲非洲清洁能源。 <a href="https://www.bloomberg.com/news/articles/2026-05-14/pe-firm-lightrock-raises-500-million-for-new-clean-energy-fund" target="_blank">原文</a></li>
+</ul></div>
+</div>
+<footer>
+  数据来源：Yahoo Finance · Reuters · MarketWatch · Yahoo金融<br>
+  仅供参考，不构成投资建议 · 每日自动更新5次<br><br>
+  <a href="index.html">← 返回扯谈Duke群主页</a>
+</footer>
+</body>
+</html>

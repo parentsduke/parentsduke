@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>扯谈群助手 · 扯谈Duke家长群</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A2240">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="扯谈助手">
+<link rel="apple-touch-icon" href="/icons/chetan-icon-192.png">
+<link rel="icon" href="/icons/chetan-icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family:'SIMLI'; src:url('/fonts/SIMLI.woff2') format('woff2'); font-display:swap; }
+  @font-face { font-family:'NotoSansBold'; src:url('/fonts/NotoSans-Bold-BF.woff2') format('woff2'); font-display:swap; }
+  :root{
+    --paper:#F6F1E7; --ink:#2B2620; --navy:#0A2240; --gold:#C8A35A;
+    --bubble-bot:#FFFFFF; --bubble-user:#0A2240; --border:#E3DACB;
+    --sidebar-w:260px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; margin:0; }
+  body{
+    font-family:'Noto Sans SC', sans-serif;
+    background:var(--paper); color:var(--ink);
+    display:flex; flex-direction:column;
+    height:100vh; height:100dvh; overflow:hidden;
+  }
+
+  /* ── 侧边栏遮罩 ── */
+  #overlay{
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.4); z-index:100;
+  }
+  #overlay.open{ display:block; }
+
+  /* ── 侧边栏 ── */
+  #sidebar{
+    position:fixed; top:0; left:0; bottom:0;
+    width:var(--sidebar-w);
+    background:var(--navy); color:#fff;
+    display:flex; flex-direction:column;
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    z-index:101;
+  }
+  #sidebar.open{ transform:translateX(0); }
+  #sidebar-header{
+    padding:18px 16px 12px;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  #sidebar-header span{ font-size:14px; font-weight:700; opacity:.8; }
+  #newChatBtn{
+    background:var(--gold); color:var(--navy);
+    border:none; border-radius:8px;
+    padding:6px 12px; font-size:12px; font-weight:700;
+    cursor:pointer;
+  }
+  #convList{
+    flex:1; overflow-y:auto; padding:8px 0;
+  }
+  .conv-item{
+    padding:10px 16px; cursor:pointer;
+    border-left:3px solid transparent;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:13px; line-height:1.4;
+  }
+  .conv-item:hover{ background:rgba(255,255,255,.08); }
+  .conv-item.active{ border-left-color:var(--gold); background:rgba(200,163,90,.12); }
+  .conv-item .conv-title{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; opacity:.85; }
+  .conv-item .conv-date{ font-size:11px; opacity:.45; margin-left:8px; flex-shrink:0; }
+  .conv-item .del-btn{
+    display:none; background:none; border:none; color:#f88; cursor:pointer;
+    font-size:14px; padding:0 4px; flex-shrink:0;
+  }
+  .conv-item:hover .del-btn{ display:block; }
+  #sidebar-footer{
+    padding:12px 16px;
+    border-top:1px solid rgba(255,255,255,.1);
+    font-size:11px; opacity:.4; text-align:center;
+  }
+
+  /* ── 顶栏 ── */
+  header{
+    background:var(--navy); color:#fff;
+    padding:14px 18px;
+    display:flex; align-items:center; gap:12px;
+    box-shadow:0 2px 8px rgba(10,34,64,.15);
+    flex-shrink:0;
+  }
+  #menuBtn{
+    background:none; border:none; color:#fff;
+    font-size:20px; cursor:pointer; padding:0; flex-shrink:0;
+    line-height:1;
+  }
+  .avatar{
+    width:40px; height:40px; border-radius:50%;
+    background:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px; flex-shrink:0;
+  }
+  header .title{
+    font-family:'SIMLI','Noto Serif SC',serif;
+    font-size:19px; font-weight:400; letter-spacing:2px;
+  }
+  header .subtitle{ font-size:11px; opacity:.65; margin-top:2px; }
+
+  /* ── 安装横幅 ── */
+  #installBanner{
+    display:none; align-items:center; gap:10px;
+    background:var(--gold); color:var(--navy);
+    font-size:13px; padding:10px 14px; line-height:1.4;
+  }
+  #installBanner span{ flex:1; }
+  #installBanner button{
+    background:var(--navy); color:#fff; border:none;
+    border-radius:6px; padding:5px 10px; font-size:12px; cursor:pointer; white-space:nowrap;
+  }
+  #installBanner .close-btn{ background:none; color:var(--navy); font-size:16px; padding:0 4px; }
+
+  /* ── 消息区 ── */
+  #chat{
+    flex:1 1 auto; min-height:0; overflow-y:auto;
+    padding:16px; display:flex; flex-direction:column; gap:12px;
+  }
+  .msg{
+    max-width:78%; padding:10px 14px; border-radius:14px;
+    font-size:14.5px; line-height:1.6;
+    white-space:pre-wrap; word-break:break-word;
+    box-shadow:0 1px 2px rgba(0,0,0,.04);
+  }
+  .msg.bot{ align-self:flex-start; background:var(--bubble-bot); border:1px solid var(--border); border-top-left-radius:4px; }
+  .msg.user{ align-self:flex-end; background:var(--bubble-user); color:#fff; border-top-right-radius:4px; }
+  .msg.bot::before{ content:"扯谈群助手"; display:block; font-size:11px; font-weight:700; color:var(--gold); margin-bottom:4px; letter-spacing:1px; }
+  .msg.typing{ color:#999; font-style:italic; }
+  .msg.error{ background:#fdecea; color:#b3261e; border:1px solid #f5c2bd; }
+
+  /* ── 输入栏 ── */
+  #inputBar{
+    flex:0 0 auto; display:flex; gap:8px;
+    padding:10px 12px;
+    padding-bottom:max(10px, env(safe-area-inset-bottom));
+    background:#fff; border-top:1px solid var(--border);
+  }
+  #inputBar textarea{
+    flex:1; resize:none; border:1px solid var(--border);
+    border-radius:18px; padding:10px 16px;
+    font-size:14.5px; font-family:inherit; line-height:1.4;
+    max-height:96px; outline:none;
+  }
+  #inputBar textarea:focus{ border-color:var(--gold); }
+  #sendBtn{
+    flex-shrink:0; width:44px; height:44px; border-radius:50%;
+    border:none; background:var(--navy); color:#fff;
+    font-size:18px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .15s;
+  }
+  #sendBtn:disabled{ opacity:.4; cursor:default; }
+  #imgBtn{
+    flex-shrink:0; width:44px; height:44px; border-radius:50%;
+    border:1px solid var(--border); background:#fff; color:var(--navy);
+    font-size:18px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #imgBtn:active{ background:var(--paper); }
+  #imagePreviewBar{
+    display:none; align-items:center; gap:10px;
+    padding:8px 12px 0; background:#fff;
+  }
+  #imagePreviewBar.show{ display:flex; }
+  #imagePreviewBar img{
+    width:52px; height:52px; object-fit:cover; border-radius:8px; border:1px solid var(--border);
+  }
+  #imagePreviewBar .remove-img{
+    background:none; border:none; color:#b3261e; font-size:13px; cursor:pointer;
+  }
+  .msg img.msg-img{
+    display:block; max-width:100%; max-height:280px; object-fit:cover;
+    border-radius:10px; margin-bottom:6px;
+  }
+  #chat::-webkit-scrollbar{ width:4px; }
+  #chat::-webkit-scrollbar-thumb{ background:var(--border); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<!-- 侧边栏遮罩 -->
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- 侧边栏 -->
+<div id="sidebar">
+  <div id="sidebar-header">
+    <span>历史对话</span>
+    <button id="newChatBtn" onclick="newChat()">＋ 新对话</button>
+  </div>
+  <div id="convList"></div>
+  <div id="sidebar-footer">扯谈Duke家长群</div>
+</div>
+
+<!-- 安装横幅 -->
+<div id="installBanner">
+  <span id="installText"></span>
+  <button id="installActionBtn" style="display:none"></button>
+  <button class="close-btn" onclick="document.getElementById('installBanner').style.display='none'">✕</button>
+</div>
+
+<header>
+  <button id="menuBtn" onclick="openSidebar()">☰</button>
+  <div>
+    <div class="title">扯谈<span style="font-family:'NotoSansBold',sans-serif;font-weight:bold;display:inline-block;transform:scaleY(0.68);transform-origin:bottom;">GPT</span></div>
+    <div class="subtitle">扯谈Duke家长群 · 扯谈群助手在线 · 由 <a href="weixin://contacts/profile/2327293770" style="color:var(--gold);text-decoration:none;font-size:10px;font-weight:700;">2327293770</a> 开发</div>
+  </div>
+</header>
+
+<div id="chat"></div>
+
+<div id="imagePreviewBar">
+  <img id="previewImg" src="" alt="预览">
+  <button class="remove-img" onclick="clearPendingImage()">✕ 移除图片</button>
+</div>
+<div id="inputBar">
+  <button id="imgBtn" onclick="document.getElementById('imageInput').click()" title="发送图片">📷</button>
+  <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="onImageSelected(event)">
+  <textarea id="input" rows="1" placeholder="与扯谈群助手聊天" onkeydown="onKeyDown(event)" oninput="autoGrow(this)"></textarea>
+  <button id="sendBtn" onclick="send()">➤</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const PROXY_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/ai-proxy';
+
+const SYSTEM_PROMPT = `你是"扯谈Duke家长群"的群助手，熟悉Duke大学各届学生事务及校园生活。今天是${new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'})}。
+
+规则：
+- 始终用中文回复
+- 直接回答问题，不加任何开场白、感叹词、语气词（不要"哎呀""哈哈""好的""当然""真的嘛""说句实话"等）
+- 回复简短精炼，三五句话能说清楚的绝不说十句，不重复，不废话
+- 不讨论政治、宗教、色情、暴力等敏感话题，遇到此类问题直接跳过
+- 凡涉及下方知识库未覆盖的时效性内容（最新新闻、实时活动等），查询有关的Duke.edu网站，不要猜测
+- 涉及学生签证事宜（F-1/J-1、CPT/OPT、SEVIS、Travel Signature等），除Duke官网（visaservices.duke.edu）外，可查询美国官方渠道：uscis.gov、travel.state.gov、studyinthestates.dhs.gov、ice.gov/sevis，并提醒用户具体个案请以Duke ISSS签证服务中心或持牌移民律师意见为准，本回答不构成法律意见
+- 涉及具体课程信息（课程内容、先修要求、开课学期、任课教授、学分等），优先查询Duke官方课程目录/公告 undergraduate.bulletins.duke.edu 及各学院对应Bulletin（研究生院 gradschool.duke.edu、Pratt工程 bulletins.pratt.duke.edu 等），当学期具体开课与选课信息以DukeHub Schedule of Classes为准（registrar.duke.edu/registration/course-catalog-schedule-classes），不要编造课程编号、教授姓名或评价
+- 涉及科技、文化等通用知识性问题（不限于Duke校内事务），可正常联网搜索权威信源作答，无需局限于Duke.edu；给出信息来源，涉及有争议或快速变化的内容注明时效性
+
+Duke 2026-2027 学术日历（来源：registrar.duke.edu，以此为准）
+
+【夏季 2026】
+- 5月13日（周三）：暑期第一学期开课
+- 5月15日（周五）：第一学期加退课截止（11:59 PM）
+- 5月25日（周一）：阵亡将士纪念日，不上课
+- 6月10日（周三）：本科生第一学期带W退课截止
+- 6月19日（周五）：六月节（Juneteenth），不上课
+- 6月22日（周一）：第一学期课程结束
+- 6月23日（周二）：复习日至7PM；期末考试开始7PM
+- 6月25日（周四）：第一学期期末考试结束
+- 6月29日（周一）：暑期第二学期开课
+- 7月1日（周三）：第二学期加退课截止（11:59 PM）
+- 7月3日（周五）：独立日假期，不上课
+- 7月27日（周一）：本科生第二学期带W退课截止
+- 8月7日（周五）：第二学期课程结束
+- 8月8日（周六）：复习日至7PM；期末考试开始7PM
+- 8月10日（周一）：第二学期期末考试结束（10PM）
+
+【秋季 2026】
+- 8月15日（周六）：本科新生入住日（Move-in Day）
+- 8月16-21日：本科新生Orientation（新生入学指导周）
+- 8月17日（周一）：转学生入住及Orientation开始
+- 8月18日（周二）：研究生新生Orientation开始
+- 8月23日（周日）：本科新生开学典礼（Convocation）
+- 8月24日（周一）：秋季学期开课（8:30 AM），加退课继续
+- 9月4日（周五）：加退课截止（11:59 PM）
+- 9月7日（周一）：劳动节，不上课
+- 10月9日（周五）：期中成绩上报截止；秋假开始（7PM）
+- 10月14日（周三）：课程恢复（8:30 AM）
+- 10月19日（周一）：Spring 2027选课购物车开放
+- 10月28日（周三）：Spring 2027注册选课开始
+- 11月6日（周五）：本科生带W退课截止
+- 11月9日（周一）：Spring 2027选课注册结束
+- 11月10日（周二）：Spring 2027加退课开始
+- 11月24日（周二）：感恩节假期开始（10:30 PM）；研究生课程结束
+- 11月25日-12月8日：研究生复习期
+- 11月30日（周一）：本科生课程恢复（8:30 AM）
+- 12月4日（周五）：本科生课程结束
+- 12月5-8日：本科生复习期
+- 12月9日（周三）：期末考试开始（9:00 AM）
+- 12月14日（周一）：期末考试结束（10:00 PM）
+
+【春季 2027】
+- 1月6日（周三）：春季学期开课（8:30 AM），按周一课表上课
+- 1月18日（周一）：马丁·路德·金纪念日，不上课
+- 1月20日（周三）：加退课截止（11:59 PM）
+- 2月19日（周五）：期中成绩上报截止
+- 3月5日（周五）：春假开始（7PM）
+- 3月15日（周一）：课程恢复（8:30 AM）
+- 3月24日（周三）：本科生带W退课截止
+- 4月14日（周三）：研究生课程结束
+- 4月21日（周三）：本科生课程结束
+- 4月26日（周一）：期末考试开始
+- 5月1日（周六）：期末考试结束（10:00 PM）
+- 5月7日（周五）：毕业典礼系列活动开始
+- 5月9日（周日）：毕业典礼暨学位授予仪式
+
+Class of 2030 新生入学关键节点：
+- 8月15日（周六）：新生入住日（Move-in Day）
+- 8月16-21日：新生入学指导周（Orientation Week）
+- 8月23日（周日）：开学典礼（Convocation）
+- 8月24日（周一）：正式上课
+
+重要链接：
+- 官方学术日历：https://registrar.duke.edu/2026-2027-academic-calendar/
+- 学生注册处：https://registrar.duke.edu
+- 住宿申请：https://housing.duke.edu
+- 财务缴费：https://bursar.duke.edu
+
+Duke 2026-2027 学费与缴费指南
+
+【一、学费总览（2026-27学年，已由Board of Trustees批准）】
+- 学费(Tuition)：$73,740/年（较上年涨幅4.95%）
+- 住宿、餐饮等分项金额：Bursar's Office截至2026年6月尚未公布，预计6-7月随秋季账单同步发布
+- 本科生全年总费用（未扣助学金）估计约$103,400/年（含学费、住宿、餐饮、书本、个人开支）
+- 已获need-based助学金的学生：学费涨幅已自动纳入原资助方案，无需单独申请调整
+
+【二、缴费截止日期（2026-27，预计）】
+- 秋季账单：2026年6月29日出账，截止日2026年8月1日
+- 春季账单：2026年11月23日出账，截止日2027年1月第四个工作日
+- 账单通过DukeHub电子送达，同时发送至Duke邮箱；给家长看账单须学生先开通Guest Access
+- 逾期后果：可能产生滞纳金，影响选课、成绩单申请及毕业认证
+- 查看账单：登录 DukeHub → Finances → Make a Payment
+
+【三、缴费方式】
+
+▶ 支付宝留学缴费（国内家长首推）
+- 无需通过Flywire等第三方，直接付至学校收款账户
+- 凭录取通知书+缴费通知书，不占用付款人年度5万美元便利化购汇额度
+- 要求：付款人须持中国大陆居民身份证实名认证的支付宝账户
+- 操作：支付宝首页 → 搜索"留学缴费" → 选学校 → 填金额 → 上传证明材料（录取通知书+缴费通知书，JPG/PNG，≤10MB）
+- 注意：付款人须为中国大陆境内居民；外籍学生（无中国身份证）建议提前致电支付宝客服确认
+
+▶ 招商银行"留学快汇"
+- 招行App内置，一键缴学费，覆盖全球2000多所学校
+- 凭录取通知书+学费账单，不占用5万美元便利化额度
+- 要求：付款人持中国大陆居民身份证实名认证的招行账户；家长代办须提供近亲属关系证明（户口本）
+- 操作：招行App → 搜索"留学快汇" → 选学校 → 填金额 → 上传缴费证明材料
+
+▶ 云闪付留学缴费
+- 绑定任意银联卡即可，全程中文操作，由易思汇提供技术支持
+- 操作：云闪付App → 搜索"留学缴费"或进入"海外服务"板块
+
+▶ 微信"腾讯留学缴费"小程序
+- 微信搜索小程序"腾讯留学缴费"，底层由易思汇提供服务
+
+▶ 易思汇（eSunding）
+- 腾讯/新东方/IDG投资，历史交易量超500亿元，支持国内几乎所有主流银行网银
+
+▶ DukeHub直付（美国境内）
+- DukeHub → Student Center → Finances → Make a Payment
+- 支持美国银行ACH转账（免手续费）
+
+▶ Flywire / Convera（国际电汇）
+- DukeHub → Student Center → Finances → Make a Payment → International Payment
+- 两者均提供中文客服；付款后超过7个工作日未更新可联系客服查询
+
+▶ 分期付款计划（Nelnet Payment Plan）
+- Duke与Nelnet合作，每学期账单分5期月付，无需一次性支付全款
+- 报名费：$45/学期（不退款）
+- 扣款方式：仅限美国储蓄账户自动扣款（ACH），不支持信用卡
+- 须由学生本人登录DukeHub操作，家长Guest Access账户无法直接创建计划（学生报名后可添加家长为授权付款人）
+- 秋季计划：2026年6月1日起开放，扣款日7/1、8/1、9/1、10/1、11/1（共5期）
+- 春季计划：2026年11月1日起开放，扣款日12/1、1/1、2/1、3/1、4/1（共5期）
+- 无利息，每学期仅收$45报名费；扣款失败最高罚$30/次；逾期滞纳金为逾期余额的1.25%
+- 详情：mycollegepaymentplan.com/duke 或致电(800) 609-8056
+
+【四、常见问题】
+- 学费涨了，助学金会跟涨吗？→ 会。Duke明确承诺，学费涨幅对已获need-based助学金的学生全额覆盖，家庭实际自付部分不增加
+- 联系Bursar's Office：bursar@duke.edu 或 (919) 684-3531
+- 官方学费明细：https://finance.duke.edu/bursar/TuitionFees/tuition/
+- 官方缴费截止日：https://finance.duke.edu/bursar/Billing/
+- 官方缴费方式：https://finance.duke.edu/bursar/Payments/
+
+═══════════════════════════════
+医疗保险（SMIP）
+═══════════════════════════════
+- Duke自动为所有学生注册学生医疗保险SMIP，2026-27由Aetna承保（原BCBS已于2026年8月1日起更换）
+- 国际生（F-1/J-1签证）：必须参加SMIP，不可豁免
+- 国内学生：可申请豁免，须满足ACA合规、Durham本地覆盖、心理健康≥30次/年等条件
+- 豁免截止日：秋季2026年9月14日（逾期不候）；春季2027年1月31日
+- 2026-27保费：学生本人$4,290/年；配偶$4,257/年；子女(一个或多个)$4,257/年；配偶+子女$8,514/年
+- 豁免申请入口：gallagherstudent.com/duke（用NetID登录 → 选"Waive"）
+- 已用过保险（8月1日后）：不可再申请豁免
+- 每学年须重新申请豁免，不延续上年
+- 牙科保险：独立，需单独在Gallagher门户注册；国际生/PhD学生可邮件退出
+- 联系：shs-insurance@duke.edu / 919-684-1000；Gallagher: 866-931-5275
+- 以下保险不符合豁免条件：外州Medicaid/CHIP、HMO、Kaiser Permanente
+
+═══════════════════════════════
+疫苗接种要求（新生必读）
+═══════════════════════════════
+- 开学后第30天未达标将被取消DukeCard并无法上课，不可延期
+- 必须疫苗（5种）：
+  1. MMR（麻腮风）2剂
+  2. 水痘 Varicella 2剂（或有患病证明）
+  3. 乙肝 Hepatitis B 3剂（0/1/6个月）
+  4. 脑膜炎MenACWY 1剂（北卡州法律强制，16岁后接种）
+  5. Tdap（含百日咳）1剂；注意Td不含百日咳，不符合要求
+  6. TB结核筛查：在线问卷；高风险须在美国境内做TST或IGRA（境外检测不接受；BCG接种者须做IGRA）
+- 推荐但非强制：流感、MenB脑膜炎B（SMIP 100%覆盖，建议10月1日后预约）、HPV（SMIP 100%覆盖，26岁以下推荐）、COVID-19
+- 提交方式：登录Student Health Gateway上传，或发邮件至immunizations@duke.edu
+- 国内家长建议：前往国际旅行卫生保健中心预约，携带以往疫苗记录及I-20
+- MenB接种：Bexsero（2剂，间隔≥4周）或Trumenba（2-3剂），两种不可混用
+
+═══════════════════════════════
+宿舍信息
+═══════════════════════════════
+【总体规则】
+- 一年级：必须住East Campus（不可申请West Campus或校外）
+- 二年级及以上：West Campus，4月Room Selection抽签
+- 住宿要求：本科生前三年（6学期）必须住校；大四可选择校外
+
+【East Campus 床型】（买床单前必须确认！）
+- Twin XL（80"×36"，203×91cm）：Alspaugh、Bassett、Bell Tower、Blackwell、Brown、East House、Gilbert-Addoms、Giles、Pegram、Randolph、Southgate、Wilson
+- Full Size（75"×53"，190×135cm）：Trinity
+- 注意：Twin XL ≠ Twin，买错无法退！推荐买2-3英寸记忆棉Mattress Topper（约$30-80）
+
+【West Campus 床型】
+- Twin XL：Craven、Crowell、Hollows、Keohane、300 Swift、301 Swift、Blue Light
+- Full Size（75"×54"）：Edens、Wannamaker（注意！不是Twin XL）
+- Standard Twin（75"×38"）：Few
+
+【East Campus 14个House简介】
+- Alspaugh：社交活跃，Party文化浓
+- Bassett：体育生聚集，运动氛围浓
+- Bell Tower：地理位置好，标志性建筑，分East/West两翼
+- Giles：Party文化旺，外向学生为主
+- Randolph：house identity强，社区凝聚力紧密
+- Trinity：文科/艺术生，Full Size床，较bohemian
+- Wilson：工程STEM学生集中，学术intensity高
+- Blackwell：约185人，现代建筑，有电梯
+- Brown：红砖建筑，位于主广场，约120人，无电梯
+- East House（原Aycock）：约80人，2024年起翻修，预计2026年5月完工
+- Gilbert-Addoms（GA）：East Campus最大，约190人，GA Down Under活动室
+- Pegram：约125人，表演艺术LLC所在地
+- Southgate：约140人，单双三人间均有，一楼设健身房
+- West House（原Jarvis）：约80人，安静学术氛围
+- 注：宿舍由Housing Office根据问卷自动分配，不能自选House
+
+【宿舍分配流程（一年级）】
+- 5月初：Housing Application开放（含Roommate问卷）
+- 5月31日：问卷截止（问卷必须学生本人填写！）
+- 6月11日：收到宿舍分配结果和Roommate信息
+- 8月15日：Move-In Day
+
+【Amazon Locker 自提柜位置】
+- East Campus（4个）：Bell Tower Breezeway（Elsa）、Blackwell Breezeway（Elinor）、East Campus Union室内（Ljuba）、Randolph Breezeway（Lennie）
+- West Campus（2个）：Edens near Schafer House（Arkadiusz Jad）、Keohane Breezeway（Dawood）
+- Central Campus（1个）：Swift Apartments（Ceyln）
+- 取件须开蓝牙+下载Amazon App；3天（72小时）内取件，否则退回
+
+═══════════════════════════════
+签证与国际生
+═══════════════════════════════
+- 签证服务中心：visaservices.duke.edu
+- 国际大一新生提前抵校：8月12-13日，完成I-20/DS-2019核验
+- Passport to Duke & Durham迎新活动：8月12-14日，含银行开户、手机办理、DISC资源
+- 资源对接展：8月14日
+- 咨询：intlstudents@duke.edu
+
+═══════════════════════════════
+Duke周边银行
+═══════════════════════════════
+- Chase Bank：725 9th St，在校期间College Checking免月费（最长5年）
+- Bank of America：1515 N Gregson St，24岁以下在校学生免月费，Bryan Center有ATM
+- Wells Fargo：2000 W Main St，17-24岁在校学生免月费
+- SECU（北卡最大信用社）：504 S Duke St，手续费极低
+- Bryan Center校内ATM：Bank of America、Wells Fargo、Truist三台，24小时
+- Venmo：Duke学生日常均摊神器，须先有美国银行账户绑定
+
+═══════════════════════════════
+学院选择与学术
+═══════════════════════════════
+【Trinity vs Pratt】
+- Trinity文理学院：48个主修、50个辅修、23个证书；含CS（CS在Trinity不在Pratt）
+- Pratt工程学院：5个专业（BME、ECE、ME、CE、EnvE），授BSE学位，约1000本科生
+- CS主要目标选Trinity；ECE+CS双专业可申请Pratt的ECE再跨院辅修CS
+- 转院：大一结束后可申请，竞争较激烈
+
+【专业申报规则（Trinity）】
+- 最多3项学术计划（主修+辅修+证书任意组合），最多2个主修
+- 申报截止：大二春假前的周五（逾期锁定选课）
+- Pratt学生：大一结束暑假前申报，比Trinity早约一年
+
+【热门专业】CS、Economics、Biology、Public Policy、Psychology、Neuroscience、BME（Pratt）、Statistics
+
+【AP学分】
+- 成绩须由College Board直接发送，Duke CEEB代码：5156
+- Trinity：AP学分最多计入2个毕业学分（34学分中）
+- Pratt：无上限，AP学分可直接计入34个毕业学分
+- 不接受的AP：Economics宏/微观、Physics 1/2（代数）、Human Geography
+- 重要：AP统计学仅对Trinity有效，Pratt不接受
+
+【一年级必选项目（Trinity）】
+- FOCUS（传统）：录取率约25%，秋季半年，小班≤18人，与同学住同宿舍楼，读写量大
+- Constellations（2025年新推出）：全年，所有未进FOCUS的Trinity学生默认参加，规模更大
+
+═══════════════════════════════
+Pre-Med医学预科
+═══════════════════════════════
+- Pre-med不是专业，是学习路线；可以主修任何专业同时完成先修课
+- Duke本校学生申请Duke医学院无特别优待，录取标准与其他申请者相同
+- 必修先修课：微积分I、普通化学+实验（2门）、有机化学+实验（2门）、生物+实验（2门）、物理+实验（2门）、生化（1门）、医学社会学（1门）、心理学（1门）、统计（1门）、英文写作（2门）
+- MCAT：4部分，满分528；515+有竞争力，冲顶级医学院建议518+；有效期3年
+- Duke医学院排名第4（med.admit.org 2026）：MCAT中位数520，GPA中位数3.91
+- 竞争力参考标准：GPA 3.9+、MCAT 515-518、临床150-300小时、科研2年以上
+- 大一策略：GPA优先，不要把Bio+Chem+Physics+微积分全堆同一学期
+- CAPS心理咨询中心：免费，Duke学生可预约；Pre-Health Advising: advising.duke.edu/prehealth / (919) 684-5637
+
+═══════════════════════════════
+停车
+═══════════════════════════════
+- 一年级本科生：仅限Smith Warehouse South（SGS），不可开车去上课
+- 本科生年费：$489/年（Blue Zone/SGS）
+- 研究生年费：$282/年（Science Drive Garage或PG3）
+- 夜间/周末停车证（NGT）：工作日5PM-次日6:59AM及周末全天，$5行政费
+- 购买时间：本科生2025年6月11日起；建议7月26日前购买确保开学前收到停车牌
+- 停车费每年6月自动从Bursar账户扣除
+- 替代：Duke Transit免费班车覆盖各校区；建议一年级骑车或乘班车
+
+═══════════════════════════════
+暑期项目（+Programs）
+═══════════════════════════════
+- Data+：数据科学跨学科研究，所有专业全年级可申请
+- Code+：10周软件开发实践，仅本科生
+- CS+：3-4人小组科研，仅本科生
+- Bass Connections：跨学科研究团队，大一即可参与
+- DukeEngage：全额资助8周公益服务，大一至大三可申请，约400人/年
+- BSURF/SURF：仅大一升大二，8周付薪科研，$4,000津贴+住宿
+- Marine Lab：Beaufort海岛校区暑期课程，含住宿餐饮
+- +Programs申请通常每年春季开放`;
+
+const SYSTEM_PROMPT_NO_SEARCH = SYSTEM_PROMPT + `\n\n【重要】你没有联网能力。以上知识库之外的时效性问题（最新新闻、实时活动、具体课程安排等），请直接告知用户去官网查询，不要猜测或编造。`;
+
+// ── 对话管理 ──
+// conversations: [{id, title, date, messages:[{role,text}]}]
+let conversations = [];
+let currentId = null;
+let history = [];
+let pendingImage = null; // { mimeType, data(base64,不含前缀), previewUrl(完整dataURL) }
+
+function loadStorage() {
+  try {
+    conversations = JSON.parse(localStorage.getItem('chetan_convs') || '[]');
+  } catch(e) { conversations = []; }
+}
+
+function saveStorage() {
+  try {
+    localStorage.setItem('chetan_convs', JSON.stringify(conversations));
+  } catch(e) {
+    // 存储超限（通常因图片过多）：丢弃较早对话中的图片后重试一次
+    try {
+      const stripped = conversations.map(c => ({
+        ...c,
+        messages: c.messages.map(m => ({ role:m.role, text:m.text }))
+      }));
+      localStorage.setItem('chetan_convs', JSON.stringify(stripped));
+    } catch(e2) {}
+  }
+}
+
+function getCurrentConv() {
+  return conversations.find(c => c.id === currentId);
+}
+
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+}
+
+function newChat() {
+  const id = genId();
+  conversations.unshift({ id, title:'新对话', date: new Date().toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'}), messages:[] });
+  saveStorage();
+  switchConv(id);
+  closeSidebar();
+  document.getElementById('input').focus();
+}
+
+function switchConv(id) {
+  currentId = id;
+  history = [];
+  const conv = getCurrentConv();
+  if (conv) history = [...conv.messages];
+  renderChat();
+  renderSidebar();
+}
+
+function deleteConv(id, e) {
+  e.stopPropagation();
+  conversations = conversations.filter(c => c.id !== id);
+  saveStorage();
+  if (currentId === id) {
+    if (conversations.length > 0) switchConv(conversations[0].id);
+    else newChat();
+  } else {
+    renderSidebar();
+  }
+}
+
+function renderChat() {
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+  for (const h of history) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + (h.role === 'user' ? 'user' : 'bot');
+    if (h.image) {
+      const img = document.createElement('img');
+      img.className = 'msg-img';
+      img.src = h.image;
+      div.appendChild(img);
+    }
+    const span = document.createElement('span');
+    span.textContent = h.text;
+    div.appendChild(span);
+    chat.appendChild(div);
+  }
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function renderSidebar() {
+  const list = document.getElementById('convList');
+  list.innerHTML = '';
+  for (const c of conversations) {
+    const item = document.createElement('div');
+    item.className = 'conv-item' + (c.id === currentId ? ' active' : '');
+    item.innerHTML = `<span class="conv-title">${c.title}</span><span class="conv-date">${c.date}</span><button class="del-btn" title="删除">🗑</button>`;
+    item.querySelector('.del-btn').onclick = (e) => deleteConv(c.id, e);
+    item.onclick = () => { switchConv(c.id); closeSidebar(); };
+    list.appendChild(item);
+  }
+}
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ── UI ──
+function autoGrow(el){
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 96) + 'px';
+}
+function onKeyDown(e){
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+}
+function appendMsg(role, text, imageUrl){
+  const chat = document.getElementById('chat');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  if (imageUrl) {
+    const img = document.createElement('img');
+    img.className = 'msg-img';
+    img.src = imageUrl;
+    div.appendChild(img);
+  }
+  const span = document.createElement('span');
+  span.textContent = text;
+  div.appendChild(span);
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+// ── 图片选择/压缩 ──
+function onImageSelected(e){
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { alert('请选择图片文件'); return; }
+
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 1024;
+      let { width, height } = img;
+      if (width > MAX || height > MAX) {
+        const scale = MAX / Math.max(width, height);
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      pendingImage = { mimeType: 'image/jpeg', data: dataUrl.split(',')[1], previewUrl: dataUrl };
+      document.getElementById('previewImg').src = dataUrl;
+      document.getElementById('imagePreviewBar').classList.add('show');
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function clearPendingImage(){
+  pendingImage = null;
+  document.getElementById('imagePreviewBar').classList.remove('show');
+  document.getElementById('previewImg').src = '';
+}
+
+// ── 发送 ──
+let _sending = false;
+const CALENDAR_ANSWER = `Duke 2026-2027 学术日历（来源：registrar.duke.edu）
+
+【夏季 2026】
+- 5月13日（周三）：暑期第一学期开课
+- 5月15日（周五）：第一学期加退课截止（11:59 PM）
+- 5月25日（周一）：阵亡将士纪念日，不上课
+- 6月10日（周三）：本科生第一学期带W退课截止
+- 6月19日（周五）：六月节（Juneteenth），不上课
+- 6月22日（周一）：第一学期课程结束
+- 6月25日（周四）：第一学期期末考试结束
+- 6月29日（周一）：暑期第二学期开课
+- 7月3日（周五）：独立日假期，不上课
+- 8月7日（周五）：第二学期课程结束
+- 8月10日（周一）：第二学期期末考试结束
+
+【秋季 2026】
+- 8月15日（周六）：本科新生入住日（Move-in Day）
+- 8月16–21日：本科新生Orientation（新生入学指导周）
+- 8月17日（周一）：转学生入住及Orientation开始
+- 8月18日（周二）：研究生新生Orientation开始
+- 8月23日（周日）：本科新生开学典礼（Convocation）
+- 8月24日（周一）：秋季学期开课（8:30 AM）
+- 9月4日（周五）：加退课截止（11:59 PM）
+- 9月7日（周一）：劳动节，不上课
+- 10月9日（周五）：秋假开始（7PM）
+- 10月14日（周三）：课程恢复（8:30 AM）
+- 11月6日（周五）：本科生带W退课截止
+- 11月24日（周二）：感恩节假期开始（10:30 PM）
+- 11月30日（周一）：本科生课程恢复（8:30 AM）
+- 12月4日（周五）：本科生课程结束
+- 12月9日（周三）：期末考试开始（9:00 AM）
+- 12月14日（周一）：期末考试结束（10:00 PM）
+
+【春季 2027】
+- 1月6日（周三）：春季学期开课（8:30 AM）
+- 1月18日（周一）：马丁·路德·金纪念日，不上课
+- 1月20日（周三）：加退课截止（11:59 PM）
+- 3月5日（周五）：春假开始（7PM）
+- 3月15日（周一）：课程恢复（8:30 AM）
+- 3月24日（周三）：本科生带W退课截止
+- 4月21日（周三）：本科生课程结束
+- 4月26日（周一）：期末考试开始
+- 5月1日（周六）：期末考试结束（10:00 PM）
+- 5月7日（周五）：毕业典礼系列活动开始
+- 5月9日（周日）：毕业典礼暨学位授予仪式
+
+官方链接：https://registrar.duke.edu/2026-2027-academic-calendar/`;
+
+function matchCalendar(text) {
+  const keywords = /日历|校历|学术日历|开学|放假|秋假|春假|感恩节|毕业典礼|毕业|graduation|commencement|期末考试|考试时间|选课|注册时间|move.?in|orientation|convocation|fall break|spring break|thanksgiving|academic calendar|什么时候开学|什么时候放假/i;
+  return keywords.test(text);
+}
+
+async function send(){
+  if (_sending) return;
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  const imageToSend = pendingImage;
+  if (!text && !imageToSend) return;
+  _sending = true;
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+
+  let typingEl = null;
+  try {
+    const userText = text || '（图片）';
+    appendMsg('user', userText, imageToSend ? imageToSend.previewUrl : null);
+    input.value = '';
+    autoGrow(input);
+    clearPendingImage();
+    typingEl = appendMsg('bot typing', '扯谈群助手正在码字…');
+
+    // 日历关键词匹配：直接返回硬编码，不走AI（仅限纯文字提问，带图片时走AI识图）
+    if (!imageToSend && matchCalendar(text)) {
+      typingEl.remove();
+      const answer = CALENDAR_ANSWER;
+      appendMsg('bot', answer);
+      history.push({role:'user', text: userText});
+      history.push({role:'bot', text: answer});
+      saveStorage();
+      return;
+    }
+
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+      return;
+    }
+
+    const buildPrompt = (useSearch) => {
+      let p = (useSearch ? SYSTEM_PROMPT : SYSTEM_PROMPT_NO_SEARCH) + '\n\n以下是对话记录：\n';
+      for (const h of history) {
+        p += (h.role === 'user' ? '家长' : '扯谈群助手') + '：' + h.text + '\n';
+      }
+      p += '家长：' + userText + (imageToSend ? '（此消息附了一张图片，请结合图片内容回答）' : '') + '\n扯谈群助手：';
+      return p;
+    };
+
+    // 带图片时只走支持识图的provider；纯文字走完整fallback链
+    const PROVIDERS = imageToSend ? [
+      { provider:'gemini',     useSearch:false },
+      { provider:'gemini-lite',useSearch:false },
+      { provider:'claude',     useSearch:false },
+      { provider:'chatgpt',    useSearch:false },
+    ] : [
+      { provider:'gemini',     useSearch:true  },
+      { provider:'gemini-lite',useSearch:true  },
+      { provider:'groq',       useSearch:false },
+      { provider:'nvidia',     useSearch:false },
+      { provider:'cerebras',   useSearch:false },
+      { provider:'mistral',    useSearch:false },
+      { provider:'claude',     useSearch:false },
+      { provider:'chatgpt',    useSearch:false },
+      { provider:'openrouter', useSearch:false },
+    ];
+
+    let result = null, lastErr = null;
+    for (const p of PROVIDERS) {
+      try {
+        const payload = {provider:p.provider, prompt:buildPrompt(p.useSearch), useSearch:p.useSearch, chat:true};
+        if (imageToSend) payload.image = { mimeType: imageToSend.mimeType, data: imageToSend.data };
+        const res = await fetch(PROXY_URL, {
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},
+          body:JSON.stringify(payload)
+        });
+        const d = await res.json();
+        if (!d.ok) throw new Error(d.error || '请求失败');
+        result = d.result.trim();
+        if (!result) throw new Error('空响应');
+        break;
+      } catch(err) {
+        lastErr = err;
+        console.warn(`[${p.provider}] 失败：`, err.message);
+      }
+    }
+    if (result === null) throw lastErr || new Error('所有provider均失败');
+
+    typingEl.remove();
+    appendMsg('bot', result);
+
+    history.push({ role:'user', text: userText, image: imageToSend ? imageToSend.previewUrl : undefined });
+    history.push({ role:'model', text: result });
+    if (history.length > 40) history = history.slice(-40);
+
+    // 更新当前对话
+    const conv = getCurrentConv();
+    if (conv) {
+      conv.messages = [...history];
+      // 用第一条用户消息作标题
+      if (conv.title === '新对话') conv.title = userText.slice(0, 18);
+      saveStorage();
+      renderSidebar();
+    }
+
+  } catch(e) {
+    if (typingEl) typingEl.remove();
+    appendMsg('bot error', '❌ 出错了：' + e.message);
+  } finally {
+    _sending = false;
+    btn.disabled = false;
+    input.focus();
+  }
+}
+
+// ── 初始化 ──
+(async function init() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+    return;
+  }
+  loadStorage();
+  if (conversations.length === 0) newChat();
+  else switchConv(conversations[0].id);
+})();
+
+// ── Service Worker ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/chetan-sw.js').catch(e => console.warn('SW注册失败', e));
+  });
+}
+
+// ── 安装提示横幅 ──
+(function(){
+  const banner = document.getElementById('installBanner');
+  const text   = document.getElementById('installText');
+  const btn    = document.getElementById('installActionBtn');
+  const isIOS  = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (isStandalone) return;
+  if (isIOS) {
+    text.textContent = '点击底部 分享 按钮 → "添加到主屏幕"，即可像App一样使用扯谈GPT';
+    banner.style.display = 'flex';
+  } else {
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault(); deferredPrompt = e;
+      text.textContent = '安装扯谈GPT到主屏幕，随时快速打开';
+      btn.textContent = '安装'; btn.style.display = 'inline-block';
+      btn.onclick = () => { deferredPrompt.prompt(); banner.style.display='none'; };
+      banner.style.display = 'flex';
+    });
+    setTimeout(() => {
+      if (!deferredPrompt && banner.style.display === 'none') {
+        text.textContent = '点击浏览器菜单 → "添加到主屏幕"，即可像App一样使用扯谈GPT';
+        banner.style.display = 'flex';
+      }
+    }, 1200);
+  }
+})();
+</script>
+</body>
+</html>

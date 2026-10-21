@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最小二乘法 · 一场关于"众口难调"的取舍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101b2d;
+    --navy-deep:#0a121e;
+    --navy-mid:#1c2d47;
+    --gold:#c19a49;
+    --gold-pale:#e8d9ae;
+    --paper:#f8f3e8;
+    --paper-warm:#f2ead9;
+    --ink:#20242c;
+    --ink-soft:#4a5163;
+    --rule:#ddd0a6;
+    --dot:#5c6f92;
+    --dot-off:#a5773a;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Serif SC","Songti SC","SimSun",serif;
+    line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- 顶部横幅 ---------- */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse at 82% -10%, rgba(193,154,73,0.16), transparent 55%),
+      linear-gradient(150deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:var(--gold-pale);
+    padding:88px 8vw 64px;
+    overflow:hidden;
+  }
+  .hero .eyebrow{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:12px;
+    letter-spacing:0.4em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 20px;
+  }
+  .hero h1{
+    margin:0;
+    font-size:clamp(30px,4.4vw,46px);
+    font-weight:700;
+    color:#fbf6e9;
+    max-width:16em;
+    letter-spacing:0.01em;
+  }
+  .hero .sub{
+    margin-top:18px;
+    font-family:"Noto Sans SC",sans-serif;
+    font-weight:300;
+    font-size:16px;
+    color:#c3ccdd;
+    max-width:36em;
+  }
+
+  /* 签名视觉：散点 + 一条穿过去的折中直线 */
+  .scatter-box{
+    margin-top:46px;
+    width:100%;
+    max-width:360px;
+  }
+  .scatter-caption{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    color:#9aa4bb;
+    margin-top:14px;
+  }
+  .scatter-caption b{color:var(--gold-pale);font-weight:500;}
+
+  /* ---------- 正文容器 ---------- */
+  .wrap{
+    max-width:700px;
+    margin:0 auto;
+    padding:0 8vw 120px;
+  }
+  @media (min-width:900px){ .wrap{ padding:0 24px 120px; margin:0 auto; } }
+
+  .stage{
+    margin-top:70px;
+  }
+  .stage-num{
+    font-family:"JetBrains Mono",monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    color:var(--dot-off);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  .stage-num::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg,var(--rule),transparent);
+  }
+  .stage h2{
+    font-size:24px;
+    font-weight:700;
+    margin:0 0 22px;
+    color:var(--navy);
+    letter-spacing:0.01em;
+  }
+  .stage p{
+    margin:0 0 18px;
+    font-size:16.5px;
+    color:var(--ink);
+  }
+  .stage p:last-child{margin-bottom:0;}
+
+  .lede{
+    font-size:19px;
+    color:var(--navy-mid);
+    font-weight:500;
+  }
+  .lede::first-letter{
+    font-size:2.6em;
+    font-weight:700;
+    color:var(--dot-off);
+    float:left;
+    line-height:0.8;
+    margin:6px 8px 0 0;
+  }
+
+  strong{color:var(--navy-mid);font-weight:600;}
+
+  .callout{
+    background:#fffdf7;
+    border:1px solid var(--rule);
+    border-left:3px solid var(--gold);
+    padding:20px 24px;
+    margin:26px 0;
+    font-size:15.5px;
+    color:var(--ink-soft);
+  }
+  .callout .tag{
+    display:inline-block;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#fff;
+    background:var(--dot-off);
+    padding:3px 9px;
+    border-radius:2px;
+    margin-bottom:10px;
+  }
+
+  .analogy{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    background:var(--navy);
+    color:#e6ecf5;
+    padding:26px 26px;
+    margin:30px 0;
+    border-radius:2px;
+  }
+  .analogy .mark{
+    font-family:"Noto Serif SC",serif;
+    font-size:34px;
+    color:var(--gold);
+    line-height:1;
+    flex-shrink:0;
+  }
+  .analogy p{
+    margin:0;
+    font-size:15.5px;
+    color:#dbe2ee;
+  }
+  .analogy strong{color:var(--gold-pale);}
+
+  .divider-dots{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:10px;
+    margin:56px 0 8px;
+  }
+  .divider-dots .d{
+    width:9px;height:9px;
+    border-radius:50%;
+    border:1px solid var(--rule);
+    background:transparent;
+  }
+  .divider-dots .d.off{border-color:var(--gold);background:rgba(193,154,73,0.18);}
+
+  .key-relation{
+    margin:44px 0;
+    background:var(--navy-deep);
+    border:1px solid rgba(193,154,73,0.35);
+    padding:34px 30px;
+    position:relative;
+  }
+  .key-relation::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg,var(--gold),var(--dot-off),var(--gold));
+  }
+  .key-relation .tag{
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 18px;
+  }
+  .key-relation .rows{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .key-relation .row{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    font-family:"Noto Sans SC",sans-serif;
+    flex-wrap:wrap;
+  }
+  .key-relation .term{
+    font-family:"Noto Serif SC",serif;
+    font-weight:700;
+    font-size:17px;
+    color:#fbf6e9;
+    min-width:9.5em;
+  }
+  .key-relation .eq{color:var(--gold);font-size:15px;}
+  .key-relation .meaning{
+    color:#c3ccdd;
+    font-size:14.5px;
+    font-weight:300;
+  }
+  .key-relation .foot{
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid rgba(193,154,73,0.22);
+    font-size:14.5px;
+    color:#aeb8cc;
+  }
+  .key-relation .foot strong{color:var(--gold-pale);}
+
+  .closing{
+    margin-top:76px;
+    padding-top:36px;
+    border-top:1px solid var(--rule);
+  }
+  .closing h2{
+    font-size:22px;
+    color:var(--navy);
+    margin:0 0 18px;
+  }
+  .closing p{font-size:16.5px;}
+
+  footer{
+    text-align:center;
+    padding:40px 8vw 60px;
+    font-family:"Noto Sans SC",sans-serif;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:#b3a878;
+  }
+
+  @media (max-width:520px){
+    .hero{padding:64px 22px 48px;}
+    .analogy{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <p class="eyebrow">Linear Algebra · 深入讲解</p>
+    <h1>最小二乘法<br>一场关于"众口难调"的取舍</h1>
+    <p class="sub">不用一个公式，只用语言，把"为什么找不到完美答案、退而求其次求的到底是什么、为什么这个退法偏偏是平方"这几件事讲透。</p>
+
+    <div class="scatter-box" aria-hidden="true">
+      <svg viewBox="0 0 320 120" width="100%" height="120">
+        <line x1="10" y1="95" x2="300" y2="30" stroke="#c19a49" stroke-width="1.6"/>
+        <circle cx="28" cy="78" r="5" fill="#5c6f92"/>
+        <line x1="28" y1="78" x2="28" y2="89" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="70" cy="60" r="5" fill="#5c6f92"/>
+        <line x1="70" y1="60" x2="70" y2="80" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="118" cy="70" r="5" fill="#5c6f92"/>
+        <line x1="118" y1="70" x2="118" y2="66" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="165" cy="42" r="5" fill="#5c6f92"/>
+        <line x1="165" y1="42" x2="165" y2="53" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="210" cy="52" r="5" fill="#5c6f92"/>
+        <line x1="210" y1="52" x2="210" y2="41" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="255" cy="28" r="5" fill="#5c6f92"/>
+        <line x1="255" y1="28" x2="255" y2="35" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+        <circle cx="285" cy="18" r="5" fill="#5c6f92"/>
+        <line x1="285" y1="18" x2="285" y2="32" stroke="#a5773a" stroke-width="1" stroke-dasharray="2,2"/>
+      </svg>
+    </div>
+    <p class="scatter-caption">灰点是<b>众说纷纭的实际数据</b>，金线是那条谁都不完全服它、却<b>让所有人加起来最不冤枉</b>的折中直线；虚线是每个人和这条线之间，各自认下的那一点点误差。</p>
+  </header>
+
+  <div class="wrap">
+
+    <section class="stage">
+      <p class="lede">想凑出一条能让所有点都精确落在上面的直线，十有八九是奢望——点稍微一多，这件事几乎注定办不到。最小二乘法要回答的，正是这时候该怎么办：既然"人人满意"做不到，那就退而求其次，找一个让"所有人加起来最不满意的程度"降到最低的答案。</p>
+    </section>
+
+    <div class="divider-dots" aria-hidden="true">
+      <div class="d"></div><div class="d off"></div><div class="d off"></div><div class="d off"></div><div class="d"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">第一步 · 为什么"完全满足所有人"是奢望</div>
+      <h2>方程比未知数多，本身就是一种"强人所难"</h2>
+      <p>设想有好几组说法，每一组都在对同一件事下断言，而要找的答案只有寥寥几个未知量。断言的数目一旦超过未知量的数目，这件事的性质就变了——一开始你也许还能指望所有断言凑巧全部相容，可断言越多，凑巧的概率就越低。多数时候，你会发现：满足前面几条断言的答案，放到后面一条里就对不上了。这不是算错了，而是这些断言本身就没有一个共同的、精确的交点。</p>
+      <p>放到具体场景里最容易体会：几次测量同一个量，每次结果都有细微出入；几个人各自报出他们认为合适的会面时间，没有哪个时刻能让所有人都刚刚好；一组观测数据摆在坐标纸上，没有哪条直线能不偏不倚地穿过每一个点。这些都是同一件事的不同面目——要求的答案，比能满足的约束更"瘦"，硬凑没有出路。</p>
+      <div class="callout">
+        <span class="tag">类比</span>
+        这和若尔当标准形要面对的处境，其实是同一类"退而求其次"：那边是"矩阵配合不了、找不出足够多互不相干的特征方向"，这边是"数据配合不了、找不出一条能精确穿过所有点的直线"。两边都不纠结于硬求那个不存在的完美答案，而是老老实实退一步，问一句：在做不到完美的前提下，什么才是最合理的将就？
+      </div>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">第二步 · "最不满意的程度"到底怎么算</div>
+      <h2>每个人认下的偏差，不是直接相加，而是先平方再相加</h2>
+      <p>既然精确满足所有断言做不到，退一步的做法是：给定一个候选答案，看它跟每一条断言之间差了多少，把这些差距汇总成一个"总的不满意程度"，再去找那个能让这个总量降到最低的候选答案。这个思路听着简单，但汇总的方式大有讲究——为什么偏偏是"先平方、再相加"，而不是直接把差距加起来？</p>
+      <p>直接相加会出一个麻烦：正的偏差和负的偏差会互相抵消，一个"差太多"和一个"差太少"加在一起可能显得毫无问题，可实际上两头都错得不轻。于是很自然地想到先把每个差距的正负号抹掉。抹掉正负号的办法不止一种，但平方这个选择格外顺手：它不仅让所有差距都变成正数，还有一个更微妙的偏好——差距越大，平方之后被放大得越凶。也就是说，这种算法会对"错得离谱"格外敏感，不容许某一处偏差大到没边，却对无伤大雅的小偏差比较宽容。这种脾气，恰好对应了大多数人对"靠谱"这件事的直觉：宁可每处都错一点点，也不要有一处错得特别离谱。</p>
+      <p>还有一层技术上的方便：平方之后的总量，是一个处处光滑、只有一个最低点的"碗形"量——找它的最低点，靠的是一条干净利落的路径，不会像其他汇总方式那样，让"哪个候选答案最合适"变得难以捉摸。这也是"平方"最终胜出、成为约定俗成做法的重要原因。</p>
+    </section>
+
+    <div class="divider-dots" aria-hidden="true">
+      <div class="d"></div><div class="d off"></div><div class="d off"></div><div class="d off"></div><div class="d"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">第三步 · 那条"最合适的线"是怎么挑出来的</div>
+      <h2>不是试出来的，而是有一套必然指向它的道理</h2>
+      <p>既然总的不满意程度是一个"碗形"的量，候选答案沿着某个方向变化时，这个总量会先降后升，中间必然存在一个最低谷。要找到这个最低谷，不需要一个个候选答案去试——因为在最低谷这个特殊位置上，总量对任何方向的变化都不再敏感了：随便往哪个方向挪一点点，总量几乎都不会再往下掉。这个"哪个方向都挪不动"的状态，恰恰就是最低点的标志，顺着这条线索，能够直接把最低谷所在的位置严格地推算出来，不必依赖尝试和运气。</p>
+      <p>还有一种更几何的看法，同样直观：把每一条断言看作空间里的一根根轴，所有"理论上能被这些断言精确满足"的答案，共同撑起一整片平坦的区域；而实际的数据，因为互相不配合，落在了这片区域之外。最合适的答案，就是这片区域里离实际数据最近的那一点——从数据出发，垂直落到这片区域上，落脚的地方就是它。"垂直落下"这个动作保证了：往区域里任何其他方向挪动，都只会让距离变得更远，不会更近。这正是为什么这个答案不是碰运气凑出来的，而是几何上唯一、必然的落点。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">插曲 · 亲眼看一遍最小的例子</div>
+      <h2>三个不肯站成一条直线的点，最终会被安顿在哪里</h2>
+      <p>不妨想象最简单的情形：只有三个点，横着摆开，纵向的高度却各不相同、也配合不成一条直线——把前两个点连起来是一种倾斜程度，把后两个点连起来又是另一种倾斜程度，两者对不上。这时候要找的，不是"哪两个点连线更合理"这种取舍，而是一条压根不为迁就任何一个点而生、只为让三处偏差的平方和最小的直线。</p>
+      <p>直觉上能感受到它大致会落在哪：明显偏离大部队的那个点，会被这条直线"温柔地"稍微靠近一些，但不会为了迁就它而牺牲另外两个点——因为一旦为了这一个点大幅调整倾斜程度，另外两个点的偏差平方会跟着涨得更凶，总账反而更难看。反过来，如果三个点里有两个几乎步调一致、只有一个稍稍出格，最终这条直线会更贴近那两个一致的点，只把那唯一出格的点留下一点不算离谱的偏差。这就是"平方"这个选择在悄悄起作用：它不容忍某一处偏差被放得很大，宁可让直线在多数点上都稍稍将就一点，也不肯在任何单一点上放任不管。</p>
+      <div class="callout">
+        <span class="tag">对照</span>
+        如果三个点凑巧真的共线，那"最合适的直线"和"精确穿过所有点的直线"就完全重合，最小二乘法退化成了不需要退让的情形——每处偏差都是零，总不满意程度也降到了零，这是最理想、但通常不会发生的特例。
+      </div>
+    </section>
+
+    <div class="divider-dots" aria-hidden="true">
+      <div class="d"></div><div class="d off"></div><div class="d off"></div><div class="d off"></div><div class="d"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">回望 · 它和"取平均"到底什么关系</div>
+      <h2>求平均数，其实是最小二乘法里最朴素的那种情况</h2>
+      <p>如果把问题简化到极致——不去拟合一条线，只想找一个单独的数，去代表一组彼此不同的测量结果，这时候最小二乘法给出的答案，恰好就是这组数的平均数。这不是巧合：平均数正是那个让"每个数据到它的距离的平方"加起来最小的数，任何比它偏大或偏小的候选，总的平方偏差都会更大。</p>
+      <p>这样一来就能看得更清楚：拟合一条直线、拟合一个更复杂的曲面，本质上和求平均数是同一件事的不同规模——都是在"找一个最能代表一堆互不一致的数据的答案"，只是平均数只允许答案是一个不随位置变化的常数，而拟合直线、曲面则允许答案随着位置而变化。规模变大了，做法的骨架却没有变。</p>
+    </section>
+
+    <section class="stage">
+      <div class="stage-num">再往深看 · 它和"投影"到底是什么关系</div>
+      <h2>找最合适的答案，本质上是在做一次垂直的靠近</h2>
+      <p>前面提到的"垂直落到那片平坦区域上"，其实有一个更正式的名字——<strong>投影</strong>。所有断言理论上能够精确满足的那些答案，共同构成一片规规矩矩的平坦区域；实际数据由于互相不配合，多半会落在这片区域之外。最小二乘法找到的答案，正是把实际数据垂直投影到这片区域上得到的落脚点，而投影之后剩下的那一小截——数据和它在区域上的落脚点之间的差距——恰好和整片区域"处处垂直"。</p>
+      <p>"处处垂直"这个条件，正是这套方法之所以靠谱、之所以答案唯一确定的根本原因：如果剩下的那截偏差和区域不垂直，就说明还能顺着区域挪一挪，让偏差进一步缩小，这就意味着当前的落脚点还不是最合适的；只有当偏差和整片区域再无瓜葛、彻底垂直的时候，才再挪不动、再降不下去了。换句话说，最小二乘法不是凭感觉去"凑一条看着顺眼的线"，而是严格地问一句：数据和候选答案之间剩下的这点误差，是不是已经跟所有能够解释的方向都不再相关？一旦答案是肯定的，这个候选就是唯一的、真正的答案。</p>
+      <div class="callout">
+        <span class="tag">回到那条金线</span>
+        用开头那条穿过散点的金线收个尾：它不是凭手感画上去的，而是那片"能被直线解释"的所有可能性里，离真实数据最近的一次垂直落地。每一条虚线，都是数据和这次落地之间剩下的那一点误差；这些误差之所以看起来东倒西歪、大小不一，正是因为它们已经被逼到了"再也挪不动"的位置——再往哪个方向调这条线，都只会让总账变得更难看。这条线不完美，但它是所有不完美里，最不冤枉所有点的那一个。
+      </div>
+    </section>
+
+    <div class="divider-dots" aria-hidden="true">
+      <div class="d"></div><div class="d off"></div><div class="d off"></div><div class="d off"></div><div class="d"></div>
+    </div>
+
+    <section class="stage">
+      <div class="stage-num">番外 · 方程组无解，到底该怎么办</div>
+      <h2>无解不是算错了，而是这些约束压根没有交点</h2>
+      <p>前面反复说过，约束一多，"精确满足所有断言"很容易变成奢望——但无解具体是怎么判断出来的、判断出来之后又该怎么办，值得单独说清楚。判断的办法说来并不神秘：只要看要满足的目标，是不是真的落在这些约束理论上能够触及的那片范围之内。一旦发现它压根不在这片范围里，就能确定：不是算得不够仔细，而是这些约束从一开始就没有一个共同的交点。</p>
+      <p>这种情况最常出现在断言的数目比未知量还多的时候。好几条断言本该出自同一件事，但只要其中夹杂着测量误差、观测噪声，或者本身就有一点点不一致，凑出一个能让所有断言同时精确成立的答案，就会变成奢望——这正是最开头第一步里讲的那种处境。</p>
+      <p>如果无解的原因正是这种"差一点点对不上"，最合理的做法就是前面几步一路铺陈下来的那条路：不再死磕一个精确解，退一步去找那个让所有偏差加起来最小的近似解。这个答案在几何上是唯一确定的——把要满足的目标，垂直投影到这些约束理论上能够构成的那片区域上，落脚点就是它。这也是为什么最小二乘法值得被认真对待：它不是"实在没办法了才将就一下"的权宜之计，而是面对无解这件事，最站得住脚的正面回应。</p>
+      <p>但无解也不总是因为这种"差一点点"的不一致。有时候纯粹是断言之间自相矛盾——一条说某个量该是这样，另一条偏偏说它该是那样，两者压根不可能同时成立，这种情况下该做的不是硬凑一个近似解，而是回头检查这些断言本身是不是写错了，或者建模的时候有没有把互相冲突的要求塞进了同一组约束里。</p>
+      <p>如果这些断言是从实际问题里搭出来的，遇到无解，也可以考虑：是不是每一条都真的必须被精确满足？能不能把某些断言放宽成一个可以接受的范围，而不是要求分毫不差？很多时候，无解只是因为约束定得比实际需要更死，松一松，交点自然就出来了。</p>
+      <div class="callout">
+        <span class="tag">该怎么办</span>
+        无解并不可怕，可怕的是把它当成算错了，一遍遍去找那个根本不存在的精确答案。真正该做的，是先弄清楚无解到底是因为数据有噪声、约束只是差一点点对不上，还是因为断言本身就自相矛盾——前者交给最小二乘法，退一步找那个最不冤枉大家的近似解；后者则要回头把矛盾的地方改掉，而不是指望靠算法把矛盾算没。
+      </div>
+    </section>
+
+    <section class="stage closing">
+      <h2>为什么值得把这套"将就"的道理讲这么细</h2>
+      <p>最小二乘法看着朴素，甚至有点"退而求其次"的委屈感，但它背后的道理并不将就：为什么用平方、答案为什么唯一、它和投影是什么关系，每一步都有干净的理由，不是拍脑袋定下的经验规则。也正因为这套道理讲得通，从测量误差的处理，到数据里找趋势，再到更复杂模型的拟合，几乎所有"面对一堆互不一致的证据、要找一个最站得住脚的答案"的场合，最终都会绕回到这同一套逻辑上来——先承认完美做不到，再把"最不冤枉大家"这件事，交给平方和距离，讲得明明白白。</p>
+    </section>
+
+  </div>
+
+  <footer>最小二乘法 · 一份不含公式的推导笔记</footer>
+
+<style id="reader-style">
+  .fr-reading{
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+    background: rgba(193,154,73,0.09);
+    border-radius: 4px;
+  }
+  .fr-clickable{ cursor: pointer; transition: background 0.15s ease; }
+  .fr-clickable:hover{ background: rgba(193,154,73,0.06); border-radius: 4px; }
+  .fr-clickable:active{ background: rgba(193,154,73,0.12); }
+
+  #fr-toggle{
+    position: fixed; right: 18px; bottom: 18px; z-index: 61;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(160deg, var(--gold) 0%, var(--room-suite) 100%);
+    color: #241d0e; border: none; box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+    font-size: 20px; cursor: pointer; display:flex; align-items:center; justify-content:center;
+  }
+  #fr-toggle:active{ transform: scale(0.94); }
+
+  #fr-panel{
+    position: fixed; right: 18px; bottom: 82px; z-index: 60;
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    border: 1px solid rgba(193,154,73,0.4);
+    border-radius: 12px;
+    padding: 14px 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    font-family: "Noto Sans SC", sans-serif;
+    width: 216px;
+    display: none;
+  }
+  #fr-panel.open{ display:block; }
+  #fr-panel .fr-title{
+    font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+    color: var(--gold-pale); margin-bottom:10px; font-weight:500;
+  }
+  #fr-progress{ font-size:12px; color:#c3ccdd; margin-bottom:6px; }
+  #fr-bar-track{ height:4px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden; margin-bottom:11px;}
+  #fr-bar-fill{ height:100%; width:0%; background: var(--gold); transition: width 0.2s ease; }
+  .fr-row{ display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+  #fr-play{
+    flex:1; background: var(--gold); color:#241d0e; border:none;
+    border-radius:6px; padding:9px 10px; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  #fr-stop{
+    background: transparent; border:1px solid rgba(193,154,73,0.5);
+    color: var(--gold-pale); border-radius:6px; padding:9px 11px; font-size:13px; cursor:pointer;
+  }
+  #fr-rate-row{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:#c3ccdd; margin-bottom:2px; }
+  #fr-rate{ flex:1; accent-color: var(--gold); }
+
+  #fr-export{ margin-top:11px; border-top: 1px solid rgba(193,154,73,0.2); padding-top:9px; }
+  #fr-export summary{
+    font-size:11.5px; color: var(--gold-pale); cursor:pointer; list-style:none;
+    display:flex; align-items:center; gap:4px;
+  }
+  #fr-export summary::-webkit-details-marker{ display:none; }
+  #fr-export summary::before{ content:'▸'; color: var(--gold); }
+  #fr-export[open] summary::before{ content:'▾'; }
+  .fr-export-body{ margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+  #fr-export input[type="password"], #fr-export input[type="text"], #fr-export select{
+    background: rgba(0,0,0,0.25); border:1px solid rgba(193,154,73,0.35); color: var(--gold-pale);
+    border-radius:5px; padding:6px 8px; font-size:12px; width:100%;
+  }
+  .fr-row2{ display:flex; gap:6px; }
+  .fr-row2 input{ flex:1.2; }
+  .fr-row2 select{ flex:1; }
+  #fr-export-btn, #fr-export-cancel{
+    background: var(--gold); color:#241d0e; border:none; border-radius:6px;
+    padding:7px 10px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-export-cancel{ background: transparent; border:1px solid rgba(193,154,73,0.5); color: var(--gold-pale); }
+  #fr-export-progress{ font-size:11px; color:#c3ccdd; min-height:14px; }
+  #fr-download-link{
+    display:inline-block; text-align:center; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+  }
+  #fr-audio-preview{ width:100%; height:32px; }
+
+  #fr-record-btn{
+    width:100%; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:9px 10px;
+    font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #fr-record-btn.recording{ background: #b3453f; border-color:#e88a84; color:#fff; }
+  #fr-record-status{ font-size:11px; color:#c3ccdd; min-height:14px; margin-top:4px; }
+  #fr-record-download{
+    display:inline-block; text-align:center; background: rgba(193,154,73,0.18); color: var(--gold-pale);
+    border:1px solid var(--gold); border-radius:6px; padding:7px 10px; font-size:12px; text-decoration:none;
+    margin-top:4px;
+  }
+  #fr-record-preview{ width:100%; height:32px; margin-top:4px; }
+  @media (max-width: 520px){ #fr-panel{ right:10px; bottom:74px; width:188px; padding:12px 13px; } #fr-toggle{ right:10px; bottom:10px; } }
+</style>
+
+<button id="fr-toggle" title="语音朗读">🔊</button>
+<div id="fr-panel">
+  <div class="fr-title">语音朗读全文</div>
+  <div id="fr-progress">正在扫描内容…</div>
+  <div id="fr-bar-track"><div id="fr-bar-fill"></div></div>
+  <div class="fr-row">
+    <button id="fr-play">▶ 朗读全文</button>
+    <button id="fr-stop">■</button>
+  </div>
+  <div id="fr-rate-row">
+    语速 <input type="range" id="fr-rate" min="0.6" max="1.6" step="0.1" value="0.95"> <span id="fr-rate-val">0.95x</span>
+  </div>
+  <div class="fr-row" style="margin-top:2px;">
+    <button id="fr-record-btn">🎙 录制音频文件（免注册）</button>
+  </div>
+  <div id="fr-record-status"></div>
+  <a id="fr-record-download" style="display:none;">↓ 下载录音</a>
+  <audio id="fr-record-preview" controls style="display:none;"></audio>
+  <details id="fr-export">
+    <summary>高级：导出 MP3（Azure 语音，需注册）</summary>
+    <div class="fr-export-body">
+      <input type="password" id="fr-azure-key" placeholder="Azure Speech Key">
+      <div class="fr-row2">
+        <input type="text" id="fr-azure-region" placeholder="区域 如 eastasia">
+        <select id="fr-azure-voice">
+          <option value="zh-CN-XiaoxiaoNeural">晓晓 女声</option>
+          <option value="zh-CN-YunxiNeural">云希 男声</option>
+          <option value="zh-CN-YunyangNeural">云扬 男声</option>
+        </select>
+      </div>
+      <button id="fr-export-btn">生成并下载 MP3</button>
+      <button id="fr-export-cancel" style="display:none;">取消</button>
+      <div id="fr-export-progress"></div>
+      <a id="fr-download-link" style="display:none;">↓ 下载 MP3</a>
+      <audio id="fr-audio-preview" controls style="display:none;"></audio>
+    </div>
+  </details>
+</div>
+
+<script id="reader-script">
+(function () {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function () {};
+  }
+
+  // ---------------------------------------------------------------
+  // 本页是纯语言讲解、不含公式，朗读逻辑比线代讲义那份简化很多：
+  // 只需要把正文按"段落/最小可读块"切开，逐块喂给浏览器自带的语音引擎。
+  // ---------------------------------------------------------------
+  const BLOCK_TAGS = new Set(['DIV','P','LI','TD','TH','TR','H1','H2','H3','H4','H5','H6',
+    'BLOCKQUOTE','SECTION','TABLE','THEAD','TBODY','UL','OL','FIGURE','FIGCAPTION','DT','DD',
+    'FOOTER','HEADER','ARTICLE']);
+  const SKIP_CLASSES = ['scatter-box', 'divider-dots'];
+
+  function shouldSkipEl(el) {
+    if (!el || el.nodeType !== 1) return false;
+    if (el.getAttribute && el.getAttribute('aria-hidden') === 'true') return true;
+    for (const cls of SKIP_CLASSES) { if (el.classList && el.classList.contains(cls)) return true; }
+    return false;
+  }
+
+  function collectInline(el) {
+    const parts = [];
+    el.childNodes.forEach(node => {
+      if (node.nodeType === 3) {
+        const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+        if (t) parts.push(t);
+      } else if (node.nodeType === 1) {
+        if (shouldSkipEl(node)) return;
+        const inner = collectInline(node);
+        if (inner) parts.push(inner);
+      }
+    });
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function buildContentUnits(root) {
+    const units = [];
+    function walk(el) {
+      if (shouldSkipEl(el)) return;
+      let buffer = [];
+      const flush = () => {
+        const text = buffer.join(' ').replace(/\s+/g, ' ').trim();
+        if (text) units.push({ el, text });
+        buffer = [];
+      };
+      el.childNodes.forEach(node => {
+        if (node.nodeType === 3) {
+          const t = node.nodeValue.replace(/\s+/g, ' ').trim();
+          if (t) buffer.push(t);
+        } else if (node.nodeType === 1) {
+          if (shouldSkipEl(node)) return;
+          if (BLOCK_TAGS.has(node.tagName)) {
+            flush();
+            walk(node);
+          } else {
+            const inner = collectInline(node);
+            if (inner) buffer.push(inner);
+          }
+        }
+      });
+      flush();
+    }
+    walk(root);
+    return units;
+  }
+
+  function initReader() {
+    const roots = [document.querySelector('.hero'), document.querySelector('.wrap')].filter(Boolean);
+    let units = [];
+    roots.forEach(r => { units = units.concat(buildContentUnits(r)); });
+
+    const progressEl = document.getElementById('fr-progress');
+    if (!units.length) { progressEl.textContent = '未找到可朗读内容'; return; }
+
+    const toggleBtn = document.getElementById('fr-toggle');
+    const panel = document.getElementById('fr-panel');
+    const playBtn = document.getElementById('fr-play');
+    const stopBtn = document.getElementById('fr-stop');
+    const barFill = document.getElementById('fr-bar-fill');
+    const rateInput = document.getElementById('fr-rate');
+    const rateVal = document.getElementById('fr-rate-val');
+
+    let playing = false;
+    let currentIdx = -1;
+    let stopRequested = false;
+
+    toggleBtn.addEventListener('click', () => { panel.classList.toggle('open'); });
+    rateInput.addEventListener('input', () => { rateVal.textContent = `${rateInput.value}x`; });
+
+    function updateProgressIdle() {
+      progressEl.textContent = `共 ${units.length} 段`;
+      barFill.style.width = '0%';
+    }
+
+    function updateProgress(idx) {
+      progressEl.textContent = `第 ${idx + 1} / ${units.length} 段`;
+      barFill.style.width = `${((idx + 1) / units.length) * 100}%`;
+    }
+
+    function clearHighlight() {
+      units.forEach(u => u.el.classList.remove('fr-reading'));
+    }
+
+    function speakOne(idx, chainNext) {
+      if (!('speechSynthesis' in window)) { alert('当前浏览器不支持语音朗读'); return; }
+      const item = units[idx];
+      clearHighlight();
+      item.el.classList.add('fr-reading');
+      item.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const spoken = item.text || '';
+      if (!spoken) {
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+        return;
+      }
+
+      const utter = new SpeechSynthesisUtterance(spoken);
+      utter.lang = 'zh-CN';
+      utter.rate = parseFloat(rateInput.value);
+      const voices = window.speechSynthesis.getVoices();
+      const v = voices.find(vv => vv.lang && vv.lang.toLowerCase().startsWith('zh'));
+      if (v) utter.voice = v;
+
+      utter.onend = () => {
+        item.el.classList.remove('fr-reading');
+        if (chainNext && !stopRequested) {
+          currentIdx = idx + 1;
+          if (currentIdx < units.length) { updateProgress(currentIdx); speakOne(currentIdx, true); }
+          else { finishPlay(); }
+        }
+      };
+      utter.onerror = () => { if (chainNext) finishPlay(); };
+      window.speechSynthesis.speak(utter);
+    }
+
+    function finishPlay() {
+      playing = false; stopRequested = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      if (recordingActive) stopRecording();
+      releaseWakeLock();
+    }
+
+    function stopAll() {
+      window.speechSynthesis.cancel();
+      stopRequested = true; playing = false;
+      clearHighlight();
+      playBtn.textContent = '▶ 朗读全文';
+      releaseWakeLock();
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (playing) { stopAll(); return; }
+      startFrom(0);
+    });
+
+    // 屏幕唤醒锁：朗读期间尽量阻止系统自动熄屏
+    let wakeLock = null;
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      } catch (e) { /* 静默忽略 */ }
+    }
+    function releaseWakeLock() {
+      if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && playing && !wakeLock) requestWakeLock();
+    });
+
+    function startFrom(idx) {
+      if (playing) stopAll();
+      if (!units.length || idx < 0 || idx >= units.length) return;
+      checkChineseVoice();
+      playing = true; stopRequested = false;
+      playBtn.textContent = '⏸ 朗读中…';
+      currentIdx = idx;
+      updateProgress(currentIdx);
+      requestWakeLock();
+      speakOne(currentIdx, true);
+    }
+
+    let voiceWarned = false;
+    function checkChineseVoice() {
+      if (voiceWarned || !('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return;
+      const hasZh = voices.some(v => v.lang && v.lang.toLowerCase().startsWith('zh'));
+      if (!hasZh) {
+        voiceWarned = true;
+        alert('没检测到设备上的中文语音包，念出来的可能是别的语言。\n\n去 设置 → 语言和输入法 → 文字转语音输出，把引擎设为"Google 文字转语音"，进去下载"中文（中国）"语音包，装完刷新页面重试。');
+      }
+    }
+
+    // 点击任意一段正文，从那一段开始往下连续朗读
+    units.forEach((u, idx) => {
+      u.el.classList.add('fr-clickable');
+      u.el.addEventListener('click', (e) => {
+        const sel = window.getSelection ? window.getSelection().toString() : '';
+        if (sel) return;
+        panel.classList.add('open');
+        startFrom(idx);
+      });
+    });
+
+    stopBtn.addEventListener('click', stopAll);
+    updateProgressIdle();
+
+    // ---------------------------------------------------------------
+    // 免注册方案：录制当前标签页播放的朗读声音，存成音频文件
+    // ---------------------------------------------------------------
+    const recordBtn = document.getElementById('fr-record-btn');
+    const recordStatus = document.getElementById('fr-record-status');
+    const recordDownload = document.getElementById('fr-record-download');
+    const recordPreview = document.getElementById('fr-record-preview');
+
+    let recordingActive = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      recordingActive = false;
+      recordBtn.classList.remove('recording');
+      recordBtn.textContent = '🎙 录制音频文件（免注册）';
+    }
+
+    recordBtn.addEventListener('click', async () => {
+      if (recordingActive) { stopRecording(); recordStatus.textContent = '已手动停止'; return; }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        alert('当前浏览器不支持标签页音频录制，换 Chrome / Edge 试试'); return;
+      }
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      } catch (err) {
+        recordStatus.textContent = '未授权分享，已取消'; return;
+      }
+      const audioTracks = stream.getAudioTracks();
+      stream.getVideoTracks().forEach(t => t.stop());
+      if (!audioTracks.length) {
+        recordStatus.textContent = '没有捕获到音频 —— 分享时要勾选"分享标签页音频"';
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+
+      const audioStream = new MediaStream(audioTracks);
+      recordedChunks = [];
+      try {
+        mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+      } catch (err) {
+        mediaRecorder = new MediaRecorder(audioStream);
+      }
+      mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        audioTracks.forEach(t => t.stop());
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        const ext = (blob.type.indexOf('webm') !== -1) ? 'webm' : 'ogg';
+        recordDownload.href = url;
+        recordDownload.download = '最小二乘法_朗读.' + ext;
+        recordDownload.style.display = 'inline-block';
+        recordPreview.src = url;
+        recordPreview.style.display = 'block';
+        recordStatus.textContent = `录制完成，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+      };
+
+      mediaRecorder.start();
+      recordingActive = true;
+      recordBtn.classList.add('recording');
+      recordBtn.textContent = '⏹ 停止录制';
+      recordStatus.textContent = '正在录制…请不要切走这个标签页或静音';
+      recordDownload.style.display = 'none';
+      recordPreview.style.display = 'none';
+
+      if (!playing) playBtn.click();
+    });
+
+    // ---------------------------------------------------------------
+    // 导出 MP3：把正文逐段发给 Azure 语音合成 REST API，拼成一个 MP3 文件
+    // ---------------------------------------------------------------
+    const keyInput = document.getElementById('fr-azure-key');
+    const regionInput = document.getElementById('fr-azure-region');
+    const voiceSelect = document.getElementById('fr-azure-voice');
+    const exportBtn = document.getElementById('fr-export-btn');
+    const exportCancelBtn = document.getElementById('fr-export-cancel');
+    const exportProgress = document.getElementById('fr-export-progress');
+    const downloadLink = document.getElementById('fr-download-link');
+    const audioPreview = document.getElementById('fr-audio-preview');
+
+    try {
+      keyInput.value = localStorage.getItem('fr-azure-key') || '';
+      regionInput.value = localStorage.getItem('fr-azure-region') || 'eastasia';
+      const savedVoice = localStorage.getItem('fr-azure-voice');
+      if (savedVoice) voiceSelect.value = savedVoice;
+    } catch (e) { /* localStorage 不可用则忽略 */ }
+
+    function escapeXml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    }
+
+    async function getAzureToken(key, region) {
+      const resp = await fetch(`https://${region}.api.cognitive.microsoft.com/sts/v1.0/issuetoken`, {
+        method: 'POST',
+        headers: { 'Ocp-Apim-Subscription-Key': key, 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
+      if (!resp.ok) throw new Error(`认证失败（${resp.status}），请检查 Key 和区域是否正确`);
+      return await resp.text();
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function synthesizeOne(token, region, text, voice, rate) {
+      const ratePct = Math.round((rate - 1) * 100);
+      const ssml = `<speak version="1.0" xml:lang="zh-CN"><voice name="${voice}"><prosody rate="${ratePct}%">${escapeXml(text)}</prosody></voice></speak>`;
+      const resp = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/ssml+xml',
+          'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3'
+        },
+        body: ssml
+      });
+      if (!resp.ok) {
+        const errText = await resp.text().catch(() => '');
+        const err = new Error(`合成失败（${resp.status}）${errText.slice(0, 150)}`);
+        err.status = resp.status;
+        err.retryAfter = parseInt(resp.headers.get('Retry-After') || '', 10) || null;
+        throw err;
+      }
+      return await resp.arrayBuffer();
+    }
+
+    async function synthesizeWithRetry(token, region, text, voice, rate, onRetryMsg) {
+      const maxRetries = 5;
+      let attempt = 0;
+      while (true) {
+        try {
+          return await synthesizeOne(token, region, text, voice, rate);
+        } catch (err) {
+          if (err.status === 429 && attempt < maxRetries) {
+            attempt++;
+            const waitMs = err.retryAfter ? err.retryAfter * 1000 : Math.min(2000 * 2 ** (attempt - 1), 20000);
+            onRetryMsg(`触发限流(429)，${Math.round(waitMs / 1000)} 秒后自动重试（第 ${attempt}/${maxRetries} 次）…`);
+            await sleep(waitMs);
+            continue;
+          }
+          throw err;
+        }
+      }
+    }
+
+    let exportCancelled = false;
+
+    exportBtn.addEventListener('click', async () => {
+      const key = keyInput.value.trim();
+      const region = (regionInput.value.trim() || 'eastasia');
+      if (!key) { alert('请先填写 Azure Speech Key'); return; }
+
+      try {
+        localStorage.setItem('fr-azure-key', key);
+        localStorage.setItem('fr-azure-region', region);
+        localStorage.setItem('fr-azure-voice', voiceSelect.value);
+      } catch (e) { /* ignore */ }
+
+      const list = units.filter(it => it.text && it.text.trim());
+      if (!list.length) { alert('没有可朗读的内容'); return; }
+
+      if (playing) stopAll();
+
+      exportCancelled = false;
+      exportBtn.disabled = true;
+      exportBtn.textContent = '生成中…';
+      exportCancelBtn.style.display = 'inline-block';
+      downloadLink.style.display = 'none';
+      audioPreview.style.display = 'none';
+
+      const rate = parseFloat(rateInput.value);
+      const voice = voiceSelect.value;
+      const chunks = [];
+      let token = '', tokenTime = 0;
+
+      try {
+        for (let i = 0; i < list.length; i++) {
+          if (exportCancelled) { exportProgress.textContent = '已取消'; break; }
+          if (!token || Date.now() - tokenTime > 8 * 60 * 1000) {
+            token = await getAzureToken(key, region);
+            tokenTime = Date.now();
+          }
+          exportProgress.textContent = `正在合成第 ${i + 1} / ${list.length} 段…`;
+          const buf = await synthesizeWithRetry(token, region, list[i].text, voice, rate,
+            (msg) => { exportProgress.textContent = msg; });
+          chunks.push(new Uint8Array(buf));
+          if (i < list.length - 1) await sleep(250);
+        }
+
+        if (!exportCancelled && chunks.length) {
+          const blob = new Blob(chunks, { type: 'audio/mpeg' });
+          const url = URL.createObjectURL(blob);
+          downloadLink.href = url;
+          downloadLink.download = '最小二乘法_朗读.mp3';
+          downloadLink.style.display = 'inline-block';
+          audioPreview.src = url;
+          audioPreview.style.display = 'block';
+          exportProgress.textContent = `完成，共 ${chunks.length} 段，约 ${(blob.size / 1024 / 1024).toFixed(1)} MB`;
+        }
+      } catch (err) {
+        exportProgress.textContent = '出错：' + err.message;
+      } finally {
+        exportBtn.disabled = false;
+        exportBtn.textContent = '生成并下载 MP3';
+        exportCancelBtn.style.display = 'none';
+      }
+    });
+
+    exportCancelBtn.addEventListener('click', () => { exportCancelled = true; });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReader);
+  } else {
+    initReader();
+  }
+})();
+</script>
+
+
+</body>
+</html>

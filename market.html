@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股每日动态 | 扯谈 Duke 群</title>
+<style>
+  @font-face {
+    font-family: 'SimLi';
+    src: url('https://raw.githubusercontent.com/dukeparents/assets/main/fonts/SimLi.ttf') format('truetype');
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0a1128;
+    color: #ffffff;
+    font-family: 'SimLi', 'Kaiti', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.7;
+    padding-bottom: 80px;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 32px 20px; }
+  h1 { font-size: 26px; font-weight: 700; margin: 0 0 4px; }
+  .subtitle { color: #f0c040; font-size: 13px; margin-bottom: 32px; }
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(240,192,64,0.25);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .card h2 { font-size: 18px; margin: 0 0 4px; }
+  .card .timestamp { color: #f0c040; font-size: 12px; margin-bottom: 16px; }
+  .card ul { margin: 8px 0; padding-left: 20px; }
+  .card li { margin-bottom: 6px; font-size: 15px; }
+  .card p { font-size: 15px; }
+  footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    text-align: center; padding: 10px;
+    background: rgba(10,17,40,0.9);
+    color: #f0c040; font-size: 12px;
+  }
+  footer a { color: #f0c040; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📈 美股每日动态</h1>
+  <div class="subtitle">数据仅供参考，不构成投资建议</div>
+
+  <div class="card">
+    <h2>🌆 收盘总结</h2>
+    <div class="timestamp"><span id="market-close-time">尚未生成</span></div>
+    <div id="market-close-content">
+      <p style="color:rgba(255,255,255,0.4);font-size:13px;">今日数据生成中，请稍后刷新</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🌃 盘前预览</h2>
+    <div class="timestamp"><span id="market-premarket-time">尚未生成</span></div>
+    <div id="market-premarket-content">
+      <p style="color:rgba(255,255,255,0.4);font-size:13px;">今日数据生成中，请稍后刷新</p>
+    </div>
+  </div>
+
+  <div class="card" id="subscribe-card">
+    <h2>📬 邮件订阅</h2>
+    <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:0;">
+      订阅后可选择接收哪些内容，随时可改。
+    </p>
+    <form id="stock-subscribe-form">
+      <input type="email" id="sub-email" required placeholder="你的邮箱"
+        style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(240,192,64,0.3);
+        background:rgba(255,255,255,0.06);color:#fff;font-size:14px;margin-bottom:12px;">
+      <label style="display:block;font-size:14px;margin-bottom:6px;">
+        <input type="checkbox" id="sub-premarket"> 盘前预览（美东8am）
+      </label>
+      <label style="display:block;font-size:14px;margin-bottom:14px;">
+        <input type="checkbox" id="sub-close" checked> 收盘总结（美东5pm）
+      </label>
+      <button type="submit"
+        style="background:#f0c040;color:#0a1128;border:none;border-radius:8px;
+        padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;">订阅</button>
+      <span id="sub-status" style="margin-left:10px;font-size:13px;color:#f0c040;"></span>
+    </form>
+  </div>
+</div>
+<footer>扯谈 Duke 群 · <a href="https://dukeparents.org">dukeparents.org</a></footer>
+
+<script>
+const SUBSCRIBE_URL = 'https://YOUR_PROJECT_REF.supabase.co/functions/v1/subscribe';
+
+document.getElementById('stock-subscribe-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const status = document.getElementById('sub-status');
+  const email = document.getElementById('sub-email').value.trim();
+  const sub_stock_premarket = document.getElementById('sub-premarket').checked;
+  const sub_stock_close = document.getElementById('sub-close').checked;
+
+  if (!sub_stock_premarket && !sub_stock_close) {
+    status.textContent = '请至少勾选一项';
+    return;
+  }
+
+  status.textContent = '提交中...';
+  try {
+    const res = await fetch(SUBSCRIBE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      // 注意：这里故意不传 sub_duke，交给后端按"没传就不动"处理——
+      // 已经订阅Duke摘要的老用户不会被这个表单误改成false。
+      // 全新用户第一次通过这里注册时，sub_duke 走数据库默认值（false），
+      // 也就是不会被自动订阅Duke摘要，符合预期。
+      body: JSON.stringify({ email, sub_stock_premarket, sub_stock_close }),
+    });
+    const data = await res.json();
+    if (data.status === 'preferences_updated') {
+      status.textContent = '✅ 订阅偏好已更新';
+    } else if (data.status === 'confirm_sent') {
+      status.textContent = '✅ 确认邮件已发送，请查收邮箱';
+    } else if (data.status === 'already_confirmed') {
+      status.textContent = '✅ 已订阅';
+    } else {
+      status.textContent = data.error || '提交失败，请稍后再试';
+    }
+  } catch (err) {
+    status.textContent = '网络错误，请稍后再试';
+  }
+});
+</script>
+</body>
+</html>

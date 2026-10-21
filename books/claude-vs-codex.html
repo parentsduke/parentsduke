@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude vs Codex · 任务执行对比</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2e;
+    --claude: #d4a843;
+    --claude-dim: rgba(212,168,67,0.12);
+    --codex: #4f9ef8;
+    --codex-dim: rgba(79,158,248,0.12);
+    --text: #e8e4dc;
+    --muted: #6b6878;
+    --accent: #ff6b6b;
+    --mono: 'JetBrains Mono', monospace;
+    --serif: 'Noto Serif SC', serif;
+    --sans: 'Noto Sans SC', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 56px;
+    text-align: center;
+  }
+
+  .header-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .header-label::before,
+  .header-label::after {
+    content: '';
+    flex: 1;
+    max-width: 80px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 6vw, 52px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .vs-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(24px, 5vw, 44px);
+    font-weight: 900;
+  }
+  .name-claude { color: var(--claude); }
+  .name-vs {
+    font-family: var(--mono);
+    font-size: 0.5em;
+    color: var(--muted);
+    font-weight: 400;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+  }
+  .name-codex { color: var(--codex); }
+
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    margin-top: 16px;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .legend-dot.claude { background: var(--claude); }
+  .legend-dot.codex { background: var(--codex); }
+
+  /* Accordion */
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .item {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .item.open { border-color: rgba(255,255,255,0.08); }
+
+  .item-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 20px 24px;
+    cursor: pointer;
+    user-select: none;
+    gap: 16px;
+    transition: background 0.2s;
+    position: relative;
+  }
+  .item-header:hover { background: rgba(255,255,255,0.02); }
+
+  .item-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  .item-title {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .item-icon {
+    font-size: 18px;
+    opacity: 0.8;
+  }
+
+  .item-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 300;
+  }
+
+  .winner-chip {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .winner-chip.claude { background: var(--claude-dim); color: var(--claude); border: 1px solid rgba(212,168,67,0.25); }
+  .winner-chip.codex { background: var(--codex-dim); color: var(--codex); border: 1px solid rgba(79,158,248,0.25); }
+  .winner-chip.tie { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); }
+
+  .toggle-btn {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    flex-shrink: 0;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .item.open .toggle-btn {
+    border-color: rgba(255,255,255,0.1);
+    color: var(--text);
+    transform: rotate(45deg);
+  }
+
+  /* Body */
+  .item-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .item.open .item-body { max-height: 1200px; }
+
+  .item-content {
+    padding: 0 24px 28px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Comparison grid */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 600px) {
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+
+  .compare-card {
+    padding: 18px;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
+  }
+  .compare-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .compare-card.claude {
+    border-color: rgba(212,168,67,0.2);
+    background: var(--claude-dim);
+  }
+  .compare-card.claude::before { background: var(--claude); }
+  .compare-card.codex {
+    border-color: rgba(79,158,248,0.2);
+    background: var(--codex-dim);
+  }
+  .compare-card.codex::before { background: var(--codex); }
+
+  .card-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .claude .card-label { color: var(--claude); }
+  .codex .card-label { color: var(--codex); }
+
+  .card-text {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: rgba(232,228,220,0.85);
+    font-weight: 300;
+  }
+
+  /* Score bars */
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .score-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    width: 60px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .score-bar-wrap {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .score-bar {
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+    width: 0;
+  }
+  .item.open .score-bar { width: var(--w); }
+  .score-bar.claude { background: var(--claude); }
+  .score-bar.codex { background: var(--codex); }
+  .score-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    width: 28px;
+    flex-shrink: 0;
+  }
+  .score-num.claude { color: var(--claude); }
+  .score-num.codex { color: var(--codex); }
+
+  /* Tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 9px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* Summary */
+  .summary-note {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid var(--muted);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  /* Footer scoreboard */
+  .scoreboard {
+    margin-top: 48px;
+    padding: 28px 32px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .sb-side { display: flex; flex-direction: column; }
+  .sb-side.right { align-items: flex-end; }
+  .sb-name {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .sb-name.claude { color: var(--claude); }
+  .sb-name.codex { color: var(--codex); }
+  .sb-score {
+    font-family: var(--mono);
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .sb-score.claude { color: var(--claude); }
+  .sb-score.codex { color: var(--codex); }
+  .sb-wins {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .sb-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .sb-div-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+  .sb-div-vs {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--border);
+  }
+
+  @media (max-width: 480px) {
+    .scoreboard { grid-template-columns: 1fr; text-align: center; }
+    .sb-side.right { align-items: center; }
+    .sb-divider { flex-direction: row; }
+  }
+
+  /* Verdict */
+  .verdict {
+    margin-top: 24px;
+    padding: 20px 24px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .verdict-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .verdict-text {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(232,228,220,0.75);
+    font-weight: 400;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-label">2026 · AI智能体深度评测</div>
+    <h1>
+      <div class="vs-badge">
+        <span class="name-claude">Claude</span>
+        <span class="name-vs">VS</span>
+        <span class="name-codex">Codex</span>
+      </div>
+    </h1>
+    <p class="header-sub">八项核心任务 · 逐项执行对比 · 综合能力评估</p>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot claude"></span>Claude Opus / Sonnet</div>
+    <div class="legend-item"><span class="legend-dot codex"></span>OpenAI Codex (GPT-5.3)</div>
+  </div>
+
+  <div class="accordion" id="accordion">
+
+    <!-- Task 1 -->
+    <div class="item" data-index="0">
+      <div class="item-header" onclick="toggle(0)">
+        <div>
+          <div class="item-num">01 / 08</div>
+          <div class="item-title"><span class="item-icon">⚙️</span>自主软件工程任务</div>
+          <div class="item-meta">端到端代码生成 · Bug修复 · 重构 · 测试</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="winner-chip codex">CODEX 优势</span>
+          <div class="toggle-btn">+</div>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="item-content">
+          <div class="compare-grid">
+            <div class="compare-card codex">
+              <div class="card-label">Codex (GPT-5.3)</div>
+              <div class="card-text">专为自主编程优化，可在沙箱中运行代码、执行测试、读写文件，形成完整的"编写→运行→修复"闭环。在 SWE-bench 等基准上表现突出，可接管整个 PR 流程，包括提交、代码审查响应等。支持并行多任务，500万+周活跃用户印证了其实用性。</div>
+            </div>
+            <div class="compare-card claude">
+              <div class="card-label">Claude</div>
+              <div class="card-text">通过 Claude Code（CLI工具）提供类似能力，代码质量和推理深度受好评。在复杂架构设计和代码解释方面尤为出色。但作为通用模型，自主执行编程任务的端到端流畅度略逊于 Codex 的专项优化版本。</div>
+            </div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Claude</span>
+            <div class="score-bar-wrap"><div class="score-bar claude" style="--w:78%"></div></div>
+            <span class="score-num claude">78</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Codex</span>
+            <div class="score-bar-wrap"><div class="score-bar codex" style="--w:92%"></div></div>
+            <span class="score-num codex">92</span>
+          </div>
+          <div class="tags">
+            <span class="tag">SWE-bench</span><span class="tag">自动PR</span><span class="tag">沙箱执行</span><span class="tag">多智能体</span>
+          </div>
+          <div class="summary-note">Codex 在"无人监督完成整个功能开发"这类任务上有明显优势，是其核心设计场景。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task 2 -->
+    <div class="item" data-index="1">
+      <div class="item-header" onclick="toggle(1)">
+        <div>
+          <div class="item-num">02 / 08</div>
+          <div class="item-title"><span class="item-icon">✍️</span>长文写作与内容创作</div>
+          <div class="item-meta">报告 · 方案 · 营销文案 · 创意写作</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="winner-chip claude">Claude 优势</span>
+          <div class="toggle-btn">+</div>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="item-content">
+          <div class="compare-grid">
+            <div class="compare-card claude">
+              <div class="card-label">Claude</div>
+              <div class="card-text">长文写作是 Claude 的传统强项。文章结构清晰、论证严密、语言风格灵活，能精准适配不同受众语气（学术/商务/口语）。对写作任务的指令遵循极为准确，字数控制、格式要求、风格调整均表现出色。中文写作质量尤为自然流畅。</div>
+            </div>
+            <div class="compare-card codex">
+              <div class="card-label">Codex (GPT-5.3)</div>
+              <div class="card-text">GPT-5.3 基础模型写作能力很强，但 Codex 的定位是职场执行工具（分析师/投行/产品），写作任务通过"插件+模板"方式处理。纯文学创意写作和超长报告场景中，Claude 的风格把控更胜一筹。</div>
+            </div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Claude</span>
+            <div class="score-bar-wrap"><div class="score-bar claude" style="--w:93%"></div></div>
+            <span class="score-num claude">93</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Codex</span>
+            <div class="score-bar-wrap"><div class="score-bar codex" style="--w:82%"></div></div>
+            <span class="score-num codex">82</span>
+          </div>
+          <div class="tags">
+            <span class="tag">长报告</span><span class="tag">创意写作</span><span class="tag">语气适配</span><span class="tag">中文写作</span>
+          </div>
+          <div class="summary-note">Claude 的写作更具"人味"，Codex 更像一个职场文档生产引擎。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task 3 -->
+    <div class="item" data-index="2">
+      <div class="item-header" onclick="toggle(2)">
+        <div>
+          <div class="item-num">03 / 08</div>
+          <div class="item-title"><span class="item-icon">🧠</span>复杂推理与逻辑分析</div>
+          <div class="item-meta">数学推导 · 因果分析 · 多步骤问题求解</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="winner-chip tie">基本持平</span>
+          <div class="toggle-btn">+</div>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="item-content">
+          <div class="compare-grid">
+            <div class="compare-card claude">
+              <div class="card-label">Claude</div>
+              <div class="card-text">Claude 的推理过程透明且条理清晰，擅长展示中间步骤、识别假设前提、主动指出论证漏洞。在哲学推理、法律分析、因果推断等人文/社科类复杂推理中表现尤为出色，对模糊性问题的处理比较谨慎、不过度自信。</div>
+            </div>
+            <div class="compare-card codex">
+              <div class="card-label">Codex (GPT-5.3)</div>
+              <div class="card-text">基于 o3 推理模型，在数学竞赛题、STEM推导、定量分析方面有很强的推理深度，支持"思维链"扩展推理时间。在硬科学和定量逻辑题型上往往能超越 Claude，但有时会过度自信地给出错误答案。</div>
+            </div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Claude</span>
+            <div class="score-bar-wrap"><div class="score-bar claude" style="--w:88%"></div></div>
+            <span class="score-num claude">88</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Codex</span>
+            <div class="score-bar-wrap"><div class="score-bar codex" style="--w:90%"></div></div>
+            <span class="score-num codex">90</span>
+          </div>
+          <div class="tags">
+            <span class="tag">MATH基准</span><span class="tag">逻辑谜题</span><span class="tag">因果推断</span><span class="tag">思维链</span>
+          </div>
+          <div class="summary-note">STEM定量推理 Codex 略优；人文逻辑与不确定性推理 Claude 更稳健。整体接近。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task 4 -->
+    <div class="item" data-index="3">
+      <div class="item-header" onclick="toggle(3)">
+        <div>
+          <div class="item-num">04 / 08</div>
+          <div class="item-title"><span class="item-icon">📋</span>指令遵循与格式控制</div>
+          <div class="item-meta">结构化输出 · 约束条件 · 复杂格式要求</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="winner-chip claude">Claude 优势</span>
+          <div class="toggle-btn">+</div>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="item-content">
+          <div class="compare-grid">
+            <div class="compare-card claude">
+              <div class="card-label">Claude</div>
+              <div class="card-text">在 IFEval 等指令遵循基准上持续高分。对多条件并发约束（如"不超过300字、用三段式、第二段必须包含X、语气要正式"）的处理准确率极高。对于否定约束（"不要做X"）的遵守也比同类模型更严格。</div>
+            </div>
+            <div class="compare-card codex">
+              <div class="card-label">Codex (GPT-5.3)</div>
+              <div class="card-text">GPT-5.3 基础指令遵循能力很强，但 Codex 作为智能体工具，更擅长执行"任务型"指令（"帮我写完这个功能"），对细粒度格式约束（字数、结构、风格禁忌）的精准遵循偶有偏差，尤其在长对话后上下文漂移更明显。</div>
+            </div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Claude</span>
+            <div class="score-bar-wrap"><div class="score-bar claude" style="--w:95%"></div></div>
+            <span class="score-num claude">95</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Codex</span>
+            <div class="score-bar-wrap"><div class="score-bar codex" style="--w:84%"></div></div>
+            <span class="score-num codex">84</span>
+          </div>
+          <div class="tags">
+            <span class="tag">IFEval</span><span class="tag">多约束</span><span class="tag">JSON输出</span><span class="tag">结构化生成</span>
+          </div>
+          <div class="summary-note">Claude 在"精确按要求执行"这件事上是业界公认的标杆，是其核心竞争力之一。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task 5 -->
+    <div class="item" data-index="4">
+      <div class="item-header" onclick="toggle(4)">
+        <div>
+          <div class="item-num">05 / 08</div>
+          <div class="item-title"><span class="item-icon">🌐</span>多语言能力（重点：中文）</div>
+          <div class="item-meta">理解 · 生成 · 翻译 · 文化语境</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="winner-chip claude">Claude 优势</span>
+          <div class="toggle-btn">+</div>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="item-content">
+          <div class="compare-grid">
+            <div class="compare-card claude">
+              <div class="card-label">Claude</div>
+              <div class="card-text">中文写作自然流畅，能准确把握书面语与口语的边界，成语运用、语境隐喻处理得当。对中文文化背景（节日、社会现象、网络语言）理解深入。跨语言切换无缝，非英语指令下也能保持高质量遵循。</div>
+            </div>
+            <div class="compare-card codex">
+              <div class="card-label">Codex (GPT-5.3)</div>
+              <div class="card-text">技术文档、代码注释的中英翻译质量很高。但在纯中文创作和文化语境理解方面偶有生硬感，Codex 的用户群和优化重点主要面向英语职场场景，中文细腻度稍逊。</div>
+            </div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Claude</span>
+            <div class="score-bar-wrap"><div class="score-bar claude" style="--w:91%"></div></div>
+            <span class="score-num claude">91</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Codex</span>
+            <div class="score-bar-wrap"><div class="score-bar codex" style="--w:80%"></div></div>
+            <span class="score-num codex">80</span>
+          </div>
+          <div class="tags">
+            <span class="tag">中文写作</span><span class="tag">文化语境</span><span class="tag">翻译质量</span><span class="tag">多语言切换</span>
+          </div>
+          <div class="summary-note">对于中文用户，Claude 在日常写作、沟通、内容生产上的体验明显更优。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task 6 -->
+    <div class="item" data-index="5">
+      <div class="item-header" onclick="toggle(5)">
+        <div>
+          <div class="item-num">06 / 08</div>
+          <div class="item-title"><span class="item-icon">🔍</span>长文档理解与分析</div>
+          <div class="item-meta">合同解析 · 研究报告 · 代码库理解</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="winner-chip claude">Claude 优势</span>
+          <div class="toggle-btn">+</div>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="item-content">
+          <div class="compare-grid">
+            <div class="compare-card claude">
+              <div class="card-label">Claude</div>
+              <div class="card-text">200K token 超长上下文窗口，且在长文档中的信息检索准确率高（"大海捞针"测试表现优秀）。对法律合同、学术论文、财报的深度解读能准确捕捉细节与矛盾点，不会简单复述而是真正分析。</div>
+            </div>
+            <div class="compare-card codex">
+              <div class="card-label">Codex (GPT-5.3)</div>
+              <div class="card-text">对代码库的整体理解和跨文件分析是 Codex 的亮点，可以理解大型项目的架构脉络。但在非代码类长文档（如法律文本、学术论文）的深度分析上，注意力分配和细节捕捉不如 Claude 稳定。</div>
+            </div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Claude</span>
+            <div class="score-bar-wrap"><div class="score-bar claude" style="--w:94%"></div></div>
+            <span class="score-num claude">94</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Codex</span>
+            <div class="score-bar-wrap"><div class="score-bar codex" style="--w:85%"></div></div>
+            <span class="score-num codex">85</span>
+          </div>
+          <div class="tags">
+            <span class="tag">200K上下文</span><span class="tag">合同分析</span><span class="tag">代码库理解</span><span class="tag">大海捞针</span>
+          </div>
+          <div class="summary-note">阅读理解类任务 Claude 综合更强，Codex 在代码库专项分析上有针对性优势。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task 7 -->
+    <div class="item" data-index="6">
+      <div class="item-header" onclick="toggle(6)">
+        <div>
+          <div class="item-num">07 / 08</div>
+          <div class="item-title"><span class="item-icon">🏢</span>职场自动化与企业集成</div>
+          <div class="item-meta">数据分析 · 演示文稿 · 工作流自动化</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="winner-chip codex">CODEX 优势</span>
+          <div class="toggle-btn">+</div>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="item-content">
+          <div class="compare-grid">
+            <div class="compare-card codex">
+              <div class="card-label">Codex (GPT-5.3)</div>
+              <div class="card-text">2026年6月新发布6个职场专项插件（数据分析、创意制作、销售、产品设计、股权投资、投行），深度集成 AWS、Office 等企业生态。Sites 功能可直接生成可分享的交互式网页/应用。企业用户可快速接入现有安全合规和采购流程。</div>
+            </div>
+            <div class="compare-card claude">
+              <div class="card-label">Claude</div>
+              <div class="card-text">Claude Team/Enterprise 方案提供企业级功能，Projects 和扩展 API 支持工作流集成。但职场专项插件生态目前不及 Codex 丰富。Claude 的优势在于"通才型"企业助手，而非某一垂直职能的深度专项工具。</div>
+            </div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Claude</span>
+            <div class="score-bar-wrap"><div class="score-bar claude" style="--w:80%"></div></div>
+            <span class="score-num claude">80</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Codex</span>
+            <div class="score-bar-wrap"><div class="score-bar codex" style="--w:91%"></div></div>
+            <span class="score-num codex">91</span>
+          </div>
+          <div class="tags">
+            <span class="tag">职场插件</span><span class="tag">AWS集成</span><span class="tag">Sites功能</span><span class="tag">企业合规</span>
+          </div>
+          <div class="summary-note">想让AI直接嵌入特定职能工作流，Codex 的专项插件体系目前更成熟。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task 8 -->
+    <div class="item" data-index="7">
+      <div class="item-header" onclick="toggle(7)">
+        <div>
+          <div class="item-num">08 / 08</div>
+          <div class="item-title"><span class="item-icon">🛡️</span>安全性与价值观对齐</div>
+          <div class="item-meta">有害内容防护 · 透明度 · 可信赖性</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="winner-chip claude">Claude 优势</span>
+          <div class="toggle-btn">+</div>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="item-content">
+          <div class="compare-grid">
+            <div class="compare-card claude">
+              <div class="card-label">Claude</div>
+              <div class="card-text">Anthropic 以 AI 安全为核心使命，Claude 在"宪法AI"框架下训练，对有害输出的拒绝更一致、解释更透明。在不确定时主动表达不确定性而非杜撰答案。整体被评为目前最"诚实"的主流大模型之一，过度拒绝问题也在持续改善。</div>
+            </div>
+            <div class="compare-card codex">
+              <div class="card-label">Codex (GPT-5.3)</div>
+              <div class="card-text">OpenAI 同样重视安全，GPT-5 系列有专门的安全评估。但 Codex 作为代码执行智能体，安全边界更多体现在"沙箱隔离"等技术层面。在内容安全一致性和模型透明度方面，第三方评测普遍认为 Claude 更具优势。</div>
+            </div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Claude</span>
+            <div class="score-bar-wrap"><div class="score-bar claude" style="--w:96%"></div></div>
+            <span class="score-num claude">96</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Codex</span>
+            <div class="score-bar-wrap"><div class="score-bar codex" style="--w:85%"></div></div>
+            <span class="score-num codex">85</span>
+          </div>
+          <div class="tags">
+            <span class="tag">宪法AI</span><span class="tag">诚实性</span><span class="tag">沙箱安全</span><span class="tag">不确定性</span>
+          </div>
+          <div class="summary-note">对安全合规要求严格的场景，Claude 的价值观对齐设计提供了更强的可信度保障。</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end accordion -->
+
+  <!-- Scoreboard -->
+  <div class="scoreboard">
+    <div class="sb-side">
+      <div class="sb-name claude">Claude</div>
+      <div class="sb-score claude" id="scoreC">0</div>
+      <div class="sb-wins">项胜出</div>
+    </div>
+    <div class="sb-divider">
+      <div class="sb-div-label">综合</div>
+      <div class="sb-div-vs">VS</div>
+      <div class="sb-div-label">胜负</div>
+    </div>
+    <div class="sb-side right">
+      <div class="sb-name codex">Codex</div>
+      <div class="sb-score codex" id="scoreX">0</div>
+      <div class="sb-wins">项胜出</div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-label">综合建议</div>
+    <div class="verdict-text">
+      如果你的核心需求是<strong style="color:var(--codex)">自主完成软件工程任务、职场流程自动化</strong>，Codex 是更专业的选择。<br>
+      如果你更看重<strong style="color:var(--claude)">写作质量、指令精确遵循、中文能力、长文档分析或可信赖性</strong>，Claude 则更胜一筹。<br>
+      两者并非对立，很多团队已在同时使用 Claude Code 与 Codex 处理不同场景。
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const items = document.querySelectorAll('.item');
+
+  function toggle(index) {
+    const item = items[index];
+    const isOpen = item.classList.contains('open');
+    item.classList.toggle('open', !isOpen);
+  }
+
+  // Count wins for scoreboard
+  const winners = ['codex','claude','tie','claude','claude','claude','codex','claude'];
+  let claudeWins = winners.filter(w => w === 'claude').length;
+  let codexWins  = winners.filter(w => w === 'codex').length;
+
+  function animateCount(el, target, color) {
+    let current = 0;
+    const step = () => {
+      if (current < target) {
+        current++;
+        el.textContent = current;
+        setTimeout(step, 120);
+      }
+    };
+    setTimeout(step, 600);
+  }
+
+  animateCount(document.getElementById('scoreC'), claudeWins);
+  animateCount(document.getElementById('scoreX'), codexWins);
+
+  // Open first item by default
+  toggle(0);
+</script>
+</body>
+</html>

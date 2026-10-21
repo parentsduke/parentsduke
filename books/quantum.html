@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>量子计算：一场正在发生的革命</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #04060f;
+    --surface: #080e1f;
+    --border: rgba(0,200,255,0.12);
+    --accent: #00c8ff;
+    --accent2: #7b4cff;
+    --accent3: #ff4c8b;
+    --text: #cde0f0;
+    --text-dim: #5a7a99;
+    --glow: 0 0 24px rgba(0,200,255,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Serif SC', serif;
+    min-height: 100vh;
+    padding: 48px 24px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Starfield */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 25%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 40%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 90%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 85%, rgba(255,255,255,0.3) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Nebula glow */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: -10%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(ellipse, rgba(0,80,160,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .header-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+
+  .header h1 {
+    font-size: clamp(26px, 5vw, 42px);
+    font-weight: 900;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .header p {
+    color: var(--text-dim);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* Accordion */
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .item {
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .item:nth-child(1) { animation-delay: 0.05s; }
+  .item:nth-child(2) { animation-delay: 0.1s; }
+  .item:nth-child(3) { animation-delay: 0.15s; }
+  .item:nth-child(4) { animation-delay: 0.2s; }
+  .item:nth-child(5) { animation-delay: 0.25s; }
+  .item:nth-child(6) { animation-delay: 0.3s; }
+  .item:nth-child(7) { animation-delay: 0.35s; }
+  .item:nth-child(8) { animation-delay: 0.4s; }
+  .item:nth-child(9) { animation-delay: 0.45s; }
+
+  .item.open {
+    border-color: rgba(0,200,255,0.3);
+    box-shadow: var(--glow);
+  }
+
+  /* Trigger */
+  .trigger {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    cursor: pointer;
+    background: var(--surface);
+    transition: background 0.2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .trigger:hover {
+    background: rgba(0,200,255,0.05);
+  }
+
+  .item.open .trigger {
+    background: rgba(0,200,255,0.07);
+  }
+
+  .trigger-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    opacity: 0.5;
+    min-width: 28px;
+    flex-shrink: 0;
+  }
+
+  .item.open .trigger-num {
+    opacity: 1;
+  }
+
+  .trigger-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    filter: grayscale(0.4);
+    transition: filter 0.3s, transform 0.3s;
+  }
+
+  .item.open .trigger-icon {
+    filter: none;
+    transform: scale(1.1);
+  }
+
+  .trigger-text {
+    flex: 1;
+  }
+
+  .trigger-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #d0e8f5;
+    line-height: 1.3;
+    transition: color 0.2s;
+  }
+
+  .item.open .trigger-title {
+    color: #fff;
+  }
+
+  .trigger-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 3px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .trigger-arrow {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .trigger-arrow::before,
+  .trigger-arrow::after {
+    content: '';
+    position: absolute;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s;
+  }
+
+  .trigger-arrow::before {
+    width: 10px; height: 2px;
+    top: 9px; left: 1px;
+    transform: rotate(-40deg);
+  }
+
+  .trigger-arrow::after {
+    width: 10px; height: 2px;
+    top: 9px; left: 9px;
+    transform: rotate(40deg);
+  }
+
+  .item.open .trigger-arrow::before {
+    transform: rotate(40deg);
+  }
+
+  .item.open .trigger-arrow::after {
+    transform: rotate(-40deg);
+  }
+
+  /* Panel */
+  .panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .item.open .panel {
+    max-height: 2400px;
+  }
+
+  /* Concept blocks for the three quantum principles */
+  .concept-block {
+    margin-top: 18px;
+    padding: 16px 18px;
+    background: rgba(0,200,255,0.03);
+    border: 1px solid rgba(0,200,255,0.1);
+    border-radius: 4px;
+  }
+
+  .concept-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .concept-icon {
+    font-size: 18px;
+    color: var(--accent);
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .concept-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+
+  .concept-en {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    opacity: 0.6;
+    margin-left: 6px;
+    letter-spacing: 1px;
+  }
+
+  .panel-inner {
+    padding: 0 24px 24px 80px;
+    border-top: 1px solid var(--border);
+    background: rgba(0,10,30,0.5);
+  }
+
+  .panel-inner p {
+    font-size: 14px;
+    line-height: 1.9;
+    color: #9ab8d0;
+    margin-top: 18px;
+  }
+
+  .panel-inner p + p {
+    margin-top: 12px;
+  }
+
+  /* Highlight boxes */
+  .highlight {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-left: 2px solid var(--accent);
+    background: rgba(0,200,255,0.04);
+    border-radius: 0 4px 4px 0;
+    font-size: 13px;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    line-height: 1.6;
+  }
+
+  .highlight.purple {
+    border-color: var(--accent2);
+    color: #b09aff;
+    background: rgba(123,76,255,0.05);
+  }
+
+  .highlight.pink {
+    border-color: var(--accent3);
+    color: #ff8ab5;
+    background: rgba(255,76,139,0.05);
+  }
+
+  /* Stats row */
+  .stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 14px;
+    background: rgba(0,200,255,0.04);
+    border: 1px solid rgba(0,200,255,0.1);
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* Tags */
+  .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    border: 1px solid rgba(0,200,255,0.2);
+    color: var(--accent);
+    background: rgba(0,200,255,0.04);
+  }
+
+  .tag.purple {
+    border-color: rgba(123,76,255,0.3);
+    color: #b09aff;
+    background: rgba(123,76,255,0.05);
+  }
+
+  .tag.pink {
+    border-color: rgba(255,76,139,0.3);
+    color: #ff8ab5;
+    background: rgba(255,76,139,0.05);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 56px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    opacity: 0.5;
+    animation: fadeUp 0.6s ease 0.5s both;
+  }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile */
+  @media (max-width: 520px) {
+    body { padding: 32px 16px; }
+    .panel-inner { padding: 0 16px 20px 16px; }
+    .trigger { padding: 16px 16px; }
+    .trigger-num { display: none; }
+    .stats { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <div class="header-label">深度解读 · 2026</div>
+    <h1>量子计算机<br>到底行不行？</h1>
+    <p>从比特到量子比特，从 Shor 算法到加密危机，一场正在改写算力边界的革命。</p>
+  </header>
+
+  <div class="accordion" id="accordion">
+
+    <div class="item" data-index="0">
+      <div class="trigger">
+        <span class="trigger-num">01</span>
+        <span class="trigger-icon">⚛️</span>
+        <div class="trigger-text">
+          <div class="trigger-title">计算范式的革命：从比特到量子比特</div>
+          <div class="trigger-sub">叠加 · 纠缠 · 干涉</div>
+        </div>
+        <span class="trigger-arrow"></span>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <p>经典计算机的底层是比特——要么0，要么1。所有运算都是线性顺序的，一次只走一条路。量子比特则由三种神奇的物理特性驱动，彻底改写了"计算"的定义。</p>
+
+          <!-- 叠加 -->
+          <div class="concept-block">
+            <div class="concept-header">
+              <span class="concept-icon">〰</span>
+              <span class="concept-name">叠加 <span class="concept-en">Superposition</span></span>
+            </div>
+            <p style="margin-top:10px">想象你抛一枚硬币。经典硬币在空中旋转时，你不知道它是正面还是反面——但落地之后，它<em>只能是</em>其中一个。量子比特不同：它在被测量之前，<strong style="color:#cde0f0">真实地同时处于0和1两种状态</strong>，不是"我们不知道它是哪个"，而是"它本来就两个都是"。</p>
+            <p>更精确地说，叠加态是一个<strong style="color:#cde0f0">概率幅的叠加</strong>：量子比特携带着两个复数权重，分别对应|0⟩和|1⟩，测量时才按各自权重的平方坍缩成确定值。100个量子比特的叠加态，可以同时表示 2¹⁰⁰ ≈ 10³⁰ 种组合——比宇宙中原子的数量还多。这就是量子并行性的根源。</p>
+            <div class="highlight">比喻：经典比特是走廊里的一盏灯，要么亮要么灭。量子比特是湖面上的涟漪，可以同时向四面八方扩散，直到你伸手去摸它，它才在某一点定格。</div>
+          </div>
+
+          <!-- 纠缠 -->
+          <div class="concept-block" style="margin-top:20px">
+            <div class="concept-header">
+              <span class="concept-icon" style="color:var(--accent2)">∞</span>
+              <span class="concept-name" style="color:#b09aff">纠缠 <span class="concept-en">Entanglement</span></span>
+            </div>
+            <p style="margin-top:10px">把两个量子比特制备成"纠缠态"后，它们就像一对心灵感应的双胞胎：<strong style="color:#cde0f0">无论相距多远，测量其中一个，另一个的状态会在瞬间确定</strong>。爱因斯坦称之为"鬼魅般的超距作用"，一生都觉得这不可能是真的——但实验一再证明，它确实存在。</p>
+            <p>纠缠的威力在于：它把多个量子比特绑定成一个整体，不再是各自独立的个体。两个纠缠量子比特的状态空间不是 2+2=4，而是 2×2=4，且这4种状态可以互相关联、协同演化。100个完全纠缠的量子比特，整体状态空间是 2¹⁰⁰，对整个系统的操作相当于同时操控了所有可能的组合。</p>
+            <div class="highlight purple">比喻：两个纠缠粒子像一副手套——你打开箱子发现左手套，远在火星的另一只立刻就是右手套。神奇的是，在你打开箱子之前，它们本来"两只都是"。</div>
+          </div>
+
+          <!-- 干涉 -->
+          <div class="concept-block" style="margin-top:20px">
+            <div class="concept-header">
+              <span class="concept-icon" style="color:var(--accent3)">⫶</span>
+              <span class="concept-name" style="color:#ff8ab5">干涉 <span class="concept-en">Interference</span></span>
+            </div>
+            <p style="margin-top:10px">叠加和纠缠给了量子计算机海量并行的能力，但如果最后测量时每种答案概率相同，那不过是个昂贵的随机数发生器。干涉才是把并行变成"有用答案"的关键手术刀。</p>
+            <p>量子态携带<strong style="color:#cde0f0">相位</strong>信息（像波的波峰和波谷）。量子算法精心设计每一步操作，让<strong style="color:#cde0f0">正确答案路径的波峰对齐、相互叠加增强</strong>，让<strong style="color:#cde0f0">错误答案路径的波峰与波谷相遇、相互抵消</strong>。最终测量时，正确答案的概率接近100%，错误答案的概率趋近于零。</p>
+            <div class="highlight pink">比喻：水面上的两道涟漪相遇，波峰碰波峰会叠加成更高的浪，波峰碰波谷会彼此抵消归于平静。量子算法就是设计这套"涟漪的乐谱"，让正确答案最终掀起最高的浪。</div>
+          </div>
+
+          <p style="margin-top:20px">三者缺一不可：叠加提供并行的原料，纠缠把量子比特编织成协同整体，干涉把海量可能收敛到正确答案。</p>
+          <div class="highlight" style="margin-top:12px">叠加 × 纠缠 × 干涉 = 量子计算碾压经典计算的底层逻辑</div>
+          <div class="tags" style="margin-top:16px">
+            <span class="tag">叠加态</span>
+            <span class="tag">量子纠缠</span>
+            <span class="tag purple">量子干涉</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-index="1">
+      <div class="trigger">
+        <span class="trigger-num">02</span>
+        <span class="trigger-icon">🔐</span>
+        <div class="trigger-text">
+          <div class="trigger-title">Shor 算法：悬在互联网头顶的达摩克利斯之剑</div>
+          <div class="trigger-sub">RSA · 质因数分解 · 周期查找</div>
+        </div>
+        <span class="trigger-arrow"></span>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <p>RSA 加密的安全根基在于"大数分解极难"：给你221，要你猜是哪两个质数相乘，极其困难。617位合数，全球所有计算机算到宇宙毁灭也算不完。</p>
+          <p>1994年，数学家 Peter Shor 将"分解大数"巧妙转化为量子计算机擅长的"找周期"问题。量子叠加态一次性计算所有幂次余数，量子傅里叶变换精准提取周期，几步算术即得答案。</p>
+          <div class="stats">
+            <div class="stat">
+              <span class="stat-val">&lt; 1秒</span>
+              <span class="stat-label">量子机破解300位数</span>
+            </div>
+            <div class="stat">
+              <span class="stat-val">15万年</span>
+              <span class="stat-label">经典机破解300位数</span>
+            </div>
+            <div class="stat">
+              <span class="stat-val">2分钟</span>
+              <span class="stat-label">量子机破解5000位数</span>
+            </div>
+          </div>
+          <div class="highlight pink">到那时，银行账户、军事机密、加密货币，全都会像没锁的门一样。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-index="2">
+      <div class="trigger">
+        <span class="trigger-num">03</span>
+        <span class="trigger-icon">🔬</span>
+        <div class="trigger-text">
+          <div class="trigger-title">两条路逼近加密堡垒</div>
+          <div class="trigger-sub">加州理工 Oratomic · 谷歌 Willow</div>
+        </div>
+        <span class="trigger-arrow"></span>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <p><strong style="color:#cde0f0">加州理工 + 哈佛 Lukin 实验室</strong>走中性原子路线，结合 qLDPC 新型纠错码，将纠错开销压缩超过100倍。结论：仅需 10,000 个物理量子比特即可破解比特币 256 位椭圆曲线加密，102,000 个可在 97 天内破解 2048 位 RSA。团队现场成立初创公司 Oratomic。</p>
+          <p><strong style="color:#cde0f0">谷歌</strong>的 Willow 处理器实现了低于纠错阈值的突破——量子比特越多，逻辑错误率反而指数级下降。今年4月谷歌白皮书宣称仅需 1200 个逻辑量子比特即可破解椭圆曲线加密，比此前估算降低约20倍。谷歌已将自家系统迁移至后量子加密的时间表定在 <strong style="color:#00c8ff">2029年</strong>。</p>
+          <div class="highlight purple">领军企业自己都说：不能再等了。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-index="3">
+      <div class="trigger">
+        <span class="trigger-num">04</span>
+        <span class="trigger-icon">💻</span>
+        <div class="trigger-text">
+          <div class="trigger-title">经典计算机的反杀</div>
+          <div class="trigger-sub">张量网络 · 熨斗研究所 · 量子霸权祛魅</div>
+        </div>
+        <span class="trigger-arrow"></span>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <p>美国熨斗研究所（Flatiron Institute）的物理学家们用一台<strong style="color:#cde0f0">普通笔记本电脑</strong>，跑张量网络（Tensor Network）算法，成功模拟了此前只有量子计算机才能完成的复杂量子动态系统。</p>
+          <p>张量网络是波函数的"ZIP压缩"：将指数级爆炸的量子状态砸扁成节点互联的张量网络，每个节点只存储局部信息，通过"腿"彼此连接还原全局。加上改造自上世纪80年代"信念传播"算法的高效处理方式，三维晶格模拟精度与量子实验完全一致。</p>
+          <div class="highlight">经典计算机还没死，甚至还挺能打。量子优越性神话，需要一次次重新验证。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-index="4">
+      <div class="trigger">
+        <span class="trigger-num">05</span>
+        <span class="trigger-icon">🧬</span>
+        <div class="trigger-text">
+          <div class="trigger-title">量子计算到底能干什么？</div>
+          <div class="trigger-sub">制药 · 基础物理 · AI 加速</div>
+        </div>
+        <span class="trigger-arrow"></span>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <p><strong style="color:#cde0f0">药物与材料模拟</strong>：固氮、光合作用等关键化学反应本质是量子行为，经典计算机模拟几十个电子就撑不住了。量子计算机天生擅长此类任务，将大幅压缩新药研发周期。</p>
+          <p><strong style="color:#cde0f0">基础物理实验室</strong>：谷歌和 QuEra 已在量子计算机上成功模拟"弦断裂"——夸克被拉开时凭空产生正反物质对。这是人类首次直观看到这一纯理论现象。</p>
+          <p><strong style="color:#cde0f0">AI 加速卡</strong>：澳洲电信 Telstra 用量子处理器训练网络延迟模型，将三周压缩至两天。储层计算与量子优化的结合已有实际商业案例。</p>
+          <div class="tags">
+            <span class="tag">新药研发</span>
+            <span class="tag purple">粒子物理</span>
+            <span class="tag pink">AI 优化</span>
+            <span class="tag">材料科学</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-index="5">
+      <div class="trigger">
+        <span class="trigger-num">06</span>
+        <span class="trigger-icon">📈</span>
+        <div class="trigger-text">
+          <div class="trigger-title">IonQ：商业化赛道的领跑者</div>
+          <div class="trigger-sub">囚禁离子 · SkyWater 收购 · 755% 营收增长</div>
+        </div>
+        <span class="trigger-arrow"></span>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <p>IonQ 走"囚禁离子"路线：单个离子悬浮于超高真空腔体，激光束操控量子比特。优势在于相干时间长、门保真度高（万次操作仅出一次错）、任意两比特可直接纠缠，无需邻居"传话"。</p>
+          <p>2026年初以18亿美元收购国防级芯片厂 SkyWater Technologies，成为全球唯一拥有全栈垂直整合能力的量子公司。</p>
+          <div class="stats">
+            <div class="stat">
+              <span class="stat-val">755%</span>
+              <span class="stat-label">Q1营收同比增幅</span>
+            </div>
+            <div class="stat">
+              <span class="stat-val">$4.7亿</span>
+              <span class="stat-label">剩余履约义务</span>
+            </div>
+            <div class="stat">
+              <span class="stat-val">$210亿</span>
+              <span class="stat-label">当前市值</span>
+            </div>
+          </div>
+          <div class="highlight">市场不是在为今天的利润买单，而是在赌它十年后的位置。</div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="item" data-index="6">
+      <div class="trigger">
+        <span class="trigger-num">07</span>
+        <span class="trigger-icon">🔵</span>
+        <div class="trigger-text">
+          <div class="trigger-title">Duke：量子革命的源头之一</div>
+          <div class="trigger-sub">Duke Quantum Center · IonQ 的摇篮 · 256量子比特计划</div>
+        </div>
+        <span class="trigger-arrow"></span>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <p>文章里反复出现的 IonQ，其实就孵化自 Duke。物理学家 <strong style="color:#cde0f0">Christopher Monroe</strong> 和工程师 <strong style="color:#cde0f0">Jungsang Kim</strong> 是 IonQ 的联合创始人，两人均为 Duke 教授；量子纠错权威 <strong style="color:#cde0f0">Kenneth Brown</strong> 也在 Duke，三人共同奠定了囚禁离子路线的学术根基。IonQ 的核心技术，正是从 Duke 实验室里走出来的。</p>
+          <p>2021年，Duke 正式成立 <strong style="color:#cde0f0">Duke Quantum Center（DQC）</strong>，迅速成为全美顶尖的离子阱量子计算研究机构。DQC 拥有学术界最先进的离子阱量子计算系统，毕业生遍布 IonQ、Quantinuum、谷歌、AWS、IBM 等量子计算头部公司。</p>
+          <p>2024年，DQC 获 NSF 100万美元资助，启动 <strong style="color:#cde0f0">QACTI 计划</strong>（Quantum Advantage-Class Trapped Ion System），目标是建造全球最强学术量子计算机——<strong style="color:#00c8ff">256量子比特</strong>，计划2026年完成。若设计获 NSF 批准进入实施阶段，后续资助可能达每年1000万美元，持续12年。</p>
+          <div class="stats">
+            <div class="stat">
+              <span class="stat-val">256</span>
+              <span class="stat-label">目标量子比特数</span>
+            </div>
+            <div class="stat">
+              <span class="stat-val">$17M</span>
+              <span class="stat-label">STAQ项目续期资助</span>
+            </div>
+            <div class="stat">
+              <span class="stat-val">2026</span>
+              <span class="stat-label">QACTI 计划完成年</span>
+            </div>
+          </div>
+          <div class="highlight purple">IonQ 是从 Duke 走向华尔街的量子故事。Duke 不是旁观者，而是这场革命的发源地之一。</div>
+          <div class="tags">
+            <span class="tag">Duke Quantum Center</span>
+            <span class="tag purple">IonQ 摇篮</span>
+            <span class="tag">NSF NQVL</span>
+            <span class="tag pink">QACTI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-index="7">
+      <div class="trigger">
+        <span class="trigger-num">08</span>
+        <span class="trigger-icon">🪨</span>
+        <div class="trigger-text">
+          <div class="trigger-title">还横着几座大山</div>
+          <div class="trigger-sub">退相干 · 纠错开销 · 算法匮乏 · 工程地狱</div>
+        </div>
+        <span class="trigger-arrow"></span>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <p><strong style="color:#cde0f0">① 退相干</strong>：量子比特叠加态极度脆弱，一点热量、振动、电磁波甚至宇宙射线就能让它坍缩。必须与外界隔绝，同时又必须被操控读取——这是根本矛盾。</p>
+          <p><strong style="color:#cde0f0">② 纠错无底洞</strong>：一台1000量子比特的机器，真正用于计算的逻辑算力可能只有几十甚至几个。从几十个逻辑量子比特到破解 RSA 所需的数千个，还有漫漫长路。</p>
+          <p><strong style="color:#cde0f0">③ 算法匮乏</strong>：MIT 奥利弗教授直言："有很多问题，我不知道怎么在经典计算机上算，也不知道怎么在量子计算机上算。"杀手级应用严重不足。</p>
+          <p><strong style="color:#cde0f0">④ 工程地狱</strong>：从实验室几十个量子比特到工厂数万个稳定互联，控制电子学、低温封装、软件栈……每一环都是工程难题。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="item" data-index="8">
+      <div class="trigger">
+        <span class="trigger-num">09</span>
+        <span class="trigger-icon">🎯</span>
+        <div class="trigger-text">
+          <div class="trigger-title">现在该怎么看？</div>
+          <div class="trigger-sub">早得很，但不得不赌</div>
+        </div>
+        <span class="trigger-arrow"></span>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <p>目前任何经典计算机无法完成的实用之事，量子计算机也做不到。商业价值体现在三个层面：<strong style="color:#cde0f0">战略卡位</strong>（国家安全基础设施）、<strong style="color:#cde0f0">探索性应用</strong>（银行医药化工占座）、<strong style="color:#cde0f0">资本市场的未来预期定价</strong>。</p>
+          <p>也许量子计算机就像1950年代的经典计算机——屋子那么大，算力不如计算器，所有人都说没用。你看现在如何？它会走同样的路：理论可行，潜力无限，但要等工程师们再肝上十几年。</p>
+          <div class="highlight pink">普通人的银行密码五年内仍是安全的。但企业和技术决策者，是时候参与进来了。</div>
+          <p style="margin-top:16px; color: #7a9ab5; font-size:13px">量子计算机的快车刚刚驶出站台。机会总是留给有准备的人。</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /accordion -->
+
+  <div class="footer">QUANTUM COMPUTING REPORT · 2026 · dukeparents.org</div>
+
+</div>
+
+<script>
+  const items = document.querySelectorAll('.item');
+
+  items.forEach(item => {
+    const trigger = item.querySelector('.trigger');
+    trigger.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      // Close all
+      items.forEach(i => i.classList.remove('open'));
+      // Toggle clicked
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Open first by default
+  items[0].classList.add('open');
+</script>
+</body>
+</html>

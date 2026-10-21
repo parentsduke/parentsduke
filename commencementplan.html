@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>毕业典礼家长聚会企划书</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  --navy: #012169;
+  --gold: #c9a84c;
+  --gold-light: #f0d98a;
+  --navy-light: #1a3a7a;
+  --bg: #fafafa;
+  --text: #1a1a2a;
+  --gray: #6a6a8a;
+  --border: #e0e4f0;
+  --cream: #fffdf5;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* ── PRINT WRAPPER ── */
+.doc {
+  max-width: 800px;
+  margin: 32px auto;
+  background: white;
+  box-shadow: 0 4px 32px rgba(1,33,105,0.12);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* ── COVER ── */
+.cover {
+  background: var(--navy);
+  padding: 52px 52px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  right: -40px; top: -40px;
+  width: 300px; height: 300px;
+  border: 60px solid rgba(201,168,76,0.12);
+  border-radius: 50%;
+}
+.cover::after {
+  content: '';
+  position: absolute;
+  right: 60px; top: 80px;
+  width: 160px; height: 160px;
+  border: 30px solid rgba(201,168,76,0.08);
+  border-radius: 50%;
+}
+.cover-tag {
+  display: inline-block;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 4px 12px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+.cover h1 {
+  font-family: "Noto Serif SC", serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 2px;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+.cover-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.65);
+  letter-spacing: 1px;
+  margin-bottom: 32px;
+}
+.cover-meta {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.cover-meta-item {
+  color: rgba(255,255,255,0.6);
+  font-size: 13px;
+}
+.cover-meta-item strong {
+  display: block;
+  color: var(--gold);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* ── GOLD BAR ── */
+.gold-bar {
+  height: 5px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+}
+
+/* ── BODY ── */
+.body {
+  padding: 40px 52px;
+}
+
+/* ── SECTION ── */
+.section { margin-bottom: 36px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.section-num {
+  width: 28px; height: 28px;
+  background: var(--navy);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.5px;
+}
+
+/* ── OVERVIEW GRID ── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.ov-item {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 16px;
+}
+.ov-label {
+  font-size: 11px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.ov-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.5;
+}
+
+/* ── GOAL ITEMS ── */
+.goals { display: flex; flex-direction: column; gap: 10px; }
+.goal-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 14px;
+  background: var(--cream);
+  border-radius: 6px;
+  border-left: 3px solid var(--gold);
+}
+.goal-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  background: var(--navy);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.goal-icon svg { opacity: 0.9; }
+.goal-text strong { display: block; font-size: 14px; color: var(--navy); margin-bottom: 2px; }
+.goal-text span { font-size: 13px; color: var(--gray); }
+
+/* ── SCHEDULE ── */
+.schedule { display: flex; flex-direction: column; gap: 0; }
+.schedule-item {
+  display: flex; gap: 20px; position: relative;
+}
+.schedule-item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 44px; top: 32px;
+  width: 1px; height: calc(100% - 8px);
+  background: var(--border);
+}
+.sch-time {
+  width: 80px;
+  flex-shrink: 0;
+  text-align: right;
+  padding-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.sch-dot {
+  width: 10px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 10px;
+}
+.sch-dot-inner {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+.sch-content {
+  flex: 1;
+  padding: 4px 0 20px;
+}
+.sch-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.sch-desc { font-size: 13px; color: var(--gray); margin-top: 3px; }
+
+/* ── TASKS TABLE ── */
+.tasks-table { width: 100%; border-collapse: collapse; }
+.tasks-table th {
+  background: var(--navy);
+  color: white;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  letter-spacing: 0.5px;
+}
+.tasks-table td {
+  padding: 11px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.tasks-table tr:last-child td { border-bottom: none; }
+.tasks-table tr:nth-child(even) td { background: #fafbff; }
+.task-name { font-weight: 600; color: var(--navy); }
+.task-note { font-size: 12px; color: var(--gray); margin-top: 2px; }
+.slots-badge {
+  display: inline-block;
+  background: #e8ecff;
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 10px;
+}
+.urgency-high { color: #b82020; font-weight: 600; font-size: 12px; }
+.urgency-mid { color: #92710a; font-weight: 600; font-size: 12px; }
+.urgency-low { color: var(--gray); font-size: 12px; }
+
+/* ── BUDGET ── */
+.budget-table { width: 100%; border-collapse: collapse; }
+.budget-table th {
+  background: #f0f2f8;
+  color: var(--navy);
+  padding: 9px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  border-bottom: 2px solid var(--border);
+}
+.budget-table td {
+  padding: 10px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+.budget-table tr:last-child td {
+  font-weight: 700;
+  color: var(--navy);
+  border-top: 2px solid var(--navy);
+  border-bottom: none;
+  background: var(--cream);
+}
+.budget-amount { text-align: right; font-weight: 500; }
+
+/* ── NOTES ── */
+.notes { background: var(--cream); border-radius: 8px; padding: 18px 20px; border: 1px solid var(--border); }
+.notes p { font-size: 13px; color: #444; margin-bottom: 8px; }
+.notes p:last-child { margin-bottom: 0; }
+.notes p::before { content: '• '; color: var(--gold); font-weight: 700; }
+
+/* ── SIGN OFF ── */
+.signoff {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.signoff-left { font-size: 13px; color: var(--gray); }
+.signoff-left strong { color: var(--navy); display: block; font-size: 15px; margin-bottom: 4px; }
+.signoff-right {
+  text-align: right;
+}
+.duke-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 14px;
+}
+.duke-d {
+  width: 28px; height: 28px;
+  background: var(--navy);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold);
+  font-size: 17px;
+  font-weight: 800;
+  font-family: serif;
+}
+.duke-name { font-size: 12px; color: var(--navy); font-weight: 600; line-height: 1.3; }
+
+/* PRINT */
+@media print {
+  body { background: white; }
+  .doc { margin: 0; box-shadow: none; border-radius: 0; }
+  .print-btn { display: none; }
+}
+
+.print-btn {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 11px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(1,33,105,0.3);
+  font-family: inherit;
+}
+.print-btn:hover { background: #0a2f7a; }
+</style>
+</head>
+<body>
+
+<div class="doc">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-tag">DUKE PARENTS COMMUNITY · 27届家长群</div>
+    <h1>毕业典礼<br>家长聚会企划书</h1>
+    <div class="cover-sub">Class of 2025 · Commencement Celebration</div>
+    <div class="cover-meta">
+      <div class="cover-meta-item"><strong>活动日期</strong>2025年5月10日（周六）</div>
+      <div class="cover-meta-item"><strong>活动地点</strong>待定（Durham 校区附近）</div>
+      <div class="cover-meta-item"><strong>预计规模</strong>50–80 位家长</div>
+      <div class="cover-meta-item"><strong>文件版本</strong>v1.0 · 2025.05</div>
+    </div>
+  </div>
+  <div class="gold-bar"></div>
+
+  <div class="body">
+
+    <!-- 一、活动概述 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-title">活动概述</div>
+      </div>
+      <div class="overview-grid">
+        <div class="ov-item">
+          <div class="ov-label">活动名称</div>
+          <div class="ov-value">Class of 2025 毕业典礼家长聚会</div>
+        </div>
+        <div class="ov-item">
+          <div class="ov-label">主办方</div>
+          <div class="ov-value">Duke 27届家长群</div>
+        </div>
+        <div class="ov-item">
+          <div class="ov-label">活动时间</div>
+          <div class="ov-value">2025年5月10日 18:00–21:00</div>
+        </div>
+        <div class="ov-item">
+          <div class="ov-label">活动形式</div>
+          <div class="ov-value">中式聚餐 + 自由交流 + 颁发纪念品</div>
+        </div>
+        <div class="ov-item">
+          <div class="ov-label">参与对象</div>
+          <div class="ov-value">2025届毕业生中国家长及亲属</div>
+        </div>
+        <div class="ov-item">
+          <div class="ov-label">预计人数</div>
+          <div class="ov-value">50–80 人</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 二、活动目标 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-title">活动目标</div>
+      </div>
+      <div class="goals">
+        <div class="goal-item">
+          <div class="goal-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="goal-text">
+            <strong>家长联谊，建立友谊</strong>
+            <span>为来自全国各地的中国家长创造面对面交流的机会，分享四年陪伴子女求学的感受与故事</span>
+          </div>
+        </div>
+        <div class="goal-item">
+          <div class="goal-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="goal-text">
+            <strong>庆祝毕业，见证荣耀</strong>
+            <span>以温馨的方式庆祝孩子从 Duke 顺利毕业，记录这一重要人生节点</span>
+          </div>
+        </div>
+        <div class="goal-item">
+          <div class="goal-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div class="goal-text">
+            <strong>资源共享，展望未来</strong>
+            <span>交流毕业生求职、升学、生活安排等经验，为即将结束的大学阶段画上圆满句号</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 三、活动流程 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-title">活动流程</div>
+      </div>
+      <div class="schedule">
+        <div class="schedule-item">
+          <div class="sch-time">17:30</div>
+          <div class="sch-dot"><div class="sch-dot-inner"></div></div>
+          <div class="sch-content">
+            <div class="sch-title">签到入场</div>
+            <div class="sch-desc">义工在门口迎接，发放名牌、座位引导，拍摄签到照</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="sch-time">18:00</div>
+          <div class="sch-dot"><div class="sch-dot-inner"></div></div>
+          <div class="sch-content">
+            <div class="sch-title">开幕致辞</div>
+            <div class="sch-desc">主持人宣布活动开始，简短介绍 Duke 27届家长群的故事与初衷</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="sch-time">18:15</div>
+          <div class="sch-dot"><div class="sch-dot-inner"></div></div>
+          <div class="sch-content">
+            <div class="sch-title">聚餐交流</div>
+            <div class="sch-desc">中式聚餐，桌间自由交流；播放四年精彩回忆幻灯片</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="sch-time">19:30</div>
+          <div class="sch-dot"><div class="sch-dot-inner"></div></div>
+          <div class="sch-content">
+            <div class="sch-title">互动环节</div>
+            <div class="sch-desc">家长分享环节（3–5位）+ 趣味问答（Duke 知识竞答，设小礼品）</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="sch-time">20:15</div>
+          <div class="sch-dot"><div class="sch-dot-inner"></div></div>
+          <div class="sch-content">
+            <div class="sch-title">纪念品颁发</div>
+            <div class="sch-desc">为每位参与家长颁发毕业纪念品，集体合影留念</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="sch-time">20:45</div>
+          <div class="sch-dot"><div class="sch-dot-inner"></div></div>
+          <div class="sch-content">
+            <div class="sch-title">自由交流 / 散场</div>
+            <div class="sch-desc">继续交流，义工协助收场整理，预计21:00全部结束</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 四、义工任务分工 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-title">义工任务分工</div>
+      </div>
+      <table class="tasks-table">
+        <thead>
+          <tr>
+            <th style="width:22%">任务</th>
+            <th style="width:32%">职责说明</th>
+            <th style="width:13%">截止日期</th>
+            <th style="width:8%">人数</th>
+            <th style="width:13%">所需技能</th>
+            <th style="width:12%">紧急度</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="task-name">场地联络</div><div class="task-note">提前确认场地细节</div></td>
+            <td>与餐厅/场地方确认包间、桌型、停车、设备（投影/音响）等，协调备用方案</td>
+            <td>5月1日</td>
+            <td><span class="slots-badge">1–2 人</span></td>
+            <td>有沟通经验</td>
+            <td><span class="urgency-high">紧急</span></td>
+          </tr>
+          <tr>
+            <td><div class="task-name">报名统计</div><div class="task-note">收集参会人员信息</div></td>
+            <td>维护报名表，跟进付款，汇总饮食禁忌（素食/过敏），定期更新人数至活动群</td>
+            <td>5月5日</td>
+            <td><span class="slots-badge">1–2 人</span></td>
+            <td>细心、会 Excel</td>
+            <td><span class="urgency-high">紧急</span></td>
+          </tr>
+          <tr>
+            <td><div class="task-name">餐饮协调</div><div class="task-note">菜单确认与现场服务</div></td>
+            <td>根据人数和饮食禁忌与餐厅确认菜单，当晚协助服务员引导上菜节奏</td>
+            <td>5月7日</td>
+            <td><span class="slots-badge">1–2 人</span></td>
+            <td>有组织经验</td>
+            <td><span class="urgency-mid">中等</span></td>
+          </tr>
+          <tr>
+            <td><div class="task-name">签到接待</div><div class="task-note">活动当天门口迎宾</div></td>
+            <td>制作签到表，当晚在门口迎接家长，引导入座，发放名牌和节目单</td>
+            <td>5月9日</td>
+            <td><span class="slots-badge">2–3 人</span></td>
+            <td>热情、有耐心</td>
+            <td><span class="urgency-mid">中等</span></td>
+          </tr>
+          <tr>
+            <td><div class="task-name">PPT / 幻灯片</div><div class="task-note">四年回忆片段整理</div></td>
+            <td>收集家长提供的照片/视频，制作约10分钟的回忆幻灯片，配合活动主题和音乐</td>
+            <td>5月8日</td>
+            <td><span class="slots-badge">1–2 人</span></td>
+            <td>会做PPT/视频</td>
+            <td><span class="urgency-mid">中等</span></td>
+          </tr>
+          <tr>
+            <td><div class="task-name">现场摄影</div><div class="task-note">活动全程记录</div></td>
+            <td>活动全程拍照，重点拍签到、聚餐、颁奖、合影环节，活动后整理并分享至群</td>
+            <td>活动当天</td>
+            <td><span class="slots-badge">1–2 人</span></td>
+            <td>会摄影更佳</td>
+            <td><span class="urgency-low">普通</span></td>
+          </tr>
+          <tr>
+            <td><div class="task-name">主持人</div><div class="task-note">全场活动串场</div></td>
+            <td>主持整场活动，控制节奏，串联各环节，带动现场气氛，普通话流利</td>
+            <td>5月9日</td>
+            <td><span class="slots-badge">1 人</span></td>
+            <td>有主持经验</td>
+            <td><span class="urgency-mid">中等</span></td>
+          </tr>
+          <tr>
+            <td><div class="task-name">纪念品采购</div><div class="task-note">选购并准备礼品</div></td>
+            <td>在预算范围内选购有 Duke 元素的纪念品，提前打包装袋，活动当天搬运到场</td>
+            <td>5月7日</td>
+            <td><span class="slots-badge">1–2 人</span></td>
+            <td>有购物渠道</td>
+            <td><span class="urgency-mid">中等</span></td>
+          </tr>
+          <tr>
+            <td><div class="task-name">收尾整理</div><div class="task-note">活动结束后清场</div></td>
+            <td>活动结束后协助收拾桌面、带走自有物品、与场地方核对费用结算</td>
+            <td>活动当天</td>
+            <td><span class="slots-badge">2–3 人</span></td>
+            <td>—</td>
+            <td><span class="urgency-low">普通</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 五、预算估算 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div class="section-title">预算估算（仅供参考）</div>
+      </div>
+      <table class="budget-table">
+        <thead>
+          <tr>
+            <th>项目</th>
+            <th>说明</th>
+            <th class="budget-amount">预算（美元）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>餐饮费用</td>
+            <td>60人 × $35/人（含税及小费）</td>
+            <td class="budget-amount">$2,100</td>
+          </tr>
+          <tr>
+            <td>场地/音响</td>
+            <td>包间费用或设备租用</td>
+            <td class="budget-amount">$300</td>
+          </tr>
+          <tr>
+            <td>纪念品</td>
+            <td>60份 × $15/份（Duke 马克杯/书签等）</td>
+            <td class="budget-amount">$900</td>
+          </tr>
+          <tr>
+            <td>印刷物料</td>
+            <td>名牌、节目单、签到表等</td>
+            <td class="budget-amount">$80</td>
+          </tr>
+          <tr>
+            <td>趣味问答奖品</td>
+            <td>5份小礼品</td>
+            <td class="budget-amount">$100</td>
+          </tr>
+          <tr>
+            <td>机动备用</td>
+            <td>不可预见开支</td>
+            <td class="budget-amount">$200</td>
+          </tr>
+          <tr>
+            <td><strong>合计</strong></td>
+            <td>约 60 人参与，人均约 $60</td>
+            <td class="budget-amount"><strong>$3,680</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="font-size:12px;color:var(--gray);margin-top:8px">
+        * 可通过收取每人 $40–60 参会费，联合群内赞助商覆盖成本，具体方案待确定后更新。
+      </div>
+    </div>
+
+    <!-- 六、注意事项 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <div class="section-title">注意事项</div>
+      </div>
+      <div class="notes">
+        <p>场地预订须在5月1日前完成，毕业季期间 Durham 餐厅包间资源紧张，越早确认越好</p>
+        <p>国际家长入境签证建议提前3个月办理，企划书可作为活动证明材料附件使用</p>
+        <p>PPT 所用照片须征得本人同意方可使用，避免上传含有未成年人的照片</p>
+        <p>活动当日建议设立微信接龙或现场二维码，方便快速结算费用</p>
+        <p>活动结束后统一发布照片精选至微信群，建议活动后48小时内完成</p>
+        <p>所有义工建议5月9日参加简短的线上对接会（30分钟），确认分工与细节</p>
+      </div>
+    </div>
+
+    <!-- SIGN OFF -->
+    <div class="signoff">
+      <div class="signoff-left">
+        <strong>Duke 27届家长群</strong>
+        发布日期：2025年5月 · 如需修改请联系管理员
+      </div>
+      <div class="signoff-right">
+        <div class="duke-badge">
+          <div class="duke-d">D</div>
+          <div class="duke-name">Duke University<br>Parents Community</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+</div><!-- /doc -->
+
+<button class="print-btn" onclick="window.print()">打印 / 保存为 PDF</button>
+
+</body>
+</html>

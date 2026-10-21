@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>用户管理</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #f0f4f8;
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: #1a1a2e;
+    }
+
+    header {
+      background: #fff;
+      padding: 18px 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logout-btn {
+      padding: 7px 16px;
+      background: #f0f4f8;
+      color: #555;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .logout-btn:hover { background: #e0e6ef; }
+
+    .container {
+      max-width: 960px;
+      margin: 32px auto;
+      padding: 0 20px;
+      display: none;
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 28px;
+      flex: 1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .stat-card .num {
+      font-size: 32px;
+      font-weight: 700;
+      color: #4f8ef7;
+    }
+
+    .stat-card .label {
+      font-size: 13px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .card-header h2 {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-box input {
+      padding: 8px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      width: 200px;
+      transition: border 0.2s;
+    }
+
+    .search-box input:focus { border-color: #4f8ef7; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: #f7f9fc;
+    }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 13px;
+      color: #888;
+      font-weight: 600;
+      border-bottom: 1.5px solid #f0f0f0;
+    }
+
+    td {
+      padding: 14px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid #f5f5f5;
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafbff; }
+
+    .delete-btn {
+      padding: 5px 12px;
+      background: #fff0f0;
+      color: #c62828;
+      border: 1.5px solid #ffcdd2;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .delete-btn:hover { background: #fdecea; }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f8ef7, #a78bfa);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .name-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge.set {
+      background: #e6f4ea;
+      color: #2e7d32;
+    }
+
+    .badge.not-set {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    .loading-row td {
+      text-align: center;
+      padding: 40px;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .empty-row td {
+      text-align: center;
+      padding: 40px;
+      color: #bbb;
+      font-size: 14px;
+    }
+
+    .refresh-btn {
+      padding: 8px 16px;
+      background: #4f8ef7;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .refresh-btn:hover { background: #3a7ae0; }
+
+    .error-msg {
+      background: #fdecea;
+      color: #c62828;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* 视频弹窗 */
+    .video-btn {
+      padding: 8px 16px;
+      background: #003366;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .video-btn:hover { background: #004b99; }
+
+    #videoModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.75);
+      align-items: center;
+      justify-content: center;
+    }
+    #videoModal.active { display: flex; }
+
+    .video-modal-box {
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      width: 90%;
+      max-width: 860px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .video-modal-close {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      line-height: 32px;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .video-modal-close:hover { background: rgba(255,255,255,0.3); }
+
+    .video-modal-box iframe {
+      width: 100%;
+      height: 70vh; display: block; border: none; border-radius: 8px;
+      max-height: 80vh;
+    }
+  </style>
+</head>
+<body>
+
+<header id="adminHeader">
+  <h1>🛠 用户管理后台</h1>
+  <div class="header-right">
+    <span id="lastUpdated">正在加载...</span>
+    <span id="adminEmail" style="font-size:13px;color:#4f8ef7;"></span>
+    <button class="video-btn" onclick="openVideoModal()">▶ 播放视频</button>
+    <button class="logout-btn" onclick="adminLogout()">退出登录</button>
+  </div>
+</header>
+
+<div class="container" id="adminContent">
+
+  <!-- 统计卡片 -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="num" id="totalCount">-</div>
+      <div class="label">总用户数</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="setCount">-</div>
+      <div class="label">已设置密码</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="notSetCount">-</div>
+      <div class="label">待设置密码</div>
+    </div>
+  </div>
+
+  <!-- 用户列表 -->
+  <div class="card">
+    <div class="card-header">
+      <h2>已邀请用户列表</h2>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索姓名或邮箱..." oninput="filterTable()" />
+        <button class="refresh-btn" onclick="loadUsers()">🔄 刷新</button>
+      </div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>姓名</th>
+          <th>邮箱</th>
+          <th>注册时间</th>
+          <th>密码状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody">
+        <tr class="loading-row"><td colspan="4">⏳ 加载中...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- 视频弹窗 -->
+<div id="videoModal" onclick="handleModalClick(event)">
+  <div class="video-modal-box">
+    <button class="video-modal-close" onclick="closeVideoModal()">✕</button>
+    <iframe id="videoPlayer"
+      src=""
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
+
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+
+  const ADMIN_EMAILS = ['weihong_j@yahoo.com', 'sws122003@yahoo.com'];
+
+  const { createClient } = supabase;
+  const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let allUsers = [];
+
+  // ===== 管理员验证 =====
+  (async function checkAdmin() {
+    const { data: { session } } = await client.auth.getSession();
+
+    if (!session) {
+      showLoginScreen();
+      return;
+    }
+
+    const email = session.user.email;
+    if (!ADMIN_EMAILS.includes(email)) {
+      document.body.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;font-family:sans-serif;">
+          <div style="font-size:48px;">🚫</div>
+          <h2 style="color:#c62828;">无权限访问</h2>
+          <p style="color:#888;">账号 ${email} 没有管理员权限</p>
+          <button onclick="client.auth.signOut().then(()=>location.reload())" style="padding:10px 24px;background:#003366;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;">退出登录</button>
+        </div>`;
+      return;
+    }
+
+    // 有权限，显示页面
+    document.getElementById('adminHeader').style.display = 'flex';
+    document.getElementById('adminContent').style.display = 'block';
+    document.getElementById('adminEmail').textContent = email;
+    loadUsers();
+  })();
+
+  function showLoginScreen() {
+    document.body.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f0f4f8;">
+        <div style="background:#fff;padding:40px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.1);width:100%;max-width:360px;text-align:center;">
+          <div style="font-size:40px;margin-bottom:12px;">🛠</div>
+          <h2 style="margin-bottom:6px;color:#1a1a2e;">管理员登录</h2>
+          <p style="color:#888;font-size:13px;margin-bottom:24px;">仅限授权管理员访问</p>
+          <input type="email" id="loginEmail" placeholder="管理员邮箱" style="width:100%;padding:12px 16px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:12px;outline:none;box-sizing:border-box;">
+          <input type="password" id="loginPwd" placeholder="密码" style="width:100%;padding:12px 16px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:16px;outline:none;box-sizing:border-box;">
+          <button onclick="adminLogin()" style="width:100%;padding:13px;background:#003366;color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer;">登录</button>
+          <p id="loginErr" style="color:#c62828;font-size:13px;margin-top:12px;display:none;"></p>
+        </div>
+      </div>`;
+  }
+
+  async function adminLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pwd = document.getElementById('loginPwd').value;
+    const err = document.getElementById('loginErr');
+    err.style.display = 'none';
+
+    if (!ADMIN_EMAILS.includes(email)) {
+      err.textContent = '❌ 该账号没有管理员权限';
+      err.style.display = 'block';
+      return;
+    }
+
+    const { error } = await client.auth.signInWithPassword({ email, password: pwd });
+    if (error) {
+      err.textContent = '❌ ' + error.message;
+      err.style.display = 'block';
+      return;
+    }
+    location.reload();
+  }
+
+  async function adminLogout() {
+    await client.auth.signOut();
+    location.reload();
+  }
+
+  async function loadUsers() {
+    const tbody = document.getElementById('userTableBody');
+    const errorMsg = document.getElementById('errorMsg');
+    errorMsg.style.display = 'none';
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="5">⏳ 加载中...</td></tr>';
+
+    const { data, error } = await client
+      .from('profiles')
+      .select('id, full_name, email, created_at, has_set_password')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      errorMsg.textContent = '❌ 加载失败：' + error.message;
+      errorMsg.style.display = 'block';
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">暂无数据</td></tr>';
+      return;
+    }
+
+    allUsers = data || [];
+    renderTable(allUsers);
+    updateStats(allUsers);
+    document.getElementById('lastUpdated').textContent =
+      '最后更新：' + new Date().toLocaleTimeString('zh-CN');
+  }
+
+  async function deleteUser(userId, email) {
+    if (!confirm(`确认删除用户 ${email}？\n此操作不可撤销。`)) return;
+
+    // 先删除 profiles 记录
+    const { error: profileErr } = await client
+      .from('profiles')
+      .delete()
+      .eq('id', userId);
+
+    if (profileErr) {
+      alert('❌ 删除失败：' + profileErr.message);
+      return;
+    }
+
+    alert('✅ 用户已从名单中移除。\n注意：如需完全删除登录账号，请在 Supabase Authentication 后台手动删除。');
+    loadUsers();
+  }
+
+  function renderTable(users) {
+    const tbody = document.getElementById('userTableBody');
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">暂无用户数据</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = users.map(user => {
+      const name = user.full_name || '未设置';
+      const initial = name !== '未设置' ? name[0] : '?';
+      const email = user.email || '-';
+      const createdAt = user.created_at
+        ? new Date(user.created_at).toLocaleString('zh-CN', {
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit'
+          })
+        : '-';
+      const passwordSet = user.has_set_password;
+
+      return `
+        <tr>
+          <td>
+            <div class="name-cell">
+              <div class="avatar">${initial}</div>
+              <span>${name}</span>
+            </div>
+          </td>
+          <td>${email}</td>
+          <td>${createdAt}</td>
+          <td>
+            <span class="badge ${passwordSet ? 'set' : 'not-set'}">
+              ${passwordSet ? '✅ 已设置' : '⏳ 待设置'}
+            </span>
+          </td>
+          <td>
+            <button class="delete-btn" onclick="deleteUser('${user.id}', '${email}')">🗑 删除</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function updateStats(users) {
+    const setCount = users.filter(u => u.has_set_password).length;
+    document.getElementById('totalCount').textContent = users.length;
+    document.getElementById('setCount').textContent = setCount;
+    document.getElementById('notSetCount').textContent = users.length - setCount;
+  }
+
+  function filterTable() {
+    const keyword = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allUsers.filter(u =>
+      (u.full_name || '').toLowerCase().includes(keyword) ||
+      (u.email || '').toLowerCase().includes(keyword)
+    );
+    renderTable(filtered);
+  }
+
+  // ===== 视频弹窗 =====
+  const YT_EMBED = 'https://www.youtube.com/embed/VpeycZqQMMY?autoplay=1&rel=0';
+  const BILI_EMBED = 'https://player.bilibili.com/player.html?bvid=BV1dtAVzHEFk&autoplay=1';
+
+  async function openVideoModal() {
+    document.getElementById('videoModal').classList.add('active');
+    // 检测是否能访问YouTube，不能则用B站
+    let canYT = false;
+    try {
+      await Promise.race([
+        fetch('https://www.youtube.com/favicon.ico', { mode: 'no-cors' }),
+        new Promise((_, reject) => setTimeout(() => reject(), 3000))
+      ]);
+      canYT = true;
+    } catch(e) { canYT = false; }
+    document.getElementById('videoPlayer').src = canYT ? YT_EMBED : BILI_EMBED;
+  }
+
+  function closeVideoModal() {
+    document.getElementById('videoModal').classList.remove('active');
+    document.getElementById('videoPlayer').src = '';
+  }
+
+  function handleModalClick(e) {
+    if (e.target === document.getElementById('videoModal')) {
+      closeVideoModal();
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeVideoModal();
+  });
+</script>
+
+</body>
+</html>

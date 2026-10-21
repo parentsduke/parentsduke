@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P-1000 拉针示意图</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;700&display=swap');
+
+  :root {
+    --bg: #ffffff;
+    --panel: #f6f8fa;
+    --border: #d0d7de;
+    --accent: #0969da;
+    --accent2: #cf222e;
+    --accent3: #1a7f37;
+    --accent4: #8250df;
+    --text: #1f2328;
+    --muted: #656d76;
+    --label-bg: #eaeef2;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans SC', sans-serif;
+    padding: 20px 16px 60px;
+    min-height: 100vh;
+  }
+
+  .header { margin-bottom: 24px; }
+
+  h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .subtitle { font-size: 12px; color: var(--muted); }
+
+  .section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title.orange { color: var(--accent2); }
+  .section-title.green  { color: var(--accent3); }
+  .section-title.purple { color: var(--accent4); }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  svg { width: 100%; overflow: visible; }
+
+  .param-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .param-table th {
+    background: var(--label-bg);
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .param-table td {
+    padding: 10px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .param-table tr:last-child td { border-bottom: none; }
+  .param-table .line1 td { color: var(--accent); }
+  .param-table .line2 td { color: var(--accent2); }
+
+  .changed {
+    background: rgba(207,34,46,0.08);
+    border-radius: 4px;
+    font-weight: 700;
+    color: var(--accent2) !important;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 20px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .tag-red    { background: rgba(207,34,46,0.08);  color: var(--accent2); border: 1px solid rgba(207,34,46,0.25); }
+  .tag-green  { background: rgba(26,127,55,0.08);  color: var(--accent3); border: 1px solid rgba(26,127,55,0.25); }
+  .tag-blue   { background: rgba(9,105,218,0.08);  color: var(--accent);  border: 1px solid rgba(9,105,218,0.25); }
+  .tag-purple { background: rgba(130,80,223,0.08); color: var(--accent4); border: 1px solid rgba(130,80,223,0.25); }
+
+  .note {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-top: 12px;
+  }
+  .note strong { color: var(--text); }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .compare-box {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 12px 10px;
+    border: 1px solid var(--border);
+  }
+  .compare-box .clabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+
+  .arrow-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 9px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 14px 0;
+  }
+
+  /* Opening reference table */
+  .opening-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  .opening-table th {
+    background: var(--label-bg);
+    color: var(--muted);
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.8px;
+    padding: 7px 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .opening-table td {
+    padding: 9px 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .opening-table tr:last-child td { border-bottom: none; }
+  .opening-table .highlight-row td {
+    background: rgba(9,105,218,0.05);
+    font-weight: 600;
+  }
+
+  .range-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--label-bg);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+  }
+  .bar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+    min-width: 50px;
+  }
+
+  .tip-check {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 12px;
+    line-height: 1.8;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .tip-check strong { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Sutter P-1000 · P-2000G</h1>
+  <h2>拉针参数完整手册</h2>
+  <div class="subtitle">小鼠原核显微注射 · CRISPR/Cas9 RNP · P-2000G PROG#56 已验证</div>
+</div>
+
+<!-- ═══ SECTION 0: 毛细管型号 ═══ -->
+<div class="section">
+  <div class="section-title" style="color:#8250df">毛细管 · WPI TW100F-6</div>
+
+  <table class="opening-table">
+    <tr>
+      <th>规格</th>
+      <th>值</th>
+      <th>说明</th>
+    </tr>
+    <tr>
+      <td>品牌/型号</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">TW100F-6</td>
+      <td style="font-size:11px;color:var(--muted)">World Precision Instruments</td>
+    </tr>
+    <tr>
+      <td>材质</td>
+      <td style="font-size:12px;font-weight:600">硼硅酸盐</td>
+      <td style="font-size:11px;color:var(--muted)">Borosilicate（非石英）</td>
+    </tr>
+    <tr>
+      <td>外径 OD</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:12px">1.0 mm</td>
+      <td style="font-size:11px;color:var(--muted)">标准尺寸</td>
+    </tr>
+    <tr>
+      <td>壁厚</td>
+      <td style="font-size:12px;color:#1a7f37;font-weight:600">Thin wall</td>
+      <td style="font-size:11px;color:var(--muted)">ID ~0.75 mm，比厚壁更易软化</td>
+    </tr>
+    <tr class="highlight-row">
+      <td>内置细丝</td>
+      <td style="font-size:12px;color:#0969da;font-weight:700">有（W/FIL）✓</td>
+      <td style="font-size:11px;color:var(--muted)">毛细力自动导液至针尖，无需背充</td>
+    </tr>
+    <tr>
+      <td>长度</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:12px">6"（15 cm）</td>
+      <td style="font-size:11px;color:var(--muted)">适配 P-2000G 夹具</td>
+    </tr>
+  </table>
+
+  <div class="tip-check" style="margin-top:12px;border-color:rgba(9,105,218,0.3);background:#f0f6ff">
+    <strong>内置细丝的优势（对 RNP 注射尤其重要）</strong><br>
+    ① 充液时毛细力自动将液体导向针尖，<strong>无需背充针</strong><br>
+    ② 减少蛋白在管内停留时间 → <strong>降低 Cas9 吸附堵针</strong><br>
+    ③ 针尖充液更完全，气泡少<br>
+    ④ 薄壁 + 有丝 → 与 PROG #56（HEAT=250, PUL=185）匹配良好 ✓
+  </div>
+</div>
+
+<!-- ═══ SECTION 1: 两步原理 ═══ -->
+<div class="section">
+  <div class="section-title">两步拉制原理</div>
+  <svg viewBox="0 0 340 148" height="148">
+    <!-- LINE 1 label -->
+    <text x="0" y="13" font-family="JetBrains Mono" font-size="9" fill="#0969da" letter-spacing="1">LINE 1 — 塑形（Pull=0，不拉断）</text>
+    <path d="M0,20 L130,20 L180,30 L190,30 L200,30 L250,20 L340,20 L340,38 L250,38 L200,30 L190,30 L180,30 L130,38 L0,38 Z"
+          fill="#dbeafe" stroke="#0969da" stroke-width="1.2"/>
+    <text x="190" y="35" font-family="JetBrains Mono" font-size="7.5" fill="#0969da" text-anchor="middle">软化区</text>
+    <!-- Vel brace -->
+    <line x1="130" y1="44" x2="190" y2="44" stroke="#0969da" stroke-width="0.8"/>
+    <line x1="130" y1="41" x2="130" y2="47" stroke="#0969da" stroke-width="0.8"/>
+    <line x1="190" y1="41" x2="190" y2="47" stroke="#0969da" stroke-width="0.8"/>
+    <text x="160" y="56" font-family="JetBrains Mono" font-size="7" fill="#0969da" text-anchor="middle">Vel 控制锥度长短</text>
+    <!-- Arrow -->
+    <text x="163" y="72" font-family="JetBrains Mono" font-size="18" fill="#d0d7de" text-anchor="middle">↓</text>
+    <!-- LINE 2 label -->
+    <text x="0" y="88" font-family="JetBrains Mono" font-size="9" fill="#cf222e" letter-spacing="1">LINE 2 — 收尖拉断</text>
+    <!-- Left needle -->
+    <path d="M0,95 L120,95 L188,107 L120,119 L0,119 Z" fill="#fef2f2" stroke="#0969da" stroke-width="1.2"/>
+    <!-- Right needle -->
+    <path d="M340,95 L220,95 L194,107 L220,119 L340,119 Z" fill="#fef2f2" stroke="#cf222e" stroke-width="1.2"/>
+    <!-- Tip opening brace -->
+    <line x1="188" y1="122" x2="194" y2="122" stroke="#cf222e" stroke-width="0.8"/>
+    <line x1="188" y1="119" x2="188" y2="125" stroke="#cf222e" stroke-width="0.8"/>
+    <line x1="194" y1="119" x2="194" y2="125" stroke="#cf222e" stroke-width="0.8"/>
+    <text x="191" y="136" font-family="JetBrains Mono" font-size="7" fill="#cf222e" text-anchor="middle">针尖开口</text>
+    <text x="191" y="147" font-family="JetBrains Mono" font-size="6.5" fill="#656d76" text-anchor="middle">Heat/Pull/Vel 控制</text>
+  </svg>
+</div>
+
+<!-- ═══ SECTION 2: 锥度 Vel对比 ═══ -->
+<div class="section">
+  <div class="section-title orange">Line 1 · Vel → 控制锥度长短</div>
+  <div class="two-col">
+    <div class="compare-box">
+      <div class="clabel" style="color:#cf222e">Vel = 20 <span class="tag tag-red">当前·太长</span></div>
+      <svg viewBox="0 0 145 36" height="36">
+        <path d="M0,4 L15,4 L138,18 L15,32 L0,32 Z" fill="#fef2f2" stroke="#cf222e" stroke-width="1.2"/>
+        <line x1="15" y1="34" x2="138" y2="34" stroke="#cf222e" stroke-width="0.7" stroke-dasharray="2,2"/>
+        <text x="76" y="41" font-family="JetBrains Mono" font-size="6.5" fill="#cf222e" text-anchor="middle">锥度过长 ✗</text>
+      </svg>
+    </div>
+    <div class="compare-box">
+      <div class="clabel" style="color:#1a7f37">Vel = 40 <span class="tag tag-green">建议</span></div>
+      <svg viewBox="0 0 145 36" height="36">
+        <path d="M0,4 L55,4 L138,18 L55,32 L0,32 Z" fill="#f0fdf4" stroke="#1a7f37" stroke-width="1.2"/>
+        <line x1="55" y1="34" x2="138" y2="34" stroke="#1a7f37" stroke-width="0.7" stroke-dasharray="2,2"/>
+        <text x="96" y="41" font-family="JetBrains Mono" font-size="6.5" fill="#1a7f37" text-anchor="middle">锥度合适 ✓</text>
+      </svg>
+    </div>
+  </div>
+  <div class="note" style="margin-top:14px">
+    Vel ↑ → 玻璃运动快 → 锥度<strong>短</strong><br>
+    Vel ↓ → 玻璃运动慢 → 锥度<strong>长</strong>
+  </div>
+</div>
+
+<!-- ═══ SECTION 3: 开口参考 ═══ -->
+<div class="section">
+  <div class="section-title purple">针尖开口参考 · 按注射类型</div>
+
+  <table class="opening-table">
+    <tr>
+      <th>注射类型</th>
+      <th>开口直径</th>
+      <th>大小示意</th>
+    </tr>
+    <tr>
+      <td>原核 DNA 注射</td>
+      <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px">0.5–1 µm</span></td>
+      <td>
+        <div class="range-bar">
+          <div class="bar-track"><div class="bar-fill" style="width:20%;background:#0969da"></div></div>
+          <span class="bar-label">最细</span>
+        </div>
+      </td>
+    </tr>
+    <tr class="highlight-row">
+      <td>原核 RNA / CRISPR <span class="tag tag-blue">常用</span></td>
+      <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px">1–2 µm</span></td>
+      <td>
+        <div class="range-bar">
+          <div class="bar-track"><div class="bar-fill" style="width:40%;background:#0969da"></div></div>
+          <span class="bar-label">推荐</span>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>细胞质注射</td>
+      <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px">2–5 µm</span></td>
+      <td>
+        <div class="range-bar">
+          <div class="bar-track"><div class="bar-fill" style="width:75%;background:#8250df"></div></div>
+          <span class="bar-label">较粗</span>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="tip-check">
+    <strong>实际判断方法（装针后）</strong><br>
+    ✓ 施加正压，液体能稳定流出 → 开口合适<br>
+    ✗ 加压无液体流出 → 开口太小，轻碰打开<br>
+    ✗ 液体自流不止 → 开口太大，重新拉针
+  </div>
+
+  <div class="note" style="margin-top:12px">
+    <strong>开口太小</strong> → Line 2 降低 Heat / Pull / Vel<br>
+    <strong>开口太大</strong> → Line 2 升高 Heat / Pull / Vel
+  </div>
+</div>
+
+<!-- ═══ SECTION 4: 开口对比图 ═══ -->
+<div class="section">
+  <div class="section-title purple">Line 2 · 开口大小对比</div>
+  <div class="two-col">
+    <div class="compare-box">
+      <div class="clabel" style="color:#cf222e">开口太小</div>
+      <svg viewBox="0 0 145 44" height="44">
+        <path d="M0,4 L100,4 L143,22 L100,40 L0,40 Z" fill="#fef2f2" stroke="#0969da" stroke-width="1"/>
+        <circle cx="143" cy="22" r="1.2" fill="#cf222e"/>
+        <text x="72" y="44" font-family="JetBrains Mono" font-size="6.5" fill="#cf222e" text-anchor="middle" dy="4">注液困难，压力大 ✗</text>
+      </svg>
+    </div>
+    <div class="compare-box">
+      <div class="clabel" style="color:#1a7f37">开口合适 ~1–2µm</div>
+      <svg viewBox="0 0 145 44" height="44">
+        <path d="M0,4 L100,4 L137,18 L137,26 L100,40 L0,40 Z" fill="#f0fdf4" stroke="#1a7f37" stroke-width="1"/>
+        <line x1="137" y1="18" x2="137" y2="26" stroke="#1a7f37" stroke-width="2.5"/>
+        <text x="72" y="44" font-family="JetBrains Mono" font-size="6.5" fill="#1a7f37" text-anchor="middle" dy="4">液体稳定流出 ✓</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 5: CRISPR注射成分 ═══ -->
+<div class="section">
+  <div class="section-title purple">CRISPR 混合物注射 · 开口要求</div>
+  <table class="opening-table">
+    <tr>
+      <th>成分</th>
+      <th>开口要求</th>
+      <th>说明</th>
+    </tr>
+    <tr>
+      <td>Plasmid DNA</td>
+      <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#1a7f37">0.5–1 µm</span></td>
+      <td style="font-size:11px;color:var(--muted)">分子小，不易堵针</td>
+    </tr>
+    <tr>
+      <td>gRNA</td>
+      <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#1a7f37">0.5–1 µm</span></td>
+      <td style="font-size:11px;color:var(--muted)">分子小，不易堵针</td>
+    </tr>
+    <tr>
+      <td>Cas9 mRNA</td>
+      <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#cf222e">~1.5 µm</span></td>
+      <td style="font-size:11px;color:var(--muted)">分子较大，易堵细针</td>
+    </tr>
+    <tr class="highlight-row">
+      <td><strong>Cas9 蛋白 RNP</strong> <span class="tag tag-red">本次</span></td>
+      <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#cf222e">~2 µm</span></td>
+      <td style="font-size:11px;color:var(--muted)">蛋白体积最大，最易堵</td>
+    </tr>
+    <tr>
+      <td><strong>混合物整体</strong></td>
+      <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#0969da">2 µm</span></td>
+      <td style="font-size:11px;color:var(--muted)">以最大成分为准 <span class="tag tag-blue">推荐</span></td>
+    </tr>
+  </table>
+</div>
+
+<!-- ═══ SECTION 6: Cas9蛋白吸附 ═══ -->
+<div class="section">
+  <div class="section-title orange">Cas9 蛋白 · 针尖吸附问题</div>
+
+  <div class="tip-check" style="border-color:rgba(207,34,46,0.3);background:#fff8f8">
+    <strong style="color:#cf222e">为什么 Cas9 蛋白容易堵针？</strong><br><br>
+    玻璃表面有大量 <strong>Si-OH（硅羟基）</strong>，带负电荷<br>
+    Cas9 蛋白在生理 pH 下局部带正电<br>
+    → 被玻璃表面<strong>静电吸附</strong>，逐渐堵塞针尖
+  </div>
+
+  <table class="opening-table" style="margin-top:12px">
+    <tr>
+      <th>放置时间</th>
+      <th>针尖状态</th>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">刚拉好</td>
+      <td style="font-size:11px;color:#1a7f37">✓ 表面最干净，吸附最少</td>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">1–2 小时后</td>
+      <td style="font-size:11px;color:#cf222e">轻微吸附开始累积</td>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">过夜</td>
+      <td style="font-size:11px;color:#cf222e">✗ 明显堵针，基本不可用</td>
+    </tr>
+  </table>
+
+  <div class="tip-check" style="margin-top:12px">
+    <strong>解决方法</strong><br>
+    ① 拉针后<strong>当天用完</strong>，不要隔夜存放<br>
+    ② 注射液加 <strong>BSA 0.1%</strong> → 先占据玻璃表面，减少 Cas9 吸附<br>
+    ③ 针尖用 <strong>Sigmacote</strong> 做硅烷化处理 → 中和表面负电荷，根本解决<br>
+    ④ 注射前在<strong>矿物油</strong>里先试流，确认通畅再用
+  </div>
+</div>
+
+<!-- ═══ SECTION 7: P-1000 参数表 ═══ -->
+<div class="section">
+  <div class="section-title">P-1000 完整参数（Cas9 蛋白 RNP · Ramp=694）</div>
+  <table class="param-table">
+    <tr>
+      <th>Line</th>
+      <th>Heat</th>
+      <th>Pull</th>
+      <th>Vel</th>
+      <th>Time</th>
+      <th>Pressure</th>
+    </tr>
+    <tr class="line1">
+      <td>1</td>
+      <td>694</td>
+      <td>0</td>
+      <td class="changed">40</td>
+      <td>200</td>
+      <td>500</td>
+    </tr>
+    <tr class="line2">
+      <td>2</td>
+      <td class="changed">695</td>
+      <td class="changed">40</td>
+      <td class="changed">40</td>
+      <td>200</td>
+      <td>500</td>
+    </tr>
+  </table>
+  <div class="note" style="margin-top:10px">
+    Line 1 Vel→<strong>40</strong>：缩短锥度 &nbsp;|&nbsp;
+    Line 2：Heat 695 / Pull 40 / Vel 40，开口约 <strong>2 µm</strong>
+  </div>
+</div>
+
+<!-- ═══ SECTION 8: P-2000 老款操作 ═══ -->
+<div class="section">
+  <div class="section-title" style="color:#1a7f37">P-2000（老款绿屏）· 操作与设置</div>
+
+  <div class="tip-check" style="margin-bottom:14px">
+    <strong>P-2000G 参数名称不同于 P-1000</strong><br>
+    HEAT=激光功率 &nbsp;|&nbsp; FIL=扫描宽度 &nbsp;|&nbsp; VEL=触发速度 &nbsp;|&nbsp; DEL=加热时长 &nbsp;|&nbsp; PUL=拉力
+  </div>
+
+  <table class="param-table">
+    <tr>
+      <th>Line</th>
+      <th>Heat</th>
+      <th>Fil</th>
+      <th>Vel</th>
+      <th>Del</th>
+      <th>Pul</th>
+    </tr>
+    <tr class="line1">
+      <td>1 <span class="tag tag-blue">塑形</span></td>
+      <td>350</td>
+      <td>4</td>
+      <td>60</td>
+      <td>200</td>
+      <td class="changed">0</td>
+    </tr>
+    <tr class="line2">
+      <td>2 <span class="tag tag-red">收尖</span></td>
+      <td>345</td>
+      <td>4</td>
+      <td>45</td>
+      <td>180</td>
+      <td>160</td>
+    </tr>
+  </table>
+  <div class="note" style="margin-top:10px">
+    Line 1：Pul=0 不拉断，Del 控制锥度（Del↓→锥度更长）<br>
+    Line 2：Pul=160 拉断，开口约 <strong>2 µm</strong>，适合 Cas9 蛋白 RNP
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;">键盘操作步骤</div>
+
+  <div class="tip-check" style="border-color:rgba(207,34,46,0.3);background:#fff8f8;margin-bottom:12px">
+    <strong style="color:#cf222e">⚠ 先解除 WP（Write Protect）锁</strong><br>
+    屏幕显示 <strong>WP</strong> = 程序被写保护，无法编辑<br>
+    解锁方法：按 <strong>CLR</strong> 键，或进入菜单关闭 Write Protect
+  </div>
+
+  <table class="opening-table">
+    <tr>
+      <th>步骤</th>
+      <th>操作</th>
+      <th>说明</th>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">1</td>
+      <td style="font-size:11px">按 <strong>CLR</strong> 解除 WP 锁</td>
+      <td style="font-size:11px;color:var(--muted)">先确认可以编辑</td>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">2</td>
+      <td style="font-size:11px">在 Line 1 输入：Heat=350, Fil=4, Vel=60, Del=200, Pul=<strong>0</strong></td>
+      <td style="font-size:11px;color:var(--muted)">每个参数后按 ENTR</td>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">3</td>
+      <td style="font-size:11px">按 <strong>NEXT</strong> 进入 Line 2</td>
+      <td style="font-size:11px;color:var(--muted)">添加第二步</td>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">4</td>
+      <td style="font-size:11px">输入：Heat=345, Fil=4, Vel=45, Del=180, Pul=160</td>
+      <td style="font-size:11px;color:var(--muted)">每个参数后按 ENTR</td>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">5</td>
+      <td style="font-size:11px">按绿色 <strong>PULL</strong> 键开始拉针</td>
+      <td style="font-size:11px;color:var(--muted)">确认玻璃管已装好</td>
+    </tr>
+  </table>
+
+  <div class="divider"></div>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;">P-1000 vs P-2000 参数对照</div>
+
+  <table class="opening-table">
+    <tr>
+      <th>P-1000 参数</th>
+      <th>P-2000 对应参数</th>
+      <th>作用</th>
+    </tr>
+    <tr>
+      <td>Heat</td>
+      <td>Heat</td>
+      <td style="font-size:11px;color:var(--muted)">加热强度</td>
+    </tr>
+    <tr>
+      <td>Vel</td>
+      <td>Vel</td>
+      <td style="font-size:11px;color:var(--muted)">触发速度 → 锥度长短</td>
+    </tr>
+    <tr>
+      <td>Time</td>
+      <td>Del</td>
+      <td style="font-size:11px;color:var(--muted)">加热时长 → 锥度/开口</td>
+    </tr>
+    <tr>
+      <td>Pull</td>
+      <td>Pul</td>
+      <td style="font-size:11px;color:var(--muted)">针尖拉力</td>
+    </tr>
+    <tr>
+      <td style="color:var(--muted)">—</td>
+      <td>Fil</td>
+      <td style="font-size:11px;color:var(--muted)">激光扫描宽度（P-1000无）</td>
+    </tr>
+  </table>
+
+  <div class="tip-check" style="margin-top:12px;border-color:rgba(26,127,55,0.3);background:#f6fff8">
+    <strong>P-2000 重要注意</strong><br>
+    ① 参数数值与 P-1000 完全不同，<strong>不可互相套用</strong><br>
+    ② Ramp Test 会损耗激光寿命，<strong>不建议常规做</strong><br>
+    ③ 激光加热无金属残留，针尖更干净<br>
+    ④ 当前屏幕显示 Program 8，建议另存为新程序号，不要覆盖原有程序
+  </div>
+</div>
+
+<!-- ═══ SECTION 8b: 三步拉制 ═══ -->
+<div class="section">
+  <div class="section-title" style="color:#8250df">P-2000G · 三步拉制（锥度短 + 前段更细）</div>
+
+  <svg viewBox="0 0 340 110" height="110">
+    <text x="0" y="13" font-family="JetBrains Mono" font-size="8" fill="#cf222e">两步结果：锥度短但前段粗 (Program #17 现状)</text>
+    <path d="M0,18 L200,18 L300,28 L300,32 L200,42 L0,42 Z" fill="#fef2f2" stroke="#cf222e" stroke-width="1"/>
+    <line x1="200" y1="44" x2="300" y2="44" stroke="#cf222e" stroke-width="0.7" stroke-dasharray="2,2"/>
+    <text x="250" y="53" font-family="JetBrains Mono" font-size="7" fill="#cf222e" text-anchor="middle">前段偏粗 ✗</text>
+    <text x="163" y="68" font-family="JetBrains Mono" font-size="14" fill="#d0d7de" text-anchor="middle">↓ 加 Line 2</text>
+    <text x="0" y="82" font-family="JetBrains Mono" font-size="8" fill="#1a7f37">三步结果：锥度短 + 前段细（目标）</text>
+    <path d="M0,87 L190,87 L240,91 L300,94 L240,97 L190,103 L0,103 Z" fill="#f0fdf4" stroke="#1a7f37" stroke-width="1"/>
+    <text x="245" y="112" font-family="JetBrains Mono" font-size="7" fill="#1a7f37" text-anchor="middle">前段逐渐收细 ✓</text>
+  </svg>
+
+  <div style="margin-top:16px">
+
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:8px;">Program #17 最佳两步参数 <span class="tag tag-green">Best so far</span></div>
+    <table class="param-table" style="margin-bottom:14px">
+      <tr>
+        <th>Line</th>
+        <th>Heat</th>
+        <th>Fil</th>
+        <th>Vel</th>
+        <th>Del</th>
+        <th>Pul</th>
+        <th style="font-size:9px;color:var(--muted)">状态</th>
+      </tr>
+      <tr class="line1">
+        <td>1</td>
+        <td class="changed">280</td>
+        <td>4</td>
+        <td>60</td>
+        <td>180</td>
+        <td>空/0</td>
+        <td style="font-size:10px;color:#0969da;text-align:left;padding-left:6px">塑形 ✓</td>
+      </tr>
+      <tr class="line2">
+        <td>2</td>
+        <td class="changed">280</td>
+        <td>3</td>
+        <td>40</td>
+        <td>180</td>
+        <td>200</td>
+        <td style="font-size:10px;color:#cf222e;text-align:left;padding-left:6px">拉断，前段需收细</td>
+      </tr>
+    </table>
+
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8250df;margin-bottom:8px;">▶ 建议改为三步（收细前段）</div>
+    <table class="param-table">
+      <tr>
+        <th>Line</th>
+        <th>Heat</th>
+        <th>Fil</th>
+        <th>Vel</th>
+        <th>Del</th>
+        <th>Pul</th>
+        <th style="font-size:9px;color:var(--muted)">作用</th>
+      </tr>
+      <tr class="line1">
+        <td>1</td>
+        <td>280</td>
+        <td>4</td>
+        <td>60</td>
+        <td>180</td>
+        <td>0</td>
+        <td style="font-size:10px;color:#0969da;text-align:left;padding-left:6px">塑形（不变）</td>
+      </tr>
+      <tr style="color:#8250df">
+        <td>2 <span class="tag tag-purple">新增</span></td>
+        <td>278</td>
+        <td>3</td>
+        <td>40</td>
+        <td>180</td>
+        <td style="font-weight:700;color:#8250df">0</td>
+        <td style="font-size:10px;color:#8250df;text-align:left;padding-left:6px">收细前段，不拉断</td>
+      </tr>
+      <tr class="line2">
+        <td>3</td>
+        <td>275</td>
+        <td>3</td>
+        <td>40</td>
+        <td>160</td>
+        <td>200</td>
+        <td style="font-size:10px;color:#cf222e;text-align:left;padding-left:6px">拉断，控开口</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="tip-check" style="margin-top:12px">
+    <strong>操作方法</strong><br>
+    ① 在 Line 1 和原 Line 2 之间插入新行<br>
+    ② 按 <strong>NEXT</strong> 到 Line 2 位置输入新参数（Heat=248, Fil=3, Vel=40, Del=180, Pul=0）<br>
+    ③ 原 Line 2 自动后移为 Line 3，Del 改为 <strong>160</strong>
+  </div>
+
+  <div class="note" style="margin-top:12px">
+    <strong>关键：新 Line 2 的 Pul=0</strong>，只软化收细，不拉断<br>
+    三步分工：Line 1 管锥度形状 → Line 2 管前段细度 → Line 3 管开口大小
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8250df;margin-bottom:8px;">▶▶ 进阶：四步拉制（整段变细）</div>
+
+  <svg viewBox="0 0 340 60" height="60">
+    <text x="0" y="12" font-family="JetBrains Mono" font-size="7.5" fill="#cf222e">三步结果：后段仍有粗"肩膀"</text>
+    <path d="M0,16 L180,16 L220,20 L300,24 L220,28 L180,32 L0,32 Z" fill="#fef2f2" stroke="#cf222e" stroke-width="1"/>
+    <text x="190" y="40" font-family="JetBrains Mono" font-size="7" fill="#cf222e">粗肩膀</text>
+
+    <text x="0" y="52" font-family="JetBrains Mono" font-size="7.5" fill="#1a7f37">四步结果：整段平滑收细 ✓</text>
+    <path d="M0,54 L160,54 L210,58 L270,61 L300,63 L270,65 L210,68 L160,72 L0,72 Z" fill="#f0fdf4" stroke="#1a7f37" stroke-width="1"/>
+  </svg>
+
+  <table class="param-table" style="margin-top:14px">
+    <tr>
+      <th>Line</th>
+      <th>Heat</th>
+      <th>Fil</th>
+      <th>Vel</th>
+      <th>Del</th>
+      <th>Pul</th>
+      <th style="font-size:9px;color:var(--muted)">作用</th>
+    </tr>
+    <tr class="line1">
+      <td>1</td>
+      <td>250</td>
+      <td>4</td>
+      <td>60</td>
+      <td>180</td>
+      <td>0</td>
+      <td style="font-size:10px;color:#0969da;text-align:left;padding-left:6px">塑形，控锥度长短</td>
+    </tr>
+    <tr style="color:#0969da">
+      <td>2 <span class="tag tag-blue">新增</span></td>
+      <td>252</td>
+      <td>4</td>
+      <td>50</td>
+      <td>190</td>
+      <td style="font-weight:700">0</td>
+      <td style="font-size:10px;color:#0969da;text-align:left;padding-left:6px">拉细整体过渡段</td>
+    </tr>
+    <tr style="color:#8250df">
+      <td>3 <span class="tag tag-purple">收细</span></td>
+      <td>255</td>
+      <td>3</td>
+      <td>40</td>
+      <td>200</td>
+      <td style="font-weight:700">0</td>
+      <td style="font-size:10px;color:#8250df;text-align:left;padding-left:6px">收细前段，不拉断</td>
+    </tr>
+    <tr class="line2">
+      <td>4</td>
+      <td>245</td>
+      <td>3</td>
+      <td>40</td>
+      <td>160</td>
+      <td>200</td>
+      <td style="font-size:10px;color:#cf222e;text-align:left;padding-left:6px">最终拉断，控开口</td>
+    </tr>
+  </table>
+
+  <div class="note" style="margin-top:12px">
+    Line 2 Vel=<strong>50</strong>（比 Line 1 慢）→ 过渡段拉得更均匀<br>
+    Line 2、3 Pul 均为 <strong>0</strong> → 只软化收细，不拉断<br>
+    四步分工：形状 → 过渡段 → 前段细度 → 开口
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;">四步调参方向</div>
+
+  <div class="arrow-row">
+    <div class="dot" style="background:#0969da"></div>
+    <div>锥度<strong>变长</strong> → Line 1 <strong style="color:#0969da">Vel ↑</strong>（60→70）</div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#0969da"></div>
+    <div>过渡段<strong>还是有肩膀</strong> → Line 2 <strong style="color:#0969da">Del ↑</strong> 或 <strong style="color:#0969da">Heat ↑</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#8250df"></div>
+    <div>前段<strong>还是太粗</strong> → Line 3 <strong style="color:#8250df">Heat ↑</strong> 或 <strong style="color:#8250df">Del ↑</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#8250df"></div>
+    <div>前段<strong>太细/断</strong> → Line 3 <strong style="color:#8250df">Heat ↓</strong> 或 <strong style="color:#8250df">Del ↓</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#cf222e"></div>
+    <div>开口<strong>太大</strong> → Line 4 <strong style="color:#cf222e">Pul ↑</strong> 或 <strong style="color:#cf222e">Del ↓</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#cf222e"></div>
+    <div>开口<strong>太小</strong> → Line 4 <strong style="color:#cf222e">Pul ↓</strong> 或 <strong style="color:#cf222e">Del ↑</strong></div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 8c: Filament 解释 ═══ -->
+<div class="section">
+  <div class="section-title" style="color:#1a7f37">P-2000G · Filament 参数解释</div>
+
+  <svg viewBox="0 0 340 90" height="90">
+    <!-- Glass tube -->
+    <rect x="0" y="30" width="340" height="20" rx="4" fill="#eaeef2" stroke="#d0d7de" stroke-width="1"/>
+    <text x="170" y="43" font-family="JetBrains Mono" font-size="8" fill="#656d76" text-anchor="middle">玻璃管</text>
+
+    <!-- Laser scan narrow (Fil=2) -->
+    <text x="70" y="14" font-family="JetBrains Mono" font-size="7.5" fill="#cf222e" text-anchor="middle">Fil = 2（窄）</text>
+    <line x1="60" y1="18" x2="80" y2="18" stroke="#cf222e" stroke-width="1.5" marker-start="url(#arr2)" marker-end="url(#arr2)"/>
+    <rect x="60" y="19" width="20" height="11" rx="2" fill="rgba(207,34,46,0.15)" stroke="#cf222e" stroke-width="0.8"/>
+    <!-- laser beam dots narrow -->
+    <line x1="65" y1="8" x2="65" y2="19" stroke="#cf222e" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="70" y1="8" x2="70" y2="19" stroke="#cf222e" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="75" y1="8" x2="75" y2="19" stroke="#cf222e" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <text x="70" y="7" font-family="JetBrains Mono" font-size="6" fill="#cf222e" text-anchor="middle">激光束</text>
+
+    <!-- Laser scan wide (Fil=4) -->
+    <text x="250" y="14" font-family="JetBrains Mono" font-size="7.5" fill="#1a7f37" text-anchor="middle">Fil = 4（宽）</text>
+    <line x1="210" y1="18" x2="290" y2="18" stroke="#1a7f37" stroke-width="1.5"/>
+    <rect x="210" y="19" width="80" height="11" rx="2" fill="rgba(26,127,55,0.12)" stroke="#1a7f37" stroke-width="0.8"/>
+    <line x1="220" y1="8" x2="220" y2="19" stroke="#1a7f37" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="235" y1="8" x2="235" y2="19" stroke="#1a7f37" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="250" y1="8" x2="250" y2="19" stroke="#1a7f37" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="265" y1="8" x2="265" y2="19" stroke="#1a7f37" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <line x1="280" y1="8" x2="280" y2="19" stroke="#1a7f37" stroke-width="0.8" stroke-dasharray="2,1"/>
+    <text x="250" y="7" font-family="JetBrains Mono" font-size="6" fill="#1a7f37" text-anchor="middle">激光束扫描范围</text>
+
+    <!-- Resulting needle shapes -->
+    <text x="70" y="62" font-family="JetBrains Mono" font-size="7" fill="#cf222e" text-anchor="middle">结果：锥度短</text>
+    <path d="M30,68 L90,68 L115,75 L90,82 L30,82 Z" fill="#fef2f2" stroke="#cf222e" stroke-width="1"/>
+
+    <text x="250" y="62" font-family="JetBrains Mono" font-size="7" fill="#1a7f37" text-anchor="middle">结果：锥度长、过渡平缓</text>
+    <path d="M170,68 L220,68 L290,75 L220,82 L170,82 Z" fill="#f0fdf4" stroke="#1a7f37" stroke-width="1"/>
+
+    <defs>
+      <marker id="arr2" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
+        <path d="M0,0 L4,2 L0,4 Z" fill="#cf222e"/>
+      </marker>
+    </defs>
+  </svg>
+
+  <div style="margin-top:14px">
+    <table class="opening-table">
+      <tr>
+        <th>Fil 值</th>
+        <th>扫描宽度</th>
+        <th>锥度</th>
+        <th>适合</th>
+      </tr>
+      <tr>
+        <td style="font-family:'JetBrains Mono',monospace">1–2</td>
+        <td style="font-size:11px;color:#cf222e">窄</td>
+        <td style="font-size:11px">短、针尖细</td>
+        <td style="font-size:11px;color:var(--muted)">收尖步骤（Line 2/3）</td>
+      </tr>
+      <tr class="highlight-row">
+        <td style="font-family:'JetBrains Mono',monospace">3–4</td>
+        <td style="font-size:11px;color:#1a7f37">中等</td>
+        <td style="font-size:11px">中等、过渡平缓</td>
+        <td style="font-size:11px;color:var(--muted)">塑形步骤（Line 1），常用</td>
+      </tr>
+      <tr>
+        <td style="font-family:'JetBrains Mono',monospace">5+</td>
+        <td style="font-size:11px;color:#0969da">宽</td>
+        <td style="font-size:11px">长、肩膀宽</td>
+        <td style="font-size:11px;color:var(--muted)">特殊用途</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="tip-check" style="margin-top:12px">
+    <strong>为什么叫 Filament？</strong><br>
+    早期 P-87/P-97 用<strong>金属电热丝（filament）</strong>加热，丝的长短决定加热范围。<br>
+    P-2000G 换成激光后保留了这个参数名，含义类比电热丝长度，<br>
+    实际上是<strong>激光扫描宽度</strong>。
+  </div>
+
+  <div class="note" style="margin-top:12px">
+    Program #17 中：Line 1 用 Fil=<strong>4</strong>（宽，塑形），Line 2/3 用 Fil=<strong>3</strong>（稍窄，收细）<br>
+    这是正确的搭配策略。
+  </div>
+</div>
+
+
+<!-- ═══ SECTION P-2000G 参数手册 ═══ -->
+<div class="section">
+  <div class="section-title" style="color:#1a7f37">P-2000G · PROG #56 当前确认参数</div>
+
+  <!-- LCD display -->
+  <div style="background:#1a2400;border:1px solid #3a5a00;border-radius:6px;padding:14px 16px;margin-bottom:14px;box-shadow:0 0 20px rgba(0,200,100,0.06)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a8a40;margin-bottom:4px;letter-spacing:0.05em">SUTTER INSTRUMENT CO.&nbsp; MODEL P-2000G</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#00e070;text-shadow:0 0 6px rgba(0,220,100,0.4);line-height:1.7">
+      HEAT=<span style="color:#fff;font-weight:700">250</span>,FIL=&nbsp;<span style="color:#fff;font-weight:700">4</span>,VEL=<span style="color:#fff;font-weight:700">25</span>,DEL=<span style="color:#fff;font-weight:700">235</span>,PUL=<span style="color:#fff;font-weight:700">185</span>
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a8a40;margin-top:4px">LINE=1,PROG=56,W&nbsp;&nbsp;&nbsp;,JUN 09 2026 &nbsp;·&nbsp; 已验证 ✓</div>
+  </div>
+
+  <!-- 5 param cards -->
+  <table class="param-table" style="margin-bottom:4px">
+    <tr>
+      <th>参数</th>
+      <th>值</th>
+      <th style="text-align:left;padding-left:8px">物理含义</th>
+      <th>调大效果</th>
+    </tr>
+    <tr>
+      <td style="color:#0969da;font-weight:700">HEAT</td>
+      <td>250</td>
+      <td style="text-align:left;padding-left:8px;font-size:11px;color:var(--muted)">CO₂激光功率，控制玻璃软化程度</td>
+      <td style="font-size:10px;color:#1a7f37">针尖更细/长</td>
+    </tr>
+    <tr>
+      <td style="color:#0969da;font-weight:700">FIL</td>
+      <td>4</td>
+      <td style="text-align:left;padding-left:8px;font-size:11px;color:var(--muted)">激光扫描宽度，决定软化区长短</td>
+      <td style="font-size:10px;color:#1a7f37">锥形更长</td>
+    </tr>
+    <tr>
+      <td style="color:#0969da;font-weight:700">VEL</td>
+      <td>25</td>
+      <td style="text-align:left;padding-left:8px;font-size:11px;color:var(--muted)">触发强拉的速度阈值</td>
+      <td style="font-size:10px;color:#cf222e">针尖较粗</td>
+    </tr>
+    <tr>
+      <td style="color:#0969da;font-weight:700">DEL</td>
+      <td>235</td>
+      <td style="text-align:left;padding-left:8px;font-size:11px;color:var(--muted)">激光关闭后到拉制的延迟(ms)，热量继续扩散</td>
+      <td style="font-size:10px;color:#1a7f37">锥形更渐变</td>
+    </tr>
+    <tr>
+      <td style="color:#cf222e;font-weight:700">PUL</td>
+      <td style="font-weight:700">185</td>
+      <td style="text-align:left;padding-left:8px;font-size:11px;color:var(--muted)">第二阶段机械拉力，直接决定针尖粗细</td>
+      <td style="font-size:10px;color:#cf222e">针尖更细(≥190堵针)</td>
+    </tr>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- PUL comparison -->
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">PUL 值选择 · 原核 CRISPR RNP 注射</div>
+
+  <table class="opening-table">
+    <tr>
+      <th>PUL</th>
+      <th>针尖估计</th>
+      <th>评估</th>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace">170</td>
+      <td style="font-size:11px">~0.5–0.8 µm</td>
+      <td style="font-size:11px;color:var(--muted)">稳定，略粗</td>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace">180</td>
+      <td style="font-size:11px">~0.3–0.5 µm</td>
+      <td style="font-size:11px;color:#1a7f37">好</td>
+    </tr>
+    <tr class="highlight-row">
+      <td style="font-family:'JetBrains Mono',monospace;font-weight:700">185</td>
+      <td style="font-size:11px;font-weight:700">~0.3 µm</td>
+      <td style="font-size:11px;color:#0969da;font-weight:700">✓ 当前 · 甜点区间</td>
+    </tr>
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace">190+</td>
+      <td style="font-size:11px">&lt;0.2 µm</td>
+      <td style="font-size:11px;color:#cf222e">过细，堵针风险高 ✗</td>
+    </tr>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- Tuning rules -->
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px">调参速查（P-2000G 单步程序）</div>
+
+  <div class="arrow-row">
+    <div class="dot" style="background:#0969da"></div>
+    <div>针尖更细 → 优先 <strong style="color:#0969da">HEAT ↑</strong>（255→260），其次 <strong style="color:#cf222e">PUL ↑</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#1a7f37"></div>
+    <div>锥形更长渐变 → <strong style="color:#1a7f37">DEL ↑</strong>（235→245）或 <strong style="color:#1a7f37">FIL ↑</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#cf222e"></div>
+    <div>堵针频繁 → <strong style="color:#cf222e">PUL ↓</strong> 到 175–180，注射液离心取上清</div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#8250df"></div>
+    <div>存活率低 → 降低注射量，检查针尖是否过粗或注射压力过高</div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 9: 调参速查 ═══ -->
+<div class="section">
+  <div class="section-title green">调参方向速查（两台机器通用）</div>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;">锥度 TAPER — 调 Line 1</div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#cf222e"></div>
+    <div>锥度<strong>太长</strong> → P-1000: Line 1 <strong style="color:#0969da">Vel ↑</strong> &nbsp;|&nbsp; P-2000G: Line 1 <strong style="color:#1a7f37">Vel ↑ 或 Del ↑</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#1a7f37"></div>
+    <div>锥度<strong>太短</strong> → P-1000: Line 1 <strong style="color:#0969da">Vel ↓</strong> &nbsp;|&nbsp; P-2000G: Line 1 <strong style="color:#1a7f37">Vel ↓ 或 Del ↓</strong></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;">针尖开口 TIP — 调 Line 2</div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#cf222e"></div>
+    <div>开口<strong>太小</strong> → P-1000: <strong style="color:#cf222e">Heat/Pull/Vel ↓</strong> &nbsp;|&nbsp; P-2000G: <strong style="color:#1a7f37">Heat/Pul/Vel ↓</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#1a7f37"></div>
+    <div>开口<strong>太大</strong> → P-1000: <strong style="color:#cf222e">Heat/Pull/Vel ↑</strong> &nbsp;|&nbsp; P-2000G: <strong style="color:#1a7f37">Heat/Pul/Vel ↑</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#8250df"></div>
+    <div>针尖<strong>断/太细</strong> → P-1000: <strong style="color:#cf222e">Heat ↓ 或 Pull ↓</strong> &nbsp;|&nbsp; P-2000G: <strong style="color:#1a7f37">Heat ↓ 或 Pul ↓</strong></div>
+  </div>
+  <div class="arrow-row">
+    <div class="dot" style="background:#8250df"></div>
+    <div>针尖<strong>太粗</strong> → P-1000: <strong style="color:#cf222e">Pull ↑ 或 Vel ↑</strong> &nbsp;|&nbsp; P-2000G: <strong style="color:#1a7f37">Pul ↑ 或 Vel ↑</strong></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="note">
+    每次只调<strong>一个参数</strong>，幅度不超过 5–10，拉完在显微镜下确认再调下一步。
+  </div>
+</div>
+
+</body>
+</html>

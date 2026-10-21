@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duke 本科生录取信息</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Han+Serif+SC:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --duke-navy: #012169;
+    --duke-royal: #0736A4;
+    --duke-gold: #C84B31;
+    --duke-cream: #F5F0E8;
+    --duke-warm: #EDE8DC;
+    --duke-muted: #8B7355;
+    --duke-light: #FAFAF7;
+    --text-dark: #1A1510;
+    --text-mid: #4A3F30;
+    --border: #D4CDB8;
+    --shadow: rgba(1,33,105,0.08);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--duke-light);
+    color: var(--text-dark);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    background: var(--duke-navy);
+    padding: 52px 48px 44px;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.07);
+  }
+  .page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .header-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 14px;
+  }
+  .header-title {
+    font-family: 'Playfair Display', 'Source Han Serif SC', serif;
+    font-size: clamp(26px, 5vw, 38px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .header-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 300;
+    letter-spacing: 0.03em;
+  }
+  .header-rule {
+    width: 40px; height: 2px;
+    background: var(--duke-gold);
+    margin: 18px 0 0;
+    border-radius: 2px;
+  }
+
+  /* ── Main container ── */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 64px;
+  }
+
+  /* ── Accordion ── */
+  .accordion { display: flex; flex-direction: column; gap: 10px; }
+
+  .accordion-item {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #fff;
+    box-shadow: 0 2px 12px var(--shadow);
+    transition: box-shadow 0.25s, border-color 0.25s;
+  }
+  .accordion-item.open {
+    box-shadow: 0 6px 28px rgba(1,33,105,0.12);
+    border-color: rgba(1,33,105,0.2);
+  }
+  .accordion-item.featured {
+    border-color: rgba(200,75,49,0.35);
+    background: linear-gradient(135deg, #fff 70%, rgba(200,75,49,0.03));
+  }
+  .accordion-item.featured.open {
+    border-color: rgba(200,75,49,0.55);
+    box-shadow: 0 6px 28px rgba(200,75,49,0.12);
+  }
+
+  /* ── Trigger ── */
+  .accordion-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+  }
+  .accordion-trigger:hover { background: rgba(1,33,105,0.025); }
+
+  .year-badge {
+    flex-shrink: 0;
+    width: 62px; height: 54px;
+    border-radius: 8px;
+    background: var(--duke-cream);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .accordion-item.featured .year-badge {
+    background: rgba(200,75,49,0.1);
+  }
+  .accordion-item.open .year-badge { transform: scale(1.04); }
+  .year-badge .year-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px; font-weight: 700;
+    color: var(--duke-navy);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+  .accordion-item.featured .year-badge .year-num { color: var(--duke-gold); }
+  .year-badge .class-label {
+    font-size: 10px; font-weight: 400;
+    color: var(--duke-muted);
+    letter-spacing: 0.04em;
+    margin-top: 3px;
+  }
+
+  .trigger-meta {
+    flex: 1;
+    min-width: 0;
+  }
+  .trigger-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .trigger-title {
+    font-family: 'Playfair Display', 'Source Han Serif SC', serif;
+    font-size: 17px; font-weight: 600;
+    color: var(--text-dark);
+  }
+  .tag {
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .tag-upcoming {
+    background: rgba(200,75,49,0.12);
+    color: var(--duke-gold);
+    border: 1px solid rgba(200,75,49,0.3);
+    animation: pulse-tag 2s ease-in-out infinite;
+  }
+  @keyframes pulse-tag {
+    0%,100% { opacity:1; } 50% { opacity:0.65; }
+  }
+  .tag-confirmed {
+    background: rgba(1,33,105,0.08);
+    color: var(--duke-royal);
+    border: 1px solid rgba(1,33,105,0.15);
+  }
+  .trigger-dates {
+    display: flex;
+    gap: 18px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+  .trigger-date-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--duke-muted);
+    font-weight: 300;
+  }
+  .trigger-date-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .trigger-date-dot.ed { background: var(--duke-royal); }
+  .trigger-date-dot.rd { background: var(--duke-navy); }
+
+  .chevron {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--duke-cream);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1), background 0.2s;
+  }
+  .accordion-item.open .chevron {
+    transform: rotate(180deg);
+    background: var(--duke-navy);
+  }
+  .chevron svg { transition: stroke 0.2s; stroke: var(--duke-muted); }
+  .accordion-item.open .chevron svg { stroke: #fff; }
+
+  /* ── Panel ── */
+  .accordion-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1);
+  }
+  .accordion-panel.open { max-height: 900px; }
+
+  .panel-inner {
+    padding: 0 24px 26px;
+    border-top: 1px solid var(--duke-warm);
+    padding-top: 22px;
+  }
+
+  /* ── Two-column layout for ED + RD ── */
+  .decisions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 560px) {
+    .decisions-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Decision card ── */
+  .decision-card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .decision-card-header {
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: rgba(255,255,255,0.92);
+  }
+  .decision-card-header.ed-head { background: var(--duke-royal); }
+  .decision-card-header.rd-head { background: var(--duke-navy); }
+
+  .decision-card-body {
+    background: #fff;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .dc-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .dc-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--duke-muted);
+  }
+  .dc-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--duke-navy);
+    line-height: 1.2;
+  }
+  .dc-value.ed { color: var(--duke-royal); }
+  .dc-sub {
+    font-size: 12px;
+    color: var(--text-mid);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+  }
+  .dc-source {
+    font-size: 11px;
+    color: var(--duke-muted);
+    padding-top: 6px;
+    border-top: 1px solid var(--duke-warm);
+  }
+
+  /* ── Upcoming notice ── */
+  .upcoming-notice {
+    margin-bottom: 18px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(200,75,49,0.07), rgba(200,75,49,0.02));
+    border: 1px solid rgba(200,75,49,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .notice-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--duke-gold);
+    flex-shrink: 0;
+    margin-top: 5px;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .notice-text { font-size: 13px; color: var(--text-mid); line-height: 1.55; }
+  .notice-text strong { color: var(--duke-gold); font-weight: 600; }
+
+  /* ── BDD Section ── */
+  .bdd-section {
+    margin-top: 14px;
+    border: 1px solid rgba(1,33,105,0.18);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .bdd-header {
+    background: var(--duke-navy);
+    color: rgba(255,255,255,0.85);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bdd-dates {
+    display: flex;
+    gap: 0;
+    background: #fff;
+  }
+  .bdd-date-card {
+    flex: 1;
+    text-align: center;
+    padding: 16px 8px 14px;
+    border-right: 1px solid var(--border);
+  }
+  .bdd-date-card:last-child { border-right: none; }
+  .bdd-month {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--duke-muted);
+    margin-bottom: 4px;
+  }
+  .bdd-day {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--duke-navy);
+    line-height: 1;
+  }
+  .bdd-dow {
+    font-size: 11px;
+    color: var(--duke-muted);
+    margin-top: 4px;
+    font-weight: 300;
+  }
+  .bdd-note {
+    background: var(--duke-cream);
+    font-size: 11.5px;
+    color: var(--text-mid);
+    padding: 9px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Source note ── */
+  .source-note {
+    margin-top: 14px;
+    font-size: 11.5px;
+    color: var(--duke-muted);
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    padding: 10px 14px;
+    background: var(--duke-warm);
+    border-radius: 6px;
+    border-left: 3px solid var(--duke-muted);
+  }
+  .source-note svg { flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    background: var(--duke-cream);
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+  .stat-pill strong { color: var(--duke-navy); font-size: 13px; }
+
+  /* ── Divider ── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 20px;
+  }
+  .section-divider span {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--duke-muted);
+    white-space: nowrap;
+  }
+  .section-divider::before,.section-divider::after {
+    content:''; flex:1; height:1px;
+    background: var(--border);
+  }
+
+  /* ── Footer ── */
+  .page-footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--duke-muted);
+    padding: 0 24px 32px;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-eyebrow">Duke University · 杜克大学</div>
+  <div class="header-title">本科生录取放榜信息</div>
+  <div class="header-subtitle">Early Decision &amp; Regular Decision · 按班级年份整理 · 数据来源 Duke Today &amp; Chronicle</div>
+  <div class="header-rule"></div>
+</div>
+
+<div class="container">
+
+  <div class="stats-row">
+    <div class="stat-pill">📅 <span>覆盖 <strong>7届</strong> 班级数据</span></div>
+    <div class="stat-pill">⭐ <span>ED 来源 <strong>Duke Today 官方新闻稿</strong></span></div>
+    <div class="stat-pill">📰 <span>RD 来源 <strong>Duke Chronicle</strong></span></div>
+  </div>
+
+  <div class="accordion" id="accordion">
+
+    <!-- ════════════════════════════════ Class of 2030 ════ -->
+    <div class="accordion-item featured" data-index="0">
+      <button class="accordion-trigger" onclick="toggle(0)" aria-expanded="false">
+        <div class="year-badge">
+          <span class="year-num">Class of 2030</span>
+          <span class="class-label">入学 2026</span>
+        </div>
+        <div class="trigger-meta">
+          <div class="trigger-top">
+            <span class="trigger-title">Class of 2030</span>
+            <span class="tag tag-upcoming">⬤ RD 即将放榜</span>
+          </div>
+          <div class="trigger-dates">
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot ed"></span>ED 12/18/2025（周四）
+            </span>
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot rd"></span>RD 预计 3/31/2026
+            </span>
+          </div>
+        </div>
+        <div class="chevron">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 5 7 10 12 5"/>
+          </svg>
+        </div>
+      </button>
+      <div class="accordion-panel" id="panel-0">
+        <div class="panel-inner">
+
+          <div class="upcoming-notice">
+            <div class="notice-dot"></div>
+            <div class="notice-text">
+              <strong>RD 尚未放榜</strong> — 根据历年规律，预计日期为 <strong>3/31/2026</strong>。Duke Chronicle 将于当晚发布录取通知。
+            </div>
+          </div>
+
+          <div class="decisions-grid">
+            <!-- ED -->
+            <div class="decision-card">
+              <div class="decision-card-header ed-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L10 6H14L11 9L12 13L8 10.5L4 13L5 9L2 6H6L8 2Z"/></svg>
+                Early Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value ed">12/18/2025</div>
+                  <div class="dc-sub">周四</div>
+                </div>
+                <div class="dc-source">来源：Duke Chronicle</div>
+              </div>
+            </div>
+            <!-- RD -->
+            <div class="decision-card">
+              <div class="decision-card-header rd-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="8" y1="5" x2="8" y2="11"/></svg>
+                Regular Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">预计日期</div>
+                  <div class="dc-value">预计 3/31/2026</div>
+                  <div class="dc-sub">预计 7 PM ET（待官方确认）</div>
+                </div>
+                <div class="dc-source">来源：历年规律推算（待确认）</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BDD -->
+          <div class="bdd-section">
+            <div class="bdd-header">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="8" y1="5" x2="8" y2="11"/>
+              </svg>
+              Blue Devil Days（BDD）· 2026
+            </div>
+            <div class="bdd-dates">
+              <div class="bdd-date-card">
+                <div class="bdd-month">APR</div>
+                <div class="bdd-day">16</div>
+                <div class="bdd-dow">周四</div>
+              </div>
+              <div class="bdd-date-card">
+                <div class="bdd-month">APR</div>
+                <div class="bdd-day">17</div>
+                <div class="bdd-dow">周五</div>
+              </div>
+              <div class="bdd-date-card">
+                <div class="bdd-month">APR</div>
+                <div class="bdd-day">20</div>
+                <div class="bdd-dow">周一</div>
+              </div>
+            </div>
+            <div class="bdd-note">BDD 为录取新生校园开放日，被录取学生可选择参加以上任一场次。</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════ Class of 2029 ════ -->
+    <div class="accordion-item" data-index="1">
+      <button class="accordion-trigger" onclick="toggle(1)" aria-expanded="false">
+        <div class="year-badge">
+          <span class="year-num">Class of 2029</span>
+          <span class="class-label">入学 2025</span>
+        </div>
+        <div class="trigger-meta">
+          <div class="trigger-top">
+            <span class="trigger-title">Class of 2029</span>
+            <span class="tag tag-confirmed">已确认</span>
+          </div>
+          <div class="trigger-dates">
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot ed"></span>ED 12/16/2024（周一 · 7 PM ET）
+            </span>
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot rd"></span>RD 3/31/2025（周一 · 7 PM ET）
+            </span>
+          </div>
+        </div>
+        <div class="chevron">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 5 7 10 12 5"/>
+          </svg>
+        </div>
+      </button>
+      <div class="accordion-panel" id="panel-1">
+        <div class="panel-inner">
+          <div class="decisions-grid">
+            <div class="decision-card">
+              <div class="decision-card-header ed-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L10 6H14L11 9L12 13L8 10.5L4 13L5 9L2 6H6L8 2Z"/></svg>
+                Early Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value ed">12/16/2024</div>
+                  <div class="dc-sub">周一 · 7 PM ET</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿（Chronicle 正文明确写出）</div>
+              </div>
+            </div>
+            <div class="decision-card">
+              <div class="decision-card-header rd-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="8" y1="5" x2="8" y2="11"/></svg>
+                Regular Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value">3/31/2025</div>
+                  <div class="dc-sub">周一 · 7 PM ET</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿 &amp; Chronicle</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BDD 2029 -->
+          <div class="bdd-section">
+            <div class="bdd-header">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="8" y1="5" x2="8" y2="11"/></svg>
+              Blue Devil Days · Class of 2029（2025年4月）
+            </div>
+            <div class="bdd-dates">
+              <div class="bdd-date-card"><div class="bdd-month">APR</div><div class="bdd-day">11</div><div class="bdd-dow">周五</div></div>
+              <div class="bdd-date-card"><div class="bdd-month">APR</div><div class="bdd-day">17</div><div class="bdd-dow">周四</div></div>
+              <div class="bdd-date-card"><div class="bdd-month">APR</div><div class="bdd-day">18</div><div class="bdd-dow">周五</div></div>
+              <div class="bdd-date-card"><div class="bdd-month">APR</div><div class="bdd-day">21</div><div class="bdd-dow">周一</div></div>
+            </div>
+            <div class="bdd-note">来源：Duke LIFE 官网（dukelife.duke.edu）"April 11, 17, 18, & 21"</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════ Class of 2028 ════ -->
+    <div class="accordion-item" data-index="2">
+      <button class="accordion-trigger" onclick="toggle(2)" aria-expanded="false">
+        <div class="year-badge">
+          <span class="year-num">Class of 2028</span>
+          <span class="class-label">入学 2024</span>
+        </div>
+        <div class="trigger-meta">
+          <div class="trigger-top">
+            <span class="trigger-title">Class of 2028</span>
+            <span class="tag tag-confirmed">已确认</span>
+          </div>
+          <div class="trigger-dates">
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot ed"></span>ED 12/14/2023（周四）
+            </span>
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot rd"></span>RD 3/28/2024（周四 · 7 PM ET）
+            </span>
+          </div>
+        </div>
+        <div class="chevron">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 5 7 10 12 5"/>
+          </svg>
+        </div>
+      </button>
+      <div class="accordion-panel" id="panel-2">
+        <div class="panel-inner">
+          <div class="decisions-grid">
+            <div class="decision-card">
+              <div class="decision-card-header ed-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L10 6H14L11 9L12 13L8 10.5L4 13L5 9L2 6H6L8 2Z"/></svg>
+                Early Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value ed">12/14/2023</div>
+                  <div class="dc-sub">周四</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿</div>
+              </div>
+            </div>
+            <div class="decision-card">
+              <div class="decision-card-header rd-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="8" y1="5" x2="8" y2="11"/></svg>
+                Regular Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value">3/28/2024</div>
+                  <div class="dc-sub">周四 · 7 PM ET</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿（"7 p.m. Thursday"）</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BDD 2028 -->
+          <div class="source-note">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r="0.5" fill="currentColor"/></svg>
+            BDD 2024 年 4 月举行，具体场次日期未找到官方来源记录。
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════ Class of 2027 ════ -->
+    <div class="accordion-item" data-index="3">
+      <button class="accordion-trigger" onclick="toggle(3)" aria-expanded="false">
+        <div class="year-badge">
+          <span class="year-num">Class of 2027</span>
+          <span class="class-label">入学 2023</span>
+        </div>
+        <div class="trigger-meta">
+          <div class="trigger-top">
+            <span class="trigger-title">Class of 2027</span>
+            <span class="tag tag-confirmed">已确认</span>
+          </div>
+          <div class="trigger-dates">
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot ed"></span>ED 12/17/2022（周六）
+            </span>
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot rd"></span>RD 3/31/2023（周五 · ⚠️ 6 PM ET）
+            </span>
+          </div>
+        </div>
+        <div class="chevron">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 5 7 10 12 5"/>
+          </svg>
+        </div>
+      </button>
+      <div class="accordion-panel" id="panel-3">
+        <div class="panel-inner">
+          <div class="decisions-grid">
+            <div class="decision-card">
+              <div class="decision-card-header ed-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L10 6H14L11 9L12 13L8 10.5L4 13L5 9L2 6H6L8 2Z"/></svg>
+                Early Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value ed">12/17/2022</div>
+                  <div class="dc-sub">周六</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿（"On Saturday"）</div>
+              </div>
+            </div>
+            <div class="decision-card">
+              <div class="decision-card-header rd-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="8" y1="5" x2="8" y2="11"/></svg>
+                Regular Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value">3/31/2023</div>
+                  <div class="dc-sub">周五 · <strong style="color:var(--duke-gold)">6 PM ET</strong>（例外年份）</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿（"6 p.m. Friday"）</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════ Class of 2026 ════ -->
+    <div class="accordion-item" data-index="4">
+      <button class="accordion-trigger" onclick="toggle(4)" aria-expanded="false">
+        <div class="year-badge">
+          <span class="year-num">Class of 2026</span>
+          <span class="class-label">入学 2022</span>
+        </div>
+        <div class="trigger-meta">
+          <div class="trigger-top">
+            <span class="trigger-title">Class of 2026</span>
+            <span class="tag tag-confirmed">已确认</span>
+          </div>
+          <div class="trigger-dates">
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot ed"></span>ED 12/16/2021（周四 · 7 PM ET）
+            </span>
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot rd"></span>RD 3/31/2022（周四 · 7 PM ET）
+            </span>
+          </div>
+        </div>
+        <div class="chevron">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 5 7 10 12 5"/>
+          </svg>
+        </div>
+      </button>
+      <div class="accordion-panel" id="panel-4">
+        <div class="panel-inner">
+          <div class="decisions-grid">
+            <div class="decision-card">
+              <div class="decision-card-header ed-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L10 6H14L11 9L12 13L8 10.5L4 13L5 9L2 6H6L8 2Z"/></svg>
+                Early Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value ed">12/16/2021</div>
+                  <div class="dc-sub">周四 · 7 PM ET</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿（"7 p.m. Thursday"）</div>
+              </div>
+            </div>
+            <div class="decision-card">
+              <div class="decision-card-header rd-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="8" y1="5" x2="8" y2="11"/></svg>
+                Regular Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value">3/31/2022</div>
+                  <div class="dc-sub">周四 · 7 PM ET</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿（"7 p.m. Thursday"）</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════ Class of 2025 ════ -->
+    <div class="accordion-item" data-index="5">
+      <button class="accordion-trigger" onclick="toggle(5)" aria-expanded="false">
+        <div class="year-badge">
+          <span class="year-num">Class of 2025</span>
+          <span class="class-label">入学 2021</span>
+        </div>
+        <div class="trigger-meta">
+          <div class="trigger-top">
+            <span class="trigger-title">Class of 2025</span>
+            <span class="tag tag-confirmed">已确认</span>
+          </div>
+          <div class="trigger-dates">
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot ed"></span>ED 12/18/2020（周五 · 7 PM ET）
+            </span>
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot rd"></span>RD 4/5/2021（周一 · 晚间 · 疫情延期）
+            </span>
+          </div>
+        </div>
+        <div class="chevron">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 5 7 10 12 5"/>
+          </svg>
+        </div>
+      </button>
+      <div class="accordion-panel" id="panel-5">
+        <div class="panel-inner">
+          <div class="decisions-grid">
+            <div class="decision-card">
+              <div class="decision-card-header ed-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L10 6H14L11 9L12 13L8 10.5L4 13L5 9L2 6H6L8 2Z"/></svg>
+                Early Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value ed">12/18/2020</div>
+                  <div class="dc-sub">周五 · 7 PM ET</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿（"7 p.m. Friday"）</div>
+              </div>
+            </div>
+            <div class="decision-card">
+              <div class="decision-card-header rd-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="8" y1="5" x2="8" y2="11"/></svg>
+                Regular Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value">4/5/2021</div>
+                  <div class="dc-sub">周一 · 7 PM ET · 疫情年推迟</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿</div>
+              </div>
+            </div>
+          </div>
+          <div class="source-note">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="8" cy="8" r="6.5"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r="0.5" fill="currentColor"/>
+            </svg>
+            注：2021年 RD 放榜时间为4月5日，相较常规年份（3月底）有所推迟，恰逢新冠疫情特殊时期。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════ Class of 2024 ════ -->
+    <div class="accordion-item" data-index="6">
+      <button class="accordion-trigger" onclick="toggle(6)" aria-expanded="false">
+        <div class="year-badge">
+          <span class="year-num">Class of 2024</span>
+          <span class="class-label">入学 2020</span>
+        </div>
+        <div class="trigger-meta">
+          <div class="trigger-top">
+            <span class="trigger-title">Class of 2024</span>
+            <span class="tag tag-confirmed">已确认</span>
+          </div>
+          <div class="trigger-dates">
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot ed"></span>ED 12/13/2019（周四 · 晚间）
+            </span>
+            <span class="trigger-date-item">
+              <span class="trigger-date-dot rd"></span>RD 3/26/2020（周四 · 7 PM ET）
+            </span>
+          </div>
+        </div>
+        <div class="chevron">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 5 7 10 12 5"/>
+          </svg>
+        </div>
+      </button>
+      <div class="accordion-panel" id="panel-6">
+        <div class="panel-inner">
+          <div class="decisions-grid">
+            <div class="decision-card">
+              <div class="decision-card-header ed-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L10 6H14L11 9L12 13L8 10.5L4 13L5 9L2 6H6L8 2Z"/></svg>
+                Early Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value ed">12/13/2019</div>
+                  <div class="dc-sub">周四 · 晚间</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿（"Thursday night"）</div>
+              </div>
+            </div>
+            <div class="decision-card">
+              <div class="decision-card-header rd-head">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="8" y1="5" x2="8" y2="11"/></svg>
+                Regular Decision
+              </div>
+              <div class="decision-card-body">
+                <div class="dc-row">
+                  <div class="dc-label">发榜日期</div>
+                  <div class="dc-value">3/26/2020</div>
+                  <div class="dc-sub">周四 · 7 PM ET</div>
+                </div>
+                <div class="dc-source">来源：Duke Today 官方新闻稿 &amp; Twitter</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /accordion -->
+
+  <div class="section-divider">
+    <span>规律总结</span>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-pill">⭐ <span>ED 惯例 <strong>12月中旬</strong>（12/13–12/18）</span></div>
+    <div class="stat-pill">📅 <span>RD 惯例 <strong>3月31日</strong>（含例外）</span></div>
+    <div class="stat-pill">🕖 <span>放榜时间 <strong>7 PM ET</strong>（部分年份明确）</span></div>
+  </div>
+
+</div><!-- /container -->
+
+<div class="page-footer">
+  数据来源：Duke Today 官方新闻稿（ED &amp; RD）· 仅供参考
+</div>
+
+<script>
+  function toggle(index) {
+    const item = document.querySelector(`.accordion-item[data-index="${index}"]`);
+    const panel = document.getElementById(`panel-${index}`);
+    const trigger = item.querySelector('.accordion-trigger');
+    const isOpen = item.classList.contains('open');
+
+    document.querySelectorAll('.accordion-item.open').forEach(el => {
+      el.classList.remove('open');
+      el.querySelector('.accordion-panel').classList.remove('open');
+      el.querySelector('.accordion-trigger').setAttribute('aria-expanded','false');
+    });
+
+    if (!isOpen) {
+      item.classList.add('open');
+      panel.classList.add('open');
+      trigger.setAttribute('aria-expanded','true');
+    }
+  }
+
+  document.querySelectorAll('.accordion-item').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(14px)';
+    setTimeout(() => {
+      el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    }, 80 + i * 55);
+  });
+
+  setTimeout(() => toggle(0), 550);
+</script>
+</body>
+</html>

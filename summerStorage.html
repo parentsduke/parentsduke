@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duke 暑期行李储存方案</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1e3a6e;
+    --navy-mid: #254a8a;
+    --gold: #f0c040;
+    --gold-dim: #c89a28;
+    --white: #ffffff;
+    --border: rgba(240,192,64,0.35);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    padding: 16px 8px 24px;
+  }
+  .header { text-align: center; margin-bottom: 28px; }
+  .header-label {
+    display: inline-block;
+    font-size: 11px; letter-spacing: 0.18em; color: var(--gold);
+    text-transform: uppercase; border: 1px solid var(--border);
+    padding: 4px 14px; border-radius: 20px; margin-bottom: 12px;
+  }
+  .header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(19px, 5vw, 26px); font-weight: 700; color: var(--white); line-height: 1.35;
+  }
+  .header h1 span { color: var(--gold); }
+  .header-sub { margin-top: 8px; font-size: 12.5px; color: rgba(255,255,255,0.75); line-height: 1.6; }
+
+  .accordion { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+
+  .acc-item {
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; transition: border-color 0.25s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .acc-item.open { border-color: rgba(240,192,64,0.55); }
+
+  .acc-head {
+    display: flex; align-items: center; gap: 13px;
+    padding: 15px 17px; cursor: pointer; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .acc-icon {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: rgba(240,192,64,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0; transition: background 0.25s;
+  }
+  .acc-item.open .acc-icon { background: rgba(240,192,64,0.22); }
+  .acc-title-wrap { flex: 1; min-width: 0; }
+  .acc-title { font-size: 14.5px; font-weight: 500; color: var(--white); line-height: 1.3; }
+  .acc-subtitle { font-size: 11px; color: var(--gold); margin-top: 2px; opacity: 0.85; }
+  .acc-arrow {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform 0.3s, background 0.25s;
+    color: var(--gold); font-size: 10px;
+  }
+  .acc-item.open .acc-arrow { transform: rotate(180deg); background: rgba(240,192,64,0.12); }
+
+  .acc-divider { height: 1px; background: var(--border); margin: 0 17px 14px; opacity: 0.5; }
+
+  .acc-body {
+    display: none;
+    padding: 0 17px 17px;
+    font-size: 13px; line-height: 1.8; color: rgba(255,255,255,0.95);
+  }
+  .acc-item.open .acc-body { display: block; }
+
+  .intro-text {
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 11px 13px;
+    font-size: 12.5px; line-height: 1.75; color: rgba(255,255,255,0.92); margin-bottom: 14px;
+  }
+
+  .service-list { display: flex; flex-direction: column; gap: 8px; }
+  .service-card {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 9px; padding: 11px 13px;
+    display: flex; align-items: flex-start; gap: 11px;
+    transition: border-color 0.2s;
+  }
+  .service-card:hover { border-color: rgba(240,192,64,0.5); }
+  .service-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0; margin-top: 5px;
+  }
+  .service-info { flex: 1; min-width: 0; }
+  .service-name { font-size: 13.5px; font-weight: 500; color: var(--white); margin-bottom: 2px; }
+  .service-desc { font-size: 12px; color: rgba(255,255,255,0.82); line-height: 1.5; }
+  .service-link {
+    display: inline-block; margin-top: 4px;
+    font-size: 11.5px; color: var(--gold); text-decoration: none;
+    border-bottom: 1px dotted rgba(240,192,64,0.35);
+    transition: border-color 0.2s; word-break: break-all;
+  }
+  .service-link:hover { border-color: var(--gold); }
+
+  .badge {
+    display: inline-block; font-size: 10px; font-weight: 500;
+    padding: 1px 7px; border-radius: 20px; margin-left: 5px; vertical-align: middle;
+  }
+  .badge-gold { background: rgba(240,192,64,0.15); color: var(--gold); border: 1px solid rgba(240,192,64,0.3); }
+  .badge-blue  { background: rgba(100,160,255,0.12); color: #88bbff; border: 1px solid rgba(100,160,255,0.25); }
+
+  .tip-box {
+    background: rgba(240,192,64,0.12);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 13px; margin-top: 12px;
+    font-size: 12px; color: rgba(255,255,255,0.92); line-height: 1.7;
+  }
+  .tip-box strong { color: var(--gold); }
+
+  .footer { text-align: center; margin-top: 36px; font-size: 11.5px; color: rgba(255,255,255,0.55); }
+  .footer a { color: var(--gold); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="header" style="display:none;">
+  <div class="header-label">🎓 Duke Parents Guide</div>
+  <h1>暑期行李 <span>储存方案</span></h1>
+  <p class="header-sub">Durham 实测可用 · 全服务 / 自助任选 · 中文整理</p>
+</div>
+
+<div class="accordion">
+
+  <!-- 0. 总体说明 -->
+  <div class="acc-item open">
+    <div class="acc-head" onclick="toggle(this)">
+      <div class="acc-icon">📋</div>
+      <div class="acc-title-wrap">
+        <div class="acc-title">暑假行李怎么办？先看这里</div>
+        <div class="acc-subtitle">基本思路 · 注意事项 · 三类方案</div>
+      </div>
+      <div class="acc-arrow">▼</div>
+    </div>
+    <div class="acc-divider"></div>
+    <div class="acc-body">
+      <div class="intro-text">
+        暑假不需要把所有东西都带回家，学生只需带回夏天需要的衣物。<strong>其余物品可以和下一年的室友合租储存单元分摊费用。</strong><br><br>
+        储存单元通常没有空调，注意不要存放食物或不耐热的物品，尽量用袋子和箱子打包。<br><br>
+        没有车也不是问题，可以和有车的同学组团，或托朋友帮忙运送。
+      </div>
+      <div class="tip-box">
+        <strong>三类方案一览：</strong><br>
+        🔑 <strong>自助仓储</strong> — 自己送过去，最省钱，需要有车或拼车（6家可选）<br>
+        🚚 <strong>搬运＋储存一体</strong> — 上门取件，开学送回，省力但费用略高（6家可选）<br>
+        💪 <strong>仅搬运装卸</strong> — 只帮搬，不含储存，适合已有仓储单元的同学（2家可选）
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. 自助仓储 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggle(this)">
+      <div class="acc-icon">🔑</div>
+      <div class="acc-title-wrap">
+        <div class="acc-title">自助仓储（Self-Storage）</div>
+        <div class="acc-subtitle">校园附近 · 自行运输 · 6家可选</div>
+      </div>
+      <div class="acc-arrow">▼</div>
+    </div>
+    <div class="acc-divider"></div>
+    <div class="acc-body">
+      <div class="intro-text">以下均为 Durham 校园附近的自助仓储设施，自行取件送件，价格通常更经济。建议和室友合租一个单元分摊费用。</div>
+
+      <div class="service-list">
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">Extra Space Storage</div>
+            <div class="service-desc">Durham 地区多个分店，选择灵活</div>
+            <a class="service-link" href="https://www.extraspace.com" target="_blank">extraspace.com</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">Public Storage</div>
+            <div class="service-desc">位于 Kangaroo Drive</div>
+            <a class="service-link" href="https://www.publicstorage.com" target="_blank">publicstorage.com</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">Brassfield Storage</div>
+            <div class="service-desc">2717 Western Bypass &nbsp;·&nbsp; 电话：919-251-8474</div>
+            <a class="service-link" href="https://www.brassfieldselfstorage.com" target="_blank">brassfieldselfstorage.com</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">Uncle Bob's Life Storage</div>
+            <div class="service-desc">位于 Hillsborough Road</div>
+            <a class="service-link" href="https://www.lifestorage.com" target="_blank">lifestorage.com</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">CubeSmart Self Storage</div>
+            <div class="service-desc">Durham 地区连锁自助储存</div>
+            <a class="service-link" href="https://www.cubesmart.com" target="_blank">cubesmart.com</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">U-Haul Storage</div>
+            <div class="service-desc">位于 Durham Chapel Hill Blvd &nbsp;·&nbsp; 距 Duke 约 5 公里</div>
+            <a class="service-link" href="https://www.uhaul.com" target="_blank">uhaul.com</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <strong>⚠️ 必须选空调仓库：</strong>Durham 夏季气温常超 32°C、湿度高，普通仓库内部可超 40°C，皮革发霉、木质变形、电子受损风险极高。请务必确认 climate-controlled（恒温空调）单元。
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 搬运+储存一体 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggle(this)">
+      <div class="acc-icon">🚚</div>
+      <div class="acc-title-wrap">
+        <div class="acc-title">搬运＋储存一体服务</div>
+        <div class="acc-subtitle">上门取件 · 开学配送 · 6家可选</div>
+      </div>
+      <div class="acc-arrow">▼</div>
+    </div>
+    <div class="acc-divider"></div>
+    <div class="acc-body">
+      <div class="intro-text">派人到宿舍 / 公寓取件，放在有空调的仓库保管，开学时直接送回。无需自己有车，适合外州 / 国际生。</div>
+
+      <div class="service-list">
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">Storage Scholars<span class="badge badge-gold">最受好评</span></div>
+            <div class="service-desc">专为大学生提供的上门取送储存服务，Duke 在校生运营。物品拍照存档，空调恒温仓库，每件含 $100 保险。注册费 $50，按件计费，暑期总费用参考 $300–500。</div>
+            <a class="service-link" href="https://www.storagescholars.com" target="_blank">storagescholars.com</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">Trosa Storage</div>
+            <div class="service-desc">本地非营利机构运营，口碑好，价格实惠</div>
+            <a class="service-link" href="https://www.trosamoving.com" target="_blank">trosamoving.com</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">Dorm Room Movers</div>
+            <div class="service-desc">全国性服务，专业有保险，按实际物品数量计费，公寓 / Greek life 学生同样可用</div>
+            <a class="service-link" href="https://www.dormroommovers.com" target="_blank">dormroommovers.com</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">Dorm2Dorm</div>
+            <div class="service-desc">上门取送，网上预约，支持暑期及出国留学期间存储</div>
+            <a class="service-link" href="https://dorm2dorm.com" target="_blank">dorm2dorm.com</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">BlueBox<span class="badge badge-blue">Duke 官方合作</span></div>
+            <div class="service-desc">通过 Duke Campus Enterprises 提供的校园合作服务</div>
+            <a class="service-link" href="https://www.campus-enterprises.org" target="_blank">campus-enterprises.org</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">Pakup</div>
+            <div class="service-desc">上门打包存储，按月计费，灵活存取</div>
+            <a class="service-link" href="https://www.pakupnow.com" target="_blank">pakupnow.com</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <strong>⏰ 预订时机：</strong>最晚 3月底前预订。Duke 和 UNC 期末周同时搬出，Durham 周边货车和仓储名额极为紧张，早鸟价格更优惠。
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 仅搬运装卸 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggle(this)">
+      <div class="acc-icon">💪</div>
+      <div class="acc-title-wrap">
+        <div class="acc-title">仅搬运装卸服务</div>
+        <div class="acc-subtitle">只帮搬 · 不含储存 · 2家可选</div>
+      </div>
+      <div class="acc-arrow">▼</div>
+    </div>
+    <div class="acc-divider"></div>
+    <div class="acc-body">
+      <div class="intro-text">已经有仓储单元、但没有车或人手的同学，可单独雇搬运服务帮忙装卸。</div>
+
+      <div class="service-list">
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">University Shipping and Storage</div>
+            <div class="service-desc">提供搬运服务，不储存物品</div>
+            <a class="service-link" href="https://www.universityshipping.com" target="_blank">universityshipping.com</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">U-Haul Moving Help</div>
+            <div class="service-desc">提供装卸劳力服务，按小时预约，灵活方便</div>
+            <a class="service-link" href="https://www.uhaul.com/MovingHelp" target="_blank">uhaul.com/MovingHelp</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 给家长的建议 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggle(this)">
+      <div class="acc-icon">👨‍👩‍👧</div>
+      <div class="acc-title-wrap">
+        <div class="acc-title">给家长的几点建议</div>
+        <div class="acc-subtitle">帮孩子提前安排好</div>
+      </div>
+      <div class="acc-arrow">▼</div>
+    </div>
+    <div class="acc-divider"></div>
+    <div class="acc-body">
+      <div class="service-list">
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">⏰ 3月底前帮孩子预订</div>
+            <div class="service-desc">期末周孩子考试压力大，提前安排好 Storage 让他们专心备考</div>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">🤝 和室友合租自助仓储最省钱</div>
+            <div class="service-desc">一个单元 $50–100/月，两三人分摊非常划算</div>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">✈️ 国际生优先考虑全服务</div>
+            <div class="service-desc">Storage Scholars / BlueBox 均支持开学前直接送到新宿舍，无需本人在场</div>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">📸 存入前自行拍照留底</div>
+            <div class="service-desc">贵重物品（电脑、乐器等）拍照存档，Storage Scholars 会额外帮你做这一步</div>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-dot"></div>
+          <div class="service-info">
+            <div class="service-name">❄️ 一定选有空调的仓库</div>
+            <div class="service-desc">Durham 夏季高温高湿，全服务商家一般自带空调仓库；自助仓储务必选 climate-controlled 单元</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer" style="display:none;">
+  扯谈 Duke 群 · <a href="https://dukeparents.org" target="_blank">dukeparents.org</a>
+</div>
+
+<script>
+  function toggle(head) {
+    head.parentElement.classList.toggle('open');
+  }
+</script>
+</body>
+</html>

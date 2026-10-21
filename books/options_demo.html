@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>期权交易 通俗讲解</title>
+<style>
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 16px;
+    background: #f5f6f8;
+    color: #222;
+  }
+  h1 { font-size: 22px; }
+  h2 { font-size: 18px; margin-top: 28px; }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .row { display:flex; justify-content:space-between; margin:6px 0; }
+  .label { color:#666; }
+  .big { font-size: 28px; font-weight: bold; }
+  .green { color: #16a34a; }
+  .red { color: #dc2626; }
+  input[type=range] { width: 100%; }
+  .btnrow { display:flex; gap:8px; margin-top:8px; }
+  button {
+    flex:1; padding:10px; border:none; border-radius:8px;
+    font-size:15px; cursor:pointer; background:#e5e7eb;
+  }
+  button.active.call { background:#16a34a; color:#fff; }
+  button.active.put { background:#dc2626; color:#fff; }
+  .note { font-size:13px; color:#888; line-height:1.6; }
+  table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14px;}
+  td, th { padding:4px 0; text-align:right; }
+  th:first-child, td:first-child { text-align:left; }
+</style>
+</head>
+<body>
+
+<h1>📈 期权(Option)是什么?</h1>
+
+<div class="card">
+<p>期权就是一份<b>"权利合同"</b>:</p>
+<p>👉 你付一点<b>权利金</b>(保费),就买到一个<b>未来按固定价格买/卖股票的权利</b>。</p>
+<p>到期时,如果对你有利就执行;不利就放弃,最多损失这点权利金。</p>
+</div>
+
+<h2>🎮 互动模拟器</h2>
+
+<div class="card">
+  <div class="btnrow">
+    <button id="btnCall" class="active call" onclick="setType('call')">Call 看涨</button>
+    <button id="btnPut" class="put" onclick="setType('put')">Put 看跌</button>
+  </div>
+
+  <div class="row" style="margin-top:16px;">
+    <span class="label">行权价 (Strike)</span>
+    <span id="strikeVal" class="big">200</span>
+  </div>
+  <input type="range" id="strike" min="150" max="250" value="200" step="1" oninput="update()">
+
+  <div class="row" style="margin-top:16px;">
+    <span class="label">到期时股价</span>
+    <span id="priceVal" class="big">200</span>
+  </div>
+  <input type="range" id="price" min="100" max="300" value="200" step="1" oninput="update()">
+
+  <div class="row" style="margin-top:16px;">
+    <span class="label">你付的权利金</span>
+    <span id="premiumVal" class="big">10</span>
+  </div>
+  <input type="range" id="premium" min="0" max="50" value="10" step="0.5" oninput="update()">
+</div>
+
+<div class="card">
+  <div class="row"><span class="label">是否执行权利?</span><span id="exercise" class="big">-</span></div>
+  <div class="row"><span class="label">内含价值</span><span id="intrinsic">-</span></div>
+  <div class="row"><span class="label">你的盈亏</span><span id="pnl" class="big">-</span></div>
+  <p class="note" id="explain"></p>
+</div>
+
+<h2>📖 三个核心概念</h2>
+
+<div class="card">
+  <p><b>Call和Put是两份完全独立的合约</b>,只是共用同一个行权价和到期日,放同一行方便对比。</p>
+  <p>你可以只买call、只买put、两个都买、两个都不买——买卖双方也是各自独立的人,互不影响。</p>
+</div>
+
+<div class="card">
+  <table>
+    <tr><th>概念</th><th>意思</th></tr>
+    <tr><td>实值 (ITM)</td><td>执行能赚钱</td></tr>
+    <tr><td>虚值 (OTM)</td><td>执行会亏,放弃</td></tr>
+    <tr><td>平值 (ATM)</td><td>股价≈行权价</td></tr>
+  </table>
+  <p class="note">
+  Call: 股价 &gt; 行权价 → 实值<br>
+  Put: 股价 &lt; 行权价 → 实值
+  </p>
+</div>
+
+<div class="card">
+  <p><b>内含价值</b> = 立刻执行能拿到的钱</p>
+  <p><b>时间价值</b> = 期权价格 - 内含价值,是"未来还可能更有利"的可能性的价值。越接近到期日,时间价值越接近 0(时间衰减)。</p>
+</div>
+
+<h2>🧾 一句话总结</h2>
+<div class="card">
+  <p>买方:花小钱(权利金),博一个大涨/大跌的可能,最大损失=权利金。</p>
+  <p>卖方:收权利金,赌不会发生大涨/大跌,但风险可能很大。</p>
+</div>
+
+<h2>🤔 既然叫"看涨期权",为什么有人会卖出?</h2>
+<div class="card">
+  <p>"看涨期权(call)"描述的是<b>这份合约的内容</b>——买方有权在涨的时候获利,不代表卖方也看涨。</p>
+  <p><b>买call</b>:认为会涨,想从上涨中获利</p>
+  <p><b>卖call</b>:认为<b>不会大涨</b>(横盘或下跌),想赚买方付的权利金</p>
+  <p class="note">类比保险:卖call的人像保险公司,卖的是"如果大涨我赔你"这份保险。保险公司当然不希望"大涨"发生,赌的是不会发生,赚保费。</p>
+  <p>所以名字描述的是"涨"这个事件,但买卖双方立场是<b>相反</b>的——买方看涨,卖方看跌/中性。</p>
+
+  <table>
+    <tr><th></th><th>买方</th><th>卖方</th></tr>
+    <tr><td>Call</td><td>赌涨</td><td>赌不涨(跌/横盘)</td></tr>
+    <tr><td>Put</td><td>赌跌</td><td>赌不跌(涨/横盘)</td></tr>
+  </table>
+</div>
+
+<h2>⚠️ 卖方的风险:为什么可能亏到无限?</h2>
+<div class="card">
+  <p>买方最大亏损就是权利金,不会无限。但<b>卖方(尤其裸卖call)</b>可能不一样:</p>
+  <p>你卖出一份call收了权利金10,如果股价从200暴涨到2000,buyer要求执行:</p>
+  <p>你必须按200卖给他股票,但手里没货,得先按2000买入再按200卖出 → <span class="red">亏1800</span></p>
+  <p>股价理论上没有上限,所以<b>卖call的最大亏损是无限的</b>。</p>
+  <p class="note">
+  对比:卖put最大亏损 = 行权价(股价跌到0时还要按约定价接盘),亏损有上限但金额可能很大。
+  </p>
+</div>
+
+<script>
+let type = 'call';
+
+function setType(t) {
+  type = t;
+  document.getElementById('btnCall').classList.toggle('active', t==='call');
+  document.getElementById('btnPut').classList.toggle('active', t==='put');
+  update();
+}
+
+function update() {
+  const strike = parseFloat(document.getElementById('strike').value);
+  const price = parseFloat(document.getElementById('price').value);
+  const premium = parseFloat(document.getElementById('premium').value);
+
+  document.getElementById('strikeVal').textContent = strike;
+  document.getElementById('priceVal').textContent = price;
+  document.getElementById('premiumVal').textContent = premium;
+
+  let intrinsic, exercise, explain;
+
+  if (type === 'call') {
+    intrinsic = Math.max(0, price - strike);
+    if (price > strike) {
+      exercise = '✅ 执行';
+      explain = `股价${price} > 行权价${strike},以${strike}买入再按${price}卖出,赚${intrinsic}。`;
+    } else {
+      exercise = '❌ 放弃';
+      explain = `股价${price} ≤ 行权价${strike},执行会亏,直接放弃,只损失权利金。`;
+    }
+  } else {
+    intrinsic = Math.max(0, strike - price);
+    if (strike > price) {
+      exercise = '✅ 执行';
+      explain = `行权价${strike} > 股价${price},以${strike}卖出比市价${price}高,赚${intrinsic}。`;
+    } else {
+      exercise = '❌ 放弃';
+      explain = `行权价${strike} ≤ 股价${price},执行会亏,直接放弃,只损失权利金。`;
+    }
+  }
+
+  const pnl = intrinsic - premium;
+
+  document.getElementById('exercise').textContent = exercise;
+  document.getElementById('intrinsic').textContent = intrinsic.toFixed(2);
+
+  const pnlEl = document.getElementById('pnl');
+  pnlEl.textContent = (pnl >= 0 ? '+' : '') + pnl.toFixed(2);
+  pnlEl.className = 'big ' + (pnl >= 0 ? 'green' : 'red');
+
+  document.getElementById('explain').textContent = explain +
+    ` 减去权利金${premium},净盈亏 = ${intrinsic.toFixed(2)} - ${premium} = ${pnl.toFixed(2)}。`;
+}
+
+update();
+</script>
+
+</body>
+</html>
