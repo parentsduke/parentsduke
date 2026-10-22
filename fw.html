@@ -2217,6 +2217,15 @@ function exportMinutes(){
     return true;
   }
 
+  // 页面内置名单里没有的家庭（比如这台设备上的页面是旧版本）读不进页面，
+  // 不能当作“用户删除了”而去清空云端的到场/礼物记录
+  function orphanKey(k){
+    const kind = k.slice(0, 2), rest = k.slice(2);
+    if(kind === 'a:' || kind === 'q:') return !roster.some(r => r.name === rest);
+    if(kind === 'n:' || kind === 'w:') return !roster.some(r => r.name === rest.split('|')[0]);
+    return false;
+  }
+
   // ------ 云端：把本页与 known 的差异推送上去 ------
   async function pushDiff(){
     if(mode !== 'shared') return;
@@ -2227,7 +2236,7 @@ function exportMinutes(){
         again = false;
         const cur = readModel(), rows = [];
         Object.keys(cur).forEach(k => { if(!eq(cur[k], known[k])) rows.push({ event_id: EVENT_ID, key: k, value: cur[k], client_id: CLIENT_ID }); });
-        Object.keys(known).forEach(k => { if(!(k in cur)) rows.push({ event_id: EVENT_ID, key: k, value: null, client_id: CLIENT_ID }); });
+        Object.keys(known).forEach(k => { if(!(k in cur) && !orphanKey(k)) rows.push({ event_id: EVENT_ID, key: k, value: null, client_id: CLIENT_ID }); });
         if(!rows.length) continue;
         setStatus('同步中…');
         const { error } = await sb.from('fw_kv').upsert(rows, { onConflict: 'event_id,key' });
