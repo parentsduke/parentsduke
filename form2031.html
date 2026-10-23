@@ -551,7 +551,7 @@
           <select id="fCommitted" onchange="onCommittedChange(this.value)">
             <option value="">请选择</option>
             <option value="true">✅ 是，已 Committed</option>
-            <option value="false" id="fCommittedFalseOpt">❌ 否，尚未 Committed</option>
+            <option value="false" id="fCommittedFalseOpt">❌ 否</option>
           </select>
           <div style="font-size:12px;color:#888070;margin-top:6px;">
             选择"已 Committed"需在下方上传 <strong>Committed Letter</strong> 作为凭证（不论是否已过 5/1 截止日期）。
@@ -612,7 +612,10 @@
         </div>
         <div class="form-group full" id="dormPhotoGroup">
           <label>宿舍照片（可选）</label>
-          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;">学生本人在宿舍门前或室内的生活照</div>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;">
+            需包含<strong style="color:#C84B31;">学生本人</strong>与<strong style="color:#C84B31;">宿舍楼名称标识</strong>（楼牌/门口标志等），照片须在宿舍楼前拍摄<br/>
+            <span style="color:#C84B31;">⚠️ 仅室内房间照片无法核实是否为 Duke 宿舍，不予受理</span>
+          </div>
 
           <div class="upload-zone" id="dormZone"
                ondragover="handleDrag(event,'dormZone')"
@@ -656,6 +659,48 @@
           <div class="file-preview" id="sidPreview">
             <span class="fname" id="sidName"></span>
             <button class="rm" onclick="removeFile('sid')">✕</button>
+          </div>
+        </div>
+        <!-- Family Weekend 家长聚会参加者（可选证据） -->
+        <div class="form-group full" id="fwGroup">
+          <label>Family Weekend 家长聚会参加者（可选）</label>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;line-height:1.8;">
+            参加过 Duke Family Weekend 家长聚会的家长，可填写<strong style="color:#003087;">已在家长群里、与你面对面见过的家长（仅线上认识不算）</strong>作为身份佐证，管理员将向其核实
+          </div>
+          <select id="fFwAttended" onchange="onFwChange(this.value)">
+            <option value="">请选择</option>
+            <option value="true">✅ 是，我参加了 Family Weekend 家长聚会</option>
+            <option value="false">❌ 否</option>
+          </select>
+          <div id="fwDetail" style="display:none;margin-top:10px;">
+            <label>面对面见过的群内家长 <span class="req">*</span></label>
+            <input type="text" autocomplete="off" id="fFwKnownParent" style="width:100%;margin-top:6px;" placeholder="对方的群昵称或微信名称，如：Lily-杜妈-Amy-28T-CA"/>
+            <div style="margin-top:6px;padding:10px 14px;background:#eef2fa;border:1px solid rgba(0,48,135,0.15);border-radius:7px;font-size:12px;color:#003087;line-height:1.8;">
+              💡 请填写<strong>已在 Duke 家长群里</strong>、且与你<strong>面对面见过</strong>的家长，并确保对方愿意为你确认身份<br/>⚠️ 仅线上（微信/群聊）认识、没有见过面的不算，不予采信
+            </div>
+          </div>
+        </div>
+        <!-- Duke 校园内具体活动参加者（可选证据，与 Family Weekend 佐证同款） -->
+        <div class="form-group full" id="campusGroup">
+          <label>Duke 校园活动参加者（可选）</label>
+          <div style="font-size:12px;color:#888070;font-family:'DM Mono',monospace;margin-bottom:10px;line-height:1.8;">
+            参加过 Duke 校园内某一项具体活动的家长，请指明该活动，并可填写<strong style="color:#003087;">已在家长群里、与你面对面见过的家长（仅线上认识不算）</strong>作为身份佐证，管理员将向其核实
+          </div>
+          <select id="fCampusAttended" onchange="onCampusChange(this.value)">
+            <option value="">请选择</option>
+            <option value="true">✅ 是，我参加了 Duke 校园内的一项具体活动</option>
+            <option value="false">❌ 否</option>
+          </select>
+          <div id="campusDetail" style="display:none;margin-top:10px;">
+            <label>具体活动 <span class="req">*</span></label>
+            <input type="text" autocomplete="off" id="fCampusEvent" style="width:100%;margin-top:6px;" placeholder="请指明一项具体活动，如：新生 Move-in Day"/>
+            <label style="margin-top:10px;display:block;">活动日期 <span class="req">*</span></label>
+            <input type="date" id="fCampusDate" style="width:100%;margin-top:6px;"/>
+            <label style="margin-top:10px;display:block;">面对面见过的群内家长 <span class="req">*</span></label>
+            <input type="text" autocomplete="off" id="fCampusKnownParent" style="width:100%;margin-top:6px;" placeholder="对方的群昵称或微信名称，如：Lily-杜妈-Amy-28T-CA"/>
+            <div style="margin-top:6px;padding:10px 14px;background:#eef2fa;border:1px solid rgba(0,48,135,0.15);border-radius:7px;font-size:12px;color:#003087;line-height:1.8;">
+              💡 请填写<strong>已在 Duke 家长群里</strong>、且与你<strong>面对面见过</strong>的家长，并确保对方愿意为你确认身份<br/>⚠️ 仅线上（微信/群聊）认识、没有见过面的不算，不予采信
+            </div>
           </div>
         </div>
         <span id="progressLabel" style="display:none;">上传中…</span>
@@ -751,7 +796,7 @@
       falseOpt.remove();
     } else {
       warn.style.display = 'none';
-      falseOpt.textContent = '❌ 否，尚未 Committed';
+      falseOpt.textContent = '❌ 否，还未 Commit';
     }
   })();
 
@@ -801,7 +846,37 @@
     document.getElementById('dormPhotoGroup').style.display = extraDisplay;
     document.getElementById('portalGroup').style.display    = extraDisplay;
     document.getElementById('sidGroup').style.display       = extraDisplay;
-    if (!showExtras) { removeFile('dorm'); removeFile('portal'); removeFile('sid'); }
+    document.getElementById('fwGroup').style.display        = extraDisplay;
+    document.getElementById('campusGroup').style.display    = extraDisplay;
+    if (!showExtras) { removeFile('dorm'); removeFile('portal'); removeFile('sid'); resetFw(); }
+  }
+
+  // ── Family Weekend 证据联动 ──
+  function onFwChange(val) {
+    document.getElementById('fwDetail').style.display = (val === 'true') ? 'block' : 'none';
+    if (val !== 'true') document.getElementById('fFwKnownParent').value = '';
+  }
+  // ── Duke 校园活动证据联动 ──
+  function onCampusChange(val) {
+    document.getElementById('campusDetail').style.display = (val === 'true') ? 'block' : 'none';
+    if (val === 'true') {   // 活动日期不能晚于今天
+      const d = new Date(), t = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      document.getElementById('fCampusDate').max = t;
+    }
+    if (val !== 'true') { document.getElementById('fCampusEvent').value = ''; document.getElementById('fCampusDate').value = ''; document.getElementById('fCampusKnownParent').value = ''; }
+  }
+  function resetCampus() {
+    document.getElementById('fCampusAttended').value = '';
+    document.getElementById('fCampusEvent').value = '';
+    document.getElementById('fCampusDate').value = '';
+    document.getElementById('fCampusKnownParent').value = '';
+    document.getElementById('campusDetail').style.display = 'none';
+  }
+  function resetFw() {
+    resetCampus();
+    document.getElementById('fFwAttended').value = '';
+    document.getElementById('fFwKnownParent').value = '';
+    document.getElementById('fwDetail').style.display = 'none';
   }
 
   function toggleCommitted(type) {
@@ -1013,6 +1088,29 @@
     if (!type)  { showError('请选择录取类型'); return; }
     if (type === 'RD' && !rdCommitted) { showError('请选择是否已 Committed'); return; }
     if (type === 'RD' && rdCommitted === 'true' && !committedFile) { showError('已 Committed 需上传 Committed Letter 作为凭证'); return; }
+    // Family Weekend 证据：选择"是"时必须填写面对面见过的群内家长
+    const fwAttended    = document.getElementById('fFwAttended').value;
+    const fwKnownParent = document.getElementById('fFwKnownParent').value.trim();
+    if (fwAttended === 'true' && !fwKnownParent) { showError('请填写你在家长群里面对面见过的家长（群昵称或微信名称）'); return; }
+    // Duke 校园活动证据：选择"是"时必须指明具体活动，并填写面对面见过的群内家长
+    const campusAttended    = document.getElementById('fCampusAttended').value;
+    const campusEvent       = document.getElementById('fCampusEvent').value.trim();
+    const campusDate        = document.getElementById('fCampusDate').value;
+    const campusKnownParent = document.getElementById('fCampusKnownParent').value.trim();
+    if (campusAttended === 'true' && !campusEvent)       { showError('请指明你参加的 Duke 校园内的一项具体活动'); return; }
+    if (campusAttended === 'true' && !campusDate)        { showError('请选择该活动的日期'); return; }
+    if (campusAttended === 'true' && campusDate) {
+      const _d = new Date(), _t = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0') + '-' + String(_d.getDate()).padStart(2, '0');
+      if (campusDate > _t) { showError('活动日期不能晚于今天'); return; }
+    }
+    if (campusAttended === 'true' && !campusKnownParent) { showError('请填写你在家长群里面对面见过的家长（群昵称或微信名称）'); return; }
+    // 至少需要一项证据：上传文件，或 FW / 校园活动佐证
+    const hasFwEvidence = (fwAttended === 'true' && !!fwKnownParent) || (campusAttended === 'true' && !!campusEvent && !!campusDate && !!campusKnownParent);
+    const hasAnyFile = letterFile || committedFile || dormFile || portalFile || sidFile || hasFwEvidence;
+    if (!hasAnyFile) { showError('请至少提供一项证据（录取通知书、Committed Letter、Family Weekend 佐证、Duke 校园活动佐证等）'); return; }
+    // 活动信息同时写入备注，后台暂未显示新字段时管理员也能看到
+    const campusLine = (campusAttended === 'true' && campusEvent && campusDate && campusKnownParent) ? '【Duke 校园活动】' + campusEvent + '（' + campusDate + '）；面对面见过的群内家长：' + campusKnownParent : '';
+
     if (!document.getElementById('fSubmitterName').value.trim())    { showError('请填写群昵称'); return; }
     if (!document.getElementById('fParentRole').value)               { showError('请选择家长角色（爸爸/妈妈）'); return; }
     if (!document.getElementById('fSubmitterContact').value.trim()) { showError('请填写联系方式'); return; }
@@ -1138,19 +1236,30 @@
         college:               college || null,
         major:                 document.getElementById('fMajor').value.trim() || null,
         committed:             committed_val,
-        notes:                 notes || null,
+        notes:                 [notes, campusLine].filter(Boolean).join('\n') || null,
         letter_path,
         committed_letter_path,
         dorm_photo_path,
         portal_screenshot_path,
         student_id_path,
+        family_weekend_attended:     fwAttended === 'true' ? true : fwAttended === 'false' ? false : null,
+        family_weekend_known_parent: (fwAttended === 'true' && fwKnownParent) ? fwKnownParent : null,
+        campus_event_attended:       campusAttended === 'true' ? true : campusAttended === 'false' ? false : null,
+        campus_event_name:           (campusAttended === 'true' && campusEvent) ? campusEvent : null,
+        campus_event_date:           (campusAttended === 'true' && campusDate) ? campusDate : null,
+        campus_event_known_parent:   (campusAttended === 'true' && campusKnownParent) ? campusKnownParent : null,
         submitter_name:        document.getElementById('fSubmitterName').value.trim() || null,
         submitter_contact:     document.getElementById('fSubmitterContact').value.trim() || null,
         submitter_email:       submitterEmail || null,
         wx_nickname:       wx_nickname || null,
       };
 
-      const { data: insertedData, error } = await db.from('admissions_submissions').insert(payload).select('id').single();
+      let ins = await db.from('admissions_submissions').insert(payload).select('id').single();
+      if (ins.error && /campus_event/.test(ins.error.message || '')) {   // 数据库还没加新列：去掉新列重试（活动信息已写进备注）
+        delete payload.campus_event_attended; delete payload.campus_event_name; delete payload.campus_event_date; delete payload.campus_event_known_parent;
+        ins = await db.from('admissions_submissions').insert(payload).select('id').single();
+      }
+      const insertedData = ins.data, error = ins.error;
       if (error) throw new Error(error.message);
       const insertedId = insertedData?.id;
 
@@ -1366,6 +1475,7 @@
     // 恢复录取类型显示
     document.getElementById('fType').closest('.form-group').style.display = '';
     removeFile('letter'); removeFile('committed'); removeFile('dorm'); removeFile('portal'); removeFile('sid');
+    resetFw();
     document.getElementById('formError').className = 'msg';
     document.getElementById('submitBtn').disabled = false;
     document.getElementById('submitBtn').textContent = '提 交';

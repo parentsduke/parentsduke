@@ -594,6 +594,9 @@
           <th>Committed Letter</th>
           <th>Portal 截屏</th>
           <th>学生证截屏</th>
+          <th>FW 佐证</th>
+          <th>校园活动佐证</th>
+          <th>最近处理</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -721,6 +724,53 @@
   }
 
   // ── Data ──
+  // ── 状态操作统一入口：记录操作人/时间/动作，并写入审计表 ──
+  const ACTION_ADMIN_NAMES = {
+    'lixiaobing@gmail.com':  '笑',
+    'weihong_j@yahoo.com':   '伟',
+    'tianluosuri@gmail.com': '金',
+  };
+  const actionAdminName = e => (e && ACTION_ADMIN_NAMES[e]) || e || '';
+
+  async function applyAction(recordId, fields, label) {
+    const { data: { session } } = await db.auth.getSession();
+    const by = session?.user?.email || null;
+    const at = new Date().toISOString();
+    // 优先写入主表 handled_* 列；数据库还没加这些列时，退回只更新状态，操作人仍记录在审计表
+    let res = await db.from('admissions_submissions')
+      .update({ ...fields, handled_by: by, handled_at: at, handled_action: label })
+      .eq('id', recordId);
+    if (res.error && /handled_/.test(res.error.message || '')) {
+      res = await db.from('admissions_submissions').update(fields).eq('id', recordId);
+    }
+    if (res.error) throw new Error(res.error.message);
+    try {
+      await db.from('admissions_edits').insert({
+        record_id: recordId, field: 'action', old_value: null, new_value: label,
+        edited_by: by, edited_at: at,
+      });
+    } catch (e) { console.warn('[操作审计写入失败]', e.message); }
+    const rec = allRecords.find(r => r.id === recordId);
+    if (rec) { rec.handled_by = by; rec.handled_at = at; rec.handled_action = label; }
+  }
+
+  // 主表没有 handled_* 列时，用审计表里每条记录最近一次操作补全
+  async function mergeActionLog() {
+    try {
+      const { data } = await db.from('admissions_edits')
+        .select('record_id,new_value,edited_by,edited_at')
+        .eq('field', 'action')
+        .order('edited_at', { ascending: false })
+        .limit(5000);
+      const latest = {};
+      (data || []).forEach(e => { if (!latest[e.record_id]) latest[e.record_id] = e; });
+      allRecords.forEach(r => {
+        const e = latest[r.id];
+        if (e && !r.handled_by) { r.handled_by = e.edited_by; r.handled_at = e.edited_at; r.handled_action = e.new_value; }
+      });
+    } catch (e) { console.warn('[读取操作审计失败]', e.message); }
+  }
+
   async function loadRecords() {
     const { data, error } = await db
       .from('admissions_submissions')
@@ -737,6 +787,7 @@
     }
 
     allRecords = data || [];
+    await mergeActionLog();
     populateYearFilter();
     applyFilters();
     document.getElementById('dataTable').style.display = 'table';
@@ -1055,6 +1106,30 @@
         ? `<a class="file-link" href="#" onclick="openFile('${r.student_id_path}');return false;">查看截屏</a>`
         : '<span class="no-file">—</span>';
 
+      // Family Weekend 佐证 / Duke 校园活动佐证（无文件时的替代证据）
+      const hasAnyFileEvidence = !!(r.letter_path || r.committed_letter_path || r.dorm_photo_path || r.portal_screenshot_path || r.student_id_path);
+      const fwEsc = v => String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const campus = campusInfo(r);
+      let campusCell;
+      if (campus.ok) {
+        campusCell = `<span style="font-size:12px;color:#003087;font-family:'DM Mono',monospace;line-height:1.7;">✅ 活动：${fwEsc(campus.event)}${campus.date ? '（' + fwEsc(campus.date) + '）' : ''}<br>面见过：${fwEsc(campus.parent)}</span>`;
+      } else {
+        campusCell = '<span class="no-file">—</span>';
+      }
+      let fwCell;
+      if (r.family_weekend_attended === true && r.family_weekend_known_parent) {
+        fwCell = `<span style="font-size:12px;color:#003087;font-family:'DM Mono',monospace;">✅ 面见过：${fwEsc(r.family_weekend_known_parent)}</span>`;
+      } else if (!hasAnyFileEvidence && !campus.ok) {
+        fwCell = '<span style="font-size:12px;color:#C84B31;font-weight:600;">⚠️ 无任何证据</span>';
+      } else {
+        fwCell = '<span class="no-file">—</span>';
+      }
+
+      // 最近一次状态操作的处理人
+      const handledCell = r.handled_by
+        ? `<span style="font-size:12px;font-family:'DM Mono',monospace;line-height:1.6;white-space:nowrap;"><strong>${fwEsc(actionAdminName(r.handled_by))}</strong> · ${fwEsc(r.handled_action || '')}<br><span style="color:var(--muted);">${r.handled_at ? new Date(r.handled_at).toLocaleString('zh-CN', { timeZone: 'America/New_York', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : ''}</span></span>`
+        : '<span class="no-file">—</span>';
+
       const catalItems = r.submitter_email
         ? `<button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');openCataModal('${r.id}','${safeEmail}','${safeName}','${r.class_year||''}')">📧 催信</button>`
         : '';
@@ -1151,13 +1226,32 @@
         <td>${clLinks}</td>
         <td>${portalCell}</td>
         <td>${sidCell}</td>
+        <td>${fwCell}</td>
+        <td>${campusCell}</td>
+        <td>${handledCell}</td>
       </tr>`;
     }).join('');
   }
 
+  // ── Duke 校园活动佐证：优先读新列；数据库没有新列时，从前台写进备注的那一行里取 ──
+  function campusInfo(r) {
+    let ev = (r.campus_event_attended === true && r.campus_event_name) ? r.campus_event_name : '';
+    let pa = (r.campus_event_attended === true && r.campus_event_known_parent) ? r.campus_event_known_parent : '';
+    let dt = (r.campus_event_attended === true && r.campus_event_date) ? String(r.campus_event_date).slice(0, 10) : '';
+    if (!ev || !pa) {
+      const m = String(r.notes || '').match(/【Duke 校园活动】([^\n]*?)；认识的群内家长：([^\n]*)/);
+      if (m) { ev = m[1].trim(); pa = m[2].trim(); }
+    }
+    if (!dt) {   // 备注里的格式：活动名（YYYY-MM-DD）
+      const md = ev.match(/^(.*?)（(\d{4}-\d{2}-\d{2})）$/);
+      if (md) { ev = md[1].trim(); dt = md[2]; }
+    }
+    return { ok: !!(ev && pa), event: ev, date: dt, parent: pa };
+  }
+
   // ── Export CSV ──
   function exportCSV() {
-    const headers = ['微信昵称','提交时间','中文姓名','英文姓名','高中学校','地区','录取类型','届次','学院','专业','Committed','备注','提交者','微信号','邮箱','宿舍照片链接','录取通知书链接','Committed Letter链接','Portal截屏链接','学生证截屏链接','处理状态'];
+    const headers = ['微信昵称','提交时间','中文姓名','英文姓名','高中学校','地区','录取类型','届次','学院','专业','Committed','备注','提交者','微信号','邮箱','宿舍照片链接','录取通知书链接','Committed Letter链接','Portal截屏链接','学生证截屏链接','FW佐证家长','校园活动','校园活动日期','校园活动认识家长','处理状态'];
     const type = document.getElementById('filterType').value;
     const year = document.getElementById('filterYear').value;
     const committed = document.getElementById('filterCommitted').value;
@@ -1198,6 +1292,10 @@
       (() => { let p=r.committed_letter_path; if(!p) return ''; try{const a=JSON.parse(p); if(Array.isArray(a)) return a.map(getFileUrl).join(' | ');} catch(e){} return getFileUrl(p)||''; })(),
       getFileUrl(r.portal_screenshot_path) || '',
       getFileUrl(r.student_id_path) || '',
+      (r.family_weekend_attended === true && r.family_weekend_known_parent) ? r.family_weekend_known_parent : '',
+      campusInfo(r).event,
+      campusInfo(r).date,
+      campusInfo(r).parent,
       r.rejected_at ? '已拒绝' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '待处理',
     ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
 
@@ -1248,7 +1346,7 @@
       // 没有邮箱，直接标记已批准不发邮件
       if (!confirm(`${studentName} 没有邮箱，直接标记为已批准（不发送链接）？`)) return;
       try {
-        await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+        await applyAction(recordId, { approved_at: new Date().toISOString() }, '批准（无邮箱）');
         const rec = allRecords.find(r => r.id === recordId);
         if (rec) rec.approved_at = new Date().toISOString();
         applyFilters();
@@ -1296,7 +1394,7 @@
       }
 
       // 标记记录已批准
-      await db.from('admissions_submissions').update({ approved_at: new Date().toISOString() }).eq('id', recordId);
+      await applyAction(recordId, { approved_at: new Date().toISOString() }, '批准');
 
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.approved_at = new Date().toISOString();
@@ -1313,7 +1411,7 @@
     if (!confirm(`搁置 ${studentName}？（已在群中，暂不处理）`)) return;
     try {
       const now = new Date().toISOString();
-      await db.from('admissions_submissions').update({ shelved_at: now }).eq('id', recordId);
+      await applyAction(recordId, { shelved_at: now }, '搁置');
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = now;
       applyFilters();
@@ -1326,7 +1424,7 @@
   async function unshelveRecord(recordId, studentName) {
     if (!confirm(`取消搁置 ${studentName}，恢复为待处理？`)) return;
     try {
-      await db.from('admissions_submissions').update({ shelved_at: null }).eq('id', recordId);
+      await applyAction(recordId, { shelved_at: null }, '取消搁置');
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.shelved_at = null;
       applyFilters();
@@ -1339,7 +1437,7 @@
   async function markNotJoined(recordId, studentName) {
     if (!confirm(`标记 ${studentName} 未进群？`)) return;
     try {
-      await db.from('admissions_submissions').update({ not_joined: true }).eq('id', recordId);
+      await applyAction(recordId, { not_joined: true }, '标记未进群');
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.not_joined = true;
       applyFilters();
@@ -1352,7 +1450,7 @@
   async function clearNotJoined(recordId, studentName) {
     if (!confirm(`取消 ${studentName} 的未进群标记？`)) return;
     try {
-      await db.from('admissions_submissions').update({ not_joined: null }).eq('id', recordId);
+      await applyAction(recordId, { not_joined: null }, '取消未进群');
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.not_joined = null;
       applyFilters();
@@ -1366,7 +1464,7 @@
     if (!confirm(`标记 ${studentName} 已退群？`)) return;
     try {
       const now = new Date().toISOString();
-      await db.from('admissions_submissions').update({ left_group_at: now }).eq('id', recordId);
+      await applyAction(recordId, { left_group_at: now }, '标记已退群');
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.left_group_at = now;
       applyFilters();
@@ -1379,7 +1477,7 @@
   async function unleaveGroupRecord(recordId, studentName) {
     if (!confirm(`取消退群标记，${studentName} 恢复为已批准？`)) return;
     try {
-      await db.from('admissions_submissions').update({ left_group_at: null }).eq('id', recordId);
+      await applyAction(recordId, { left_group_at: null }, '取消退群');
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.left_group_at = null;
       applyFilters();
@@ -1392,7 +1490,7 @@
   async function unapproveRecord(recordId, studentName) {
     if (!confirm(`取消批准 ${studentName}，恢复为待处理？`)) return;
     try {
-      await db.from('admissions_submissions').update({ approved_at: null }).eq('id', recordId);
+      await applyAction(recordId, { approved_at: null }, '取消批准');
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.approved_at = null;
       applyFilters();
@@ -1406,7 +1504,7 @@
     if (!confirm(`确认拒绝 ${studentName} 入群？`)) return;
     try {
       const now = new Date().toISOString();
-      await db.from('admissions_submissions').update({ rejected_at: now }).eq('id', recordId);
+      await applyAction(recordId, { rejected_at: now }, '拒绝');
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.rejected_at = now;
       applyFilters();
@@ -1419,7 +1517,7 @@
   async function unrejectRecord(recordId, studentName) {
     if (!confirm(`取消拒绝 ${studentName}，恢复为待处理？`)) return;
     try {
-      await db.from('admissions_submissions').update({ rejected_at: null }).eq('id', recordId);
+      await applyAction(recordId, { rejected_at: null }, '取消拒绝');
       const rec = allRecords.find(r => r.id === recordId);
       if (rec) rec.rejected_at = null;
       applyFilters();
