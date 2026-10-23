@@ -749,6 +749,7 @@
         <h3>报名汇总</h3>
         <div class="btn-row">
           <button class="btn ghost" id="rsvpRefresh" type="button">刷新</button>
+          <button class="btn ghost" id="rosterImportBtn" type="button">导入/更新名单</button>
           <select id="ntSize" title="Name Tag 尺寸" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--paper-warm);">
             <option value="big">Name Tag 4×3 in（6张/页）</option>
             <option value="eight">Name Tag 4×2.5 in（8张/页）</option>
@@ -1036,6 +1037,22 @@
     <div class="btn-row">
       <button class="btn" id="authSubmit">登录</button>
       <button class="btn ghost" id="authCancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="rosterModal" role="dialog" aria-modal="true" aria-labelledby="rmTitle" hidden>
+  <div class="modal-card" style="max-width:640px;max-height:90vh;overflow:auto;">
+    <h3 id="rmTitle">导入家长名单</h3>
+    <p id="rmInfo"></p>
+    <p>把 Excel / Google 表格里的几列直接粘贴到下面，或选择 CSV 文件。每行一位家长：<b>姓名、届别、备注（可选）</b>。届别可以写 30、2030、Class of 2030 或「研究生」；第一行是表头也可以。</p>
+    <input type="file" id="rmFile" accept=".csv,.tsv,.txt" style="padding:8px;">
+    <textarea id="rmText" rows="9" placeholder="张三&#9;30&#10;李四&#9;29&#10;王五&#9;研究生" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:10px;"></textarea>
+    <div id="rmPreview" style="font-size:13px;line-height:1.7;margin-bottom:12px;"></div>
+    <div class="btn-row">
+      <button class="btn" id="rmSubmit" type="button" disabled>导入</button>
+      <button class="btn ghost" id="rmCancel" type="button">关闭</button>
+      <button class="btn ghost" id="rmLogout" type="button" hidden>退出登录</button>
     </div>
   </div>
 </div>
@@ -2291,12 +2308,16 @@ function exportMinutes(){
     if(entering || mode === 'shared') return;
     entering = true; setStatus('连接云端…');
     try{
-      if(window.FW_ROSTER_ERR){ alert(window.FW_ROSTER_ERR); await sb.auth.signOut(); setStatus('名单未就绪，未连接云端', true); return; }
       const adm = await sb.rpc('is_fw2_admin');
       if(adm.error) throw adm.error;
       if(adm.data !== true){
         alert('该账号不在管理员名单中，无法使用云端协同。');
         await sb.auth.signOut(); setStatus('已在本机保存'); return;
+      }
+      if(window.FW_ROSTER_ERR){   // 管理员已登录但后台名单为空：不连云端，直接弹出名单导入窗口
+        window.fwRosterSetup = true; setStatus('名单未就绪：请先导入家长名单', true);
+        if(window.fwOpenRosterImport) window.fwOpenRosterImport();
+        return;
       }
       const res = await sb.from('fw2_kv').select('key,value').eq('event_id', EVENT_ID);
       if(res.error) throw res.error;
@@ -2353,6 +2374,7 @@ function exportMinutes(){
   }
   if(authBtn){
     authBtn.addEventListener('click', async () => {
+      if(window.fwRosterSetup && mode !== 'shared'){ if(window.fwOpenRosterImport) window.fwOpenRosterImport(); return; }
       if(mode === 'shared'){
         if(!confirm('退出云端协同？退出后本页会清空，重新登录即可恢复。')) return;
         await pushDiff(); await sb.auth.signOut();
@@ -3391,13 +3413,121 @@ function exportMinutes(){
 
 
 <script>
+// ---- 家长名单导入：管理员把名单写进后台表 fw2_roster（需要先在 Supabase 运行 fw2_roster_set.sql）----
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var modal = $('rosterModal'), txt = $('rmText'), file = $('rmFile'), prev = $('rmPreview'), btnGo = $('rmSubmit'), info = $('rmInfo');
+  var parsed = null;
+  var EVENT = function(){ return window.FW_CONF.event; };
+  modal.addEventListener('input', function(e){ e.stopPropagation(); });
+  modal.addEventListener('change', function(e){ e.stopPropagation(); });
+
+  function splitLine(line, delim){
+    if(delim === '\t') return line.split('\t');
+    var out = [], f = '', q = false;
+    for(var i = 0; i < line.length; i++){
+      var c = line[i];
+      if(q){ if(c === '"'){ if(line[i + 1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+      else if(c === '"') q = true;
+      else if(c === ',') { out.push(f); f = ''; }
+      else f += c;
+    }
+    out.push(f); return out;
+  }
+  function normGrade(g){
+    g = String(g || '').trim(); if(!g) return null;
+    if(/研究生|硕士|博士|grad/i.test(g)) return '研究生';
+    var m = g.match(/\d+/); if(!m) return null;
+    var d = m[0]; if(d.length === 4 && d.slice(0, 2) === '20') d = d.slice(2);
+    return d.length === 2 ? d : null;
+  }
+  function parse(text){
+    var lines = String(text || '').replace(/^\uFEFF/, '').replace(/\r/g, '').split('\n').filter(function(l){ return l.trim(); });
+    var rows = [], errs = [], seen = {};
+    var delim = lines.some(function(l){ return l.indexOf('\t') >= 0; }) ? '\t' : ',';
+    lines.forEach(function(line, idx){
+      var c = splitLine(line, delim).map(function(x){ return x.trim(); });
+      if(idx === 0 && /^(姓名|名字|家长|name)/i.test(c[0])) return;
+      var name = c[0] || '', grade = normGrade(c[1]), note = (c[2] || '').trim() || null, no = idx + 1;
+      if(!name){ errs.push('第 ' + no + ' 行：没有姓名'); return; }
+      if(name.length > 40){ errs.push('第 ' + no + ' 行：姓名太长'); return; }
+      if(!grade){ errs.push('第 ' + no + ' 行（' + name + '）：届别「' + (c[1] || '') + '」无法识别'); return; }
+      if(seen[name]){ errs.push('第 ' + no + ' 行（' + name + '）：姓名重复，同一场聚会里姓名必须唯一，请改成能区分的写法'); return; }
+      seen[name] = 1; rows.push({ name: name, grade: grade, note: note });
+    });
+    return { rows: rows, errs: errs };
+  }
+  function curCount(){ try{ return ROSTER_DATA.roster.length; }catch(e){ return 0; } }
+  function refresh(){
+    parsed = parse(txt.value);
+    var cnt = {}; parsed.rows.forEach(function(r){ cnt[r.grade] = (cnt[r.grade] || 0) + 1; });
+    var order = Object.keys(cnt).sort(function(a, b){ return ((a === '研究生') - (b === '研究生')) || (Number(b) - Number(a)); });
+    var h = '';
+    if(parsed.rows.length) h += '共识别 <b>' + parsed.rows.length + '</b> 位家长：' + order.map(function(g){ return (g === '研究生' ? '研究生' : g + ' 届') + ' ' + cnt[g] + ' 位'; }).join('，') + '。';
+    else if(txt.value.trim()) h += '没有识别出有效的行。';
+    if(parsed.errs.length) h += '<div style="color:#b71c1c;margin-top:6px;">有 ' + parsed.errs.length + ' 行有问题（这些行不会导入）：<br>' + parsed.errs.slice(0, 8).map(function(s){ return s.replace(/</g, '&lt;'); }).join('<br>') + (parsed.errs.length > 8 ? '<br>…' : '') + '</div>';
+    prev.innerHTML = h;
+    btnGo.disabled = !parsed.rows.length;
+  }
+  txt.addEventListener('input', refresh);
+  file.addEventListener('change', function(){
+    var f = file.files && file.files[0]; if(!f) return;
+    var rd = new FileReader();
+    rd.onload = function(){
+      var buf = rd.result, s;
+      try{ s = new TextDecoder('utf-8', { fatal: true }).decode(buf); }
+      catch(e){ try{ s = new TextDecoder('gbk').decode(buf); }catch(e2){ s = new TextDecoder('utf-8').decode(buf); } }   // Excel 另存的中文 CSV 常是 GBK
+      txt.value = s; refresh();
+    };
+    rd.readAsArrayBuffer(f);
+  });
+
+  window.fwOpenRosterImport = function(){
+    var n = curCount();
+    info.textContent = window.fwRosterSetup
+      ? '后台里还没有这场聚会（' + EVENT() + '）的家长名单。导入之后本页才能正常使用。'
+      : '后台现有 ' + n + ' 位家长。导入会用新名单整体替换（原有备注会保留，除非新名单里带了备注）。';
+    $('rmLogout').hidden = !window.fwRosterSetup;
+    modal.hidden = false; refresh();
+  };
+  $('rmCancel').addEventListener('click', function(){ modal.hidden = true; });
+  $('rmLogout').addEventListener('click', async function(){ try{ await window.fwSb.auth.signOut(); }catch(e){} location.reload(); });
+  var openBtn = $('rosterImportBtn'); if(openBtn) openBtn.addEventListener('click', function(){ window.fwOpenRosterImport(); });
+
+  btnGo.addEventListener('click', async function(){
+    var sb = window.fwSb;
+    if(!sb){ alert('未连接后台'); return; }
+    if(!parsed || !parsed.rows.length) return;
+    var n = parsed.rows.length, cur = curCount();
+    var msg = cur
+      ? '后台现有 ' + cur + ' 位家长，将被这份 ' + n + ' 位的名单整体替换。\n\n已经报名、缴费的记录不受影响，但名单里没有的人会在报名页消失。确定吗？'
+      : '将把 ' + n + ' 位家长导入后台。确定吗？';
+    if(!confirm(msg)) return;
+    btnGo.disabled = true; btnGo.textContent = '导入中…';
+    try{
+      var r = await sb.rpc('fw2_roster_set', { p_event: EVENT(), p_rows: parsed.rows });
+      if(r.error) throw r.error;
+      try{ localStorage.removeItem('fw2-roster-cache-' + EVENT()); }catch(e){}
+      alert('已导入 ' + r.data + ' 位家长，页面将刷新。');
+      location.reload();
+    }catch(e){
+      btnGo.disabled = false; btnGo.textContent = '导入';
+      var m = (e && e.message) || String(e);
+      if(/could not find the function|PGRST202|fw2_roster_set/i.test(m) && /find|exist|schema cache/i.test(m)) m = '后台还没有 fw2_roster_set 函数。请先在 Supabase 的 SQL Editor 里运行 fw2_roster_set.sql，再回来导入。\n\n（' + m + '）';
+      alert('导入失败：' + m);
+    }
+  });
+})();
+</script>
+
+<script>
 (function(){
   var KEY = 'fw_readonly_lock';
   var locked = true;
   try{ locked = localStorage.getItem(KEY) !== '0'; }catch(e){}
-  var SEL = '#bEdit,#bSave,#bAdd,#bImport,#bPurchase,#bReceipts,#bRefunds,#bReimb,#bGhSave,#bGhLoad,.pay-btn,#budgetSections button,[data-act],#grpPlan2Reset';
+  var SEL = '#bEdit,#bSave,#bAdd,#bImport,#bPurchase,#bReceipts,#bRefunds,#bReimb,#bGhSave,#bGhLoad,#rosterImportBtn,.pay-btn,#budgetSections button,[data-act],#grpPlan2Reset';
   var style = document.createElement('style');
-  style.textContent = 'body.fwlocked #bEdit,body.fwlocked #bSave,body.fwlocked #bAdd,body.fwlocked #bImport,body.fwlocked #bPurchase,body.fwlocked #bReceipts,body.fwlocked #bRefunds,body.fwlocked #bReimb,body.fwlocked #bGhSave,body.fwlocked #bGhLoad,body.fwlocked .pay-btn,body.fwlocked #budgetSections button{opacity:.4}'
+  style.textContent = 'body.fwlocked #bEdit,body.fwlocked #bSave,body.fwlocked #bAdd,body.fwlocked #bImport,body.fwlocked #bPurchase,body.fwlocked #bReceipts,body.fwlocked #bRefunds,body.fwlocked #bReimb,body.fwlocked #bGhSave,body.fwlocked #bGhLoad,body.fwlocked #rosterImportBtn,body.fwlocked .pay-btn,body.fwlocked #budgetSections button{opacity:.4}'
     + '#fwLockBtn{position:fixed;right:14px;bottom:14px;z-index:9999;border:0;border-radius:999px;padding:10px 16px;font:600 14px/1 system-ui,sans-serif;color:#fff;background:#1f6f3b;box-shadow:0 2px 10px rgba(0,0,0,.25);cursor:pointer;display:none}'
     + '#fwLockBtn.open{background:#b33a1f}'
     + '#fwLockToast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:9999;background:#222;color:#fff;border-radius:8px;padding:10px 14px;font:14px/1.4 system-ui,sans-serif;display:none;max-width:86vw;text-align:center}';
