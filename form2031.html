@@ -673,10 +673,10 @@
             <option value="false">❌ 否</option>
           </select>
           <div id="fwDetail" style="display:none;margin-top:10px;">
-            <label>面对面见过的群内家长 <span class="req">*</span></label>
-            <input type="text" autocomplete="off" id="fFwKnownParent" style="width:100%;margin-top:6px;" placeholder="对方的群昵称或微信名称，如：Lily-杜妈-Amy-28T-CA"/>
+            <label>面对面见过的群内家长真实姓名 <span class="req">*</span></label>
+            <input type="text" autocomplete="off" id="fFwKnownParent" style="width:100%;margin-top:6px;" placeholder="对方的真实姓名（中文或英文全名），如：张伟 / Wei Zhang"/>
             <div style="margin-top:6px;padding:10px 14px;background:#eef2fa;border:1px solid rgba(0,48,135,0.15);border-radius:7px;font-size:12px;color:#003087;line-height:1.8;">
-              💡 请填写<strong>已在 Duke 家长群里</strong>、且与你<strong>面对面见过</strong>的家长，并确保对方愿意为你确认身份<br/>⚠️ 仅线上（微信/群聊）认识、没有见过面的不算，不予采信
+              💡 请填写<strong>已在 Duke 家长群里</strong>、且与你<strong>面对面见过</strong>的家长，并确保对方愿意为你确认身份<br/>📛 <strong>必须填写对方的真实姓名</strong>（中文或英文全名），不要只填微信昵称或群昵称，否则无法核实<br/>⚠️ 仅线上（微信/群聊）认识、没有见过面的不算，不予采信
             </div>
           </div>
         </div>
@@ -696,10 +696,10 @@
             <input type="text" autocomplete="off" id="fCampusEvent" style="width:100%;margin-top:6px;" placeholder="请指明一项具体活动，如：新生 Move-in Day"/>
             <label style="margin-top:10px;display:block;">活动日期 <span class="req">*</span></label>
             <input type="date" id="fCampusDate" style="width:100%;margin-top:6px;"/>
-            <label style="margin-top:10px;display:block;">面对面见过的群内家长 <span class="req">*</span></label>
-            <input type="text" autocomplete="off" id="fCampusKnownParent" style="width:100%;margin-top:6px;" placeholder="对方的群昵称或微信名称，如：Lily-杜妈-Amy-28T-CA"/>
+            <label style="margin-top:10px;display:block;">面对面见过的群内家长真实姓名 <span class="req">*</span></label>
+            <input type="text" autocomplete="off" id="fCampusKnownParent" style="width:100%;margin-top:6px;" placeholder="对方的真实姓名（中文或英文全名），如：张伟 / Wei Zhang"/>
             <div style="margin-top:6px;padding:10px 14px;background:#eef2fa;border:1px solid rgba(0,48,135,0.15);border-radius:7px;font-size:12px;color:#003087;line-height:1.8;">
-              💡 请填写<strong>已在 Duke 家长群里</strong>、且与你<strong>面对面见过</strong>的家长，并确保对方愿意为你确认身份<br/>⚠️ 仅线上（微信/群聊）认识、没有见过面的不算，不予采信
+              💡 请填写<strong>已在 Duke 家长群里</strong>、且与你<strong>面对面见过</strong>的家长，并确保对方愿意为你确认身份<br/>📛 <strong>必须填写对方的真实姓名</strong>（中文或英文全名），不要只填微信昵称或群昵称，否则无法核实<br/>⚠️ 仅线上（微信/群聊）认识、没有见过面的不算，不予采信
             </div>
           </div>
         </div>
@@ -1091,7 +1091,7 @@
     // Family Weekend 证据：选择"是"时必须填写面对面见过的群内家长
     const fwAttended    = document.getElementById('fFwAttended').value;
     const fwKnownParent = document.getElementById('fFwKnownParent').value.trim();
-    if (fwAttended === 'true' && !fwKnownParent) { showError('请填写你在家长群里面对面见过的家长（群昵称或微信名称）'); return; }
+    if (fwAttended === 'true' && !fwKnownParent) { showError('请填写你在家长群里面对面见过的家长的真实姓名（不能只填昵称）'); return; }
     // Duke 校园活动证据：选择"是"时必须指明具体活动，并填写面对面见过的群内家长
     const campusAttended    = document.getElementById('fCampusAttended').value;
     const campusEvent       = document.getElementById('fCampusEvent').value.trim();
@@ -1103,13 +1103,13 @@
       const _d = new Date(), _t = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0') + '-' + String(_d.getDate()).padStart(2, '0');
       if (campusDate > _t) { showError('活动日期不能晚于今天'); return; }
     }
-    if (campusAttended === 'true' && !campusKnownParent) { showError('请填写你在家长群里面对面见过的家长（群昵称或微信名称）'); return; }
+    if (campusAttended === 'true' && !campusKnownParent) { showError('请填写你在家长群里面对面见过的家长的真实姓名（不能只填昵称）'); return; }
     // 至少需要一项证据：上传文件，或 FW / 校园活动佐证
     const hasFwEvidence = (fwAttended === 'true' && !!fwKnownParent) || (campusAttended === 'true' && !!campusEvent && !!campusDate && !!campusKnownParent);
     const hasAnyFile = letterFile || committedFile || dormFile || portalFile || sidFile || hasFwEvidence;
     if (!hasAnyFile) { showError('请至少提供一项证据（录取通知书、Committed Letter、Family Weekend 佐证、Duke 校园活动佐证等）'); return; }
     // 活动信息同时写入备注，后台暂未显示新字段时管理员也能看到
-    const campusLine = (campusAttended === 'true' && campusEvent && campusDate && campusKnownParent) ? '【Duke 校园活动】' + campusEvent + '（' + campusDate + '）；面对面见过的群内家长：' + campusKnownParent : '';
+    const campusLine = (campusAttended === 'true' && campusEvent && campusDate && campusKnownParent) ? '【Duke 校园活动】' + campusEvent + '（' + campusDate + '）；面对面见过的群内家长（真实姓名）：' + campusKnownParent : '';
 
     if (!document.getElementById('fSubmitterName').value.trim())    { showError('请填写群昵称'); return; }
     if (!document.getElementById('fParentRole').value)               { showError('请选择家长角色（爸爸/妈妈）'); return; }
