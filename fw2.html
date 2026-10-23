@@ -1049,6 +1049,7 @@
     <input type="file" id="rmFile" accept=".csv,.tsv,.txt" style="padding:8px;">
     <textarea id="rmText" rows="9" placeholder="张三&#9;30&#10;李四&#9;29&#10;王五&#9;研究生" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:10px;"></textarea>
     <div id="rmPreview" style="font-size:13px;line-height:1.7;margin-bottom:12px;"></div>
+    <label style="display:block;font-size:14px;line-height:1.6;margin-bottom:12px;"><input type="checkbox" id="rmAppend" checked style="width:auto;margin:0 6px 0 0;vertical-align:middle;">追加模式：保留现有名单，只添加/更新上面粘贴的人（取消勾选＝整体替换）</label>
     <div class="btn-row">
       <button class="btn" id="rmSubmit" type="button" disabled>导入</button>
       <button class="btn ghost" id="rmCancel" type="button">关闭</button>
@@ -3458,6 +3459,16 @@ function exportMinutes(){
     return { rows: rows, errs: errs };
   }
   function curCount(){ try{ return ROSTER_DATA.roster.length; }catch(e){ return 0; } }
+  function appendOn(){ var c = $('rmAppend'); return !!(c && c.checked); }
+  function mergedRows(){   // 现有名单 + 新粘贴的人：同名则更新届别/备注，新名字则追加
+    var map = {}, order = [];
+    (ROSTER_DATA.roster || []).forEach(function(r){ map[r.name] = { name: r.name, grade: r.grade, note: r.note || null }; order.push(r.name); });
+    parsed.rows.forEach(function(r){
+      if(map[r.name]){ map[r.name].grade = r.grade; if(r.note) map[r.name].note = r.note; }
+      else { map[r.name] = { name: r.name, grade: r.grade, note: r.note }; order.push(r.name); }
+    });
+    return order.map(function(n){ return map[n]; });
+  }
   function refresh(){
     parsed = parse(txt.value);
     var cnt = {}; parsed.rows.forEach(function(r){ cnt[r.grade] = (cnt[r.grade] || 0) + 1; });
@@ -3466,10 +3477,16 @@ function exportMinutes(){
     if(parsed.rows.length) h += '共识别 <b>' + parsed.rows.length + '</b> 位家长：' + order.map(function(g){ return (g === '研究生' ? '研究生' : g + ' 届') + ' ' + cnt[g] + ' 位'; }).join('，') + '。';
     else if(txt.value.trim()) h += '没有识别出有效的行。';
     if(parsed.errs.length) h += '<div style="color:#b71c1c;margin-top:6px;">有 ' + parsed.errs.length + ' 行有问题（这些行不会导入）：<br>' + parsed.errs.slice(0, 8).map(function(s){ return s.replace(/</g, '&lt;'); }).join('<br>') + (parsed.errs.length > 8 ? '<br>…' : '') + '</div>';
+    if(parsed.rows.length && appendOn()){
+      var ex = {}; (ROSTER_DATA.roster || []).forEach(function(r){ ex[r.name] = 1; });
+      var nw = parsed.rows.filter(function(r){ return !ex[r.name]; }).length;
+      h += '<div style="margin-top:6px;">追加模式：新增 <b>' + nw + '</b> 位，更新已有 <b>' + (parsed.rows.length - nw) + '</b> 位，导入后共 <b>' + (curCount() + nw) + '</b> 位。</div>';
+    }
     prev.innerHTML = h;
     btnGo.disabled = !parsed.rows.length;
   }
   txt.addEventListener('input', refresh);
+  if($('rmAppend')) $('rmAppend').addEventListener('change', refresh);
   file.addEventListener('change', function(){
     var f = file.files && file.files[0]; if(!f) return;
     var rd = new FileReader();
@@ -3486,7 +3503,7 @@ function exportMinutes(){
     var n = curCount();
     info.textContent = window.fwRosterSetup
       ? '后台里还没有这场聚会（' + EVENT() + '）的家长名单。导入之后本页才能正常使用。'
-      : '后台现有 ' + n + ' 位家长。导入会用新名单整体替换（原有备注会保留，除非新名单里带了备注）。';
+      : '后台现有 ' + n + ' 位家长。默认是追加模式：只添加/更新你粘贴的人，其他人不动；取消勾选则用新名单整体替换（原有备注会保留，除非新名单里带了备注）。';
     $('rmLogout').hidden = !window.fwRosterSetup;
     modal.hidden = false; refresh();
   };
@@ -3502,10 +3519,15 @@ function exportMinutes(){
     var msg = cur
       ? '后台现有 ' + cur + ' 位家长，将被这份 ' + n + ' 位的名单整体替换。\n\n已经报名、缴费的记录不受影响，但名单里没有的人会在报名页消失。确定吗？'
       : '将把 ' + n + ' 位家长导入后台。确定吗？';
+    var app = appendOn(), finalRows = parsed.rows;
+    if(app){
+      finalRows = mergedRows();
+      msg = '将在现有 ' + cur + ' 位家长的基础上追加/更新 ' + n + ' 位，导入后共 ' + finalRows.length + ' 位。其他人不受影响。确定吗？';
+    }
     if(!confirm(msg)) return;
     btnGo.disabled = true; btnGo.textContent = '导入中…';
     try{
-      var r = await sb.rpc('fw2_roster_set', { p_event: EVENT(), p_rows: parsed.rows });
+      var r = await sb.rpc('fw2_roster_set', { p_event: EVENT(), p_rows: finalRows });
       if(r.error) throw r.error;
       try{ localStorage.removeItem('fw2-roster-cache-' + EVENT()); }catch(e){}
       alert('已导入 ' + r.data + ' 位家长，页面将刷新。');
