@@ -1106,6 +1106,7 @@
 <script>
 // ======== 连接配置：改聚会只改这一处（event 必须和报名页 fw2_signup.html 里的 EVENT_ID 相同）========
 window.FW_CONF = { url: 'https://ritglkwqpwlcjwemhfqd.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8', event: 'fw2027' };
+window.FW_PAGE_VERSION = 2;   // 页面版本号：每次发布改过同步逻辑的新版，都要加 1；同时把后台 fw2_config 里的最低版本也改成一样的数字（v2 = 流水表版）
 // ======== 家长名单：从后台读取（表 fw2_roster），页面里不再写死 ========
 const ROSTER_DATA = (function(){
   const C = window.FW_CONF, CK = 'fw2-roster-cache-' + C.event;
@@ -1896,7 +1897,7 @@ function exportMinutes(){
   // ========================================================
 
   const LOCAL_KEY = 'duke-' + EVENT_ID + '-kv-v1';
-  const CLIENT_ID = 'fw2-' + Math.random().toString(36).slice(2) + Date.now().toString(36);   // fw2- 前缀：在后台一眼看出是新版页面写的
+  const CLIENT_ID = 'fw2-v' + window.FW_PAGE_VERSION + '-' + Math.random().toString(36).slice(2) + Date.now().toString(36);   // fw2- 前缀：在后台一眼看出是新版页面写的
   const fieldIds  = ['mDate','mTime','mDeadline','mLink','mHost','mTopic','mAgenda','rDate','rTime','rHost','rNote'];
   const inviteIds = ['mDate','mTime','mDeadline','mLink','mHost','mTopic','mAgenda'];
 
@@ -2242,6 +2243,29 @@ function exportMinutes(){
   // ------ 状态 ------
   let mode = 'local';            // 'local' 本机草稿 | 'shared' 云端协同
   let sb = null, channel = null, me = '', entering = false;
+  // ------ 版本检查：后台规定的最低版本高于本页面时，整页停用，必须重新打开新版 ------
+  let blocked = false;
+  async function checkVersion(){
+    if(blocked || !sb) return;
+    try{
+      const r = await sb.rpc('fw2_min_version', { p_event: EVENT_ID, p_page: 'admin' });
+      if(r.error || typeof r.data !== 'number') return;          // 查不到（离线、后台还没建）时不拦；后台写入时还有强制检查
+      if(window.FW_PAGE_VERSION < r.data) blockOldVersion(r.data);
+    }catch(e){}
+  }
+  function blockOldVersion(need){
+    blocked = true;
+    try{ if(channel){ sb.removeChannel(channel); channel = null; } }catch(e){}
+    const d = document.createElement('div');
+    d.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font:16px/1.8 system-ui,sans-serif';
+    d.innerHTML = '<div><div style="font-size:20px;font-weight:700;margin-bottom:12px">⚠️ 页面版本过旧，已停用</div>当前版本 v' + window.FW_PAGE_VERSION + '，需要 v' + need + ' 以上。<br>请点下面按钮重新加载；如果仍然提示，<br>请清除这个网站的浏览器缓存，或删除主屏幕图标后重新添加。<br><br><button type="button" style="font-size:16px;padding:10px 24px" onclick="location.href=location.pathname+\'?v=\'+Date.now()">重新加载最新版</button></div>';
+    document.body.appendChild(d);
+  }
+  function keyLabel(k){
+    const m = { 'a:': '整户到场', 'n:': '个人到场', 'w:': '礼物', 'q:': '现场收款', 'o:': '名单外人员' };
+    const kind = String(k).slice(0, 2);
+    return (m[kind] ? m[kind] + ' ' : '') + String(k).slice(m[kind] ? 2 : 0).replace(/\|/g, ' / ');
+  }
   let known = {}, seen = new Set();                // 云端上我们已知的内容（用来算差异）
   let lastLocalJson = null, timer = null, dirty = false, pushing = false, again = false, retryTimer = null;
 
@@ -2262,7 +2286,7 @@ function exportMinutes(){
 
   // ------ 云端：把本页与 known 的差异推送上去 ------
   async function pushDiff(){
-    if(mode !== 'shared') return;
+    if(mode !== 'shared' || blocked) return;
     if(pushing){ again = true; return; }
     pushing = true;
     try{
@@ -2274,14 +2298,28 @@ function exportMinutes(){
         Object.keys(known).forEach(k => { if(!(k in cur) && seen.has(k)) rows.push({ event_id: EVENT_ID, key: k, value: null, client_id: CLIENT_ID }); });
         if(!rows.length) continue;
         setStatus('同步中…');
-        const wire = rows.map(r => r.value === null ? { ...r, value: false } : r);   // 绝不向后台发 null：“取消/删除”只发 false 标记，原值留在后台历史里
-        const { error } = await sb.from('fw2_kv').upsert(wire, { onConflict: 'event_id,key' });
-        if(error) throw error;
-        rows.forEach(r => { if(r.value === null) delete known[r.key]; else known[r.key] = r.value; });
+        // 页面不再直接写表：把改动当作“指令”交给后台 fw2_apply。后台逐条校验（名单、10 分钟规则、版本），
+        // 通过的才追加进只增不改的流水表 fw2_log。取消/删除只发 false 标记，永远不发空值，原值留在流水里。
+        const cmds = rows.map(r => ({ key: r.key, value: r.value === null ? false : r.value }));
+        const res = await sb.rpc('fw2_apply', { p_event: EVENT_ID, p_client: CLIENT_ID, p_cmds: cmds });
+        if(res.error) throw res.error;
+        const rejected = (res.data && Array.isArray(res.data.rejected)) ? res.data.rejected : [];
+        const bad = new Set(rejected.map(x => x.key));
+        rows.forEach(r => { if(bad.has(r.key)) return; if(r.value === null) delete known[r.key]; else known[r.key] = r.value; });
+        if(rejected.length){
+          rejected.forEach(x => {   // 被后台拒绝的改动：按后台现有的值恢复页面
+            const cv = (x.current === undefined || x.current === false) ? null : x.current;
+            if(cv === null) delete known[x.key]; else known[x.key] = cv;
+            applyRemote(x.key, cv);
+            if(x.key in readModel()) seen.add(x.key);
+          });
+          setTimeout(() => alert('后台没有接受以下改动，页面已恢复成后台的记录：\\n\\n' + rejected.slice(0, 8).map(x => '· ' + keyLabel(x.key) + '：' + x.reason).join('\\n') + (rejected.length > 8 ? '\\n…另有 ' + (rejected.length - 8) + ' 条' : '')), 0);
+        }
         setStatus('云端已同步 ✓ ' + clock());
       } while(again);
     }catch(e){
       console.error(e);
+      if(/版本过旧/.test(String(e && e.message))) checkVersion();
       setStatus('⚠ 同步失败，稍后自动重试', true);
       clearTimeout(retryTimer); retryTimer = setTimeout(pushDiff, 5000);
     }finally{ pushing = false; }
@@ -2301,14 +2339,15 @@ function exportMinutes(){
   }
   async function reconcile(){   // 订阅成功/断线重连后，补拉一次，防止漏掉变更
     if(mode !== 'shared') return;
-    const { data, error } = await sb.from('fw2_kv').select('key,value').eq('event_id', EVENT_ID);
+    const { data, error } = await sb.rpc('fw2_state_get', { p_event: EVENT_ID });
     if(!error && data){ data.forEach(r => handleRow(r.key, r.value)); const mm = readModel(); data.forEach(r => { if(r.key in mm) seen.add(r.key); }); }
   }
 
   async function enterShared(session){
-    if(entering || mode === 'shared') return;
+    if(entering || mode === 'shared' || blocked) return;
     entering = true; setStatus('连接云端…');
     try{
+      await checkVersion(); if(blocked) return;
       const adm = await sb.rpc('is_fw2_admin');
       if(adm.error) throw adm.error;
       if(adm.data !== true){
@@ -2320,7 +2359,7 @@ function exportMinutes(){
         if(window.fwOpenRosterImport) window.fwOpenRosterImport();
         return;
       }
-      const res = await sb.from('fw2_kv').select('key,value').eq('event_id', EVENT_ID);
+      const res = await sb.rpc('fw2_state_get', { p_event: EVENT_ID });
       if(res.error) throw res.error;
       const rows = res.data || [], live = {};
       rows.forEach(r => { if(r.value !== null && r.value !== undefined && r.value !== false) live[r.key] = r.value; });
@@ -2340,7 +2379,7 @@ function exportMinutes(){
       } else { known = {}; }
       try{ localStorage.removeItem(LOCAL_KEY); lastLocalJson = null; }catch(e){}
       channel = sb.channel('fw-' + EVENT_ID + '-' + CLIENT_ID)
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'fw2_kv', filter: 'event_id=eq.' + EVENT_ID }, onRemote)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'fw2_log', filter: 'event_id=eq.' + EVENT_ID }, onRemote)
         .subscribe(st => { if(st === 'SUBSCRIBED') reconcile(); });
       updateAuthUI();
       try{ const rr = await sb.rpc('fw2_roster_get', { p_event: EVENT_ID }); if(!rr.error && Array.isArray(rr.data)){ const nm = {}; rr.data.forEach(x => { nm[x.name] = x.note || null; }); roster.forEach(r => { r.note = nm[r.name] || null; }); if(typeof renderGrid === 'function') renderGrid(); } }catch(e){ console.warn('名单备注', e); }
@@ -2389,6 +2428,8 @@ function exportMinutes(){
   function initCloud(){
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     window.fwSb = sb; document.dispatchEvent(new Event('fw-sb-ready'));
+    checkVersion(); setInterval(checkVersion, 5 * 60 * 1000);
+    document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') checkVersion(); });
     if(authBtn) authBtn.hidden = false;
     updateAuthUI();
     sb.auth.onAuthStateChange((ev, session) => {
@@ -2410,6 +2451,8 @@ function exportMinutes(){
   function scheduleSave(){ dirty = true; clearTimeout(timer); timer = setTimeout(flush, 400); }
 
   if(loadLocal()) setStatus('已恢复本机草稿');
+  { const vt = document.createElement('div'); vt.id = 'fwVer'; vt.textContent = 'fw2 · v' + window.FW_PAGE_VERSION + ' · ' + EVENT_ID;   // 页面左下角显示版本号，一眼能看出是不是新版
+    vt.style.cssText = 'position:fixed;left:8px;bottom:6px;z-index:50;font:11px/1 system-ui,sans-serif;color:#8a9;pointer-events:none;'; document.body.appendChild(vt); }
   ['input', 'change'].forEach(ev => document.addEventListener(ev, e => {
     if(e.target && (e.target.id === 'attendSearch' || e.target.id === 'famGrade' || e.target.id === 'ntSize')) return;
     if(e.target && (e.target.id === 'authEmail' || e.target.id === 'authPass')) return;
