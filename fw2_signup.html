@@ -104,9 +104,9 @@
   <p class="lead" id="leadText">请选择你的名字，再填写参加人数、孩子专业，以及是否观看橄榄球比赛。填错了，重新选名字再提交一次，会覆盖上一次的答案。</p>
 
   <div class="notice" id="deadlineNotice">
-    <b>聚会时间</b>：【待填：聚会日期】<br>
-    【待填：聚会时间】<br>
-    <b>报名截止</b>：<b style="color:#c0392b">【待填：报名截止日期】</b>，请在此日期前完成报名
+    <b>聚会时间</b>：<span id="evDate">【待填：聚会日期】</span><br>
+    <span id="evTime">【待填：聚会时间】</span><br>
+    <b>报名截止</b>：<b style="color:#c0392b" id="evDeadline">【待填：报名截止日期】</b>，请在此日期前完成报名
   </div>
 
   <div class="notice" id="notOpenNotice" hidden>
@@ -210,11 +210,45 @@
 <script>
 // ======== 配置：与管理页（fw2.html）保持一致 ========
 // 这是“下一届”的报名页（fw2）：和已办完的 2026 聚会（fw_signup.html / fw2026）完全分开。
-// 开放报名之前，必须依次完成：① 把新名单导入后台表 fw2_roster ② 改下面公告里三处【待填】 ③ 填 cutoff ④ 把 SIGNUP_OPEN 改成 true
+// 开放报名只需要做 3 件事：① 把新名单导入后台（管理页“导入/更新名单”） ② 填好下面 EVENT_INFO 的四项 ③ 把 SIGNUP_OPEN 改成 true
+// 四项没填全、或名单是空的，页面都会保持“尚未开放”，不会把【待填】露给家长。
 const SIGNUP_OPEN = false;   // false = 页面只显示“尚未开放”，谁都提交不了
+const EVENT_INFO = {
+  date: '',       // 聚会日期，例：'2027年10月16日（周六）'
+  time: '',       // 聚会时间，例：'12:00–2:00 pm'
+  deadline: '',   // 报名截止（显示给家长看的文字），例：'2027年10月5日（周二）'
+  cutoff: ''      // 截止日的次日（美东时间，从这一天 00:00 起关闭报名），格式 YYYY-MM-DD，例：'2027-10-06'
+};
+const PAGE_VERSION = 1;      // 页面版本号：每次发布新版加 1；同时把后台 fw2_config 里 signup 的最低版本也改成一样的数字
 const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';   // anon 公开密钥，写入权限由数据库函数限定
 const EVENT_ID = 'fw2027';            // 必须与 fw2.html 里的 EVENT_ID 相同
+// ------ 版本检查：后台规定的最低版本高于本页面时，整页停用，必须重新打开新版 ------
+(function(){
+  let done = false;
+  function block(need){
+    if(done) return; done = true;
+    const d = document.createElement('div');
+    d.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font:16px/1.8 system-ui,sans-serif';
+    d.innerHTML = '<div><div style="font-size:20px;font-weight:700;margin-bottom:12px">⚠️ 报名页面版本过旧，已停用</div>当前版本 v' + PAGE_VERSION + '，需要 v' + need + ' 以上。<br>请点下面按钮重新加载；如果仍然提示，<br>请清除这个网站的浏览器缓存，或删除主屏幕图标后重新添加。<br><br><button type="button" style="font-size:16px;padding:10px 24px" onclick="location.href=location.pathname+\'?v=\'+Date.now()">重新加载最新版</button></div>';
+    document.body.appendChild(d);
+  }
+  async function check(){
+    if(done) return;
+    try{
+      const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/fw2_min_version', { method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+        body: JSON.stringify({ p_event: EVENT_ID, p_page: 'signup' }) });
+      if(!r.ok) return;
+      const need = await r.json();
+      if(typeof need === 'number' && PAGE_VERSION < need) block(need);
+    }catch(e){}
+  }
+  check(); setInterval(check, 5 * 60 * 1000);
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') check(); });
+  const vt = document.createElement('div'); vt.textContent = 'fw2 signup · v' + PAGE_VERSION + ' · ' + EVENT_ID;
+  vt.style.cssText = 'position:fixed;left:8px;bottom:6px;z-index:50;font:11px/1 system-ui,sans-serif;color:#8a9;pointer-events:none;'; document.body.appendChild(vt);
+})();
 // ==================================================
 
 // 家长名单：从后台读取（表 fw2_roster），页面里不再写死
@@ -241,13 +275,15 @@ const gradeOrder = (function(){ const g = {}; ROSTER.forEach(function(r){ g[r[1]
 const gradeLabel = g => g === '研究生' ? '研究生' : ('Class of 20' + g);
 
 const $ = id => document.getElementById(id);
+// 把配置里的日期、时间、截止日期填进公告
+[['evDate', 'date'], ['evTime', 'time'], ['evDeadline', 'deadline']].forEach(([id, k]) => { if(EVENT_INFO[k] && $(id)) $(id).textContent = EVENT_INFO[k]; });
+const INFO_READY = !!(EVENT_INFO.date && EVENT_INFO.time && EVENT_INFO.deadline && /^\d{4}-\d{2}-\d{2}$/.test(EVENT_INFO.cutoff));
 
 // 报名截止后（美东时间 2026年10月7日 00:00 起），只保留「查询缴费状态」和感谢语，其余内容隐藏
 // 用 Intl 把访问者本地时间换算成美东时间的日期字符串，不受访问者所在时区影响（America/New_York 会自动处理夏令时/标准时切换）
 function isAfterEasternCutoff(){
-  if(!SIGNUP_OPEN || !ROSTER.length) return true;   // 名单没导入/没读到，也不开放
-  const cutoff = '';   // 填 YYYY-MM-DD（截止日的次日，美东时间）；留空 = 一直显示已截止，开放前务必填好
-  if(!cutoff) return true;
+  if(!SIGNUP_OPEN || !INFO_READY || !ROSTER.length) return true;   // 没打开、信息没填全、名单没导入/没读到，都不开放
+  const cutoff = EVENT_INFO.cutoff;
    // 美东时间的日期，含当天 00:00 起视为已截止
   const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   return parts >= cutoff;   // en-CA 格式为 YYYY-MM-DD，可直接按字符串比较
@@ -255,7 +291,7 @@ function isAfterEasternCutoff(){
 function applyClosedState(){
   if(!isAfterEasternCutoff()) return;
   ['eyebrow','mainTitle','leadText','deadlineNotice','signupCard','footNote'].forEach(id => { const el = $(id); if(el) el.hidden = true; });
-  const cn = $((SIGNUP_OPEN && ROSTER.length) ? 'closedNotice' : 'notOpenNotice'); if(cn) cn.hidden = false;
+  const cn = $((SIGNUP_OPEN && INFO_READY && ROSTER.length) ? 'closedNotice' : 'notOpenNotice'); if(cn) cn.hidden = false;
 }
 applyClosedState();
 const sel = $('name'), guestsEl = $('guests'), majorEl = $('major'), msgEl = $('msg'), doneEl = $('done'), btn = $('submit'), nametagsBox = $('nametags'), nametagsField = $('nametagsField');
