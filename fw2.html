@@ -2590,6 +2590,7 @@ function exportMinutes(){
       const btns = document.createElement('div'); btns.className = 'bsec-btns';
       const mk = (label, cls, fn) => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'btn ' + cls; bt.textContent = label; bt.addEventListener('click', fn); btns.appendChild(bt); };
       if(!editing) mk('✏️ 编辑本块', 'ghost', () => secEdit(sec.key));
+      if(!editing && tplKindOf(sec.title)) mk('📌 存为模板', 'ghost', () => saveTplFromSection(sec));
       else {
         mk('＋ 加一行', 'ghost', () => {
           let at = sec.end; const last = budgetRows[sec.end - 1];
@@ -2758,16 +2759,51 @@ function exportMinutes(){
   })();
 
   // ---- 聚会采购明细：一键载入到预算表（再点「保存到后台」存下来；以后在「编辑」里直接改）----
+
+  // ---- 预算模板：优先用后台里的模板（fw2_templates），后台没有或读取失败时才用页面里内置的 ----
+  function tplKindOf(title){
+    title = String(title || '');
+    if(title.indexOf('聚会采购明细') === 0) return 'purchase';
+    if(title.indexOf('现场采购小票') === 0) return 'receipts';
+    if(title.indexOf('退款记录') === 0) return 'refunds';
+    if(title.indexOf('报销记录') === 0) return 'reimb';
+    return '';
+  }
+  async function tplRows(kind, fallback){
+    try{
+      const sb = window.fwSb;
+      if(sb){
+        const r = await sb.rpc('fw2_template_get', { p_event: EVENT() });
+        const rows = (r && !r.error && r.data) ? r.data[kind] : null;
+        if(Array.isArray(rows) && rows.length && rows.every(Array.isArray)) return rows;
+      }
+    }catch(e){ console.warn('fw2_template_get', e); }
+    return fallback;
+  }
+  function secLenAt(start, fallbackLen){   // 被替换的那一块现在实际有几行（不是模板有几行）
+    try{ const s = budgetSections().find(x => x.start === start); if(s) return s.end - s.start; }catch(e){}
+    return fallbackLen;
+  }
+  async function saveTplFromSection(sec){
+    const kind = tplKindOf(sec.title); if(!kind) return;
+    const sb = window.fwSb; if(!sb){ alert('未连接后台'); return; }
+    const rows = budgetRows.slice(sec.start, sec.end).map(r => r.map(c => String(c == null ? '' : c)));
+    if(!confirm('把「' + sec.title + '」这一块现在的内容（共 ' + rows.length + ' 行，含表头、合计行和里面所有数据行）存为后台模板？\n\n以后点「＋ 载入…」都会用它，下次活动也用。\n数据行也会一起存进去，不想带到下次的，请先删掉再存。\n旧模板会保留在后台历史里。')) return;
+    const r = await sb.rpc('fw2_template_set', { p_event: '*', p_kind: kind, p_rows: rows });
+    if(r.error){ alert('保存模板失败：' + r.error.message); return; }
+    $('budgetNote').textContent = '（已把「' + sec.title + '」存为后台模板，以后载入会用它）';
+  }
   const PURCHASE_ROWS = [["聚会采购明细（Temu）— 【待填：活动主题】"], ["商品", "采购人", "捐赠人", "采购（含税 $）", "家长聚会捐赠支出（含税 $）", "其他捐赠支出（含税$）", "数量", "规格", "订单号", "订购时间", "收到时间", "状态", "单价（$）", "商品小计（$）", "运费（$）", "税（$）", "含税合计（$）"], ["合计", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""], ["总计（含税合计）", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""], ["采购人均（按【人数】人）", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""], ["订单核对（收据实付 vs 明细表，差额 $0 表示一致）"], ["订单号", "商品内容", "类别", "下单日期", "商品小计（$）", "运费（$）", "税（$）", "收据实付（$）", "明细表含税合计（$）", "与明细表差额"], ["采购订单小计", "", "", "", "", "", "", "", "", ""], ["其他捐赠支出订单小计", "", "", "", "", "", "", "", "", ""], ["总计", "", "", "", "", "", "", "", "", ""], ["说明：（待填）"]];
   (function(){
     const btn = $('bPurchase'); if(!btn) return;
-    btn.addEventListener('click', () => {
-      const had = budgetRows ? budgetRows.findIndex(r => String(r[0] || '').indexOf('聚会采购明细（Temu）') === 0) : -1;
+    btn.addEventListener('click', async () => {
+      const TPL = await tplRows('purchase', PURCHASE_ROWS);
+      const had = budgetRows ? budgetRows.findIndex(r => String(r[0] || '').indexOf('聚会采购明细') === 0) : -1;
       if(had >= 0 && !confirm('预算表里已有一份采购明细，用最新的替换它？（你在那部分手动改过的内容会被覆盖）')) return;
       if(!budgetRows) budgetRows = [['预算与收支'], ['Item', 'Amount'], ['Total Estimated Receipts', ''], ['Total Estimated Cost', ''], ['Estimated Net Balance', '']];
       budgetBackup = JSON.stringify(budgetRows);
-      if(had >= 0) budgetRows.splice(had, PURCHASE_ROWS.length);
-      PURCHASE_ROWS.forEach(r => budgetRows.push(r.slice()));
+      if(had >= 0) budgetRows.splice(had, secLenAt(had, TPL.length));
+      TPL.forEach(r => budgetRows.push(r.slice()));
       budgetEdit = true; budgetUI(); renderBudget();
       $('budgetNote').textContent = '（已载入采购明细，确认无误后点「💾 保存到后台」；不想要点「取消」）';
     });
@@ -2777,13 +2813,14 @@ function exportMinutes(){
   const RECEIPT_ROWS = [["现场采购小票（Costco / ALDI / Walmart）— 【待填：日期范围】"], ["商店", "日期", "内容", "数量", "小计（$）", "税（$）", "含税合计（$）", "小票"], ["合计（现场采购小票）", "", "", "", "", "", "", ""]];
   (function(){
     const btn = $('bReceipts'); if(!btn) return;
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
+      const TPL = await tplRows('receipts', RECEIPT_ROWS);
       const had = budgetRows ? budgetRows.findIndex(r => String(r[0] || '').indexOf('现场采购小票') === 0) : -1;
       if(had >= 0 && !confirm('预算表里已有一份现场采购小票，用最新的替换它？（你在那部分手动改过的内容会被覆盖）')) return;
       if(!budgetRows) budgetRows = [['预算与收支'], ['Item', 'Amount'], ['Total Estimated Receipts', ''], ['Total Estimated Cost', ''], ['Estimated Net Balance', '']];
       budgetBackup = JSON.stringify(budgetRows);
-      if(had >= 0) budgetRows.splice(had, RECEIPT_ROWS.length);
-      RECEIPT_ROWS.forEach(r => budgetRows.push(r.slice()));
+      if(had >= 0) budgetRows.splice(had, secLenAt(had, TPL.length));
+      TPL.forEach(r => budgetRows.push(r.slice()));
       budgetEdit = true; budgetUI(); renderBudget();
       $('budgetNote').textContent = '（已载入现场采购小票，确认无误后点「💾 保存到后台」；不想要点「取消」）';
     });
@@ -2897,12 +2934,13 @@ function exportMinutes(){
   }
   (function(){
     const btn = $('bRefunds'); if(!btn) return;
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
+      const TPL = await tplRows('refunds', REFUND_ROWS);
       const had = budgetRows ? budgetRows.findIndex(r => String(r[0] || '').indexOf('退款记录') === 0) : -1;
       if(had >= 0){ alert('预算表里已经有「退款记录」，直接点「编辑」修改即可。'); return; }
       if(!budgetRows) budgetRows = [['预算与收支'], ['Item', 'Amount'], ['Total Estimated Receipts', ''], ['Total Estimated Cost', ''], ['Estimated Net Balance', '']];
       budgetBackup = JSON.stringify(budgetRows);
-      REFUND_ROWS.forEach(r => budgetRows.push(r.slice()));
+      TPL.forEach(r => budgetRows.push(r.slice()));
       budgetEdit = true; budgetUI(); renderBudget();
       $('budgetNote').textContent = '（已载入退款记录，填好后点「💾 保存到后台」；合计在保存后更新；不想要点「取消」）';
     });
@@ -2936,12 +2974,13 @@ function exportMinutes(){
   }
   (function(){
     const btn = $('bReimb'); if(!btn) return;
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
+      const TPL = await tplRows('reimb', REIMB_ROWS);
       const had = budgetRows ? budgetRows.findIndex(r => String(r[0] || '').indexOf('报销记录') === 0) : -1;
       if(had >= 0){ alert('预算表里已经有「报销记录」，直接点「编辑」修改即可。'); return; }
       if(!budgetRows) budgetRows = [['预算与收支'], ['Item', 'Amount'], ['Total Estimated Receipts', ''], ['Total Estimated Cost', ''], ['Estimated Net Balance', '']];
       budgetBackup = JSON.stringify(budgetRows);
-      REIMB_ROWS.forEach(r => budgetRows.push(r.slice()));
+      TPL.forEach(r => budgetRows.push(r.slice()));
       budgetEdit = true; budgetUI(); renderBudget();
       $('budgetNote').textContent = '（已载入报销记录，请填「垫付人」并更新状态，确认后点「💾 保存到后台」；不想要点「取消」）';
     });
