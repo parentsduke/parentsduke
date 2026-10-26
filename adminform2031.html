@@ -571,7 +571,6 @@
       <thead>
         <tr>
           <th style="min-width:80px;">操作</th>
-          <th class="person-th">伟</th>
           <th onclick="sortBy('qr_code_no')" style="min-width:60px;">入群码</th>
           <th>管理员备注</th>
           <th onclick="sortBy('wx_nickname')">微信昵称</th>
@@ -756,15 +755,15 @@
     const by = session?.user?.email || null;
     const at = new Date().toISOString();
     // 优先写入主表 handled_* 列；数据库还没加这些列时，退回只更新状态，操作人仍记录在审计表
-    let res = await db.from('admissions_submissions')
+    let res = await db.from('admissions_submissions_2031')
       .update({ ...fields, handled_by: by, handled_at: at, handled_action: label })
       .eq('id', recordId);
     if (res.error && /handled_/.test(res.error.message || '')) {
-      res = await db.from('admissions_submissions').update(fields).eq('id', recordId);
+      res = await db.from('admissions_submissions_2031').update(fields).eq('id', recordId);
     }
     if (res.error) throw new Error(res.error.message);
     try {
-      await db.from('admissions_edits').insert({
+      await db.from('admissions_edits_2031').insert({
         record_id: recordId, field: 'action', old_value: null, new_value: label,
         edited_by: by, edited_at: at,
       });
@@ -776,7 +775,7 @@
   // 主表没有 handled_* 列时，用审计表里每条记录最近一次操作补全
   async function mergeActionLog() {
     try {
-      const { data } = await db.from('admissions_edits')
+      const { data } = await db.from('admissions_edits_2031')
         .select('record_id,new_value,edited_by,edited_at')
         .eq('field', 'action')
         .order('edited_at', { ascending: false })
@@ -792,7 +791,7 @@
 
   async function loadRecords() {
     const { data, error } = await db
-      .from('admissions_submissions')
+      .from('admissions_submissions_2031')
       .select('*')
       .eq('class_year', 2031)
       .order('created_at', { ascending: false });
@@ -906,19 +905,6 @@
     return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
   }
 
-  // ── 人员标记（同步到 Supabase，三人共享） ──
-  const personCol = { '伟': 'mark_wei' };
-
-  async function saveMark(recordId, person, val) {
-    const col = personCol[person];
-    if (!col) return;
-    const update = {};
-    update[col] = val || null;
-    await db.from('admissions_submissions').update(update).eq('id', recordId);
-    const rec = allRecords.find(r => r.id === recordId);
-    if (rec) rec[col] = val || null;
-  }
-
   async function saveCommitted(recordId, val) {
     const update = {
       committed: val === 'true' ? true : val === 'false' ? false : null,
@@ -936,7 +922,16 @@
       }
     }
 
-    await db.from('admissions_submissions').update(update).eq('id', recordId);
+    const oldCommitted = rec && rec.committed != null ? String(rec.committed) : null;
+    await db.from('admissions_submissions_2031').update(update).eq('id', recordId);
+    try {
+      const { data: { session } } = await db.auth.getSession();
+      await db.from('admissions_edits_2031').insert({
+        record_id: recordId, field: 'committed', old_value: oldCommitted,
+        new_value: val || null, edited_by: session?.user?.email || null,
+        edited_at: new Date().toISOString(),
+      });
+    } catch (e) {}
     if (rec) {
       rec.committed    = update.committed;
       rec.committed_at = update.committed_at;
@@ -999,13 +994,13 @@
     }
 
     // 1. 更新主表
-    const { error } = await db.from('admissions_submissions').update({ [col]: clean }).eq('id', recordId);
+    const { error } = await db.from('admissions_submissions_2031').update({ [col]: clean }).eq('id', recordId);
 
     if (!error) {
       // 2. 写入审计表
       const { data: { session } } = await db.auth.getSession();
       const editedBy = session?.user?.email || null;
-      await db.from('admissions_edits').insert({
+      await db.from('admissions_edits_2031').insert({
         record_id:  recordId,
         field:      col,
         old_value:  oldValue,
@@ -1028,21 +1023,6 @@
         setTimeout(() => { inputEl.style.borderColor = '#ddd'; }, 1200);
       }
     }
-  }
-
-  function personCell(recordId, person, records) {
-    const col = personCol[person];
-    const rec = records.find(r => r.id === recordId);
-    const val = (rec && rec[col]) || '';
-    return `<td class="person-cell">
-      <select class="person-select" onchange="saveMark('${recordId}','${person}',this.value)" title="${person}">
-        <option value="" ${val===''?'selected':''}>—</option>
-        <option value="💙" ${val==='💙'?'selected':''}>💙</option>
-        <option value="✈️" ${val==='✈️'?'selected':''}>✈️</option>
-        <option value="⏸" ${val==='⏸'?'selected':''}>⏸</option>
-        <option value="⛔" ${val==='⛔'?'selected':''}>⛔</option>
-      </select>
-    </td>`;
   }
 
   // ── 内联编辑控件 ──
@@ -1203,7 +1183,6 @@
 
       return `<tr id="row-${r.id}"${r.left_group_at ? ' class="row-left-group"' : r.not_joined ? ' class="row-not-joined"' : ''}>
         <td style="text-align:center;padding:8px 6px;">${actionCell}</td>
-        ${personCell(r.id, '伟', allRecords)}
         <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:${r.qr_code_no ? '#003087' : 'var(--muted)'};">
           ${r.qr_code_no ? String.fromCharCode(65 + (Number(r.qr_code_no) - 1) % 10) : '—'}
         </td>
@@ -1553,7 +1532,7 @@
 
     try {
       const { data: records, error } = await db
-        .from('admissions_submissions')
+        .from('admissions_submissions_2031')
         .select('id, submitter_email, student_name_cn, student_name_en, committed')
         .eq('class_year', 2031)
         .eq('committed', true)
@@ -1616,7 +1595,7 @@
 
     // 查出2031届所有Committed=true且有邮箱的记录
     const { data: records, error } = await db
-      .from('admissions_submissions')
+      .from('admissions_submissions_2031')
       .select('id, submitter_email, student_name_cn, student_name_en, committed')
       .eq('class_year', 2031)
       .eq('committed', true)
