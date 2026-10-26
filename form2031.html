@@ -1263,9 +1263,9 @@
       if (error) throw new Error(error.message);
       const insertedId = insertedData?.id;
 
-      // ── 触发 notify-admin（邮件 + 方糖推送）──
+      // ── 触发 notify-admin-2031（邮件，发给 admins_2031 全部管理员）──
       try {
-        await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin', {
+        await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin-2031', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

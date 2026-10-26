@@ -651,7 +651,16 @@
   const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
   const BUCKET = 'admission-letters';
-  const ALLOWED_EMAILS = ['weihong_j@yahoo.com'];
+  const ALLOWED_EMAILS = [   // 与 Supabase 表 admins_2031 保持一致（8 位）
+    'acequ@139.com',
+    'cairong36@hotmail.com',
+    'haixia.du@gmail.com',
+    'liangaiye@gmail.com',
+    'weihong_j@yahoo.com',
+    'weili2023@yahoo.com',
+    'xuan211@hotmail.com',
+    'yazhongtao@gmail.com',
+  ];
 
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -726,9 +735,14 @@
   // ── Data ──
   // ── 状态操作统一入口：记录操作人/时间/动作，并写入审计表 ──
   const ACTION_ADMIN_NAMES = {
-    'lixiaobing@gmail.com':  '笑',
-    'weihong_j@yahoo.com':   '伟',
-    'tianluosuri@gmail.com': '金',
+    'acequ@139.com':         'Sophia',
+    'cairong36@hotmail.com': 'Rong',
+    'haixia.du@gmail.com':   'Haixia',
+    'liangaiye@gmail.com':   'Aiye',
+    'weihong_j@yahoo.com':   'Weihong',
+    'weili2023@yahoo.com':   'Wei',
+    'xuan211@hotmail.com':   'Ivy',
+    'yazhongtao@gmail.com':  'Mike',
   };
   const actionAdminName = e => (e && ACTION_ADMIN_NAMES[e]) || e || '';
 
@@ -1872,11 +1886,11 @@
     const isPortal  = type === 'portal';
     const isSid     = type === 'sid';
     const isAll     = type === 'all';
-    const uploadUrl = isDorm   ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=dorm`
-                    : isPortal ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=portal`
-                    : isSid    ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=sid`
-                    : isAll    ? `https://dukeparents.org/upload-cl.html?id=${recordId}&mode=all`
-                    :            `https://dukeparents.org/upload-cl.html?id=${recordId}`;
+    const uploadUrl = isDorm   ? `https://dukeparents.org/upload2031.html?id=${recordId}&mode=dorm`
+                    : isPortal ? `https://dukeparents.org/upload2031.html?id=${recordId}&mode=portal`
+                    : isSid    ? `https://dukeparents.org/upload2031.html?id=${recordId}&mode=sid`
+                    : isAll    ? `https://dukeparents.org/upload2031.html?id=${recordId}&mode=all`
+                    :            `https://dukeparents.org/upload2031.html?id=${recordId}`;
     const subject   = isLetter ? '请上传您的录取通知书 · 扯谈Duke家长群'
                     : isDorm   ? '请上传宿舍照片 · 扯谈Duke家长群'
                     : isPortal ? '请上传 Duke Portal 截屏 · 扯谈Duke家长群'
