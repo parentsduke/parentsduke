@@ -571,7 +571,6 @@
       <thead>
         <tr>
           <th style="min-width:80px;">操作</th>
-          <th onclick="sortBy('qr_code_no')" style="min-width:60px;">入群码</th>
           <th>管理员备注</th>
           <th onclick="sortBy('wx_nickname')">微信昵称</th>
           <th onclick="sortBy('committed')">Committed</th>
@@ -660,6 +659,12 @@
       const { data, error } = await db.rpc('is_admin_2031');
       return !error && data === true;
     } catch (e) { return false; }
+  }
+
+  // 调用 Edge Function 时带上当前管理员的登录令牌（而不是公开的 anon key）
+  async function authHeader() {
+    const { data: { session } } = await db.auth.getSession();
+    return 'Bearer ' + (session?.access_token || SUPABASE_ANON_KEY);
   }
 
   let allRecords = [];
@@ -1183,9 +1188,6 @@
 
       return `<tr id="row-${r.id}"${r.left_group_at ? ' class="row-left-group"' : r.not_joined ? ' class="row-not-joined"' : ''}>
         <td style="text-align:center;padding:8px 6px;">${actionCell}</td>
-        <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:${r.qr_code_no ? '#003087' : 'var(--muted)'};">
-          ${r.qr_code_no ? String.fromCharCode(65 + (Number(r.qr_code_no) - 1) % 10) : '—'}
-        </td>
         <td><input
           type="text"
           value="${r.admin_notes || ''}"
@@ -1313,11 +1315,11 @@
       const { data: { session } } = await db.auth.getSession();
       const approvedBy = session?.user?.email || '未知管理员';
       const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
-      await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+      await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-2031`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Authorization': await authHeader(),
         },
         body: JSON.stringify({
           email:      'weihong_j@yahoo.com',
@@ -1377,11 +1379,11 @@
       const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
 
       // 调用发邮件 Edge Function
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-2031`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Authorization': await authHeader(),
         },
         body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id }),
       });
@@ -1662,11 +1664,11 @@
 
         const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
 
-        const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-2031`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Authorization': await authHeader(),
           },
           body: JSON.stringify({
             email, studentName, link,
@@ -1724,11 +1726,11 @@
 
       const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
 
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-2031`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Authorization': await authHeader(),
         },
         body: JSON.stringify({
           email, studentName, link,
@@ -1914,9 +1916,9 @@
         replyTo: 'parentsduke@gmail.com', bodyLine1: line1, bodyLine2: line2, buttonText };
       if (line3) payload.bodyLine3 = line3;
 
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-2031`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+        headers: { 'Content-Type': 'application/json', 'Authorization': await authHeader() },
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(await res.text());
@@ -1959,11 +1961,11 @@
 
       const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
 
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-2031`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Authorization': await authHeader(),
         },
         body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id }),
       });
