@@ -651,19 +651,17 @@
   const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
   const BUCKET = 'admission-letters';
-  const ALLOWED_EMAILS = [   // 与 Supabase 表 admins_2031 保持一致（8 位）
-    'acequ@139.com',
-    'cairong36@hotmail.com',
-    'haixia.du@gmail.com',
-    'liangaiye@gmail.com',
-    'weihong_j@yahoo.com',
-    'weili2023@yahoo.com',
-    'xuan211@hotmail.com',
-    'yazhongtao@gmail.com',
-  ];
 
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ── 管理员校验：只看服务器端 is_admin_2031()（即 admins_2031 表） ──
+  async function isAdminServer() {
+    try {
+      const { data, error } = await db.rpc('is_admin_2031');
+      return !error && data === true;
+    } catch (e) { return false; }
+  }
 
   let allRecords = [];
   let sortCol = 'created_at';
@@ -674,7 +672,7 @@
     const { data: { session } } = await db.auth.getSession();
     if (session) {
       const email = session.user.email;
-      if (!ALLOWED_EMAILS.includes(email)) {
+      if (!(await isAdminServer())) {
         await db.auth.signOut();
         showLoginError('此账号无管理员权限');
         return;
@@ -689,7 +687,6 @@
     const btn = document.getElementById('btnLogin');
 
     if (!email || !password) { showLoginError('请填写邮箱和密码'); return; }
-    if (!ALLOWED_EMAILS.includes(email)) { showLoginError('此账号无管理员权限'); return; }
 
     btn.disabled = true;
     btn.textContent = '登录中…';
@@ -698,6 +695,14 @@
     const { data, error } = await db.auth.signInWithPassword({ email, password });
     if (error) {
       showLoginError('登录失败：' + error.message);
+      btn.disabled = false;
+      btn.textContent = '登 录';
+      return;
+    }
+    // 登录成功后再向服务器确认是否在 admins_2031 中
+    if (!(await isAdminServer())) {
+      await db.auth.signOut();
+      showLoginError('此账号无管理员权限');
       btn.disabled = false;
       btn.textContent = '登 录';
       return;
