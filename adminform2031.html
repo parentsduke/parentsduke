@@ -644,6 +644,18 @@
   </div>
 </div>
 
+<!-- 处理历史模态框 -->
+<div class="modal-overlay" id="histModal" onclick="if(event.target===this)closeHistoryModal()">
+  <div class="modal-card" style="max-width:640px;">
+    <div class="modal-title">全部处理历史</div>
+    <div class="modal-sub" id="histModal-sub"></div>
+    <div id="histModal-body" style="font-size:13px;"></div>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeHistoryModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = 'https://ritglkwqpwlcjwemhfqd.supabase.co';
@@ -792,6 +804,36 @@
         if (e && !r.handled_by) { r.handled_by = e.edited_by; r.handled_at = e.edited_at; r.handled_action = e.new_value; }
       });
     } catch (e) { console.warn('[读取操作审计失败]', e.message); }
+  }
+
+  // ── 全部处理历史（来自审计表 admissions_edits_2031，每次操作新增一行，不覆盖）──
+  function closeHistoryModal() { document.getElementById('histModal').classList.remove('open'); }
+  async function openHistoryModal(recordId) {
+    const rec = allRecords.find(r => r.id === recordId);
+    const name = rec ? (rec.student_name_cn || rec.student_name_en || '') : '';
+    document.getElementById('histModal-sub').textContent = name + (rec && rec.submitter_email ? `（${rec.submitter_email}）` : '');
+    const body = document.getElementById('histModal-body');
+    body.innerHTML = '<div style="color:var(--muted);padding:12px 0;">加载中…</div>';
+    document.getElementById('histModal').classList.add('open');
+    const esc = v => String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const fmtVal = v => (v === null || v === undefined || v === '') ? '<span style="color:var(--muted);">空</span>' : esc(v === 'true' ? '是' : v === 'false' ? '否' : v);
+    const { data, error } = await db.from('admissions_edits_2031')
+      .select('field,old_value,new_value,edited_by,edited_at')
+      .eq('record_id', recordId)
+      .order('edited_at', { ascending: false });
+    if (error) { body.innerHTML = '<div style="color:var(--red);">加载失败：' + esc(error.message) + '</div>'; return; }
+    if (!data || !data.length) { body.innerHTML = '<div style="color:var(--muted);padding:12px 0;">暂无历史记录</div>'; return; }
+    const rows = data.map(e => {
+      const t = e.edited_at ? new Date(e.edited_at).toLocaleString('zh-CN', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+      const what = e.field === 'action'
+        ? `<strong>${fmtVal(e.new_value)}</strong>`
+        : `${esc(e.field)}：${fmtVal(e.old_value)} → ${fmtVal(e.new_value)}`;
+      return `<tr><td style="white-space:nowrap;padding:6px 10px 6px 0;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">${esc(t)}</td>`
+           + `<td style="white-space:nowrap;padding:6px 10px;"><strong>${esc(actionAdminName(e.edited_by))}</strong></td>`
+           + `<td style="padding:6px 0;">${what}</td></tr>`;
+    }).join('');
+    body.innerHTML = `<table style="width:100%;border-collapse:collapse;"><tbody>${rows}</tbody></table>`
+      + `<div style="margin-top:10px;color:var(--muted);font-size:12px;">共 ${data.length} 条（纽约时间，最新在前）</div>`;
   }
 
   async function loadRecords() {
@@ -1133,6 +1175,7 @@
       const handledCell = r.handled_by
         ? `<span style="font-size:12px;font-family:'DM Mono',monospace;line-height:1.6;white-space:nowrap;"><strong>${fwEsc(actionAdminName(r.handled_by))}</strong> · ${fwEsc(r.handled_action || '')}<br><span style="color:var(--muted);">${r.handled_at ? new Date(r.handled_at).toLocaleString('zh-CN', { timeZone: 'America/New_York', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : ''}</span></span>`
         : '<span class="no-file">—</span>';
+      const handledCellClickable = `<div onclick="openHistoryModal('${r.id}')" style="cursor:pointer;" title="点击查看全部历史">${handledCell}<div style="font-size:11px;color:var(--blue);margin-top:2px;">全部历史 ›</div></div>`;
 
       const catalItems = r.submitter_email
         ? `<button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');openCataModal('${r.id}','${safeEmail}','${safeName}','${r.class_year||''}')">📧 催信</button>`
@@ -1228,7 +1271,7 @@
         <td>${sidCell}</td>
         <td>${fwCell}</td>
         <td>${campusCell}</td>
-        <td>${handledCell}</td>
+        <td>${handledCellClickable}</td>
       </tr>`;
     }).join('');
   }
