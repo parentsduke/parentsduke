@@ -376,7 +376,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
 
     try {
       const { data, error } = await db
-        .from('admissions_submissions')
+        .from('admissions_submissions_2031')
         .select('id, student_name_cn, student_name_en, class_year, admission_type, committed_letter_path, dorm_photo_path, dorm_building, portal_screenshot_path, student_id_path')
         .eq('id', recordId)
         .single();
@@ -655,7 +655,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
 
       // 读取现有路径，合并为数组（追加模式）
       const { data: current } = await db
-        .from('admissions_submissions')
+        .from('admissions_submissions_2031')
         .select(dbField)
         .eq('id', recordId)
         .single();
@@ -680,7 +680,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
       }
 
       const { error: updErr } = await db
-        .from('admissions_submissions')
+        .from('admissions_submissions_2031')
         .update(updatePayload)
         .eq('id', recordId);
 

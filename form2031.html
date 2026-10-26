@@ -1124,7 +1124,7 @@
 
     try {
       // 检查邮箱或姓名是否已提交过申请（串行，命中即拦截）
-      const dupEmail = await db.from('admissions_submissions')
+      const dupEmail = await db.from('admissions_submissions_2031')
         .select('id')
         .eq('submitter_email', submitterEmail)
         .limit(1);
@@ -1135,7 +1135,7 @@
       }
       const hasChineseName = nameCn && !nameCn.includes('不适用');
       if (hasChineseName) {
-        const dupNameCn = await db.from('admissions_submissions')
+        const dupNameCn = await db.from('admissions_submissions_2031')
           .select('id').eq('student_name_cn', nameCn).limit(1);
         if (dupNameCn.data && dupNameCn.data.length > 0) {
           btn.disabled = false; btn.textContent = '提 交';
@@ -1144,7 +1144,7 @@
         }
       }
       if (nameEn && nameEn.trim().length > 1) {
-        const dupNameEn = await db.from('admissions_submissions')
+        const dupNameEn = await db.from('admissions_submissions_2031')
           .select('id').ilike('student_name_en', nameEn.trim()).limit(1);
         if (dupNameEn.data && dupNameEn.data.length > 0) {
           btn.disabled = false; btn.textContent = '提 交';
@@ -1254,10 +1254,10 @@
         wx_nickname:       wx_nickname || null,
       };
 
-      let ins = await db.from('admissions_submissions').insert(payload).select('id').single();
+      let ins = await db.from('admissions_submissions_2031').insert(payload).select('id').single();
       if (ins.error && /campus_event/.test(ins.error.message || '')) {   // 数据库还没加新列：去掉新列重试（活动信息已写进备注）
         delete payload.campus_event_attended; delete payload.campus_event_name; delete payload.campus_event_date; delete payload.campus_event_known_parent;
-        ins = await db.from('admissions_submissions').insert(payload).select('id').single();
+        ins = await db.from('admissions_submissions_2031').insert(payload).select('id').single();
       }
       const insertedData = ins.data, error = ins.error;
       if (error) throw new Error(error.message);
@@ -1300,7 +1300,7 @@
     try {
       // Get current active QR code
       const { data, error } = await db
-        .from('qr_codes')
+        .from('qr_codes_2031')
         .select('*')
         .eq('is_active', true)
         .order('sort_order', { ascending: true })
@@ -1319,13 +1319,13 @@
       if (labelEl) labelEl.textContent = data.label || 'Duke 家长入群驿站';
 
       // Rotate: mark current as used, activate next one
-      await db.from('qr_codes')
+      await db.from('qr_codes_2031')
         .update({ is_active: false, used_at: new Date().toISOString() })
         .eq('id', data.id);
 
       // Activate the next QR (lowest sort_order that is not yet used, only q1–q3)
       const { data: nextQR } = await db
-        .from('qr_codes')
+        .from('qr_codes_2031')
         .select('id')
         .eq('is_active', false)
         .is('used_at', null)
@@ -1335,15 +1335,15 @@
         .single();
 
       if (nextQR) {
-        await db.from('qr_codes')
+        await db.from('qr_codes_2031')
           .update({ is_active: true })
           .eq('id', nextQR.id);
       } else {
         // q1–q3 都用完了，重置循环，从第一条重新开始
-        await db.from('qr_codes')
+        await db.from('qr_codes_2031')
           .update({ is_active: false, used_at: null })
           .lte('sort_order', 3);
-        await db.from('qr_codes')
+        await db.from('qr_codes_2031')
           .update({ is_active: true })
           .eq('sort_order', 1);
       }
