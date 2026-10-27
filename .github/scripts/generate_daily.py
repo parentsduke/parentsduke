@@ -65,9 +65,12 @@ RSS_FEEDS = {
     'undergrad':        'https://news.google.com/rss/search?q=Duke+undergraduate+site:undergrad.duke.edu&hl=en-US&gl=US&ceid=US:en',
     'interdisciplinary':'https://today.duke.edu/tags/interdisciplinary-studies/rss',
     'visa':             'https://news.google.com/rss/search?q=Duke+University+international+student+visa+F1+J1&hl=en-US&gl=US&ceid=US:en',
-    'goduke_mbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=MBB',
-    'goduke_wbb':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200&Sport=WBB',
-    'goduke_all':       'https://goduke.com/RSSFeed.dbml?DB_OEM_ID=4200',
+    # goduke.com 现为 SIDEARM 系统，RSS 格式为 rss.aspx?path=xxx（旧 RSSFeed.dbml 已失效）
+    'goduke_mbb':       'https://goduke.com/rss.aspx?path=mbball',
+    'goduke_wbb':       'https://goduke.com/rss.aspx?path=wbball',
+    'goduke_all':       'https://goduke.com/rss.aspx?path=general',
+    # Google News 兜底：男篮/女篮新闻与战报（goduke + Chronicle）
+    'goduke_mbb_gn':    'https://news.google.com/rss/search?q=Duke+basketball+(site:goduke.com+OR+site:dukechronicle.com)&hl=en-US&gl=US&ceid=US:en',
     # 橄榄球（football）：goduke.com的Sport参数代码未经验证，不确定是否为"FB"，
     # 为避免抓空，改用与chronicle/today等栏目一致的Google News站内搜索方式，
     # 覆盖goduke.com和dukechronicle.com两个信源，更稳妥。
@@ -698,6 +701,56 @@ def fetch_source(name, max_items=8):
                                          ['h2 a','h3 a','.views-row a'], max_items)
     return []
 
+def fetch_espn_schedule(gender='mens', team_id=150, label='男篮'):
+    """从 ESPN 公开接口抓 Duke 篮球完整赛程：已结束的带比分，未开始的带日期/对手/转播。
+    gender: 'mens' 或 'womens'。Duke 的 ESPN team id 为 150。失败返回空串，不影响其他来源。"""
+    url = (f'https://site.api.espn.com/apis/site/v2/sports/basketball/'
+           f'{gender}-college-basketball/teams/{team_id}/schedule')
+    try:
+        data = requests.get(url, headers=HEADERS, timeout=15).json()
+    except Exception as ex:
+        print(f'  ESPN {label} 赛程失败: {ex}')
+        return ''
+    def _score(c):
+        sc = c.get('score')
+        if isinstance(sc, dict):
+            return sc.get('displayValue') or str(sc.get('value', ''))
+        return str(sc) if sc is not None else ''
+    past, upcoming = [], []
+    for ev in data.get('events', []):
+        try:
+            comp = ev['competitions'][0]
+            dt = datetime.strptime(ev['date'][:10], '%Y-%m-%d')
+            d_str = f"{dt.year}年{dt.month}月{dt.day}日"
+            teams = comp['competitors']
+            duke = next(t for t in teams if str(t['team'].get('id')) == str(team_id))
+            opp  = next(t for t in teams if t is not duke)
+            where = '主场' if duke.get('homeAway') == 'home' else '客场'
+            if comp.get('neutralSite'):
+                where = '中立场'
+            opp_name = opp['team'].get('displayName', '')
+            status = comp.get('status', {}).get('type', {})
+            if status.get('completed'):
+                ds, os_ = _score(duke), _score(opp)
+                result = '胜' if duke.get('winner') else '负'
+                past.append(f"- [{d_str}] {label} {where} vs {opp_name}：Duke {result}，比分 {ds}-{os_}")
+            else:
+                bc = ''
+                try:
+                    bc = '，转播：' + '/'.join(b['media']['shortName'] for b in comp.get('broadcasts', []))
+                except Exception:
+                    pass
+                upcoming.append(f"- [{d_str}] {label} {where} vs {opp_name}（未开赛）{bc}")
+        except Exception:
+            continue
+    lines = []
+    if past:
+        lines.append(f'【{label}已结束比赛（含比分）】'); lines += past
+    if upcoming:
+        lines.append(f'【{label}未来赛程】'); lines += upcoming
+    print(f'  ESPN {label}: 已结束{len(past)} 未来{len(upcoming)}')
+    return '\n'.join(lines)
+
 def fetch_calendar():
     try:
         feed = feedparser.parse(DUKE_EVENTS_CALENDAR_URL, request_headers=HEADERS)
@@ -1036,7 +1089,8 @@ def filter_expired_text(text, today=None):
     return '\n'.join(filtered)
 
 
-def generate_section(section_name, items, extra='', allow_political=False):
+def generate_section(section_name, items, extra='', allow_political=False,
+                     allow_past_results=False, max_items=5):
     today = datetime.now()
     date_hint = f"{today.year}年{today.month}月{today.day}日"
 
@@ -1063,7 +1117,8 @@ def generate_section(section_name, items, extra='', allow_political=False):
     # 这里对拼好的完整文本（标题+摘要+extra）统一做一次逐行日期过滤，
     # 双保险：无论过期日期出现在标题、摘要还是官网正文里都会被剔除，
     # 不再单纯依赖AI自觉遵守"严格日期过滤"的文字规则。
-    news_text = filter_expired_text(news_text, GLOBAL_MIN_DATE)
+    if not allow_past_results:
+        news_text = filter_expired_text(news_text, GLOBAL_MIN_DATE)
 
     # 关键修复（对应本次问题）：上面的过滤是"逐行"删除的，items/extra 在
     # 过滤前不为空，不代表过滤后 news_text 还有内容——如果所有条目都因为
@@ -1092,6 +1147,16 @@ def generate_section(section_name, items, extra='', allow_political=False):
         f'- 同时，任何截止日期/活动日期早于今天（{today_str}）的条目也一律不得出现\n'
         '- 如果某条内容的日期无法确认是否已过期，为安全起见也不要输出\n'
     )
+    if allow_past_results:
+        # 体育板块：比赛结果是已经发生的事，必须保留；不做"早于今天即过期"的删除
+        year_rule = (
+            '- 【体育板块规则】Duke 篮球（男篮+女篮）的所有比赛信息都要完整保留：'
+            '已结束的比赛必须写明日期、对手、胜负和比分；未来赛程写明日期、对手、地点、转播\n'
+            '- 已经打完的比赛不属于"过期内容"，绝对不要因为日期早于今天而省略\n'
+            '- 先列已结束比赛（按日期从新到旧），再列未来赛程（按日期从近到远）\n'
+            '- 表演赛/热身赛（exhibition/scrimmage）也要列出，并注明是表演赛\n'
+            '- 比分和对手必须严格来自原始内容，没有的数据不要编造\n'
+        )
     if '招生' in section_name:
         year_rule += (
             f'- 只保留今天（{today_str}）及以后的招生信息，过期内容一律排除，包括已过期的Blue Devil Days日期\n'
@@ -1109,7 +1174,7 @@ def generate_section(section_name, items, extra='', allow_political=False):
         "要求：\n"
         "- 用中文，简洁易懂，每条标注日期（如已知）\n"
         "- 每条一个<li>，格式：<ul><li>...</li></ul>\n"
-        "- 最多5条，优先最新/最紧迫内容\n"
+        f"- 最多{max_items}条，优先最新/最紧迫内容\n"
         "- 链接用<a href=\"链接\" target=\"_blank\">标题</a>格式\n"
         f"{political_rule}"
         f"{year_rule}"
@@ -1546,6 +1611,9 @@ def main():
                 'goduke_mbb':      ex.submit(fetch_source, 'goduke_mbb', 5),
                 'goduke_wbb':      ex.submit(fetch_source, 'goduke_wbb', 3),
                 'goduke_all':      ex.submit(fetch_source, 'goduke_all', 3),
+                'goduke_mbb_gn':   ex.submit(fetch_source, 'goduke_mbb_gn', 8),
+                'espn_mbb':        ex.submit(fetch_espn_schedule, 'mens', 150, '男篮'),
+                'espn_wbb':        ex.submit(fetch_espn_schedule, 'womens', 150, '女篮'),
                 'goduke_fb':       ex.submit(fetch_source, 'goduke_fb', 5),
                 'athletics':       ex.submit(fetch_source, 'athletics', 3),
                 'admissions':      ex.submit(fetch_source, 'admissions', 5),
@@ -1577,7 +1645,8 @@ def main():
     r = fetch_all()
 
     school_items     = r['today'] + r['news']
-    basketball_items = r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_all'] + r['athletics']
+    basketball_items = (r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_all'] +
+                        r['goduke_mbb_gn'] + r['athletics'])
     admissions_items = r['admissions'] + r['admissions_site']
 
     # ── Python层面先过滤过期日期，再交给AI（所有栏目统一执行，不再局限于招生）──
@@ -1601,7 +1670,6 @@ def main():
 
     admissions_items = _drop_expired_items(admissions_items)
     school_items     = _drop_expired_items(school_items)
-    basketball_items = _drop_expired_items(basketball_items)
     campus_items     = (r['campus'] + r['dsg'] + r['students'] + r['dukeengage'] +
                         r['undergrad'] + r['interdisciplinary'] + r['focus'] +
                         r['library'] + r['careerhub_outcomes'])
@@ -1634,7 +1702,11 @@ def main():
         BASKETBALL_EXTRA += "\n以上比赛仅在Amazon Prime Video播出，需订阅才能观看。"
     else:
         BASKETBALL_EXTRA = ""
-    football_items   = _drop_expired_items(r['goduke_fb'])
+    # ESPN 完整赛程/比分（男篮+女篮）：已结束的带比分，未来的带日期
+    _espn = '\n\n'.join(x for x in (r['espn_mbb'], r['espn_wbb']) if x)
+    if _espn:
+        BASKETBALL_EXTRA = (BASKETBALL_EXTRA + '\n\n' + _espn).strip()
+    football_items   = r['goduke_fb']  # 已按发布日期过滤，不再二次删除
 
     # Family Weekend 独立栏目：活动结束后页面日期被逐行过滤掉，文本为空，栏目自动不显示
     FW_EXTRA = r['family_weekend_text']
@@ -1644,8 +1716,9 @@ def main():
 
     tasks = {
         'weekly-school':       lambda: generate_section('学校新闻', school_items),
-        'weekly-basketball':   lambda: generate_section('篮球/体育动态', basketball_items, extra=BASKETBALL_EXTRA),
-        'weekly-football':     lambda: generate_section('橄榄球', football_items),
+        'weekly-basketball':   lambda: generate_section('篮球/体育动态', basketball_items, extra=BASKETBALL_EXTRA,
+                                                         allow_past_results=True, max_items=15),
+        'weekly-football':     lambda: generate_section('橄榄球', football_items, allow_past_results=True),
         'weekly-admissions':   lambda: generate_section('招生信息', admissions_items, extra=r['admissions_text']),
         'weekly-calendar':     lambda: generate_calendar_section(calendar_items),
         'weekly-registration': lambda: generate_registration_section(r['reg_text'], r['housing_text']),
