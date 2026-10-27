@@ -64,7 +64,7 @@ function render(){
     else{c+='<select id="sel"><option value="">选择你的名字</option>';
       cfg.names.forEach(function(n,i){c+='<option value="'+i+'"'+(String(i)===selI?' selected':'')+'>'+esc(n)+'</option>'});
       c+='</select><input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="设置4到6位数字密码" style="margin-top:8px"><button id="cl"'+(busy?' disabled':'')+'>认领</button>'}
-    c+='<div id="msg">'+esc(msgT)+'</div><div class="mut">如果你的名字显示"已认领"但不是你本人操作的,请立刻告诉管理员重置。</div></div>';
+    c+='<div id="msg">'+esc(msgT)+'</div></div>';
     A.innerHTML=c;
     if($('sel'))$('sel').onchange=function(){selI=this.value};
     if($('cl'))$('cl').onclick=claim;return;
