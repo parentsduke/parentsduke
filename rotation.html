@@ -57,7 +57,7 @@ function render(){
   if(!ready)return;var A=$('app');
   if(!cfg){A.innerHTML='<div class="card mut">名单尚未初始化</div>';return}
   if(claimed.length<cfg.names.length){
-    var c='<div class="card"><div class="mut">认领阶段:每人选自己的名字并设置密码,7人全部认领后才开始抽签</div><table style="margin:8px 0"><tr><th>成员</th><th>状态</th></tr>';
+    var c='<div class="card"><div class="mut">认领阶段: 每人选自己的名字并设置密码, 7人全部认领后才开始抽签</div><table style="margin:8px 0"><tr><th>成员</th><th>状态</th></tr>';
     cfg.names.forEach(function(n,i){c+='<tr><td>'+esc(n)+'</td><td>'+(claimed.indexOf(i)>=0?'<span class="a">已认领</span>':'<span class="mut">未认领</span>')+'</td></tr>'});
     c+='</table>';
     if(me>=0)c+='<div class="mut" style="text-align:center">你已认领:'+esc(cfg.names[me])+',等待其他人</div>';
