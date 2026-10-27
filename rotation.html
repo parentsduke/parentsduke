@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>群主群管轮换抽签 - 扯谈Duke群</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1c1f24;--mut:#6b7280;--ac:#2563eb;--bd:#e5e7eb;--own:#d97706;--adm:#059669;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#1a1d23;--tx:#eceef2;--mut:#9aa1ad;--ac:#60a5fa;--bd:#2b2f38;--own:#fbbf24;--adm:#34d399;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#1a1d23;--tx:#eceef2;--mut:#9aa1ad;--ac:#60a5fa;--bd:#2b2f38;--own:#fbbf24;--adm:#34d399;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+main{max-width:520px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:4px 0 12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+input,select{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font-size:16px}
+button{font-size:16px;border:0;border-radius:12px;padding:14px;background:var(--ac);color:#fff;width:100%;font-weight:600;margin-top:10px}
+button:disabled{opacity:.5}
+.mut{color:var(--mut);font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td,th{padding:7px 4px;border-bottom:1px solid var(--bd);text-align:center}
+th{color:var(--mut);font-weight:500;font-size:13px}
+td:first-child,th:first-child{text-align:left}
+.o{color:var(--own);font-weight:700}.a{color:var(--adm);font-weight:700}
+#me{text-align:center;font-size:30px;font-weight:800;padding:14px 0;min-height:70px}
+#msg{color:#dc2626;font-size:14px;min-height:20px;margin-top:6px;text-align:center}
+</style></head><body><main>
+<h1>群主/群管 轮换抽签</h1>
+<div id="app"><div class="card mut">加载中...</div></div>
+<script>
+var SB='https://ritglkwqpwlcjwemhfqd.supabase.co';
+var KEY='PASTE_SITE_ANON_KEY_HERE'; /* 填入index.html里已有的同一个anon/publishable key */
+var uid='',cfg=null,rev=[],selI='',busy=false,ready=false,msgT='',last='';
+try{uid=localStorage.getItem('rot_uid');if(!uid){uid='u'+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('rot_uid',uid)}}catch(e){uid='u'+Math.random().toString(36).slice(2)}
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function api(p,o){o=o||{};o.headers=Object.assign({apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'},o.headers||{});return fetch(SB+'/rest/v1/'+p,o)}
+function rng(s){return function(){s|=0;s=s+0x6D2B79F5|0;var t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuf(a,r){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function draw(N,hist,r){
+  var cyc=hist.slice(Math.floor(hist.length/N)*N),lastH=hist.length?hist[hist.length-1]:null;
+  var lt=lastH?[lastH.o].concat(lastH.a):[],all=[];for(var i=0;i<N;i++)all.push(i);
+  var used=cyc.map(function(h){return h.o}),pool=all.filter(function(n){return used.indexOf(n)<0});
+  var fresh=pool.filter(function(n){return lt.indexOf(n)<0});
+  var o=shuf(fresh.length?fresh:pool,r)[0],cnt={};all.forEach(function(n){cnt[n]=0});
+  cyc.forEach(function(h){h.a.forEach(function(x){cnt[x]++})});
+  var cand=all.filter(function(n){return n!==o});
+  var ord=function(a){return shuf(a,r).sort(function(x,y){return cnt[x]-cnt[y]})};
+  var f=ord(cand.filter(function(n){return lt.indexOf(n)<0})),g=ord(cand.filter(function(n){return lt.indexOf(n)>=0}));
+  return {o:o,a:f.concat(g).slice(0,2)};
+}
+function sched(upTo){var r=rng(cfg.seed),h=[];for(var k=0;k<=upTo;k++)h.push(draw(cfg.names.length,h,r));return h}
+function role(s,i){return s.o===i?'群主':(s.a.indexOf(i)>=0?'群管':'成员')}
+function cls(x){return x==='群主'?'o':(x==='群管'?'a':'')}
+function mlabel(k){var y=+cfg.start.slice(0,4),m=+cfg.start.slice(5,7)-1+k;return (y+Math.floor(m/12))+'年'+(m%12+1)+'月'}
+function curMonth(){var N=cfg.names.length;for(var k=0;;k++){if(rev.filter(function(x){return x.m===k}).length<N)return k}}
+function render(){
+  if(!ready)return;var A=$('app');
+  if(!cfg){
+    var d=new Date(),ym=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),h='<div class="card"><div class="mut" style="margin-bottom:8px">首次使用:填写7位成员名字和起始月份(创建后不可修改)</div><div class="grid">';
+    for(var i=0;i<7;i++)h+='<input class="nm" placeholder="成员'+(i+1)+'">';
+    A.innerHTML=h+'</div><input type="month" id="st" value="'+ym+'" style="margin-top:8px"><button id="mk">创建</button><div id="msg">'+esc(msgT)+'</div></div>';
+    $('mk').onclick=create;return;
+  }
+  var N=cfg.names.length,k=curMonth(),S=sched(k),cur=S[k],mine=rev.filter(function(x){return x.m===k&&x.uid===uid})[0];
+  var h='<div class="card"><div class="mut">'+mlabel(k)+'　已抽'+rev.filter(function(x){return x.m===k}).length+'/'+N+'</div>';
+  h+='<div id="me">'+(mine?'<span class="'+cls(role(cur,mine.i))+'">'+esc(cfg.names[mine.i])+':'+role(cur,mine.i)+'</span>':'')+'</div>';
+  if(!mine){
+    h+='<select id="sel"><option value="">选择你的名字</option>';
+    cfg.names.forEach(function(n,i){var tk=rev.some(function(x){return x.m===k&&x.i===i});h+='<option value="'+i+'"'+(tk?' disabled':'')+(String(i)===selI?' selected':'')+'>'+esc(n)+(tk?'(已抽)':'')+'</option>'});
+    h+='</select><button id="go"'+(busy?' disabled':'')+'>抽签</button>';
+  }
+  h+='<div id="msg">'+esc(msgT)+'</div></div>';
+  h+='<div class="card"><div class="mut" style="margin-bottom:6px">本月结果(自动刷新)</div><table><tr><th>成员</th><th>结果</th></tr>';
+  cfg.names.forEach(function(n,i){var d=rev.some(function(x){return x.m===k&&x.i===i});var r=role(cur,i);h+='<tr><td>'+esc(n)+'</td><td>'+(d?'<span class="'+cls(r)+'">'+r+'</span>':'<span class="mut">未抽</span>')+'</td></tr>'});
+  h+='</table></div>';
+  if(k>0){h+='<div class="card"><div class="mut" style="margin-bottom:6px">历史</div><table><tr><th>月份</th><th>群主</th><th>群管</th></tr>';
+    for(var j=k-1;j>=0;j--)h+='<tr><td>'+mlabel(j)+'</td><td class="o">'+esc(cfg.names[S[j].o])+'</td><td class="a">'+S[j].a.map(function(x){return esc(cfg.names[x])}).join('、')+'</td></tr>';
+    h+='</table></div>'}
+  h+='<div class="mut">规则:每月1群主+2群管+4成员;7个月一轮,每人1次群主、2次群管;尽量避开上月在任者。</div>';
+  A.innerHTML=h;
+  if($('sel'))$('sel').onchange=function(){selI=this.value};
+  if($('go'))$('go').onclick=function(){reveal(k)};
+}
+function say(t){msgT=t;last='';render()}
+async function create(){
+  var nm=[].map.call(document.querySelectorAll('.nm'),function(e,i){return e.value.trim()||('成员'+(i+1))});
+  if(new Set(nm).size<nm.length){return say('名字不能重复')}
+  var st=$('st').value;if(!st)return say('请选择起始月份');
+  try{var r=await api('rotation_cfg',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({id:1,names:nm,start:st,seed:Math.floor(Math.random()*2147483647)})});
+    if(!r.ok)return say('创建失败(可能已被他人创建),请刷新');await load()}catch(e){say('网络错误')}
+}
+async function reveal(k){
+  if(selI===''){return say('请先选择你的名字')}
+  var i=+selI;busy=true;msgT='';
+  var t=0,iv=setInterval(function(){var e=$('me');if(e)e.textContent=['群主','群管','成员'][t%3];t++},80);
+  await new Promise(function(r){setTimeout(r,1000)});clearInterval(iv);
+  try{var r=await api('rotation_reveals',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({m:k,i:i,uid:uid})});
+    if(r.status===409)msgT='这个名字已被抽过,或你本月已抽过';else if(!r.ok)msgT='抽签失败,请重试'}
+  catch(e){msgT='网络错误,请重试'}
+  busy=false;last='';await load();
+}
+async function load(){
+  try{
+    var a=await api('rotation_cfg?select=*&id=eq.1'),b=await api('rotation_reveals?select=m,i,uid');
+    if(!a.ok||!b.ok){if(!ready){$('app').innerHTML='<div class="card mut">数据表未就绪或key未配置</div>'}return}
+    var c=await a.json(),v=await b.json(),s=JSON.stringify([c,v]);
+    cfg=c.length?c[0]:null;rev=v;ready=true;
+    if(s!==last&&!busy){last=s;render()}
+  }catch(e){}
+}
+load();setInterval(function(){if(!busy)load()},4000);
+</script></main></body></html>
