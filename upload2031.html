@@ -696,39 +696,17 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
     }
   }
 
-  // ── 上传完成后通知管理员 ──
+  // ── 上传完成后通知管理员（走 notify-admin-2031：收件人取自 admins_2031，邮件带"前往管理后台审核"按钮）──
   async function notifyAdminUploaded(mode, fileCount) {
     try {
-      const data = window._uploadData || {};
-      const studentName = data.student_name_cn || data.student_name_en || '同学';
-      const typeLabel = {
-        cl:     'Commitment Letter / 录取材料',
-        dorm:   '宿舍照片',
-        portal: 'Duke Portal 截屏',
-        sid:    'Duke 学生证截屏',
-      }[mode] || mode;
-      const now = new Date().toLocaleString('zh-CN', { timeZone: 'America/New_York' });
-      const adminEmails = ['acequ@139.com', 'cairong36@hotmail.com', 'haixia.du@gmail.com', 'liangaiye@gmail.com',
-                           'weihong_j@yahoo.com', 'weili2023@yahoo.com', 'xuan211@hotmail.com', 'yazhongtao@gmail.com'];
-
-      await Promise.all(adminEmails.map(email => fetch(`${SUPABASE_URL}/functions/v1/send-approval-email`, {
+      await fetch(`${SUPABASE_URL}/functions/v1/notify-admin-2031`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         },
-        body: JSON.stringify({
-          email,
-          studentName:'管理员',
-          link:       'https://dukeparents.org/adminform2031.html',
-          subject:    `📥 已上传催信材料：${studentName}（${typeLabel}）`,
-          replyTo:    'parentsduke@gmail.com',
-          bodyLine1:  `${studentName} 已上传「${typeLabel}」。`,
-          bodyLine2:  `当前共 ${fileCount} 份文件\n时间：${now}（美东）`,
-          buttonText: '进入审批页面',
-          noButton:   true,
-        }),
-      })));
+        body: JSON.stringify({ id: recordId, kind: 'upload', mode, fileCount }),
+      });
     } catch(e) {
       console.warn('[通知管理员失败]', e.message);
     }
