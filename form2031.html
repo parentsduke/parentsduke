@@ -764,7 +764,7 @@
 
   // ── RD Commitment Deadline（Class of 2031：2027-05-01 23:59 ET）──
   const RD_COMMIT_DEADLINE = new Date('2027-05-02T03:59:59Z'); // 2027-05-01 23:59 美东
-  const pastRdDeadline = new Date() > RD_COMMIT_DEADLINE;
+  const pastRdDeadline = new Date() > RD_COMMIT_DEADLINE || new URLSearchParams(location.search).has('preview'); // 加 ?preview=1 可提前预览 5/1 后的全部上传项
 
   (function initDeadlineUI() {
     const warn = document.getElementById('rdDeadlineWarning');
