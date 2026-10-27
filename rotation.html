@@ -29,8 +29,8 @@ td:first-child,th:first-child{text-align:left}
 <script>
 var SB='https://ritglkwqpwlcjwemhfqd.supabase.co';
 var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8'; /* 填入index.html里已有的同一个anon/publishable key */
-var uid='',cfg=null,rev=[],selI='',busy=false,ready=false,msgT='',last='';
-try{uid=localStorage.getItem('rot_uid');if(!uid){uid='u'+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('rot_uid',uid)}}catch(e){uid='u'+Math.random().toString(36).slice(2)}
+var me=-1,pin='',claimed=[],cfg=null,rev=[],selI='',busy=false,ready=false,msgT='',last='';
+try{var sv=JSON.parse(localStorage.getItem('rot_me'));if(sv&&typeof sv.i==='number'&&sv.pin){me=sv.i;pin=sv.pin}}catch(e){}
 function $(i){return document.getElementById(i)}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function api(p,o){o=o||{};var hd={apikey:KEY,'Content-Type':'application/json'};if(KEY.indexOf('eyJ')===0)hd.Authorization='Bearer '+KEY;o.headers=Object.assign(hd,o.headers||{});return fetch(SB+'/rest/v1/'+p,o)}
@@ -55,19 +55,32 @@ function mlabel(k){var y=+cfg.start.slice(0,4),m=+cfg.start.slice(5,7)-1+k;retur
 function curMonth(){var N=cfg.names.length;for(var k=0;;k++){if(rev.filter(function(x){return x.m===k}).length<N)return k}}
 function render(){
   if(!ready)return;var A=$('app');
-  if(!cfg){
-    var d=new Date(),ym=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),h='<div class="card"><div class="mut" style="margin-bottom:8px">首次使用:填写7位成员名字和起始月份(创建后不可修改)</div><div class="grid">';
-    for(var i=0;i<7;i++)h+='<input class="nm" placeholder="成员'+(i+1)+'">';
-    A.innerHTML=h+'</div><input type="month" id="st" value="'+ym+'" style="margin-top:8px"><button id="mk">创建</button><div id="msg">'+esc(msgT)+'</div></div>';
-    $('mk').onclick=create;return;
+  if(!cfg){A.innerHTML='<div class="card mut">名单尚未初始化</div>';return}
+  if(claimed.length<cfg.names.length){
+    var c='<div class="card"><div class="mut">认领阶段:每人选自己的名字并设置密码,7人全部认领后才开始抽签</div><table style="margin:8px 0"><tr><th>成员</th><th>状态</th></tr>';
+    cfg.names.forEach(function(n,i){c+='<tr><td>'+esc(n)+'</td><td>'+(claimed.indexOf(i)>=0?'<span class="a">已认领</span>':'<span class="mut">未认领</span>')+'</td></tr>'});
+    c+='</table>';
+    if(me>=0)c+='<div class="mut" style="text-align:center">你已认领:'+esc(cfg.names[me])+',等待其他人</div>';
+    else{c+='<select id="sel"><option value="">选择你的名字</option>';
+      cfg.names.forEach(function(n,i){c+='<option value="'+i+'"'+(String(i)===selI?' selected':'')+'>'+esc(n)+'</option>'});
+      c+='</select><input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="设置4到6位数字密码" style="margin-top:8px"><button id="cl"'+(busy?' disabled':'')+'>认领</button>'}
+    c+='<div id="msg">'+esc(msgT)+'</div><div class="mut">如果你的名字显示"已认领"但不是你本人操作的,请立刻告诉管理员重置。</div></div>';
+    A.innerHTML=c;
+    if($('sel'))$('sel').onchange=function(){selI=this.value};
+    if($('cl'))$('cl').onclick=claim;return;
   }
-  var N=cfg.names.length,k=curMonth(),S=sched(k),cur=S[k],mine=rev.filter(function(x){return x.m===k&&x.uid===uid})[0];
+  var N=cfg.names.length,k=curMonth(),S=sched(k),cur=S[k],mine=rev.some(function(x){return x.m===k&&x.i===me});
   var h='<div class="card"><div class="mut">'+mlabel(k)+'　已抽'+rev.filter(function(x){return x.m===k}).length+'/'+N+'</div>';
-  h+='<div id="me">'+(mine?'<span class="'+cls(role(cur,mine.i))+'">'+esc(cfg.names[mine.i])+':'+role(cur,mine.i)+'</span>':'')+'</div>';
-  if(!mine){
-    h+='<select id="sel"><option value="">选择你的名字</option>';
-    cfg.names.forEach(function(n,i){var tk=rev.some(function(x){return x.m===k&&x.i===i});h+='<option value="'+i+'"'+(tk?' disabled':'')+(String(i)===selI?' selected':'')+'>'+esc(n)+(tk?'(已抽)':'')+'</option>'});
-    h+='</select><button id="go"'+(busy?' disabled':'')+'>抽签</button>';
+  if(mine){h+='<div id="me"><span class="'+cls(role(cur,me))+'">'+role(cur,me)+'</span></div>';h+='<div class="mut" style="text-align:center">'+esc(cfg.names[me])+',你本月已抽过</div>'}
+  else{
+    h+='<div id="me"></div>';
+    if(me>=0)h+='<div class="mut" style="text-align:center">你好,'+esc(cfg.names[me])+'</div>';
+    else{
+      h+='<select id="sel"><option value="">选择你的名字</option>';
+      cfg.names.forEach(function(n,i){var tk=rev.some(function(x){return x.m===k&&x.i===i});h+='<option value="'+i+'"'+(tk?' disabled':'')+(String(i)===selI?' selected':'')+'>'+esc(n)+(tk?'(已抽)':'')+'</option>'});
+      h+='</select><input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="4到6位数字密码" style="margin-top:8px"><div class="mut" style="margin-top:4px">首次使用时,输入的数字会成为你的密码,请记住;以后每月都用它。</div>';
+    }
+    h+='<button id="go"'+(busy?' disabled':'')+'>抽签</button>';
   }
   h+='<div id="msg">'+esc(msgT)+'</div></div>';
   h+='<div class="card"><div class="mut" style="margin-bottom:6px">本月结果(自动刷新)</div><table><tr><th>成员</th><th>结果</th></tr>';
@@ -79,31 +92,39 @@ function render(){
   h+='<div class="mut">规则:每月1群主+2群管+4成员;7个月一轮,每人1次群主、2次群管;尽量避开上月在任者。</div>';
   A.innerHTML=h;
   if($('sel'))$('sel').onchange=function(){selI=this.value};
-  if($('go'))$('go').onclick=function(){reveal(k)};
+  if($('go'))$('go').onclick=reveal;
 }
 function say(t){msgT=t;last='';render()}
-async function create(){
-  var nm=[].map.call(document.querySelectorAll('.nm'),function(e,i){return e.value.trim()||('成员'+(i+1))});
-  if(new Set(nm).size<nm.length){return say('名字不能重复')}
-  var st=$('st').value;if(!st)return say('请选择起始月份');
-  try{var r=await api('rotation_cfg',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({id:1,names:nm,start:st,seed:Math.floor(Math.random()*2147483647)})});
-    if(!r.ok)return say('创建失败(可能已被他人创建),请刷新');await load()}catch(e){say('网络错误')}
+function fail(j){
+  var r=(j&&j.r)||'';
+  if(r.indexOf('pin:')===0){msgT='密码错误,还剩'+r.slice(4)+'次机会';me=-1;pin='';try{localStorage.removeItem('rot_me')}catch(e){}}
+  else if(r==='locked'){msgT='已锁定,请联系管理员';me=-1;pin=''}
+  else if(r==='wait')msgT='还有人未认领,请等全部认领后再抽';
+  else if(r==='none'){msgT='该名字尚未认领';me=-1;pin='';try{localStorage.removeItem('rot_me')}catch(e){}}
+  else msgT='操作失败,请重试';
 }
-async function reveal(k){
-  if(selI===''){return say('请先选择你的名字')}
-  var i=+selI;busy=true;msgT='';
-  var t=0,iv=setInterval(function(){var e=$('me');if(e)e.textContent=['群主','群管','成员'][t%3];t++},80);
-  await new Promise(function(r){setTimeout(r,1000)});clearInterval(iv);
-  try{var r=await api('rotation_reveals',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({m:k,i:i,uid:uid})});
-    if(r.status===409)msgT='这个名字已被抽过,或你本月已抽过';else if(!r.ok)msgT='抽签失败,请重试'}
+async function call(fn,i,p,anim){
+  busy=true;msgT='';
+  if(anim){var t=0,iv=setInterval(function(){var e=$('me');if(e)e.textContent=['群主','群管','成员'][t%3];t++},80);
+    await new Promise(function(r){setTimeout(r,1000)});clearInterval(iv)}
+  try{var r=await api('rpc/'+fn,{method:'POST',body:JSON.stringify({p_i:i,p_pin:p})});var j=await r.json();
+    if(j&&j.ok){me=i;pin=p;try{localStorage.setItem('rot_me',JSON.stringify({i:i,pin:p}))}catch(e){}}else fail(j)}
   catch(e){msgT='网络错误,请重试'}
   busy=false;last='';await load();
 }
+function inputs(){
+  var i=me,p=pin;
+  if(i<0){if(selI===''){say('请先选择你的名字');return null}i=+selI;p=($('pin')||{}).value||''}
+  if(!/^[0-9]{4,6}$/.test(p)){say('密码须为4到6位数字');return null}
+  return [i,p];
+}
+async function claim(){var x=inputs();if(x)await call('rotation_claim',x[0],x[1],false)}
+async function reveal(){var x=inputs();if(x)await call('rotation_draw',x[0],x[1],true)}
 async function load(){
   try{
-    var a=await api('rotation_cfg?select=*&id=eq.1'),b=await api('rotation_reveals?select=m,i,uid');
+    var a=await api('rotation_cfg?select=*&id=eq.1'),b=await api('rotation_reveals?select=m,i');
     if(!a.ok||!b.ok){if(!ready){var bad=a.ok?b:a,tx='';try{tx=(await bad.text()).slice(0,160)}catch(e2){}var why=KEY.indexOf('PASTE')===0?'key还没有填写':(bad.status===401||bad.status===403?'key不对或没有权限':(bad.status===404?'数据表不存在,请先运行SQL':'请求失败'));$('app').innerHTML='<div class="card mut">'+why+'(状态码'+bad.status+')<br>'+esc(tx)+'</div>'}return}
-    var c=await a.json(),v=await b.json(),s=JSON.stringify([c,v]);
+    var c=await a.json(),v=await b.json(),cl=[];try{var d=await api('rpc/rotation_claimed',{method:'POST',body:'{}'});if(d.ok)cl=await d.json()}catch(e3){}var s=JSON.stringify([c,v,cl]);claimed=cl;
     cfg=c.length?c[0]:null;rev=v;ready=true;
     if(s!==last&&!busy){last=s;render()}
   }catch(e){if(!ready)$('app').innerHTML='<div class="card mut">网络请求失败:'+esc(String(e))+'</div>'}
