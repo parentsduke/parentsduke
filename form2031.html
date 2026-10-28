@@ -1037,7 +1037,7 @@
     const nameEn   = nameEnFirst + ' ' + nameEnLast;
     const school   = document.getElementById('fSchool').value.trim();
     const location = getLocationValue();
-    const year     = document.getElementById('fYear').value;
+    const year     = '2031'; // 2031届专用，固定值
     const college  = (document.getElementById('fCollege').value || '').trim();
     const notes    = document.getElementById('fNotes').value.trim();
     const type     = document.getElementById('fType').value;
@@ -1061,7 +1061,6 @@
     if (locCountry === 'OTHER' && !document.getElementById('fLocationOther').value.trim()) {
       showError('请填写所在国家或城市'); return;
     }
-    if (!year)     { showError('请选择入学届次'); return; }
     if (!college)  { showError('请选择学院'); return; }
 
     if (!type)  { showError('请选择录取类型'); return; }
@@ -1353,7 +1352,7 @@
     const nickname  = document.getElementById('fSubmitterName').value.trim();
     const role      = document.getElementById('fParentRole').value;
     const childFirst= document.getElementById('fNameEnFirst').value.trim();
-    const year      = document.getElementById('fYear').value;
+    const year      = '2031'; // 2031届专用，固定值
     const college   = (document.getElementById('fCollege').value || '').trim();
     const locCountry= document.getElementById('fLocationCountry').value;
     const locSecond = document.getElementById('fLocationSecond')?.value || '';
@@ -1447,7 +1446,7 @@
     document.getElementById('fLocationSecondGroup').style.display = 'none';
     document.getElementById('fLocationOtherGroup').style.display  = 'none';
     document.getElementById('fType').value = '';
-    document.getElementById('fYear').value = '';
+    document.getElementById('fYear').value = '2031';
     document.getElementById('fCommitted').value = '';
     document.getElementById('committedGroup').classList.remove('show');
     updateUploadVisibility('', '');
