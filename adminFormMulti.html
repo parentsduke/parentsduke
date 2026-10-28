@@ -1463,20 +1463,20 @@
     const base = 'https://dukeparents.org';
     const isGrad = (['grad_masters','grad_phd','硕士','博士'].includes(admissionType));
     if (isGrad) {
-      return { image_url: `${base}/qgrad.png`, label: 'Duke 研究生家长群', groupName: 'Duke 研究生家长群' };
+      return { image_url: `${base}/qr.png`, label: 'Duke 研究生家长群', groupName: 'Duke 研究生家长群' };
     }
     if (admissionType === 'Pre-med Track') {
-      return { image_url: `${base}/qpmt.png`, label: 'Duke Pre-med Track 家长群', groupName: 'Duke Pre-med Track 家长群' };
+      return { image_url: `${base}/qr.png`, label: 'Duke Pre-med Track 家长群', groupName: 'Duke Pre-med Track 家长群' };
     }
     if (admissionType === '扯谈Duke群1.0') {
-      return { image_url: `${base}/qh.png`, label: '扯谈Duke群1.0', groupName: '扯谈Duke群1.0' };
+      return { image_url: `${base}/qr.png`, label: '扯谈Duke群1.0', groupName: '扯谈Duke群1.0' };
     }
     if (admissionType === '扯谈Duke群2.0') {
-      return { image_url: `${base}/qh20.png`, label: '扯谈Duke群2.0', groupName: '扯谈Duke群2.0' };
+      return { image_url: `${base}/qr.png`, label: '扯谈Duke群2.0', groupName: '扯谈Duke群2.0' };
     }
     const yr = String(classYear || '2030').slice(-2);
     return {
-      image_url: `${base}/qh.png`,
+      image_url: `${base}/qr.png`,
       label:     `Duke ${classYear} 家长群`,
       groupName: `Duke ${classYear} 届本科家长群`,
     };

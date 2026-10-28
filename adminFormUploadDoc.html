@@ -1141,7 +1141,7 @@
 
   // ── 批准入群 ──
   // ── 二维码图片地址（只需改这里）──
-  const QR_IMAGE_URL = 'https://dukeparents.org/q30d.png';
+  const QR_IMAGE_URL = 'https://dukeparents.org/qr.png';
 
   async function approveRecord(recordId, email, studentName) {
     if (!email) {
@@ -1468,11 +1468,11 @@
           .eq('reserved_for', email)
           .eq('used', false);
 
-        // 创建新token（使用get2qr.jpg）
+        // 创建新token（使用qr.png）
         const { data: qrRow, error: qrErr } = await db
           .from('private_qr_links')
           .insert({
-            image_url:    'https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg',
+            image_url:    'https://dukeparents.org/qr.png',
             label:        '扯谈Duke群2.0',
             reserved_for: email,
             reserved_at:  new Date().toISOString(),
@@ -1534,7 +1534,7 @@
       const { data: qrRow, error: qrErr } = await db
         .from('private_qr_links')
         .insert({
-          image_url:    'https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg',
+          image_url:    'https://dukeparents.org/qr.png',
           label:        '扯谈Duke群2.0',
           reserved_for: email,
           reserved_at:  new Date().toISOString(),
