@@ -825,14 +825,14 @@
     if (!data || !data.length) { body.innerHTML = '<div style="color:var(--muted);padding:12px 0;">暂无历史记录</div>'; return; }
     const rows = data.map(e => {
       const t = e.edited_at ? new Date(e.edited_at).toLocaleString('zh-CN', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
-      const what = (e.field === 'action' || e.field === 'remind')
+      const what = e.field === 'action'
         ? `<strong>${fmtVal(e.new_value)}</strong>`
         : `${esc(e.field)}：${fmtVal(e.old_value)} → ${fmtVal(e.new_value)}`;
       return `<tr><td style="white-space:nowrap;padding:6px 10px 6px 0;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">${esc(t)}</td>`
            + `<td style="white-space:nowrap;padding:6px 10px;"><strong>${esc(actionAdminName(e.edited_by))}</strong></td>`
            + `<td style="padding:6px 0;">${what}</td></tr>`;
     }).join('');
-    body.innerHTML = `<table style="width:100%;min-width:0;border-collapse:collapse;"><tbody>${rows}</tbody></table>`
+    body.innerHTML = `<table style="width:100%;border-collapse:collapse;"><tbody>${rows}</tbody></table>`
       + `<div style="margin-top:10px;color:var(--muted);font-size:12px;">共 ${data.length} 条（纽约时间，最新在前）</div>`;
   }
 
@@ -1381,8 +1381,8 @@
   }
 
   // ── 批准入群 ──
-  // ── 二维码图片地址（现在统一qh.png）──
-  const QR_IMAGE_URL = 'https://dukeparents.org/qh.png';
+  // ── 二维码图片地址（所有入群链接统一用这一张）──
+  const QR_IMAGE_URL = 'https://dukeparents.org/qr.png';
 
   async function approveRecord(recordId, email, studentName) {
     if (!email) {
@@ -1691,11 +1691,11 @@
           .eq('reserved_for', email)
           .eq('used', false);
 
-        // 创建新token（使用get2qr.jpg）
+        // 创建新token（统一二维码 qr.png）
         const { data: qrRow, error: qrErr } = await db
           .from('private_qr_links')
           .insert({
-            image_url:    'https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg',
+            image_url:    QR_IMAGE_URL,
             label:        '扯谈Duke群2.0',
             reserved_for: email,
             reserved_at:  new Date().toISOString(),
@@ -1757,7 +1757,7 @@
       const { data: qrRow, error: qrErr } = await db
         .from('private_qr_links')
         .insert({
-          image_url:    'https://raw.githubusercontent.com/parentsduke/parentsduke/main/get2qr.jpg',
+          image_url:    QR_IMAGE_URL,
           label:        '扯谈Duke群2.0',
           reserved_for: email,
           reserved_at:  new Date().toISOString(),
@@ -1965,21 +1965,8 @@
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(await res.text());
-      // 写入处理历史（审计表）；失败不影响催信本身
-      let histWarn = '';
-      try {
-        const { data: { session } } = await db.auth.getSession();
-        const typeName = { letter: '录取通知书', committed: 'Commitment Letter', dorm: '宿舍照片',
-                           portal: 'Duke Portal 截屏', sid: '学生证截屏', all: '相关材料' }[type] || type;
-        const { error: histErr } = await db.from('admissions_edits_2031').insert({
-          record_id: recordId, field: 'remind', old_value: null,
-          new_value: '📧 催信：' + typeName + (checked.length > 0 ? '（含附加询问）' : ''),
-          edited_by: session?.user?.email || null, edited_at: new Date().toISOString(),
-        });
-        if (histErr) throw new Error(histErr.message);
-      } catch (e) { console.warn('[催信记录写入失败]', e.message); histWarn = '\n⚠️ 但历史记录写入失败：' + e.message; }
       closeCataModal();
-      alert(`✅ 已向 ${email} 发送催信${checked.length > 0 ? `（含 ${checked.length} 条附加询问）` : ''}${histWarn}`);
+      alert(`✅ 已向 ${email} 发送催信${checked.length > 0 ? `（含 ${checked.length} 条附加询问）` : ''}`);
     } catch(e) {
       btn.disabled = false;
       btn.textContent = '发送催信';
