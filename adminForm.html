@@ -814,6 +814,38 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
     } catch (e) { console.warn('[读取操作审计失败]', e.message); }
   }
 
+  // ── 催信历史：读取审计表中 field='reminder' 的全部记录 ──
+  function histEsc(v) {
+    return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function fmtMD(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return isNaN(d) ? '' : `${d.getMonth() + 1}/${d.getDate()}`;
+  }
+  async function mergeReminderLog() {
+    try {
+      const { data } = await db.from('admissions_edits')
+        .select('record_id,new_value,edited_by,edited_at')
+        .eq('field', 'reminder')
+        .order('edited_at', { ascending: true })
+        .limit(5000);
+      const byRec = {};
+      (data || []).forEach(e => { (byRec[e.record_id] = byRec[e.record_id] || []).push(e); });
+      allRecords.forEach(r => {
+        const list = (byRec[r.id] || []).map(e => {
+          const [type, ...rest] = String(e.new_value || '').split('｜');
+          return { type, note: rest.join('｜') || null, by: e.edited_by, at: e.edited_at, _audit: true };
+        });
+        // 兼容旧数据：历史功能上线前只有 last_reminder_* 一条
+        if (!list.length && r.last_reminder_type) {
+          list.push({ type: r.last_reminder_type, note: null, by: r.last_reminder_by, at: r.last_reminder_at, _audit: false });
+        }
+        r.reminder_log = list;
+      });
+    } catch (e) { console.warn('[读取催信历史失败]', e.message); }
+  }
+
   async function loadRecords() {
     const { data, error } = await db
       .from('admissions_submissions')
@@ -830,6 +862,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
 
     allRecords = data || [];
     await mergeActionLog();
+    await mergeReminderLog();
     populateYearFilter();
     applyFilters();
     document.getElementById('dataTable').style.display = 'table';
@@ -1233,7 +1266,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           <span class="catalist-status" style="color:#b45309;">⏸ 已搁置</span>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');unshelveRecord('${r.id}','${esc(safeNameRaw)}')">↩ 取消搁置</button>`;
       } else {
-        const remindedSpan = r.last_reminder_type
+        const rl = r.reminder_log || [];
+        const remindedSpan = rl.length
+          ? `<span class="catalist-status" style="color:#001a4d;">📧 已催 ${rl.length} 次${rl.map(e => `<br><span style="font-size:11px;color:#4a5f8f;">${fmtMD(e.at)} ${REMINDER_LABELS[e.type] || '已催信'}${e.by ? ' · ' + histEsc(adminShortName(e.by)) : ''}${e.note ? '：' + histEsc(e.note) : ''}</span>`).join('')}</span>`
+          : r.last_reminder_type
           ? `<span class="catalist-status" style="color:#001a4d;">📧 ${REMINDER_LABELS[r.last_reminder_type] || '已催信'}${r.last_reminder_at ? '（' + new Date(r.last_reminder_at).toLocaleDateString('zh-CN') + '）' : ''}${r.last_reminder_by ? `<br><span style="font-size:11px;color:#4a5f8f;">由 ${adminShortName(r.last_reminder_by)} 发送</span>` : ''}</span>`
           : '';
         actionItems = `${remindedSpan}
@@ -1243,10 +1279,12 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
       }
       if (catalItems) actionItems += `<div style="border-top:1px solid var(--border);margin:2px 0;"></div>${catalItems}`;
       const pendingReminded = !r.rejected_at && !r.left_group_at && !r.approved_at && !r.shelved_at && r.last_reminder_type;
-      const btnLabel = r.rejected_at ? '已拒绝' : r.left_group_at ? '已退群' : r.not_joined ? '未进群' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : pendingReminded ? (REMINDER_LABELS[r.last_reminder_type] || '已催信') : '操作';
+      const btnLabel = r.rejected_at ? '已拒绝' : r.left_group_at ? '已退群' : r.not_joined ? '未进群' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : pendingReminded ? ((REMINDER_LABELS[r.last_reminder_type] || '已催信') + ((r.reminder_log || []).length > 1 ? '×' + r.reminder_log.length : '')) : '操作';
       const btnBg    = r.rejected_at ? '#7f1d1d' : r.left_group_at ? '#c2610c' : r.not_joined ? '#b45309' : r.approved_at ? '#14532d' : r.shelved_at ? '#78350f' : pendingReminded ? '#001a4d' : '#444';
       const btnHover = r.rejected_at ? '#991b1b' : r.left_group_at ? '#d97706' : r.not_joined ? '#c2610c' : r.approved_at ? '#166534' : r.shelved_at ? '#92400e' : pendingReminded ? '#0a2e6e' : '#222';
-      const btnTitle = pendingReminded && r.last_reminder_by ? ` title="由 ${adminShortName(r.last_reminder_by)} 发送"` : '';
+      const btnTitle = pendingReminded && (r.reminder_log || []).length
+        ? ` title="${(r.reminder_log).map(e => `${fmtMD(e.at)} ${REMINDER_LABELS[e.type] || '已催信'} · ${histEsc(adminShortName(e.by))}${e.note ? '：' + histEsc(e.note) : ''}`).join('&#10;')}"`
+        : (pendingReminded && r.last_reminder_by ? ` title="由 ${adminShortName(r.last_reminder_by)} 发送"` : '');
       const actionCell = `<div class="catalist-wrap">
         <button onclick="toggleCatMenu(event,'actmenu-${r.id}')"${btnTitle}
           style="padding:3px 8px;background:${btnBg};color:#fff;border:none;border-radius:5px;
@@ -2113,6 +2151,25 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
         .update({ last_reminder_type: type, last_reminder_at: nowIso, last_reminder_by: sentBy })
         .eq('id', recordId);
       const rec = allRecords.find(r => r.id === recordId);
+      // 写入催信历史（审计表）；若只有功能上线前的旧记录，先把它补进审计表，避免被覆盖丢失
+      try {
+        const legacy = (rec && rec.reminder_log || []).filter(e => !e._audit);
+        for (const e of legacy) {
+          await db.from('admissions_edits').insert({
+            record_id: recordId, field: 'reminder', old_value: null, new_value: e.type,
+            edited_by: e.by || null, edited_at: e.at || nowIso,
+          });
+        }
+        await db.from('admissions_edits').insert({
+          record_id: recordId, field: 'reminder', old_value: null,
+          new_value: type + (custom ? '｜' + custom : ''),
+          edited_by: sentBy, edited_at: nowIso,
+        });
+        if (rec) {
+          rec.reminder_log = (rec.reminder_log || []).map(e => ({ ...e, _audit: true }));
+          rec.reminder_log.push({ type, note: custom || null, by: sentBy, at: nowIso, _audit: true });
+        }
+      } catch (e) { console.warn('[催信历史写入失败]', e.message); }
       if (rec) { rec.last_reminder_type = type; rec.last_reminder_at = nowIso; rec.last_reminder_by = sentBy; }
       applyFilters();
 

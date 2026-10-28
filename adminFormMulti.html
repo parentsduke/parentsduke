@@ -1006,7 +1006,16 @@
     if (r.submitter_email) {
       items += `<div style="border-top:1px solid var(--border);margin:2px 0;"></div>`;
       items += `<button class="catalist-item" style="color:var(--navy);" onclick="closeCatMenu('actmenu-${id}');sendReminder('${id}','${(r.submitter_email||'').replace(/'/g,"\\'")}','${sName}')">📧 催信</button>`;
-      if (reminderLog.length) items += histSpan(`催${reminderLog.length}:${reminderLog.map(e=>e.by).join(' ')}`);
+      if (reminderLog.length) {
+        items += histSpan(`催${reminderLog.length}:${reminderLog.map(e=>e.by).join(' ')}`);
+        // 每次催信的明细：日期 / 操作人 / 催的材料 / 备注
+        reminderLog.forEach(e => {
+          const d = e.at ? new Date(e.at) : null;
+          const md = d && !isNaN(d) ? `${d.getMonth()+1}/${d.getDate()}` : '';
+          const what = (e.missing_items && e.missing_items.length) ? e.missing_items.join('、') : '通用';
+          items += histSpan(`${md} ${_hEsc(e.by)}：${_hEsc(what)}${e.note ? '｜' + _hEsc(e.note) : ''}`);
+        });
+      }
     }
 
     const hasReminder = reminderLog.length > 0;
@@ -1160,6 +1169,8 @@
     const input = logDiv?.nextElementSibling;
     if (input) input.value = '';
   }
+
+  function _hEsc(v) { return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   // ── 催交材料邮件 ──
   let _reminderArgs = null;
