@@ -789,6 +789,17 @@
     if (rec) { rec.handled_by = by; rec.handled_at = at; rec.handled_action = label; }
   }
 
+  // 只写审计表的操作记录（催信、重发链接等不改变状态的操作），会出现在"全部历史"里
+  async function logActionOnly(recordId, label) {
+    try {
+      const { data: { session } } = await db.auth.getSession();
+      await db.from('admissions_edits_2031').insert({
+        record_id: recordId, field: 'action', old_value: null, new_value: label,
+        edited_by: session?.user?.email || null, edited_at: new Date().toISOString(),
+      });
+    } catch (e) { console.warn('[操作审计写入失败]', e.message); }
+  }
+
   // 主表没有 handled_* 列时，用审计表里每条记录最近一次操作补全
   async function mergeActionLog() {
     try {
@@ -1965,6 +1976,8 @@
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(await res.text());
+      const typeNames = { letter:'录取通知书', dorm:'宿舍照片', portal:'Duke Portal 截屏', sid:'学生证截屏', all:'相关材料' };
+      await logActionOnly(recordId, `发送催信（${typeNames[type] || 'Commitment Letter'}）${custom ? '，含附加询问：' + custom : ''}`);
       closeCataModal();
       alert(`✅ 已向 ${email} 发送催信${checked.length > 0 ? `（含 ${checked.length} 条附加询问）` : ''}`);
     } catch(e) {
@@ -2018,6 +2031,7 @@
         throw new Error(err);
       }
 
+      await logActionOnly(recordId, '重新发送入群链接');
       alert(`✅ 已重新发送入群链接到 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
