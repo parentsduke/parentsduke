@@ -14272,6 +14272,7 @@ window.showPV();
       <select id="invite-name"
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none; background:#fff; color:#333;">
         <option value="">请选择微信家长群名</option>
+        <option value="Duke2031本科生家长群">Duke2031本科生家长群</option>
         <option value="Duke2030本科生家长群">Duke2030本科生家长群</option>
         <option value="Duke2029本科生家长群">Duke2029本科生家长群</option>
         <option value="Duke2028本科生家长群">Duke2028本科生家长群</option>
@@ -14322,6 +14323,7 @@ window.showPV();
         style="width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; outline:none; background:#fff; color:#333;"
         onchange="handleWechatGroupChange(this.value)">
         <option value="">请选择希望申请的群</option>
+        <option value="grade_2031">Duke 2031 本科家长群</option>
         <option value="grade_2030">Duke 2030 本科家长群</option>
         <option value="grade_2029">Duke 2029 本科家长群</option>
         <option value="grade_2028">Duke 2028 本科家长群</option>
@@ -14541,7 +14543,9 @@ function goToGroupForm() {
     return;
   }
   msg.textContent = '';
-  if (val === 'grade_2030') {
+  if (val === 'grade_2031') {
+    window.location.href = 'https://dukeparents.org/form2031.html';
+  } else if (val === 'grade_2030') {
     window.location.href = 'https://dukeparents.org/form.html';
   } else if (val === 'grade_2029') {
     window.location.href = 'https://dukeparents.org/formMulti.html?group=2029';
@@ -14583,6 +14587,7 @@ function goToGroupForm() {
       <option value="2028">2028届</option>
       <option value="2029">2029届</option>
       <option value="2030">2030届</option>
+      <option value="2031">2031届</option>
       <option value="研究生">研究生</option>
     </select>
     <div id="subscribe-msg" style="font-size:13px;min-height:20px;margin-bottom:10px;"></div>
