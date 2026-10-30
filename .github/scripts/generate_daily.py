@@ -28,13 +28,12 @@ CHRONICLE_MIN_DATE = GLOBAL_MIN_DATE
 
 SECTION_LABELS = {
     'weekly-school':       '🏫 学校新闻',
-    'weekly-basketball':   '🏀 篮球/体育动态',
+    'weekly-basketball':   '🏀 篮球动态',
     'weekly-football':     '🏈 橄榄球',
     'weekly-admissions':   '📋 招生信息',
     'weekly-prematric':    '📅 开学前安排',
     'weekly-calendar':     '🗓 学术日历',
     'weekly-registration': '📝 选课与住房',
-    'weekly-familyweekend':'👨‍👩‍👧 Family Weekend 家庭周末',
     'weekly-campus':       '🎓 校园生活',
     'weekly-chronicle':    '📰 Chronicle学生报',
     'weekly-research':     '🔬 科研动态',
@@ -59,7 +58,6 @@ RSS_FEEDS = {
     # 这里保留一个默认值供未走候选逻辑的地方引用。
     'trinity':          'https://today.duke.edu/tags/trinity-college-arts-sciences/rss',
     'admissions':       'https://today.duke.edu/tags/admissions/rss',
-    'athletics':        'https://today.duke.edu/tags/athletics/rss',
     'campus':           'https://today.duke.edu/topics/campus-&-community/rss',
     'dukeengage':       'https://news.google.com/rss/search?q=DukeEngage+site:dukeengage.duke.edu&hl=en-US&gl=US&ceid=US:en',
     'undergrad':        'https://news.google.com/rss/search?q=Duke+undergraduate+site:undergrad.duke.edu&hl=en-US&gl=US&ceid=US:en',
@@ -68,7 +66,6 @@ RSS_FEEDS = {
     # goduke.com 现为 SIDEARM 系统，RSS 格式为 rss.aspx?path=xxx（旧 RSSFeed.dbml 已失效）
     'goduke_mbb':       'https://goduke.com/rss.aspx?path=mbball',
     'goduke_wbb':       'https://goduke.com/rss.aspx?path=wbball',
-    'goduke_all':       'https://goduke.com/rss.aspx?path=general',
     # Google News 兜底：男篮/女篮新闻与战报（goduke + Chronicle）
     'goduke_mbb_gn':    'https://news.google.com/rss/search?q=Duke+basketball+(site:goduke.com+OR+site:dukechronicle.com)&hl=en-US&gl=US&ceid=US:en',
     # 橄榄球（football）：goduke.com的Sport参数代码未经验证，不确定是否为"FB"，
@@ -108,11 +105,6 @@ HOUSING_PAGES = [
     'https://students.duke.edu/living/housing/annual-housing-calendar/',
     'https://students.duke.edu/living/housing/housing-assignments/fall26-housing/',
     'https://students.duke.edu/living/housing/graduate-professional-housing/',
-]
-
-# ── Family Weekend（家庭周末）：官方页面每年更新日期和日程，深度文本抓取 ──
-FAMILY_WEEKEND_PAGES = [
-    'https://students.duke.edu/info-for/families/family-weekend/',
 ]
 
 # ── 招生页面：深度文本抓取 ──────────────────────────────────
@@ -613,34 +605,6 @@ def fetch_pages_text(urls, max_chars=1200):
                 print(f'  抓取失败 {url}: {ex}')
     return '\n\n'.join(texts)
 
-def fetch_family_weekend_text(urls, max_chars=2500):
-    """Family Weekend 专用抓取：
-    通用的 fetch_pages_text 用 separator=' ' 把整页压成一行，
-    而 filter_expired_text 是逐行过滤——页面里只要有一个过去的日期
-    （比如底部 'Last Updated August 26th, 2026'），整页文字就会被一次性删光。
-    这里改为按行保留，只留含关键词的行，日期过滤才能逐行生效，
-    同时避免开头的导航文字把字符额度占满、截掉后面的日期和橄榄球信息。"""
-    keys = ('family weekend', 'october', 'football', 'unc', 'register',
-            'box office', 'ticket', 'kickoff')
-    out = []
-    for url in urls:
-        try:
-            resp = requests.get(url, headers=HEADERS, timeout=15)
-            soup = BeautifulSoup(resp.text, 'html.parser')
-            for tag in soup.select('nav,footer,header,script,style'):
-                tag.decompose()
-            main = soup.select_one('main,#main,.main-content,article') or soup
-            lines = [ln.strip() for ln in main.get_text(separator='\n').split('\n')]
-            kept = [ln for ln in lines if len(ln) > 25 and any(k in ln.lower() for k in keys)]
-            text = '\n'.join(kept)[:max_chars]
-            if text:
-                out.append(f'[{url}]\n{text}')
-                print(f'  抓取OK: {url}')
-        except Exception as ex:
-            print(f'  抓取失败 {url}: {ex}')
-    return '\n\n'.join(out)
-
-
 TRINITY_TAG_URL_CANDIDATES = [
     'https://today.duke.edu/tags/trinity-college-arts-sciences/rss',
     'https://today.duke.edu/tags/trinity-college-of-arts-and-sciences/rss',
@@ -717,11 +681,15 @@ def fetch_espn_schedule(gender='mens', team_id=150, label='男篮'):
             return sc.get('displayValue') or str(sc.get('value', ''))
         return str(sc) if sc is not None else ''
     past, upcoming = [], []
+    _today_d = datetime.now().date()
     for ev in data.get('events', []):
         try:
             comp = ev['competitions'][0]
             dt = datetime.strptime(ev['date'][:10], '%Y-%m-%d')
             d_str = f"{dt.year}年{dt.month}月{dt.day}日"
+            # 只保留近14天：已结束的取近14天内的战报，未来的取14天内的赛程，
+            # 避免把整个赛季（11月到次年3月）的赛程一次性全列出来
+            delta = (dt.date() - _today_d).days
             teams = comp['competitors']
             duke = next(t for t in teams if str(t['team'].get('id')) == str(team_id))
             opp  = next(t for t in teams if t is not duke)
@@ -731,10 +699,14 @@ def fetch_espn_schedule(gender='mens', team_id=150, label='男篮'):
             opp_name = opp['team'].get('displayName', '')
             status = comp.get('status', {}).get('type', {})
             if status.get('completed'):
+                if delta < -14:
+                    continue  # 14天以前的战报不再列出
                 ds, os_ = _score(duke), _score(opp)
                 result = '胜' if duke.get('winner') else '负'
                 past.append(f"- [{d_str}] {label} {where} vs {opp_name}：Duke {result}，比分 {ds}-{os_}")
             else:
+                if delta > 14:
+                    continue  # 14天以后的赛程不提前列出
                 bc = ''
                 try:
                     bc = '，转播：' + '/'.join(b['media']['shortName'] for b in comp.get('broadcasts', []))
@@ -1610,12 +1582,10 @@ def main():
                 'news':            ex.submit(fetch_source, 'news', 4),
                 'goduke_mbb':      ex.submit(fetch_source, 'goduke_mbb', 5),
                 'goduke_wbb':      ex.submit(fetch_source, 'goduke_wbb', 3),
-                'goduke_all':      ex.submit(fetch_source, 'goduke_all', 3),
                 'goduke_mbb_gn':   ex.submit(fetch_source, 'goduke_mbb_gn', 8),
                 'espn_mbb':        ex.submit(fetch_espn_schedule, 'mens', 150, '男篮'),
                 'espn_wbb':        ex.submit(fetch_espn_schedule, 'womens', 150, '女篮'),
                 'goduke_fb':       ex.submit(fetch_source, 'goduke_fb', 5),
-                'athletics':       ex.submit(fetch_source, 'athletics', 3),
                 'admissions':      ex.submit(fetch_source, 'admissions', 5),
                 'admissions_site': ex.submit(fetch_source, 'admissions_site', 6),
                 'campus':          ex.submit(fetch_source, 'campus', 3),
@@ -1636,7 +1606,6 @@ def main():
                 'calendar':        ex.submit(fetch_calendar),
                 'reg_text':        ex.submit(fetch_pages_text, REGISTRATION_PAGES),
                 'housing_text':    ex.submit(fetch_pages_text, HOUSING_PAGES),
-                'family_weekend_text': ex.submit(fetch_family_weekend_text, FAMILY_WEEKEND_PAGES, 2500),
                 'admissions_text': ex.submit(fetch_pages_text, ADMISSIONS_PAGES, 1500),
                 'prematric_text':  ex.submit(fetch_pages_text, PREMATRIC_PAGES, 1200),
             }
@@ -1645,8 +1614,8 @@ def main():
     r = fetch_all()
 
     school_items     = r['today'] + r['news']
-    basketball_items = (r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_all'] +
-                        r['goduke_mbb_gn'] + r['athletics'])
+    # 篮球栏目只收男篮/女篮来源：goduke综合(athletics)和其他项目会混入橄榄球等内容，已剔除
+    basketball_items = (r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_mbb_gn'])
     admissions_items = r['admissions'] + r['admissions_site']
 
     # ── Python层面先过滤过期日期，再交给AI（所有栏目统一执行，不再局限于招生）──
@@ -1666,7 +1635,6 @@ def main():
     r["reg_text"]        = filter_expired_text(r["reg_text"], _today_date)
     r["housing_text"]    = filter_expired_text(r["housing_text"], _today_date)
     r["prematric_text"]  = filter_expired_text(r["prematric_text"], _today_date)
-    r["family_weekend_text"] = filter_expired_text(r["family_weekend_text"], _today_date)
 
     admissions_items = _drop_expired_items(admissions_items)
     school_items     = _drop_expired_items(school_items)
@@ -1708,22 +1676,15 @@ def main():
         BASKETBALL_EXTRA = (BASKETBALL_EXTRA + '\n\n' + _espn).strip()
     football_items   = r['goduke_fb']  # 已按发布日期过滤，不再二次删除
 
-    # Family Weekend 独立栏目：活动结束后页面日期被逐行过滤掉，文本为空，栏目自动不显示
-    FW_EXTRA = r['family_weekend_text']
-    if FW_EXTRA.strip():
-        FW_EXTRA = ("【请提炼：具体日期、是否与橄榄球主场赛程重合、注册/购票入口、"
-                    "截止日期、联系方式】\n" + FW_EXTRA)
-
     tasks = {
         'weekly-school':       lambda: generate_section('学校新闻', school_items),
-        'weekly-basketball':   lambda: generate_section('篮球/体育动态', basketball_items, extra=BASKETBALL_EXTRA,
+        'weekly-basketball':   lambda: generate_section('篮球动态', basketball_items, extra=BASKETBALL_EXTRA,
                                                          allow_past_results=True, max_items=15),
         'weekly-football':     lambda: generate_section('橄榄球', football_items, allow_past_results=True),
         'weekly-admissions':   lambda: generate_section('招生信息', admissions_items, extra=r['admissions_text']),
         'weekly-calendar':     lambda: generate_calendar_section(calendar_items),
         'weekly-registration': lambda: generate_registration_section(r['reg_text'], r['housing_text']),
         'weekly-prematric':    lambda: generate_prematric_section(r['prematric_text']),
-        'weekly-familyweekend': lambda: (generate_section('Family Weekend家庭周末', [], extra=FW_EXTRA) if FW_EXTRA.strip() else ''),
         'weekly-campus':       lambda: generate_section('校园生活', campus_items),
         'weekly-chronicle':    lambda: generate_section('Chronicle学生报', chronicle_items),
         'weekly-research':     lambda: generate_section('科研动态', research_items),
