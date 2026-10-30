@@ -1274,19 +1274,7 @@
       if (error) throw new Error(error.message);
       const insertedId = insertedData?.id;
 
-      // ── 触发 notify-admin（邮件 + 方糖推送）──
-      try {
-        await fetch('https://ritglkwqpwlcjwemhfqd.supabase.co/functions/v1/notify-admin', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({ record: payload }),
-        });
-      } catch(e) {
-        console.warn('通知发送失败:', e);
-      }
+      // 通知由数据库触发器 on_new_submission 统一发送（邮件 + 方糖），前端不再重复调用
 
       document.getElementById('formArea').style.display = 'none';
       document.getElementById('pendingScreen').style.display = 'block';
