@@ -36,52 +36,56 @@ h1{font-size:1.5rem;line-height:1.3;margin:8px 0 4px;color:var(--blue)}
 <h1>橄榄球小测验</h1>
 <p class="sub">Duke vs. Boston College · 10 月 31 日 Wallace Wade 球场</p>
 <p class="sub"><b>⚠️ 不准查网络，凭实力作答！</b></p>
-<p class="sub">美东时间 11 月 1 日 18:00 截止，截止后公布成绩榜。</p>
+<p class="sub">美东时间 11 月 1 日 18:00 截止，截止后公布正确答案和成绩榜。</p>
 <div class="bar"><i id="bar"></i></div>
 <div class="card" id="card"></div>
 </main>
 <script>
 var Q=[
 {q:"第 1 题：这场比赛的最终比分是多少？",
- o:["Duke 47 – Boston College 2","Duke 47 – Boston College 9","Duke 41 – Boston College 2","Duke 44 – Boston College 7"],
- a:0,
- e:"最终比分 Duke 47–2 获胜。Duke 拿下 6 个达阵（5 个冲球、1 个传球）和 2 个射门；Boston College 全场没有达阵，只在第一节得到 2 分。"},
+ o:["Duke 47 – Boston College 2","Duke 47 – Boston College 9","Duke 41 – Boston College 2","Duke 44 – Boston College 7"],},
 {q:"第 2 题：Boston College 的这 2 分是怎么得到的？",
- o:["安全分（Safety）：在对方持球时擒倒在其端区","射门得分（Field Goal）","Duke 加分踢被封盖","对方犯规直接送分"],
- a:2,
- e:"第一节 Duke 第二次达阵后，加分踢（PAT）被封盖，比分从 13–0 变成 13–2。大学橄榄球规则里，加分尝试中防守方若夺得球权并推进到对方端区，可得 2 分（防守方两分转换）。数据记录里写的是「回收被封盖的踢球」，具体推进过程请以比赛回放为准。"},
+ o:["安全分（Safety）：在对方持球时擒倒在其端区","射门得分（Field Goal）","Duke 加分踢被封盖","对方犯规直接送分"],},
 {q:"第 3 题：Duke 的 N. Sheppard 全场一共冲球达阵几次？",
- o:["3 次","4 次","5 次","6 次"],
- a:2,
- e:"Sheppard 全场 5 次冲球达阵：1 码、2 码、54 码、4 码、1 码。Duke 全队共 6 个达阵，另一个是 W. Eget 传球给 J. Hasley 的 5 码达阵。"}
+ o:["3 次","4 次","5 次","6 次"],}
 ];
 var N=["Aiye杜妈-Daniel30-T-SC","Alain 杜爸_Wendi30 T_Shanghai","Alicia 杜妈-Justin 29-Pratt-MO","AmandaMom - Edwin27 - P - NV","Amelia 杜妈-James’27-T-NJ","Ananda-justin-27-trinity-china","AN安宁杜妈- Annie Sheng30P-VA","an杜妈-Olivia-30T-NC","Annie-杜妈-Kevin27-T-NJ","Annie杜妈-Jessica-28T-Vancouver","安順Mom-angela27-T-HK","APPLE","北斗璇玑","Bin 杜妈- Ian2028 Pratt - 纽约","Brent 杜爸 Ethan 30P HK","c-Dad-Amy’28-T-NY","Carol 杜妈-Cecilia 30T-SH","Carol杜妈-Weiwei 30T-SH","陈-杜妈-Zack 30T-Chapel Hill-C","陈利杜妈- Aleena2030-Trinity-NJ","陈燕 杜妈-艺霏-2027 NY","Chenyu-Rachel 30-T-MA","扯谈入群Wayne-KevT24","弛宜妈-Ura2028-Trinity-北京","Christina Lai媽-Cayden28Pratt-Ca","crystal-杜妈-Dominic30P-深圳","Cui 杜妈-Stephen-30T-sy","大狗熊杜爸-Grace29-NC-义工","Dan 杜妈-Maggie 30T-OH","Debbie-mom- Peyton30-T-TX","DT-DAD-JT28P-CA","杜爸-zimiao27-Wisconsin","Elaine 杜妈-Jiayu28-Trinity-NY","Elinor杜妈-Chelsea2030-Pratt-MD","Fan-杜妈-J-2028-Trinity-TX","Fangmom-Hanlin27-P-BJ","Feng-杜爸-Kayla-30T-NJ","Feng杜爸- Youlan30T - Vancouver","feng峰-dad-Eddie27-T-WA","Fenghai Guo -杜爸 Maggie 30T-NC","Flora-杜妈-Maggie Guo-T30-NC","Forest杜爸，Austin - 30T","Fu 杜爸- Justin 29- Pratt MO","甘 Gan 杜妈- Eiry28 - T - 上海","Gary 杜爸-Michael-28-T-NJ","George Lee 杜爸-Meghan-P30-CA-C","Gina杜妈-Melissa28 -T-SC","Grace杜妈- Youlan 30T -Vancouver","Guanghui杜妈-Logan28-Pratt-WA","海斌杜爸-Chelsea2030-Pratt-MD","海文 杜爸 Kevin T30-AZ","Haixia（杜妈） - William 30-P-MD","Helen杜妈-Leo30-P-PA","珩 -杜妈-Amy28-T-NY","Hongbin-Claire2028-Trinity-MD","Hong杜妈-Emily30T-IL","黄超杜爸-David2028-Trinity-NY","黄江杜妈-Cierra28-Pratt VA","黄娟杜妈-杨子健2027-Trinity-广州","Hui杜爸-Cindy-2030-Trinity-NC","Huimin杜妈-Hannah27-T-NC","Isa-杜妈-Noah 28T-SH","Jane杜妈-Merissa-30T-TX","Jas-Jas 杜妈-Jasmine 30T-NC-C","jean杜妈 - Jacob30T - AZ","Jeff-D-Brian28-P-BJ","Jenny 杜妈 Sofia C 30 T NJ","Jessica 杜妈- Austin 30T -TO-C","Jessica 杜妈-Howell30-T-TX","Jessie杜妈-Kaylyn27-T-GA","Jessie许妈- Jonathan 30T-SH","JianDad-Edwin27-P-NV","Jiang-杜爸-Rachel30P-TX","Jian杨爸- Alisa30-MD","Jie杜妈-Chris2028-T-SH","解青 杜妈Kevin T30-AZ","槿杜妈-🍀🦌Alice2027🦌🍀-Pratt-…","静杜妈- Jerry27-T-WA","Joanna Mom - Eddie 27 - T - WA","Joanne 杜妈 Rocky30-T-BJ","Jo杜爸-Jake27-Trinity-CA","Joelyn杜妈-Adelle27Eunice29-T-TX","Jolie杜妈-Harry29-T-OH","Josh 杜爸-Rachel 30T-MA","Joyce -mom-2030Larry-trinity-CA","JoyceMom-Michele 2029 Trinity-PA","JS-Dad-Patrick-29T-VA","Julie 杜妈- Nathanael ‘27P- WI","Justin妈妈-April2028-Trinity-BJ","开心果杜妈-Anna 2028-T-NC","kevin 杜爸 Gary T30 FL","Kit杜爸-Weiwei 30T-SH","空一杜妈-Ray‘29-P-SC","Kwan-Marvin-23-HK","Lan-杜爸-Merissa-30T-TX-C","老刘 杜爸-Yuki30-T-SH","LauraMom-Stella2028-Trinity-OR","leiwenDad-David28-T-RI","Leo 杜爸-Maggie2030-Trinity-OH","Leqin-Mom-David28-T-VA","Li mom-Iris28-P-TN","Li-杜妈- Michael28-BJ","李红杜妈- Lex-2029-Pratt-NC","李剑锋-Dad-Stephanie29-Pratt-NC","李家瑞-杜爸- Olivia-30T-NC","Lillina杜妈-Grace2028 T-SZ","Lily-杜妈-Shelly -T27 NC","林-杜妈- Eric’28-T-OK","Linda Mom-Grace 27- T-PA","LindaMom-Jamie27-T-CA","Ling-杜妈-Kev’27-T-TX","林美眉杜妈-Jerry29-P-CA","LinWen-Derek27-WH-TX","Liping Mom-Emily27-T-GA","liwei","理智杜妈-Rally 2027-pratt 多伦多","Lucy杜妈-Tony30T -SH-C","Maggiemom29David BJ","芒果布丁 杜妈 Katharine30 T NJ","Mary杜妈- Aiden30T-OH","May杜妈-Brianna2028-Trinity-纽约","may杜妈-Zimiao27-P-Wi and Beijin","MeiL-杜妈-Daniel28-T-AL","meng 杜妈 yinuo 28 T BJ","涼涼杜妈-Cindy29-Trinity天津","Michael 杜爸-Rachel 30T-SH","Mike","Min 杜爸- Emily30T-IL","Mina杜妈-Zaria2029 Trinity南京","Ming杜爸- Aiden30T-OH","Ming杜妈-Rachel28Johnathan30-P","Nancy杜妈- Wendi2030-trinity-SH","宁杜爸-Jill28P- NY","Ningmom-Rachel28-p-NC","Noel杜妈-Leah28-HK","Ocean杜爸-Dominic-30P-深圳","潘军杜爸-Justin潘2027-trinity-北京","Peifang-Mom-Albert 27-T-CA","Philip-John2028-Toronto","PingMom-Stephanie’28-T-SC","QH杜爸Janie28-P-VA","Qian-杜妈- Ann-30P🇨🇦","倩-杜妈- Ryan27-T-NY","卿卿杜妈–Yvonne2030-Trinity-NC","QQ 杜妈 AK 27T 28P NC","Qunna_Jason28_GA","qw3Dad-Ben28-T-NY","Rachel-Katie27-FL","RC杜妈-Allen2030-T-NC","Redden杜爸-Victor 30T-SH","Ren杜妈 - Jill 2028 Pratt - NY","RYAN-D-Lawrence27T-Toronto","Sarah-杜妈-Tengle28-T-GA","Sarah杜妈-Josh29-Pratt-CA","Selena 杜妈-Rachel 30T-SH","Selina 杜妈-sonic29-TBD-HK","Sharon杜妈-James28-Pratt-NC","Shirley杜媳-Meghan-P30-CA-C","Shuanglin 杜爸-Hannah27-T-NC","肆丫头-杜妈-Rachel 2030-P-TX","SL-妈-Patrick-29-VA","Sophia","Sophia 杜妈-Victor 30T-SH","Sophie_杜妈_Josh_T30_NC","Steve-Jamie27-CA","SteveDad-Claire27-Trinity-CA","Suri（杜妈）-Tom29T-NC","Tang杜妈-Krystal28-P-Suzhou","Tao杜妈-Rose 30T-SC","Teresa","Teresa 杜妈 Gary T30 FL","Teresa杜媳Kaden27T&Kaitlyn30T-…","天罡北斗杜爸-Ryan2027-Trinity-OH","Tina 杜媳 S 30T CA","Ulysse杜爸 James 27-Trinity NJ","Victoria杜妈JohnHu 28Prat-Toront","Vivian 杜妈-Vanessa-30T-CA","Vivian杜媳-Jessica28-Trinity-NC","VON_杜妈_Leo‘27_T_NJ","王耕D-Charlotte29P-NY","王平","Watson杜爸-Jimmy27-Trinity-重庆","Wayne-D-Kev24-OH","Wei L-杜妈-Brooke-30T-WA","文 杜妈-Sabrina 30T-CO","wendy—Jimmy27-重庆","Will杜爸-Jerry2030-Trinity-深圳","wren 杜妈 - Kevin27-T-TX","WS'27KevinLingPTX","Xiao 杜妈-Ming2029-Pratt-NJ","Xin Zhang","徐炖 杜妈-Kiana2027-trinity-深圳","Xw-杜妈-JW28P-NY","琯Duke Mom- August 27-Pratt-MD","Yanhua杜妈-Mia2030-Trinity-TX","Yanhui杜妈-Alisa 30T-MD","颜强","Yanshun 杜爸-Allen-30T-NC","奕-杜妈- Matt26-T-NY","一默-杜妈-Blaine27-T-苏州","Ying 杜妈- Cindy-30T-NC","Ying杜妈-Sophie30-T-MD","yoyo杜妈-Yuki2030-T-上海","Yu-杜妈-Albert27Claire29-P-TN","袁野杜爸–袁艺珈2028Trinity重庆","豫栋 杜爸-Daniel 30T-SC","Yue Mom-Leah 2028-Trinity-OH","Yuebing 杜爸-Mia 30T-TX","yuki-杜妈-Tiffany 2027-T-PA","鱼羊鲜Dad-Kevin-27-P-GA","曾燿杜妈-Cynthia2030-Trinity-NJ","张昕-杜爸-Aleena 2030-T-NJ","ZhibinDad-Nathanael’27-P-WI","Zhiqiang-Dad-Katherine-T’28-AZ","周杜爸- Brianna 2028-Trinity-NYC","zhu 杜爸- Cecilia 30T -SH","庄庄-杜妈Cecilia袁艺珈 28-重庆","ZL","Zoe 杜妈- Xiao 30T-NY"];
-
- 
- 
- 
- 
- 
- 
-var SB_URL="https://ritglkwqpwlcjwemhfqd.supabase.co";
-var SB_KEY= 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdGdsa3dxcHdsY2p3ZW1oZnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MzEyMTQsImV4cCI6MjA4NzMwNzIxNH0.TqjETAEGcWTd2CbvkMnmfm6bKHLtZHjXbsy3dtPuEB8';
+var SB_URL="https://YOUR-PROJECT.supabase.co";
+var SB_KEY="YOUR-ANON-PUBLIC-KEY";
 var DEADLINE=new Date("2026-11-01T18:00:00-05:00");
-var who="",i=0,s=0,picks=[],sent=false,recMsg="",card=document.getElementById("card"),bar=document.getElementById("bar");
+var who="",i=0,picks=[],card=document.getElementById("card"),bar=document.getElementById("bar");
 function rpc(fn,body){
   return fetch(SB_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()});
 }
 function results(){
   bar.style.width="100%";
-  card.innerHTML='<p class="sub">正在加载成绩榜…</p>';
+  card.innerHTML='<p class="sub">正在加载…</p>';
   rpc("get_results",{}).then(function(d){
-    if(!d||!d.open){card.innerHTML='<p class="q">答题尚未截止</p><p class="sub">美东时间 18:00 截止后公布成绩榜。</p>';return}
-    var rows=d.rows||[];
-    var rate=Q.map(function(q,k){var c=rows.filter(function(r){return r.answers[k]==q.a}).length;return rows.length?Math.round(c*100/rows.length):0});
-    card.innerHTML='<p class="q">成绩榜（共 '+rows.length+' 人参加）</p><p class="sub" id="rt"></p><div id="lb"></div>';
-    document.getElementById("rt").textContent="各题正确率："+rate.map(function(x,k){return "第 "+(k+1)+" 题 "+x+"%"}).join("，");
+    if(!d||!d.open){card.innerHTML='<p class="q">答题尚未截止</p><p class="sub">美东时间 18:00 截止后公布正确答案和成绩榜。</p>';return}
+    var rows=d.rows||[],key=d.key||[],ex=d.explain||[];
+    card.innerHTML='<p class="q">正确答案与解析</p><div id="ans"></div><p class="q" id="lbt" style="margin-top:18px"></p><div id="lb"></div>';
+    var an=document.getElementById("ans");
+    Q.forEach(function(q,k){
+      var c=rows.filter(function(r){return r.answers[k]==key[k]}).length;
+      var p=document.createElement("div");p.className="exp";p.style.marginBottom="10px";
+      var bb=document.createElement("b");bb.textContent=q.q;p.appendChild(bb);
+      p.appendChild(document.createElement("br"));
+      p.appendChild(document.createTextNode("正确答案："+q.o[key[k]]+"（正确率 "+(rows.length?Math.round(c*100/rows.length):0)+"%）"));
+      p.appendChild(document.createElement("br"));
+      p.appendChild(document.createTextNode(ex[k]||""));
+      an.appendChild(p);
+    });
+    document.getElementById("lbt").textContent="成绩榜（共 "+rows.length+" 人参加）";
     var lb=document.getElementById("lb");
     rows.forEach(function(r,n){var p=document.createElement("p");p.className="exp";p.textContent=(n+1)+". "+r.name+" — "+r.score+" / "+Q.length;lb.appendChild(p)});
-  }).catch(function(){card.innerHTML='<p class="sub">成绩榜加载失败，请稍后刷新。</p>'});
+  }).catch(function(){card.innerHTML='<p class="sub">加载失败，请稍后刷新。</p>'});
+}
+function submit(){
+  var rec=document.getElementById("rec"),rb=document.getElementById("retry");
+  rb.classList.add("hide");rec.textContent="正在记录…";
+  rpc("submit_quiz",{p_name:who,p_answers:picks}).then(function(d){
+    rec.textContent=d.status==="ok"?"已记录！美东时间 18:00 截止后，这个页面会公布正确答案和成绩榜。":d.status==="duplicate"?"这个群名已经提交过，以第一次提交为准。":d.status==="closed"?"答题已截止，本次未记录。":"记录失败，请联系管理员。";
+  }).catch(function(){rec.textContent="网络错误，答案未记录。";rb.classList.remove("hide")});
 }
 function gate(){
   bar.style.width="0%";
@@ -103,16 +107,10 @@ function show(){
   bar.style.width=(i/Q.length*100)+"%";
   if(i>=Q.length){
     bar.style.width="100%";
-    card.innerHTML='<p class="sub">'+who+'，测验完成</p><div class="score">'+s+' / '+Q.length+'</div><p>'+(s==Q.length?"全对！你已经看懂这场比赛的关键细节了。":"再读一遍解析，下次一定全对。")+'</p><p class="sub" id="rec"></p><button class="next" id="again">再测一次</button>';
-    var rec=document.getElementById("rec");
-    if(!sent){
-      sent=true;rec.textContent="正在记录成绩…";
-      rpc("submit_quiz",{p_name:who,p_answers:picks}).then(function(d){
-        recMsg=d.status==="ok"?"成绩已记录，18:00 截止后公布成绩榜。":d.status==="duplicate"?"这个群名已经提交过，以第一次成绩为准。":d.status==="closed"?"答题已截止，成绩未记录。":"记录失败，请联系管理员。";
-        rec.textContent=recMsg;
-      }).catch(function(){recMsg="网络错误，成绩未记录，请刷新页面重新答题。";sent=false;rec.textContent=recMsg});
-    }else{rec.textContent="成绩只记录第一次提交。"}
-    document.getElementById("again").onclick=function(){i=0;s=0;picks=[];show()};
+    card.innerHTML='<p class="sub" id="who2"></p><p class="q" id="rec"></p><button class="next hide" id="retry">重试提交</button>';
+    document.getElementById("who2").textContent=who+"，作答完成";
+    document.getElementById("retry").onclick=submit;
+    submit();
     return;
   }
   var d=Q[i],h='<p class="q">'+d.q+'</p>';
@@ -121,14 +119,7 @@ function show(){
   card.innerHTML=h;
   card.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){pick(+b.dataset.k)}});
 }
-function pick(k){
-  var d=Q[i],bs=card.querySelectorAll(".opt");
-  bs.forEach(function(b,n){b.disabled=true;if(n==d.a)b.classList.add("ok");else if(n==k)b.classList.add("no")});
-  picks[i]=k;
-  if(k==d.a)s++;
-  document.getElementById("fb").innerHTML='<div class="exp">'+(k==d.a?"答对了！":"答错了，正确答案已标出。")+d.e+'</div><button class="next" id="nx">'+(i<Q.length-1?"下一题":"查看成绩")+'</button>';
-  document.getElementById("nx").onclick=function(){i++;show()};
-}
+function pick(k){picks[i]=k;i++;show()}
 show();
 </script>
 </body>
