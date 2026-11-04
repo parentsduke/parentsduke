@@ -41,6 +41,15 @@
     }
     .hd { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -1px; -webkit-text-stroke: 1.5px #ffffff; text-stroke: 1.5px #ffffff; }
     .ht { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 600; }
+    .hb { display: flex; flex-direction: column; line-height: 1.25; }
+    .hb-name { font-size: 15px; color: #fff; font-weight: 700; letter-spacing: 0.5px; }
+    .hb-url { font-size: 11px; color: var(--gold); text-decoration: none; letter-spacing: 0.5px; font-family: 'DM Mono', monospace; }
+    .hb-url:hover { text-decoration: underline; }
+    .ht-right { margin-left: auto; }
+    @media (max-width: 520px) {
+      header { padding: 0 16px; }
+      .ht-right { display: none; }
+    }
 
     /* ── Hero ── */
     .hero {
@@ -363,7 +372,11 @@
 
 <header>
   <div class="hd">D</div>
-  <div class="ht">Duke 录取信息提交</div>
+  <div class="hb">
+    <span class="hb-name">扯谈Duke群</span>
+    <a class="hb-url" href="https://dukeparents.org" target="_blank" rel="noopener">dukeparents.org</a>
+  </div>
+  <div class="ht ht-right">Duke 录取信息提交</div>
 </header>
 
 <div class="hero">
