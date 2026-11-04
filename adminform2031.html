@@ -1411,7 +1411,7 @@
       }
       return;
     }
-    if (!confirm(`确认批准 ${studentName} 入群？\n将发送链接到：${email}`)) return;
+    if (!confirm(`确认批准 ${studentName} 入群？\n将发送入群链接到：${email}\n同时发送网站登录邀请`)) return;
 
     try {
       // 自动创建一条新的 private_qr_links 记录
@@ -1454,9 +1454,39 @@
       if (rec) rec.approved_at = new Date().toISOString();
       applyFilters();
       await notifyAdmin(studentName, email);
-      alert(`✅ 已发送入群链接到 ${email}`);
+
+      // 同时批准网站注册（等同于 approve 页面的"批准并邀请"）
+      const siteMsg = await approveSiteAccess(recordId, email, studentName);
+      alert(`✅ 已发送入群链接到 ${email}\n${siteMsg}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+  // ── 同时发送网站邀请 ──
+  // 不再需要网站注册申请：批准入群时直接按邮箱调用 send-notification 发网站邀请。
+  // 失败不影响已完成的入群批准，只在提示里说明。
+  async function approveSiteAccess(recordId, email, studentName) {
+    try {
+      const url = `${SUPABASE_URL}/functions/v1/send-notification`;
+      const body = JSON.stringify({ action: 'invite', email, name: studentName });
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': await authHeader() },
+        body,
+      });
+      if (!res.ok) {
+        let msg = res.status;
+        try { const d = await res.json(); msg = d.error || msg; } catch (e) {}
+        throw new Error(msg);
+      }
+
+      await logActionOnly(recordId, '同时发送网站邀请');
+      return '✅ 网站：已发送网站登录邀请';
+    } catch (e) {
+      console.warn('[网站邀请失败]', e);
+      return '⚠️ 网站邀请未成功：' + e.message + '（入群批准已完成）';
     }
   }
 
