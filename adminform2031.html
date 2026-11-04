@@ -1439,7 +1439,8 @@
           'Content-Type': 'application/json',
           'Authorization': await authHeader(),
         },
-        body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id }),
+        body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id,
+          bodyLine3: '另外，您还会单独收到一封「网站登录邀请」邮件，请点击其中的链接设置密码后登录网站（已注册过网站账号的不会重复发送）。如几分钟内未收到，请查看垃圾邮件夹。' }),
       });
 
       if (!res.ok) {
