@@ -816,7 +816,7 @@ def call_groq(prompt):
     return None
 
 def call_openrouter(prompt):
-    """OpenRouter 多模型轮询备用"""
+    """OpenRouter 免费路由：只走免费模型，不花钱（auto 会路由到付费模型导致 402）"""
     if not OPENROUTER_KEY:
         return None
     url = 'https://openrouter.ai/api/v1/chat/completions'
@@ -825,13 +825,13 @@ def call_openrouter(prompt):
                'HTTP-Referer': 'https://dukeparents.org'}
     # 使用 openrouter/free 路由器，自动从所有可用免费模型中选择
     try:
-        body = {'model': 'openrouter/auto',
+        body = {'model': 'openrouter/free',
                 'messages': [{'role': 'user', 'content': prompt}],
                 'max_tokens': 1500}
         r = requests.post(url, json=body, headers=headers, timeout=60)
         data = r.json()
         if 'choices' in data:
-            used = data.get('model', 'openrouter/auto')
+            used = data.get('model', 'openrouter/free')
             print(f'  OpenRouter({used})成功')
             return clean_ai_html(data['choices'][0]['message']['content'])
         print(f'  OpenRouter失败: {r.status_code} {str(data)[:80]}')
@@ -883,7 +883,7 @@ def call_mistral(prompt):
         return None
 
 def gemini(prompt):
-    """自动降级链：Gemini → Groq → OpenRouter → Cerebras → Mistral（保留，供单独调用）"""
+    """自动降级链：Gemini → Groq → OpenRouter(free) → Cerebras → Mistral（保留，供单独调用）"""
     return call_ai_roundrobin(prompt)
 
 # 轮询分配：每个板块直接指定首选AI，失败再降级
