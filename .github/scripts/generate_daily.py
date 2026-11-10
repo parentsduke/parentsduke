@@ -28,8 +28,7 @@ CHRONICLE_MIN_DATE = GLOBAL_MIN_DATE
 
 SECTION_LABELS = {
     'weekly-school':       '🏫 学校新闻',
-    'weekly-basketball':   '🏀 篮球动态',
-    'weekly-football':     '🏈 橄榄球',
+    'weekly-basketball':   '🏀🏈 体育动态',
     'weekly-admissions':   '📋 招生信息',
     'weekly-prematric':    '📅 开学前安排',
     'weekly-calendar':     '🗓 学术日历',
@@ -1122,7 +1121,7 @@ def generate_section(section_name, items, extra='', allow_political=False,
     if allow_past_results:
         # 体育板块：比赛结果是已经发生的事，必须保留；不做"早于今天即过期"的删除
         year_rule = (
-            '- 【体育板块规则】Duke 篮球（男篮+女篮）的所有比赛信息都要完整保留：'
+            '- 【体育板块规则】Duke 篮球（男篮+女篮）和橄榄球的所有比赛信息都要完整保留：'
             '已结束的比赛必须写明日期、对手、胜负和比分；未来赛程写明日期、对手、地点、转播\n'
             '- 已经打完的比赛不属于"过期内容"，绝对不要因为日期早于今天而省略\n'
             '- 先列已结束比赛（按日期从新到旧），再列未来赛程（按日期从近到远）\n'
@@ -1614,8 +1613,9 @@ def main():
     r = fetch_all()
 
     school_items     = r['today'] + r['news']
-    # 篮球栏目只收男篮/女篮来源：goduke综合(athletics)和其他项目会混入橄榄球等内容，已剔除
+    # 体育栏目：篮球来源（已净化）+ 橄榄球来源；橄榄球源（Google News 搜索）会混入篮球内容，单列分不开，故合并
     basketball_items = (r['goduke_mbb'] + r['goduke_wbb'] + r['goduke_mbb_gn'])
+    sports_items = basketball_items + r['goduke_fb']
     admissions_items = r['admissions'] + r['admissions_site']
 
     # ── Python层面先过滤过期日期，再交给AI（所有栏目统一执行，不再局限于招生）──
@@ -1674,13 +1674,10 @@ def main():
     _espn = '\n\n'.join(x for x in (r['espn_mbb'], r['espn_wbb']) if x)
     if _espn:
         BASKETBALL_EXTRA = (BASKETBALL_EXTRA + '\n\n' + _espn).strip()
-    football_items   = r['goduke_fb']  # 已按发布日期过滤，不再二次删除
-
     tasks = {
         'weekly-school':       lambda: generate_section('学校新闻', school_items),
-        'weekly-basketball':   lambda: generate_section('篮球动态', basketball_items, extra=BASKETBALL_EXTRA,
+        'weekly-basketball':   lambda: generate_section('体育动态', sports_items, extra=BASKETBALL_EXTRA,
                                                          allow_past_results=True, max_items=15),
-        'weekly-football':     lambda: generate_section('橄榄球', football_items, allow_past_results=True),
         'weekly-admissions':   lambda: generate_section('招生信息', admissions_items, extra=r['admissions_text']),
         'weekly-calendar':     lambda: generate_calendar_section(calendar_items),
         'weekly-registration': lambda: generate_registration_section(r['reg_text'], r['housing_text']),
