@@ -703,6 +703,12 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
     }, 2500);
   }
 
+  // 调用需要管理员身份的 Edge Function 时，带上当前管理员的登录令牌（而不是公开的 anon key）
+  async function authHeader() {
+    const { data: { session } } = await db.auth.getSession();
+    return 'Bearer ' + (session?.access_token || SUPABASE_ANON_KEY);
+  }
+
   // ── Auth ──
   async function init() {
     const { data: { session } } = await db.auth.getSession();
@@ -774,6 +780,40 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
     'tianluosuri@gmail.com': '金',
   };
   const actionAdminName = e => (e && ACTION_ADMIN_NAMES[e]) || e || '';
+
+  // 只写审计表的操作记录（不改变状态），会出现在"全部历史"里
+  async function logActionOnly(recordId, label) {
+    try {
+      const { data: { session } } = await db.auth.getSession();
+      await db.from('admissions_edits').insert({
+        record_id: recordId, field: 'action', old_value: null, new_value: label,
+        edited_by: session?.user?.email || null, edited_at: new Date().toISOString(),
+      });
+    } catch (e) { console.warn('[操作审计写入失败]', e.message); }
+  }
+
+  // ── 同时发送网站邀请 ──
+  // 批准入群时直接按邮箱调用 send-notification 发网站邀请。
+  // 失败不影响已完成的入群批准，只在提示里说明。
+  async function approveSiteAccess(recordId, email, studentName) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-notification`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': await authHeader() },
+        body: JSON.stringify({ action: 'invite', email, name: studentName }),
+      });
+      if (!res.ok) {
+        let msg = res.status;
+        try { const d = await res.json(); msg = d.error || msg; } catch (e) {}
+        throw new Error(msg);
+      }
+      await logActionOnly(recordId, '同时发送网站邀请');
+      return '✅ 网站：已发送网站登录邀请';
+    } catch (e) {
+      console.warn('[网站邀请失败]', e);
+      return '⚠️ 网站邀请未成功：' + e.message + '（入群批准已完成）';
+    }
+  }
 
   async function applyAction(recordId, fields, label) {
     const { data: { session } } = await db.auth.getSession();
@@ -1500,7 +1540,8 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         },
-        body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id }),
+        body: JSON.stringify({ email, studentName, link, recordId, qrId: qrRow.id,
+          bodyLine3: '另外，您还会单独收到一封「网站登录邀请」邮件，请点击其中的链接设置密码后登录网站（已注册过网站账号的不会重复发送）。如几分钟内未收到，请查看垃圾邮件夹。' }),
       });
 
       if (!res.ok) {
@@ -1515,7 +1556,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
       if (rec) rec.approved_at = new Date().toISOString();
       applyFilters();
       await notifyAdmin(studentName, email);
-      alert(`✅ 已发送入群链接到 ${email}`);
+
+      // 同时发送网站邀请
+      const siteMsg = await approveSiteAccess(recordId, email, studentName);
+      alert(`✅ 已发送入群链接到 ${email}\n${siteMsg}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
     }
