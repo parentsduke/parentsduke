@@ -1210,6 +1210,7 @@
           <span class="catalist-status" style="color:var(--green);">✅ 已批准</span>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendApproval('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发1.0入群链接</button>
           <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendQr20('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发2.0链接</button>
+          <button class="catalist-item" onclick="closeCatMenu('actmenu-${r.id}');resendQr2031Only('${r.id}','${esc(safeEmailRaw)}','${esc(safeNameRaw)}')">📨 重发31群链接</button>
           ${r.not_joined
             ? `<button class="catalist-item" style="color:#b45309;" onclick="closeCatMenu('actmenu-${r.id}');clearNotJoined('${r.id}','${esc(safeNameRaw)}')">✅ 取消未进群</button>`
             : `<button class="catalist-item" style="color:#b45309;" onclick="closeCatMenu('actmenu-${r.id}');markNotJoined('${r.id}','${esc(safeNameRaw)}')">⚠️ 标记未进群</button>`
@@ -2064,6 +2065,59 @@
 
       await logActionOnly(recordId, '重新发送入群链接');
       alert(`✅ 已重新发送入群链接到 ${email}`);
+    } catch(e) {
+      alert('❌ 发送失败：' + e.message);
+    }
+  }
+
+  // ── 重发 2031 群二维码（仅入群二维码：不发网站登录邀请、不改批准状态）──
+  async function resendQr2031Only(recordId, email, studentName) {
+    if (!email) { alert('该记录没有邮箱，无法发送'); return; }
+    if (!confirm(`仅重新发送 2031 群入群二维码给 ${studentName}？\n将发送到：${email}\n（不会发送网站登录邀请）`)) return;
+
+    try {
+      // 作废旧的未使用 token（同一邮箱）
+      await db.from('private_qr_links')
+        .update({ used: true, used_at: new Date().toISOString() })
+        .eq('reserved_for', email)
+        .eq('used', false);
+
+      // 创建新 token（2031 群二维码）
+      const { data: qrRow, error: qrErr } = await db
+        .from('private_qr_links')
+        .insert({
+          image_url:    QR_IMAGE_URL,
+          label:        'Duke 2031 家长群',
+          reserved_for: email,
+          reserved_at:  new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (qrErr || !qrRow) throw new Error('创建二维码链接失败：' + (qrErr?.message || '未知错误'));
+
+      const link = `https://dukeparents.org/qr.html?token=${qrRow.token}`;
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-approval-email-2031`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': await authHeader(),
+        },
+        body: JSON.stringify({
+          email, studentName, link,
+          recordId, qrId: qrRow.id,
+          subject: 'Duke 2031 家长群入群二维码 · 扯谈Duke家长群',
+          replyTo: 'parentsduke@gmail.com',
+          bodyLine1: '您好！您的 Duke 2031 届家长群入群申请已批准。',
+          bodyLine2: '请点击下方按钮扫码加入 2031 届家长微信群：',
+        }),
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+
+      await logActionOnly(recordId, '重发31群链接');
+      alert(`✅ 已重新发送 2031 群入群二维码到 ${email}`);
     } catch(e) {
       alert('❌ 发送失败：' + e.message);
     }
