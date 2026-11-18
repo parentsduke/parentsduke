@@ -371,6 +371,13 @@ function toggleBannerMusic() {
 
     <header id="top-qrcode">
     <h1>欢迎来到扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群网站</h1>
+    <a href="chetan-gpt.html" target="_blank" title="扯谈GPT" style="display:flex;flex-direction:column;align-items:center;text-decoration:none;margin:14px auto 4px;width:fit-content;position:relative;">
+      <div style="position:relative;">
+        <img src="chetan-icon-512.png" alt="扯谈GPT" style="width:72px;height:72px;border-radius:16px;border:2px solid #B8963E;box-shadow:0 4px 14px rgba(0,0,0,0.35);display:block;">
+        <span style="position:absolute;top:-9px;right:-9px;background:#e0413a;color:#fff;font-size:9px;font-weight:800;line-height:1;padding:3px 6px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.4);letter-spacing:0.5px;">NEW</span>
+      </div>
+      <span style="margin-top:6px;font-size:14px;font-weight:800;color:#ffffff;letter-spacing:1px;"><span style="font-family:SIMLI,serif;">扯谈</span><span style="font-family:'NotoSansBF',sans-serif;font-size:10px;">GPT</span></span>
+    </a>
 </header>
 
 <!-- ===== 每日Duke动态 ===== -->
@@ -13498,7 +13505,9 @@ window.showPV();
             .dg-road{display:flex;flex-direction:column;gap:10px;position:absolute;z-index:2;left:50%;transform:translateX(-50%);top:var(--road-top);bottom:var(--road-bottom);width:var(--road-w);overflow-y:auto;scrollbar-width:none;}
             .dg-road::-webkit-scrollbar{display:none;}
             .dg-road > div{max-width:none !important;margin:0 !important;padding:0 !important;}
-            .dg-road > div > div{padding:12px 14px !important;background:rgba(255,255,255,0.9) !important;box-shadow:0 4px 14px rgba(0,31,91,0.25) !important;}
+            .dg-road > div > div{padding:12px 14px !important;background:transparent !important;box-shadow:none !important;border:1px solid rgba(1,33,105,0.28) !important;text-shadow:0 0 6px rgba(255,255,255,0.9);}
+            .dg-road select{background:rgba(255,255,255,0.45) !important;border-color:rgba(1,33,105,0.3) !important;}
+            .dg-road > div > div > div:nth-child(2){color:#3a4a6b !important;}
             .dg-road > div > div > div:nth-child(2){margin-bottom:10px !important;}
           }
         </style>
