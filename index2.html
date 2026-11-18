@@ -13395,7 +13395,7 @@ async function rejectPendingItem(id, filePath) {
 </div>
 
 <footer>
-  <h5>&copy; 扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群1.0-2.0</h5>
+  <h5>&copy; 扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群</h5>
   <h5>Web administrator:</h5>
   <h5>2024届家长_WeChatID_2327293770</h5>
   <div class="footer-bottom">
@@ -13527,6 +13527,11 @@ window.showPV();
             .dg-login{padding:8px 12px 14px !important;}
             .dg-login > div{font-size:13px !important;margin-bottom:2px !important;letter-spacing:1px !important;}
             .dg-login > a{font-size:16px !important;}
+          }
+          /* 桌面版（宽度>=768px）：卡片从图片底部往上定位，位于“Duke 家长交流与资讯平台”上方，不再压住它；去掉图片下方多出的空白 */
+          @media (min-width:768px){
+            .dg-img{margin-bottom:0 !important;}
+            .dg-road{top:auto !important;bottom:110px !important;overflow:visible !important;transform:translateX(-50%) !important;}
           }
         </style>
         <div class="dg-t">Duke University</div>
