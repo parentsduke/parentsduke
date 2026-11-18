@@ -13388,8 +13388,6 @@ window.showPV();
     if (dw) dw.style.display = "none";
     document.getElementById("protected-area").innerHTML = `
       <div style="text-align:center;margin-top:0;padding:0;position:relative;" class="login-hero">
-      <img src="https://dukeparents.org/chapel.jpg" style="width:100%;display:block;" alt="Duke Chapel">
-      <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0) 40%, rgba(255,255,255,0.85) 100%);"></div>
       <div class="dg-ov">
         <style>
           .dg-ov{position:absolute;top:0;left:0;right:0;z-index:1;padding:clamp(10px,2.4vw,22px) clamp(12px,3vw,28px) clamp(26px,5vw,52px);background:linear-gradient(to bottom, rgba(0,31,91,0.82) 0%, rgba(0,31,91,0.55) 60%, rgba(0,31,91,0) 100%);color:#fff;text-align:center;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.55);}
@@ -13399,6 +13397,7 @@ window.showPV();
           .dg-ov .dg-c{margin-top:clamp(5px,1vw,10px);display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(3px,.7vw,7px);}
           .dg-ov .dg-c span{font-size:clamp(10px,1.5vw,14px);line-height:1.5;padding:1px clamp(6px,1.1vw,11px);border:1px solid rgba(230,199,106,0.75);border-radius:999px;background:rgba(0,31,91,0.35);white-space:nowrap;}
           .dg-ov .dg-c b{color:#E6C76A;font-weight:700;}
+          @media (max-width:767px){.dg-ov{position:relative;z-index:2;background:linear-gradient(to bottom,#dee7f1 0,#dee7f1 45%,rgba(222,231,241,0) 100%);color:#001F5B;padding:12px 12px 14px;margin-bottom:-50px;text-shadow:0 0 4px rgba(255,255,255,0.75);}.dg-ov .dg-c span{padding:1px 7px;border-color:rgba(0,31,91,0.45);background:rgba(255,255,255,0.35);}.dg-ov .dg-c b{color:#8a6a12;}.dg-img{background:#dee7f1;}}
         </style>
         <div class="dg-t">Duke University</div>
         <div class="dg-s">北卡罗来纳州 Durham · 私立研究型大学 · 源于 1838 年 · 1924 年成立</div>
@@ -13410,9 +13409,13 @@ window.showPV();
           <span>ACC · Blue Devils</span>
         </div>
       </div>
+      <div class="dg-img" style="position:relative;">
+      <img class="dg-pic" src="https://dukeparents.org/chapel.jpg" style="width:100%;display:block;" alt="Duke Chapel">
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0) 40%, rgba(255,255,255,0.85) 100%);"></div>
       <div style="position:absolute;bottom:0;left:0;right:0;padding:20px 20px 32px 20px;z-index:1;text-align:center;">
         <div style="margin:0 0 6px;font-size:clamp(12px,1.8vw,18px);letter-spacing:2px;color:#001F5B;font-weight:500;opacity:0.85;font-family:SIMLI,serif;">Duke 家长交流与资讯平台</div>
         <a href="login.html" style="display:inline-block;background:transparent;color:#001F5B;border:none;text-decoration:none;font-size:16px;letter-spacing:2px;font-weight:500;opacity:0.8;font-family:SIMLI,serif;">登录</a>
+      </div>
       </div>
       </div>
     `;
