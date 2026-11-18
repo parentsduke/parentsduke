@@ -13485,7 +13485,7 @@ window.showPV();
     var tw = titleEl.getBoundingClientRect().width;    // 标题一行的实际宽度
     if (!tw) return;
     var scale = tw / BASE_W;
-    var bottom = login.offsetHeight + 6;               // 卡片底边紧贴在“登录”区块上方
+    var bottom = login.offsetHeight - 14;              // 卡片底边离“登录”区块顶部的距离（越小越靠下；原为 +6，下移 20px）
     var maxH = img.offsetHeight * 0.40 - bottom;       // 路大约占图片下方 40%
     var rawH = road.offsetHeight;                      // 未缩放高度
     if (rawH * scale > maxH && maxH > 0) scale = maxH / rawH;  // 太高才缩小，保证不爬出路面
