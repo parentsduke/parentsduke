@@ -13469,12 +13469,28 @@ window.showPV();
         h.parent.insertBefore(el, h.next && h.next.parentNode === h.parent ? h.next : null);
       }
     });
-    // 整体再下移“第一张卡片”的高度，并给图片下方预留同样的空间
+    // 桌面端：卡片整体宽度 = “Duke 家长交流与资讯平台”那一行的宽度；高度限制在图片底部的“路”内，不再溢出图片下方。手机端不处理（走原有 CSS）
     var img = road && road.parentNode;
-    var first = document.getElementById('rdu-carpool-section');
-    var h = (desk && road && first && first.parentNode === road) ? first.offsetHeight : 0;
-    if (road) road.style.transform = h ? 'translate(-50%,' + h + 'px)' : '';
-    if (img) img.style.marginBottom = h ? h + 'px' : '';
+    if (!road) return;
+    if (img) img.style.marginBottom = '';
+    if (!desk) {
+      road.style.removeProperty('transform');
+      road.style.removeProperty('bottom');
+      return;
+    }
+    var titleEl = document.getElementById('dg-title-txt');
+    var login = img && img.querySelector('.dg-login');
+    if (!titleEl || !login) return;
+    var BASE_W = 214;                                  // 与 CSS 中 .dg-road 桌面端的基准宽度一致
+    var tw = titleEl.getBoundingClientRect().width;    // 标题一行的实际宽度
+    if (!tw) return;
+    var scale = tw / BASE_W;
+    var bottom = login.offsetHeight + 6;               // 卡片底边紧贴在“登录”区块上方
+    var maxH = img.offsetHeight * 0.40 - bottom;       // 路大约占图片下方 40%
+    var rawH = road.offsetHeight;                      // 未缩放高度
+    if (rawH * scale > maxH && maxH > 0) scale = maxH / rawH;  // 太高才缩小，保证不爬出路面
+    road.style.setProperty('bottom', bottom + 'px', 'important');
+    road.style.setProperty('transform', 'translateX(-50%) scale(' + scale.toFixed(3) + ')', 'important');
   }
   window.addEventListener('resize', function () {
     if (document.getElementById('dg-road')) layoutRoadCards();
@@ -13558,7 +13574,7 @@ window.showPV();
       <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0) 40%, rgba(255,255,255,0.85) 100%);"></div>
       <div id="dg-road" class="dg-road"></div>
       <div class="dg-login" style="position:absolute;bottom:0;left:0;right:0;padding:20px 20px 32px 20px;z-index:1;text-align:center;">
-        <div style="margin:0 0 6px;font-size:clamp(15px,2.25vw,22.5px);letter-spacing:2px;color:#001F5B;font-weight:500;opacity:0.85;font-family:SIMLI,serif;">Duke 家长交流与资讯平台</div>
+        <div style="margin:0 0 6px;font-size:clamp(15px,2.25vw,22.5px);letter-spacing:2px;color:#001F5B;font-weight:500;opacity:0.85;font-family:SIMLI,serif;"><span id="dg-title-txt" style="display:inline-block;">Duke 家长交流与资讯平台</span></div>
         <a href="login.html" style="display:inline-block;background:transparent;color:#001F5B;border:none;text-decoration:none;font-size:20px;letter-spacing:2px;font-weight:500;opacity:0.8;font-family:SIMLI,serif;">登录</a>
       </div>
       </div>
@@ -13566,6 +13582,10 @@ window.showPV();
     `;
 
     layoutRoadCards();
+    var _pic = document.querySelector('.dg-pic');
+    if (_pic && !_pic.complete) _pic.addEventListener('load', layoutRoadCards);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutRoadCards);
+    window.addEventListener('load', layoutRoadCards);
   }
 
   function showContent(user) {
