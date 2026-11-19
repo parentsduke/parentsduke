@@ -13397,7 +13397,7 @@ async function rejectPendingItem(id, filePath) {
 <footer>
   <h5>&copy; 扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群</h5>
   <h5>Web admin:</h5>
-  <h5>2024届家长 <a href="#" style="color:inherit;text-decoration:none;" onclick="openOverlay('WJ.png','管理员二维码');return false;">点击二维码</a></h5>
+  <h5>2024届家长</h5>
   <div class="footer-bottom">
     <h5 id="emailDisplay"></h5>
     <script>
@@ -13405,7 +13405,20 @@ async function rejectPendingItem(id, filePath) {
         var u="parentsduke";var d="gmail.com";
         var el=document.getElementById("emailDisplay");
         var addr=u+"@"+d;
-        el.innerHTML='<a class="email-link" href="mailto:'+addr+'">'+addr+'</a>';
+        el.innerHTML='联系：<a href="#" style="color:inherit;text-decoration:none;" onclick="openOverlay(\'WJ.png\',\'管理员二维码\');return false;">点击二维码</a> <a class="email-link" style="margin-left:10px;text-decoration:none;" href="mailto:'+addr+'">点击邮箱</a>';
+        el.querySelector('.email-link').addEventListener('click',function(){
+          var done=function(){
+            var t=document.createElement('div');
+            t.textContent='邮箱已复制：'+addr;
+            t.style.cssText='position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:8px 16px;border-radius:8px;font-size:14px;z-index:99999;';
+            document.body.appendChild(t);
+            setTimeout(function(){t.remove();},2200);
+          };
+          try{
+            if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(addr).then(done,function(){});}
+            else{var ta=document.createElement('textarea');ta.value=addr;ta.style.cssText='position:fixed;opacity:0;';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();done();}
+          }catch(e){}
+        });
       })();
     </script>
   </div>
