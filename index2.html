@@ -13491,6 +13491,8 @@ async function submitDonateNotice(){
 <style>
 /* footer 文字降低亮度：由纯白改为柔和的浅蓝灰 */
 footer h5,footer h5 .gothic,footer h6,footer .site-counter,footer .site-counter span,footer #busuanzi_value_site_pv,footer .site-counter h6,footer .email-link{color:#c3cde3 !important;opacity:1 !important;}
+/* footer 的 Since 行与访问次数：强制与其他行同色（去掉可能的金色渐变/描边/发光） */
+footer .site-counter,footer .site-counter h6,footer .site-counter span,footer .site-counter #busuanzi_value_site_pv,footer #busuanzi_value_site_pv{color:#c3cde3 !important;-webkit-text-fill-color:#c3cde3 !important;background:none !important;-webkit-background-clip:border-box !important;background-clip:border-box !important;text-shadow:none !important;filter:none !important;opacity:1 !important;font-weight:inherit !important;font-size:.83em !important;}
 /* footer：压缩行距、去分隔线、合并为 3 行（手机与桌面端通用） */
 @media all{
   footer{padding-top:12px !important;padding-bottom:12px !important;min-height:0 !important;height:auto !important;}
@@ -13516,6 +13518,26 @@ footer h5,footer h5 .gothic,footer h6,footer .site-counter,footer .site-counter 
 }
 </style>
 
+
+<script>
+/* 让 Since 行与访问次数的字号和页脚其他行（h5）一致 */
+(function(){
+  function sync(){
+    var ref=document.querySelector('footer h5');
+    if(!ref) return;
+    var cs=getComputedStyle(ref);
+    document.querySelectorAll('footer .site-counter, footer .site-counter h6, footer .site-counter span').forEach(function(el){
+      el.style.setProperty('font-size',cs.fontSize,'important');
+      el.style.setProperty('font-family',cs.fontFamily,'important');
+      el.style.setProperty('font-weight',cs.fontWeight,'important');
+      el.style.setProperty('letter-spacing',cs.letterSpacing,'important');
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',sync); else sync();
+  window.addEventListener('load',sync);
+  window.addEventListener('resize',sync);
+})();
+</script>
 <!-- 访问统计（Supabase自建，登录时计数） -->
 <script>
 window.incrementAndShowPV = function() {
