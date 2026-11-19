@@ -13426,7 +13426,18 @@ footer h5,footer h5 .gothic,footer .email-link{color:#c3cde3 !important;}
   footer .footer-bottom h5{margin:0 !important;}
   footer .WJ-wrapper{margin:0 !important;padding:0 !important;line-height:0 !important;}
   footer .site-counter{margin:0 !important;padding:0 !important;border:none !important;box-shadow:none !important;}
-  footer .site-counter h6,footer .site-counter span{margin:0 !important;padding:0 !important;line-height:1.2 !important;display:block;}
+  footer .site-counter h6,footer .site-counter span{margin:0 !important;padding:0 !important;line-height:1.2 !important;display:inline !important;}
+  footer .site-counter h6{margin-right:8px !important;}
+  /* 合并行：Web admin 与微信号同一行；Since 与访问计数同一行 */
+  footer > h5:nth-of-type(2),footer > h5:nth-of-type(3){display:inline !important;}
+  footer > h5:nth-of-type(2){margin-right:6px !important;}
+  /* 3 行：① Web admin + 微信号　② 邮箱 + 二维码　③ © + Since + 访问计数 */
+  footer{display:flex !important;flex-wrap:wrap !important;justify-content:center !important;align-items:center !important;column-gap:8px !important;row-gap:2px !important;}
+  footer > h5:nth-of-type(2){order:1 !important;margin-right:0 !important;}
+  footer > h5:nth-of-type(3){order:2 !important;}
+  footer > .footer-bottom{order:3 !important;flex:0 0 100% !important;justify-content:center !important;}
+  footer > h5:nth-of-type(1){order:4 !important;}
+  footer > .site-counter{order:5 !important;}
   footer hr{display:none !important;}
   footer .footer-bottom::before,footer .footer-bottom::after,footer .site-counter::before,footer .site-counter::after,footer::before,footer::after{display:none !important;content:none !important;}
 }
