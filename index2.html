@@ -13395,6 +13395,7 @@ async function rejectPendingItem(id, filePath) {
 </div>
 
 <footer>
+  <div class="dg-support-wrap" style="order:0;flex:0 0 100%;width:100%;text-align:center;"><a href="#" class="dg-support-btn" onclick="openDonate();return false;">支持家长群</a></div>
   <h5>&copy; 扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群</h5>
   <h5>Web admin:</h5>
   <h5>2024届家长</h5>
@@ -13405,7 +13406,7 @@ async function rejectPendingItem(id, filePath) {
         var u="parentsduke";var d="gmail.com";
         var el=document.getElementById("emailDisplay");
         var addr=u+"@"+d;
-        el.innerHTML='联系：<a href="#" style="color:inherit;text-decoration:none;" onclick="openOverlay(\'WJ.png\',\'管理员二维码\');return false;">点击二维码</a> <a class="email-link" style="margin-left:10px;text-decoration:none;" href="mailto:'+addr+'">点击邮箱</a><br><a href="#" class="dg-support-btn" onclick="openDonate();return false;">支持家长群</a>';
+        el.innerHTML='联系：<a href="#" style="color:inherit;text-decoration:none;" onclick="openOverlay(\'WJ.png\',\'管理员二维码\');return false;">点击二维码</a> <a class="email-link" style="margin-left:10px;text-decoration:none;" href="mailto:'+addr+'">点击邮箱</a>';
         el.querySelector('.email-link').addEventListener('click',function(){
           var done=function(){
             var t=document.createElement('div');
@@ -13428,7 +13429,7 @@ async function rejectPendingItem(id, filePath) {
   </div>
 </footer>
 <style>
-.dg-support-btn{display:inline-block;margin-top:2px;padding:0 16px;line-height:1.35;border-radius:999px;background:#cfd9f5;color:#012169 !important;font-family:-apple-system,"PingFang SC","Microsoft YaHei",Arial,sans-serif !important;font-size:13px;font-weight:600;letter-spacing:1px;text-shadow:none !important;text-decoration:none !important;border:1px solid rgba(255,255,255,.8);box-shadow:0 2px 8px rgba(0,0,0,.28);animation:dgSoft 3s ease-in-out infinite;}
+.dg-support-btn{display:inline-block;margin:0;padding:0 16px;line-height:1.35;border-radius:999px;background:#cfd9f5;color:#012169 !important;font-family:-apple-system,"PingFang SC","Microsoft YaHei",Arial,sans-serif !important;font-size:13px;font-weight:600;letter-spacing:1px;text-shadow:none !important;text-decoration:none !important;border:1px solid rgba(255,255,255,.8);box-shadow:0 2px 8px rgba(0,0,0,.28);animation:dgSoft 3s ease-in-out infinite;}
 .dg-support-btn:hover{background:#dde5fa;}
 @keyframes dgSoft{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,.28);}50%{box-shadow:0 2px 8px rgba(0,0,0,.28),0 0 12px 2px rgba(255,255,255,.45);}}
 .dg-support-btn:active{transform:scale(.97);}
