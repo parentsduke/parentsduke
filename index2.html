@@ -13405,7 +13405,7 @@ async function rejectPendingItem(id, filePath) {
         var u="parentsduke";var d="gmail.com";
         var el=document.getElementById("emailDisplay");
         var addr=u+"@"+d;
-        el.innerHTML='联系：<a href="#" style="color:inherit;text-decoration:none;" onclick="openOverlay(\'WJ.png\',\'管理员二维码\');return false;">点击二维码</a> <a class="email-link" style="margin-left:10px;text-decoration:none;" href="mailto:'+addr+'">点击邮箱</a><br><a href="#" style="color:inherit;text-decoration:none;" onclick="openDonate();return false;">支持家长群</a>';
+        el.innerHTML='联系：<a href="#" style="color:inherit;text-decoration:none;" onclick="openOverlay(\'WJ.png\',\'管理员二维码\');return false;">点击二维码</a> <a class="email-link" style="margin-left:10px;text-decoration:none;" href="mailto:'+addr+'">点击邮箱</a><br><a href="#" class="dg-support-btn" onclick="openDonate();return false;">支持家长群</a>';
         el.querySelector('.email-link').addEventListener('click',function(){
           var done=function(){
             var t=document.createElement('div');
@@ -13427,16 +13427,21 @@ async function rejectPendingItem(id, filePath) {
     <span id="busuanzi_value_site_pv">…</span>
   </div>
 </footer>
+<style>
+.dg-support-btn{display:inline-block;margin-top:8px;padding:8px 22px;border-radius:999px;background:linear-gradient(135deg,#ffb347,#ff7a45);color:#fff !important;font-size:16px;font-weight:700;letter-spacing:1px;text-decoration:none !important;box-shadow:0 3px 10px rgba(255,122,69,.45);animation:dgPulse 2.4s ease-in-out infinite;}
+.dg-support-btn:active{transform:scale(.96);}
+@keyframes dgPulse{0%,100%{box-shadow:0 3px 10px rgba(255,122,69,.45);}50%{box-shadow:0 3px 18px rgba(255,122,69,.85);}}
+</style>
 <div id="dg-donate" onclick="if(event.target===this)closeDonate()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100000;align-items:center;justify-content:center;padding:16px;">
   <div style="background:#fff;border-radius:14px;max-width:420px;width:100%;max-height:90vh;overflow:auto;padding:20px 18px;text-align:center;color:#001F5B;position:relative;">
     <div onclick="closeDonate()" style="position:absolute;top:8px;right:14px;font-size:26px;line-height:1;cursor:pointer;color:#666;">&times;</div>
     <div style="font-size:18px;font-weight:700;margin-bottom:8px;">支持扯谈Duke家长群</div>
     <div style="font-size:14px;line-height:1.7;color:#333;margin-bottom:14px;">本网站由家长个人出资建立，并持续自费维护。<br>您的支持将用于家长群聚会和群内其他线上线下活动，以及网站服务器、数据库、扯谈GPT的AI接口等持续费用。欢迎自愿支持，金额随意，收支情况将定期在群内公布。非常感谢！</div>
-    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-      <figure style="margin:0;"><img src="zoe_wechat.png" alt="微信收款码" onerror="this.parentNode.style.display='none'" style="width:150px;max-width:100%;border-radius:8px;"><figcaption style="font-size:13px;margin-top:4px;">微信</figcaption></figure>
-      <figure style="margin:0;"><img src="ivy_zelle.png" alt="Zelle收款码" onerror="this.parentNode.style.display='none'" style="width:150px;max-width:100%;border-radius:8px;"><figcaption style="font-size:13px;margin-top:4px;">Zelle</figcaption></figure>
-      <figure style="margin:0;"><img src="ivy_venmo.png" alt="Venmo收款码" onerror="this.parentNode.style.display='none'" style="width:150px;max-width:100%;border-radius:8px;"><figcaption style="font-size:13px;margin-top:4px;">Venmo</figcaption></figure>
-      <figure style="margin:0;"><img src="wayne_paypal.png" alt="PayPal收款码" onerror="this.parentNode.style.display='none'" style="width:150px;max-width:100%;border-radius:8px;"><figcaption style="font-size:13px;margin-top:4px;">PayPal</figcaption></figure>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px 12px;align-items:start;justify-items:center;">
+      <figure style="margin:0;"><img src="zoe_wechat.png" alt="微信收款码" onerror="this.parentNode.style.display='none'" style="width:150px;height:150px;max-width:100%;object-fit:contain;display:block;margin:0 auto;border-radius:8px;"><figcaption style="font-size:13px;margin-top:4px;">微信</figcaption></figure>
+      <figure style="margin:0;"><img src="ivy_zelle.png" alt="Zelle收款码" onerror="this.parentNode.style.display='none'" style="width:150px;height:150px;max-width:100%;object-fit:contain;display:block;margin:0 auto;border-radius:8px;"><figcaption style="font-size:13px;margin-top:4px;">Zelle</figcaption></figure>
+      <figure style="margin:0;"><img src="ivy_venmo.png" alt="Venmo收款码" onerror="this.parentNode.style.display='none'" style="width:150px;height:150px;max-width:100%;object-fit:contain;display:block;margin:0 auto;border-radius:8px;"><figcaption style="font-size:13px;margin-top:4px;">Venmo</figcaption></figure>
+      <figure style="margin:0;"><img src="wayne_paypal.png" alt="PayPal收款码" onerror="this.parentNode.style.display='none'" style="width:150px;height:150px;max-width:100%;object-fit:contain;display:block;margin:0 auto;border-radius:8px;"><figcaption style="font-size:13px;margin-top:4px;">PayPal</figcaption></figure>
     </div>
     <div id="dg-donate-notify" style="margin-top:16px;padding-top:14px;border-top:1px solid #e3e8f0;text-align:left;">
       <div style="font-size:14px;font-weight:700;margin-bottom:4px;text-align:center;">已捐赠？告诉我们一声</div>
