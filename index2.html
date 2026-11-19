@@ -13396,7 +13396,7 @@ async function rejectPendingItem(id, filePath) {
 
 <footer>
   <h5>&copy; 扯谈<span class="gothic">𝔇𝔲𝔨𝔢</span>群</h5>
-  <h5>Web administrator:</h5>
+  <h5>Web admin:</h5>
   <h5>2024届家长_WeChatID_2327293770</h5>
   <div class="footer-bottom">
     <h5 id="emailDisplay"></h5>
@@ -13418,13 +13418,15 @@ async function rejectPendingItem(id, filePath) {
 <style>
 /* 手机端：压缩 footer 各行之间的间距（桌面端不受影响） */
 @media (max-width:767px){
-  footer{padding-top:10px !important;padding-bottom:10px !important;}
-  footer h5,footer h6{margin:0 !important;padding:0 !important;line-height:1.5 !important;}
-  footer h5{margin-bottom:2px !important;}
-  footer .footer-bottom{margin:4px 0 0 !important;padding:4px 0 0 !important;gap:6px !important;}
+  footer{padding-top:6px !important;padding-bottom:6px !important;min-height:0 !important;height:auto !important;}
+  footer h5,footer h6{margin:0 !important;padding:0 !important;line-height:1.3 !important;}
+  footer .footer-bottom{margin:0 !important;padding:0 !important;gap:6px !important;border:none !important;box-shadow:none !important;}
   footer .footer-bottom h5{margin:0 !important;}
-  footer .site-counter{margin:4px 0 0 !important;padding:0 !important;}
-  footer .site-counter h6,footer .site-counter span{margin:0 !important;line-height:1.4 !important;}
+  footer .WJ-wrapper{margin:0 !important;padding:0 !important;line-height:0 !important;}
+  footer .site-counter{margin:0 !important;padding:0 !important;border:none !important;box-shadow:none !important;}
+  footer .site-counter h6,footer .site-counter span{margin:0 !important;padding:0 !important;line-height:1.2 !important;display:block;}
+  footer hr{display:none !important;}
+  footer .footer-bottom::before,footer .footer-bottom::after,footer .site-counter::before,footer .site-counter::after,footer::before,footer::after{display:none !important;content:none !important;}
 }
 </style>
 
