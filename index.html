@@ -694,6 +694,16 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
     </div>
   </div>
 
+  <!-- ===== 教科书调剂（家长互助，独立页面 textbooks.html，登录后才渲染）===== -->
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">
+      <span>教科书调剂 · 家长互助</span><span class="accordion-arrow">&#9658;</span>
+    </button>
+    <div class="accordion-body">
+      <iframe src="/textbooks.html" style="width:100%;height:80vh;border:none;display:block;" loading="lazy"></iframe>
+    </div>
+  </div>
+
 
   <div class="accordion">
     <button class="accordion-btn" onclick="toggleAccordion(this)">
