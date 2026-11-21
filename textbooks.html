@@ -42,6 +42,7 @@
   .tag { display:inline-block; font-size:11px; border-radius:10px; padding:1px 8px; background:#e8f0fe; color:var(--blue); margin-right:6px; }
   .tag.sold { background:#eee; color:#888; }
   .tag.bc { background:#e6f4ea; color:#1b7a3c; }
+  #feeBanner .overdue { color:#b3261e; font-weight:700; }
   #feeBanner .box.buyer { background:#e6f4ea; border-color:#b7dfb9; color:#1b5e20; }
   #feeBanner .box { background:#fdecea; border:1px solid #f1b0aa; color:#8a1f17; border-radius:8px;
                     padding:10px 12px; font-size:13px; line-height:1.7; margin-bottom:12px; }
@@ -237,6 +238,17 @@ var PAY_IMG = {
       var ad = el('div', 'box admin');
       ad.textContent = '管理员视图：待收 ' + pend.length + ' 笔 ' + money(sum(pend)) +
                        ' ｜ 已确认收款 ' + paid.length + ' 笔 ' + money(sum(paid));
+      if (pend.length) {
+        pend.slice().sort(function (a, b) { return new Date(a.sold_at) - new Date(b.sold_at); }).forEach(function (x) {
+          var days = Math.floor((Date.now() - new Date(x.sold_at).getTime()) / 86400000);
+          var late = days > DUE_DAYS;
+          var line = el('div', late ? 'overdue' : null,
+            (late ? '⚠ 已逾期 ' + (days - DUE_DAYS) + ' 天 · ' : '· 已转出 ' + days + ' 天 · ') +
+            '《' + x.title + '》 ' + money(x.fee_amount) + ' ｜ 联系：' + x.contact);
+          line.style.marginTop = '4px';
+          ad.appendChild(line);
+        });
+      }
       box.appendChild(ad);
     }
   }
