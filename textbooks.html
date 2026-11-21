@@ -80,8 +80,8 @@
     不接受其他物品，请勿在此发布。
   </div>
   <div class="notice">
-    <b>家长群支持款：</b>转让完成后，转出方需将转让价的 3%（不足 $1 按 $1 计）支持给家长群，
-    仅用于群内活动和网站运作。标记"已转出"时须如实填写实际转让价，并在 14 天内支付，逾期将暂停发布新的调剂信息。<br>
+    <b>家长群捐赠：</b>转让完成后，诚邀转出方将转让价的 3%（不足 $1 按 $1 计）捐赠给家长群，
+    仅用于群内活动和网站运作，感谢您的支持。标记"已转出"时请如实填写实际转让价，建议在 14 天内完成捐赠。捐赠款不可抵税，本站不开具捐赠收据。<br>
     仅限调剂<b>实体教科书</b>，配套答案本、题解手册可以一并调剂；禁止转让扫描版/电子版 PDF、复印本和盗版资料。请勿收购后转售牟利。
     本站为家长自发组织的互助页面，<b>非杜克大学官方网站</b>，与杜克大学无隶属关系。
     请勿在备注里写身份证、银行卡等敏感信息。
@@ -111,8 +111,8 @@
       <label>
         <input type="checkbox" id="f-agree">
         <span>我已阅读并同意：① 本页面目前<b>仅限调剂教科书</b>，不发布其他物品；仅用于家长之间调剂自家闲置的实体教科书，非商业买卖；我不是为转售牟利而收购，不转让电子版、复印本或盗版资料；
-        ② 转让完成后如实填写实际转让价，并在 14 天内向家长群支付转让价的 <b>3%</b>（不足 $1 按 $1 计；仅用于群内活动和网站运作），
-        逾期将暂停我发布新的调剂信息；③ 本站非杜克官方网站，不是卖家、不经手书款、不担保，调剂双方自行协商并承担风险。</span>
+        ② 转让完成后如实填写实际转让价，并自愿在 14 天内向家长群捐赠转让价的 <b>3%</b>（不足 $1 按 $1 计；仅用于群内活动和网站运作），
+        感谢您的支持；③ 本站非杜克官方网站，不是卖家、不经手书款、不担保，调剂双方自行协商并承担风险。</span>
       </label>
     </div>
     <button class="btn" id="submitBtn">发布</button>
@@ -122,11 +122,11 @@
 
   <div id="payModal" style="display:none;">
     <div class="paybox">
-      <div class="payhead"><b>支持家长群 · 选择支付方式</b><span id="payClose">✕</span></div>
+      <div class="payhead"><b>捐赠家长群 · 选择捐赠方式</b><span id="payClose">✕</span></div>
       <div id="payAmount"></div>
       <div id="payTabs"></div>
       <div id="payBody"></div>
-      <div class="paynote">付款备注请写：<b>教科书支持款 + 书名</b>。付款后管理员会在核对到账后确认。<br>
+      <div class="paynote">备注请写：<b>教科书捐赠 + 书名</b>。捐赠后管理员会在核对到账后确认。捐赠款不可抵税，不开具收据。<br>
         手机上无法扫自己屏幕的二维码时，可长按保存图片，再在对应 App 里从相册识别；PayPal / Venmo 也可直接点按钮打开。</div>
     </div>
   </div>
@@ -210,12 +210,12 @@ var PAY_IMG = {
     var mine = rows.filter(function (x) { return me && x.user_id === me.id && x.fee_status === 'pending'; });
     if (mine.length) {
       var d = el('div', 'box');
-      d.appendChild(el('div', null, '您有 ' + mine.length + ' 笔待支付的家长群支持款（转让价的 3%，不足 $1 按 $1）：'));
+      d.appendChild(el('div', null, '您有 ' + mine.length + ' 笔家长群捐赠尚未完成，感谢您的支持（转让价的 3%，不足 $1 按 $1）：'));
       mine.forEach(function (x) {
         var due = new Date(new Date(x.sold_at).getTime() + DUE_DAYS * 86400000).toLocaleDateString('zh-CN');
-        d.appendChild(el('div', null, '· 《' + x.title + '》 ' + money(x.fee_amount) + '（请于 ' + due + ' 前支付）'));
+        d.appendChild(el('div', null, '· 《' + x.title + '》 ' + money(x.fee_amount) + '（建议于 ' + due + ' 前完成）'));
       });
-      var pb = el('button', 'btn small', '查看收款码 / 去支付');
+      var pb = el('button', 'btn small', '查看收款码 / 去捐赠');
       pb.style.marginTop = '6px';
       pb.onclick = function () { openPay(mine.reduce(function (t, x) { return t + Number(x.fee_amount); }, 0)); };
       d.appendChild(pb);
@@ -264,8 +264,8 @@ var PAY_IMG = {
       var mineCard = me && x.user_id === me.id;
       if (x.sold && (mineCard || isAdmin)) {
         var fl = el('div', 'feeline ' + x.fee_status,
-          '转让价 ' + money(x.sold_price) + ' ｜ 家长群支持款 ' + money(x.fee_amount) + ' ｜ ' +
-          (x.fee_status === 'paid' ? '已确认收款，感谢支持' : '待支付'));
+          '转让价 ' + money(x.sold_price) + ' ｜ 家长群捐赠 ' + money(x.fee_amount) + ' ｜ ' +
+          (x.fee_status === 'paid' ? '已确认收款，感谢捐赠' : '待捐赠'));
         card.appendChild(fl);
       }
       var act = el('div', 'actions');
@@ -292,8 +292,8 @@ var PAY_IMG = {
     var price = parseFloat(input);
     if (isNaN(price) || price < 0) return alert('转让价格式不正确');
     var fee = calcFee(price);
-    var ok = confirm('转让价 ' + money(price) + '，需支持家长群 ' + money(fee) + '（3%，不足 $1 按 $1）。\n' +
-                     '标记后不可撤销，请在 ' + DUE_DAYS + ' 天内支付。确认吗？');
+    var ok = confirm('转让价 ' + money(price) + '，诚邀您捐赠家长群 ' + money(fee) + '（3%，不足 $1 按 $1）。\n' +
+                     '标记后不可撤销，请在 ' + DUE_DAYS + ' 天内完成捐赠，感谢您的支持。确认吗？');
     if (!ok) return;
     var r = await sb.from('textbook_listings').update({ sold: true, sold_price: price }).eq('id', x.id);
     if (r.error) return alert('操作失败：' + r.error.message);
@@ -337,9 +337,7 @@ var PAY_IMG = {
     $('submitBtn').disabled = false;
     if (r.error) {
       msg.style.color = '#c00';
-      msg.textContent = (r.error.code === '42501')
-        ? '您有逾期未支付的家长群支持款（转让价的 3%），请先支付并等待管理员确认后再发布。'
-        : '发布失败：' + r.error.message;
+      msg.textContent = '发布失败：' + r.error.message;
       return;
     }
     ['f-title','f-course','f-price','f-contact','f-note'].forEach(function (i) { $(i).value = ''; });
@@ -350,7 +348,7 @@ var PAY_IMG = {
   }
 
   function openPay(amount) {
-    $('payAmount').textContent = amount > 0 ? '应支付：' + money(amount) + '（转让价的 3%，不足 $1 按 $1）' : '';
+    $('payAmount').textContent = amount > 0 ? '建议捐赠：' + money(amount) + '（转让价的 3%，不足 $1 按 $1）' : '';
     var tabs = $('payTabs'); tabs.innerHTML = '';
     function pick(item, btn) {
       Array.prototype.forEach.call(tabs.children, function (c) { c.className = ''; });
