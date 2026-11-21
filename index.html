@@ -9477,6 +9477,18 @@ function toggleWeekly(btn){btn.classList.toggle("open");btn.nextElementSibling.c
     </div>
   </div>
 
+  <!-- ===== 教科书调剂卡片（登录后在页面内查看；点击进入 textbooks.html）===== -->
+  <div id="textbook-exchange-section" style="max-width:480px; margin:16px auto 0; padding:0 16px 8px;">
+    <div style="background:#fff; border:1px solid #d0d8e8; border-radius:10px; padding:22px 24px; box-shadow:0 2px 10px rgba(1,33,105,0.07);">
+      <div style="font-size:15px; font-weight:700; color:#012169; margin-bottom:6px;">教科书调剂</div>
+      <div style="font-size:12px; color:#888; margin-bottom:16px;">家长间调剂闲置教科书，非商业买卖，仅限教科书。</div>
+      <button onclick="location.href='textbooks.html'"
+        style="width:100%; padding:10px; background:#012169; color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
+        进入教科书调剂
+      </button>
+    </div>
+  </div>
+
   <!-- 管理员面板（默认隐藏） -->
   <div id="admin-panel" style="display:none; max-width:800px; margin:0 auto; padding:20px; background:#f8f8f8; border:1px solid #ddd; border-radius:10px; margin-bottom:20px;">
 
@@ -13603,7 +13615,7 @@ window.showPV();
 
   // 把底部两张卡片（RDU拼车 / 申请加入家长群）放到首图的“路”上；窄屏保持原位
   var _roadHomes = {};
-  var _roadIds = ['rdu-carpool-section', 'wechat-group-section'];
+  var _roadIds = ['textbook-exchange-section', 'rdu-carpool-section', 'wechat-group-section'];
   function layoutRoadCards() {
     var road = document.getElementById('dg-road');
     var wide = true;
