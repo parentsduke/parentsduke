@@ -41,6 +41,8 @@
   .card .actions { margin-top:8px; display:flex; gap:8px; }
   .tag { display:inline-block; font-size:11px; border-radius:10px; padding:1px 8px; background:#e8f0fe; color:var(--blue); margin-right:6px; }
   .tag.sold { background:#eee; color:#888; }
+  .tag.bc { background:#e6f4ea; color:#1b7a3c; }
+  #feeBanner .box.buyer { background:#e6f4ea; border-color:#b7dfb9; color:#1b5e20; }
   #feeBanner .box { background:#fdecea; border:1px solid #f1b0aa; color:#8a1f17; border-radius:8px;
                     padding:10px 12px; font-size:13px; line-height:1.7; margin-bottom:12px; }
   #feeBanner .box.admin { background:#e8f5e9; border-color:#b7dfb9; color:#1b5e20; }
@@ -221,6 +223,13 @@ var PAY_IMG = {
       d.appendChild(pb);
       box.appendChild(d);
     }
+    var bc = rows.filter(function (x) { return me && x.user_id === me.id && !x.sold && x.buyer_confirmed_at; });
+    if (bc.length) {
+      var bd = el('div', 'box buyer');
+      bd.appendChild(el('div', null, '有买家确认已拿到您的书，请在下方对应卡片点"标记已转出"，如实填写转让价：'));
+      bc.forEach(function (x) { bd.appendChild(el('div', null, '· 《' + x.title + '》')); });
+      box.appendChild(bd);
+    }
     if (isAdmin) {
       var pend = rows.filter(function (x) { return x.fee_status === 'pending'; });
       var paid = rows.filter(function (x) { return x.fee_status === 'paid'; });
@@ -255,6 +264,7 @@ var PAY_IMG = {
       if (x.sold) meta.appendChild(el('span', 'tag sold', '已转出'));
       if (x.course) meta.appendChild(el('span', 'tag', x.course));
       if (x.condition) meta.appendChild(el('span', 'tag', x.condition));
+      if (!x.sold && x.buyer_confirmed_at) meta.appendChild(el('span', 'tag bc', '买家已确认收书'));
       meta.appendChild(document.createTextNode(new Date(x.created_at).toLocaleDateString('zh-CN')));
       card.appendChild(meta);
 
@@ -270,11 +280,27 @@ var PAY_IMG = {
       }
       var act = el('div', 'actions');
       if (mineCard && !x.sold) {
-        var b1 = el('button', 'btn small ghost', '标记已转出');
+        var b1 = el('button', x.buyer_confirmed_at ? 'btn small' : 'btn small ghost', '标记已转出');
         b1.onclick = function () { markSold(x); };
         var b2 = el('button', 'btn small danger', '删除');
         b2.onclick = function () { remove(x.id); };
         act.appendChild(b1); act.appendChild(b2);
+        if (x.buyer_confirmed_at) {
+          var b4 = el('button', 'btn small ghost', '买家点错了');
+          b4.onclick = function () { buyerAct(x.id, true, '确定驳回买家的确认？'); };
+          act.appendChild(b4);
+        }
+      }
+      if (me && !mineCard && !x.sold) {
+        if (!x.buyer_id) {
+          var b5 = el('button', 'btn small ghost', '我已拿到这本书');
+          b5.onclick = function () { buyerAct(x.id, false, '确认您已从发布者处拿到这本书？发布者登录后会看到提醒，并登记转让价。'); };
+          act.appendChild(b5);
+        } else if (x.buyer_id === me.id) {
+          var b6 = el('button', 'btn small danger', '撤销我的确认');
+          b6.onclick = function () { buyerAct(x.id, true, '确定撤销确认？'); };
+          act.appendChild(b6);
+        }
       }
       if (isAdmin && x.fee_status === 'pending') {
         var b3 = el('button', 'btn small', '确认已收款');
@@ -299,6 +325,13 @@ var PAY_IMG = {
     if (r.error) return alert('操作失败：' + r.error.message);
     await load();
     if (fee > 0) openPay(fee);
+  }
+
+  async function buyerAct(id, undo, tip) {
+    if (!confirm(tip)) return;
+    var r = await sb.rpc('textbook_buyer_confirm', { p_id: String(id), p_undo: undo });
+    if (r.error) return alert('操作失败：' + r.error.message);
+    load();
   }
 
   async function confirmPaid(id) {
