@@ -593,7 +593,8 @@
           <th>Portal 截屏</th>
           <th>学生证截屏</th>
           <th>FW 佐证</th>
-          <th>校园活动佐证</th>
+          <th>校内活动佐证</th>
+          <th>校外活动佐证</th>
           <th>最近处理</th>
         </tr>
       </thead>
@@ -1173,10 +1174,17 @@
       } else {
         campusCell = '<span class="no-file">—</span>';
       }
+      const off = offInfo(r);
+      let offCell;
+      if (off.ok) {
+        offCell = `<span style="font-size:12px;color:#003087;font-family:'DM Mono',monospace;line-height:1.7;">✅ 活动：${fwEsc(off.event)}${off.date ? '（' + fwEsc(off.date) + '）' : ''}<br>面见过（真实姓名）：${fwEsc(off.parent)}</span>`;
+      } else {
+        offCell = '<span class="no-file">—</span>';
+      }
       let fwCell;
       if (r.family_weekend_attended === true && r.family_weekend_known_parent) {
         fwCell = `<span style="font-size:12px;color:#003087;font-family:'DM Mono',monospace;">✅ 面见过（真实姓名）：${fwEsc(r.family_weekend_known_parent)}</span>`;
-      } else if (!hasAnyFileEvidence && !campus.ok) {
+      } else if (!hasAnyFileEvidence && !campus.ok && !off.ok) {
         fwCell = '<span style="font-size:12px;color:#C84B31;font-weight:600;">⚠️ 无任何证据</span>';
       } else {
         fwCell = '<span class="no-file">—</span>';
@@ -1283,18 +1291,19 @@
         <td>${sidCell}</td>
         <td>${fwCell}</td>
         <td>${campusCell}</td>
+        <td>${offCell}</td>
         <td>${handledCellClickable}</td>
       </tr>`;
     }).join('');
   }
 
-  // ── Duke 校园活动佐证：优先读新列；数据库没有新列时，从前台写进备注的那一行里取 ──
+  // ── Duke 校内活动佐证（旧记录的备注标记为「校园活动」）：优先读新列；数据库没有新列时，从前台写进备注的那一行里取 ──
   function campusInfo(r) {
     let ev = (r.campus_event_attended === true && r.campus_event_name) ? r.campus_event_name : '';
     let pa = (r.campus_event_attended === true && r.campus_event_known_parent) ? r.campus_event_known_parent : '';
     let dt = (r.campus_event_attended === true && r.campus_event_date) ? String(r.campus_event_date).slice(0, 10) : '';
     if (!ev || !pa) {
-      const m = String(r.notes || '').match(/【Duke 校园活动】([^\n]*?)；(?:面对面见过|认识)的群内家长(?:（真实姓名）)?：([^\n]*)/);
+      const m = String(r.notes || '').match(/【Duke 校(?:园|内)活动】([^\n]*?)；(?:面对面见过|认识)的群内家长(?:（真实姓名）)?：([^\n]*)/);
       if (m) { ev = m[1].trim(); pa = m[2].trim(); }
     }
     if (!dt) {   // 备注里的格式：活动名（YYYY-MM-DD）
@@ -1304,9 +1313,25 @@
     return { ok: !!(ev && pa), event: ev, date: dt, parent: pa };
   }
 
+  // ── 校外活动佐证（如 Send-off 聚会）：优先读新列；没有新列时从备注里取 ──
+  function offInfo(r) {
+    let ev = (r.offcampus_event_attended === true && r.offcampus_event_name) ? r.offcampus_event_name : '';
+    let pa = (r.offcampus_event_attended === true && r.offcampus_event_known_parent) ? r.offcampus_event_known_parent : '';
+    let dt = (r.offcampus_event_attended === true && r.offcampus_event_date) ? String(r.offcampus_event_date).slice(0, 10) : '';
+    if (!ev || !pa) {
+      const m = String(r.notes || '').match(/【校外活动】([^\n]*?)；(?:面对面见过|认识)的群内家长(?:（真实姓名）)?：([^\n]*)/);
+      if (m) { ev = m[1].trim(); pa = m[2].trim(); }
+    }
+    if (!dt) {
+      const md = ev.match(/^(.*?)（(\d{4}-\d{2}-\d{2})）$/);
+      if (md) { ev = md[1].trim(); dt = md[2]; }
+    }
+    return { ok: !!(ev && pa), event: ev, date: dt, parent: pa };
+  }
+
   // ── Export CSV ──
   function exportCSV() {
-    const headers = ['微信昵称','提交时间','中文姓名','英文姓名','高中学校','地区','录取类型','届次','学院','专业','Committed','备注','提交者','微信号','邮箱','宿舍照片链接','录取通知书链接','Committed Letter链接','Portal截屏链接','学生证截屏链接','FW佐证家长姓名','校园活动','校园活动日期','校园活动认识家长姓名','处理状态'];
+    const headers = ['微信昵称','提交时间','中文姓名','英文姓名','高中学校','地区','录取类型','届次','学院','专业','Committed','备注','提交者','微信号','邮箱','宿舍照片链接','录取通知书链接','Committed Letter链接','Portal截屏链接','学生证截屏链接','FW佐证家长姓名','校内活动','校内活动日期','校内活动认识家长姓名','校外活动','校外活动日期','校外活动认识家长姓名','处理状态'];
     const type = document.getElementById('filterType').value;
     const year = document.getElementById('filterYear').value;
     const committed = document.getElementById('filterCommitted').value;
@@ -1351,6 +1376,9 @@
       campusInfo(r).event,
       campusInfo(r).date,
       campusInfo(r).parent,
+      offInfo(r).event,
+      offInfo(r).date,
+      offInfo(r).parent,
       r.rejected_at ? '已拒绝' : r.approved_at ? '已批准' : r.shelved_at ? '已搁置' : '待处理',
     ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
 
