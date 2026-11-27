@@ -839,7 +839,7 @@
       const t = e.edited_at ? new Date(e.edited_at).toLocaleString('zh-CN', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
       const what = e.field === 'action'
         ? `<strong>${fmtVal(e.new_value)}</strong>`
-        : `${esc(e.field)}：${fmtVal(e.old_value)} → ${fmtVal(e.new_value)}`;
+        : `${esc(FIELD_LABELS[e.field] || e.field)}：<span style="white-space:pre-wrap;">${fmtVal(e.old_value)}</span> → <span style="white-space:pre-wrap;">${fmtVal(e.new_value)}</span>`;
       return `<tr><td style="white-space:nowrap;padding:6px 10px 6px 0;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">${esc(t)}</td>`
            + `<td style="white-space:nowrap;padding:6px 10px;"><strong>${esc(actionAdminName(e.edited_by))}</strong></td>`
            + `<td style="padding:6px 0;">${what}</td></tr>`;
@@ -1017,6 +1017,7 @@
     college:           '学院',
     major:             '专业',
     notes:             '备注',
+    admin_notes:       '管理员备注',
     submitter_name:    '提交者',
     submitter_contact: '微信号',
     submitter_email:   '邮箱',
@@ -1251,15 +1252,16 @@
 
       return `<tr id="row-${r.id}"${r.left_group_at ? ' class="row-left-group"' : r.not_joined ? ' class="row-not-joined"' : ''}>
         <td style="text-align:center;padding:8px 6px;">${actionCell}</td>
-        <td><input
-          type="text"
-          value="${r.admin_notes || ''}"
-          placeholder="管理员备注"
+        <td><textarea
+          class="notes-ta"
+          rows="1"
+          placeholder="管理员备注（回车换行，点框外保存）"
+          oninput="autoGrow(this)"
           onblur="saveField('${r.id}', 'admin_notes', this.value, this)"
-          onkeydown="if(event.key==='Enter')this.blur()"
-          style="width:120px;font-size:13px;border:1px solid #ddd;border-radius:4px;padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;"
+          onkeydown="if((event.ctrlKey||event.metaKey)&&event.key==='Enter')this.blur()"
+          style="width:220px;min-height:38px;overflow:hidden;font:inherit;font-size:13px;line-height:1.5;border:1px solid #ddd;border-radius:4px;padding:4px 8px;background:#fff;color:#1a1a1a;outline:none;resize:none;"
           onfocus="this.style.borderColor='#0736a4'"
-        /></td>
+        >${String(r.admin_notes || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></td>
         <td><input
           type="text"
           value="${r.wx_nickname || ''}"
@@ -1295,6 +1297,13 @@
         <td>${handledCellClickable}</td>
       </tr>`;
     }).join('');
+    document.querySelectorAll('textarea.notes-ta').forEach(autoGrow);
+  }
+
+  // 管理员备注框随内容自动增高，保证内容完整显示
+  function autoGrow(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 2 + 'px';
   }
 
   // ── Duke 校内活动佐证（旧记录的备注标记为「校园活动」）：优先读新列；数据库没有新列时，从前台写进备注的那一行里取 ──
